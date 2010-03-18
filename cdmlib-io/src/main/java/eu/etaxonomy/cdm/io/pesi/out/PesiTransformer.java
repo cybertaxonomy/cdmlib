@@ -20,6 +20,8 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -1094,7 +1096,7 @@ public final class PesiTransformer {
 	public static String STR_AREA_SPAIN = "Spain";
 	public static String STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE = "Spanish_Exclusive_Economic_Zone";
 	public static String STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART = "Spanish_Exclusive_Economic_Zone_[Mediterranean_part]";
-	public static String STR_AREA_SVALBARD_WITH_BJÖRNÖYA_AND_JAN_MAYEN = "Svalbard_with_Björnöya_and_Jan_Mayen";
+	public static String STR_AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN = "Svalbard_with_Björnöya_and_Jan_Mayen";
 	public static String STR_AREA_SWEDEN = "Sweden";
 	public static String STR_AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE = "Swedish_Exclusive_Economic_Zone";
 	public static String STR_AREA_SWITZERLAND = "Switzerland";
@@ -1144,8 +1146,8 @@ public final class PesiTransformer {
 	 * @return
 	 * @throws UnknownCdmTypeException 
 	 */
-	public static String presenceAbsenceTerm2OccurrenceStatusCache(PresenceAbsenceTermBase<?> term) throws UnknownCdmTypeException {
-		String result = null;
+	public static String presenceAbsenceTerm2OccurrenceStatusCache(PresenceAbsenceTermBase<?> term) {
+		String result = STR_STATUS_PRESENT; // TODO: What should be returned if a PresenceTerm/AbsenceTerm could not be translated to a datawarehouse occurrence status id?
 		if (term.isInstanceOf(PresenceTerm.class)) {
 			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
 			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
@@ -1163,14 +1165,14 @@ public final class PesiTransformer {
 //			} else if (presenceTerm.equals(PresenceTerm.)) {
 //				result = STR_STATUS_DOUBTFUL;
 			} else {
-				throw new UnknownCdmTypeException("PresenceTerm could not be translated to datawarehouse occurrence status id: " + presenceTerm.getLabel());
+				logger.error("PresenceTerm could not be translated to datawarehouse occurrence status id: " + presenceTerm.getLabel());
 			}
 		} else if (term.isInstanceOf(AbsenceTerm.class)) {
 			AbsenceTerm absenceTerm = CdmBase.deproxy(term, AbsenceTerm.class);
 			if (absenceTerm.equals(AbsenceTerm.ABSENT())) {
 				result = STR_STATUS_ABSENT;
 			} else {
-				throw new UnknownCdmTypeException("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
+				logger.error("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
 			}
 //			result = STR_STATUS_ABSENT; // or just like this?
 		}
@@ -1183,8 +1185,8 @@ public final class PesiTransformer {
 	 * @return
 	 * @throws UnknownCdmTypeException 
 	 */
-	public static Integer presenceAbsenceTerm2OccurrenceStatusId(PresenceAbsenceTermBase<?> term) throws UnknownCdmTypeException {
-		Integer result = null;
+	public static Integer presenceAbsenceTerm2OccurrenceStatusId(PresenceAbsenceTermBase<?> term) {
+		Integer result = STATUS_PRESENT; // TODO: What should be returned if a PresenceTerm/AbsenceTerm could not be translated to a datawarehouse occurrence status id?
 		if (term.isInstanceOf(PresenceTerm.class)) {
 			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
 			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
@@ -1202,14 +1204,14 @@ public final class PesiTransformer {
 //			} else if (presenceTerm.equals(PresenceTerm.)) {
 //				result = STATUS_DOUBTFUL;
 			} else {
-				throw new UnknownCdmTypeException("PresenceTerm could not be translated to datawarehouse occurrence status id: " + presenceTerm.getLabel());
+				logger.error("PresenceTerm could not be translated to datawarehouse occurrence status id: " + presenceTerm.getLabel());
 			}
 		} else if (term.isInstanceOf(AbsenceTerm.class)) {
 			AbsenceTerm absenceTerm = CdmBase.deproxy(term, AbsenceTerm.class);
 			if (absenceTerm.equals(AbsenceTerm.ABSENT())) {
 				result = STATUS_ABSENT;
 			} else {
-				throw new UnknownCdmTypeException("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
+				logger.error("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
 			}
 //			result = STATUS_ABSENT; // or just like this?
 		}
@@ -1222,15 +1224,1193 @@ public final class PesiTransformer {
 	 * @return
 	 */
 	public static String area2AreaCache(NamedArea area) {
-		return null;
+		if (area == null) {
+			return null;
+		} else if (area.isInstanceOf(TdwgArea.class)) {
+			// TODO: This will take forever to implement the return of the appropriate datawarehouse area for any TDWG area. The return of STR_AREA_ALBANIA for any TDWG Area found is just a placeholder.
+			TdwgArea tdwgArea = CdmBase.deproxy(area, TdwgArea.class);
+			if (tdwgArea.equals(TdwgArea.ABBREV_1())) {	return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_2 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_3 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_4 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_5 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_6 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_7 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_8 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_9 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_10 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_11 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_12 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_13 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_14 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_20 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_21 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_22 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_23 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_24 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_25 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_26 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_27 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_28 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_29 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_30 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_31 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_32 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_33 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_34 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_35 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_36 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_37 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_38 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_40 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_41 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_42 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_43 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_50 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_51 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_60 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_61 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_62 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_63 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_70 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_71 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_72 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_73 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_74 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_75 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_76 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_77 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_78 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_79 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_80 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_81 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_82 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_83 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_84 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_85 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_90 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_91 ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ABT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AFG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AMU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AND ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ATP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AUT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AZO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BEN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BER ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BGM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BIS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BKN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CBD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CGS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHQ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHX ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CKI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CMN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CON ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CUB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CVI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CYP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CZE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DJI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DOM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DSV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ECU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EGY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ELS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EQG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ERI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ETH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FAL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FLA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FOR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GEO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GER ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GHA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GIL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HBI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HMD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HON ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HUN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ICE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IDA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ILL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_INI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IOW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRQ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IVO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JNF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KER ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KGZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KHA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KOR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KTY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KZN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LDV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LES ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LIN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LOU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAQ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MNT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MON ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MPE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRQ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MTN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MYA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NBR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NDA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NET ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NIC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NLA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NNS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NOR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NRU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NTA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OFS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OGA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OHI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OKL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OMA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ONT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ORE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PER ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHX ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PIT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PRM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PUE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QLD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QUE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_REU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RHO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RWA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SDA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SGE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SRL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SSA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_STH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SVA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TDC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEX ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_THA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TKM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TON ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TRT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TZK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UGA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UKR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_URU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UTA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UZB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VAN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VEN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VER ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VNA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VRG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WDC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WVA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WYO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_XMS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YAK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YEM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZIM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ABT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AFG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_BA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_CH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_CN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_CO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_DF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_ER ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_FO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_LP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_MI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_CB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_NE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_RN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_SC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_SF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_TF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_CA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_JU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_LR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_ME ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_TU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALD_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AMU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AND_AN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AND_CO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASP_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_AS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_ME ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_MI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_NA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_TR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ATP_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AUT_AU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AUT_LI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AZO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAH_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BEN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BER_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BGM_BE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BGM_LU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BIS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BKN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_ES ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_KA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_LA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_LI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLZ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_BR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_KA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_SB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_SR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_DF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_GO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_MS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_MT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_AL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_BA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_CE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_FN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_PB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_PE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_PI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_RN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_SE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_ES ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_MG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_RJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_SP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_TR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_AC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_AM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_AP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_PA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_RM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_RO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_TO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS_PR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS_RS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS_SC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAF_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CBD_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CGS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_CQ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_GZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_HU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_SC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_YN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHH_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHI_NM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHI_NX ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM_HJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM_JL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM_LN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_BJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_GS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_HB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_SA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_SD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_SX ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_TJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHQ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_AH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_FJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_GD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_GX ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_HE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_HK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_HN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_JS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_JX ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_KI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_MP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_SH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_ZJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHX_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CKI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_BI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_CO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_LA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_OH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_SA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_VA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN_AN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN_AT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN_TA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS_AI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS_LL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS_MG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CMN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COM_CO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COM_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CON_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI_CL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI_CO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP_EC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP_NC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP_WC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPV_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRL_MF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRL_PA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRZ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CUB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CVI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CYP_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CZE_CZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CZE_SK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DJI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DOM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DSV_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ECU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EGY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_AP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_BH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_DJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_SI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ELS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EQG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ERI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ETH_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FAL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIJ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FLA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FOR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA_CI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA_FR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA_MO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GEO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GER_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_AN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_BI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_PR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_ST ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GHA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GIL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST_BA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST_QA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST_UA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAI_HA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAI_NI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW_HI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW_JI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW_MI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HBI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HMD_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HON_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HUN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ICE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IDA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ILL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_AP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_BI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_CH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_CT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_GO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_GU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_HA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_JK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_KE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_KL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_KT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_MH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_MP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_MR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_OR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_PO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_PU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_RA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_TN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_UP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_WB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_YA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_INI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IOW_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRE_IR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRE_NI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRQ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA_IT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA_SM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA_VC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IVO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_HK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_HN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_KY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_SH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAW_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JNF_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAZ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KER_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KGZ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KHA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KOR_NK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KOR_SK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KTY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUW_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KZN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBS_LB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBS_SY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LDV_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_AB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_AG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_AV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_BV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_GU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_MO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_NL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_SK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_SM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_VI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LES_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LIN_KI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LIN_US ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LOU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI_BA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI_ET ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI_LS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAQ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDV_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLW_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLY_PM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLY_SI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MNT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MON_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOR_MO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOR_SP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOZ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MPE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRN_GU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRN_NM ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRQ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MTN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_DF ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_ME ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_MO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_PU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_TL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_AG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_CO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_CU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_DU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_GU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_HI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_NL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_QU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_SL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_TA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_ZA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXG_VC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI_GU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI_RA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI_RG ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_BC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_BS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_SI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_SO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_CL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_GR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_JA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_MI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_NA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_OA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_CA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_CI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_QR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_TB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_YU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MYA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NBR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_CH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_DA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_IN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_KB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_KC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_KR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_SO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_ST ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NDA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEP_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NET_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEV_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFK_LH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFK_NI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFL_NE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFL_SP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NIC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NLA_BO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NLA_CU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NNS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NOR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NRU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSW_CT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSW_NS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NTA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWG_IJ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWG_PN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWH_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWJ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OFS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OGA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OHI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OKL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OMA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ONT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ORE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAL_IS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAL_JO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PER_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHX_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PIT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PRM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PUE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QLD_CS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QLD_QU ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QUE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_REU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RHO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROD_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUW_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RWA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAM_AS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAM_WS ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCS_PI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCS_SI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCZ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SDA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEY_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SGE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIC_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIC_SI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOL_NO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOL_SO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA_AN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA_GI ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA_SP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SRL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SSA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_STH_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUD_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SVA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC_CC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC_HC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC_NC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWZ_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AB ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AD ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AZ ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_GR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_NA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_NK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TDC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEX_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_THA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TKM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK_SW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK_TO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TON_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TRT_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUR_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUV_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_GA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_MP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_NP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_NW ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TZK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UGA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UKR_MO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UKR_UK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_URU_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UTA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UZB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VAN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VEN_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VER_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIE_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VNA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VRG_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAL_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAU_AC ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAU_WA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WDC_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM_HP ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM_JK ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM_UT ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_BA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_DO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_GR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_SL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_SV ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSB_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WVA_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WYO_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_XMS_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YAK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YEM_NY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YEM_SY ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_BH ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_CR ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_KO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_MA ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_MN ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_SE ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_SL ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUK_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAI_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAM_OO ())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZIM_OO ())) { return STR_AREA_ALBANIA; }
+			else {
+				logger.error("Unknown TdwgArea Area: " + area.getTitleCache());
+				return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
+			}
+		} else if (area.isInstanceOf(WaterbodyOrCountry.class)) {
+			if (area.equals(WaterbodyOrCountry.ALBANIAPEOPLESSOCIALISTREPUBLICOF())) {
+				return STR_AREA_ALBANIA;
+			} else if (area.equals(WaterbodyOrCountry.AUSTRIAREPUBLICOF())) {
+				return STR_AREA_AUSTRIA;
+			} else if (area.equals(WaterbodyOrCountry.LIECHTENSTEINPRINCIPALITYOF())) {
+				return STR_AREA_LIECHTENSTEIN;
+			} else if (area.equals(WaterbodyOrCountry.BELGIUMKINGDOMOF())) {
+				return STR_AREA_BELGIUM;
+			} else if (area.equals(WaterbodyOrCountry.LUXEMBOURGGRANDDUCHYOF())) {
+				return STR_AREA_LUXEMBOURG;
+			} else if (area.equals(WaterbodyOrCountry.BOSNIAANDHERZEGOVINA())) {
+				return STR_AREA_BOSNIA_HERZEGOVINA;
+			} else if (area.equals(WaterbodyOrCountry.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND())) {
+				return STR_AREA_GREAT_BRITAIN;
+			} else if (area.equals(WaterbodyOrCountry.BULGARIAPEOPLESREPUBLICOF())) {
+				return STR_AREA_BULGARIA;
+			} else if (area.equals(WaterbodyOrCountry.BELARUS())) {
+				return STR_AREA_BELARUS;
+			} else if (area.equals(WaterbodyOrCountry.CZECHREPUBLIC())) {
+				return STR_AREA_CZECH_REPUBLIC;
+			} else if (area.equals(WaterbodyOrCountry.CYPRUSREPUBLICOF())) {
+				return STR_AREA_CYPRUS;
+			} else if (area.equals(WaterbodyOrCountry.DENMARKKINGDOMOF())) {
+				return STR_AREA_DENMARK_WITH_BORNHOLM; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.ESTONIA())) {
+				return STR_AREA_ESTONIA;
+			} else if (area.equals(WaterbodyOrCountry.FAEROEISLANDS())) {
+				return STR_AREA_FAROE_ISLANDS;
+			} else if (area.equals(WaterbodyOrCountry.FINLANDREPUBLICOF())) {
+				return STR_AREA_FINLAND_WITH_AHVENANMAA; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.FRANCEFRENCHREPUBLIC())) {
+				return STR_AREA_FRANCE;
+			} else if (area.equals(WaterbodyOrCountry.MONACOPRINCIPALITYOF())) {
+				return STR_AREA_MONACO;
+			} else if (area.equals(WaterbodyOrCountry.GERMANY())) {
+				return STR_AREA_GERMANY;
+			} else if (area.equals(WaterbodyOrCountry.IRELAND())) {
+				return STR_AREA_IRELAND;
+			} else if (area.equals(WaterbodyOrCountry.SWITZERLANDSWISSCONFEDERATION())) {
+				return STR_AREA_SWITZERLAND; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.NETHERLANDSKINGDOMOFTHE())) {
+				return STR_AREA_NETHERLANDS;
+			} else if (area.equals(WaterbodyOrCountry.SPAINSPANISHSTATE())) {
+				return STR_AREA_SPAIN;
+			} else if (area.equals(WaterbodyOrCountry.ANDORRAPRINCIPALITYOF())) {
+				return STR_AREA_ANDORRA;
+			} else if (area.equals(WaterbodyOrCountry.GIBRALTAR())) {
+				return STR_AREA_GIBRALTAR;
+			} else if (area.equals(WaterbodyOrCountry.HUNGARYHUNGARIANPEOPLESREPUBLIC())) {
+				return STR_AREA_HUNGARY;
+			} else if (area.equals(WaterbodyOrCountry.ICELANDREPUBLICOF())) {
+				return STR_AREA_ICELAND;
+			} else if (area.equals(WaterbodyOrCountry.ITALYITALIANREPUBLIC())) {
+				return STR_AREA_ITALY;
+			} else if (area.equals(WaterbodyOrCountry.SANMARINOREPUBLICOF())) {
+				return STR_AREA_SAN_MARINO;
+			} else if (area.equals(WaterbodyOrCountry.LATVIA())) {
+				return STR_AREA_LATVIA;
+			} else if (area.equals(WaterbodyOrCountry.LITHUANIA())) {
+				return STR_AREA_LITHUANIA;
+			} else if (area.equals(WaterbodyOrCountry.PORTUGALPORTUGUESEREPUBLIC())) {
+				return STR_AREA_PORTUGUESE_MAINLAND;
+			} else if (area.equals(WaterbodyOrCountry.MACEDONIATHEFORMERYUGOSLAVREPUBLICOF())) {
+				return STR_AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA;
+			} else if (area.equals(WaterbodyOrCountry.MOLDOVAREPUBLICOF())) {
+				return STR_AREA_MOLDOVA;
+			} else if (area.equals(WaterbodyOrCountry.NORWAYKINGDOMOF())) {
+				return STR_AREA_NORWEGIAN_MAINLAND;
+			} else if (area.equals(WaterbodyOrCountry.POLANDPOLISHPEOPLESREPUBLIC())) {
+				return STR_AREA_POLAND;
+			} else if (area.equals(WaterbodyOrCountry.RUSSIANFEDERATION())) {
+				return STR_AREA_THE_RUSSIAN_FEDERATION;
+			} else if (area.equals(WaterbodyOrCountry.ROMANIASOCIALISTREPUBLICOF())) {
+				return STR_AREA_ROMANIA;
+			} else if (area.equals(WaterbodyOrCountry.SVALBARDJANMAYENISLANDS())) {
+				return STR_AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN;
+			} else if (area.equals(WaterbodyOrCountry.MALTAREPUBLICOF())) {
+				return STR_AREA_MALTA;
+			} else if (area.equals(WaterbodyOrCountry.SLOVAKIA())) {
+				return STR_AREA_SLOVAKIA;
+			} else if (area.equals(WaterbodyOrCountry.SLOVENIA())) {
+				return STR_AREA_SLOVENIA;
+			} else if (area.equals(WaterbodyOrCountry.SERBIAANDMONTENEGRO())) {
+				return STR_AREA_SERBIA_WITH_MONTENEGRO;
+			} else if (area.equals(WaterbodyOrCountry.SWEDENKINGDOMOF())) {
+				return STR_AREA_SWEDEN;
+			} else if (area.equals(WaterbodyOrCountry.UKRAINE())) {
+				return STR_AREA_UKRAINE;
+			} else if (area.equals(WaterbodyOrCountry.GREECEHELLENICREPUBLIC())) {
+				return STR_AREA_GREEK_MAINLAND; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.VATICANCITYSTATE())) {
+				return STR_AREA_VATICAN_CITY;
+			} else if (area.equals(WaterbodyOrCountry.AZERBAIJANREPUBLICOF())) {
+				return STR_AREA_AZERBAIJAN;
+			} else if (area.equals(WaterbodyOrCountry.ALGERIAPEOPLESDEMOCRATICREPUBLICOF())) {
+				return STR_AREA_ALGERIA;
+			} else if (area.equals(WaterbodyOrCountry.ARMENIA())) {
+				return STR_AREA_ARMENIA;
+			} else if (area.equals(WaterbodyOrCountry.EGYPTARABREPUBLICOF())) {
+				return STR_AREA_EGYPT;
+			} else if (area.equals(WaterbodyOrCountry.GEORGIA())) {
+				return STR_AREA_GEORGIA;
+			} else if (area.equals(WaterbodyOrCountry.ISRAELSTATEOF())) {
+				return STR_AREA_ISRAEL;
+			} else if (area.equals(WaterbodyOrCountry.JORDANHASHEMITEKINGDOMOF())) {
+				return STR_AREA_JORDAN; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.LEBANONLEBANESEREPUBLIC())) {
+				return STR_AREA_LEBANON;
+			} else if (area.equals(WaterbodyOrCountry.LIBYANARABJAMAHIRIYA())) {
+				return STR_AREA_LIBYA; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.MOROCCOKINGDOMOF())) {
+				return STR_AREA_MOROCCO;
+			} else if (area.equals(WaterbodyOrCountry.SYRIANARABREPUBLIC())) {
+				return STR_AREA_SYRIA;
+			} else if (area.equals(WaterbodyOrCountry.TUNISIAREPUBLICOF())) {
+				return STR_AREA_TUNISIA;
+			} else if (area.equals(WaterbodyOrCountry.TURKEYREPUBLICOF())) {
+				return STR_AREA_TURKEY;
+			} else if (area.equals(WaterbodyOrCountry.AUSTRALIACOMMONWEALTHOF())) {
+				return STR_AREA_AUSTRALIAN_REGION;
+			} else if (area.equals(WaterbodyOrCountry.MEDITERRANEANSEA())) {
+				return STR_AREA_MEDITERRANEAN_SEA;
+			} else if (area.equals(WaterbodyOrCountry.BLACKSEA())) {
+				return STR_AREA_BLACK_SEA;
+			} else if (area.equals(WaterbodyOrCountry.CASPIANSEA())) {
+				return STR_AREA_CASPIAN_SEA;
+			} else {
+				logger.error("Unknown WaterbodyOrCountry Area: " + area.getTitleCache());
+				return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
+			}
+		}
+		return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
 		
+		// These areas are unknown:
 //		EAST_AEGEAN_ISLANDS
 //		GREEK_EAST_AEGEAN_ISLANDS
 //		TURKISH_EAST_AEGEAN_ISLANDS
-//		ALBANIA
 //		AUSTRIA_WITH_LIECHTENSTEIN
-//		AUSTRIA
-//		LIECHTENSTEIN
 //		AZORES
 //		CORVO
 //		FAIAL
@@ -1242,17 +2422,11 @@ public final class PesiTransformer {
 //		SANTA_MARIA
 //		TERCEIRA
 //		BELGIUM_WITH_LUXEMBOURG
-//		BELGIUM
-//		LUXEMBOURG
-//		BOSNIA-HERZEGOVINA
 //		BALEARES
 //		IBIZA_WITH_FORMENTERA
 //		MALLORCA
 //		MENORCA
-//		GREAT_BRITAIN
 //		BALTIC_STATES_AND_KALININGRAD_REGION
-//		BULGARIA
-//		BELARUS
 //		CANARY_ISLANDS
 //		GRAN_CANARIA
 //		FUERTEVENTURA_WITH_LOBOS
@@ -1264,47 +2438,20 @@ public final class PesiTransformer {
 //		MONTENEGRO
 //		CORSE
 //		CRETE_WITH_KARPATHOS,_KASOS_AND_GAVDHOS
-//		CZECH_REPUBLIC
 //		CROATIA
-//		CYPRUS
 //		FORMER_CZECHOSLOVAKIA
-//		DENMARK_WITH_BORNHOLM
-//		ESTONIA
-//		FAROE_ISLANDS
-//		FINLAND_WITH_AHVENANMAA
-//		FRANCE
 //		CHANNEL_ISLANDS
 //		FRENCH_MAINLAND
-//		MONACO
-//		GERMANY
 //		GREECE_WITH_CYCLADES_AND_MORE_ISLANDS
-//		IRELAND
 //		REPUBLIC_OF_IRELAND
 //		NORTHERN_IRELAND
-//		SWITZERLAND
-//		NETHERLANDS
-//		SPAIN
-//		ANDORRA
-//		GIBRALTAR
 //		KINGDOM_OF_SPAIN
-//		HUNGARY
-//		ICELAND
-//		ITALY
 //		ITALIAN_MAINLAND
-//		SAN_MARINO
 //		FORMER_JUGOSLAVIA
-//		LATVIA
-//		LITHUANIA
-//		PORTUGUESE_MAINLAND
-//		MADEIRA
+//		MADEIRA (This one is: MADEIRA ARCHIPELAGO)
 //		DESERTAS
 //		MADEIRA
 //		PORTO_SANTO
-//		THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA
-//		MOLDOVA
-//		NORWEGIAN_MAINLAND
-//		POLAND
-//		THE_RUSSIAN_FEDERATION
 //		NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND
 //		CENTRAL_EUROPEAN_RUSSIA
 //		EASTERN_EUROPEAN_RUSSIA
@@ -1312,7 +2459,6 @@ public final class PesiTransformer {
 //		NORTHERN_EUROPEAN_RUSSIA
 //		NORTHWEST_EUROPEAN_RUSSIA
 //		SOUTH_EUROPEAN_RUSSIA
-//		ROMANIA
 //		FORMER_USSR
 //		RUSSIA_BALTIC
 //		RUSSIA_CENTRAL
@@ -1320,65 +2466,39 @@ public final class PesiTransformer {
 //		RUSSIA_NORTHERN
 //		RUSSIA_SOUTHWEST
 //		SARDEGNA
-//		SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN
 //		SELVAGENS_ISLANDS
 //		SICILY_WITH_MALTA
-//		MALTA
 //		SICILY
-//		SLOVAKIA
-//		SLOVENIA
-//		SERBIA_WITH_MONTENEGRO
 //		SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO
-//		SWEDEN
 //		EUROPEAN_TURKEY
 //		UKRAINE_INCLUDING_CRIMEA
 //		CRIMEA
-//		UKRAINE
-//		GREEK_MAINLAND
 //		CRETE
 //		DODECANESE_ISLANDS
 //		CYCLADES_ISLANDS
 //		NORTH_AEGEAN_ISLANDS
-//		VATICAN_CITY
 //		FRANZ_JOSEF_LAND
 //		NOVAYA_ZEMLYA
 //		AZERBAIJAN_INCLUDING_NAKHICHEVAN
-//		AZERBAIJAN
 //		NAKHICHEVAN
-//		ALGERIA
-//		ARMENIA
 //		CAUCASUS_REGION
-//		EGYPT
-//		GEORGIA
 //		ISRAEL-JORDAN
-//		ISRAEL
-//		JORDAN
-//		LEBANON
-//		LIBYA
 //		LEBANON-SYRIA
-//		MOROCCO
 //		NORTH_CAUCASUS
 //		SINAI
-//		SYRIA
-//		TUNISIA
 //		ASIATIC_TURKEY
-//		TURKEY
 //		NORTHERN_AFRICA
 //		AFRO_TROPICAL_REGION
-//		AUSTRALIAN_REGION
 //		EAST_PALAEARCTIC
 //		NEARCTIC_REGION
 //		NEOTROPICAL_REGION
 //		NEAR_EAST
 //		ORIENTAL_REGION
 //		EUROPEAN_MARINE_WATERS
-//		MEDITERRANEAN_SEA
 //		WHITE_SEA
 //		NORTH_SEA
 //		BALTIC_SEA
-//		BLACK_SEA
 //		BARENTS_SEA
-//		CASPIAN_SEA
 //		PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE
 //		BELGIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		FRENCH_EXCLUSIVE_ECONOMIC_ZONE
@@ -1416,7 +2536,7 @@ public final class PesiTransformer {
 //		UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE
 //		LEBANESE_EXCLUSIVE_ECONOMIC_ZONE
-//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE_[MEDITERRANEAN_PART]
+//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART
 //		ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		CROATIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		BALEAR_SEA
@@ -1431,15 +2551,1193 @@ public final class PesiTransformer {
 	 * @return
 	 */
 	public static Integer area2AreaId(NamedArea area) {
-		return null;
-
+		if (area == null) {
+			return null;
+		} else if (area.isInstanceOf(TdwgArea.class)) {
+			// TODO: This will take forever to implement the return of the appropriate datawarehouse area for any TDWG area. The return of AREA_ALBANIA for any TDWG Area found is just a placeholder.
+			TdwgArea tdwgArea = CdmBase.deproxy(area, TdwgArea.class);
+			if (tdwgArea.equals(TdwgArea.ABBREV_1())) {	return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_2 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_3 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_4 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_5 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_6 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_7 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_8 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_9 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_10 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_11 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_12 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_13 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_14 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_20 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_21 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_22 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_23 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_24 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_25 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_26 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_27 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_28 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_29 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_30 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_31 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_32 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_33 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_34 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_35 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_36 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_37 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_38 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_40 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_41 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_42 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_43 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_50 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_51 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_60 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_61 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_62 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_63 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_70 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_71 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_72 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_73 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_74 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_75 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_76 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_77 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_78 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_79 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_80 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_81 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_82 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_83 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_84 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_85 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_90 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_91 ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ABT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AFG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AMU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AND ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ATP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AUT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AZO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BEN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BER ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BGM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BIS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BKN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CBD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CGS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHQ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHX ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CKI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CMN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CON ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CUB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CVI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CYP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CZE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DJI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DOM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DSV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ECU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EGY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ELS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EQG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ERI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ETH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FAL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FLA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FOR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GEO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GER ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GHA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GIL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HBI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HMD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HON ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HUN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ICE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IDA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ILL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_INI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IOW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRQ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IVO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JNF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KER ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KGZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KHA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KOR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KTY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KZN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LDV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LES ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LIN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LOU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAQ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MNT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MON ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MPE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRQ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MTN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MYA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NBR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NDA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NET ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NIC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NLA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NNS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NOR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NRU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NTA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OFS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OGA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OHI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OKL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OMA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ONT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ORE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PER ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHX ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PIT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PRM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PUE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QLD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QUE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_REU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RHO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RWA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SDA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SGE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SRL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SSA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_STH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SVA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TDC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEX ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_THA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TKM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TON ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TRT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TZK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UGA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UKR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_URU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UTA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UZB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VAN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VEN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VER ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VNA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VRG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WDC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WVA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WYO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_XMS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YAK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YEM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZIM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ABT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AFG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_BA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_CH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_CN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_CO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_DF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_ER ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_FO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_LP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGE_MI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_CB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_NE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_RN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_SC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_SF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGS_TF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_CA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_JU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_LR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_ME ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_SL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AGW_TU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALD_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ALU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AMU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AND_AN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AND_CO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ANT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ARU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASP_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_AS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_ME ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_MI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_NA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ASS_TR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ATP_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AUT_AU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AUT_LI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_AZO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAH_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BAN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BEN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BER_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BGM_BE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BGM_LU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BIS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BKN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_ES ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_KA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_LA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLT_LI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BLZ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_BR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_KA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_SB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOR_SR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BOU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BRY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BUR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_DF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_GO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_MS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZC_MT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_AL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_BA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_CE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_FN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_PB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_PE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_PI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_RN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZE_SE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_ES ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_MG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_RJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_SP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZL_TR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_AC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_AM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_AP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_PA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_RM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_RO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZN_TO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS_PR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS_RS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_BZS_SC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAF_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CAY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CBD_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CGS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_CQ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_GZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_HU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_SC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHC_YN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHH_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHI_NM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHI_NX ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM_HJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM_JL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHM_LN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_BJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_GS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_HB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_SA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_SD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_SX ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHN_TJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHQ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_AH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_FJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_GD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_GX ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_HE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_HK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_HN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_JS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_JX ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_KI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_MP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_SH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHS_ZJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CHX_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CKI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_BI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_CO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_LA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_OH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_SA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLC_VA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN_AN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN_AT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLN_TA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS_AI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS_LL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CLS_MG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CMN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CNY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COM_CO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COM_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CON_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_COS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI_CL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI_CO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPI_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP_EC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP_NC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPP_WC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CPV_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRL_MF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRL_PA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CRZ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CTM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CUB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CVI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CYP_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CZE_CZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_CZE_SK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DEN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DJI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DOM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_DSV_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EAS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ECU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EGY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_AP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_BH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_DJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EHM_SI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ELS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_EQG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ERI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ETH_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FAL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIJ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FIN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FLA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FOR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA_CI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA_FR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRA_MO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_FRG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GAM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GEO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GER_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_AN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_BI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_PR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GGI_ST ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GHA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GIL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GNL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GRC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST_BA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST_QA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GST_UA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_GUY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAI_HA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAI_NI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW_HI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW_JI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HAW_MI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HBI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HMD_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HON_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_HUN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ICE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IDA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ILL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_AP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_BI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_CH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_CT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_DM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_GO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_GU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_HA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_JK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_KE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_KL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_KT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_MH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_MP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_MR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_OR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_PO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_PU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_RA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_TN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_UP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_WB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IND_YA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_INI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IOW_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRE_IR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRE_NI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IRQ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA_IT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA_SM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ITA_VC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_IVO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_HK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_HN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_KY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAP_SH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JAW_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_JNF_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KAZ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KEN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KER_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KGZ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KHA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KOR_NK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KOR_SK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KRY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KTY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KUW_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_KZN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LAO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBS_LB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBS_SY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LBY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LDV_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_AB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_AG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_AV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_BV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_GU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_MO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_NL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_SK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_SM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LEE_VI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LES_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LIN_KI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LIN_US ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LOU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI_BA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI_ET ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_LSI_LS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAQ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MAU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MCS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MDV_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MIN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLW_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLY_PM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MLY_SI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MNT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MON_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOR_MO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOR_SP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MOZ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MPE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRN_GU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRN_NM ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRQ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MRY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MSO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MTN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_DF ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_ME ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_MO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_PU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXC_TL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_AG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_CO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_CU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_DU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_GU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_HI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_NL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_QU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_SL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_TA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXE_ZA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXG_VC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI_GU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI_RA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXI_RG ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_BC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_BS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_SI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXN_SO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_CL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_GR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_JA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_MI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_NA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXS_OA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_CA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_CI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_QR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_TB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MXT_YU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_MYA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NAT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NBR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_CH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_DA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_IN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_KB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_KC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_KR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_SO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NCS_ST ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NDA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEP_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NET_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NEV_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFK_LH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFK_NI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFL_NE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NFL_SP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NGR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NIC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NLA_BO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NLA_CU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NNS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NOR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NRU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSW_CT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NSW_NS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NTA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NUN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWG_IJ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWG_PN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWH_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWJ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NWY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_NZS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OFS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OGA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OHI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OKL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_OMA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ONT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ORE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAL_IS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAL_JO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PAR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PEN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PER_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PHX_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PIT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_POR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PRM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_PUE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QLD_CS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QLD_QU ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_QUE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_REU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RHO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROD_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ROM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RUW_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_RWA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAM_AS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAM_WS ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SAU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCS_PI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCS_SI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SCZ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SDA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SEY_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SGE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIC_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIC_SI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SIN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOL_NO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOL_SO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SOM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA_AN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA_GI ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SPA_SP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SRL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SSA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_STH_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUD_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SUR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SVA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC_CC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC_HC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWC_NC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_SWZ_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TAS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AB ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AD ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_AZ ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_GR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_NA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TCS_NK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TDC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TEX_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_THA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TKM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK_SW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TOK_TO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TON_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TRT_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUR_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TUV_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_GA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_MP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_NP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TVL_NW ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_TZK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UGA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UKR_MO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UKR_UK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_URU_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UTA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_UZB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VAN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VEN_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VER_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VIE_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VNA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_VRG_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAL_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAU_AC ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WAU_WA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WDC_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM_HP ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM_JK ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WHM_UT ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_BA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_DO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_GR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_SL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIN_SV ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WIS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WSB_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WVA_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_WYO_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_XMS_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YAK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YEM_NY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YEM_SY ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_BH ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_CR ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_KO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_MA ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_MN ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_SE ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUG_SL ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_YUK_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAI_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZAM_OO ())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_ZIM_OO ())) { return AREA_ALBANIA; }
+			else {
+				logger.error("Unknown TdwgArea Area: " + area.getTitleCache());
+				return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
+			}
+		} else if (area.isInstanceOf(WaterbodyOrCountry.class)) {
+			if (area.equals(WaterbodyOrCountry.ALBANIAPEOPLESSOCIALISTREPUBLICOF())) {
+				return AREA_ALBANIA;
+			} else if (area.equals(WaterbodyOrCountry.AUSTRIAREPUBLICOF())) {
+				return AREA_AUSTRIA;
+			} else if (area.equals(WaterbodyOrCountry.LIECHTENSTEINPRINCIPALITYOF())) {
+				return AREA_LIECHTENSTEIN;
+			} else if (area.equals(WaterbodyOrCountry.BELGIUMKINGDOMOF())) {
+				return AREA_BELGIUM;
+			} else if (area.equals(WaterbodyOrCountry.LUXEMBOURGGRANDDUCHYOF())) {
+				return AREA_LUXEMBOURG;
+			} else if (area.equals(WaterbodyOrCountry.BOSNIAANDHERZEGOVINA())) {
+				return AREA_BOSNIA_HERZEGOVINA;
+			} else if (area.equals(WaterbodyOrCountry.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND())) {
+				return AREA_GREAT_BRITAIN;
+			} else if (area.equals(WaterbodyOrCountry.BULGARIAPEOPLESREPUBLICOF())) {
+				return AREA_BULGARIA;
+			} else if (area.equals(WaterbodyOrCountry.BELARUS())) {
+				return AREA_BELARUS;
+			} else if (area.equals(WaterbodyOrCountry.CZECHREPUBLIC())) {
+				return AREA_CZECH_REPUBLIC;
+			} else if (area.equals(WaterbodyOrCountry.CYPRUSREPUBLICOF())) {
+				return AREA_CYPRUS;
+			} else if (area.equals(WaterbodyOrCountry.DENMARKKINGDOMOF())) {
+				return AREA_DENMARK_WITH_BORNHOLM; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.ESTONIA())) {
+				return AREA_ESTONIA;
+			} else if (area.equals(WaterbodyOrCountry.FAEROEISLANDS())) {
+				return AREA_FAROE_ISLANDS;
+			} else if (area.equals(WaterbodyOrCountry.FINLANDREPUBLICOF())) {
+				return AREA_FINLAND_WITH_AHVENANMAA; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.FRANCEFRENCHREPUBLIC())) {
+				return AREA_FRANCE;
+			} else if (area.equals(WaterbodyOrCountry.MONACOPRINCIPALITYOF())) {
+				return AREA_MONACO;
+			} else if (area.equals(WaterbodyOrCountry.GERMANY())) {
+				return AREA_GERMANY;
+			} else if (area.equals(WaterbodyOrCountry.IRELAND())) {
+				return AREA_IRELAND;
+			} else if (area.equals(WaterbodyOrCountry.SWITZERLANDSWISSCONFEDERATION())) {
+				return AREA_SWITZERLAND; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.NETHERLANDSKINGDOMOFTHE())) {
+				return AREA_NETHERLANDS;
+			} else if (area.equals(WaterbodyOrCountry.SPAINSPANISHSTATE())) {
+				return AREA_SPAIN;
+			} else if (area.equals(WaterbodyOrCountry.ANDORRAPRINCIPALITYOF())) {
+				return AREA_ANDORRA;
+			} else if (area.equals(WaterbodyOrCountry.GIBRALTAR())) {
+				return AREA_GIBRALTAR;
+			} else if (area.equals(WaterbodyOrCountry.HUNGARYHUNGARIANPEOPLESREPUBLIC())) {
+				return AREA_HUNGARY;
+			} else if (area.equals(WaterbodyOrCountry.ICELANDREPUBLICOF())) {
+				return AREA_ICELAND;
+			} else if (area.equals(WaterbodyOrCountry.ITALYITALIANREPUBLIC())) {
+				return AREA_ITALY;
+			} else if (area.equals(WaterbodyOrCountry.SANMARINOREPUBLICOF())) {
+				return AREA_SAN_MARINO;
+			} else if (area.equals(WaterbodyOrCountry.LATVIA())) {
+				return AREA_LATVIA;
+			} else if (area.equals(WaterbodyOrCountry.LITHUANIA())) {
+				return AREA_LITHUANIA;
+			} else if (area.equals(WaterbodyOrCountry.PORTUGALPORTUGUESEREPUBLIC())) {
+				return AREA_PORTUGUESE_MAINLAND;
+			} else if (area.equals(WaterbodyOrCountry.MACEDONIATHEFORMERYUGOSLAVREPUBLICOF())) {
+				return AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA;
+			} else if (area.equals(WaterbodyOrCountry.MOLDOVAREPUBLICOF())) {
+				return AREA_MOLDOVA;
+			} else if (area.equals(WaterbodyOrCountry.NORWAYKINGDOMOF())) {
+				return AREA_NORWEGIAN_MAINLAND;
+			} else if (area.equals(WaterbodyOrCountry.POLANDPOLISHPEOPLESREPUBLIC())) {
+				return AREA_POLAND;
+			} else if (area.equals(WaterbodyOrCountry.RUSSIANFEDERATION())) {
+				return AREA_THE_RUSSIAN_FEDERATION;
+			} else if (area.equals(WaterbodyOrCountry.ROMANIASOCIALISTREPUBLICOF())) {
+				return AREA_ROMANIA;
+			} else if (area.equals(WaterbodyOrCountry.SVALBARDJANMAYENISLANDS())) {
+				return AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN;
+			} else if (area.equals(WaterbodyOrCountry.MALTAREPUBLICOF())) {
+				return AREA_MALTA;
+			} else if (area.equals(WaterbodyOrCountry.SLOVAKIA())) {
+				return AREA_SLOVAKIA;
+			} else if (area.equals(WaterbodyOrCountry.SLOVENIA())) {
+				return AREA_SLOVENIA;
+			} else if (area.equals(WaterbodyOrCountry.SERBIAANDMONTENEGRO())) {
+				return AREA_SERBIA_WITH_MONTENEGRO;
+			} else if (area.equals(WaterbodyOrCountry.SWEDENKINGDOMOF())) {
+				return AREA_SWEDEN;
+			} else if (area.equals(WaterbodyOrCountry.UKRAINE())) {
+				return AREA_UKRAINE;
+			} else if (area.equals(WaterbodyOrCountry.GREECEHELLENICREPUBLIC())) {
+				return AREA_GREEK_MAINLAND; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.VATICANCITYSTATE())) {
+				return AREA_VATICAN_CITY;
+			} else if (area.equals(WaterbodyOrCountry.AZERBAIJANREPUBLICOF())) {
+				return AREA_AZERBAIJAN;
+			} else if (area.equals(WaterbodyOrCountry.ALGERIAPEOPLESDEMOCRATICREPUBLICOF())) {
+				return AREA_ALGERIA;
+			} else if (area.equals(WaterbodyOrCountry.ARMENIA())) {
+				return AREA_ARMENIA;
+			} else if (area.equals(WaterbodyOrCountry.EGYPTARABREPUBLICOF())) {
+				return AREA_EGYPT;
+			} else if (area.equals(WaterbodyOrCountry.GEORGIA())) {
+				return AREA_GEORGIA;
+			} else if (area.equals(WaterbodyOrCountry.ISRAELSTATEOF())) {
+				return AREA_ISRAEL;
+			} else if (area.equals(WaterbodyOrCountry.JORDANHASHEMITEKINGDOMOF())) {
+				return AREA_JORDAN; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.LEBANONLEBANESEREPUBLIC())) {
+				return AREA_LEBANON;
+			} else if (area.equals(WaterbodyOrCountry.LIBYANARABJAMAHIRIYA())) {
+				return AREA_LIBYA; // maybe wrong?
+			} else if (area.equals(WaterbodyOrCountry.MOROCCOKINGDOMOF())) {
+				return AREA_MOROCCO;
+			} else if (area.equals(WaterbodyOrCountry.SYRIANARABREPUBLIC())) {
+				return AREA_SYRIA;
+			} else if (area.equals(WaterbodyOrCountry.TUNISIAREPUBLICOF())) {
+				return AREA_TUNISIA;
+			} else if (area.equals(WaterbodyOrCountry.TURKEYREPUBLICOF())) {
+				return AREA_TURKEY;
+			} else if (area.equals(WaterbodyOrCountry.AUSTRALIACOMMONWEALTHOF())) {
+				return AREA_AUSTRALIAN_REGION;
+			} else if (area.equals(WaterbodyOrCountry.MEDITERRANEANSEA())) {
+				return AREA_MEDITERRANEAN_SEA;
+			} else if (area.equals(WaterbodyOrCountry.BLACKSEA())) {
+				return AREA_BLACK_SEA;
+			} else if (area.equals(WaterbodyOrCountry.CASPIANSEA())) {
+				return AREA_CASPIAN_SEA;
+			} else {
+				logger.error("Unknown WaterbodyOrCountry Area: " + area.getTitleCache());
+				return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
+			}
+		}
+		return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
+		
+		// These areas are unknown:
 //		EAST_AEGEAN_ISLANDS
 //		GREEK_EAST_AEGEAN_ISLANDS
 //		TURKISH_EAST_AEGEAN_ISLANDS
-//		ALBANIA
 //		AUSTRIA_WITH_LIECHTENSTEIN
-//		AUSTRIA
-//		LIECHTENSTEIN
 //		AZORES
 //		CORVO
 //		FAIAL
@@ -1451,17 +3749,11 @@ public final class PesiTransformer {
 //		SANTA_MARIA
 //		TERCEIRA
 //		BELGIUM_WITH_LUXEMBOURG
-//		BELGIUM
-//		LUXEMBOURG
-//		BOSNIA-HERZEGOVINA
 //		BALEARES
 //		IBIZA_WITH_FORMENTERA
 //		MALLORCA
 //		MENORCA
-//		GREAT_BRITAIN
 //		BALTIC_STATES_AND_KALININGRAD_REGION
-//		BULGARIA
-//		BELARUS
 //		CANARY_ISLANDS
 //		GRAN_CANARIA
 //		FUERTEVENTURA_WITH_LOBOS
@@ -1473,47 +3765,20 @@ public final class PesiTransformer {
 //		MONTENEGRO
 //		CORSE
 //		CRETE_WITH_KARPATHOS,_KASOS_AND_GAVDHOS
-//		CZECH_REPUBLIC
 //		CROATIA
-//		CYPRUS
 //		FORMER_CZECHOSLOVAKIA
-//		DENMARK_WITH_BORNHOLM
-//		ESTONIA
-//		FAROE_ISLANDS
-//		FINLAND_WITH_AHVENANMAA
-//		FRANCE
 //		CHANNEL_ISLANDS
 //		FRENCH_MAINLAND
-//		MONACO
-//		GERMANY
 //		GREECE_WITH_CYCLADES_AND_MORE_ISLANDS
-//		IRELAND
 //		REPUBLIC_OF_IRELAND
 //		NORTHERN_IRELAND
-//		SWITZERLAND
-//		NETHERLANDS
-//		SPAIN
-//		ANDORRA
-//		GIBRALTAR
 //		KINGDOM_OF_SPAIN
-//		HUNGARY
-//		ICELAND
-//		ITALY
 //		ITALIAN_MAINLAND
-//		SAN_MARINO
 //		FORMER_JUGOSLAVIA
-//		LATVIA
-//		LITHUANIA
-//		PORTUGUESE_MAINLAND
-//		MADEIRA
+//		MADEIRA (This one is: MADEIRA ARCHIPELAGO)
 //		DESERTAS
 //		MADEIRA
 //		PORTO_SANTO
-//		THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA
-//		MOLDOVA
-//		NORWEGIAN_MAINLAND
-//		POLAND
-//		THE_RUSSIAN_FEDERATION
 //		NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND
 //		CENTRAL_EUROPEAN_RUSSIA
 //		EASTERN_EUROPEAN_RUSSIA
@@ -1521,7 +3786,6 @@ public final class PesiTransformer {
 //		NORTHERN_EUROPEAN_RUSSIA
 //		NORTHWEST_EUROPEAN_RUSSIA
 //		SOUTH_EUROPEAN_RUSSIA
-//		ROMANIA
 //		FORMER_USSR
 //		RUSSIA_BALTIC
 //		RUSSIA_CENTRAL
@@ -1529,65 +3793,39 @@ public final class PesiTransformer {
 //		RUSSIA_NORTHERN
 //		RUSSIA_SOUTHWEST
 //		SARDEGNA
-//		SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN
 //		SELVAGENS_ISLANDS
 //		SICILY_WITH_MALTA
-//		MALTA
 //		SICILY
-//		SLOVAKIA
-//		SLOVENIA
-//		SERBIA_WITH_MONTENEGRO
 //		SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO
-//		SWEDEN
 //		EUROPEAN_TURKEY
 //		UKRAINE_INCLUDING_CRIMEA
 //		CRIMEA
-//		UKRAINE
-//		GREEK_MAINLAND
 //		CRETE
 //		DODECANESE_ISLANDS
 //		CYCLADES_ISLANDS
 //		NORTH_AEGEAN_ISLANDS
-//		VATICAN_CITY
 //		FRANZ_JOSEF_LAND
 //		NOVAYA_ZEMLYA
 //		AZERBAIJAN_INCLUDING_NAKHICHEVAN
-//		AZERBAIJAN
 //		NAKHICHEVAN
-//		ALGERIA
-//		ARMENIA
 //		CAUCASUS_REGION
-//		EGYPT
-//		GEORGIA
 //		ISRAEL-JORDAN
-//		ISRAEL
-//		JORDAN
-//		LEBANON
-//		LIBYA
 //		LEBANON-SYRIA
-//		MOROCCO
 //		NORTH_CAUCASUS
 //		SINAI
-//		SYRIA
-//		TUNISIA
 //		ASIATIC_TURKEY
-//		TURKEY
 //		NORTHERN_AFRICA
 //		AFRO_TROPICAL_REGION
-//		AUSTRALIAN_REGION
 //		EAST_PALAEARCTIC
 //		NEARCTIC_REGION
 //		NEOTROPICAL_REGION
 //		NEAR_EAST
 //		ORIENTAL_REGION
 //		EUROPEAN_MARINE_WATERS
-//		MEDITERRANEAN_SEA
 //		WHITE_SEA
 //		NORTH_SEA
 //		BALTIC_SEA
-//		BLACK_SEA
 //		BARENTS_SEA
-//		CASPIAN_SEA
 //		PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE
 //		BELGIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		FRENCH_EXCLUSIVE_ECONOMIC_ZONE
@@ -1625,7 +3863,7 @@ public final class PesiTransformer {
 //		UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE
 //		LEBANESE_EXCLUSIVE_ECONOMIC_ZONE
-//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE_[MEDITERRANEAN_PART]
+//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART
 //		ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		CROATIAN_EXCLUSIVE_ECONOMIC_ZONE
 //		BALEAR_SEA
@@ -1818,7 +4056,7 @@ public final class PesiTransformer {
 		} else if (language.equals(Language.CORSICAN())) {
 			return STR_LANGUAGE_CORSICAN;
 		} else {
-			logger.debug("Unknown Language.");
+			logger.debug("Unknown Language: " + language.getTitleCache());
 			return null;
 		}
 	}
@@ -1955,7 +4193,7 @@ public final class PesiTransformer {
 		} else if (language.equals(Language.CORSICAN())) {
 			return Language_Corsican;
 		} else {
-			logger.debug("Unknown Language.");
+			logger.debug("Unknown Language: " + language.getTitleCache());
 			return null;
 		}
 	}

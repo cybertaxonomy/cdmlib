@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -30,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -55,6 +55,8 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	private static final String parentPluralString = "Taxa";
 	private static Taxon taxon = null;
 	private static Map<Integer, Integer> sourceId2OccurenceIdMap = new HashMap<Integer, Integer>();
+	private static NamedArea namedArea = null;
+	private static Distribution distribution = null;
 
 	public PesiOccurrenceExport() {
 		super();
@@ -129,20 +131,30 @@ public class PesiOccurrenceExport extends PesiExportBase {
 							for (DescriptionElementBase descriptionElement : descriptionElements) {
 								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
 								
-								// Differentiate between descriptionElements with and without sources.
-								if (elementSources.size() == 0) {
-									success &= mapping.invoke(descriptionElement);
-								} else {
-									for (DescriptionElementSource elementSource : elementSources) {
-										ReferenceBase reference = elementSource.getCitation();
+								if (descriptionElement.isInstanceOf(Distribution.class)) {
+									Distribution distribution = CdmBase.deproxy(descriptionElement, Distribution.class);
+									setNamedArea(distribution.getArea());
+									setDistribution(distribution);
 
-										// Citations can be empty (null): Is it wrong data or just a normal case?
-										if (reference != null) {
-											doCount(count++, modCount, pluralString);
-											success &= mapping.invoke(reference);
+									// Differentiate between descriptionElements with and without sources.
+									if (elementSources.size() == 0) {
+										success &= mapping.invoke(descriptionElement);
+									} else {
+										for (DescriptionElementSource elementSource : elementSources) {
+											ReferenceBase reference = elementSource.getCitation();
+	
+											// Citations can be empty (null): Is it wrong data or just a normal case?
+											if (reference != null) {
+												doCount(count++, modCount, pluralString);
+												success &= mapping.invoke(reference);
+											}
 										}
+										
 									}
+									
+									setDistribution(null);
 								}
+								
 							}
 						}
 					}
@@ -304,18 +316,12 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getAreaFk(AnnotatableEntity entity) {
-		Integer result = 1; // TODO
-		Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
-		
-		// TODO: I guess we have multiple TaxonDescriptions and multiple NamedAreas for each TaxonDescriptions.
-		// This is some kind of trouble since datawarehouse expects a 1:1 relationship between an occurrence and an area.
-		for (TaxonDescription taxonDescription : taxonDescriptions) {
-			Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
-			for (NamedArea namedArea : namedAreas) {
-				// This does not make sense in case of multiple NamedAreas as assumed above.
-				result = PesiTransformer.area2AreaId(namedArea);
-			}
-		}	
+		Integer result = null;
+		if (getNamedArea() != null) {
+			result = PesiTransformer.area2AreaId(namedArea);
+		} else {
+			logger.warn("This should never happen, but a NamedArea could not be found for entity: " + entity.getUuid());
+		}
 		return result;
 	}
 
@@ -328,18 +334,40 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getAreaNameCache(AnnotatableEntity entity) {
 		String result = null;
-		Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
-		
-		// TODO: I guess we have multiple TaxonDescriptions and multiple NamedAreas for each TaxonDescriptions.
-		// This is some kind of trouble since datawarehouse expects a 1:1 relationship between an occurrence and an area.
-		for (TaxonDescription taxonDescription : taxonDescriptions) {
-			Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
-			for (NamedArea namedArea : namedAreas) {
-				// This does not make sense in case of multiple NamedAreas as assumed above.
-				result = PesiTransformer.area2AreaCache(namedArea);
-			}
-		}	
+		if (getNamedArea() != null) {
+			result = PesiTransformer.area2AreaCache(namedArea);
+		} else {
+			logger.warn("This should never happen, but a NamedArea could not be found for entity: " + entity.getUuid());
+		}
 		return result;
+	}
+
+	/**
+	 * @return the distribution
+	 */
+	public static Distribution getDistribution() {
+		return distribution;
+	}
+
+	/**
+	 * @param distribution the distribution to set
+	 */
+	public static void setDistribution(Distribution distribution) {
+		PesiOccurrenceExport.distribution = distribution;
+	}
+
+	/**
+	 * @return the namedArea
+	 */
+	public static NamedArea getNamedArea() {
+		return namedArea;
+	}
+
+	/**
+	 * @param namedArea the namedArea to set
+	 */
+	public static void setNamedArea(NamedArea namedArea) {
+		PesiOccurrenceExport.namedArea = namedArea;
 	}
 
 	/**
@@ -350,12 +378,11 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getOccurrenceStatusFk(AnnotatableEntity entity) throws UnknownCdmTypeException {
-		Integer result = 1; // TODO
-//		if (entity != null && entity.isInstanceOf(Distribution.class)) {
-//			Distribution distribution = CdmBase.deproxy(entity, Distribution.class);
-//			result = PesiTransformer.presenceAbsenceTerm2OccurrenceStatusId(distribution.getStatus());
-//		}
+	private static Integer getOccurrenceStatusFk(AnnotatableEntity entity) {
+		Integer result = null;
+		if (getDistribution() != null) {
+			result = PesiTransformer.presenceAbsenceTerm2OccurrenceStatusId(getDistribution().getStatus());
+		}
 		return result;
 	}
 
@@ -367,12 +394,11 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getOccurrenceStatusCache(AnnotatableEntity entity) throws UnknownCdmTypeException {
-		String result = null; // TODO
-//		if (entity != null && entity.isInstanceOf(Distribution.class)) {
-//			Distribution distribution = CdmBase.deproxy(entity, Distribution.class);
-//			result = PesiTransformer.presenceAbsenceTerm2OccurrenceStatusCache(distribution.getStatus());
-//		}
+	private static String getOccurrenceStatusCache(AnnotatableEntity entity) {
+		String result = null;
+		if (getDistribution() != null) {
+			result = PesiTransformer.presenceAbsenceTerm2OccurrenceStatusCache(getDistribution().getStatus());
+		}
 		return result;
 	}
 
