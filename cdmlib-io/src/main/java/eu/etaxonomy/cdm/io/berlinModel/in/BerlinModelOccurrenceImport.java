@@ -215,7 +215,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 }
                 
             }
-            //TODO fix: makeOccurrenceSource(distributionMap, state, duplicateMap);
+            makeOccurrenceSource(distributionMap, state, duplicateMap);
 			
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
 			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
@@ -238,21 +238,37 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 */
 	private void makeOccurrenceSource(MapWrapper<Distribution> distributionMap, BerlinModelImportState state, Map<Integer, Distribution> duplicateMap) 
 				throws SQLException {
-		//FIXME multiple sources for one distribution, needs model change first
 		Map<String, ReferenceBase<?>> sourceIdMap = makeSourceIdMap(state); 
 		Source source = state.getConfig().getSource();
-		String strQuery = " SELECT OccurrenceSourceId, OccurrenceFk, SourceNumber, OldName, OldNameFk, PreferredReferenceFlag " + 
-						" FROM emOccurrenceSource " +
-						" ORDER BY SourceNumber DESC ";
+		
+		String facultativCols = "";
+		String strFacTable = "emOccurrenceSource";
+		String strFacColumn = "PreferredReferenceFlag";
+		String strColAlias = null;
+		if (checkSqlServerColumnExists(source, strFacTable, strFacColumn)){
+			facultativCols +=  ", " + strFacTable + "." + strFacColumn ;
+			if (! CdmUtils.Nz(strColAlias).equals("") ){
+				facultativCols += " AS " + strColAlias;
+			}
+		}
+		
+		String strQuery = 
+			" SELECT OccurrenceSourceId, OccurrenceFk, SourceNumber, OldName, OldNameFk " + facultativCols +  
+			" FROM emOccurrenceSource " +
+			" ORDER BY SourceNumber DESC ";
 		
 		
 		ResultSet rs = source.getResultSet(strQuery) ;
+		int i = 0;
 		while (rs.next()){
-			int occurrenceSourceId = rs.getInt("OccurrenceSourceId"); //TODO make originalSourceId
+			if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Occurrence sources handled: " + (i-1));}
+            int occurrenceSourceId = rs.getInt("OccurrenceSourceId"); //TODO make originalSourceId
 			Integer occurrenceFk = (Integer)rs.getObject("OccurrenceFk");
 			String sourceNumber = rs.getString("SourceNumber");
 			String oldName = rs.getString("OldName");
 			int oldNameFk = rs.getInt("OldNameFk");
+			
+			//get distribution
 			Distribution distribution = distributionMap.get(occurrenceFk);
 			if (distribution == null){
 				distribution = duplicateMap.get(occurrenceFk);
