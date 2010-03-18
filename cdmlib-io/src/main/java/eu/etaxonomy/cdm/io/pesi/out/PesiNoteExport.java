@@ -318,7 +318,7 @@ public class PesiNoteExport extends PesiExportBase {
 		if (descriptionElement != null) {
 			DateTime updated = descriptionElement.getUpdated();
 			if (updated != null) {
-				logger.error("Note Updated: " + updated);
+//				logger.error("Note Updated: " + updated);
 				result = new DateTime(updated.toDate());  // Unfortunately the time information gets lost here.
 			}
 		}
