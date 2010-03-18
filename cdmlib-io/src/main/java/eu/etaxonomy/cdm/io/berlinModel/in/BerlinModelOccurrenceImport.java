@@ -153,7 +153,9 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			int countDescriptions = 0;
 			int countDistributions = 0;
 			//for each reference
-            while (rs.next()){
+			TransactionStatus tx = startTransaction();
+            
+			while (rs.next()){
                 
                 if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
                 
@@ -216,7 +218,6 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 }
                 
             }
-            TransactionStatus tx = startTransaction();
             makeOccurrenceSource(distributionMap, state, duplicateMap);
 			
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
