@@ -243,7 +243,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName("A", MatchMode.BEGINNING, true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 9);
-
+		
 		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertEquals("Results list should contain one entity",1,results.size());
