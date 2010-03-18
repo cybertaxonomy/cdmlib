@@ -495,7 +495,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (hql == "") return null;
 		if(!doCount){
 			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
-			hql += " order by t.name.genusOrUninomial, t.name.rank desc, t.name.nomenclaturalReference.datePublished, titleCache"; 
+			hql += " order by t.name.genusOrUninomial, t.name.rank desc, titleCache"; 
 		}
 	
 		Query query = getSession().createQuery(hql);
