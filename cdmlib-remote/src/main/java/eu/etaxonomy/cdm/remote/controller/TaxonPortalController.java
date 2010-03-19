@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
@@ -275,6 +276,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
 		binder.registerCustomEditor(NamedArea.class, new NamedAreaPropertyEditor());
+		binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
 	}
 	
 	
@@ -318,6 +320,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *            weather to search for instances of {@link Synonym} - <i>optional parameter</i>
 	 * @param doTaxaByCommonNames
 	 *            for instances of {@link Taxon} by a common name used - <i>optional parameter</i>
+	 * @param matchMode
+	 *           valid values are "EXACT", "BEGINNING", "ANYWHERE", "END" (case sensitive !!!)
 	 * @return a Pager on a list of {@link IdentifiableEntity}s initialized by
 	 *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
 	 * @throws IOException
@@ -332,7 +336,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
 			@RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
 			@RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
-			@RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames)
+			@RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
+			@RequestParam(value = "matchMode", required = false) MatchMode matchMode
+			)
 			 throws IOException {
 		
 		logger.info("doFind( " +
@@ -354,7 +360,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );
 		config.setDoSynonyms(doSynonyms != null ? doSynonyms : Boolean.FALSE );
 		config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );
-		config.setMatchMode(MatchMode.BEGINNING);
+		config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
 		config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
 		config.setNamedAreas(areas);
 		if(treeUuid != null){
