@@ -10,14 +10,17 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IMarkerDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -38,6 +41,52 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 	public List<Marker> list(MarkerType markerType, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 		Criteria criteria = getSession().createCriteria(Marker.class);
 		criteria.add(Restrictions.eq("markerType", markerType));
+		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		addOrder(criteria, orderHints);
+		List<Marker> results = (List<Marker>)criteria.list();		
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
+	}
+	
+	@Override
+	public UUID delete(Marker marker) {
+		if(marker.getMarkedObj() != null) {
+			AnnotatableEntity markedObject = marker.getMarkedObj();
+			marker.setMarkedObj(null);
+			if(markedObject.getMarkers().contains(marker)) {
+				markedObject.getMarkers().remove(marker);
+				getSession().merge(markedObject);
+			} 			
+		} else {
+		    marker.setMarkedObj(null);
+		    getSession().delete(marker);
+		}
+		return marker.getUuid();
+	}
+
+	public Integer count(User creator, MarkerType markerType) {
+		Criteria criteria = getSession().createCriteria(Marker.class);
+		criteria.add(Restrictions.eq("createdBy", creator));
+		if(markerType != null) {
+		    criteria.add(Restrictions.eq("markerType", markerType));
+		}
+		criteria.setProjection(Projections.rowCount());
+		return (Integer) criteria.uniqueResult();
+	}
+
+	public List<Marker> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+		Criteria criteria = getSession().createCriteria(Marker.class);
+		criteria.add(Restrictions.eq("createdBy", creator));
+		if(markerType != null) {
+		    criteria.add(Restrictions.eq("markerType", markerType));
+		}
 		
 		if(pageSize != null) {
 			criteria.setMaxResults(pageSize);
