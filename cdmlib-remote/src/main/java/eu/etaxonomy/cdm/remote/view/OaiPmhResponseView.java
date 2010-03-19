@@ -1,6 +1,7 @@
 // $Id: RdfView.java 7281 2009-10-07 12:09:25Z ben.clark $
 package eu.etaxonomy.cdm.remote.view;
 
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,15 +44,17 @@ public abstract class OaiPmhResponseView extends AbstractView {
 			throws Exception {
 	    OAIPMH oaiPmh = new OAIPMH();
 	    StringBuffer requestBuffer = request.getRequestURL();
-	    if(!request.getParameterMap().keySet().isEmpty()) {
+	    if(!request.getParameterMap().isEmpty()) {
 	    	int i = 0;
-	        for(Object paramName : request.getParameterMap().keySet()) {
+	    	Enumeration<String> parameterNames = request.getParameterNames();
+	        while(parameterNames.hasMoreElements()) {
+	        	String parameterName = parameterNames.nextElement();
 	        	if(i == 0) {
 	        		requestBuffer.append("?");
 	        	} else {
 	        		requestBuffer.append("&");
 	        	}
-	            requestBuffer.append(paramName + "=" + request.getParameterMap().get(paramName));
+	            requestBuffer.append(parameterName + "=" + request.getParameter(parameterName));
 	        }
 	    }
         model.put("request",requestBuffer.toString());

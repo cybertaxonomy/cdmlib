@@ -103,7 +103,7 @@ public class ParameterizedUrlHandlerMapping extends SimpleUrlHandlerMapping
     }
     if (bestPathMatch != null) {
       handler = handlerMap.get(bestPathMatch);
-      exposePathWithinMapping(this.pathMatcher.extractPathWithinPattern(bestPathMatch, urlPath), request);
+      exposePathWithinMapping(this.pathMatcher.extractPathWithinPattern(bestPathMatch, urlPath), bestPathMatch, request);
       request.setAttribute( PATH_PARAMETERS, bestParamters );
     }
     return handler;

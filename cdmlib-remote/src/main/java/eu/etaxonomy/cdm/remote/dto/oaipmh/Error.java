@@ -36,12 +36,12 @@ import javax.xml.bind.annotation.XmlValue;
 @XmlType(name = "OAI-PMHerrorType", propOrder = {
     "value"
 })
-public class OAIPMHerror {
+public class Error {
 
     @XmlValue
     protected String value;
     @XmlAttribute(required = true)
-    protected OAIPMHerrorcode code;
+    protected ErrorCode code;
 
     /**
      * Gets the value of the value property.
@@ -72,10 +72,10 @@ public class OAIPMHerror {
      * 
      * @return
      *     possible object is
-     *     {@link OAIPMHerrorcode }
+     *     {@link ErrorCode }
      *     
      */
-    public OAIPMHerrorcode getCode() {
+    public ErrorCode getCode() {
         return code;
     }
 
@@ -84,10 +84,10 @@ public class OAIPMHerror {
      * 
      * @param value
      *     allowed object is
-     *     {@link OAIPMHerrorcode }
+     *     {@link ErrorCode }
      *     
      */
-    public void setCode(OAIPMHerrorcode value) {
+    public void setCode(ErrorCode value) {
         this.code = value;
     }
 

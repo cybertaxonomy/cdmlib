@@ -145,11 +145,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link OAIPMHerror }
+     * Create an instance of {@link Error }
      * 
      */
-    public OAIPMHerror createOAIPMHerrorType() {
-        return new OAIPMHerror();
+    public Error createOAIPMHerrorType() {
+        return new Error();
     }
 
     /**

@@ -28,7 +28,7 @@ public class LsidProxyConverter implements CustomConverter {
 	}
 
 	public Object convert(Object destination, Object source, Class destClass, Class sourceClass) {
-		if (source == null) {
+		if (source == null || ((LSID)source).toString() == null || ((LSID)source).toString().equals("")) {
 			return null;
 		}
 		String dest = null;

@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
