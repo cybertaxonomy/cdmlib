@@ -120,10 +120,10 @@ public class PesiOccurrenceExport extends PesiExportBase {
 					if (taxonBase.isInstanceOf(Taxon.class)) {
 
 						// Set the current Taxon
-						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+						setTaxon(CdmBase.deproxy(taxonBase, Taxon.class));
 
 						// Determine the TaxonDescriptions
-						Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
+						Set<TaxonDescription> taxonDescriptions = getTaxon().getDescriptions();
 
 						// Determine the DescriptionElements (Citations) for the current Taxon
 						for (TaxonDescription taxonDescription : taxonDescriptions) {
@@ -188,37 +188,18 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the identifier of the last occurrence committed to the database.
-	 * @param state
-	 * @return
+	 * @return the taxon
 	 */
-	private static Integer getLastOccurrenceId(PesiExportState state) {
-		// Retrieve the identifier of the last stored record
-		// Retrieve database identifier of the last created occurrence record.
-		String lastRecordSql = "Select @@Identity From OccurrenceSource";
-		Connection con = state.getConfig().getDestination().getConnection();
-		PreparedStatement stmt = null;
-		
-		Integer occurrenceId = 0;
-		try {
-			stmt = con.prepareStatement(lastRecordSql);
-	//		stmt.setString(1, dbTableName);
-			ResultSet resultSet = stmt.executeQuery();
-			while (resultSet.next()) {
-				// Count of this resultset should be 1
-				occurrenceId = resultSet.getInt(1);
-			}
-			if (occurrenceId == 0) {
-				throw new RuntimeException();
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException during getOccurrenceId invoke.");
-			e.printStackTrace();
-		}
-
-		return occurrenceId;
+	public static Taxon getTaxon() {
+		return taxon;
 	}
 
+	/**
+	 * @param taxon the taxon to set
+	 */
+	public static void setTaxon(Taxon taxon) {
+		PesiOccurrenceExport.taxon = taxon;
+	}
 
 	/**
 	 * Creates the entries for the database table 'OccurrenceSource'.
@@ -280,6 +261,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
+	 * @param entity
 	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
@@ -304,7 +286,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getTaxonFullNameCache(AnnotatableEntity entity) {
 		String result = null;
-		result = taxon.getName().getTitleCache();
+		result = getTaxon().getName().getTitleCache();
 		return result;
 	}
 

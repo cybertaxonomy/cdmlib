@@ -80,7 +80,7 @@ public class PesiNoteExport extends PesiExportBase {
 //			int pageSize = state.getConfig().getLimitSave();
 			int pageSize = 1000;
 
-			// Calculate the pageNumber
+			// Set the first pageNumber
 			int pageNumber = 1;
 
 			// Stores whether this invoke was successful or not.
@@ -186,6 +186,8 @@ public class PesiNoteExport extends PesiExportBase {
 		if (descriptionElement.isInstanceOf(TextData.class)) {
 			TextData textData = CdmBase.deproxy(descriptionElement, TextData.class);
 			result = textData.getText(Language.DEFAULT());
+		} else {
+//			logger.warn("DescriptionElement is of instance: " + descriptionElement.getClass());
 		}
 		return result;
 	}
@@ -323,8 +325,7 @@ public class PesiNoteExport extends PesiExportBase {
 		if (descriptionElement != null) {
 			DateTime updated = descriptionElement.getUpdated();
 			if (updated != null) {
-//				logger.error("Note Updated: " + updated);
-				result = new DateTime(updated.toDate());  // Unfortunately the time information gets lost here.
+				result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
 			}
 		}
 		return result;

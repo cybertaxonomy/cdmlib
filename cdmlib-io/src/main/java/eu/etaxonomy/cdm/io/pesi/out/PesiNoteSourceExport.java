@@ -73,8 +73,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 //			int pageSize = state.getConfig().getLimitSave();
 			int pageSize = 1000;
 
-			// Calculate the pageNumber
-			int maxCount = 0;
+			// Set the first pageNumber
 			int pageNumber = 1;
 
 			// Stores whether this invoke was successful or not.

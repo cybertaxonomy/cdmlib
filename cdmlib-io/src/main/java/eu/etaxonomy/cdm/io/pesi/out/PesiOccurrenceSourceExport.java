@@ -49,7 +49,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	private static final String dbTableName = "OccurrenceSource";
 	private static final String pluralString = "OccurrenceSources";
 	private static final String parentPluralString = "Taxa";
-	private static Taxon taxon = null;
 	private static ArrayList processedList = new ArrayList();
 
 	public PesiOccurrenceSourceExport() {
@@ -119,7 +118,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 					if (taxonBase.isInstanceOf(Taxon.class)) {
 
 						// Set the current Taxon
-						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+						Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 
 						// Determine the TaxonDescriptions
 						Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();

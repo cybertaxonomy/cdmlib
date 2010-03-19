@@ -11,19 +11,23 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbIntegerExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.erms.ErmsImportBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -80,10 +84,6 @@ public class PesiSourceExport extends PesiExportBase {
 
 			// PESI: Clear the database table Source.
 			doDelete(state);
-
-			// CDM: Get the number of all available references.
-//			int maxCount = getReferenceService().count(null);
-//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
 
 			// Get specific mappings: (CDM) Reference -> (PESI) Source
 			PesiExportMapping mapping = getMapping();
@@ -171,12 +171,12 @@ public class PesiSourceExport extends PesiExportBase {
 	 * @return The <code>IMIS_Id</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static Integer getIMIS_Id(ReferenceBase<?> reference) {
-		// TODO
-		// Where is the IMIS_Id from an ERMS import stored in CDM?
-		return null;
-	}
+//	@SuppressWarnings("unused")
+//	private static Integer getIMIS_Id(ReferenceBase<?> reference) {
+//		// TODO
+//		// Where is the IMIS_Id from an ERMS import stored in CDM?
+//		return null;
+//	}
 	
 	/**
 	 * Returns the <code>SourceCategoryFK</code> attribute.
@@ -260,12 +260,11 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
-		
-		// TODO: For sets of size bigger than one, this isn't good at all.
-		for (IdentifiableSource source : reference.getSources()) {
-			if (source != null) {
-				result = source.getIdInSource();
-			}
+		Set<IdentifiableSource> sources = reference.getSources();
+		if (sources.size() == 1) {
+			result = sources.iterator().next().getIdInSource();
+		} else {
+			logger.warn("Reference has more than one source: " + reference.getTitleCache());
 		}
 		return result;
 	}
@@ -303,7 +302,13 @@ public class PesiSourceExport extends PesiExportBase {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
 		mapping.addMapper(IdMapper.NewInstance("SourceId"));
-		mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
+
+//		mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
+		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().find(ErmsImportBase.IMIS_UUID);
+		if (idInSourceExtensionType != null) {
+			mapping.addMapper(DbIntegerExtensionMapper.NewInstance(idInSourceExtensionType, "IMIS_Id"));
+		}
+
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryFK", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Name", this));
