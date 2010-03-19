@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="spring-tx-3.0.0.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-security-core-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="spring-security-core-3.0.0.RELEASE.jar" sourcepath="spring-security-core-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="spring-expression-3.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-beans-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -67,7 +67,6 @@
 	<classpathentry exported="true" kind="lib" path="spring-2.5.6.jar" sourcepath="spring-2.5.6src.zip"/>
 	<classpathentry exported="true" kind="lib" path="spring-agent-2.5.6.jar" sourcepath="spring-agent-2.5.6src.zip"/>
 	<classpathentry exported="true" kind="lib" path="spring-modules-lucene-0.8a.jar" sourcepath="spring-modules-lucene-0.8asrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4.jar" sourcepath="spring-security-core-2.0.4src.zip"/>
 	<classpathentry exported="true" kind="lib" path="spring-web-2.5.6.jar" sourcepath="spring-web-2.5.6src.zip"/>
 	<classpathentry exported="true" kind="lib" path="spring-webmvc-2.5.6.jar" sourcepath="spring-webmvc-2.5.6src.zip"/>
 	<classpathentry exported="true" kind="lib" path="wsdl4j-1.6.1.jar" sourcepath="wsdl4j-1.6.1src.zip"/>
