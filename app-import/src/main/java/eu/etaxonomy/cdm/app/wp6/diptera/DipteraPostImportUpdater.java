@@ -75,7 +75,7 @@ public class DipteraPostImportUpdater {
 			
 			Taxon taxon;
 			for (TaxonBase taxonBase : taxonList){
-				if ((i++ % modCount) == 0){ logger.info("taxa handled: " + (i-1));}
+				if ((i++ % modCount) == 0){ logger.warn("taxa handled: " + (i-1));}
 				
 				if (taxonBase.isInstanceOf(Taxon.class)){
 					taxon = CdmBase.deproxy(taxonBase, Taxon.class);
