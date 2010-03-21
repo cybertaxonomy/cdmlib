@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
 import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.app.wp6.diptera.DipteraDistributionParser;
+import eu.etaxonomy.cdm.app.wp6.palmae.PalmaeActivator;
+import eu.etaxonomy.cdm.app.wp6.palmae.PalmaePostImportUpdater;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -77,6 +79,9 @@ public class DipteraActivator {
 //	//ignore null
 	static final boolean ignoreNull = true;
 	
+	//update citations ?
+	static final boolean updateCitations = true;
+	
 	//authors
 	static final boolean doAuthors = true;
 	//references
@@ -123,15 +128,16 @@ public class DipteraActivator {
 
 	
 	/**
+	 * @param destination 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public void doImport(ICdmDataSource destination) {
 		
 		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
-		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
+
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
@@ -195,6 +201,34 @@ public class DipteraActivator {
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
+	
+	public static void main(String[] args) {
+	boolean success = true;
+		logger.debug("start");
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;	
+		DipteraActivator me = new DipteraActivator();
+
+		me.doImport(destination);
+		DipteraPostImportUpdater updater = new DipteraPostImportUpdater();
+		if (updateCitations){
+			updater.updateCitations(destination);
+		}
+
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	private static NameTypeDesignationStatus nameTypeDesignationStatueMethod(String note){
 		if (CdmUtils.isEmpty(note)){
