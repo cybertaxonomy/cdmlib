@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 //TODO make it CONFIG extends DBExportConfigurator
-public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase> extends IoStateBase<CONFIG> {
+public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase> extends IoStateBase<CONFIG, CdmExportBase> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExportStateBase.class);
 	

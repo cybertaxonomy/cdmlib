@@ -13,6 +13,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorExport.j
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/ImportUtils.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/common/TestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/taxa/NormalExplicitActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java -text
@@ -21,7 +22,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportState.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbExportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbImportActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/ErmsActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/EuroMedActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/FaunaEuropaeaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/FaunaEuropaeaSources.java -text
@@ -1301,6 +1301,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/RelatedObjectsHelper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ResultSetPartitioner.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportConfiguratorBase.java -text
@@ -1513,6 +1515,7 @@ cdmlib-io/src/main/resources/schema/cdm/taxon.xsd -text
 cdmlib-io/src/main/resources/schema/xml/XMLSchema.xsd -text
 cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
 cdmlib-io/src/site/site.xml -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/erms/ermsErrors.txt -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.java -text
@@ -1573,6 +1576,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
+cdmlib-io/src/test/resources/termCodeCreator.xls -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
@@ -1762,6 +1766,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/Rank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignationStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationStatusBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ViralName.java -text
@@ -1868,6 +1873,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/TeamDefaultCach
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IIdentifiableEntityCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IdentifiableEntityDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/description/TaxonDescriptionDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/BacterialNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/CacheUpdate.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/INameCacheStrategy.java -text
@@ -1999,6 +2005,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionTypeTest.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/AnnotationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmMetaDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefinedTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/ExtensionTypeTest.java -text

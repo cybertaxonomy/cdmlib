@@ -229,6 +229,7 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public boolean isUseTaxonomicTree() {
 		return useTaxonomicTree;
 	}
+	
 
 	/**
 	 * @param useTaxonomicTree the useTaxonomicTree to set

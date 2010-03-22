@@ -158,6 +158,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
 //					result &= cdmIo.invoke(config, stores);
+					state.setCurrentIO(cdmIo);
 					result &= cdmIo.invoke(state);
 				}else{
 					logger.error("cdmIO was null");

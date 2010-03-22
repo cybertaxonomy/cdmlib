@@ -224,6 +224,12 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	public T findById(int id) throws DataAccessException;
 
 	/**
+	 * @param idSet
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public List<T> findById(Set<Integer> uuidSet) throws DataAccessException;
+	/**
 	 * @param Uuid
 	 * @return
 	 * @throws DataAccessException

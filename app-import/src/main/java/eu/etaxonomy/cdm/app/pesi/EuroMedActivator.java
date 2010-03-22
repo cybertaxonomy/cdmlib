@@ -46,8 +46,11 @@ public class EuroMedActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.euroMed();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2EuroMed();
+//	static final Source berlinModelSource = BerlinModelSources.euroMed();
+	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
+//	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
+	
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 	static final int sourceSecId = 7000000; //500000
 	
 	static final UUID taxonomicTreeUuid = UUID.fromString("314a68f9-8449-495a-91c2-92fde8bcf344");
@@ -58,10 +61,7 @@ public class EuroMedActivator {
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
 	
-	//should the other imports run as well?
-	static final boolean includeTaraxacum = true; 
-	static final boolean includeImages = true;
-	
+	static final int partitionSize = 2000;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -79,7 +79,7 @@ public class EuroMedActivator {
 
 
 // **************** ALL *********************	
-
+//
 	static final boolean doUser = true;
 	//authors
 	static final boolean doAuthors = true;
@@ -103,7 +103,7 @@ public class EuroMedActivator {
 
 	
 // **************** SELECTED *********************
-//
+
 //	static final boolean doUser = true;
 //	//authors
 //	static final boolean doAuthors = false;
@@ -138,7 +138,7 @@ public class EuroMedActivator {
 				
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(taxonomicTreeUuid);
+		bmImportConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
@@ -168,6 +168,7 @@ public class EuroMedActivator {
 		
 		bmImportConfigurator.setCheck(check);
 		bmImportConfigurator.setEditor(editor);
+		bmImportConfigurator.setRecordsPerTransaction(partitionSize);
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();

@@ -330,267 +330,261 @@ public class WaterbodyOrCountry extends NamedArea {
 	private static final UUID uuidPersianGulf = UUID.fromString("aa96ca19-46ab-4114-a494-96886eb7108a");
 
 	
-	/*
-	 * 
-uuidAfghanistan
-uuidAlbaniaPeoplesSocialistRepublicof
-uuidAlgeriaPeoplesDemocraticRepublicof
-uuidAmericanSamoa
-uuidAndorraPrincipalityof
-uuidAngolaRepublicof
-uuidAnguilla
-uuidAntarctica(theterritorySouthof60degS)
-uuidAntiguaandBarbuda
-uuidArgentinaArgentineRepublic
-uuidArmenia
-uuidAruba
-uuidAustraliaCommonwealthof
-uuidAustriaRepublicof
-uuidAzerbaijanRepublicof
-uuidBahamasCommonwealthofthe
-uuidBahrainKingdomof
-uuidBangladeshPeoplesRepublicof
-uuidBarbados
-uuidBelarus
-uuidBelgiumKingdomof
-uuidBelize
-uuidBeninPeoplesRepublicof
-uuidBermuda
-uuidBhutanKingdomof
-uuidBoliviaRepublicof
-uuidBosniaandHerzegovina
-uuidBotswanaRepublicof
-uuidBouvetIsland(Bouvetoya)
-uuidBrazilFederativeRepublicof
-uuidBritishIndianOceanTerritory(ChagosArchipelago)
-uuidBritishVirginIslands
-uuidBruneiDarussalam
-uuidBulgariaPeoplesRepublicof
-uuidBurkinaFaso
-uuidBurundiRepublicof
-uuidCambodiaKingdomof
-uuidCameroonUnitedRepublicof
-uuidCanada
-uuidCapeVerdeRepublicof
-uuidCaymanIslands
-uuidCentralAfricanRepublic
-uuidChadRepublicof
-uuidChileRepublicof
-uuidChinaPeoplesRepublicof
-uuidChristmasIsland
-uuidCocos(Keeling)Islands
-uuidColombiaRepublicof
-uuidComorosUnionofthe
-uuidCongoDemocraticRepublicof
-uuidCongoPeoplesRepublicof
-uuidCookIslands
-uuidCostaRicaRepublicof
-uuidCoteDIvoireIvoryCoastRepublicofthe
-uuidCubaRepublicof
-uuidCyprusRepublicof
-uuidCzechRepublic
-uuidDenmarkKingdomof
-uuidDjiboutiRepublicof
-uuidDominicaCommonwealthof
-uuidDominicanRepublic
-uuidEcuadorRepublicof
-uuidEgyptArabRepublicof
-uuidElSalvadorRepublicof
-uuidEquatorialGuineaRepublicof
-uuidEritrea
-uuidEstonia
-uuidEthiopia
-uuidFaeroeIslands
-uuidFalklandIslands(Malvinas)
-uuidFijiRepublicoftheFijiIslands
-uuidFinlandRepublicof
-uuidFranceFrenchRepublic
-uuidFrenchGuiana
-uuidFrenchPolynesia
-uuidFrenchSouthernTerritories
-uuidGabonGaboneseRepublic
-uuidGambiaRepublicofthe
-uuidGeorgia
-uuidGermany
-uuidGhanaRepublicof
-uuidGibraltar
-uuidGreeceHellenicRepublic
-uuidGreenland
-uuidGrenada
-uuidGuadaloupe
-uuidGuam
-uuidGuatemalaRepublicof
-uuidGuineaRevolutionaryPeoplesRepcof
-uuidGuinea-BissauRepublicof
-uuidGuyanaRepublicof
-uuidHaitiRepublicof
-uuidHeardandMcDonaldIslands
-uuidHolySee(VaticanCityState)
-uuidHondurasRepublicof
-uuidHongKongSpecialAdministrativeRegionofChina
-uuidHrvatska(Croatia)
-uuidHungaryHungarianPeoplesRepublic
-uuidIcelandRepublicof
-uuidIndiaRepublicof
-uuidIndonesiaRepublicof
-uuidIranIslamicRepublicof
-uuidIraqRepublicof
-uuidIreland
-uuidIsraelStateof
-uuidItalyItalianRepublic
-uuidJamaica
-uuidJapan
-uuidJordanHashemiteKingdomof
-uuidKazakhstanRepublicof
-uuidKenyaRepublicof
-uuidKiribatiRepublicof
-uuidKoreaDemocraticPeoplesRepublicof
-uuidKoreaRepublicof
-uuidKuwaitStateof
-uuidKyrgyzRepublic
-uuidLaoPeoplesDemocraticRepublic
-uuidLatvia
-uuidLebanonLebaneseRepublic
-uuidLesothoKingdomof
-uuidLiberiaRepublicof
-uuidLibyanArabJamahiriya
-uuidLiechtensteinPrincipalityof
-uuidLithuania
-uuidLuxembourgGrandDuchyof
-uuidMacaoSpecialAdministrativeRegionofChina
-uuidMacedoniatheformerYugoslavRepublicof
-uuidMadagascarRepublicof
-uuidMalawiRepublicof
-uuidMalaysia
-uuidMaldivesRepublicof
-uuidMaliRepublicof
-uuidMaltaRepublicof
-uuidMarshallIslands
-uuidMartinique
-uuidMauritaniaIslamicRepublicof
-uuidMauritius
-uuidMayotte
-uuidMexicoUnitedMexicanStates
-uuidMicronesiaFederatedStatesof
-uuidMoldovaRepublicof
-uuidMonacoPrincipalityof
-uuidMongoliaMongolianPeoplesRepublic
-uuidMontserrat
-uuidMoroccoKingdomof
-uuidMozambiquePeoplesRepublicof
-uuidMyanmar
-uuidNamibia
-uuidNauruRepublicof
-uuidNepalKingdomof
-uuidNetherlandsAntilles
-uuidNetherlandsKingdomofthe
-uuidNewCaledonia
-uuidNewZealand
-uuidNicaraguaRepublicof
-uuidNigerRepublicofthe
-uuidNigeriaFederalRepublicof
-uuidNiueRepublicof
-uuidNorfolkIsland
-uuidNorthernMarianaIslands
-uuidNorwayKingdomof
-uuidOmanSultanateof
-uuidPakistanIslamicRepublicof
-uuidPalau
-uuidPalestinianTerritoryOccupied
-uuidPanamaRepublicof
-uuidPapuaNewGuinea
-uuidParaguayRepublicof
-uuidPeruRepublicof
-uuidPhilippinesRepublicofthe
-uuidPitcairnIsland
-uuidPolandPolishPeoplesRepublic
-uuidPortugalPortugueseRepublic
-uuidPuertoRico
-uuidQatarStateof
-uuidReunion
-uuidRomaniaSocialistRepublicof
-uuidRussianFederation
-uuidRwandaRwandeseRepublic
-uuidSt.Helena
-uuidSt.KittsandNevis
-uuidSt.Lucia
-uuidSt.PierreandMiquelon
-uuidSt.VincentandtheGrenadines
-uuidSamoaIndependentStateof
-uuidSanMarinoRepublicof
-uuidSaoTomeandPrincipeDemocraticRepublicof
-uuidSaudiArabiaKingdomof
-uuidSenegalRepublicof
-uuidSerbiaandMontenegro
-uuidSeychellesRepublicof
-uuidSierraLeoneRepublicof
-uuidSingaporeRepublicof
-uuidSlovakia(SlovakRepublic)
-uuidSlovenia
-uuidSolomonIslands
-uuidSomaliaSomaliRepublic
-uuidSouthAfricaRepublicof
-uuidSouthGeorgiaandtheSouthSandwichIslands
-uuidSpainSpanishState
-uuidSriLankaDemocraticSocialistRepublicof
-uuidSudanDemocraticRepublicofthe
-uuidSurinameRepublicof
-uuidSvalbard&JanMayenIslands
-uuidSwazilandKingdomof
-uuidSwedenKingdomof
-uuidSwitzerlandSwissConfederation
-uuidSyrianArabRepublic
-uuidTaiwanProvinceofChina
-uuidTajikistan
-uuidTanzaniaUnitedRepublicof
-uuidThailandKingdomof
-uuidTimor-LesteDemocraticRepublicof
-uuidTogoTogoleseRepublic
-uuidTokelau(TokelauIslands)
-uuidTongaKingdomof
-uuidTrinidadandTobagoRepublicof
-uuidTunisiaRepublicof
-uuidTurkeyRepublicof
-uuidTurkmenistan
-uuidTurksandCaicosIslands
-uuidTuvalu
-uuidUSVirginIslands
-uuidUgandaRepublicof
-uuidUkraine
-uuidUnitedArabEmirates
-uuidUnitedKingdomofGreatBritain&N.Ireland
-uuidUnitedStatesMinorOutlyingIslands
-uuidUnitedStatesofAmerica
-uuidUruguayEasternRepublicof
-uuidUzbekistan
-uuidVanuatu
-uuidVenezuelaBolivarianRepublicof
-uuidVietNamSocialistRepublicof
-uuidWallisandFutunaIslands
-uuidWesternSahara
-uuidYemen
-uuidZambiaRepublicof
-uuidZimbabwe
-uuidArcticOcean
-uuidAtlanticOcean
-uuidPacificOcean
-uuidIndianOcean
-uuidSouthernOcean
-uuidMediterraneanSea
-uuidBlackSea
-uuidCaspianSea
-uuidRedSea
-uuidPersianGulf
-
-	 */
-public static final WaterbodyOrCountry AFGHANISTAN(){
-	return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAfghanistan);
-}
-	
 	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
 		logger.warn("Not yet implemented");
 		return null; // FIXME(uuidArgentinaArgentineRepublic);
 	}
+
+	public static final WaterbodyOrCountry AFGHANISTAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAfghanistan );}
+	public static final WaterbodyOrCountry ALBANIAPEOPLESSOCIALISTREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAlbaniaPeoplesSocialistRepublicof );}
+	public static final WaterbodyOrCountry ALGERIAPEOPLESDEMOCRATICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAlgeriaPeoplesDemocraticRepublicof );}
+	public static final WaterbodyOrCountry AMERICANSAMOA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAmericanSamoa );}
+	public static final WaterbodyOrCountry ANDORRAPRINCIPALITYOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAndorraPrincipalityof );}
+	public static final WaterbodyOrCountry ANGOLAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAngolaRepublicof );}
+	public static final WaterbodyOrCountry ANGUILLA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAnguilla );}
+	public static final WaterbodyOrCountry ANTARCTICASOUTHOF60 () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAntarcticaSouthOf60 );}
+	public static final WaterbodyOrCountry ANTIGUAANDBARBUDA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAntiguaandBarbuda );}
+	public static final WaterbodyOrCountry ARGENTINAARGENTINEREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidArgentinaArgentineRepublic );}
+	public static final WaterbodyOrCountry ARMENIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidArmenia );}
+	public static final WaterbodyOrCountry ARUBA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAruba );}
+	public static final WaterbodyOrCountry AUSTRALIACOMMONWEALTHOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAustraliaCommonwealthof );}
+	public static final WaterbodyOrCountry AUSTRIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAustriaRepublicof );}
+	public static final WaterbodyOrCountry AZERBAIJANREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAzerbaijanRepublicof );}
+	public static final WaterbodyOrCountry BAHAMASCOMMONWEALTHOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBahamasCommonwealthofthe );}
+	public static final WaterbodyOrCountry BAHRAINKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBahrainKingdomof );}
+	public static final WaterbodyOrCountry BANGLADESHPEOPLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBangladeshPeoplesRepublicof );}
+	public static final WaterbodyOrCountry BARBADOS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBarbados );}
+	public static final WaterbodyOrCountry BELARUS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBelarus );}
+	public static final WaterbodyOrCountry BELGIUMKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBelgiumKingdomof );}
+	public static final WaterbodyOrCountry BELIZE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBelize );}
+	public static final WaterbodyOrCountry BENINPEOPLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBeninPeoplesRepublicof );}
+	public static final WaterbodyOrCountry BERMUDA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBermuda );}
+	public static final WaterbodyOrCountry BHUTANKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBhutanKingdomof );}
+	public static final WaterbodyOrCountry BOLIVIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBoliviaRepublicof );}
+	public static final WaterbodyOrCountry BOSNIAANDHERZEGOVINA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBosniaandHerzegovina );}
+	public static final WaterbodyOrCountry BOTSWANAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBotswanaRepublicof );}
+	public static final WaterbodyOrCountry BOUVETISLAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBouvetIsland );}
+	public static final WaterbodyOrCountry BRAZILFEDERATIVEREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBrazilFederativeRepublicof );}
+	public static final WaterbodyOrCountry BRITISHINDIANOCEANTERRITORY () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBritishIndianOceanTerritory );}
+	public static final WaterbodyOrCountry BRITISHVIRGINISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBritishVirginIslands );}
+	public static final WaterbodyOrCountry BRUNEIDARUSSALAM () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBruneiDarussalam );}
+	public static final WaterbodyOrCountry BULGARIAPEOPLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBulgariaPeoplesRepublicof );}
+	public static final WaterbodyOrCountry BURKINAFASO () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBurkinaFaso );}
+	public static final WaterbodyOrCountry BURUNDIREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBurundiRepublicof );}
+	public static final WaterbodyOrCountry CAMBODIAKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCambodiaKingdomof );}
+	public static final WaterbodyOrCountry CAMEROONUNITEDREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCameroonUnitedRepublicof );}
+	public static final WaterbodyOrCountry CANADA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCanada );}
+	public static final WaterbodyOrCountry CAPEVERDEREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCapeVerdeRepublicof );}
+	public static final WaterbodyOrCountry CAYMANISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCaymanIslands );}
+	public static final WaterbodyOrCountry CENTRALAFRICANREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCentralAfricanRepublic );}
+	public static final WaterbodyOrCountry CHADREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidChadRepublicof );}
+	public static final WaterbodyOrCountry CHILEREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidChileRepublicof );}
+	public static final WaterbodyOrCountry CHINAPEOPLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidChinaPeoplesRepublicof );}
+	public static final WaterbodyOrCountry CHRISTMASISLAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidChristmasIsland );}
+	public static final WaterbodyOrCountry COCOSISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCocosIslands );}
+	public static final WaterbodyOrCountry COLOMBIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidColombiaRepublicof );}
+	public static final WaterbodyOrCountry COMOROSUNIONOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidComorosUnionofthe );}
+	public static final WaterbodyOrCountry CONGODEMOCRATICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCongoDemocraticRepublicof );}
+	public static final WaterbodyOrCountry CONGOPEOPLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCongoPeoplesRepublicof );}
+	public static final WaterbodyOrCountry COOKISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCookIslands );}
+	public static final WaterbodyOrCountry COSTARICAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCostaRicaRepublicof );}
+	public static final WaterbodyOrCountry COTEDIVOIREIVORYCOASTREPUBLICOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCoteDIvoireIvoryCoastRepublicofthe );}
+	public static final WaterbodyOrCountry CUBAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCubaRepublicof );}
+	public static final WaterbodyOrCountry CYPRUSREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCyprusRepublicof );}
+	public static final WaterbodyOrCountry CZECHREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCzechRepublic );}
+	public static final WaterbodyOrCountry DENMARKKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidDenmarkKingdomof );}
+	public static final WaterbodyOrCountry DJIBOUTIREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidDjiboutiRepublicof );}
+	public static final WaterbodyOrCountry DOMINICACOMMONWEALTHOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidDominicaCommonwealthof );}
+	public static final WaterbodyOrCountry DOMINICANREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidDominicanRepublic );}
+	public static final WaterbodyOrCountry ECUADORREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidEcuadorRepublicof );}
+	public static final WaterbodyOrCountry EGYPTARABREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidEgyptArabRepublicof );}
+	public static final WaterbodyOrCountry ELSALVADORREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidElSalvadorRepublicof );}
+	public static final WaterbodyOrCountry EQUATORIALGUINEAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidEquatorialGuineaRepublicof );}
+	public static final WaterbodyOrCountry ERITREA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidEritrea );}
+	public static final WaterbodyOrCountry ESTONIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidEstonia );}
+	public static final WaterbodyOrCountry ETHIOPIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidEthiopia );}
+	public static final WaterbodyOrCountry FAEROEISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFaeroeIslands );}
+	public static final WaterbodyOrCountry FALKLANDISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFalklandIslands );}
+	public static final WaterbodyOrCountry FIJIREPUBLICOFTHEFIJIISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFijiRepublicoftheFijiIslands );}
+	public static final WaterbodyOrCountry FINLANDREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFinlandRepublicof );}
+	public static final WaterbodyOrCountry FRANCEFRENCHREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFranceFrenchRepublic );}
+	public static final WaterbodyOrCountry FRENCHGUIANA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFrenchGuiana );}
+	public static final WaterbodyOrCountry FRENCHPOLYNESIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFrenchPolynesia );}
+	public static final WaterbodyOrCountry FRENCHSOUTHERNTERRITORIES () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidFrenchSouthernTerritories );}
+	public static final WaterbodyOrCountry GABONGABONESEREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGabonGaboneseRepublic );}
+	public static final WaterbodyOrCountry GAMBIAREPUBLICOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGambiaRepublicofthe );}
+	public static final WaterbodyOrCountry GEORGIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGeorgia );}
+	public static final WaterbodyOrCountry GERMANY () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGermany );}
+	public static final WaterbodyOrCountry GHANAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGhanaRepublicof );}
+	public static final WaterbodyOrCountry GIBRALTAR () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGibraltar );}
+	public static final WaterbodyOrCountry GREECEHELLENICREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGreeceHellenicRepublic );}
+	public static final WaterbodyOrCountry GREENLAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGreenland );}
+	public static final WaterbodyOrCountry GRENADA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGrenada );}
+	public static final WaterbodyOrCountry GUADALOUPE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGuadaloupe );}
+	public static final WaterbodyOrCountry GUAM () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGuam );}
+	public static final WaterbodyOrCountry GUATEMALAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGuatemalaRepublicof );}
+	public static final WaterbodyOrCountry GUINEAREVOLUTIONARYPEOPLESREPCOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGuineaRevolutionaryPeoplesRepcof );}
+	public static final WaterbodyOrCountry GUINEABISSAUREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGuineaBissauRepublicof );}
+	public static final WaterbodyOrCountry GUYANAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidGuyanaRepublicof );}
+	public static final WaterbodyOrCountry HAITIREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidHaitiRepublicof );}
+	public static final WaterbodyOrCountry HEARDANDMCDONALDISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidHeardandMcDonaldIslands );}
+	public static final WaterbodyOrCountry VATICANCITYSTATE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidVaticanCityState );}
+	public static final WaterbodyOrCountry HONDURASREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidHondurasRepublicof );}
+	public static final WaterbodyOrCountry HONGKONGSPECIALADMINISTRATIVEREGIONOFCHINA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidHongKongSpecialAdministrativeRegionofChina );}
+	public static final WaterbodyOrCountry HRVATSKA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidHrvatska );}
+	public static final WaterbodyOrCountry HUNGARYHUNGARIANPEOPLESREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidHungaryHungarianPeoplesRepublic );}
+	public static final WaterbodyOrCountry ICELANDREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIcelandRepublicof );}
+	public static final WaterbodyOrCountry INDIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIndiaRepublicof );}
+	public static final WaterbodyOrCountry INDONESIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIndonesiaRepublicof );}
+	public static final WaterbodyOrCountry IRANISLAMICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIranIslamicRepublicof );}
+	public static final WaterbodyOrCountry IRAQREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIraqRepublicof );}
+	public static final WaterbodyOrCountry IRELAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIreland );}
+	public static final WaterbodyOrCountry ISRAELSTATEOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIsraelStateof );}
+	public static final WaterbodyOrCountry ITALYITALIANREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidItalyItalianRepublic );}
+	public static final WaterbodyOrCountry JAMAICA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidJamaica );}
+	public static final WaterbodyOrCountry JAPAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidJapan );}
+	public static final WaterbodyOrCountry JORDANHASHEMITEKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidJordanHashemiteKingdomof );}
+	public static final WaterbodyOrCountry KAZAKHSTANREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidKazakhstanRepublicof );}
+	public static final WaterbodyOrCountry KENYAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidKenyaRepublicof );}
+	public static final WaterbodyOrCountry KIRIBATIREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidKiribatiRepublicof );}
+	public static final WaterbodyOrCountry KOREADEMOCRATICPEOPLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidKoreaDemocraticPeoplesRepublicof );}
+	public static final WaterbodyOrCountry KOREAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidKoreaRepublicof );}
+	public static final WaterbodyOrCountry KUWAITSTATEOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidKuwaitStateof );}
+	public static final WaterbodyOrCountry KYRGYZREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidKyrgyzRepublic );}
+	public static final WaterbodyOrCountry LAOPEOPLESDEMOCRATICREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLaoPeoplesDemocraticRepublic );}
+	public static final WaterbodyOrCountry LATVIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLatvia );}
+	public static final WaterbodyOrCountry LEBANONLEBANESEREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLebanonLebaneseRepublic );}
+	public static final WaterbodyOrCountry LESOTHOKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLesothoKingdomof );}
+	public static final WaterbodyOrCountry LIBERIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLiberiaRepublicof );}
+	public static final WaterbodyOrCountry LIBYANARABJAMAHIRIYA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLibyanArabJamahiriya );}
+	public static final WaterbodyOrCountry LIECHTENSTEINPRINCIPALITYOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLiechtensteinPrincipalityof );}
+	public static final WaterbodyOrCountry LITHUANIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLithuania );}
+	public static final WaterbodyOrCountry LUXEMBOURGGRANDDUCHYOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidLuxembourgGrandDuchyof );}
+	public static final WaterbodyOrCountry MACAOSPECIALADMINISTRATIVEREGIONOFCHINA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMacaoSpecialAdministrativeRegionofChina );}
+	public static final WaterbodyOrCountry MACEDONIATHEFORMERYUGOSLAVREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMacedoniatheformerYugoslavRepublicof );}
+	public static final WaterbodyOrCountry MADAGASCARREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMadagascarRepublicof );}
+	public static final WaterbodyOrCountry MALAWIREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMalawiRepublicof );}
+	public static final WaterbodyOrCountry MALAYSIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMalaysia );}
+	public static final WaterbodyOrCountry MALDIVESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMaldivesRepublicof );}
+	public static final WaterbodyOrCountry MALIREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMaliRepublicof );}
+	public static final WaterbodyOrCountry MALTAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMaltaRepublicof );}
+	public static final WaterbodyOrCountry MARSHALLISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMarshallIslands );}
+	public static final WaterbodyOrCountry MARTINIQUE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMartinique );}
+	public static final WaterbodyOrCountry MAURITANIAISLAMICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMauritaniaIslamicRepublicof );}
+	public static final WaterbodyOrCountry MAURITIUS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMauritius );}
+	public static final WaterbodyOrCountry MAYOTTE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMayotte );}
+	public static final WaterbodyOrCountry MEXICOUNITEDMEXICANSTATES () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMexicoUnitedMexicanStates );}
+	public static final WaterbodyOrCountry MICRONESIAFEDERATEDSTATESOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMicronesiaFederatedStatesof );}
+	public static final WaterbodyOrCountry MOLDOVAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMoldovaRepublicof );}
+	public static final WaterbodyOrCountry MONACOPRINCIPALITYOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMonacoPrincipalityof );}
+	public static final WaterbodyOrCountry MONGOLIAMONGOLIANPEOPLESREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMongoliaMongolianPeoplesRepublic );}
+	public static final WaterbodyOrCountry MONTSERRAT () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMontserrat );}
+	public static final WaterbodyOrCountry MOROCCOKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMoroccoKingdomof );}
+	public static final WaterbodyOrCountry MOZAMBIQUEPEOPLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMozambiquePeoplesRepublicof );}
+	public static final WaterbodyOrCountry MYANMAR () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMyanmar );}
+	public static final WaterbodyOrCountry NAMIBIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNamibia );}
+	public static final WaterbodyOrCountry NAURUREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNauruRepublicof );}
+	public static final WaterbodyOrCountry NEPALKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNepalKingdomof );}
+	public static final WaterbodyOrCountry NETHERLANDSANTILLES () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNetherlandsAntilles );}
+	public static final WaterbodyOrCountry NETHERLANDSKINGDOMOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNetherlandsKingdomofthe );}
+	public static final WaterbodyOrCountry NEWCALEDONIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNewCaledonia );}
+	public static final WaterbodyOrCountry NEWZEALAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNewZealand );}
+	public static final WaterbodyOrCountry NICARAGUAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNicaraguaRepublicof );}
+	public static final WaterbodyOrCountry NIGERREPUBLICOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNigerRepublicofthe );}
+	public static final WaterbodyOrCountry NIGERIAFEDERALREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNigeriaFederalRepublicof );}
+	public static final WaterbodyOrCountry NIUEREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNiueRepublicof );}
+	public static final WaterbodyOrCountry NORFOLKISLAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNorfolkIsland );}
+	public static final WaterbodyOrCountry NORTHERNMARIANAISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNorthernMarianaIslands );}
+	public static final WaterbodyOrCountry NORWAYKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidNorwayKingdomof );}
+	public static final WaterbodyOrCountry OMANSULTANATEOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidOmanSultanateof );}
+	public static final WaterbodyOrCountry PAKISTANISLAMICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPakistanIslamicRepublicof );}
+	public static final WaterbodyOrCountry PALAU () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPalau );}
+	public static final WaterbodyOrCountry PALESTINIANTERRITORYOCCUPIED () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPalestinianTerritoryOccupied );}
+	public static final WaterbodyOrCountry PANAMAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPanamaRepublicof );}
+	public static final WaterbodyOrCountry PAPUANEWGUINEA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPapuaNewGuinea );}
+	public static final WaterbodyOrCountry PARAGUAYREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidParaguayRepublicof );}
+	public static final WaterbodyOrCountry PERUREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPeruRepublicof );}
+	public static final WaterbodyOrCountry PHILIPPINESREPUBLICOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPhilippinesRepublicofthe );}
+	public static final WaterbodyOrCountry PITCAIRNISLAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPitcairnIsland );}
+	public static final WaterbodyOrCountry POLANDPOLISHPEOPLESREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPolandPolishPeoplesRepublic );}
+	public static final WaterbodyOrCountry PORTUGALPORTUGUESEREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPortugalPortugueseRepublic );}
+	public static final WaterbodyOrCountry PUERTORICO () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPuertoRico );}
+	public static final WaterbodyOrCountry QATARSTATEOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidQatarStateof );}
+	public static final WaterbodyOrCountry REUNION () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidReunion );}
+	public static final WaterbodyOrCountry ROMANIASOCIALISTREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidRomaniaSocialistRepublicof );}
+	public static final WaterbodyOrCountry RUSSIANFEDERATION () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidRussianFederation );}
+	public static final WaterbodyOrCountry RWANDARWANDESEREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidRwandaRwandeseRepublic );}
+	public static final WaterbodyOrCountry STHELENA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidStHelena );}
+	public static final WaterbodyOrCountry STKITTSANDNEVIS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidStKittsandNevis );}
+	public static final WaterbodyOrCountry STLUCIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidStLucia );}
+	public static final WaterbodyOrCountry STPIERREANDMIQUELON () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidStPierreandMiquelon );}
+	public static final WaterbodyOrCountry STVINCENTANDTHEGRENADINES () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidStVincentandtheGrenadines );}
+	public static final WaterbodyOrCountry SAMOAINDEPENDENTSTATEOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSamoaIndependentStateof );}
+	public static final WaterbodyOrCountry SANMARINOREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSanMarinoRepublicof );}
+	public static final WaterbodyOrCountry SAOTOMEANDPRINCIPEDEMOCRATICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSaoTomeandPrincipeDemocraticRepublicof );}
+	public static final WaterbodyOrCountry SAUDIARABIAKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSaudiArabiaKingdomof );}
+	public static final WaterbodyOrCountry SENEGALREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSenegalRepublicof );}
+	public static final WaterbodyOrCountry SERBIAANDMONTENEGRO () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSerbiaandMontenegro );}
+	public static final WaterbodyOrCountry SEYCHELLESREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSeychellesRepublicof );}
+	public static final WaterbodyOrCountry SIERRALEONEREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSierraLeoneRepublicof );}
+	public static final WaterbodyOrCountry SINGAPOREREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSingaporeRepublicof );}
+	public static final WaterbodyOrCountry SLOVAKIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSlovakia );}
+	public static final WaterbodyOrCountry SLOVENIA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSlovenia );}
+	public static final WaterbodyOrCountry SOLOMONISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSolomonIslands );}
+	public static final WaterbodyOrCountry SOMALIASOMALIREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSomaliaSomaliRepublic );}
+	public static final WaterbodyOrCountry SOUTHAFRICAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSouthAfricaRepublicof );}
+	public static final WaterbodyOrCountry SOUTHGEORGIAANDTHESOUTHSANDWICHISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSouthGeorgiaandtheSouthSandwichIslands );}
+	public static final WaterbodyOrCountry SPAINSPANISHSTATE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSpainSpanishState );}
+	public static final WaterbodyOrCountry SRILANKADEMOCRATICSOCIALISTREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSriLankaDemocraticSocialistRepublicof );}
+	public static final WaterbodyOrCountry SUDANDEMOCRATICREPUBLICOFTHE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSudanDemocraticRepublicofthe );}
+	public static final WaterbodyOrCountry SURINAMEREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSurinameRepublicof );}
+	public static final WaterbodyOrCountry SVALBARDJANMAYENISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSvalbardJanMayenIslands );}
+	public static final WaterbodyOrCountry SWAZILANDKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSwazilandKingdomof );}
+	public static final WaterbodyOrCountry SWEDENKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSwedenKingdomof );}
+	public static final WaterbodyOrCountry SWITZERLANDSWISSCONFEDERATION () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSwitzerlandSwissConfederation );}
+	public static final WaterbodyOrCountry SYRIANARABREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSyrianArabRepublic );}
+	public static final WaterbodyOrCountry TAIWANPROVINCEOFCHINA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTaiwanProvinceofChina );}
+	public static final WaterbodyOrCountry TAJIKISTAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTajikistan );}
+	public static final WaterbodyOrCountry TANZANIAUNITEDREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTanzaniaUnitedRepublicof );}
+	public static final WaterbodyOrCountry THAILANDKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidThailandKingdomof );}
+	public static final WaterbodyOrCountry TIMORLESTEDEMOCRATICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTimorLesteDemocraticRepublicof );}
+	public static final WaterbodyOrCountry TOGOTOGOLESEREPUBLIC () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTogoTogoleseRepublic );}
+	public static final WaterbodyOrCountry TOKELAUISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTokelauIslands );}
+	public static final WaterbodyOrCountry TONGAKINGDOMOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTongaKingdomof );}
+	public static final WaterbodyOrCountry TRINIDADANDTOBAGOREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTrinidadandTobagoRepublicof );}
+	public static final WaterbodyOrCountry TUNISIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTunisiaRepublicof );}
+	public static final WaterbodyOrCountry TURKEYREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTurkeyRepublicof );}
+	public static final WaterbodyOrCountry TURKMENISTAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTurkmenistan );}
+	public static final WaterbodyOrCountry TURKSANDCAICOSISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTurksandCaicosIslands );}
+	public static final WaterbodyOrCountry TUVALU () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidTuvalu );}
+	public static final WaterbodyOrCountry USVIRGINISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUSVirginIslands );}
+	public static final WaterbodyOrCountry UGANDAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUgandaRepublicof );}
+	public static final WaterbodyOrCountry UKRAINE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUkraine );}
+	public static final WaterbodyOrCountry UNITEDARABEMIRATES () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUnitedArabEmirates );}
+	public static final WaterbodyOrCountry UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUnitedKingdomofGreatBritainAndNorthernIreland );}
+	public static final WaterbodyOrCountry UNITEDSTATESMINOROUTLYINGISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUnitedStatesMinorOutlyingIslands );}
+	public static final WaterbodyOrCountry UNITEDSTATESOFAMERICA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUnitedStatesofAmerica );}
+	public static final WaterbodyOrCountry URUGUAYEASTERNREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUruguayEasternRepublicof );}
+	public static final WaterbodyOrCountry UZBEKISTAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidUzbekistan );}
+	public static final WaterbodyOrCountry VANUATU () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidVanuatu );}
+	public static final WaterbodyOrCountry VENEZUELABOLIVARIANREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidVenezuelaBolivarianRepublicof );}
+	public static final WaterbodyOrCountry VIETNAMSOCIALISTREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidVietNamSocialistRepublicof );}
+	public static final WaterbodyOrCountry WALLISANDFUTUNAISLANDS () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidWallisandFutunaIslands );}
+	public static final WaterbodyOrCountry WESTERNSAHARA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidWesternSahara );}
+	public static final WaterbodyOrCountry YEMEN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidYemen );}
+	public static final WaterbodyOrCountry ZAMBIAREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidZambiaRepublicof );}
+	public static final WaterbodyOrCountry ZIMBABWE () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidZimbabwe );}
+	public static final WaterbodyOrCountry ARCTICOCEAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidArcticOcean );}
+	public static final WaterbodyOrCountry ATLANTICOCEAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAtlanticOcean );}
+	public static final WaterbodyOrCountry PACIFICOCEAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPacificOcean );}
+	public static final WaterbodyOrCountry INDIANOCEAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidIndianOcean );}
+	public static final WaterbodyOrCountry SOUTHERNOCEAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidSouthernOcean );}
+	public static final WaterbodyOrCountry MEDITERRANEANSEA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidMediterraneanSea );}
+	public static final WaterbodyOrCountry BLACKSEA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidBlackSea );}
+	public static final WaterbodyOrCountry CASPIANSEA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidCaspianSea );}
+	public static final WaterbodyOrCountry REDSEA () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidRedSea );}
+	public static final WaterbodyOrCountry PERSIANGULF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPersianGulf );}
+
 	
 	/**
 	 * Factory method
@@ -674,7 +668,7 @@ public static final WaterbodyOrCountry AFGHANISTAN(){
 		String [] line = new String[6];
 		line[0] = getUuid().toString();
 		line[1] = getUri();
-		line[2] = getLabel(Language.ENGLISH());
+		line[2] = getLabel(Language.CSV_LANGUAGE());
 		line[3] = getDescription();
 		line[4] = this.getIso3166_A2().toString();
 		line[5] = this.getContinents().toString();

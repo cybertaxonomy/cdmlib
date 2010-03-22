@@ -14,7 +14,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -22,7 +21,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.faunaEuropaea.CdmImportConfigurator;
+
 import eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaImportConfigurator;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -104,6 +103,7 @@ public class FaunaEuropaeaActivator {
 		fauEuImportConfigurator.setDoBasionyms(doBasionyms);
 		fauEuImportConfigurator.setDoMisappliedNames(doMisappliedNames);
 		fauEuImportConfigurator.setDoHeterotypicSynonyms(doHeterotypicSynonyms);
+		fauEuImportConfigurator.setDoHeterotypicSynonymsForBasionyms(doHeterotypicSynonymsForBasionyms);
 		
 		CdmDefaultImport<FaunaEuropaeaImportConfigurator> fauEuImport = 
 			new CdmDefaultImport<FaunaEuropaeaImportConfigurator>();
@@ -116,30 +116,30 @@ public class FaunaEuropaeaActivator {
 
 		// invoke CDM to CDM import
 		
-		System.out.println("Starting import from CDM to CDM (" + destination.getDatabase() + ")...");
-		
-		CdmImportConfigurator cdmImportConfigurator = 
-			CdmImportConfigurator.NewInstance(destination, destination);
-		
-		cdmImportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
-		cdmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
-		cdmImportConfigurator.setCheck(check);
-
-		cdmImportConfigurator.setDoHeterotypicSynonymsForBasionyms(doHeterotypicSynonymsForBasionyms);
-		cdmImportConfigurator.setDoAuthors(false);
-		cdmImportConfigurator.setDoTaxa(false);
-		cdmImportConfigurator.setDoReferences(DO_REFERENCES.NONE);
-		cdmImportConfigurator.setDoOccurrence(false);
-		cdmImportConfigurator.setLimitSave(limitSave);
-
-		CdmDefaultImport<CdmImportConfigurator> cdmImport = 
-			new CdmDefaultImport<CdmImportConfigurator>();
-		try {
-			cdmImport.invoke(cdmImportConfigurator);
-		} catch (Exception e) {
-			System.out.println("ERROR in CDM to CDM import");
-			e.printStackTrace();
-		}
+//		System.out.println("Starting import from CDM to CDM (" + destination.getDatabase() + ")...");
+//		
+//		CdmImportConfigurator cdmImportConfigurator = 
+//			CdmImportConfigurator.NewInstance(destination, destination);
+//		
+//		cdmImportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
+//		cdmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
+//		cdmImportConfigurator.setCheck(check);
+//
+//		cdmImportConfigurator.setDoHeterotypicSynonymsForBasionyms(doHeterotypicSynonymsForBasionyms);
+//		cdmImportConfigurator.setDoAuthors(false);
+//		cdmImportConfigurator.setDoTaxa(false);
+//		cdmImportConfigurator.setDoReferences(DO_REFERENCES.NONE);
+//		cdmImportConfigurator.setDoOccurrence(false);
+//		cdmImportConfigurator.setLimitSave(limitSave);
+//
+//		CdmDefaultImport<CdmImportConfigurator> cdmImport = 
+//			new CdmDefaultImport<CdmImportConfigurator>();
+//		try {
+//			cdmImport.invoke(cdmImportConfigurator);
+//		} catch (Exception e) {
+//			System.out.println("ERROR in CDM to CDM import");
+//			e.printStackTrace();
+//		}
 		
 		//make feature tree
 		

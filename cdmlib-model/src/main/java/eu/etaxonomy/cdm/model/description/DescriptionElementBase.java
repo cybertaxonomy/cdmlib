@@ -46,11 +46,10 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -366,6 +365,18 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 			this.sources.add(source);
 			source.setSourcedObj(this);
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)
+	 */
+	public DescriptionElementSource addSource(String id, String idNamespace, ReferenceBase citation, String microCitation) {
+		if (id == null && idNamespace == null && citation == null && microCitation == null){
+			return null;
+		}
+		DescriptionElementSource source = DescriptionElementSource.NewInstance(id, idNamespace, citation, microCitation);
+		addSource(source);
+		return source;
 	}
 	
 	public void addSource(String id, String idNamespace, ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){

@@ -37,8 +37,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class FaunaEuropaeaHeterotypicSynonymImport extends CdmImportBase<CdmImportConfigurator, CdmImportState>
-implements ICdmImport<CdmImportConfigurator, CdmImportState> {
+public class FaunaEuropaeaHeterotypicSynonymImport extends CdmImportBase<FaunaEuropaeaImportConfigurator, FaunaEuropaeaImportState>
+implements ICdmImport<FaunaEuropaeaImportConfigurator, FaunaEuropaeaImportState> {
 	private static final Logger logger = Logger
 			.getLogger(FaunaEuropaeaHeterotypicSynonymImport.class);
 
@@ -46,7 +46,7 @@ implements ICdmImport<CdmImportConfigurator, CdmImportState> {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
 	@Override
-	protected boolean doCheck(CdmImportState state) {
+	protected boolean doCheck(FaunaEuropaeaImportState state) {
 		logger.warn("Checking for heterotypic synonyms for basionyms not yet implemented");
 		return false;
 	}
@@ -55,7 +55,7 @@ implements ICdmImport<CdmImportConfigurator, CdmImportState> {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
 	@Override
-	protected boolean doInvoke(CdmImportState state) {
+	protected boolean doInvoke(FaunaEuropaeaImportState state) {
 		
 		TransactionStatus txStatus = null;
 		List<Synonym> synonymList = null;
@@ -139,7 +139,7 @@ implements ICdmImport<CdmImportConfigurator, CdmImportState> {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
 	@Override
-	protected boolean isIgnore(CdmImportState state) {
+	protected boolean isIgnore(FaunaEuropaeaImportState state) {
 		return !(state.getConfig().isDoHeterotypicSynonymsForBasionyms());
 	}
 }

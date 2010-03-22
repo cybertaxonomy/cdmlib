@@ -51,6 +51,7 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final UUID uuidAbbreviation = UUID.fromString("5837e34e-b0f5-4736-8083-ff5eaecd8c43");
 	private static final UUID uuidOrder = UUID.fromString("ecb7770d-a295-49ee-a88f-e9e137a7cabb");
 	private static final UUID uuidInformalCategory = UUID.fromString("11bbc52f-a085-43d3-9f9b-cbe0d1eb9a91");
+	private static final UUID uuidUrl = UUID.fromString("d769fa9f-51ee-4e11-8152-b5ce72b7f413");
 	
 	protected static Map<UUID, ExtensionType> termMap = null;		
 
@@ -109,6 +110,10 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	
 	public static final ExtensionType INFORMAL_CATEGORY(){
 		return getTermByUuid(uuidInformalCategory);
+	}
+
+	public static final ExtensionType URL(){
+		return getTermByUuid(uuidUrl);
 	}
 	
 	

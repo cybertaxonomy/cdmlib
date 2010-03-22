@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -35,6 +36,10 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	
 	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;
+	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
 	
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
@@ -69,7 +74,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	 * @param destination
 	 */
 	private TaxonXImportConfigurator(String url, ICdmDataSource destination) {
-		super();
+		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}

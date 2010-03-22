@@ -18,7 +18,9 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -196,6 +198,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 
+	public int countAllRelationships();
+	
 	/**
 	 * Find taxa by searching for @{link NameBase}
 	 * @param queryString
@@ -360,4 +364,31 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths);
+	/**
+	 * creates all inferred synonyms for the species in the tree and insert it to the database
+	 * @param tree
+	 * @return List of inferred synonyms
+	 */
+	//public List<Synonym> insertAllInferredSynonymy(TaxonomicTree tree);
+	/**
+	 * creates all inferred synonyms for the taxon in the taxonomic tree, but do not insert it to the database
+	 * @param taxon
+	 * @param tree
+	 * @return list of inferred synonyms
+	 */
+	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree);
+	/**
+	 * creates the specified inferred synonyms for the taxon in the taxonomic tree, but do not insert it to the database
+	 * @param taxon
+	 * @param tree
+	 * @return list of inferred synonyms
+	 */
+	public List<Synonym> createInferredSynonyms(Taxon taxon, TaxonomicTree tree, SynonymRelationshipType type);
+
+	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+	public String getPhylumName(TaxonNameBase name);
+
+	public long countTaxaByCommonName(String searchString,
+			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Set<NamedArea> namedAreas);
 }

@@ -10,19 +10,12 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase;
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 
 /**
@@ -34,24 +27,26 @@ public class DbImportObjectCreationMapper<ANNOTATABLE extends AnnotatableEntity,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapper.class);
 	
-	public static DbImportObjectCreationMapper<?> NewInstance(IMappingImport mappingImport){
-		return new DbImportObjectCreationMapper(mappingImport);
+//******************************** FACTORY METHOD ***************************************************/
+	
+	public static DbImportObjectCreationMapper<?,?> NewInstance(IMappingImport mappingImport, String dbIdAttribute, String namespace){
+		return new DbImportObjectCreationMapper(mappingImport, dbIdAttribute, namespace);
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
 	private IMappingImport<ANNOTATABLE, STATE> mappingImport;
 		
 	
-
-	
+//********************************* CONSTRUCTOR ****************************************/
 	/**
-	 * @param parameterTypes 
-	 * @param dbIdAttributString
+	 * @param mappingImport
 	 */
 	protected DbImportObjectCreationMapper(IMappingImport<ANNOTATABLE, STATE> mappingImport, String dbIdAttribute, String objectToCreateNamespace) {
 		super(dbIdAttribute, objectToCreateNamespace);
 		this.mappingImport = mappingImport;
 	}
+
+//************************************ METHODS *******************************************/
 
 
 	/* (non-Javadoc)
@@ -71,5 +66,6 @@ public class DbImportObjectCreationMapper<ANNOTATABLE extends AnnotatableEntity,
 		ANNOTATABLE result = mappingImport.createObject(rs, importMapperHelper.getState());
 		return result;
 	}
+
 
 }

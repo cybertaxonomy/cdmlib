@@ -132,7 +132,7 @@ public class TaraxacumActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(treeUuid);
+		bmImportConfigurator.setTaxonomicTreeUuid(treeUuid);
 //		bmImportConfigurator.setSecUuid(secUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
