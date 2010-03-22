@@ -125,8 +125,6 @@ public final class ErmsTransformer extends InputTransformerBase {
 	public static final UUID uuidIdentification = UUID.fromString("dec3cd5b-0690-4035-825d-bda9aee96bc1");
 	public static final UUID uuidSynonymy = UUID.fromString("f5c8be5f-8d33-47df-838e-55fc7999fc81");
 
-	//UUIDS
-	
 	//extension type uuids
 	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
 	public static final UUID IMIS_UUID = UUID.fromString("ee2ac2ca-b60c-4e6f-9cad-720fcdb0a6ae");
