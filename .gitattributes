@@ -1192,7 +1192,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelAuthorImpo
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelAuthorTeamImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelCommonNamesImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelFactsImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelGeneralImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelImportState.java -text
