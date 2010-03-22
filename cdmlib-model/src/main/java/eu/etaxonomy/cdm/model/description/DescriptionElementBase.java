@@ -231,6 +231,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 * @see #getFeature() 
 	 */
 	@Transient
+	@Deprecated //will be removed in version 3. 
 	public Feature getType(){
 		return this.getFeature();
 	}
@@ -241,6 +242,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 * @see 		#setFeature(Feature) 
 	 * @see 		#getFeature() 
 	 */
+	@Deprecated  //will be removed in version 3
 	public void setType(Feature type){
 		this.setFeature(type);
 	}
