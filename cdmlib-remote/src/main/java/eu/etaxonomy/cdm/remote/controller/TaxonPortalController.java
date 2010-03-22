@@ -208,11 +208,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"elements.$",
 			"elements.sources.citation.",
 			"elements.sources.citation.authorTeam.$",
-			//"elements.sources.citation.authorTeam.teamMembers.",
+			"elements.sources.nameUsedInSource.titleCache",
+			"elements.sources.citation.authorTeam.titleCache",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
-			
 	});
+	
 	
 	private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
 			"uuid",
@@ -222,6 +223,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"elements.media.representations.parts",
 	});
 	
+	protected static final List<String> TAXONDESCRIPTION_MEDIA_INIT_STRATEGY = Arrays.asList(new String []{
+			"elements.media.representations.parts",
+			
+	});
+
 	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
 			//"$",
 			"typeSpecimen.$",
@@ -230,27 +236,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"typeName.taggedName"
 	});
 	
-	protected static final List<String> TAXONNODEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
-			"$",
-			/*
-			"taxon.descriptions.$" ,
-			"taxon.descriptions.elements.$",
-			"taxon.descriptions.elements.sources.citation.",
-			"taxon.descriptions.elements.sources.citation.authorTeam.$",
-			//"elements.sources.citation.authorTeam.teamMembers.",
-			"taxon.descriptions.elements.multilanguageText",
-			"taxon.descriptions.elements.media.representations.parts"
-			*/
-			"taxon.name.$",
-			"taxon.name.taggedName",
-			
-			//childnodes:
-			
-			"childNodes.$",
-			/*
-			"childNodes.taxon.$",
-			"childNodes.taxon.name.$"
-			*/
+	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
+//			"$",
+//			"taxon.name.$",
+//			"taxon.name.taggedName",
+			"childNodes.taxon",
+	
 	});
 	
 	
@@ -625,7 +616,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			node = iterator.next();
 			//überprüfen, ob der TaxonNode zum aktuellen Baum gehört.
 			
-			node = taxonTreeService.loadTaxonNode(node, TAXONNODEDESCRIPTION_INIT_STRATEGY);
+			node = taxonTreeService.loadTaxonNode(node, TAXONNODE_INIT_STRATEGY);
 			Set<TaxonNode> children = node.getChildNodes();
 			Taxon childTaxon;
 			for (TaxonNode child : children){
@@ -641,7 +632,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private List<Media> getMediaForTaxon(Taxon taxon, String path, int mimeTypeTokenPosition){
 		
 		Pager<TaxonDescription> p = 
-			descriptionService.getTaxonDescriptions(taxon, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+			descriptionService.getTaxonDescriptions(taxon, null, null, null, null, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
 		
 		// pars the media and quality parameters
 		
