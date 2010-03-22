@@ -10,13 +10,10 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.sql.PreparedStatement;
-
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
-import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
@@ -28,43 +25,24 @@ import eu.etaxonomy.cdm.io.common.DbImportStateBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbImportMapperBase<STATE extends DbImportStateBase<?>>  /*implements IDbExportMapper */{
+public class DbImportMapperBase<STATE extends DbImportStateBase<?,?>>  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportMapperBase.class);
 
-	protected PreparedStatement preparedStatement = null;
-	protected int index = 0;
 	private STATE state;
 	private String tableName;
+	private Class<? extends CdmBase> cdmClass;
 	
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#initialize(java.sql.PreparedStatement, int)
+	
+	/**
+	 * @param state
+	 * @param tableName
 	 */
-	public void initialize(PreparedStatement stmt, IndexCounter index, STATE state, String tableName) {
-		this.preparedStatement = stmt;
-		this.index = index.getIncreasing();
+	public void initialize(STATE state, Class<? extends CdmBase> cdmClass) {
 		this.state = state;
 		this.tableName = tableName;
+		this.cdmClass = cdmClass;
 	}
-
-
-	/**
-	 * @return the preparedStatement
-	 */
-	public PreparedStatement getPreparedStatement() {
-		return preparedStatement;
-	}
-	
-	/**
-	 * @return the index
-	 */
-	public int getIndex() {
-		return index;
-	}
-
 
 	/**
 	 * @return the state
@@ -73,7 +51,6 @@ public class DbImportMapperBase<STATE extends DbImportStateBase<?>>  /*implement
 		return state;
 	}
 
-
 	/**
 	 * @return the tableName
 	 */
@@ -81,11 +58,24 @@ public class DbImportMapperBase<STATE extends DbImportStateBase<?>>  /*implement
 		return tableName;
 	}
 
-
 	/**
 	 * @param tableName the tableName to set
 	 */
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+
+	/**
+	 * @param cdmClass the cdmClass to set
+	 */
+	public void setCdmClass(Class<? extends CdmBase> cdmClass) {
+		this.cdmClass = cdmClass;
+	}
+
+	/**
+	 * @return the cdmClass
+	 */
+	public Class<? extends CdmBase> getCdmClass() {
+		return cdmClass;
 	}
 }

@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -80,5 +82,20 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 		Set<String> result = new HashSet<String>();
 		result.addAll(getSourceAttributeList());
 		return result;
+	}
+	
+
+	/**
+	 * Returns the value of a result set attribute in its String representation.
+	 * Better move this to a subclass for DbImportMappers (does not exist yet)
+	 * @param rs
+	 * @param attribute
+	 * @return
+	 * @throws SQLException
+	 */
+	protected String getStringDbValue(ResultSet rs, String attribute) throws SQLException {
+		Object oId = rs.getObject(attribute);
+		String id = String.valueOf(oId);
+		return id;
 	}
 }
