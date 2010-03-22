@@ -13,8 +13,8 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -199,10 +199,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public Person getCommentator();
 
 	public void setCommentator(Person commentator);
-
-	public Language getFactLanguage();
-
-	public void setFactLanguage(Language factLanguage);
 	
 	public NomenclaturalCode getNomenclaturalCode();
 	
@@ -231,8 +227,8 @@ public interface IImportConfigurator extends IIoConfigurator {
  	 * functionality otherwise it will have no effect.
  	 * @return
  	 */
- 	public UUID getTreeUuid();
-	public void setTreeUuid(UUID treeUuid);
+ 	public UUID getTaxonomicTreeUuid();
+	public void setTaxonomicTreeUuid(UUID treeUuid);
 
 	/**
  	 * If one wants do define the uuid of the accepted taxa (except for missaplied names) this can be
@@ -241,5 +237,18 @@ public interface IImportConfigurator extends IIoConfigurator {
  	 */
  	public UUID getSecUuid();
 	public void setSecUuid(UUID secUuid);
+	
+	
+	/**
+	 * Returns the transformer used during import
+	 * @return
+	 */
+	public IInputTransformer getTransformer();
+	
+	/**
+	 * Sets the transformer used during import
+	 * @param transformer
+	 */
+	public void setTransformer(IInputTransformer transformer);
 	
 }

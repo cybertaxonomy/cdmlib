@@ -12,16 +12,20 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public abstract class IoStateBase<CONFIG extends IIoConfigurator> {
+public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoStateBase.class);
 	
+	private IO currentIO;
+
 	CONFIG config;
 	
 	/**
@@ -45,5 +49,20 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator> {
 	public void initialize(CONFIG config){
 		this.config = config;
 	}
+
+	/**
+	 * @param currentImport the currentImport to set
+	 */
+	public void setCurrentIO(IO currentIO) {
+		this.currentIO = currentIO;
+	}
+
+	/**
+	 * @return the currentImport
+	 */
+	public IO getCurrentIO() {
+		return currentIO;
+	}
+	
 	
 }
