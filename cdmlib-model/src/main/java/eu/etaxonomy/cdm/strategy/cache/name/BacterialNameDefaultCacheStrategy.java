@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.name.BacterialName;
 
 /**
  * The bacterial name default cache strategy.
+ * FIXME t
  * 
  * @author a.mueller
  *
@@ -25,8 +26,12 @@ public class BacterialNameDefaultCacheStrategy<NAME extends BacterialName> exten
 	
 	final static UUID uuid = UUID.fromString("b97cf0af-2f97-487e-8d06-cbe924f3222a");
 	
+	private static boolean doWarning = true;
 	private static String warning = {
-		logger.warn("BacterialNameDefaultCacheStrategy not yet really implemented. Its just a copy from BotanicalNameDefaultCacheStrategy right now !!");
+		if (doWarning){
+			logger.warn("BacterialNameDefaultCacheStrategy not yet really implemented. Its just a copy from BotanicalNameDefaultCacheStrategy right now !!");
+			doWarning = false;
+		}
 	};
 	
 	@Override

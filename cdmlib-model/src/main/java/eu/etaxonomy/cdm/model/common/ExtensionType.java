@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +23,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+
+import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * Extension types similar to dynamically defined attributes. These are not data
@@ -55,9 +58,48 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	
 	protected static Map<UUID, ExtensionType> termMap = null;		
 
+	/** 
+	 * Creates a new empty extension type instance.
+	 * 
+	 * @see #NewInstance(String, String, String)
+	 */
+	public static ExtensionType NewInstance() {
+		return new ExtensionType();
+	}
+	
+	/** 
+	 * Creates a new extension type instance with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new extension type to be created 
+	 * @param	label  		 the string identifying the new extension type to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new extension type to be created
+	 * @see 				 #readCsvLine(List, Language)
+	 * @see 				 #NewInstance()
+	 */
+	public static ExtensionType NewInstance(String term, String label, String labelAbbrev){
+		return new ExtensionType(term, label, labelAbbrev);
+	}
+	
+	//public only for Term Loader
+	@Deprecated
 	public ExtensionType() {
 	}
-	public ExtensionType(String term, String label, String labelAbbrev) {
+	
+	/** 
+	 * Class constructor: creates a new extension type instance with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new extension type to be created 
+	 * @param	label  		 the string identifying the new extension type to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new extension type to be created
+	 * @see 				 #ExtensionType()
+	 */
+	protected ExtensionType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
