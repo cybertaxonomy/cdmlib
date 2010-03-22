@@ -78,6 +78,13 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement);
 	
 	/**
+	 * Persists a collection of <code>DescriptionElementBase</code>
+	 * @param descriptionElements
+	 * @return
+	 */
+	public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements);
+	
+	/**
 	 * Delete an existing description element
 	 * 
 	 * @param descriptionElement the description element to be deleted

@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -232,8 +234,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * descriptionElementService.save
      */
+	@Transactional(readOnly = false)
 	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
 		return descriptionElementDao.save(descriptionElement);
+	}
+	
+    /**
+     * FIXME Candidate for harmonization
+     * descriptionElementService.save
+     */
+	@Transactional(readOnly = false)
+	public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
+		return descriptionElementDao.saveAll(descriptionElements);
 	}
 
     /**
