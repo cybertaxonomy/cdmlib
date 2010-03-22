@@ -76,7 +76,7 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> implements IMappi
 			
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", AREA_NAMESPACE)); //id
 			mapping.addMapper(DbImportStringMapper.NewInstance("gu_name", "titleCache"));
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("gazetteer_id",GAZETTEER_UUID, "Gazetteer ID", "Gazetteer ID", "G-ID"));
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("gazetteer_id", ErmsTransformer.GAZETTEER_UUID, "Gazetteer ID", "Gazetteer ID", "G-ID"));
 			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL()));
 
 		}

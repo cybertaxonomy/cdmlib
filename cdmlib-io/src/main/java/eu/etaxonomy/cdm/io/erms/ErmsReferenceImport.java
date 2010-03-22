@@ -77,7 +77,7 @@ public class ErmsReferenceImport  extends ErmsImportBase<ReferenceBase> implemen
 			mapping = new DbImportMapping();
 			
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", REFERENCE_NAMESPACE)); //id
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("imis_id", IMIS_UUID, "imis", "imis", "imis"));
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("imis_id", ErmsTransformer.IMIS_UUID, "imis", "imis", "imis"));
 			
 			mapping.addMapper(DbImportStringMapper.NewInstance("source_name", "titleCache"));
 			mapping.addMapper(DbImportStringMapper.NewInstance("source_abstract", "referenceAbstract"));
