@@ -1295,6 +1295,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IExportConfigurator.java -tex
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IOValidator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHelper.java -text
@@ -1303,6 +1304,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/PartitionerProfiler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/RelatedObjectsHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ResultSetPartitioner.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
