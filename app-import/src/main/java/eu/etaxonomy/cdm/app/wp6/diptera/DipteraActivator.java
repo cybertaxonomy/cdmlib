@@ -141,7 +141,7 @@ public class DipteraActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(treeUuid);
+		bmImportConfigurator.setTaxonomicTreeUuid(treeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 

@@ -68,7 +68,7 @@ public class TcsRdfTestActivator {
 		
 		TcsRdfImportConfigurator tcsImportConfigurator = TcsRdfImportConfigurator.NewInstance(source,  destination);
 		
-		tcsImportConfigurator.setTreeUuid(treeUuid);
+		tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
 		tcsImportConfigurator.setSourceSecId(sourceSecId);
 		
 		tcsImportConfigurator.setDoReferences(doReferences);

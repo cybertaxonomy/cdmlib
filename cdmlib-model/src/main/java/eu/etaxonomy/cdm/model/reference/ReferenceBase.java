@@ -287,7 +287,9 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @Match(MatchMode.IGNORE)
     private int problemEnds = -1;
     
-    @Transient
+    //@Transient
+    @XmlAttribute
+    @Match(MatchMode.IGNORE)
 	private boolean cacheStrategyRectified = false; 
     
     protected ReferenceBase(){

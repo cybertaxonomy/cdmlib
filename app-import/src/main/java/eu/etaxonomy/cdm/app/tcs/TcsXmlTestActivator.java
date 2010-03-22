@@ -68,7 +68,7 @@ public class TcsXmlTestActivator {
 		
 		TcsXmlImportConfigurator tcsImportConfigurator = TcsXmlImportConfigurator.NewInstance(source,  destination);
 		
-		tcsImportConfigurator.setTreeUuid(treeUuid);
+		tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
 		tcsImportConfigurator.setSourceSecId(sourceSecId);
 		
 		tcsImportConfigurator.setDoMetaData(doMetaData);

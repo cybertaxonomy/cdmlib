@@ -134,13 +134,30 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private AgentBase artist;
 
+
 	/**
 	 * Factory method
 	 * @return
 	 */
 	public static Media NewInstance(){
-		logger.debug("NewInstance");
 		return new Media();
+	}
+	
+
+	/**
+	 * Factory method which creates a new media, adds a reprsentation including mime type and suffix information
+	 * and adds to the later a representation part for a given uri and size
+	 * Returns <code>null</code> if uri is empty
+	 * @return Media
+	 */
+	public static Media NewInstance(String uri, Integer size, String mimeType, String suffix){
+		MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size);
+		if (representation == null){
+			return null;
+		}
+		Media media = new Media();
+		media.addRepresentation(representation);
+		return media;
 	}
 	
 	/**

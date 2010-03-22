@@ -36,6 +36,7 @@ public class PalmaeProtologueImportActivator {
 	
 	static final String protologueSource = "\\\\Media\\EditWP6\\palmae\\protologe";
 	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
+
 	
 	
 	//static File source  = TcsSources.taxonX_localDir();
