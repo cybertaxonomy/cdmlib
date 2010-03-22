@@ -35,12 +35,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
+public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportNameTypeDesignationMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
 	
-	public static DbImportNameTypeDesignationMapper<?,?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String desigStatusAttribute){
+	public static DbImportNameTypeDesignationMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String desigStatusAttribute){
 		return new DbImportNameTypeDesignationMapper(dbFromAttribute, dbToAttribute, null, relatedObjectNamespace, desigStatusAttribute);
 	}
 	
@@ -86,6 +86,9 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 		
 		CdmBase fromObject = getRelatedObject(rs, fromAttribute);
 		CdmBase toObject = getRelatedObject(rs, toAttribute);
+		String fromId = String.valueOf(rs.getObject(fromAttribute));
+		String toId = String.valueOf(rs.getObject(toAttribute));
+
 		//TODO cast
 		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
 		String microCitation = null;
@@ -100,14 +103,14 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 
 
 		if (fromObject == null){
-			String warning  = "Higher rank name could not be found. Name type not added to higher rank name";
+			String warning  = "Higher rank taxon name for (id = " + fromId + ") could not be found. Name type not added to higher rank name";
 			logger.warn(warning);
 			return cdmBase;
 		}
 		TaxonNameBase typifiedName = checkTaxonNameBaseType(fromObject);
 		
 		if (toObject == null){
-			String warning  = "Species name could not be found. Name type not added to higher rank name";
+			String warning  = "Lower rank taxon name (id = " + toId + ") could not be found. Name type not added to higher rank name";
 			logger.warn(warning);
 			return cdmBase;
 		}
@@ -116,17 +119,27 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 		boolean addToAllHomotypicNames = false; //TODO check if this is correct
 		String originalNameString = null; //TODO what is this
 		
-		NameTypeDesignationStatus status = this.designationStatus;
-		if (designationStatusValue != null){
-			//FIXME this needs work in generics to remove casts. Or find an other solution
-			if (currentImport instanceof IDbImportTransformed){
-				IDbImportTransformer transformer = ((IDbImportTransformed)currentImport).getTransformer();
-				status = transformer.transformNameTypeDesignationStatus(designationStatusValue);
-			}
-		}
+		NameTypeDesignationStatus status = makeStatus(designationStatusValue);
 		typifiedName.addNameTypeDesignation(typeName, citation, microCitation, originalNameString, status, addToAllHomotypicNames);
 		
 		return typifiedName;
+	}
+
+	/**
+	 * @param designationStatusValue
+	 * @return
+	 */
+	private NameTypeDesignationStatus makeStatus(Object designationStatusValue) {
+		NameTypeDesignationStatus status = this.designationStatus;
+		if (designationStatusValue != null){
+			IInputTransformer transformer = getState().getConfig().getTransformer();
+			try {
+				status = transformer.getNameTypeDesignationStatusByKey(String.valueOf(designationStatusValue));
+			} catch (UndefinedTransformerMethodException e) {
+				logger.warn("Name type designation status " + designationStatusValue + " not recognized by import");
+			}
+		}
+		return status;
 	}
 	
 	/**

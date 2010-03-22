@@ -61,7 +61,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 			addDescriptionElement(taxon, element);
 			return element;
 		}else{
-			logger.warn("Taxon could not be determined. Description element was not add to any description or taxon");
+			logger.info("Taxon could not be determined. Description element was not add to any description or taxon");
 			return element;
 		}
 		

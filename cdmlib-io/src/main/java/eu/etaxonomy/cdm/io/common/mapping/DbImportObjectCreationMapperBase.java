@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
@@ -49,6 +50,9 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	protected DbImportObjectCreationMapperBase(String dbIdAttribute, String objectToCreateNamespace) {
 		super();
 		//TODO make it a single attribute mapper
+		if (dbIdAttribute == null){
+			logger.warn("No id attribute defined. Original source id will not be added");
+		}
 		this.dbIdAttribute = dbIdAttribute;
 		this.objectToCreateNamespace = objectToCreateNamespace;
 	}
@@ -97,7 +101,7 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	 * @throws SQLException 
 	 */
 	public void addOriginalSource(ResultSet rs, CREATE cdmBase) throws SQLException {
-		if (cdmBase instanceof ISourceable ){
+		if (cdmBase instanceof ISourceable && CdmUtils.isNotEmpty(dbIdAttribute)){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable)cdmBase;
 			Object id = rs.getObject(dbIdAttribute);

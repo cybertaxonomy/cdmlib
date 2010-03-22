@@ -80,7 +80,7 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 	 * @param dbTaxonFkAttribute
 	 * @param taxonNamespace
 	 */
-	protected DbImportTextDataCreationMapper(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String dbTextAttribute, String taxonNamespace, Language language, Feature feature, TextFormat format) {
+	protected DbImportTextDataCreationMapper(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, String dbTextAttribute, Language language, Feature feature, TextFormat format) {
 		super(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace);
 		this.defaultFeature = feature;
 		this.defaultLanguage = language;

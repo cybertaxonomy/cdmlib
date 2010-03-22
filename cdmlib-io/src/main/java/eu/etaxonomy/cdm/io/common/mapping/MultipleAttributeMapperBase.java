@@ -104,6 +104,9 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	 */
 	protected String getStringDbValue(ResultSet rs, String attribute) throws SQLException {
 		Object oId = rs.getObject(attribute);
+		if (oId == null){
+			return null;
+		}
 		String id = String.valueOf(oId);
 		return id;
 	}
