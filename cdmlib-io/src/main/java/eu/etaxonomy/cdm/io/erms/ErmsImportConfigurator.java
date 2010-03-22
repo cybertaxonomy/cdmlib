@@ -55,7 +55,7 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 		ioClassList = new Class[]{
 				ErmsGeneralImportValidator.class
 				, ErmsImportRankMap.class
-//				, ErmsReferenceImport.class
+				, ErmsReferenceImport.class
 				, ErmsTaxonImport.class
 				, ErmsTaxonRelationImport.class
 				, ErmsVernacularImport.class

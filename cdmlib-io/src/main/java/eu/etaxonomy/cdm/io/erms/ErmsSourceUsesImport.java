@@ -124,27 +124,32 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 				}
 				ReferenceBase ref = (ReferenceBase)state.getRelatedObject(ErmsReferenceImport.REFERENCE_NAMESPACE, strSourceId);
 				
-				IdentifiableEntity objectToSave = null;
-				//invoke methods for each sourceUse type
-				if (sourceUseId == SOURCE_USE_ORIGINAL_DESCRIPTION){
-					objectToSave = makeOriginalDescription(partitioner, state, ref, strTaxonId, strPageNr);
-				}else if (sourceUseId == SOURCE_USE_BASIS_OF_RECORD){
-					objectToSave = makeBasisOfRecord(partitioner, state, ref, strTaxonId, strPageNr);
-				}else if (sourceUseId == SOURCE_USE_ADDITIONAL_SOURCE){
-					objectToSave = makeAdditionalSource(partitioner, state, ref, strTaxonId, strPageNr);
-				}else if (sourceUseId == SOURCE_USE_SOURCE_OF_SYNONYMY){
-					objectToSave = makeSourceOfSynonymy(partitioner, state, ref, strTaxonId, strPageNr);
-				}else if (sourceUseId == SOURCE_USE_REDESCRIPTION){
-					objectToSave = makeRedescription(partitioner, state, ref, strTaxonId, strPageNr);
-				}else if (sourceUseId == SOURCE_USE_NEW_COMBINATION_REFERENCE){
-					objectToSave = makeCombinationReference(partitioner, state, ref, strTaxonId, strPageNr);
-				}else if (sourceUseId == SOURCE_USE_STATUS_SOURCE){
-					objectToSave = makeStatusSource(partitioner, state, ref, strTaxonId, strPageNr);
-				}else if (sourceUseId == SOURCE_USE_EMENDATION){
-					objectToSave = makeEmendation(partitioner, state, ref, strTaxonId, strPageNr);
-				}
-				if(objectToSave != null){
-					objectsToSave.add(objectToSave);
+				try {
+					IdentifiableEntity objectToSave = null;
+					//invoke methods for each sourceUse type
+					if (sourceUseId == SOURCE_USE_ORIGINAL_DESCRIPTION){
+						objectToSave = makeOriginalDescription(partitioner, state, ref, strTaxonId, strPageNr);
+					}else if (sourceUseId == SOURCE_USE_BASIS_OF_RECORD){
+						objectToSave = makeBasisOfRecord(partitioner, state, ref, strTaxonId, strPageNr);
+					}else if (sourceUseId == SOURCE_USE_ADDITIONAL_SOURCE){
+						objectToSave = makeAdditionalSource(partitioner, state, ref, strTaxonId, strPageNr);
+					}else if (sourceUseId == SOURCE_USE_SOURCE_OF_SYNONYMY){
+						objectToSave = makeSourceOfSynonymy(partitioner, state, ref, strTaxonId, strPageNr);
+					}else if (sourceUseId == SOURCE_USE_REDESCRIPTION){
+						objectToSave = makeRedescription(partitioner, state, ref, strTaxonId, strPageNr);
+					}else if (sourceUseId == SOURCE_USE_NEW_COMBINATION_REFERENCE){
+						objectToSave = makeCombinationReference(partitioner, state, ref, strTaxonId, strPageNr);
+					}else if (sourceUseId == SOURCE_USE_STATUS_SOURCE){
+						objectToSave = makeStatusSource(partitioner, state, ref, strTaxonId, strPageNr);
+					}else if (sourceUseId == SOURCE_USE_EMENDATION){
+						objectToSave = makeEmendation(partitioner, state, ref, strTaxonId, strPageNr);
+					}
+					if(objectToSave != null){
+						objectsToSave.add(objectToSave);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					success = false;
 				}
 			}
 		} catch (SQLException e) {
@@ -207,9 +212,16 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		if (taxonBase.isInstanceOf(Synonym.class)){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<Taxon> taxa = synonym.getAcceptedTaxa();
-			if (taxa.size() != 1){
-				String warning = "Synonym "+ strTaxonId + " has more or less then 1 accepted taxon";
-				throw new IllegalStateException(warning);
+			if (taxa.size() < 1){
+				String warning = "Synonym "+ strTaxonId + " has no accepted taxon";
+				logger.warn(warning);
+				return null;
+				//throw new IllegalStateException(warning);
+			}else if (taxa.size() > 1){
+				String warning = "Synonym "+ strTaxonId + " has more than 1 accepted taxon";
+				logger.warn(warning);
+				return null;
+				//throw new IllegalStateException(warning);
 			}
 			taxon = taxa.iterator().next();
 			//add synonym name as name used in source
@@ -238,7 +250,16 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 */
 	private IdentifiableEntity makeSourceOfSynonymy(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		TaxonBase taxonBase = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, strTaxonId);
-		Synonym synonym = (Synonym)taxonBase;
+		if (taxonBase == null){
+			String warning = "taxonBase (id = " + strTaxonId + ") could not be found ";
+			logger.warn(warning);
+			return null;
+		}else if (! taxonBase.isInstanceOf(Synonym.class)){
+			String warning = "TaxonBase is not of class Synonym but " + taxonBase.getClass().getSimpleName();
+			logger.warn(warning);
+			return null;
+		}
+		Synonym synonym =CdmBase.deproxy(taxonBase, Synonym.class);
 		Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
 		if (synRels.size() != 1){
 			logger.warn("Synonym has not 1 but " + synRels.size() + " relations!");

@@ -24,10 +24,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportNameTypeDesignationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportSynonymMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper;
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportTransformed;
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -38,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implements ICheckIgnoreMapper, IDbImportTransformed{
+public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implements ICheckIgnoreMapper{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ErmsTaxonRelationImport.class);
 	
@@ -61,10 +58,9 @@ private DbImportMapping mapping;
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			mapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "parentId", TAXON_NAMESPACE, "accParentId", TAXON_NAMESPACE, null));
-					//("id", "parentId", TAXON_NAMESPACE, null)); //there is only one tree
+			mapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", TAXON_NAMESPACE, "parentId", TAXON_NAMESPACE, "accParentId", TAXON_NAMESPACE, null));//there is only one tree
 			mapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", TAXON_NAMESPACE, null)); 			
-//			mapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", ErmsTaxonImport.NAME_NAMESPACE, "tu_typedesignationstatus"));
+			mapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", ErmsTaxonImport.NAME_NAMESPACE, "tu_typedesignationstatus"));
 //			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_acctaxon"));
 		}
 		return mapping;
@@ -103,8 +99,10 @@ private DbImportMapping mapping;
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "parentId");
 				handleForeignKey(rs, taxonIdSet, "accParentId");
+				handleForeignKey(rs, taxonIdSet, "tu_acctaxon");
+				handleForeignKey(rs, taxonIdSet, "id");
 				handleForeignKey(rs, nameIdSet, "tu_typetaxon");
-				handleForeignKey(rs, taxonIdSet, "tu_acctaxon");					
+				handleForeignKey(rs, nameIdSet, "id");		
 			}
 			
 			//name map
@@ -143,6 +141,8 @@ private DbImportMapping mapping;
 			int tu_status = rs.getInt("tu_status");
 			if (tu_status == 1){
 				result = true;
+			}else{
+				return false;
 			}
 		}else if (mapper instanceof DbImportNameTypeDesignationMapper){
 			Object tu_typeTaxon = rs.getObject("tu_typetaxon");
@@ -161,14 +161,6 @@ private DbImportMapping mapping;
 		return null;
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.ITransformed#getTransformer()
-	 */
-	public IDbImportTransformer getTransformer() {
-		//TODO class variable
-		return new ErmsTransformer();
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)

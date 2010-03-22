@@ -23,8 +23,11 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionTypeCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMarkerCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
@@ -85,34 +88,51 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			//TODO create original source
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", TAXON_NAMESPACE)); //id + tu_status
-			//FIXME extension type
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("tsn", ExtensionType.ABBREVIATION()));
+			UUID tsnUuid = ErmsTransformer.uuidTsn;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("tsn", tsnUuid, "TSN", "TSN", "TSN"));
 //			mapping.addMapper(DbImportStringMapper.NewInstance("tu_name", "(NonViralName)name.nameCache"));
-			//FIXME extension type
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_displayname", ExtensionType.ABBREVIATION()));
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_fuzzyname", ExtensionType.ABBREVIATION()));
+			
+			UUID displayNameUuid = ErmsTransformer.uuidDisplayName;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_displayname", displayNameUuid, "display name", "display name", "display name"));
+			UUID fuzzyNameUuid = ErmsTransformer.uuidFuzzyName;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_fuzzyname", fuzzyNameUuid, "fuzzy name", "fuzzy name", "fuzzy name"));
 			mapping.addMapper(DbImportStringMapper.NewInstance("tu_authority", "(NonViralName)name.authorshipCache"));
 			
+			UUID fossilStatusUuid = ErmsTransformer.uuidFossilStatus;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("fossil_name", fossilStatusUuid, "fossil status", "fossil status", "fos. stat."));
+//			mapping.addMapper(DbImportExtensionTypeCreationMapper.NewInstance("fossil_name", EXTENSION_TYPE_NAMESPACE, "fossil_name", "fossil_name", "fossil_name"));
+			
+			UUID credibilityUuid = ErmsTransformer.uuidCredibility;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_credibility", credibilityUuid, "credibility", "credibility", "credibility")); //Werte: null, unknown, marked for deletion
+			
+			UUID completenessUuid = ErmsTransformer.uuidCompleteness;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_completeness", completenessUuid, "completeness", "completeness", "completeness")); //null, unknown, tmpflag, tmp2, tmp3, complete
+			
+			UUID unacceptUuid = ErmsTransformer.uuidUnacceptReason;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_unacceptreason", unacceptUuid, "unaccept reason", "unaccept reason", "reason"));
+			
+			UUID qualityUuid = ErmsTransformer.uuidQualityStatus;
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("qualitystatus_name", qualityUuid, "quality status", "quality status", "quality status")); //checked by Tax Editor ERMS1.1, Added by db management team (2x), checked by Tax Editor
+			
+//			UUID hiddenUuid = ErmsTransformer.uuidHidden;
+//			mapping.addMapper(DbImportMarkerCreationMapper.Mapper.NewInstance("qualitystatus_name", qualityUuid, "quality status", "quality status", "quality status")); //checked by Tax Editor ERMS1.1, Added by db management team (2x), checked by Tax Editor
+			
+			
 			//ignore
-			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_marine"));
-			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_brackish"));
-			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_fresh"));
-			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_terrestrial"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_marine", "marine flag not implemented in PESI"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_brackish", "brackish flag not implemented in PESI"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_fresh", "freshwater flag not implemented in PESI"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_terrestrial", "terrestrial flag not implemented in PESI"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("tu_fossil", "tu_fossil implemented as foreign key"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation", "citation cache not needed in PESI"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_sp", "included in rank/object creation")); 
+			
 			
 			//not yet implemented or ignore
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_unacceptreason"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_credibility")); //Werte: null, unknown, marked for deletion
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_completeness")); //null, unknown, tmpflag, tmp2, tmp3, complete
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_qualitystatus")); //checked by Tax Editor ERMS1.1, Added by db management team (2x), checked by Tax Editor
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_hidden", "Needs DbImportMarkerMapper implemented"));
 			
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_fossil"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_hidden"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_sp"));  //included in object creation
-			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation"));
-			
-//			//second path
+//			//second path / implemented in ErmsTaxonRelationImport
 //			DbImportMapping secondPathMapping = new DbImportMapping();
 //			secondPathMapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "tu_parent", TAXON_NAMESPACE, null)); //there is only one tree
 //			secondPathMapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", TAXON_NAMESPACE, null)); 			
@@ -131,11 +151,13 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 	protected String getRecordQuery(ErmsImportConfigurator config) {
 		String strSelect = " SELECT tu.*, parent1.tu_name AS parent1name, parent2.tu_name AS parent2name, parent3.tu_name AS parent3name, " 
 			+ " parent1.tu_rank AS parent1rank, parent2.tu_rank AS parent2rank, parent3.tu_rank AS parent3rank, " + 
-			" status.status_id as status_id";
+			" status.status_id as status_id,  fossil.fossil_name, qualitystatus.qualitystatus_name";
 		String strFrom = " FROM tu  LEFT OUTER JOIN  tu AS parent1 ON parent1.id = tu.tu_parent " + 
 				" LEFT OUTER JOIN   tu AS parent2  ON parent2.id = parent1.tu_parent " + 
 				" LEFT OUTER JOIN tu AS parent3 ON parent2.tu_parent = parent3.id " + 
-				" LEFT OUTER JOIN status ON tu.tu_status = status.status_id";
+				" LEFT OUTER JOIN status ON tu.tu_status = status.status_id " + 
+				" LEFT OUTER JOIN fossil ON tu.tu_fossil = fossil.fossil_id " +
+				" LEFT OUTER JOIN qualitystatus ON tu.tu_qualitystatus = qualitystatus.id ";
 		String strWhere = " WHERE ( tu.id IN (" + ID_LIST_TOKEN + ") )";
 		String strRecordQuery = strSelect + strFrom + strWhere;
 		return strRecordQuery;

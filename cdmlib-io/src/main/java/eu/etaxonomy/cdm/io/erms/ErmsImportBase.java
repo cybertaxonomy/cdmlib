@@ -66,6 +66,7 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	protected static final String NAME_NAMESPACE = "TaxonName";
 	protected static final String VERNACULAR_NAMESPACE = "Vernaculars";
 	protected static final String FEATURE_NAMESPACE = "note.type";
+	protected static final String EXTENSION_TYPE_NAMESPACE = "ExtensionType";
 	
 	//UUIDS
 	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
@@ -364,7 +365,7 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	protected ExtensionType getExtensionType(UUID uuid, String label, String text, String labelAbbrev){
 		ExtensionType extensionType = (ExtensionType)getTermService().find(uuid);
 		if (extensionType == null){
-			extensionType = new ExtensionType(label, text, labelAbbrev);
+			extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 			extensionType.setUuid(uuid);
 			getTermService().save(extensionType);
 		}
