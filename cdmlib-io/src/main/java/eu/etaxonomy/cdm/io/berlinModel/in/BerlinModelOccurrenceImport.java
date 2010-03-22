@@ -20,14 +20,17 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelOccurrenceImportValidator;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -54,86 +57,29 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelOccurrenceImport.class);
 
 	private static int modCount = 10000;
+	private static final String pluralString = "occurrences";
+	private static final String dbTableName = "emOccurrence";  //??
+
 
 	public BerlinModelOccurrenceImport(){
 		super();
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-		result &= checkTaxonIsAccepted(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		logger.warn("Checking for Occurrence not yet fully implemented");
-		return result;
+	protected String getIdQuery() {
+		return " SELECT occurrenceId FROM " + getTableName();
 	}
-	
-//******************************** CHECK *************************************************
-	
-	private static boolean checkTaxonIsAccepted(BerlinModelImportConfigurator bmiConfig){
-		try {
-			boolean result = true;
-			Source source = bmiConfig.getSource();
-			String strQuery = "SELECT emOccurrence.OccurrenceId, PTaxon.StatusFk, Name.FullNameCache, Status.Status " + 
-						" FROM emOccurrence INNER JOIN " +
-							" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk INNER JOIN " + 
-			                " Name ON PTaxon.PTNameFk = Name.NameId INNER JOIN " +
-			                " Status ON PTaxon.StatusFk = Status.StatusId " + 
-						" WHERE (PTaxon.StatusFk <> 1)  ";
-			
-			ResultSet resulSet = source.getResultSet(strQuery);
-			boolean firstRow = true;
-			while (resulSet.next()){
-				if (firstRow){
-					System.out.println("========================================================");
-					logger.warn("There are Occurrences for a taxon that is not accepted!");
-					System.out.println("========================================================");
-				}
-				int occurrenceId = resulSet.getInt("OccurrenceId");
-				int statusFk = resulSet.getInt("StatusFk");
-				String status = resulSet.getString("Status");
-				String fullNameCache = resulSet.getString("FullNameCache");
-				
-				System.out.println("OccurrenceId:" + occurrenceId + "\n  Status: " + status + 
-						"\n  FullNameCache: " + fullNameCache );
-				result = firstRow = false;
-			}
-			
-			return result;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	
-
-	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */
 	@Override
-	protected boolean doInvoke(BerlinModelImportState state){
-		boolean success = true;
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<Distribution> distributionMap = new MapWrapper<Distribution>(null);
-		BerlinModelImportConfigurator config = state.getConfig();
-		Source source = config.getSource();
-		
-		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-		
-		logger.info("start make occurrences ...");
-		
-		try {
-			//get data from database
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
-                " SELECT DISTINCT PTaxon.RIdentifier, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, emOccurrence.Native, " +  
+            " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
                 	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
                 	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
                 " FROM emOccurrence INNER JOIN " +  
@@ -141,10 +87,25 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
                 	" emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " +  
                 	" emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " +  
-                " WHERE (1=1)" +  
+            " WHERE (emOccurrence.OccurrenceId IN (" + ID_LIST_TOKEN + ")  )" +  
                 " ORDER BY PTaxon.RIdentifier";
-			ResultSet rs = source.getResultSet(strQuery) ;
+		return strQuery;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		boolean success = true;
+		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
+		MapWrapper<Distribution> distributionMap = new MapWrapper<Distribution>(null);
+
+		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
 			
+		BerlinModelImportConfigurator config = state.getConfig();
+		ResultSet rs = partitioner.getResultSet();
+
+		try {
 			//map to store the mapping of duplicate berlin model occurrences to their real distributions
 			Map<Integer, Distribution> duplicateMap = new HashMap<Integer, Distribution>();
 			int oldTaxonId = -1;
@@ -153,21 +114,14 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			int countDescriptions = 0;
 			int countDistributions = 0;
 			//for each reference
-			TransactionStatus tx = startTransaction();
-            
-			while (rs.next()){
+            while (rs.next()){
                 
                 if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
                 
                 int occurrenceId = rs.getInt("OccurrenceId");
-                int newTaxonId = rs.getInt("RIdentifier");
+                int newTaxonId = rs.getInt("taxonId");
                 String tdwgCodeString = rs.getString("TDWGCode");
                 Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
-                String nativeStatus = rs.getString("Native");
-                if ("(N)".equalsIgnoreCase(CdmUtils.Nz(nativeStatus).trim())){
-                	//EDIT WP6 usecase - neglect status
-                	continue;   
-                }
                 
                 try {
                     //status
@@ -199,7 +153,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	                        	   taxonDescription.addElement(distribution); 
 	                               countDistributions++; 
 	                               if (taxonDescription != oldDescription){ 
-	                            	   taxonStore.add(taxonDescription.getTaxon()); 
+	                            	   taxaToSave.add(taxonDescription.getTaxon()); 
 	                                   oldDescription = taxonDescription; 
 	                                   countDescriptions++; 
 	                               	} 
@@ -218,20 +172,62 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 }
                 
             }
-            makeOccurrenceSource(distributionMap, state, duplicateMap);
+            //TODO fix: makeOccurrenceSource(distributionMap, state, duplicateMap);
 			
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
 			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
-			logger.info("Taxa to save: " + taxonStore.size());
-			getTaxonService().save(taxonStore);	
-			commitTransaction(tx);
-			logger.info("end make occurrences ..." + getSuccessString(success));
+			logger.info("Taxa to save: " + taxaToSave.size());
+			getTaxonService().save(taxaToSave);	
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
+	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		String nameSpace;
+		Class cdmClass;
+		Set<String> idSet;
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+		
+		try{
+			Set<String> taxonIdSet = new HashSet<String>();
+			Set<String> referenceIdSet = new HashSet<String>();
+			while (rs.next()){
+				handleForeignKey(rs, taxonIdSet, "taxonId");
+//				handleForeignKey(rs, referenceIdSet, "PTDesignationRefFk"); falsch, kommt eigentlich aus source Tabellen
+	}
+			
+			//taxon map
+			nameSpace = BerlinModelTaxonImport.NAMESPACE;
+			cdmClass = TaxonBase.class;
+			idSet = taxonIdSet;
+			Map<String, TaxonBase> objectMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, objectMap);
+//
+//			//nom reference map
+//			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+//			cdmClass = ReferenceBase.class;
+//			idSet = referenceIdSet;
+//			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+//			result.put(nameSpace, nomReferenceMap);
+//
+//			//biblio reference map
+//			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
+//			cdmClass = ReferenceBase.class;
+//			idSet = referenceIdSet;
+//			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+//			result.put(nameSpace, biblioReferenceMap);
+
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
 	}
 
 	/**
@@ -241,37 +237,21 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 */
 	private void makeOccurrenceSource(MapWrapper<Distribution> distributionMap, BerlinModelImportState state, Map<Integer, Distribution> duplicateMap) 
 				throws SQLException {
+		//FIXME multiple sources for one distribution, needs model change first
 		Map<String, ReferenceBase<?>> sourceIdMap = makeSourceIdMap(state); 
 		Source source = state.getConfig().getSource();
-		
-		String facultativCols = "";
-		String strFacTable = "emOccurrenceSource";
-		String strFacColumn = "PreferredReferenceFlag";
-		String strColAlias = null;
-		if (checkSqlServerColumnExists(source, strFacTable, strFacColumn)){
-			facultativCols +=  ", " + strFacTable + "." + strFacColumn ;
-			if (! CdmUtils.Nz(strColAlias).equals("") ){
-				facultativCols += " AS " + strColAlias;
-			}
-		}
-		
-		String strQuery = 
-			" SELECT OccurrenceSourceId, OccurrenceFk, SourceNumber, OldName, OldNameFk " + facultativCols +  
-			" FROM emOccurrenceSource " +
-			" ORDER BY SourceNumber DESC ";
+		String strQuery = " SELECT OccurrenceSourceId, OccurrenceFk, SourceNumber, OldName, OldNameFk, PreferredReferenceFlag " + 
+						" FROM emOccurrenceSource " +
+						" ORDER BY SourceNumber DESC ";
 		
 		
 		ResultSet rs = source.getResultSet(strQuery) ;
-		int i = 0;
 		while (rs.next()){
-			if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Occurrence sources handled: " + (i-1));}
-            int occurrenceSourceId = rs.getInt("OccurrenceSourceId"); //TODO make originalSourceId
+			int occurrenceSourceId = rs.getInt("OccurrenceSourceId"); //TODO make originalSourceId
 			Integer occurrenceFk = (Integer)rs.getObject("OccurrenceFk");
 			String sourceNumber = rs.getString("SourceNumber");
 			String oldName = rs.getString("OldName");
 			int oldNameFk = rs.getInt("OldNameFk");
-			
-			//get distribution
 			Distribution distribution = distributionMap.get(occurrenceFk);
 			if (distribution == null){
 				distribution = duplicateMap.get(occurrenceFk);
@@ -330,8 +310,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @return
      * @throws SQLException 
 	 */
-	private Map<String, ReferenceBase<?>> makeSourceIdMap(
-			BerlinModelImportState state) throws SQLException {
+	private Map<String, ReferenceBase<?>> makeSourceIdMap(BerlinModelImportState state) throws SQLException {
 		MapWrapper<ReferenceBase<?>> referenceMap = (MapWrapper<ReferenceBase<?>>)state.getStore(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase<?>> nomRefMap = (MapWrapper<ReferenceBase<?>>)state.getStore(ICdmIO.NOMREF_STORE);
 		
@@ -404,10 +383,10 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @param taxonMap
 	 * @return
 	 */
-	private TaxonDescription getTaxonDescription(int newTaxonId, int oldTaxonId, TaxonDescription oldDescription, MapWrapper<TaxonBase> taxonMap, int occurrenceId, ReferenceBase<?> sourceSec){
+	private TaxonDescription getTaxonDescription(int newTaxonId, int oldTaxonId, TaxonDescription oldDescription, Map<String, TaxonBase> taxonMap, int occurrenceId, ReferenceBase<?> sourceSec){
 		TaxonDescription result = null;
 		if (oldDescription == null || newTaxonId != oldTaxonId){
-			TaxonBase taxonBase = taxonMap.get(newTaxonId);
+			TaxonBase taxonBase = taxonMap.get(String.valueOf(newTaxonId));
 			//TODO for testing
 			//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 			Taxon taxon;
@@ -432,6 +411,32 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			result = oldDescription;
 		}
 		return result;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelOccurrenceImportValidator();
+		return validator.validate(state);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
 	}
 
 	/* (non-Javadoc)

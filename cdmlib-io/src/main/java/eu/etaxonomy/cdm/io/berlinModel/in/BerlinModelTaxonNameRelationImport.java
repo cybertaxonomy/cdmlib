@@ -24,20 +24,23 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TYPE_NOT_DESIGNATED;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonNameRelationImportValidator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -56,54 +59,46 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameRelationImport.class);
 
 	private static int modCount = 5000;
+	private static final String pluralString = "name relations";
+	private static final String dbTableName = "RelName";
+
 	
 	public BerlinModelTaxonNameRelationImport(){
 		super();
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		logger.warn("Checking for TaxonNameRelations not yet implemented");
-		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-		result &= checkUnrelatedHomotypicSynonyms(bmiConfig);
-		
-		return result;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(BerlinModelImportState state){				
-		boolean success = true;	
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
-		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_DETAIL_STORE);
-		
-		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
-		BerlinModelImportConfigurator config = state.getConfig();
-		Source source = config.getSource();
-		
-		logger.info("start makeNameRelationships ...");
-		
-		try {
-			//get data from database
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery = 
 					" SELECT RelName.*, FromName.nameId as name1Id, ToName.nameId as name2Id, RefDetail.Details " + 
 					" FROM Name as FromName INNER JOIN " +
                       	" RelName ON FromName.NameId = RelName.NameFk1 INNER JOIN " +
                       	" Name AS ToName ON RelName.NameFk2 = ToName.NameId LEFT OUTER JOIN "+
                       	" RefDetail ON RelName.RefDetailFK = RefDetail.RefDetailId " + 
-                    " WHERE (1=1)";
-			ResultSet rs = source.getResultSet(strQuery) ;
+            " WHERE (RelNameId IN ("+ID_LIST_TOKEN +"))";
+		return strQuery;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		boolean success = true ;
+		BerlinModelImportConfigurator config = state.getConfig();
+		Set<TaxonNameBase> nameToSave = new HashSet<TaxonNameBase>();
+		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
+		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+
+			
+		ResultSet rs = partitioner.getResultSet();
+		try {
 			
 			int i = 0;
-			//for each reference
+			//for each name relation
 			while (rs.next()){
 				
 				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelName handled: " + (i-1));}
@@ -111,25 +106,23 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				int relNameId = rs.getInt("RelNameId");
 				int name1Id = rs.getInt("name1Id");
 				int name2Id = rs.getInt("name2Id");
-				Object relRefFk = rs.getObject("refFk");
+				Object relRefFkObj = rs.getObject("refFk");
 				String details = rs.getString("details");
 				int relQualifierFk = rs.getInt("relNameQualifierFk");
 				String notes = rs.getString("notes");
 				
-				TaxonNameBase nameFrom = taxonNameMap.get(name1Id);
-				TaxonNameBase nameTo = taxonNameMap.get(name2Id);
+				TaxonNameBase nameFrom = nameMap.get(String.valueOf(name1Id));
+				TaxonNameBase nameTo = nameMap.get(String.valueOf(name2Id));
 				
 				
 				ReferenceBase<?> citation = null;
-				if (relRefFk != null){
-					nomRefDetailMap.get(relRefFk);
-					if (citation == null){
-						citation = referenceMap.get(relRefFk);
+				if (relRefFkObj != null){
+					String relRefFk = String.valueOf(relRefFkObj);
+					//get nomRef
+					citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, 
+							relRefFk);
 					}
-					if (citation == null){
-						citation = nomRefMap.get(relRefFk);
-					}
-				}
+				
 				//TODO (preliminaryFlag = true testen
 				String microcitation = details;
 				String rule = null;  
@@ -206,7 +199,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 							success = false;
 						}
 					}
-					nameStore.add(nameFrom);
+					nameToSave.add(nameFrom);
 					
 					//TODO
 					//ID
@@ -222,72 +215,111 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 					success = false;
 				}
 			}
-			logger.info("TaxonName to save: " + nameStore.size());
-			getNameService().save(nameStore);
+			partitioner.startDoSave();
+			getNameService().save(nameToSave);
 			
-			logger.info("end makeNameRelationships ..." + getSuccessString(success));
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
+	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		String nameSpace;
+		Class cdmClass;
+		Set<String> idSet;
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+		
+		try{
+			Set<String> nameIdSet = new HashSet<String>();
+			Set<String> referenceIdSet = new HashSet<String>();
+			Set<String> refDetailIdSet = new HashSet<String>();
+			while (rs.next()){
+				handleForeignKey(rs, nameIdSet, "name1Id");
+				handleForeignKey(rs, nameIdSet, "name2Id");
+				handleForeignKey(rs, referenceIdSet, "RefFk");
+				handleForeignKey(rs, refDetailIdSet, "RefDetailFk");
 	}
 	
+			//name map
+			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
+			cdmClass = TaxonNameBase.class;
+			idSet = nameIdSet;
+			Map<String, Person> objectMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, objectMap);
+
+			//nom reference map
+			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, nomReferenceMap);
+
+			//biblio reference map
+			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, biblioReferenceMap);
+	
+	
+			//nom refDetail map
+			nameSpace = BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = refDetailIdSet;
+			Map<String, ReferenceBase> nomRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, nomRefDetailMap);
+			
+			//biblio refDetail map
+			nameSpace = BerlinModelRefDetailImport.BIBLIO_REFDETAIL_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = refDetailIdSet;
+			Map<String, ReferenceBase> biblioRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, biblioRefDetailMap);
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+				}
+		return result;
+	}
+				
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelTaxonNameRelationImportValidator();
+		return validator.validate(state);
+	}
+				
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+			}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
+			}
+			
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoRelNames();
-	}
-	
-	private boolean checkUnrelatedHomotypicSynonyms(BerlinModelImportConfigurator bmiConfig){
-	
-		try {
-			boolean result = true;
-			Source source = bmiConfig.getSource();
-			String strSQL = " SELECT Name.NameId AS NameId1, Name2.NameId AS NameId2, Name.FullNameCache AS NameCache1, Name2.FullNameCache AS NameCache2 " +
-			" FROM RelPTaxon INNER JOIN Name ON RelPTaxon.PTNameFk1 = Name.NameId " +
-				" INNER JOIN Name AS Name2 ON RelPTaxon.PTNameFk2 = Name2.NameId " +
-				" WHERE  RelPTaxon.RelQualifierFk = 7 AND " + 
-					" RelPTaxon.PTNameFk1 NOT IN " + 
-                         " (SELECT     NameFk1 " + 
-                         " FROM RelName " +
-                         "   WHERE  RelNameQualifierFk = 1 OR RelNameQualifierFk = 3 " +
-                       "  UNION " + 
-                         "  SELECT NameFk2 " +
-                         "  FROM  RelName AS RelName2 " + 
-                         "  WHERE  RelNameQualifierFk = 1 OR RelNameQualifierFk = 3)";
-	
-			ResultSet rs = source.getResultSet(strSQL);
-			boolean firstRow = true;
-			int i = 0;
-			while (rs.next()){
-				i++;
-				if (firstRow){
-					System.out.println("========================================================");
-					logger.warn("There are names that have a homotypic relationship as taxa but no 'is basionym' or 'is replaced synonym' relationship");
-					System.out.println("========================================================");
-				}
-				
-				int nameId1 = rs.getInt("NameId1");
-				String nameCache1 = rs.getString("NameCache1");
-				int nameId2 = rs.getInt("NameId2");
-				String nameCache2 = rs.getString("NameCache2");
-				
-				System.out.println("NameId1:" + nameId1 + 
-						"\n  NameCache1: " + nameCache1 + "\n  NameId2: " + nameId2 + "\n  NameCache2: " + nameCache2) ;
-				result = firstRow = false;
-			}
-			if (i > 0){
-				System.out.println(" ");
-			}
-			
-			return result;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
 		}
-	}
+
 	
 }
