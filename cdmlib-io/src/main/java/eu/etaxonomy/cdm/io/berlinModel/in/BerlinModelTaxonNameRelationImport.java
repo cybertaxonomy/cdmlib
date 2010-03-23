@@ -266,7 +266,6 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 	
-	
 			//nom refDetail map
 			nameSpace = BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE;
 			cdmClass = ReferenceBase.class;
@@ -295,7 +294,6 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 		IOValidator<BerlinModelImportState> validator = new BerlinModelTaxonNameRelationImportValidator();
 		return validator.validate(state);
 	}
-				
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
@@ -303,7 +301,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	@Override
 	protected String getTableName() {
 		return dbTableName;
-			}
+	}
 
 	
 	/* (non-Javadoc)
