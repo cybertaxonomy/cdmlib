@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,12 +20,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelReferenceImport;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
 
 /**
  * @author a.mueller
@@ -297,16 +293,16 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 			try {
 				boolean result = true;
 				Source source = bmiConfig.getSource();
-				String strQueryArticlesWithoutJournal = "SELECT Reference.RefId, Reference.RefCategoryFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, Reference.NomTitleAbbrev, RefCategory.RefCategoryAbbrev  " + 
+				String strQueryArticlesWithoutJournal = "SELECT Reference.RefId, Reference.RefCategoryFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, Reference.NomTitleAbbrev, Reference.Series, RefCategory.RefCategoryAbbrev  " + 
 							" FROM Reference INNER JOIN " +
 									" RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId  " +
-							" WHERE (Reference.RefCategoryFk = 9)  AND ( Reference.series is not null OR Reference.series <>'') ";
+							" WHERE (Reference.RefCategoryFk = 9)  AND ( Reference.series is not null AND Reference.series <>'') ";
 				ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
 				boolean firstRow = true;
 				while (rs.next()){
 					if (firstRow){
 						System.out.println("========================================================");
-						logger.warn("There are Journals with series!");
+						logger.warn("There are Journals with series! Series should be part of the according articles.");
 						System.out.println("========================================================");
 					}
 					int refId = rs.getInt("RefId");
@@ -316,11 +312,12 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 					String refCache = rs.getString("refCache");
 					String title = rs.getString("title");
 					String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+					String series = rs.getString("series");
 					
 					System.out.println("RefID:" + refId + "\n  cat: " + cat + 
 							"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + 
 							"\n  title: " + title +  "\n  nomTitleAbbrev: " + nomTitleAbbrev +
-							"" );
+							"\n  series: " + series );
 					result = firstRow = false;
 				}
 				
