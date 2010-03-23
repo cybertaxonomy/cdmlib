@@ -1789,6 +1789,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/Rank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignationStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationStatusBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ViralName.java -text
@@ -1869,6 +1870,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationshipType.
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Taxon.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorSearch.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
@@ -1894,6 +1896,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/TeamDefaultCach
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IIdentifiableEntityCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IdentifiableEntityDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/description/TaxonDescriptionDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/BacterialNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/CacheUpdate.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/INameCacheStrategy.java -text

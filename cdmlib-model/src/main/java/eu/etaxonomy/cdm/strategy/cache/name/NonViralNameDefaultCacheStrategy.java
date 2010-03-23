@@ -219,6 +219,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 	
 	
+
+	
+	
 	@Override
 	public String getFullTitleCache(T nonViralName) {
 		//null
@@ -249,10 +252,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
 		while (iterator.hasNext()) {
 			NomenclaturalStatus ncStatus = (NomenclaturalStatus)iterator.next();
-			NomenclaturalStatusType statusType =  ncStatus.getType();
-			Language lang = Language.LATIN();
-			Representation repr = statusType.getRepresentation(lang);
-			ncStatusCache = ", " + repr.getAbbreviatedLabel();
+			// since the NewInstance method of nomencatural status allows null as parameter
+			// we have to check for null values here
+			String suffix = "not defined";
+			if(ncStatus.getType() != null){
+				NomenclaturalStatusType statusType =  ncStatus.getType();
+				Language lang = Language.LATIN();
+				Representation repr = statusType.getRepresentation(lang);
+				suffix = repr.getAbbreviatedLabel();
+			}else if(ncStatus.getRuleConsidered() != null && ! ncStatus.getRuleConsidered().equals("")){
+				suffix = ncStatus.getRuleConsidered();
+			}
+			ncStatusCache = ", " + suffix;
 		}
 		String refConcat = " ";
 		if (referenceBaseCache != null && ! referenceBaseCache.trim().startsWith("in ")){

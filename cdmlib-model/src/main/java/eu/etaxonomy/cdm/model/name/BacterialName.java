@@ -25,6 +25,10 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+
+import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
+
 /**
  * The taxon name class for bacteria.
  * <P>
@@ -61,8 +65,14 @@ public class BacterialName extends NonViralName<BacterialName> {
 
 	// ************* CONSTRUCTORS *************/
 	
+	
+
+
+	// ************* CONSTRUCTORS *************/
+	
 	protected BacterialName(){
 		super();
+		this.cacheStrategy = BacterialNameDefaultCacheStrategy.NewInstance();
 	}
 	
 	/** 
