@@ -10,8 +10,10 @@
 
 package eu.etaxonomy.cdm.app.wp6.diptera;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.IReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -71,6 +74,11 @@ public class DipteraPostImportUpdater {
 			int page = 0;
 			int count = cdmApp.getTaxonService().count(Taxon.class);
 			List<TaxonBase> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page, null, null);
+			List<TaxonNameBase> nameList = cdmApp.getNameService().list(null, 100000, page, null, null);
+			Map<String, TaxonNameBase> nameMap = new HashMap<String, TaxonNameBase>();
+			Map<String, TaxonNameBase> nameDuplicateMap = new HashMap<String, TaxonNameBase>();
+			fillNameMaps(nameList, nameMap, nameDuplicateMap);
+			
 			int i = 0;
 			
 			Taxon taxon;
@@ -87,7 +95,7 @@ public class DipteraPostImportUpdater {
 						String newText = parseNewText(text);
 						citation.removeText(language);
 						citation.putText(newText, language);
-						TaxonNameBase scientificName = getScientificName(originalNameString, cdmApp.getNameService());
+						TaxonNameBase scientificName = getScientificName(originalNameString, nameMap, nameDuplicateMap);
 						
 						Set<DescriptionElementSource> sources = citation.getSources();
 						if (sources.size() > 1){
@@ -122,7 +130,30 @@ public class DipteraPostImportUpdater {
 		}
 		
 	}
+
+
+	private void fillNameMaps(List<TaxonNameBase> nameList, Map<String, TaxonNameBase> nameMap, Map<String, TaxonNameBase> duplicateMap) {
+		for (TaxonNameBase name : nameList){
+			NonViralName nvn = name.deproxy(name, NonViralName.class);
+			String nameCache = nvn.getNameCache();
+			if (nameMap.containsKey(nameCache)){
+				duplicateMap.put(nameCache, nvn);
+			}else{
+				nameMap.put(nameCache, nvn);
+			}
+		}
+	}
 	
+	
+	private TaxonNameBase getScientificName(String originalNameString, Map<String, TaxonNameBase> nameMap, Map<String, TaxonNameBase> nameDuplicateMap) {
+		originalNameString = originalNameString.trim();
+		TaxonNameBase result = nameMap.get(originalNameString);
+		if (nameDuplicateMap.containsKey(originalNameString)){
+			result = null;
+		}
+		return result;
+	}
+
 	private TaxonNameBase getScientificName(String originalNameString, INameService nameService) {
 		Pager<TaxonNameBase> names = nameService.findByName(null, originalNameString, null, null, null, null, null, null);
 		if (names.getCount() != 1){

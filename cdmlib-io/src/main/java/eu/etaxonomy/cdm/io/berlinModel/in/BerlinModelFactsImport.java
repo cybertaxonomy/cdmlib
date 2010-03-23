@@ -276,8 +276,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						
 						//for diptera database
 						if (categoryFk == 99 && notes.contains("<OriginalName>")){
-							notes = notes.replaceAll("<OriginalName>", "");
-							notes = notes.replaceAll("</OriginalName>", "");
+//							notes = notes.replaceAll("<OriginalName>", "");
+//							notes = notes.replaceAll("</OriginalName>", "");
 							fact = notes + ": " +  fact ;
 						}
 						//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
