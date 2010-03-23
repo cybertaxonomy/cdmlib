@@ -119,6 +119,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		BerlinModelImportConfigurator config = state.getConfig();
 		Object createdWhen = rs.getObject("Created_When");
 		String createdWho = rs.getString("Created_Who");
+		createdWho = handleHieraciumPilosella(createdWho);
 		Object updatedWhen = null;
 		String updatedWho = null;
 		try {
@@ -172,6 +173,22 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		return success;
 	}
 	
+	/**
+	 * Special usecase for EDITWP6 import where in the createdWho field the original ID is stored
+	 * @param createdWho
+	 * @return
+	 */
+	private String handleHieraciumPilosella(String createdWho) {
+		String result = createdWho;
+		if (result == null){
+			return null;
+		}else if (result.startsWith("Hieracium_Pilosella import from EM")){
+			return "Hieracium_Pilosella import from EM";
+		}else{
+			return result;
+		}
+	}
+
 	private User getUser(String userString, BerlinModelImportState state){
 		if (CdmUtils.isEmpty(userString)){
 			return null;
