@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -226,7 +226,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 				stmt.executeUpdate();
 				return true;
 			} catch (SQLException e) {
-				logger.error("SQLException during getOccurrenceId invoke...");
+				logger.error("SQLException during update into " + dbTableName + ". Entity: " + entity.getUuid());
 				e.printStackTrace();
 				return false;
 			}
@@ -286,7 +286,12 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getTaxonFullNameCache(AnnotatableEntity entity) {
 		String result = null;
-		result = getTaxon().getName().getTitleCache();
+		if (getTaxon() != null) {
+			TaxonNameBase taxonName = getTaxon().getName();
+			if (taxonName != null) {
+				result = taxonName.getTitleCache();
+			}
+		}
 		return result;
 	}
 
@@ -302,7 +307,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		if (getNamedArea() != null) {
 			result = PesiTransformer.area2AreaId(namedArea);
 		} else {
-			logger.warn("This should never happen, but a NamedArea could not be found for entity: " + entity.getUuid());
+			logger.warn("A NamedArea could not be found for entity: " + entity.getUuid());
 		}
 		return result;
 	}
@@ -319,7 +324,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		if (getNamedArea() != null) {
 			result = PesiTransformer.area2AreaCache(namedArea);
 		} else {
-			logger.warn("This should never happen, but a NamedArea could not be found for entity: " + entity.getUuid());
+			logger.warn("A NamedArea could not be found for entity: " + entity.getUuid());
 		}
 		return result;
 	}
@@ -395,7 +400,9 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		Integer result = null;		
 		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = state.getDbId(reference);
+			if (reference != null) {
+				result = state.getDbId(reference);
+			}
 		}
 		return result;
 	}
@@ -410,7 +417,9 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		String result = null;
 		if (entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = reference.getTitle();
+			if (reference != null) {
+				result = reference.getTitle();
+			}
 		}
 		return result;
 	}

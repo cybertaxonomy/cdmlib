@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -216,7 +218,16 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNotes(RelationshipBase<?, ?, ?> relationship) {
 		// TODO
-		return null;
+		String result = null;
+		if (relationship != null) {
+			Set<Annotation> annotations = relationship.getAnnotations();
+			if (annotations.size() == 1) {
+				result = annotations.iterator().next().getText();
+			} else {
+				logger.warn("Relationship has more than one Annotation: " + relationship.getUuid());
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -238,7 +249,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		if (taxon != null) {
 			return state.getDbId(taxon);
 		}
-		logger.warn("No taxon found for relationship: " + relationship.toString());
+		logger.warn("No taxon found for relationship: " + relationship.getUuid());
 		return null;
 	}
 

@@ -266,18 +266,28 @@ public class PesiNoteExport extends PesiExportBase {
 	private static String getRegion(DescriptionElementBase descriptionElement) {
 		String result = null;
 		DescriptionBase description = descriptionElement.getInDescription();
-		
-		// Area information are associated to TaxonDescriptions and Distributions.
-		if (descriptionElement.isInstanceOf(Distribution.class)) {
-			Distribution distribution = CdmBase.deproxy(descriptionElement, Distribution.class);
-			result = PesiTransformer.area2AreaCache(distribution.getArea());
-		} else if (description.isInstanceOf(TaxonDescription.class)) {
-			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-			Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
-			if (namedAreas.size() == 1) {
-				result = PesiTransformer.area2AreaCache(namedAreas.iterator().next());
-			} else if (namedAreas.size() > 1) {
-				logger.warn("This TaxonDescription contains more than one NamedArea: " + taxonDescription.getTitleCache());
+
+		if (description != null) {
+			// Area information are associated to TaxonDescriptions and Distributions.
+			if (description.isInstanceOf(Distribution.class)) {
+				Distribution distribution = CdmBase.deproxy(descriptionElement, Distribution.class);
+				if (distribution != null) {
+					result = PesiTransformer.area2AreaCache(distribution.getArea());
+				} else {
+					logger.warn("Distribution has no area information: " + distribution.getUuid());
+				}
+			} else if (description.isInstanceOf(TaxonDescription.class)) {
+				TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+				if (taxonDescription != null) {
+					Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
+					if (namedAreas != null && namedAreas.size() == 1) {
+						result = PesiTransformer.area2AreaCache(namedAreas.iterator().next());
+					} else if (namedAreas != null && namedAreas.size() > 1) {
+						logger.warn("This TaxonDescription contains more than one NamedArea: " + taxonDescription.getUuid() + " (" + taxonDescription.getTitleCache() + ")");
+					}
+				} else {
+					logger.warn("TaxonDescription is NULL for the following Description: " + descriptionElement.getUuid());
+				}
 			}
 		}
 		return result;
@@ -292,11 +302,25 @@ public class PesiNoteExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getTaxonFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
 		Integer result = null;
-		DescriptionBase description = descriptionElement.getInDescription();
-		if (description.isInstanceOf(TaxonDescription.class)) {
-			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-			Taxon taxon = taxonDescription.getTaxon();
-			result = state.getDbId(taxon);
+		if (descriptionElement != null) {
+			DescriptionBase description = descriptionElement.getInDescription();
+			if (description != null) {
+				if (description.isInstanceOf(TaxonDescription.class)) {
+					TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+					if (taxonDescription != null) {
+						Taxon taxon = taxonDescription.getTaxon();
+						if (taxon != null) {
+							result = state.getDbId(taxon);
+						} else {
+							logger.warn("TaxonDescription has no Taxon it belongs to: " + taxonDescription.getUuid() + " (" + taxonDescription.getTitleCache() + ")");
+						}
+					} else {
+						logger.warn("TaxonDescription is NULL for the following ");
+					}
+				}
+			} else {
+				logger.warn("InDescription of the following descriptionElement is NULL: " + descriptionElement.getUuid());
+			}
 		}
 		return result;
 	}
@@ -320,14 +344,14 @@ public class PesiNoteExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static DateTime getLastActionDate(DescriptionElementBase descriptionElement) {
-		DateTime result = null;
-		if (descriptionElement != null) {
-			DateTime updated = descriptionElement.getUpdated();
-			if (updated != null) {
-				result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
-			}
-		}
+	private static String getLastActionDate(DescriptionElementBase descriptionElement) {
+		String result = null;
+//		if (descriptionElement != null) {
+//			DateTime updated = descriptionElement.getUpdated(); // maybe not the right attribute!
+//			if (updated != null) {
+//				result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
+//			}
+//		}
 		return result;
 	}
 

@@ -17,17 +17,17 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbIntegerExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.erms.ErmsImportBase;
+import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -171,12 +171,25 @@ public class PesiSourceExport extends PesiExportBase {
 	 * @return The <code>IMIS_Id</code> attribute.
 	 * @see MethodMapper
 	 */
-//	@SuppressWarnings("unused")
-//	private static Integer getIMIS_Id(ReferenceBase<?> reference) {
-//		// TODO
-//		// Where is the IMIS_Id from an ERMS import stored in CDM?
-//		return null;
-//	}
+	@SuppressWarnings("unused")
+	private static Integer getIMIS_Id(ReferenceBase<?> reference) {
+		Integer result = null;
+		if (reference != null) {
+			Set<Extension> extensions = reference.getExtensions();
+			for (Extension extension : extensions) {
+				try {
+					if (extension.getType().getUuid().equals(ErmsTransformer.IMIS_UUID)) {
+						// IMIS_ID found
+						result = Integer.parseInt(extension.getValue().trim());
+					}
+				} catch (NumberFormatException e) {
+					logger.warn("String could not be parsed to int: " + extension.getValue() + " / Reference: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+					result = null;
+				}
+			}
+		}
+		return result;
+	}
 	
 	/**
 	 * Returns the <code>SourceCategoryFK</code> attribute.
@@ -248,7 +261,16 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNotes(ReferenceBase<?> reference) {
 		// TODO
-		return null;
+		String result = null;
+		if (reference != null) {
+			Set<Annotation> annotations = reference.getAnnotations();
+			if (annotations.size() == 1) {
+				result = annotations.iterator().next().getText();
+			} else {
+				logger.warn("Reference has more than one Annotation: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -264,7 +286,7 @@ public class PesiSourceExport extends PesiExportBase {
 		if (sources.size() == 1) {
 			result = sources.iterator().next().getIdInSource();
 		} else {
-			logger.warn("Reference has more than one source: " + reference.getTitleCache());
+			logger.warn("Reference has more than one source: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
 		}
 		return result;
 	}
@@ -278,9 +300,12 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getOriginalDB(ReferenceBase<?> reference) {
 		String result = null;
-		for (IdentifiableSource source : reference.getSources()) {
-			if (source != null) {
-				result = source.getCitation().getTitleCache();  //or just title
+		if (reference != null) {
+			for (IdentifiableSource source : reference.getSources()) {
+				ReferenceBase citation = source.getCitation();
+				if (source != null && citation != null) {
+					result = citation.getTitleCache();  //or just title
+				}
 			}
 		}
 		return result;
@@ -302,13 +327,7 @@ public class PesiSourceExport extends PesiExportBase {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
 		mapping.addMapper(IdMapper.NewInstance("SourceId"));
-
-//		mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
-		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().find(ErmsImportBase.IMIS_UUID);
-		if (idInSourceExtensionType != null) {
-			mapping.addMapper(DbIntegerExtensionMapper.NewInstance(idInSourceExtensionType, "IMIS_Id"));
-		}
-
+		mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryFK", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Name", this));

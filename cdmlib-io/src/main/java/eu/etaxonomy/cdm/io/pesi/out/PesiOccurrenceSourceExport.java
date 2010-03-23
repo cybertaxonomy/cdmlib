@@ -136,12 +136,14 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 
 										// Citations can be empty (null): Is it wrong data or just a normal case?
 										if (reference != null) {
-											doCount(count++, modCount, pluralString);
 
 											// Lookup sourceFk by using getSourceFk()
 											Integer sourceFk = getSourceFk(reference, state);
 											
 											if (sourceFk != null && ! allreadyProcessed(sourceFk)) {
+												// Count Count
+												doCount(count++, modCount, pluralString);
+
 												// Add to processed sourceFk's since sourceFk's can be scanned more than once.
 												addToProcessed(sourceFk);
 												
@@ -205,7 +207,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 				stmt.setString(4, null); // TODO: This is the name of the former taxon (accepted taxon as well as synonym) the source was associated to. How can we get a hand on it?
 				stmt.execute();
 			} catch (SQLException e) {
-				logger.error("SQLException during getOccurrenceId invoke.");
+				logger.error("SQLException during update into " + dbTableName + ". Reference: " + reference.getUuid() + " / SourceFk: " + sourceFk + " / OccurrenceId: " + occurrenceId);
 				e.printStackTrace();
 			}
 		}
@@ -251,7 +253,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 				occurrenceIds.add(resultSet.getInt(1));
 			}
 		} catch (SQLException e) {
-			logger.error("SQLException during getOccurrenceId invoke. (2)");
+			logger.error("SQLException during getOccurrenceId. SourceFk: " + sourceFk);
 			e.printStackTrace();
 		}
 
@@ -287,19 +289,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the <code>OccurrenceFk</code> attribute.
-	 * @param entity
-	 * @param state The {@link PesiExportState PesiExportState}.
-	 * @return The <code>OccurrenceFk</code> attribute.
-	 * @see MethodMapper
-	 */
-	@SuppressWarnings("unused")
-	private static Integer getOccurrenceFk(AnnotatableEntity entity, PesiExportState state) {
-		Integer result = null;
-		return result;
-	}
-	
-	/**
 	 * Returns the <code>SourceFk</code> attribute.
 	 * @param entity
 	 * @param state The {@link PesiExportState PesiExportState}.
@@ -311,7 +300,9 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 		Integer result = null;
 		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = state.getDbId(reference);
+			if (reference != null) {
+				result = state.getDbId(reference);
+			}
 		}
 		return result;
 	}
@@ -327,7 +318,9 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 		String result = null;
 		if (entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = reference.getTitle();
+			if (reference != null) {
+				result = reference.getTitle();
+			}
 		}
 		return result;
 	}
@@ -351,7 +344,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 
-		// These mapping are not used.
+		// These mappings are not used at all.
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceFk", this.getClass(), "getOccurrenceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceNameCache", this));
