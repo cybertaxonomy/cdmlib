@@ -47,11 +47,12 @@ public class BerlinModelOccurrenceImportValidator implements IOValidator<BerlinM
 			try {
 				boolean result = true;
 				Source source = bmiConfig.getSource();
-				String strQuery = "SELECT emOccurrence.OccurrenceId, PTaxon.StatusFk, Name.FullNameCache, Status.Status " + 
+				String strQuery = "SELECT emOccurrence.OccurrenceId, PTaxon.StatusFk, Name.FullNameCache, Status.Status, PTaxon.PTRefFk, Reference.RefCache " + 
 							" FROM emOccurrence INNER JOIN " +
 								" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk INNER JOIN " + 
 				                " Name ON PTaxon.PTNameFk = Name.NameId INNER JOIN " +
-				                " Status ON PTaxon.StatusFk = Status.StatusId " + 
+				                " Status ON PTaxon.StatusFk = Status.StatusId LEFT OUTER JOIN " +
+				                " Reference ON PTaxon.PTRefFk = Reference.RefId " + 
 							" WHERE (PTaxon.StatusFk <> 1)  ";
 				
 				ResultSet resulSet = source.getResultSet(strQuery);
@@ -66,9 +67,13 @@ public class BerlinModelOccurrenceImportValidator implements IOValidator<BerlinM
 					int statusFk = resulSet.getInt("StatusFk");
 					String status = resulSet.getString("Status");
 					String fullNameCache = resulSet.getString("FullNameCache");
+					String ptRefFk = resulSet.getString("PTRefFk");
+					String ptRef = resulSet.getString("RefCache");
 					
 					System.out.println("OccurrenceId:" + occurrenceId + "\n  Status: " + status + 
-							"\n  FullNameCache: " + fullNameCache );
+							"\n  FullNameCache: " + fullNameCache +  "\n  ptRefFk: " + ptRefFk +
+							"\n  sec: " + ptRef );
+					
 					result = firstRow = false;
 				}
 				
