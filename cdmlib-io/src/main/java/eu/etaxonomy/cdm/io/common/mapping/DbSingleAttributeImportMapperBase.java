@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportStateBase<?,?>, CDM_BASE extends CdmBase> extends CdmSingleAttributeMapperBase implements IDbImportMapper<STATE, CDM_BASE>  {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbSingleAttributeImportMapperBase.class);
 	
 	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
