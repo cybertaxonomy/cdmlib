@@ -145,15 +145,42 @@ public class CdmUtils {
 		}
 	}
 	
+
+	/**
+	 * Returns the trimmed value string if value is not <code>null</code>. 
+	 * Returns the empty string if value is <code>null</code>.
+	 * @param value
+	 * @return
+	 */
+	static public String NzTrim(String value){
+		return (value == null ? "" : value);
+	}
+
+	
+	/**
+	 * Returns value if value is not <code>null</code>. Returns empty string if value is <code>null</code>.
+	 * @param value
+	 * @return
+	 */
 	static public String Nz(String value){
 		return (value == null ? "" : value);
 	}
 
 	
+	/**
+	 * Returns value if value is not <code>null</code>. Returns 0 if value is <code>null</code>.
+	 * @param value
+	 * @return
+	 */
 	static public Integer Nz(Integer value){
 		return (value == null ? 0 : value);
 	}
 
+	/**
+	 * Returns value if value is not <code>null</code>. Returns 0 if value is <code>null</code>.
+	 * @param value
+	 * @return
+	 */
 	static public Long Nz(Long value){
 		return (value == null ? 0 : value);
 	}
