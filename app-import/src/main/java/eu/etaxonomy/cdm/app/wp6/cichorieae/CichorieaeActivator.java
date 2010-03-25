@@ -60,7 +60,7 @@ public class CichorieaeActivator {
 	static final int sourceSecId = 7800000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
+	static final Object[] featureKeyList = new Integer[]{1, 43, 31, 4, 98, 41}; 	
 	
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 	//Mac
