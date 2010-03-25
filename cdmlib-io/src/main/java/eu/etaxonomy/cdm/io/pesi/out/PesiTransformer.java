@@ -1292,6 +1292,10 @@ public final class PesiTransformer {
 	 */
 	public static Integer qualityStatus2QualityStatusFk(String qualityStatus) {
 		Integer result = null;
+		if (qualityStatus == null) {
+			logger.error("The given QualityStatus is NULL.");
+			return null;
+		}
 		if (qualityStatus.equals(STR_CHECKED_BY_TAXONOMIC_EDITOR_INCLUDED_IN_ERMS_1_1)) {
 			return CHECKED_BY_TAXONOMIC_EDITOR_INCLUDED_IN_ERMS_1_1;
 		} else if (qualityStatus.equals(STR_ADDED_BY_DATABASE_MANAGEMENT_TEAM)) {
@@ -1313,6 +1317,10 @@ public final class PesiTransformer {
 	 */
 	public static String presenceAbsenceTerm2OccurrenceStatusCache(PresenceAbsenceTermBase<?> term) {
 		String result = STR_STATUS_PRESENT; // TODO: What should be returned if a PresenceTerm/AbsenceTerm could not be translated to a datawarehouse occurrence status id?
+		if (term == null) {
+			logger.error("The given PresenceAbsenceTerm is NULL.");
+			return null;
+		}
 		if (term.isInstanceOf(PresenceTerm.class)) {
 			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
 			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
@@ -1352,6 +1360,11 @@ public final class PesiTransformer {
 	 */
 	public static Integer presenceAbsenceTerm2OccurrenceStatusId(PresenceAbsenceTermBase<?> term) {
 		Integer result = STATUS_PRESENT; // TODO: What should be returned if a PresenceTerm/AbsenceTerm could not be translated to a datawarehouse occurrence status id?
+		if (term == null) {
+			logger.error("The given PresenceAbsenceTerm is NULL.");
+//			return null;
+			return result; // TODO: It crashes otherwise because the OccurrenceStatusId must no be NULL.
+		}
 		if (term.isInstanceOf(PresenceTerm.class)) {
 			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
 			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
@@ -1390,6 +1403,7 @@ public final class PesiTransformer {
 	 */
 	public static String area2AreaCache(NamedArea ermsArea) {
 		if (ermsArea == null) {
+			logger.error("The given NamedArea is NULL.");
 			return null;
 		}
 		// cdm_test_andreas2
@@ -1459,6 +1473,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer area2AreaId(NamedArea ermsArea) {
 		if (ermsArea == null) {
+			logger.error("The given NamedArea is NULL.");
 			return null;
 		}
 		Integer result = null;
@@ -1559,6 +1574,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer fossilStatus2FossilStatusId(String fossilStatus) {
 		if (fossilStatus == null) {
+			logger.error("The given FossilStatus is NULL.");
 			return null;
 		} else if (fossilStatus.equals(STR_FOSSILSTATUS_RECENT_ONLY)) {
 			return FOSSILSTATUS_RECENT_ONLY;
@@ -1579,6 +1595,7 @@ public final class PesiTransformer {
 	 */
 	public static String language2LanguageCache(Language language) {
 		if (language == null ) {
+			logger.error("The given Language is NULL.");
 			return null;
 		}
 		if (language.equals(Language.ALBANIAN())) {
@@ -1716,6 +1733,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer language2LanguageId(Language language) {
 		if (language == null ) {
+			logger.error("The given Language is NULL.");
 			return null;
 		}
 		if (language.equals(Language.ALBANIAN())) {
@@ -1853,6 +1871,7 @@ public final class PesiTransformer {
 	 */
 	public static String textData2NodeCategoryCache(Feature feature) {
 		if (feature == null) {
+			logger.error("The given Feature is NULL.");
 			return null;
 		}
 		if (feature.equals(Feature.DESCRIPTION())) {
@@ -1927,6 +1946,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer textData2NodeCategoryFk(Feature feature) {
 		if (feature == null) {
+			logger.error("The given Feature is NULL.");
 			return null;
 		}
 		if (feature.equals(Feature.DESCRIPTION())) {
@@ -2003,7 +2023,7 @@ public final class PesiTransformer {
 	public static String rank2RankCache(Rank rank, Integer pesiKingdomId) {
 		String result = null;
 		if (rank == null) {
-			logger.error("Rank is NULL. RankId can not be determined.");
+			logger.error("Rank is NULL. RankCache can not be determined.");
 			return null;
 		}
 		
@@ -2157,6 +2177,8 @@ public final class PesiTransformer {
 			} else if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)) {
 				result = KINGDOM_BACTERIA;
 			}
+		} else {
+			logger.error("The given NomenclaturalCode is NULL.");
 		}
 		return result;
 	}
@@ -2368,6 +2390,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer nameTypeDesignationStatus2TypeDesignationStatusId(NameTypeDesignationStatus nameTypeDesignationStatus) {
 		if (nameTypeDesignationStatus == null) {
+			logger.error("The given NameTypeDesignationStatus is NULL.");
 			return null;
 		}
 		if (nameTypeDesignationStatus.equals(NameTypeDesignationStatus.ORIGINAL_DESIGNATION())) {
@@ -2391,6 +2414,7 @@ public final class PesiTransformer {
 	 */
 	public static String nameTypeDesignationStatus2TypeDesignationStatusCache(NameTypeDesignationStatus nameTypeDesignationStatus) {
 		if (nameTypeDesignationStatus == null) {
+			logger.error("The given NameTypeDesignationStatus is NULL.");
 			return null;
 		}
 		if (nameTypeDesignationStatus.equals(NameTypeDesignationStatus.ORIGINAL_DESIGNATION())) {
@@ -2413,7 +2437,10 @@ public final class PesiTransformer {
 	 * @return
 	 */
 	public static Integer taxonBase2statusFk (TaxonBase<?> taxonBase){
-		if (taxonBase == null){return null;}		
+		if (taxonBase == null) {
+			logger.error("The given Taxon is NULL.");
+			return null;
+		}
 		if (taxonBase.isInstanceOf(Taxon.class)){
 			return T_STATUS_ACCEPTED;
 		}else if (taxonBase.isInstanceOf(Synonym.class)){
@@ -2435,7 +2462,10 @@ public final class PesiTransformer {
 	 * @return
 	 */
 	public static String taxonBase2statusCache (TaxonBase<?> taxonBase){
-		if (taxonBase == null){return null;}
+		if (taxonBase == null) {
+			logger.error("The given Taxon is NULL.");
+			return null;
+		}
 		if (taxonBase.isInstanceOf(Taxon.class)){
 			return T_STATUS_STR_ACCEPTED;
 		}else if (taxonBase.isInstanceOf(Synonym.class)){
@@ -2458,6 +2488,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer reference2SourceCategoryFK(ReferenceBase<?> reference) {
 		if (reference == null){
+			logger.error("The given Reference is NULL.");
 			return null;
 		} else if (reference.getType().equals(ReferenceType.Article)) {
 			return REF_ARTICLE_IN_PERIODICAL;
@@ -2501,6 +2532,7 @@ public final class PesiTransformer {
 	 */
 	public static String getSourceCategoryCache(ReferenceBase<?> reference) {
 		if (reference == null){
+			logger.error("The given Reference is NULL.");
 			return null;
 		} else if (reference.getType().equals(ReferenceType.Article)) {
 			return REF_STR_ARTICLE_IN_PERIODICAL;
@@ -2544,6 +2576,7 @@ public final class PesiTransformer {
 	 */
 	public static String nomStatus2NomStatusCache(NomenclaturalStatusType status) {
 		if (status == null){
+			logger.error("The given NomenclaturalStatusType is NULL.");
 			return null;
 		}
 		if (status.equals(NomenclaturalStatusType.INVALID())) {return NAME_ST_STR_NOM_INVAL;
@@ -2594,6 +2627,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer nomStatus2nomStatusFk (NomenclaturalStatusType status){
 		if (status == null){
+			logger.error("The given NomenclaturalStatusType is NULL.");
 			return null;
 		}
 		if (status.equals(NomenclaturalStatusType.INVALID())) {return NAME_ST_NOM_INVAL;
@@ -2644,6 +2678,7 @@ public final class PesiTransformer {
 	 */
 	public static String taxonRelation2RelTaxonQualifierCache(RelationshipBase<?,?,?> relation){
 		if (relation == null) {
+			logger.error("The given Relationship is NULL.");
 			return null;
 		}
 		RelationshipTermBase<?> type = relation.getType();
@@ -2700,6 +2735,7 @@ public final class PesiTransformer {
 	 */
 	public static Integer taxonRelation2RelTaxonQualifierFk(RelationshipBase<?,?,?> relation) {
 		if (relation == null) {
+			logger.error("The given Relationship is NULL.");
 			return null;
 		}
 		RelationshipTermBase<?> type = relation.getType();
