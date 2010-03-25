@@ -131,6 +131,9 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				try {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
+					if (rank.getId() == 0){
+						getTermService().save(rank);
+					}
 					
 					TaxonNameBase taxonNameBase;
 					if (config.getNomenclaturalCode() != null){

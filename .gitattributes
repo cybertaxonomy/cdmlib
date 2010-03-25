@@ -1216,12 +1216,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelImportStat
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelNameFactsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelNameStatusImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelOccurrenceImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelOccurrenceSourceImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelRefDetailImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelReferenceImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameRelationImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonRelationImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTypesImport.java -text
@@ -1236,6 +1235,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinMode
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinModelNameFactsImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinModelNameStatusImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinModelOccurrenceImportValidator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinModelOccurrenceSourceImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinModelRefDetailImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinModelReferenceImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/validation/BerlinModelTaxonImportValidator.java -text

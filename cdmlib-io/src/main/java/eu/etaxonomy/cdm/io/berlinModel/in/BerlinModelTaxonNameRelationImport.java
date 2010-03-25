@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -166,8 +167,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
 					}else if (relQualifierFk == NAME_REL_IS_FIRST_PARENT_OF || relQualifierFk == NAME_REL_IS_SECOND_PARENT_OF || relQualifierFk == NAME_REL_IS_FEMALE_PARENT_OF || relQualifierFk == NAME_REL_IS_MALE_PARENT_OF){
 						//HybridRelationships
-						if (! (nameTo instanceof BotanicalName) || ! (nameFrom instanceof BotanicalName)){
-							logger.warn("HybridrelationshipNames ("+name1Id +"," + name2Id +") must be of type BotanicalName but are not");
+						if (! (nameTo instanceof NonViralName ) || ! (nameFrom instanceof NonViralName)){
+							logger.warn("HybridrelationshipNames ("+name1Id +"," + name2Id +") must be of type NonViralNameName but are not");
 							success = false;
 						}
 						try {
@@ -176,8 +177,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 							BotanicalName child = (BotanicalName)nameTo;
 							
 							//TODO bug when trying to persist
-							//parent.addHybridChild(child, hybridRelType, rule);
-							logger.warn("HybridRelationships not yet implemented");
+							parent.addHybridChild(child, hybridRelType, rule);
+//							logger.warn("HybridRelationships not yet implemented");
 							
 						} catch (UnknownCdmTypeException e) {
 							logger.warn(e);

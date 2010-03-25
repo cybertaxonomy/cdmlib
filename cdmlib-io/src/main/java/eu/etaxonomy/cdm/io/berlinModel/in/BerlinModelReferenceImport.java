@@ -793,8 +793,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					book.setInSeries((IPrintSeries)inSeries);
 					//TODO
 				}else{
-					logger.warn("inSeries is not of type PrintSeries but of type " + inSeries.getClass().getSimpleName() +
-							" Inreference relation could not be set");
+					logger.warn("inSeries is not of type PrintSeries but of type " + inSeries.getType().getMessage() +
+							". In-reference relation could not be set");
 				}
 			}else{
 				logger.error("PrintSeries (refId = " + inRefFkInt + ") for book (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");

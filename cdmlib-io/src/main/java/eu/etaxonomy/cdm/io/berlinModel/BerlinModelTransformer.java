@@ -27,21 +27,8 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.ICdDvd;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.IPatent;
-import eu.etaxonomy.cdm.model.reference.IPersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.IPrintSeries;
-import eu.etaxonomy.cdm.model.reference.IProceedings;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.IReport;
 import eu.etaxonomy.cdm.model.reference.ISectionBase;
-import eu.etaxonomy.cdm.model.reference.IThesis;
-import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -58,6 +45,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
  
+	
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
 	public static int REF_PART_OF_OTHER_TITLE = 2;
@@ -366,6 +354,7 @@ public final class BerlinModelTransformer {
 						case 58: return Rank.SPECIESAGGREGATE();
 						case 59: return Rank.SPECIESGROUP();
 						case 60: return Rank.SPECIES();
+						case 61: return Rank.GREX();
 						case 65: return Rank.SUBSPECIES();
 						case 68: return Rank.CONVAR();
 						case 70: return Rank.VARIETY();
@@ -384,7 +373,7 @@ public final class BerlinModelTransformer {
 						
 						default: {
 							if (useUnknown){
-								logger.error("Rank unknown. Created UNKNOWN_RANK");
+								logger.error("Rank unknown: " + rankId + ". Created UNKNOWN_RANK");
 								return Rank.UNKNOWN_RANK();
 							}
 							throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());
