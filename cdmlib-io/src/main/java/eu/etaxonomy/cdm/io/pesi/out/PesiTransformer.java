@@ -230,6 +230,14 @@ public final class PesiTransformer {
 	public static int KINGDOM_PROTOZOA = 5;
 	public static int KINGDOM_BACTERIA = 6;
 	public static int KINGDOM_CHROMISTA = 7;
+	
+	public static String STR_KINGDOM_NULL = "NULL";
+	public static String STR_KINGDOM_ANIMALIA = "Animalia";
+	public static String STR_KINGDOM_PLANTAE = "Plantae";
+	public static String STR_KINGDOM_FUNGI = "Fungi";
+	public static String STR_KINGDOM_PROTOZOA = "Protozoa";
+	public static String STR_KINGDOM_BACTERIA = "Bacteria";
+	public static String STR_KINGDOM_CHROMISTA = "Chromista";
 
 	// Animalia Ranks
 	public static int Animalia_Kingdom = 10;
@@ -432,6 +440,30 @@ public final class PesiTransformer {
 	public static int Bacteria_Subspecies = 230;
 	public static int Bacteria_Variety = 240;
 	public static int Bacteria_Forma	= 260;
+	
+	public static String STR_BACTERIA_KINGDOM = "Kingdom";
+	public static String STR_BACTERIA_SUBKINGDOM = "Subkingdom";
+	public static String STR_BACTERIA_PHYLUM = "Phylum";
+	public static String STR_BACTERIA_SUBPHYLUM = "Subphylum";
+	public static String STR_BACTERIA_SUPERCLASS = "Superclass";
+	public static String STR_BACTERIA_CLASS = "Class";
+	public static String STR_BACTERIA_SUBCLASS = "Subclass";
+	public static String STR_BACTERIA_INFRACLASS = "Infraclass";
+	public static String STR_BACTERIA_SUPERORDER = "Superorder";
+	public static String STR_BACTERIA_ORDER = "Order";
+	public static String STR_BACTERIA_SUBORDER = "Suborder";
+	public static String STR_BACTERIA_INFRAORDER = "Infraorder";
+	public static String STR_BACTERIA_SUPERFAMILY = "Superfamily";
+	public static String STR_BACTERIA_FAMILY = "Family";
+	public static String STR_BACTERIA_SUBFAMILY = "Subfamily";
+	public static String STR_BACTERIA_TRIBE = "Tribe";
+	public static String STR_BACTERIA_SUBTRIBE = "Subtribe";
+	public static String STR_BACTERIA_GENUS = "Genus";
+	public static String STR_BACTERIA_SUBGENUS = "Subgenus";
+	public static String STR_BACTERIA_SPECIES = "Species";
+	public static String STR_BACTERIA_SUBSPECIES = "Subspecies";
+	public static String STR_BACTERIA_VARIETY = "Variety";
+	public static String STR_BACTERIA_FORMA = "Forma";
 	
 	// Chromista Ranks
 	public static int Chromista_Kingdom = 10;
@@ -1971,6 +2003,7 @@ public final class PesiTransformer {
 	public static String rank2RankCache(Rank rank, Integer pesiKingdomId) {
 		String result = null;
 		if (rank == null) {
+			logger.error("Rank is NULL. RankId can not be determined.");
 			return null;
 		}
 		
@@ -2136,6 +2169,7 @@ public final class PesiTransformer {
 	public static Integer rank2RankId (Rank rank, Integer pesiKingdomId) {
 		Integer result = null;
 		if (rank == null) {
+			logger.error("Rank is NULL. RankId can not be determined.");
 			return null;
 		}
 		
@@ -2199,6 +2233,8 @@ public final class PesiTransformer {
 				result = Animalia_Subvariety;
 			} else if (rank.equals(Rank.FORM())) {
 				result = Animalia_Forma;
+			} else {
+				logger.warn("Rank '" + rank.getTitleCache() + "' unknown for Kingdom '" + STR_KINGDOM_ANIMALIA + "'.");
 			}
 		} else if (pesiKingdomId == KINGDOM_PLANTAE) {
 			if (rank.equals(Rank.KINGDOM())) {
@@ -2265,6 +2301,58 @@ public final class PesiTransformer {
 //				result = Plantae_Taxa_infragen;
 //			} else if (rank.equals(Rank.)) { // not yet specified
 //				result = Plantae_Taxa_infraspec;
+			} else {
+				logger.warn("Rank '" + rank.getTitleCache() + "' unknown for Kingdom '" + STR_KINGDOM_PLANTAE + "'.");
+			}
+		} else if (pesiKingdomId == KINGDOM_BACTERIA) {
+			if (rank.equals(Rank.KINGDOM())) {
+				result = Bacteria_Kingdom;
+			} else if (rank.equals(Rank.SUBKINGDOM())) {
+				result = Bacteria_Subkingdom;
+			} else if (rank.equals(Rank.PHYLUM())) {
+				result = Bacteria_Phylum;
+			} else if (rank.equals(Rank.SUBPHYLUM())) {
+				result = Bacteria_Subphylum;
+			} else if (rank.equals(Rank.SUPERCLASS())) {
+				result = Bacteria_Superclass;
+			} else if (rank.equals(Rank.CLASS())) {
+				result = Bacteria_Class;
+			} else if (rank.equals(Rank.SUBCLASS())) {
+				result = Bacteria_Subclass;
+			} else if (rank.equals(Rank.INFRACLASS())) {
+				result = Bacteria_Infraclass;
+			} else if (rank.equals(Rank.SUPERORDER())) {
+				result = Bacteria_Superorder;
+			} else if (rank.equals(Rank.ORDER())) {
+				result = Bacteria_Order;
+			} else if (rank.equals(Rank.SUBORDER())) {
+				result = Bacteria_Suborder;
+			} else if (rank.equals(Rank.INFRAORDER())) {
+				result = Bacteria_Infraorder;
+			} else if (rank.equals(Rank.SUPERFAMILY())) {
+				result = Bacteria_Superfamily;
+			} else if (rank.equals(Rank.FAMILY())) {
+				result = Bacteria_Family;
+			} else if (rank.equals(Rank.SUBFAMILY())) {
+				result = Bacteria_Subfamily;
+			} else if (rank.equals(Rank.TRIBE())) {
+				result = Bacteria_Tribe;
+			} else if (rank.equals(Rank.SUBTRIBE())) {
+				result = Bacteria_Subtribe;
+			} else if (rank.equals(Rank.GENUS())) {
+				result = Bacteria_Genus;
+			} else if (rank.equals(Rank.SUBGENUS())) {
+				result = Bacteria_Subgenus;
+			} else if (rank.equals(Rank.SPECIES())) {
+				result = Bacteria_Species;
+			} else if (rank.equals(Rank.SUBSPECIES())) {
+				result = Bacteria_Subspecies;
+			} else if (rank.equals(Rank.VARIETY())) {
+				result = Bacteria_Variety;
+			} else if (rank.equals(Rank.FORM())) {
+				result = Bacteria_Forma;
+			} else {
+				logger.warn("Rank '" + rank.getTitleCache() + "' unknown for Kingdom '" + STR_KINGDOM_BACTERIA + "'.");
 			}
 		} else {
 			//TODO Exception

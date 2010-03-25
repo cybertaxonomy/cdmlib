@@ -141,8 +141,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 											Integer sourceFk = getSourceFk(reference, state);
 											
 											if (sourceFk != null && ! allreadyProcessed(sourceFk)) {
-												// Count Count
-												doCount(count++, modCount, pluralString);
 
 												// Add to processed sourceFk's since sourceFk's can be scanned more than once.
 												addToProcessed(sourceFk);
@@ -150,6 +148,9 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 												// Query the database for all entries in table 'Occurrence' with the sourceFk just determined.
 												Set<Integer> occurrenceIds = getOccurrenceIds(sourceFk, state);
 	
+												// Count Count
+												doCount(count += occurrenceIds.size(), modCount, pluralString);
+
 												// Insert as many entries in database table 'OccurrenceSource' as occurrenceId's were determined.
 												insertColumns(stmt, reference, sourceFk, occurrenceIds);
 											}
@@ -345,7 +346,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 
 		// These mappings are not used at all.
-		mapping.addMapper(MethodMapper.NewInstance("OccurrenceFk", this.getClass(), "getOccurrenceFk", standardMethodParameter, PesiExportState.class));
+//		mapping.addMapper(MethodMapper.NewInstance("OccurrenceFk", this.getClass(), "getOccurrenceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("OldTaxonName", this));

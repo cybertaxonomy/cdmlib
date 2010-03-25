@@ -129,15 +129,17 @@ public class PesiOccurrenceExport extends PesiExportBase {
 						for (TaxonDescription taxonDescription : taxonDescriptions) {
 							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
 							for (DescriptionElementBase descriptionElement : descriptionElements) {
-								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
 								
 								if (descriptionElement.isInstanceOf(Distribution.class)) {
+									logger.error("Distribution instance found.");
 									Distribution distribution = CdmBase.deproxy(descriptionElement, Distribution.class);
 									setNamedArea(distribution.getArea());
 									setDistribution(distribution);
-
+									Set<DescriptionElementSource> elementSources = distribution.getSources();
+									
 									// Differentiate between descriptionElements with and without sources.
 									if (elementSources.size() == 0) {
+										doCount(count++, modCount, pluralString);
 										success &= mapping.invoke(descriptionElement);
 									} else {
 										for (DescriptionElementSource elementSource : elementSources) {
@@ -168,7 +170,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
+				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
 			}
 			if (list.size() == 0) {
 				logger.error("No " + pluralString + " left to fetch.");

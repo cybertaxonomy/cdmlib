@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -237,15 +238,30 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	protected boolean invokeKingdomFk(TaxonBase taxonBase, DbExportStateBase<?> state, PreparedStatement stmt) {
 		if (taxonBase == null) {
+			logger.warn("Taxon is NULL. Therefore KingdomFk, RankFk and RankCache could not be inserted into database.");
 			return true;
 		} else {
 			Integer kingdomId = getKingdomFk(taxonBase, state);
 			if (kingdomId == null) {
-				// This is possible because Synonyms are still allowed not to have synonyRelationships (yes, we have those cases...)
+				// This is possible because Synonyms are still allowed not to have synonymRelationships.
+				logger.warn("KingdomFk could not be determined. Therefore KingdomFk, RankFk and RankCache could not be inserted into database for the following taxon: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
 				return true;
 			} else {
 				Integer taxonId = state.getDbId(taxonBase);
 				Integer rankId = getRankFk(taxonBase);
+				
+				// This taxon was not exported during PesiTaxonExport.
+				if (taxonId == null) {
+					logger.warn("Taxon has no entry in state hashmap. Therefore KingdomFk, RankFk and RankCache could not be inserted into database for the following taxon: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+					return true;
+				}
+
+				// In the current ERMS data (cdm_test_andreasM2, 24.03.2010) there is a taxon that has no associated rank information: 4840e6de-fa7b-4c33-a601-58b86d619a6b (Monera)
+				// The method 'setInt' on a preparedStatement crashes (NPE) in those cases, because a null value is set.
+				if (rankId == null) {
+					logger.warn("Taxon has no associated rank information. Therefore KingdomFk, RankFk and RankCache could not be inserted into database for the following taxon: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+					return true;
+				}
 				String rankCache = getRankCache(taxonBase);
 				try {
 					stmt.setInt(1, kingdomId);
@@ -295,7 +311,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>KingdomFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getKingdomFk(TaxonBase<?> taxonBase, DbExportStateBase<?> state) {
 		Integer result = null;
 		
@@ -381,11 +396,25 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>RankFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static Integer getRankFk(TaxonBase<?> taxon) {
+	private static Integer getRankFk(TaxonBase<?> taxonBase) {
 		Integer result = null;
-		if (nomenclaturalCode != null) {
-			result = PesiTransformer.rank2RankId(taxon.getName().getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+		if (taxonBase != null && nomenclaturalCode != null) {
+			TaxonNameBase taxonName = taxonBase.getName();
+			if (taxonName != null) {
+				result = PesiTransformer.rank2RankId(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+				if (result == null) {
+					logger.error("Rank2RankId delivered NULL as result.");
+				}
+			} else {
+				logger.error("TaxonName is NULL.");
+			}
+		} else {
+			if (taxonBase == null) {
+				logger.error("TaxonBase is NULL.");
+			}
+			if (nomenclaturalCode == null) {
+				logger.error("NomenclaturalCode is NULL.");
+			}
 		}
 		return result;
 	}
@@ -396,11 +425,13 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>RankCache</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static String getRankCache(TaxonBase<?> taxon) {
+	private static String getRankCache(TaxonBase<?> taxonBase) {
 		String result = null;
-		if (nomenclaturalCode != null) {
-			result = PesiTransformer.rank2RankCache(taxon.getName().getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+		if (taxonBase != null & nomenclaturalCode != null) {
+			TaxonNameBase taxonName = taxonBase.getName();
+			if (taxonName != null) {
+				result = PesiTransformer.rank2RankCache(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+			}
 		}
 		return result;
 	}
@@ -416,7 +447,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-			result = nonViralName.getGenusOrUninomial();
+			if (nonViralName != null) {
+				result = nonViralName.getGenusOrUninomial();
+			}
 		}
 		return result;
 	}
@@ -432,7 +465,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-			result = nonViralName.getInfraGenericEpithet();
+			if (nonViralName != null) {
+				result = nonViralName.getInfraGenericEpithet();
+			}
 		}
 		return result;
 	}
@@ -448,7 +483,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-			result = nonViralName.getSpecificEpithet();
+			if (nonViralName != null) {
+				result = nonViralName.getSpecificEpithet();
+			}
 		}
 		return result;
 	}
@@ -464,7 +501,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-			result = nonViralName.getInfraSpecificEpithet();
+			if (nonViralName != null) {
+				result = nonViralName.getInfraSpecificEpithet();
+			}
 		}
 		return result;
 	}
@@ -480,7 +519,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-			result = nonViralName.getNameCache();
+			if (nonViralName != null) {
+				result = nonViralName.getNameCache();
+			}
 		}
 		return result;
 	}
@@ -497,8 +538,11 @@ public class PesiTaxonExport extends PesiExportBase {
 		// format: <span type="" text="" class=""></span>
 		String result = null;
 		if (taxon != null) {
-			List resultList = taxon.getName().getTaggedName();
-//			result = resultList.toString(); // testing purpose
+			TaxonNameBase taxonName = taxon.getName();
+			if (taxonName != null) {
+				List resultList = taxonName.getTaggedName();
+				//			result = resultList.toString(); // testing purpose
+			}
 		}
 		return result;
 	}
@@ -511,16 +555,16 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getAuthorString(TaxonBase<?> taxon) {
+		String result = null;
 		TeamOrPersonBase team = null;
 		ReferenceBase sec = taxon.getSec();
 		if (sec != null) {
 			team = sec.getAuthorTeam();
+			if (team != null) {
+				result = team.getTitleCache();
+			}
 		}
-		if (team != null) {
-			return team.getTitleCache();
-		} else {
-			return null;
-		}
+		return result;
 	}
 
 	/**
@@ -531,11 +575,14 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getFullName(TaxonBase<?> taxon) {
+		String result = null;
 		if (taxon != null) {
-			return taxon.getName().getTitleCache();
-		} else {
-			return null;
+			TaxonNameBase taxonName = taxon.getName();
+			if (taxonName != null) {
+				result = taxonName.getTitleCache();
+			}
 		}
+		return result;
 	}
 
 	/**
@@ -550,8 +597,10 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (taxon != null) {
 			try {
 				TaxonNameBase taxonName = taxon.getName();
-				if (taxonName.getNomenclaturalReference() != null) {
-					result = taxonName.getNomenclaturalMicroReference();
+				if (taxonName != null) {
+					if (taxonName.getNomenclaturalReference() != null) {
+						result = taxonName.getNomenclaturalMicroReference();
+					}
 				}
 			} catch (Exception e) {
 				logger.error("While getting NomRefString for taxon: " + taxon.getUuid() + " (" + taxon.getTitleCache() +")");
