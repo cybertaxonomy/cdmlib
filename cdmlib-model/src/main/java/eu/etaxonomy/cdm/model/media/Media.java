@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -199,11 +198,20 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.artist = artist;
 	}
 
+	@Deprecated // will be removed in next release; use getAllTitles instead
 	public Map<Language,LanguageString> getTitle(){
+		return getAllTitles();
+	}
+	
+	public Map<Language,LanguageString> getAllTitles(){
 		if(title == null) {
 			this.title = new HashMap<Language,LanguageString>();
 		}
 		return this.title;
+	}
+	
+	public LanguageString getTitle(Language language){
+		return getAllTitles().get(language);
 	}
 	
 	public void addTitle(LanguageString title){
@@ -222,15 +230,24 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.mediaCreated = mediaCreated;
 	}
 
+	@Deprecated // will be removed in next release; use getAllDescriptions instead
 	public Map<Language,LanguageString> getDescription(){
+		return getAllDescriptions();
+	}
+	
+	public Map<Language,LanguageString> getAllDescriptions(){
 		if(this.description == null) {
 			this.description = new HashMap<Language,LanguageString>();
 		}
 		return this.description;
 	}
 	
+	public LanguageString getDescription(Language language){
+		return getAllDescriptions().get(language);
+	}
+	
 	public void addDescription(LanguageString description){
-		this.description.put(description.getLanguage(),description);
+		this.description.put(description.getLanguage(), description);
 	}
 	
 	public void addDescription(String text, Language language){
