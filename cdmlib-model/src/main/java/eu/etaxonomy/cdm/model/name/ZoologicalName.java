@@ -343,4 +343,9 @@ public class ZoologicalName extends NonViralName<ZoologicalName> {
 	public void setOriginalPublicationYear(Integer originalPublicationYear) {
 		this.originalPublicationYear = originalPublicationYear;
 	}
+	
+	public static ZoologicalName valueOf(BotanicalName botanicalName){
+		logger.error("Not implemented yet.");
+		return null;
+	}
 }

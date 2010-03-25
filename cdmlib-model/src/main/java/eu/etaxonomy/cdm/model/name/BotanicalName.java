@@ -313,4 +313,13 @@ public class BotanicalName extends NonViralName<BotanicalName> /*implements IMer
 		return NomenclaturalCode.ICBN;
 	}
 
+	/**
+	 * 
+	 * @param zoologicalName
+	 * @return
+	 */
+	public static BotanicalName valueOf(ZoologicalName zoologicalName){
+		logger.error("Not implemented yet.");
+		return null;
+	}
 }
