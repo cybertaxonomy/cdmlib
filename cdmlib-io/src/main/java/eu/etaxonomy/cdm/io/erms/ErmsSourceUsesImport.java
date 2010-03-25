@@ -205,6 +205,10 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		Feature citationFeature = Feature.CITATION();
 		DescriptionElementBase element = TextData.NewInstance(citationFeature);
 		DescriptionElementSource source = element.addSource(null, null, ref, strPageNr);
+		if (source == null){
+			logger.warn("Source is null");
+			return null;
+		}
 		TaxonBase taxonBase = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, strTaxonId);
 		Taxon taxon;
 		
