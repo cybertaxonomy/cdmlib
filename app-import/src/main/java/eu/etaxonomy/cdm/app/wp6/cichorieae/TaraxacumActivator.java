@@ -120,7 +120,8 @@ public class TaraxacumActivator {
 	/**
 	 * @param args
 	 */
-	public void doImport(ICdmDataSource destination, DbSchemaValidation hbm2dll) {
+	public boolean doImport(ICdmDataSource destination, DbSchemaValidation hbm2dll) {
+		boolean success = true;
 		logger.info("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
 		
 		//make BerlinModel Source
@@ -165,7 +166,7 @@ public class TaraxacumActivator {
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		success &= bmImport.invoke(bmImportConfigurator);
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImport.getCdmAppController();
@@ -183,11 +184,12 @@ public class TaraxacumActivator {
 		}
 		
 		logger.info("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		return success;
 	}
 	
 	
-	public void mergeIntoCichorieae(CdmApplicationController app){
-		
+	public boolean mergeIntoCichorieae(CdmApplicationController app){
+		boolean success = true;
 		String taraxTaraxacumUuidStr = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
 		UUID taraxTaraxacumUUID = UUID.fromString(taraxTaraxacumUuidStr);
 
@@ -205,6 +207,7 @@ public class TaraxacumActivator {
 			
 			if (taxonNodesInCich == null || taxonNodesInCich.isEmpty()) {
 				logger.error("No taxon nodes found for Taraxacum in cichorieae database");
+				success = false;
 			} else {
 				logger.info(taxonNodesInCich.size()+ " taxon node(s) found for Taraxacum in Cich DB");
 				taxonNodeInCich = taxonNodesInCich.iterator().next();
@@ -219,6 +222,7 @@ public class TaraxacumActivator {
 			TaxonomicTree treeInTaraxacum = null;
 			if (taxonNodesInTarax == null || taxonNodesInTarax.isEmpty()) {
 				logger.warn("No taxon nodes found for Taraxacum in taraxacum database");
+				success = false;
 			}else{
 				taxonNodeInTarax = taxonNodesInTarax.iterator().next();
 				treeInTaraxacum = taxonNodeInTarax.getTaxonomicTree();
@@ -238,7 +242,9 @@ public class TaraxacumActivator {
 			app.getTaxonTreeService().delete(treeInTaraxacum);
 		}else{
 			logger.warn("Taraxacum in cichorieae not found");
+			success = false;
 		}
+		return success;
 	}
 	
 	public static void main(String[] args) {

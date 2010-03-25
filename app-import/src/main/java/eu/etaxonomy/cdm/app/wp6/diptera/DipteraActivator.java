@@ -56,7 +56,7 @@ public class DipteraActivator {
 	/* 
 	 * WARNING the cdmDestination also must be set in DipteraDistributionParser !!!!!
 	 */
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_tunnel_dipera_b();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final UUID treeUuid = UUID.fromString("1e3093f6-c761-4e96-8065-2c1334ddd0c1");
 	static final int sourceSecId = 1000000;
@@ -131,8 +131,8 @@ public class DipteraActivator {
 	 * @param destination 
 	 * @param args
 	 */
-	public void doImport(ICdmDataSource destination) {
-		
+	public boolean doImport(ICdmDataSource destination) {
+		boolean success = true;
 		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
@@ -169,7 +169,7 @@ public class DipteraActivator {
 			bmImportConfigurator.setNameTypeDesignationStatusMethod(nameTypeDesignationStatusMethod);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
+			return false;
 		}
 		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
@@ -178,7 +178,7 @@ public class DipteraActivator {
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		success &= bmImport.invoke(bmImportConfigurator);
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImport.getCdmAppController();
@@ -200,18 +200,19 @@ public class DipteraActivator {
 			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		return success;
 	}
 	
 	public static void main(String[] args) {
-	boolean success = true;
+		boolean success = true;
 		logger.debug("start");
 		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;	
 		DipteraActivator me = new DipteraActivator();
-
-		me.doImport(destination);
+		success &= me.doImport(destination);
+		
 		DipteraPostImportUpdater updater = new DipteraPostImportUpdater();
 		if (updateCitations){
-			updater.updateCitations(destination);
+			success &= updater.updateCitations(destination);
 		}
 
 	

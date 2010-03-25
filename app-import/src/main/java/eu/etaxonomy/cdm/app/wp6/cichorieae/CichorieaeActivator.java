@@ -71,8 +71,8 @@ public class CichorieaeActivator {
 	static final int maximumNumberOfNameFacts = 0;
 	
 	//should the other imports run as well?
-	static final boolean includeTaraxacum = true; 
-	static final boolean includeImages = true;
+	static final boolean includeTaraxacum = false; 
+	static final boolean includeImages = false;
 	
 	
 	//check - import
@@ -138,16 +138,10 @@ public class CichorieaeActivator {
 //	static final boolean doMarker = false;
 	
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
-		
-		//make BerlinModel Source
+	private boolean doInvoke(ICdmDataSource destination){
+		boolean success = true;
 		Source source = berlinModelSource;
-		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
-				
+		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
 		bmImportConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
@@ -193,7 +187,7 @@ public class CichorieaeActivator {
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		success &= bmImport.invoke(bmImportConfigurator);
 		
 		if (doFacts && bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImport.getCdmAppController();
@@ -215,7 +209,7 @@ public class CichorieaeActivator {
 		if (includeTaraxacum) {
 			System.out.println("Start Taraxacum import from BerlinModel ...");
 			TaraxacumActivator taraxacumActivator = new TaraxacumActivator();
-			taraxacumActivator.doImport(destination, DbSchemaValidation.UPDATE);
+			success &= taraxacumActivator.doImport(destination, DbSchemaValidation.UPDATE);
 			logger.warn("Taraxacum import still needs to be tested");
 			System.out.println("End Taraxacum import from BerlinModel ...");
 		}
@@ -229,10 +223,24 @@ public class CichorieaeActivator {
 					CichorieaeImageActivator.sourceFolder, cdmDestination, CichorieaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			imageConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
-			imageImporter.invoke(imageConfigurator);
+			success &= imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
 		}
 		
+		return success;
+		
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
+		
+		//make BerlinModel Source
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
+		CichorieaeActivator me = new CichorieaeActivator();
+		me.doInvoke(destination);
 	}
 
 }
