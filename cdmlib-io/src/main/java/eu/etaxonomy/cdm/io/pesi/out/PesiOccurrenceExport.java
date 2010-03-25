@@ -131,24 +131,30 @@ public class PesiOccurrenceExport extends PesiExportBase {
 							for (DescriptionElementBase descriptionElement : descriptionElements) {
 								
 								if (descriptionElement.isInstanceOf(Distribution.class)) {
-									logger.error("Distribution instance found.");
+//									logger.error("Distribution instance found.");
 									Distribution distribution = CdmBase.deproxy(descriptionElement, Distribution.class);
 									setNamedArea(distribution.getArea());
 									setDistribution(distribution);
 									Set<DescriptionElementSource> elementSources = distribution.getSources();
 									
 									// Differentiate between descriptionElements with and without sources.
-									if (elementSources.size() == 0) {
+									if (! hasCitations(elementSources)) {
+//										logger.error("Distribution has no sources. Exporting ...");
 										doCount(count++, modCount, pluralString);
-										success &= mapping.invoke(descriptionElement);
+										success &= mapping.invoke(distribution);
 									} else {
+//										logger.error("Distribution has " + elementSources.size() + " sources. Exporting ...");
 										for (DescriptionElementSource elementSource : elementSources) {
 											ReferenceBase reference = elementSource.getCitation();
 	
 											// Citations can be empty (null): Is it wrong data or just a normal case?
 											if (reference != null) {
+//												logger.error("Exporting Reference " + reference.getTitleCache() + " ...");
 												doCount(count++, modCount, pluralString);
 												success &= mapping.invoke(reference);
+											} else {
+												// This should never be the case. Testing purpose only.
+//												logger.error("Citation of ElementSource is NULL. Nothing to export for ElementSource: " + elementSource.getUuid());
 											}
 										}
 										
@@ -186,6 +192,27 @@ public class PesiOccurrenceExport extends PesiExportBase {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return false;
+		}
+	}
+
+	/**
+	 * Returns whether the given Set of DescriptionElementSources have a citation or not.
+	 * @param elementSources
+	 * @return
+	 */
+	public static boolean hasCitations(Set<DescriptionElementSource> elementSources) {
+		boolean notFound = true;
+		if (elementSources.size() == 0) {
+			return false;
+		} else {
+			for (DescriptionElementSource elementSource : elementSources) {
+				notFound &= elementSource.getCitation() == null;
+			}
+		}
+		if (notFound) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 
