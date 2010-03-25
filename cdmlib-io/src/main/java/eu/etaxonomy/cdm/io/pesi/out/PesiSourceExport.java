@@ -92,7 +92,6 @@ public class PesiSourceExport extends PesiExportBase {
 			mapping.initialize(state);
 
 			// PESI: Create the Sources
-			// TODO: Store CDM2PESI identifier pairs for later use in other export classes - PesiExportState
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;

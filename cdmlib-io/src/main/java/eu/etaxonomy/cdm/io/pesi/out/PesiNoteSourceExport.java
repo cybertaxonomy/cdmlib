@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -264,9 +266,12 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	private static String getSourceDetail(DescriptionElementBase descriptionElement) {
 		String result = null;
 		if (descriptionElement != null) {
-			result = descriptionElement.getCitationMicroReference(); // TODO: What else could be used?
+			Set<DescriptionElementSource> sources = descriptionElement.getSources();
+			if (sources.size() == 1) {
+				result = sources.iterator().next().getCitationMicroReference();
+			}
 		} else {
-			logger.warn("Given DescriptionElemen is NULL.");
+			logger.warn("Given DescriptionElement is NULL.");
 		}
 		return result;
 	}

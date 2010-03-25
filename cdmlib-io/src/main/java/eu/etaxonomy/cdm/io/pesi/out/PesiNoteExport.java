@@ -200,7 +200,6 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getNote_2(DescriptionElementBase descriptionElement) {
-		// TODO: extension
 		return null;
 	}
 
