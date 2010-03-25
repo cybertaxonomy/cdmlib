@@ -209,6 +209,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"elements.sources.citation.",
 			"elements.sources.citation.authorTeam.$",
 			"elements.sources.nameUsedInSource.titleCache",
+			"elements.sources.nameUsedInSource.originalNameString",
 			"elements.sources.citation.authorTeam.titleCache",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
@@ -232,8 +233,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			//"$",
 			"typeSpecimen.$",
 			"typeStatus.representations",
-			"citation.authorTeam",
-			"typeName.taggedName"
+			"citation.authorTeam",			
+			"typeName.taggedName",
 	});
 	
 	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{

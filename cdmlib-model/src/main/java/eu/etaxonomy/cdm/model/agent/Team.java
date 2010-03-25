@@ -234,6 +234,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache()
 	 */
 	@Override
+	@Transient //TODO a.kohlbecker remove??
 	public String getTitleCache() {
 		isGeneratingTitleCache = true;
 		String result = "";
