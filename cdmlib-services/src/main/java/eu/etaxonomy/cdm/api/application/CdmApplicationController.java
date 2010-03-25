@@ -85,8 +85,6 @@ public class CdmApplicationController {
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
 		return new CdmApplicationController(null, dataSource, dbSchemaValidation, false);
 	}
-
-	
 	
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the default data source
@@ -439,5 +437,4 @@ public class CdmApplicationController {
 		txManager.commit(txStatus);
 		return;
 	}
-
 }
