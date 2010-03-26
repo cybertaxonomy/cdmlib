@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
@@ -147,8 +149,25 @@ public final class BerlinModelTransformer {
 	public static int FACT_DISTRIBUTION_EM = 10;
 	public static int FACT_DISTRIBUTION_WORLD = 11;
 	
+	public static UUID uuidRelNameCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
 	
-	public static NomenclaturalStatus nomStatusFkToNomStatus(int nomStatusFk)  throws UnknownCdmTypeException{
+	static NomenclaturalStatusType nomStatusCombIned;
+	public static NomenclaturalStatusType nomStatusTypeAbbrev2NewNomStatusType(String nomStatus){
+		NomenclaturalStatusType result = null;
+		if (nomStatus == null){
+			return null;
+		}else if (nomStatus.equalsIgnoreCase("comb. ined.")){
+			if (nomStatusCombIned == null){
+				nomStatusCombIned = new NomenclaturalStatusType();
+				nomStatusCombIned.setLabel("comb. ined.");
+				nomStatusCombIned.setUuid(uuidRelNameCombIned);
+			}
+			result = nomStatusCombIned;
+		}
+		return result;
+	}
+	
+	public static NomenclaturalStatus nomStatusFkToNomStatus(int nomStatusFk, String nomStatusLabel)  throws UnknownCdmTypeException{
 		if (nomStatusFk == NAME_ST_NOM_INVAL){
 			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID());
 		}else if (nomStatusFk == NAME_ST_NOM_ILLEG){
@@ -188,6 +207,11 @@ public final class BerlinModelTransformer {
 		}else if (nomStatusFk == NAME_ST_COMB_INVAL){
 			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.COMBINATION_INVALID());
 		}else {
+			NomenclaturalStatusType statusType = nomStatusTypeAbbrev2NewNomStatusType(nomStatusLabel);
+			NomenclaturalStatus result = NomenclaturalStatus.NewInstance(statusType);
+			if (result != null){
+				return result;
+			}
 			throw new UnknownCdmTypeException("Unknown NomenclaturalStatus (id=" + Integer.valueOf(nomStatusFk).toString() + ")");
 		}
 	}
