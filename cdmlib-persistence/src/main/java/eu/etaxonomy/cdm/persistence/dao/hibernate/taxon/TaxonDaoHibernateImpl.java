@@ -456,8 +456,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		
-		List<TaxonBase> taxa = new ArrayList<TaxonBase>();
-		List<TaxonBase> synonyms = new ArrayList<TaxonBase>();
+		List<Integer> taxa = new ArrayList<Integer>();
+		List<Integer> synonyms = new ArrayList<Integer>();
 		if(clazz.equals(Taxon.class)){
 			taxa = subTaxon.list();
 			
@@ -483,8 +483,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			if(synonyms.size()>0 && taxa.size()>0){
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
 			}else if (synonyms.size()>0 ){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-				+ " where t in (:synonyms)";	
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
 			} else if (taxa.size()>0 ){
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
 			} else{
