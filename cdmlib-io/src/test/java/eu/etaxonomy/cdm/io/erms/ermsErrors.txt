@@ -21,7 +21,7 @@ ORDER BY acceptedStatus, unacceptedStatus
 
 - 289 cases where parent taxon is not accepted (is this allowed ?)
 
-- there are 46 taxa with a status not accepted, a parent not accepted and an parent.tu_acctaxon not accepted 
+- there are 46 taxa with a status not accepted, a parent not accepted and a parent.tu_acctaxon not accepted 
 
 SELECT     TOP (100) PERCENT tu_1.id, tu_1.tu_status, accTaxon.tu_status AS accStatus, parent.tu_status AS parentStatus, 
                       accParent.tu_status AS accParentStatus, tu_1.tu_displayname AS displayname, parent.tu_displayname AS parentdisplayname, tu_1.tu_acctaxon, 
@@ -46,3 +46,11 @@ FROM         dbo.status RIGHT OUTER JOIN
                       dbo.tu AS accParent ON parent.tu_acctaxon = accParent.id
 WHERE     (tu_1.tu_status <> 1) AND (parent.tu_status <> 1) AND (accParent.tu_status <> 1) AND (accTaxon.tu_status <> 1)
 ORDER BY accParentStatus, parentStatus
+
+- there are 13 taxa with status 'alternative name' and tu_acctaxon = id
+
+SELECT     dbo.tu.id, dbo.tu.tu_displayname, dbo.tu.tu_acctaxon, dbo.tu.tu_status, dbo.tu.tu_unacceptreason
+FROM         dbo.tu LEFT OUTER JOIN
+                      dbo.status ON dbo.tu.tu_status = dbo.status.status_id
+WHERE     (dbo.status.status_id = 5) AND (dbo.tu.tu_acctaxon = dbo.tu.id)
+
