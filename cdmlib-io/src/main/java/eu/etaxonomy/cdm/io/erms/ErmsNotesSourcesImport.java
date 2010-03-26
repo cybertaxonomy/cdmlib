@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @Component
 public class ErmsNotesSourcesImport extends ErmsImportBase<CommonTaxonName> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ErmsNotesSourcesImport.class);
 	
 	
@@ -94,6 +95,7 @@ public class ErmsNotesSourcesImport extends ErmsImportBase<CommonTaxonName> {
 			String vernacularNamespace = ErmsVernacularImport.VERNACULAR_NAMESPACE;
 			String referenceNamespace = ErmsReferenceImport.REFERENCE_NAMESPACE;
 			mapping.addMapper(DbImportDescriptionElementSourceCreationMapper.NewInstance("vernacular_id", vernacularNamespace, "source_id", referenceNamespace ));
+			
 		}
 		return mapping;
 	}

@@ -20,7 +20,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportDescriptionElementSourceCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportDistributionCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
@@ -75,13 +77,37 @@ public class ErmsDrImport  extends ErmsImportBase<Distribution> {
 	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
+			
 			PresenceTerm status = PresenceTerm.PRESENT();
-			mapping.addMapper(DbImportDistributionCreationMapper.NewFixedStatusInstance("id", DR_NAMESPACE, "tu_acctaxon", ErmsTaxonImport.TAXON_NAMESPACE, status));
+			DbImportDistributionCreationMapper<?> distributionMapper = DbImportDistributionCreationMapper.NewFixedStatusInstance("id", DR_NAMESPACE, "tu_acctaxon", ErmsTaxonImport.TAXON_NAMESPACE, status);
+			distributionMapper.setSource("source_id", REFERENCE_NAMESPACE, null);
+			mapping.addMapper(distributionMapper);
+			
 			mapping.addMapper(DbImportObjectMapper.NewInstance("gu_id", "area", ErmsAreaImport.AREA_NAMESPACE));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source_id"));
 			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL()));
 			
-			//TODO long list of ignore attributes
+			mapping.addMapper(DbIgnoreMapper.NewInstance("unacceptsource_id"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("unacceptreason"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("valid_flag"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("certain_flag"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("map_flag"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("endemic_flag"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("exotic_flag"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("typelocality_flag"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("specimenflag"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("lat"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("long"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("depthshallow"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("depthdeep"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("beginyear"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("beginmonth"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("beginday"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("endyear"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("endmonth"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("endday"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("min_abundance"));
+			mapping.addMapper(DbIgnoreMapper.NewInstance("max_abundance"));
+
 			
 		}
 		return mapping;
@@ -99,9 +125,11 @@ public class ErmsDrImport  extends ErmsImportBase<Distribution> {
 		try{
 			Set<String> taxonIdSet = new HashSet<String>();
 			Set<String> areaIdSet = new HashSet<String>();
+			Set<String> sourceIdSet = new HashSet<String>();
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet,"tu_acctaxon" );
 				handleForeignKey(rs, areaIdSet, "gu_id");
+				handleForeignKey(rs, sourceIdSet, "source_id");
 			}
 			
 			//taxon map
@@ -117,6 +145,14 @@ public class ErmsDrImport  extends ErmsImportBase<Distribution> {
 			idSet = areaIdSet;
 			Map<String, NamedArea> areaMap = (Map<String, NamedArea>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, areaMap);
+			
+			//reference map
+			nameSpace = ErmsReferenceImport.REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = sourceIdSet;
+			Map<String, ReferenceBase> referenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
+
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
