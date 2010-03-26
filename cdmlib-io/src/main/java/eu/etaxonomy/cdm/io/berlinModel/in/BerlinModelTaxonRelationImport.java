@@ -141,6 +141,20 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		return result;
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
+	 */
+	@Override
+	protected String getIdQuery() {
+		String result = " " +
+				" SELECT  RelPTaxon.RelPTaxonId " + 
+				" FROM RelPTaxon LEFT JOIN Name AS toName ON RelPTaxon.PTNameFk1 = toName.NameId " + 
+				" ORDER BY toName.RankFk ";
+		return result;
+	}
 
 	/**
 	 * @return
