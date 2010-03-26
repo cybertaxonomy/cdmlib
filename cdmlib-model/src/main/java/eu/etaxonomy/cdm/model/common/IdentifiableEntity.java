@@ -218,7 +218,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 */
 	@Transient
 	protected String getTruncatedCache(String cache) {
-		if (cache != null && cache.length() > 252){
+		if (cache != null && cache.length() > 255){
 			logger.warn("Truncation of cache: " + this.toString() + "/" + cache);
 			cache = cache.substring(0, 252) + "...";
 		}
