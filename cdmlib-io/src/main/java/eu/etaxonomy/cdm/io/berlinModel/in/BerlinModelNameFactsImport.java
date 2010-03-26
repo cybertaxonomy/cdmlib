@@ -126,11 +126,13 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 								TaxonNameDescription description = TaxonNameDescription.NewInstance();
 								TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
 								protolog.addMedia(media);
-								protolog.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
-										nameFactRefDetail, null, null);
+								protolog.addSource(String.valueOf(nameFactId), NAMESPACE, null, null, null, null);
 								description.addElement(protolog);
 								taxonNameBase.addDescription(description);
-								description.addDescriptionSource(citation);
+								if (citation != null){
+									description.addDescriptionSource(citation);
+									protolog.addSource(null, null, citation, nameFactRefDetail, null, null);
+								}
 							}//end NAME_FACT_PROTOLOGUE
 						}catch(NullPointerException e){
 							logger.warn("MediaUrl and/or MediaPath not set. Could not get protologue.");

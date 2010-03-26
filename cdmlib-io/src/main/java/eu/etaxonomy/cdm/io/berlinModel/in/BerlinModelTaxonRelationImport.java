@@ -105,8 +105,12 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				String ptRefFk= String.valueOf(ptRefFkObj);
 				ReferenceBase<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
 				
-				//FIXME treeName
+				rs.getString("RefCache");
 				String treeName = "TaxonTree - No Name";
+				String refCache = rs.getString("RefCache");
+				if (CdmUtils.isNotEmpty(refCache)){
+					treeName = refCache;
+				}
 				if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 					treeName = ref.getTitleCache();
 				}
@@ -146,11 +150,12 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 * @return
 	 */
 	private String getTaxonomicTreeQuery() {
-		String strQuery = "SELECT PTaxon.PTRefFk " + 
+		String strQuery = "SELECT PTaxon.PTRefFk, Reference.RefCache " + 
 						" FROM RelPTaxon INNER JOIN " + 
-							" PTaxon AS PTaxon ON RelPTaxon.PTNameFk2 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon.PTRefFk " +
+							" PTaxon AS PTaxon ON RelPTaxon.PTNameFk2 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon.PTRefFk INNER JOIN " +
+							" Reference ON PTaxon.PTRefFk = Reference.RefId " + 
 						" WHERE (RelPTaxon.RelQualifierFk = 1) " + 
-						" GROUP BY PTaxon.PTRefFk ";
+						" GROUP BY PTaxon.PTRefFk, Reference.RefCache ";
 		return strQuery;
 	}
 	
