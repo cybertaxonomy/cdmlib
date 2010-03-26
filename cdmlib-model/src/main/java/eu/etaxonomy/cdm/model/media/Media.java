@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +57,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -388,6 +390,35 @@ public class Media extends IdentifiableEntity implements Cloneable {
 						
 		}
 		return prefRepr;
+	}
+	
+	/*
+	 * Overriding the title cache methods here to avoid confusion with the title field
+	 */
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 */
+	@Override
+	public String getTitleCache() {
+		List<Language> languages = Arrays.asList(new Language[]{Language.DEFAULT()});
+		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(title, languages);
+		return languageString != null ? languageString.getText() : null;
+	}
+	
+	@Override
+	public String generateTitle() {
+		return getTitleCache();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(java.lang.String)
+	 */
+	@Override
+	public void setTitleCache(String titleCache) {
+		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
 	}
 	
 }
