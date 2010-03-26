@@ -7,26 +7,17 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
     
-    
-    <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource">
-    	<!--  The property beanDefinitionFile defaults to "datasources.xml" in {USER_HOME}./cdmLibrary 
-    	
-    	WARNING !!!
-    	The beanDefinitionFile now mus be configured in 
-    	eu.etaxonomy.cdm.database.DataSourceBeanLoader
-    	
-    	-->
-    	<!--  The property defaultDatasourceName defaults to "default" 
-    	<property name="beanDefinitionFile" value="datasources-p6spy.xml" />
-    	<property name="defaultDatasourceName" value="cichorieae" />
-    	-->
-    </bean>
-    
+    <!-- 
+    	This configuration is intended to be used in conjuntion with the eu.etaxonomy.cdm.remote.config.DataSourceConfig
+    	so no datasource is defined in here. Only the hibernateProperties are set below accordingly to enable 
+    	the c3p0 connection pooling. 
+	 -->
+        
     <!-- This configures default properties, which can overridden with the file specified by the location property -->
     <bean id="hibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
-             <!-- 
+              <!-- 
                   Configuring the C3P0ConnectionProvider
                   ========================================
                   see http://www.mchange.com/projects/c3p0/index.html#hibernate-specific
@@ -58,7 +49,17 @@
 							hibernate.c3p0.min_size
 							hibernate.c3p0.validate 
 				      -->
-              <prop key="hibernate.hbm2ddl.auto">update</prop>
+			  <prop key="hibernate.connection.driver_class">${cdm.datasource.driverclass}</prop>
+        	  <prop key="hibernate.connection.url">${cdm.datasource.url}</prop>
+              <prop key="hibernate.connection.username">${cdm.datasource.username}</prop>
+              <prop key="hibernate.connection.password">${cdm.datasource.password}</prop>
+
+	          <prop key="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</prop>
+	          <prop key="hibernate.c3p0.max_size">100</prop>
+			  <prop key="hibernate.c3p0.idle_test_period">14400</prop>
+			  <prop key="hibernate.c3p0.timeout">25200</prop>
+	         			  
+			  <prop key="hibernate.hbm2ddl.auto">update</prop>
               <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
               <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
               <prop key="hibernate.show_sql">false</prop>
