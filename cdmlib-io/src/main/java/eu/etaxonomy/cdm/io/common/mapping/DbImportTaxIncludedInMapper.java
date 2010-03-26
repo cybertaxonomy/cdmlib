@@ -114,7 +114,6 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);
 		}
-		
 		//TODO check int
 		Integer treeFk = null;
 		if (treeAttribute != null){
@@ -126,8 +125,11 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Taxon fromTaxon = checkTaxonType(fromObject, "Child", fromId);
-		if (fromTaxon == null){
+		Taxon fromTaxon;
+		try {
+			fromTaxon = checkTaxonType(fromObject, "Child", fromId);
+		} catch (IllegalArgumentException e2) {
+			//fromTaxon is null
 			return cdmBase;
 		}
 		
@@ -136,6 +138,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			logger.warn(warning);
 			return cdmBase;
 		}
+		
 		Taxon toTaxon;
 		try {
 			toTaxon = checkTaxonType(toObject, "Parent", toId);
@@ -144,10 +147,11 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 				try {
 					toTaxon = checkTaxonType(alternativeToObject, "Alternative parent", alternativeToId);
 				} catch (IllegalArgumentException e1) {
-					throw e1;
+					return cdmBase;
 				}
 			}else{
-				throw e;
+				
+				return cdmBase;
 			}
 		}
 		
@@ -163,6 +167,8 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 
 	
 	
+
+
 	/**
 	 * TODO copied from BM import. May be more generic
 	 * @param state
@@ -258,8 +264,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		if (! taxonBase.isInstanceOf(Taxon.class)){
 			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);
-			return null;
-//			throw new IllegalArgumentException(warning);
+			throw new IllegalArgumentException(warning);
 		}
 		return (taxonBase.deproxy(taxonBase, Taxon.class));
 	}

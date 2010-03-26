@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 
 
 /**
@@ -103,6 +105,9 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	 * @throws SQLException
 	 */
 	protected String getStringDbValue(ResultSet rs, String attribute) throws SQLException {
+		if (CdmUtils.isEmpty(attribute)){
+			return null;
+		}
 		Object oId = rs.getObject(attribute);
 		if (oId == null){
 			return null;
