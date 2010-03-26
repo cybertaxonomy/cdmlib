@@ -131,7 +131,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY) 
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
 	private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 	
