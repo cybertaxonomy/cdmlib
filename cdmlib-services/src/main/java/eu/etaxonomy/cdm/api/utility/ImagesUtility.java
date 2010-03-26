@@ -315,11 +315,15 @@ public class ImagesUtility {
 	 * @return
 	 */
 	private static DescriptionElementBase getGalleryElement(DescriptionBase description){
-		Assert.verify(description.isImageGallery(), "Description has to have imageGallery flag set.");
+		if(! description.isImageGallery()){
+			logger.error("Description has to have imageGallery flag set.");
+		}
 		
 		Set<DescriptionElementBase> elements = description.getElements();
 		
-		Assert.verify(elements.size() == 1, "Image gallery should have only one description");
+		if(elements.size() != 1){
+			logger.error("Image gallery should have only one description");
+		}
 		
 		return elements.iterator().next();
 	}

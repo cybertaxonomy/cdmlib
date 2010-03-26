@@ -127,26 +127,5 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		assertFalse("The list should not be empty",keys.isEmpty());
 		assertEquals("The list should contain 1 MediaKey instance",1, keys.size());
 		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
-	}
-	
-	@Test
-	public void testGetMetaData() {
-		File imageFile;
-		imageFile = new File("./src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.jpg");
-		URI uri = imageFile.toURI();
-		Map<String,String> metaData = mediaDao.getMediaMetaData(uri, 0);
-		
-		for (Entry<String, String> item: metaData.entrySet()){
-			//System.err.println("key: " + item.getKey() + " entry: " + item.getValue() );
-		}
-		assertEquals("The list of metaData should contain 49 entries",49, metaData.size());
-		
-		imageFile = new File("./src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.tif");
-		uri = imageFile.toURI();
-		metaData = mediaDao.getMediaMetaData(uri, 0);
-			
-		assertEquals("The list of metaData should contain 15 entries",15, metaData.size());
-	}
-	
-	
+	}	
 }
