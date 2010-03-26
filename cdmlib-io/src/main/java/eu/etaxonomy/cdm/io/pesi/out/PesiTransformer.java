@@ -1363,7 +1363,7 @@ public final class PesiTransformer {
 		if (term == null) {
 			logger.error("The given PresenceAbsenceTerm is NULL.");
 //			return null;
-			return result; // TODO: It crashes otherwise because the OccurrenceStatusId must no be NULL.
+			return result; // TODO: It crashes otherwise because the OccurrenceStatusId must not be NULL.
 		}
 		if (term.isInstanceOf(PresenceTerm.class)) {
 			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
