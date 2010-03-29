@@ -43,7 +43,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	private static int modCount = 1000;
 	private static final String pluralString = "AuthorTeams";
 	private static final String dbTableName = "AuthorTeam";
-	 
+	
 	//TODO pass it in other way, not as a class variable
 	private ResultSet rsSequence;
 	private Source source;
@@ -66,7 +66,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		
 		String strRecordQuery = getRecordQuery(config);
 		String strQuerySequence = 
-			" SELECT *  " +
+			" SELECT * " +
             " FROM AuthorTeamSequence " + 
             " ORDER By authorTeamFk, Sequence ";
 		rsSequence = source.getResultSet(strQuerySequence) ;
@@ -163,7 +163,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
-			
+		
 		//logger.info(i + " " + pluralString + " handled");
 		getAgentService().save((Collection)teamsToSave);
 
@@ -238,7 +238,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 				int authorFk = rsSequence.getInt("AuthorFk");
 				Person author = personMap.get(String.valueOf(authorFk));
 				if (author != null){
-				team.addTeamMember(author);
+					team.addTeamMember(author);
 				}else{
 					logger.error("Author " + authorFk + " was not found for team " + teamId);
 				}

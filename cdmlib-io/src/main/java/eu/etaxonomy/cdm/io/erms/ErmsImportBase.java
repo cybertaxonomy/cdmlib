@@ -364,7 +364,7 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	protected ExtensionType getExtensionType(UUID uuid, String label, String text, String labelAbbrev){
 		ExtensionType extensionType = (ExtensionType)getTermService().find(uuid);
 		if (extensionType == null){
-			extensionType = new ExtensionType(label, text, labelAbbrev);
+			extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 			extensionType.setUuid(uuid);
 			getTermService().save(extensionType);
 		}

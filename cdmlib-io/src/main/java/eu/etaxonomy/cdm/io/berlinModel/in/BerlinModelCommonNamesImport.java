@@ -57,8 +57,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		// TODO Auto-generated method stub
 		return null;
-		}
-		
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
@@ -76,24 +76,24 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelCommonNamesImportValidator();
 		return validator.validate(state);
-						}
-						
-						
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
 	 */
 	@Override
 	protected String getTableName() {
 		return dbTableName;
-							}
-							
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
 	 */
 	@Override
 	public String getPluralString() {
 		return pluralString;
-							}
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

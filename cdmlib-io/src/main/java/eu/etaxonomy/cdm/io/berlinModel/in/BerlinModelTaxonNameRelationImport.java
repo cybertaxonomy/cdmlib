@@ -72,12 +72,12 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
-			String strQuery = 
-					" SELECT RelName.*, FromName.nameId as name1Id, ToName.nameId as name2Id, RefDetail.Details " + 
-					" FROM Name as FromName INNER JOIN " +
-                      	" RelName ON FromName.NameId = RelName.NameFk1 INNER JOIN " +
-                      	" Name AS ToName ON RelName.NameFk2 = ToName.NameId LEFT OUTER JOIN "+
-                      	" RefDetail ON RelName.RefDetailFK = RefDetail.RefDetailId " + 
+		String strQuery = 
+			" SELECT RelName.*, FromName.nameId as name1Id, ToName.nameId as name2Id, RefDetail.Details " + 
+			" FROM Name as FromName INNER JOIN " +
+              	" RelName ON FromName.NameId = RelName.NameFk1 INNER JOIN " +
+              	" Name AS ToName ON RelName.NameFk2 = ToName.NameId LEFT OUTER JOIN "+
+              	" RefDetail ON RelName.RefDetailFK = RefDetail.RefDetailId " + 
             " WHERE (RelNameId IN ("+ID_LIST_TOKEN +"))";
 		return strQuery;
 	}
@@ -93,7 +93,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
 		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
 
-			
+		
 		ResultSet rs = partitioner.getResultSet();
 		try {
 			
@@ -121,7 +121,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 					//get nomRef
 					citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, 
 							relRefFk);
-					}
+				}
 				
 				//TODO (preliminaryFlag = true testen
 				String microcitation = details;
@@ -243,8 +243,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				handleForeignKey(rs, nameIdSet, "name2Id");
 				handleForeignKey(rs, referenceIdSet, "RefFk");
 				handleForeignKey(rs, refDetailIdSet, "RefDetailFk");
-	}
-	
+			}
+			
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
@@ -265,8 +265,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 			idSet = referenceIdSet;
 			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
-	
-	
+			
+			
 			//nom refDetail map
 			nameSpace = BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE;
 			cdmClass = ReferenceBase.class;
@@ -283,10 +283,10 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-				}
+		}
 		return result;
 	}
-				
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
@@ -295,7 +295,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 		IOValidator<BerlinModelImportState> validator = new BerlinModelTaxonNameRelationImportValidator();
 		return validator.validate(state);
 	}
-				
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
@@ -303,7 +303,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	@Override
 	protected String getTableName() {
 		return dbTableName;
-			}
+	}
 
 	
 	/* (non-Javadoc)
@@ -312,14 +312,14 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	@Override
 	public String getPluralString() {
 		return pluralString;
-			}
-			
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoRelNames();
-		}
+	}
 
 	
 }

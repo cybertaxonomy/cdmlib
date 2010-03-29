@@ -73,7 +73,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 				logger.error("SQLException:" +  e);
 				return false;
 			}
-	
+			
 			logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
 			return success;
 	}
@@ -317,7 +317,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	protected boolean loopNeedsHandling(int i, int recordsPerLoop) {
 		startTransaction();
 		return (i % recordsPerLoop) == 0;
-		}
+	}
 	
 	protected void doLogPerLoop(int count, int recordsPerLog, String pluralString){
 		if ((count % recordsPerLog ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
@@ -406,6 +406,5 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		}
 		return result;
 	}
-
 	
 }

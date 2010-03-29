@@ -78,17 +78,17 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
-			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
+		String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
             " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
-                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
-                	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
-                " FROM emOccurrence INNER JOIN " +  
-                	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
-                	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
-                	" emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " +  
-                	" emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " +  
+            	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
+            	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
+            " FROM emOccurrence INNER JOIN " +  
+            	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
+            	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
+            	" emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " +  
+            	" emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " +  
             " WHERE (emOccurrence.OccurrenceId IN (" + ID_LIST_TOKEN + ")  )" +  
-                " ORDER BY PTaxon.RIdentifier";
+            " ORDER BY PTaxon.RIdentifier";
 		return strQuery;
 	}
 
@@ -101,7 +101,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		MapWrapper<Distribution> distributionMap = new MapWrapper<Distribution>(null);
 
 		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
-			
+		
 		BerlinModelImportConfigurator config = state.getConfig();
 		ResultSet rs = partitioner.getResultSet();
 
@@ -200,7 +200,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "taxonId");
 //				handleForeignKey(rs, referenceIdSet, "PTDesignationRefFk"); falsch, kommt eigentlich aus source Tabellen
-	}
+			}
 			
 			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
@@ -229,7 +229,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}
 		return result;
 	}
-
+			
 	/**
 	 * @param distributionMap
 	 * @param state

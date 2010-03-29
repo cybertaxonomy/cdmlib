@@ -74,7 +74,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		boolean result = true;
 		Set<TaxonNameBase> namesToSave = new HashSet<TaxonNameBase>();
 		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
-		
+	
 		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
 		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
 		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
@@ -120,7 +120,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 							//get nomRef
 							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, 
 									relRefFk);
-							}
+						}
 						
 						Specimen specimen = Specimen.NewInstance();
 						specimen.setTitleCache(typePhrase);
@@ -172,8 +172,8 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			while (rs.next()){
 				handleForeignKey(rs, nameIdSet, "NameFk");
 				handleForeignKey(rs, referenceIdSet, "RefFk");
-	}
-	
+			}
+			
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
@@ -201,7 +201,6 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		return result;
 	}
 
-	
 	private static boolean makeFigures(Map<Integer, Specimen> typeMap, Source source){
 		boolean success = true;
 		try {

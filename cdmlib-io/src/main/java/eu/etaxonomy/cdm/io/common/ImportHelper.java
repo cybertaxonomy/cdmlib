@@ -151,7 +151,7 @@ public class ImportHelper {
 	}
 
 	/**
-	 * @param clazz
+	 * @param clazz either boolean or other class (for boolean the naming strategy is different !)
 	 * @param cdmAttrName 
 	 * @return
 //	 * @throws IllegalArgumentException if a clazz is not yet supported

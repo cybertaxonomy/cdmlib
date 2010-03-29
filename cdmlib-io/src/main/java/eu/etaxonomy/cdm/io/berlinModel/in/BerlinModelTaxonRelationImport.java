@@ -104,7 +104,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				Object ptRefFkObj = rs.getObject("PTRefFk");
 				String ptRefFk= String.valueOf(ptRefFkObj);
 				ReferenceBase<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
-				
+					
 				//FIXME treeName
 				String treeName = "TaxonTree - No Name";
 				if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
@@ -139,6 +139,19 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			Object id = rs.getObject("PTRefFk");
 			result.add(String.valueOf(id));
 		}
+		return result;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
+	 */
+	@Override
+	protected String getIdQuery() {
+		String result = " " +
+				" SELECT  RelPTaxon.RelPTaxonId " + 
+				" FROM RelPTaxon LEFT JOIN Name AS toName ON RelPTaxon.PTNameFk1 = toName.NameId " + 
+				" ORDER BY toName.RankFk ";
 		return result;
 	}
 
@@ -183,7 +196,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		Map<String, ReferenceBase> nomRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
 
 		ResultSet rs = partitioner.getResultSet();
-			
+		
 		try{
 			int i = 0;
 			//for each reference
@@ -290,10 +303,10 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		getTaxonService().save(taxaToSave);
 		taxonTreeMap = null;
 		taxaToSave = null;
-			
-			return success;
+		
+		return success;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
@@ -330,8 +343,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				handleForeignKey(rs, taxonIdSet, "taxon2Id");
 //				handleForeignKey(rs, taxonTreeIdSet, "treeRefFk");
 				handleForeignKey(rs, referenceIdSet, "RelRefFk");
-	}
-	
+			}
+			
 			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
 			cdmClass = TaxonBase.class;

@@ -199,8 +199,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 			while (rs.next()){
 				handleForeignKey(rs, nameIdSet, "PTnameFk");
 				handleForeignKey(rs, referenceIdSet, "nameFactRefFk");
-	}
-	
+			}
+			
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
@@ -230,6 +230,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	}
 
 	
+	//FIXME gibt es da keine allgemeine Methode in common?
 	//FIXME gibt es da keine allgemeine Methode in common?
 	public Media getMedia(String nameFact, URL mediaUrl, File mediaPath){
 		if (mediaUrl == null){

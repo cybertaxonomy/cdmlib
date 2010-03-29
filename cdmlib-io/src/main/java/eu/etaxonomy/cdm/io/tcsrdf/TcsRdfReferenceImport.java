@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
+import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;

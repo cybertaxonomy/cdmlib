@@ -148,20 +148,20 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		featureMap = invokeFactCategories(state.getConfig());
 		return super.doInvoke(state);
 	}
-		
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
-			String strQuery = 
-					" SELECT Fact.*, PTaxon.RIdentifier as taxonId, RefDetail.Details " + 
-					" FROM Fact " +
-                      	" INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk " +
-                      	" LEFT OUTER JOIN RefDetail ON Fact.FactRefDetailFk = RefDetail.RefDetailId AND Fact.FactRefFk = RefDetail.RefFk " +
+		String strQuery = 
+			" SELECT Fact.*, PTaxon.RIdentifier as taxonId, RefDetail.Details " + 
+			" FROM Fact " +
+              	" INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk " +
+              	" LEFT OUTER JOIN RefDetail ON Fact.FactRefDetailFk = RefDetail.RefDetailId AND Fact.FactRefFk = RefDetail.RefFk " +
               	" WHERE (FactId IN (" + ID_LIST_TOKEN + "))" + 
-                        " ORDER By Sequence";
+                " ORDER By Sequence";
 		return strQuery;
 	}
 	
@@ -179,8 +179,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 
 		ResultSet rs = partitioner.getResultSet();
 		
-			ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
-			
+		ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+		
 		try{
 			int i = 0;
 			//for each fact
@@ -296,11 +296,11 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						if (factRefFkObj != null){
 							citation = getReferenceOnlyFromMaps(
 									biblioRefMap, nomRefMap, factRefFk);	
-							}
+						}
 						if (citation == null && (factRefFkObj != null)){
-								logger.warn("Citation not found in referenceMap: " + factRefFk);
+							logger.warn("Citation not found in referenceMap: " + factRefFk);
 							success = false;
-							}
+						}
 						if (citation != null || CdmUtils.isNotEmpty(details)){
 							DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
 							originalSource.setCitation(citation);
@@ -372,7 +372,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		Class cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
-			
+		
 		try{
 			Set<String> taxonIdSet = new HashSet<String>();
 			Set<String> referenceIdSet = new HashSet<String>();
@@ -383,7 +383,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 				handleForeignKey(rs, referenceIdSet, "PTDesignationRefFk");
 				handleForeignKey(rs, refDetailIdSet, "FactRefDetailFk");
 				handleForeignKey(rs, refDetailIdSet, "PTDesignationRefDetailFk");
-		}
+			}
 			
 			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
@@ -423,7 +423,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-	}
+		}
 		return result;
 	}
 	
@@ -491,14 +491,14 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		IOValidator<BerlinModelImportState> validator = new BerlinModelFactsImportValidator();
 		return validator.validate(state);
 	}
-				
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
 	 */
 	@Override
 	protected String getTableName() {
 		return dbTableName;
-			}
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
@@ -506,7 +506,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	@Override
 	public String getPluralString() {
 		return pluralString;
-		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

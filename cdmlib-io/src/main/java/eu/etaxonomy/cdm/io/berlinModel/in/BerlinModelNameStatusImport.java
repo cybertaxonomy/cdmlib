@@ -167,7 +167,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 		Class cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
-	
+		
 		try{
 			Set<String> nameIdSet = new HashSet<String>();
 			Set<String> referenceIdSet = new HashSet<String>();

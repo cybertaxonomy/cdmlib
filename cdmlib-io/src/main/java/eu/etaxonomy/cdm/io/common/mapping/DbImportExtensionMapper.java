@@ -184,7 +184,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	protected ExtensionType getExtensionType(ITermService service, UUID uuid, String label, String text, String labelAbbrev){
 		ExtensionType extensionType = (ExtensionType)service.find(uuid);
 		if (extensionType == null){
-			extensionType = new ExtensionType(label, text, labelAbbrev);
+			extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 			extensionType.setUuid(uuid);
 			service.save(extensionType);
 		}

@@ -1187,7 +1187,6 @@ cdmlib-io/README.TXT -text
 cdmlib-io/pom.xml -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmBooleanMapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmExtensionMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmOneToManyMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmStringMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelAuthorImport.java -text
@@ -1295,6 +1294,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IOValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportStateBase.java -text
@@ -1348,7 +1348,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformed.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IInputTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IMappingImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/UndefinedTransformerMethodException.java -text
