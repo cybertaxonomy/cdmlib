@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.hibernate.secure.HibernatePermission;
-import org.unitils.hibernate.HibernateUnitils;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
