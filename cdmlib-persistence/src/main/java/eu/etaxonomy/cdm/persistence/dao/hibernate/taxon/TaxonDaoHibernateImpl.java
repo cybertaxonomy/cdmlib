@@ -469,7 +469,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		if(clazz.equals(Taxon.class)){
 			if  (taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t where t.id in (:taxa)";
 			}else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
@@ -481,11 +481,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		} else {
 			if(synonyms.size()>0 && taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where (t.id in (:taxa) OR t.id in (:synonyms))";
 			}else if (synonyms.size()>0 ){
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
 			} else if (taxa.size()>0 ){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
 			} else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
@@ -494,11 +494,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (hql == "") return null;
 		if(!doCount){
 			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
-			hql += " order by t.name.genusOrUninomial, t.name.rank desc, titleCache"; 
+			hql += " order by t.name.genusOrUninomial, t.name.rank desc, case when t.name.titleCache like '%\"%\"%' then 1 else 0 end, titleCache";
+			
+    
 		}
 	
 		Query query = getSession().createQuery(hql);
 		
+				
 		if(clazz.equals(Taxon.class) && taxa.size()>0){
 			//find taxa
 			query.setParameterList("taxa", taxa );
