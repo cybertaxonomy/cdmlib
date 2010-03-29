@@ -89,6 +89,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		}
 		
 		return result;
+
 	}
 	
 	

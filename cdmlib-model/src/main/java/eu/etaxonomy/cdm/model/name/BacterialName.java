@@ -86,6 +86,7 @@ public class BacterialName extends NonViralName<BacterialName> {
 	 */
 	protected BacterialName(Rank rank, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
+		this.cacheStrategy = BacterialNameDefaultCacheStrategy.NewInstance();
 	}
 
 	//********* METHODS **************************************/

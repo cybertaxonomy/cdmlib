@@ -100,9 +100,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@XmlElement(name = "TitleCache", required = true)
 	@XmlJavaTypeAdapter(FormattedTextAdapter.class)
 	@Column(length=255, name="titleCache")
-	@Fields({@Field(name = "titleCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
-	     	 @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	})
+
 	@FieldBridge(impl=StripHtmlBridge.class)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
 	@NotEmpty(groups = Level2.class) // implictly NotNull
@@ -114,35 +112,36 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	protected boolean protectedTitleCache;
 	
     @XmlElementWrapper(name = "Rights", nillable = true)
-    @XmlElement(name = "Rights")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<Rights> rights;
+	@NotNull
+	private Set<Rights> rights = new HashSet<Rights>();
     
     @XmlElementWrapper(name = "Credits", nillable = true)
-    @XmlElement(name = "Credit")
     @IndexColumn(name="sortIndex", base = 0)
 	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
     //TODO
 	@Merge(MergeMode.ADD_CLONE)
-	private List<Credit> credits;
+	@NotNull
+	private List<Credit> credits = new ArrayList<Credit>();
 	
     @XmlElementWrapper(name = "Extensions", nillable = true)
-    @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<Extension> extensions;
+	@NotNull
+	private Set<Extension> extensions = new HashSet<Extension>();
 	
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
     @OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<IdentifiableSource> sources;
+	@NotNull
+	private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
     
     @XmlTransient
 	@Transient
@@ -214,7 +213,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 */
 	@Transient
 	protected String getTruncatedCache(String cache) {
-		if (cache != null && cache.length() > 252){
+		if (cache != null && cache.length() > 255){
 			logger.warn("Truncation of cache: " + this.toString() + "/" + cache);
 			cache = cache.substring(0, 252) + "...";
 		}
@@ -374,6 +373,18 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			source.setSourcedObj(this);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)
+	 */
+	public IdentifiableSource addSource(String id, String idNamespace, ReferenceBase citation, String microCitation) {
+		if (id == null && idNamespace == null && citation == null && microCitation == null){
+			return null;
+		}
+		IdentifiableSource source = IdentifiableSource.NewInstance(id, idNamespace, citation, microCitation);
+		addSource(source);
+		return source;
+	}
 	 
 	 /* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
@@ -440,7 +451,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			 if (referenceBase != null) {
 				 referenceBase = HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class);
 				 specifiedReferenceTitleCache = referenceBase.getTitleCache();
-		 }
+			 }
 		 }
 		 
 		 if(this instanceof NonViralName) {

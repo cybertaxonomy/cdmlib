@@ -375,6 +375,10 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	public boolean addParentChild (Taxon parent, Taxon child, ReferenceBase citation, String microCitation)
 			throws IllegalStateException{
 		try {
+			if (parent == null || child == null){
+				logger.warn("Child or parent taxon is null.");
+				return false;
+			}
 			TaxonNode parentNode = this.getNode(parent);
 			TaxonNode childNode = this.getNode(child);
 			

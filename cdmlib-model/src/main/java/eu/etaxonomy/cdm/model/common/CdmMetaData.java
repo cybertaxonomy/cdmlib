@@ -85,12 +85,8 @@ public class CdmMetaData extends CdmBase{
 	/* END OF CONFUSION */
 	private MetaDataPropertyName propertyName;
 	private String value;
-	
-	
-	public String getMetaDataPropertyName() {
-		return dbSchemaVersion;
-	}
 
+	
 	/**
 	 * Method to retrieve a CDM Libraries meta data
 	 * @return
@@ -104,7 +100,6 @@ public class CdmMetaData extends CdmBase{
 	}
 
 //********************* Constructor *********************************************/	
-	
 
 	/**
 	 * Simple constructor to be used by Spring
@@ -112,7 +107,6 @@ public class CdmMetaData extends CdmBase{
 	protected CdmMetaData(){
 		super();
 	}
-
 
 	public CdmMetaData(MetaDataPropertyName propertyName, String value) {
 		super();
