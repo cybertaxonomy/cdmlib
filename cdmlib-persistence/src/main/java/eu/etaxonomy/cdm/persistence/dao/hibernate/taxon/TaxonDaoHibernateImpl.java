@@ -494,7 +494,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (hql == "") return null;
 		if(!doCount){
 			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
-			hql += " order by t.name.genusOrUninomial, t.name.rank desc, case when t.name.titleCache like '%\"%\"%' then 1 else 0 end, titleCache";
+			hql += " order by t.name.genusOrUninomial, t.name.rank desc, case when t.name.titleCache like '%\"%\"%' then 1 else 0 end, t.name.nameCache";
 			
     
 		}
