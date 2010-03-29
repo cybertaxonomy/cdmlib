@@ -410,7 +410,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			tags.add(nonViralName.getInfraSpecificEpithet());			
 		}
 		
-		if(! "".equals(nonViralName.getAppendedPhrase())){
+		if(! "".equals(nonViralName.getAppendedPhrase())&& (nonViralName.getAppendedPhrase() != null)){
 			tags.add(nonViralName.getAppendedPhrase());
 		}
 		
