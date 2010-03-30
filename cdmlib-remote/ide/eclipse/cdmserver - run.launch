@@ -6,7 +6,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="RunJettyRunWebAppClassPathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="runjettyrun.Bootstrap"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cdmlib-remote"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dlog4j.configDebug=true&#13;&#10;-Dcdm.datasource=diptera&#13;&#10;-Dcdm.datasource.password=wp5&#13;&#10;-Dcdm.datasource.username=edit&#13;&#10;-Dcdm.datasource.url=jdbc:mysql://127.0.0.1/cdm_edit_palmae_a&#13;&#10;-Dcdm.datasource.driverclass=com.mysql.jdbc.Driver"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dlog4j.configDebug=true&#13;&#10;-Dcdm.datasource=cichorieae"/>
 <stringAttribute key="run_jetty_run.CONTEXT_ATTR" value="/"/>
 <stringAttribute key="run_jetty_run.PORT_ATTR" value="8080"/>
 <stringAttribute key="run_jetty_run.WEBAPPDIR_ATTR" value="src/main/webapp"/>

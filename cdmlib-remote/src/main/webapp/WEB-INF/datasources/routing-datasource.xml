@@ -8,7 +8,7 @@
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
     
     
-    <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource">
+    <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.SelectableDataSource">
     	<!--  The property beanDefinitionFile defaults to "datasources.xml" in {USER_HOME}./cdmLibrary 
     	
     	WARNING !!!

@@ -23,7 +23,6 @@
 		<property name="order" value="1" />
 		<property name="interceptors">
 			<list>
-				<ref bean="datasourceContextHandlerInterceptor" />
 				<ref bean="contentNegociationHandlerInterceptor" />
 				<ref bean="localeContextHandlerInterceptor" />
 			</list>
@@ -57,8 +56,9 @@
 	<!-- 
 	======= HandlerInterceptors =======
 	-->
+	<!-- 
 	<bean id="datasourceContextHandlerInterceptor"
-		class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor" />
+		class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor" /> -->
 	<bean id="localeContextHandlerInterceptor"
 		class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor" />
 	<bean id="contentNegociationHandlerInterceptor"

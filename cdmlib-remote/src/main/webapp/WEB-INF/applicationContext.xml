@@ -20,8 +20,8 @@
     
     <!-- import additional beans into the root context -->
     <import resource="applicationContext.views.xml"/>
-
+    
     <!-- CONFIGURE WEB APPLICATION HERE -->
-    <import resource="datasources/jndi.xml"/>
+    <import resource="datasources/configurable.xml" />
 
 </beans>
