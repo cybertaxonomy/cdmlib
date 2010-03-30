@@ -56,34 +56,18 @@ public final class Bootloader {
 	private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
 	private static final String DATASOURCE_BEANDEF_PATH = System.getProperty("user.home")+File.separator+".cdmLibrary"+File.separator;
 	
-	private static final String DATASOURCES_XML_FILE = "datasources.xml";
 	private static final String APPLICATION_NAME = "CDM Server";
     private static final String WAR_POSTFIX = ".war";
     private static final String WAR_NAME = "cdmserver";
+    private static final String DEFAULT_WEBAPP_WAR_NAME = "default-webapp";
     
     private static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
-    private static final String ATTRIBUTE_HIBERNATE_DIALECT = "hibernate.dialect";
-    /**
-     * DATASOURCE_ATTRIBUTE:
-     * 
-     * this constant must be equal to the DATASOURCE_ATTRIBUTE 
-     * in eu.etaxonomy.cdm.remote.config.DataSourceConfig
-     * We avoid using this spring config class directly, since 
-     * this would mean having a dependency to the complete cdm library
-     * in the servlet container, and this woudl bloat the server jar by 
-     * additional 30MB. 
-     */
-    private static final String ATTRIBUTE_DATASOURCE_NAME = "cdm.datasource";
-    private static final String ATTRIBUTE_DATASOURCE_USERNAME = "cdm.datasource.username";
-    private static final String ATTRIBUTE_DATASOURCE_PASSWORD = "cdm.datasource.password";
-    private static final String ATTRIBUTE_DATASOURCE_URL = "cdm.datasource.url";
-    private static final String ATTRIBUTE_DATASOURCE_DRIVERCLASS = "cdm.datasource.driverclass";
     
-    private static final String WAR_FILENAME = WAR_NAME + WAR_POSTFIX;
     private static final int KB = 1024;
     
     private static Set<DataSourceProperties> configs = null;
     private static File webappFile = null;
+    private static File defaultWebAppFile = null;
 
     private Bootloader() {
         // is started from main
@@ -142,20 +126,21 @@ public final class Bootloader {
 	}
 
 
-	private static File extractWar() throws IOException, FileNotFoundException {
+	private static File extractWar(String warName) throws IOException, FileNotFoundException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    	URL resource = classLoader.getResource(WAR_FILENAME);
+		String warFileName = warName + WAR_POSTFIX;
+    	URL resource = classLoader.getResource(warFileName);
     	if (resource == null) {
-    		logger.error("Could not find the " + WAR_FILENAME + " on classpath!");
+    		logger.error("Could not find the " + warFileName + " on classpath!");
     		System.exit(1);
     	}
     	
-    	File warFile = File.createTempFile(WAR_NAME + "-", WAR_POSTFIX);
-    	logger.info("Extracting " + WAR_FILENAME + " to " + warFile + " ...");
+    	File warFile = File.createTempFile(warName + "-", WAR_POSTFIX);
+    	logger.info("Extracting " + warFileName + " to " + warFile + " ...");
     	
     	writeStreamTo(resource.openStream(), new FileOutputStream(warFile), 8 * KB);
     	
-    	logger.info("Extracted " + WAR_FILENAME);
+    	logger.info("Extracted " + warFileName);
 		return warFile;
 	}
     
@@ -187,8 +172,14 @@ public final class Bootloader {
     		 } else {
     			 logger.info("using user defined warfile: " + webappFile.getAbsolutePath());
     		 }
+    		 if(isRunningFromSource()){
+    	    	defaultWebAppFile = new File("./src/main/webapp");	
+    	     } else {
+    	    	defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
+    	     }
     	 } else {    		 
-    		 webappFile = extractWar();
+    		 webappFile = extractWar(WAR_NAME);
+    		 defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
     	 }
     	 
     	 // HTTP Port
@@ -223,26 +214,25 @@ public final class Bootloader {
 			mBeanContainer.start();
 		}
 		
-		
 		// add servelet contexts
 		ContextHandlerCollection contexts = new ContextHandlerCollection();
 		
+		//
 		// 1. default context
-		logger.info("Adding default WebAppContext");
+		//
+		logger.info("preparing default WebAppContext");
     	WebAppContext defaultWebapp = new WebAppContext();
-    	String defaultWebAppPath = null;
-    	if(isRunningFromSource()){
-    		defaultWebAppPath = "./src/main/webapp";
-    	} 
-    	defaultWebapp.setResourceBase(defaultWebAppPath);
-    	defaultWebapp.setDescriptor(defaultWebAppPath+"/WEB-INF/web.xml");
+    	defaultWebapp.setResourceBase(defaultWebAppFile.getAbsolutePath());
+    	//defaultWebapp.setDescriptor(defaultWebAppFile.getAbsolutePath()+"/WEB-INF/web.xml");
         defaultWebapp.setContextPath("/");
 
     	contexts.addHandler(defaultWebapp);
     	
+    	//
 		// 2. cdm server contexts
+    	//
         for(DataSourceProperties conf : configs){
-        	logger.info("Preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
+        	logger.info("preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
         	WebAppContext webapp = new WebAppContext();
 	        webapp.setContextPath("/"+conf.getDataSourceName());
 	        //webapp.setClassLoader(new MyClassLoader(webapp.getClassLoader()));

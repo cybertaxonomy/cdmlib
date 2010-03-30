@@ -17,28 +17,23 @@
     </fileSet>
   </fileSets>
   <dependencySets>
-   <!-- <dependencySet>
-      <outputDirectory/>
-      <unpack>true</unpack>
-      <outputFileNameMapping/>
-      <includes>
-        <include>org.apache.camel:camel-web-standalone</include>
-        <include>log4j:log4j</include>
-      </includes>
-    </dependencySet> -->
     <dependencySet>
       <unpack>true</unpack>
       <outputDirectory/>
       <outputFileNameMapping/>
-      <includes>
-        <include>org.mortbay.jetty:jetty-runner</include>
-      </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory/>
       <outputFileNameMapping>cdmserver.war</outputFileNameMapping>
       <includes>
         <include>eu.etaxonomy:cdmlib-remote</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory/>
+      <outputFileNameMapping>default-webapp.war</outputFileNameMapping>
+      <includes>
+        <include>eu.etaxonomy:cdm-server</include>
       </includes>
     </dependencySet>
   </dependencySets>

@@ -28,14 +28,6 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
-    
-    <!-- jetty-runner -->
-   <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-runner</artifactId>
-      <version>${jetty-version}</version>
-    </dependency>
-  
  
     <!-- JETTY 7 -->
     <dependency>
@@ -99,9 +91,6 @@
           </descriptors>
           <archive>
             <manifest>
-               <!-- 
-               <mainClass>eu.etaxonomy.cdm.server.BootloaderJettyRunner</mainClass>
-                -->
                 <mainClass>eu.etaxonomy.cdm.server.Bootloader</mainClass>
             </manifest>
           </archive>
@@ -115,6 +104,30 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <!-- package the default webapp -->
+      <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-war-plugin</artifactId>
+	      <version>2.1-beta-1</version>
+	      <configuration>
+	          <warName>default-webapp</warName>
+		      <overlays>
+		          <overlay>
+			           <groupId>eu.etaxonomy</groupId>
+					   <artifactId>cdmlib-remote</artifactId>
+					   <skip>true</skip><!-- Do Not overlay  --> 
+			      </overlay>
+		      </overlays>
+	      </configuration>
+	      <executions>
+	          <execution>
+	            <phase>package</phase>
+		        <goals>
+		          <goal>war</goal>
+		        </goals>
+	          </execution>
+            </executions>
       </plugin>
       <!-- DEPLOY -->
       <plugin>
