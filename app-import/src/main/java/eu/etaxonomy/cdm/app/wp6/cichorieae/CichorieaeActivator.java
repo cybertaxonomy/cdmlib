@@ -62,11 +62,16 @@ public class CichorieaeActivator {
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 	static final Object[] featureKeyList = new Integer[]{1, 43, 31, 4, 98, 41}; 	
 	
-	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
+	/* --------- MEDIA recources ------------ */
+	static final boolean stopOnMediaErrors = true;
+	static final String protologueUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 	//Mac
-	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
+	//static final File protologuePath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
+	public static final File imageFolder  = new File("\\\\media\\editwp6\\photos");
+	static final File protologuePath = new File("\\\\media\\editwp6\\protolog");
+	/* -------------------------------------- */
+	
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
 	
@@ -170,12 +175,25 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 		
 
-		// mediaResourceLocations
-		if ( mediaPath.exists() && mediaPath.isDirectory()){
-			bmImportConfigurator.setMediaUrl(mediaUrlString);
-			bmImportConfigurator.setMediaPath(mediaPath);
+		// protologueResourceLocations
+		if ( protologuePath.exists() && protologuePath.isDirectory()){
+			bmImportConfigurator.setMediaUrl(protologueUrlString);
+			bmImportConfigurator.setMediaPath(protologuePath);
 		}else{
-			logger.warn("Could not configure mediaResourceLocations");
+			if(stopOnMediaErrors){
+				logger.error("Could not configure protologue ResourceLocations -> will quit.");
+				System.exit(-1);
+			}
+			logger.error("Could not configure protologue ResourceLocations");
+		}
+		
+		// also check the image source folder
+		if ( !imageFolder.exists() || !imageFolder.isDirectory()){
+			if(stopOnMediaErrors){
+				logger.error("Could not configure imageFolder  -> will quit.");
+				System.exit(-1);
+			}
+			logger.error("Could not configure imageFolder");
 		}
 		
 		// maximum number of name facts to import
@@ -220,7 +238,7 @@ public class CichorieaeActivator {
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					CichorieaeImageActivator.sourceFolder, cdmDestination, CichorieaeImageImport.class);
+					CichorieaeActivator.imageFolder, cdmDestination, CichorieaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			imageConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
 			success &= imageImporter.invoke(imageConfigurator);
