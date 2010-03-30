@@ -174,10 +174,9 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 }
                 
             }
-           // makeOccurrenceSource(distributionMap, state, duplicateMap);
-			
+           
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
-			logger.warn("Duplicate occurrences: "  + (countDuplicates));
+			logger.info("Duplicate occurrences: "  + (countDuplicates));
 
 			logger.info("Taxa to save: " + taxaToSave.size());
 			getTaxonService().save(taxaToSave);	
