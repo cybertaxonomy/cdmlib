@@ -272,6 +272,10 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	public int compareTo(Object o) {
 		return 0;
 	}
+	
+	
+  /* ================ Utility methods, to be moved to MediaUtils class?? ============================= */
+	
 	/**
 	 * @param mimeTypeRegexes
 	 * @param size
@@ -287,7 +291,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 				
 		List<Media> returnMedia = new ArrayList<Media>(reps.size());
 		SortedMap<Integer, MediaRepresentation> prefRepresentations 
-				= orderMediaRepresentations(mimeTypes, size, widthOrDuration, height);
+			= orderMediaRepresentations(mimeTypes, size, widthOrDuration, height);
 			try {
 				// take first one and remove all other representations
 				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
@@ -300,6 +304,115 @@ public class Media extends IdentifiableEntity implements Cloneable {
 			return null;
 		}
 	
+	/**
+	 * @param mediaList
+	 * @param mimeTypes
+	 * @param sizeTokens
+	 * @param widthOrDuration
+	 * @param height
+	 * @param size
+	 * @return
+	 */
+	public static List<Media> findPreferredMedia(List<Media> mediaList,
+			String[] mimeTypes, String[] sizeTokens, Integer widthOrDuration,
+			Integer height, Integer size) {
+		for(int i=0; i<mimeTypes.length; i++){
+			mimeTypes[i] = mimeTypes[i].replace(':', '/');
+		}
+		
+		if(sizeTokens.length > 0){
+			try {
+				size = Integer.valueOf(sizeTokens[0]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		if(sizeTokens.length > 1){
+			try {
+				widthOrDuration = Integer.valueOf(sizeTokens[1]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		if(sizeTokens.length > 2){
+			try {
+				height = Integer.valueOf(sizeTokens[2]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		
+		List<Media> returnMedia = new ArrayList<Media>(mediaList.size());
+		for(Media media : mediaList){
+			SortedMap<String, MediaRepresentation> prefRepresentations 
+				= orderMediaRepresentations(media, mimeTypes, size, widthOrDuration, height);
+			try {
+				// take first one and remove all other representations
+				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
+				for (MediaRepresentation representation : media.getRepresentations()) {
+					if (representation != prefOne) {
+						media.removeRepresentation(representation);
+					}
+				}
+				returnMedia.add(media);
+			} catch (NoSuchElementException nse) {
+				logger.debug(nse);
+				/* IGNORE */
+			}
+		}
+		return returnMedia;
+	}
+	
+	/**
+	 * @param media
+	 * @param mimeTypeRegexes
+	 * @param size
+	 * @param widthOrDuration
+	 * @param height
+	 * @return
+	 * 
+	 * TODO move into a media utils class
+	 * TODO implement the quality filter  
+	 */
+	public static SortedMap<String, MediaRepresentation> orderMediaRepresentations(Media media, String[] mimeTypeRegexes,
+			Integer size, Integer widthOrDuration, Integer height) {
+		SortedMap<String, MediaRepresentation> prefRepr = new TreeMap<String, MediaRepresentation>();
+		for (String mimeTypeRegex : mimeTypeRegexes) {
+			// getRepresentationByMimeType
+			Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
+			int representationCnt = 0;
+			for (MediaRepresentation representation : media.getRepresentations()) {
+				int dwa = 0;
+				if(representation.getMimeType() == null){
+					prefRepr.put((dwa + representationCnt++) + "_NA", representation);
+				} else {
+					Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
+					if (mather.matches()) {
+	
+						/* TODO the quality filter part is being skipped 
+						 * // look for representation with the best matching parts
+						for (MediaRepresentationPart part : representation.getParts()) {
+							if (part instanceof ImageFile) {
+								ImageFile image = (ImageFile) part;
+								int dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
+								if (dw < 0) {
+									dw *= -1;
+								}
+								dwa += dw;
+							}
+							dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
+						}*/
+						prefRepr.put((dwa + representationCnt++) + '_' + representation.getMimeType(), representation);
+											
+						// preferred mime type found => end loop
+						break;
+					}
+				}
+			}
+		}
+		return prefRepr;
+	}
+
 	
 	/**
 	 * @param mimeTypeRegexes
