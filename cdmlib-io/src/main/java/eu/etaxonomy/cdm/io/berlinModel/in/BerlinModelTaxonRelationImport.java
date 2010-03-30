@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -59,6 +60,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonRelationImport.class);
 
+	public static final String TREE_NAMESPACE = "PTRefFk";
+	
 	private static int modCount = 30000;
 	private static final String pluralString = "taxon relations";
 	private static final String dbTableName = "RelPTaxon";
@@ -90,7 +93,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		//biblio reference map
 		nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
 		cdmClass = ReferenceBase.class;
-		idSet = new HashSet<String>();
+//		idSet = new HashSet<String>();
 		Map<String, ReferenceBase> biblioRefMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 		
 		ResultSet rs = source.getResultSet(getTaxonomicTreeQuery()) ;
@@ -119,6 +122,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				if (i == 1 && state.getConfig().getTaxonomicTreeUuid() != null){
 					tree.setUuid(state.getConfig().getTaxonomicTreeUuid());
 				}
+				IdentifiableSource identifiableSource = IdentifiableSource.NewInstance(ptRefFk, TREE_NAMESPACE);
+				tree.addSource(identifiableSource);
 				
 				getTaxonTreeService().save(tree);
 				state.putTaxonomicTreeUuidInt((Integer)ptRefFkObj, tree);
