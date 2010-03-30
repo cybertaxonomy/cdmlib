@@ -28,9 +28,9 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
@@ -555,4 +555,17 @@ public int countDefinedTermByRepresentationText(String text, Class<? extends Def
 		    return (DefinedTermBase)query.getSingleResult();
 		}
 	}
+	
+	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+//		checkNotInPriorView("DefinedTermDaoImpl.listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)");
+		
+		Query query = getSession().createQuery("from " + clazz.getSimpleName());
+	    //query.setParameter("DTYPE", );
+	    
+	    List<TERM> result = query.list();
+	    
+	    defaultBeanInitializer.initializeAll(result, propertyPaths);
+	    
+	    return result;
+	}	
 }

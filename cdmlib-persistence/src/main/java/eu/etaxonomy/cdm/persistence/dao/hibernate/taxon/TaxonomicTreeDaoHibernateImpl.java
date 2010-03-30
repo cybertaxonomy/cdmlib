@@ -45,17 +45,14 @@ public class TaxonomicTreeDaoHibernateImpl extends IdentifiableDaoBase<Taxonomic
 	
 	@SuppressWarnings("unchecked")
 	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
-		String hql = "SELECT DISTINCT tn FROM TaxonNode tn" +
-				" LEFT JOIN tn.childNodes as ctn" +
-				" LEFT JOIN tn.taxon.name.rank as r" +
+		String hql = "SELECT DISTINCT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as ctn" +
 				" WHERE tn.taxonomicTree = :tree  AND (" +
-				" r = :rank" +
-				" OR (r.orderIndex > :rank_orderIndex AND tn.parent = null)" +
-				" OR (r.orderIndex < :rank_orderIndex AND ctn.taxon.name.rank.orderIndex > :rank_orderIndex)" +
+				" tn.taxon.name.rank = :rank" +
+				" OR (tn.taxon.name.rank < :rank AND tn.parent = null)" +
+				" OR (tn.taxon.name.rank > :rank AND ctn.taxon.name.rank < :rank)" +
 				" )";
 		Query query = getSession().createQuery(hql);
 		query.setParameter("rank", rank);
-		query.setParameter("rank_orderIndex", rank.getOrderIndex());
 		query.setParameter("tree", taxonomicTree);
 		List<TaxonNode> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
