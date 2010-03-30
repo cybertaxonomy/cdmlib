@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -150,7 +151,7 @@ public class User extends CdmBase implements UserDetails {
 	}
 	
 	@Transient
-	public Set<GrantedAuthority> getAuthorities() {
+	public Collection<GrantedAuthority> getAuthorities() {
 		if(authorities == null) initAuthorities();
 		return authorities;
 	}
