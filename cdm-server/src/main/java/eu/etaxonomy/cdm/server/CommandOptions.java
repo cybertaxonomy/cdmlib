@@ -1,3 +1,13 @@
+// $Id$
+/**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
 package eu.etaxonomy.cdm.server;
 
 import org.apache.commons.cli.Option;
@@ -6,9 +16,10 @@ import org.apache.commons.cli.Options;
 
 public class CommandOptions{
 	
-	public static final Option HELP = new Option( "help", "print this message" );
-	
 	private static Options options = null;
+	
+	public static final Option HELP = new Option( "help", "print this message" );
+	public static final Option JMX = new Option( "jmx", "Start the server with the Jetty MBeans. " );
 	
 	@SuppressWarnings("static-access")
 	public static final Option WEBAPP = OptionBuilder
@@ -41,6 +52,7 @@ public class CommandOptions{
 			options.addOption(WEBAPP);		
 			options.addOption(HTTP_PORT);
 			options.addOption(DATASOURCES_FILE);
+			options.addOption(JMX);
 		}
 		return options;
 	}

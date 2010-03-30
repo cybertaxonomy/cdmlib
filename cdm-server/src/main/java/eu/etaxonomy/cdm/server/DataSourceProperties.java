@@ -12,9 +12,9 @@ package eu.etaxonomy.cdm.server;
 
 import org.apache.log4j.Logger;
 
-public class DataSourceConfig {
+public class DataSourceProperties {
  
-	public static final Logger logger = Logger.getLogger(DataSourceConfig.class);
+	public static final Logger logger = Logger.getLogger(DataSourceProperties.class);
 
 	private String dataSourceName;
 	private String password;
@@ -28,13 +28,7 @@ public class DataSourceConfig {
 		return "jdbc/"+dataSourceName;
 	}
 	
-	public String getHibernateDialectName() {
-		if(url.contains("mysql")){
-			return "org.hibernate.dialect.MySQLDialect";
-		}
-		logger.error("hibernate dialect mapping for "+url+ " not jet implemented or unavailable");
-		return null;
-	}
+	
 	
 	public void setDataSourceName(String dataSourceName) {
 		this.dataSourceName = dataSourceName;

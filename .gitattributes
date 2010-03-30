@@ -1139,7 +1139,7 @@ app-import/src/main/resources/taxonX/palm_tc_98863.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98882.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98886.xml -text
 app-import/src/main/resources/tcsXmlTest.xml -text
-cdm-server/cdmserver-start.bat -text
+cdm-server/LICENSE.TXT -text
 cdm-server/pom.xml -text
 cdm-server/src/main/assembly/assembly.xml -text
 cdm-server/src/main/installer/lib/ant-deb-task-0.0.1.jar -text
@@ -1156,7 +1156,8 @@ cdm-server/src/main/installer/win32/cdmserver.nsi -text
 cdm-server/src/main/installer/win32/cdmserver/bin/cdmserver.bat -text
 cdm-server/src/main/java/eu/etaxonomy/cdm/server/Bootloader.java -text
 cdm-server/src/main/java/eu/etaxonomy/cdm/server/CommandOptions.java -text
-cdm-server/src/main/java/eu/etaxonomy/cdm/server/DataSourceConfig.java -text
+cdm-server/src/main/java/eu/etaxonomy/cdm/server/DataSourceProperties.java -text
+cdm-server/src/main/java/eu/etaxonomy/cdm/server/DataSourcePropertyParser.java -text
 cdm-server/src/main/resources/c3p0.properties -text
 cdm-server/src/main/resources/log4j.properties -text
 cdmlib-commons/LICENSE.TXT -text

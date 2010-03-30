@@ -10,43 +10,38 @@
 
 package eu.etaxonomy.cdm.server;
 
+import static eu.etaxonomy.cdm.server.CommandOptions.DATASOURCES_FILE;
+import static eu.etaxonomy.cdm.server.CommandOptions.HELP;
+import static eu.etaxonomy.cdm.server.CommandOptions.HTTP_PORT;
+import static eu.etaxonomy.cdm.server.CommandOptions.JMX;
+import static eu.etaxonomy.cdm.server.CommandOptions.WEBAPP;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.plus.jndi.Resource;
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import static eu.etaxonomy.cdm.server.CommandOptions.*;
 
 /**
  * A bootstrap class for starting Jetty Runner using an embedded war
@@ -91,7 +86,6 @@ public final class Bootloader {
         // is started from main
     }
 
-
     public static int writeStreamTo(final InputStream input, final OutputStream output, int bufferSize) throws IOException {
         int available = Math.min(input.available(), 256 * KB);
         byte[] buffer = new byte[Math.max(bufferSize, available)];
@@ -104,48 +98,8 @@ public final class Bootloader {
         }
         return answer;
     }
-    
-	public static Set<DataSourceConfig> getDataSourceConfigs(){
 
-    	File datasourcesFile = new File(DATASOURCE_BEANDEF_PATH, DATASOURCE_BEANDEF_FILE); 
-		logger.info("loading bean definition file: " + datasourcesFile.getAbsolutePath());
-		Set<DataSourceConfig> configSet = new HashSet<DataSourceConfig>();
-    	try {
-    		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = builder.parse(datasourcesFile);
-			NodeList beanNodes  = doc.getElementsByTagName("bean");
-			for(int i=0; i < beanNodes.getLength(); i++){
-				DataSourceConfig conf = new DataSourceConfig();
-				Node beanNode = beanNodes.item(i);
-				// ATTRIBUTE_DATASOURCE_NAME
-				NamedNodeMap namedNodeMap = beanNode.getAttributes();
-				conf.setDataSourceName(namedNodeMap.getNamedItem("id").getNodeValue());
-				// ATTRIBUTE_DATASOURCE_DRIVERCLASS
-				conf.setDriverClass(getXMLNodeProperty(beanNode, "driverClass"));
-				conf.setUsername(getXMLNodeProperty(beanNode, "username"));
-				conf.setPassword(getXMLNodeProperty(beanNode, "password"));
-				conf.setUrl(getXMLNodeProperty(beanNode, "url"));              
-				
-				logger.debug("adding instanceName: "+ conf.getDataSourceName());
-				configSet.add(conf);
-			}
-			
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return configSet;
-
-    }
-
-
-	private static void bindJndiDataSource(DataSourceConfig conf) {
+	private static void bindJndiDataSource(DataSourceProperties conf) {
 		try {
 			Class<DataSource> datasource = (Class<DataSource>) Thread.currentThread().getContextClassLoader().loadClass("com.mchange.v2.c3p0.ComboPooledDataSource");
 			Object o = datasource.newInstance();
@@ -174,98 +128,7 @@ public final class Bootloader {
 			logger.error(e);
 		}
 	}
-    
-    
-    private static String getXMLNodeProperty(Node beanNode, String name) {
-    	NodeList children = beanNode.getChildNodes();
-    	for(int i=0; i < children.getLength(); i++){
-    		Node p = children.item(i);
-    		if(p.getNodeName().equals("property") 
-    				&& p.getAttributes().getNamedItem("name").getNodeValue().equals(name)){
-    			return p.getAttributes().getNamedItem("value").getNodeValue();
-    		}
-    	}
-		return null;
-	}
-
-
-	public static void main(String[] args) throws Exception {
-    	
-    	logger.info("Starting "+APPLICATION_NAME);
-    	
-    	 CommandLine cmdLine = parseCommandOptions(args);
-    	 
-    	 // print the help message
-    	 if(cmdLine.hasOption(HELP.getOpt())){
-    		 HelpFormatter formatter = new HelpFormatter();
-    		 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
-    		 System.exit(0);
-    	 }
-    	 
-    	 // WARFILE
-    	 File webappFile = null;
-    	 if(cmdLine.hasOption(WEBAPP.getOpt())){
-    		 webappFile = new File(cmdLine.getOptionValue(WEBAPP.getOpt()));
-    		 if(webappFile.isDirectory()){
-    		 } else {
-    			 logger.info("using user defined web application folder: " + webappFile.getAbsolutePath());    			     			 
-    			 logger.info("using user defined warfile: " + webappFile.getAbsolutePath());
-    		 }
-    	 } else {    		 
-    		 webappFile = extractWar();
-    	 }
-    	 
-    	 // HTTP Port
-    	 int httpPort = 8080;
-    	 if(cmdLine.hasOption(HTTP_PORT.getOpt())){
-    		 try {
-				httpPort = Integer.parseInt(cmdLine.getOptionValue(HTTP_PORT.getOpt()));
-				logger.info(HTTP_PORT.getOpt()+" set to "+cmdLine.getOptionValue(HTTP_PORT.getOpt()));
-			} catch (NumberFormatException e) {
-				logger.error("Supplied portnumber is not an integer");
-				System.exit(-1);
-			}
-    	 }
-    	 
-    	 if(cmdLine.hasOption(DATASOURCES_FILE.getOpt())){
-    		 logger.error(DATASOURCES_FILE.getOpt() + " NOT JET IMPLEMENTED!!!");
-    	 }
-    	
-    	Set<DataSourceConfig> configs = getDataSourceConfigs();
-    	logger.info("cdm server instance names found: "+ configs.toString());
-    	
-		Server server = new Server(httpPort);
-		ContextHandlerCollection contexts = new ContextHandlerCollection();
- 
-        for(DataSourceConfig conf : configs){
-        	logger.info("Preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
-        	WebAppContext webapp = new WebAppContext();
-	        webapp.setContextPath("/"+conf.getDataSourceName());
-	        
-            bindJndiDataSource(conf);
-            
-            webapp.setAttribute(ATTRIBUTE_JDBC_JNDI_NAME, conf.getJdbcJndiName());
-            webapp.setAttribute(ATTRIBUTE_HIBERNATE_DIALECT, conf.getHibernateDialectName());
-	        
-	        if(webappFile.isDirectory()){
-	        	webapp.setResourceBase(webappFile.getAbsolutePath());
-	        } else {
-	        	webapp.setWar(webappFile.getAbsolutePath());
-	        	
-	        }
-	        contexts.addHandler(webapp);
-
-        }
-        logger.info("setting contexts ...");
-        server.setHandler(contexts);
-        logger.info("starting jetty ...");
-        server.start();
-        logger.info("joining ...");
-        server.join();
-        logger.info(APPLICATION_NAME+" stopped.");
-    	System.exit(0);
-    }
-
+	
 	private static CommandLine parseCommandOptions(String[] args) throws ParseException {
 		CommandLineParser parser = new GnuParser();
 		return parser.parse( CommandOptions.getOptions(), args );
@@ -288,4 +151,109 @@ public final class Bootloader {
     	logger.info("Extracted " + WAR_FILENAME);
 		return warFile;
 	}
+    
+    
+	public static void main(String[] args) throws Exception {
+    	
+    	logger.info("Starting "+APPLICATION_NAME);
+    	
+    	 CommandLine cmdLine = parseCommandOptions(args);
+    	 
+    	 // print the help message
+    	 if(cmdLine.hasOption(HELP.getOpt())){
+    		 HelpFormatter formatter = new HelpFormatter();
+    		 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
+    		 System.exit(0);
+    	 }
+    	 
+    	 // WARFILE
+    	 File webappFile = null;
+    	 if(cmdLine.hasOption(WEBAPP.getOpt())){
+    		 webappFile = new File(cmdLine.getOptionValue(WEBAPP.getOpt()));
+    		 if(webappFile.isDirectory()){
+    			 logger.info("using user defined web application folder: " + webappFile.getAbsolutePath());    			     			 
+    		 } else {
+    			 logger.info("using user defined warfile: " + webappFile.getAbsolutePath());
+    		 }
+    	 } else {    		 
+    		 webappFile = extractWar();
+    	 }
+    	 
+    	 // HTTP Port
+    	 int httpPort = 8080;
+    	 if(cmdLine.hasOption(HTTP_PORT.getOpt())){
+    		 try {
+				httpPort = Integer.parseInt(cmdLine.getOptionValue(HTTP_PORT.getOpt()));
+				logger.info(HTTP_PORT.getOpt()+" set to "+cmdLine.getOptionValue(HTTP_PORT.getOpt()));
+			} catch (NumberFormatException e) {
+				logger.error("Supplied portnumber is not an integer");
+				System.exit(-1);
+			}
+    	 }
+    	 
+    	 if(cmdLine.hasOption(DATASOURCES_FILE.getOpt())){
+    		 logger.error(DATASOURCES_FILE.getOpt() + " NOT JET IMPLEMENTED!!!");
+    	 }
+    	
+
+    	File datasourcesFile = new File(DATASOURCE_BEANDEF_PATH, DATASOURCE_BEANDEF_FILE); 
+    	Set<DataSourceProperties> configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
+    	logger.info("cdm server instance names found: "+ configs.toString());
+    	
+		Server server = new Server(httpPort);
+		
+		// JMX support
+		if(cmdLine.hasOption(JMX.getOpt())){
+			logger.info("adding JMX support ...");
+			MBeanContainer mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+			server.getContainer().addEventListener(mBeanContainer);
+			mBeanContainer.addBean(Log.getLog());
+			mBeanContainer.start();
+		}
+		
+		
+		// add servelet contexts
+		ContextHandlerCollection contexts = new ContextHandlerCollection();
+        for(DataSourceProperties conf : configs){
+        	logger.info("Preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
+        	WebAppContext webapp = new WebAppContext();
+	        webapp.setContextPath("/"+conf.getDataSourceName());
+	        //webapp.setClassLoader(new MyClassLoader(webapp.getClassLoader()));
+            bindJndiDataSource(conf);
+            
+            webapp.setAttribute(ATTRIBUTE_JDBC_JNDI_NAME, conf.getJdbcJndiName());
+	        
+	        if(webappFile.isDirectory()){
+	        	System.getProperty("java.class.path");
+	        	webapp.setResourceBase(webappFile.getAbsolutePath());
+	        	if(false && webappFile.getAbsolutePath().replace('\\', '/').endsWith("src/main/webapp")){
+	        		//FIXME leads to perm genspace error, is this an hint to a general mem leak?
+	        		/*
+	        		 * running the webapp from the {projectpath}/target/cdmserver or from war or from
+	        		 * {projectpath} src/main/webapp should produce consistent results during development
+	        		 * thus we tell the WebAppClassLoader where the dependencies of the webapplication can be found.
+	        		 * Otherwise the system classloader would load these resources.
+	        		 */
+	        		logger.info("Running webapp from source folder, thus adding java.class.path to WebAppClassLoader");
+		        	String classPath = System.getProperty("java.class.path");
+		        	WebAppClassLoader classLoader = new WebAppClassLoader(webapp);
+		        	classLoader.addClassPath(classPath);
+		        	webapp.setClassLoader(classLoader);
+	        	}
+	        } else {
+	        	webapp.setWar(webappFile.getAbsolutePath());
+	        	
+	        }
+	        contexts.addHandler(webapp);
+
+        }
+        logger.info("setting contexts ...");
+        server.setHandler(contexts);
+        logger.info("starting jetty ...");
+        server.start();
+        logger.info("cdmserver has started!");
+        server.join();
+        logger.info(APPLICATION_NAME+" stopped.");
+    	System.exit(0);
+    }
 }
