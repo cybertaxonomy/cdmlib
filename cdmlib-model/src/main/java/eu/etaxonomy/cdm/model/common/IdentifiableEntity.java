@@ -112,6 +112,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	protected boolean protectedTitleCache;
 	
     @XmlElementWrapper(name = "Rights", nillable = true)
+    @XmlElement(name = "Rights")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	//TODO
@@ -120,6 +121,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	private Set<Rights> rights = new HashSet<Rights>();
     
     @XmlElementWrapper(name = "Credits", nillable = true)
+    @XmlElement(name = "Credit")
     @IndexColumn(name="sortIndex", base = 0)
 	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
@@ -129,6 +131,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	private List<Credit> credits = new ArrayList<Credit>();
 	
     @XmlElementWrapper(name = "Extensions", nillable = true)
+    @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
