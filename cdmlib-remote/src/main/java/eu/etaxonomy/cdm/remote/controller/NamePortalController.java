@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
  */
 
 @Controller
-@RequestMapping(value = {"/*/portal/name/*","/*/portal/name/*/typedesignations"})
+@RequestMapping(value = {"/portal/name/*","/portal/name/*/typedesignations"})
 public class NamePortalController extends BaseController<TaxonNameBase, INameService>
 {
 	
@@ -66,7 +66,7 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 
 	public NamePortalController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/portal/name/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/portal/name/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{"$"}));
 	}
 	
@@ -93,7 +93,7 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/portal/name/*/typedesignations"},
+			value = {"/portal/name/*/typedesignations"},
 			method = RequestMethod.GET)
 	public ModelAndView doGetTypeDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		ModelAndView mv = new ModelAndView();

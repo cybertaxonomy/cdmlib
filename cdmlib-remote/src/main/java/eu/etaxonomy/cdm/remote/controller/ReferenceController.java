@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 
 @Controller
-@RequestMapping(value = {"/*/reference/*","/*/reference/*/annotation", "/*/reference/*/nomenclaturalCitation"})
+@RequestMapping(value = {"/reference/*","/reference/*/annotation", "/reference/*/nomenclaturalCitation"})
 public class ReferenceController extends AnnotatableController<ReferenceBase, IReferenceService>
 {
 	
@@ -50,7 +50,7 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	
 	public ReferenceController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/reference/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/reference/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{
 				"$",
 				"authorTeam.$"}));
@@ -74,7 +74,7 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	 * @throws IOException
 	 */
 	@RequestMapping(
-		value = {"/*/reference/*/nomenclaturalCitation"},
+		value = {"/reference/*/nomenclaturalCitation"},
 		method = RequestMethod.GET)
 	public ModelAndView doGetNomenclaturalCitation(
 			HttpServletRequest request, 
@@ -83,11 +83,6 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 		ModelAndView mv = new ModelAndView();
 		UUID nomRefUuid = readValueUuid(request, null);
 		ReferenceBase rb = service.load(nomRefUuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
-//		String[] tokens = request.getServletPath().split("[/\\.]");
-//		String microReference = "";
-//		if(tokens.length > 5){
-//			microReference = tokens[5];
-//		}
 		if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
 			String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
 			mv.addObject(nomRefCit);

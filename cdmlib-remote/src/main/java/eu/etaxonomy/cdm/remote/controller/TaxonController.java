@@ -37,14 +37,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  */
 @Controller
-@RequestMapping(value = {"/*/taxon/*","/*/taxon/*/*", "/*/taxon/*/annotation"})
+@RequestMapping(value = {"/taxon/*","/taxon/*/*", "/taxon/*/annotation"})
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonController.class);
 	
 	public TaxonController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/taxon/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/taxon/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
 	}
 	
@@ -71,7 +71,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	 *         {@link #DEFAULT_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/*/taxon/*/accepted", method = RequestMethod.GET)
+	@RequestMapping(value = "/taxon/*/accepted", method = RequestMethod.GET)
 	public Set<TaxonBase> getAccepted(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getAccepted() " + request.getServletPath());
 		TaxonBase tb = doGet(request, response);

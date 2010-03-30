@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/description/*","/*/description/*/annotation", "/*/featuretree/*"})
+@RequestMapping(value = {"/description/*","/description/*/annotation", "/featuretree/*"})
 public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
@@ -50,7 +50,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	
 	public DescriptionController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/(?:[^/]+)/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
 	
 	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
@@ -81,7 +81,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/featuretree/*"},
+			value = {"/featuretree/*"},
 			method = RequestMethod.GET)
 	public FeatureTree doGetFeatureTree(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		UUID featureTreeUuid = readValueUuid(request, null);

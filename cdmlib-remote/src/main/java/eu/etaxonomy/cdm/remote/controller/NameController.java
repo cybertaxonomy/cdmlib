@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonName;
  */
 
 @Controller
-@RequestMapping(value = {"/*/name/*", "/*/name/*/*", "/*/name/*/annotation", "/*/name/*/nameCache"})
+@RequestMapping(value = {"/name/*", "/name/*/*", "/name/*/annotation", "/name/*/nameCache"})
 public class NameController extends AnnotatableController<TaxonNameBase, INameService>
 {
 	
@@ -55,7 +55,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	
 	public NameController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/name/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/name/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{"$"}));
 	}
 	
@@ -81,7 +81,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/name/*/typeDesignations"},
+			value = {"/name/*/typeDesignations"},
 			method = RequestMethod.GET)
 	public List<TypeDesignationBase> doGetNameDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		TaxonNameBase tnb = getCdmBase(request, response, null, TaxonNameBase.class);
@@ -90,7 +90,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	}
 	
 	@RequestMapping(
-			value = {"/*/name/*/nameCache"},
+			value = {"/name/*/nameCache"},
 			method = RequestMethod.GET)
 	public List<String> doGetNameCache(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		TaxonNameBase tnb = getCdmBase(request, response, NAME_CACHE_INIT_STRATEGY, TaxonNameBase.class);

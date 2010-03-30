@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
  *
  */
 @Controller
-@RequestMapping(value = {"/*/term/", "/*/term/?*", "/*/term/?*/*", "/*/term/*/compareTo/?*"})
+@RequestMapping(value = {"/term/", "/term/?*", "/term/?*/*", "/term/*/compareTo/?*"})
 public class TermListController extends BaseListController<DefinedTermBase, ITermService> {
 	
 	private static final List<String> VOCABULARY_LIST_INIT_STRATEGY = Arrays.asList(new String []{
@@ -84,7 +84,7 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.GET,
-		value = "/*/term/")
+		value = "/term/")
 	public Pager<TermVocabulary> doGetVocabularies(
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize) {
@@ -104,9 +104,9 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.GET,
-		value = "/*/term/?*")
+		value = "/term/?*")
 	public TermVocabulary<DefinedTermBase> doGetTerms(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		UUID uuid = readValueUuid(request, "^/(?:[^/]+)/term/([^/?#&\\.]+).*");
+		UUID uuid = readValueUuid(request, "^/term/([^/?#&\\.]+).*");
 		TermVocabulary<DefinedTermBase> vocab = vocabularyService.load(uuid, VOCABULARY_INIT_STRATEGY);
 		return vocab;
 	}
@@ -120,11 +120,11 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.GET,
-		value = "/*/term/*/compareTo/?*")
+		value = "/term/*/compareTo/?*")
 	public ModelAndView doCompare(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		ModelAndView mv = new ModelAndView();
-		UUID uuidThis = readValueUuid(request, "^/(?:[^/]+)/term/([^/?#&\\.]+).*");
-		UUID uuidThat = readValueUuid(request, "^/(?:[^/]+)/term/(?:[^/]+)/compareTo/([^/?#&\\.]+).*");
+		UUID uuidThis = readValueUuid(request, "^/term/([^/?#&\\.]+).*");
+		UUID uuidThat = readValueUuid(request, "^/term/(?:[^/]+)/compareTo/([^/?#&\\.]+).*");
 		DefinedTermBase thisTerm = service.load(uuidThis, TERM_COMPARE_INIT_STRATEGY);
 		DefinedTermBase thatTerm = service.load(uuidThat, TERM_COMPARE_INIT_STRATEGY);
 		if(thisTerm.getVocabulary().equals(thatTerm.getVocabulary())){
@@ -149,12 +149,12 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.GET,
-		value = "/*/term/tdwg/*")
+		value = "/term/tdwg/*")
 	public List<NamedArea> doGetTdwgLevel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		String path = request.getServletPath();
 		String[] pathTokens = path.split("/");
-		String levelStr = pathTokens[4];
+		String levelStr = pathTokens[3];
 		if(levelStr.indexOf('.') > -1){
 			levelStr = levelStr.substring(0, levelStr.indexOf('.'));
 		}

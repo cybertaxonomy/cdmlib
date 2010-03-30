@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 
 @Controller
-@RequestMapping(value = {"/*/feature/", "/*/feature/*"})
+@RequestMapping(value = {"/feature/", "/feature/*"})
 public class FeatureListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
@@ -47,7 +47,7 @@ public class FeatureListController extends BaseController<DescriptionBase, IDesc
 
 	public FeatureListController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/feature/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/feature/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)

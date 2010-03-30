@@ -80,7 +80,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 	
 	private ITermService termService;
 	
-	private Pattern parameterPattern = Pattern.compile("^/(?:[^/]+)/portal/taxontree/([^?#&\\.]+).*");
+	private Pattern parameterPattern = Pattern.compile("^/portal/taxontree/([^?#&\\.]+).*");
 
 	@Autowired
 	public void setService(ITaxonTreeService service) {
@@ -116,7 +116,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 	 *         the {@link #TAXONTREE_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = { "/*/portal/taxontree" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/portal/taxontree" }, method = RequestMethod.GET)
 	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		logger.info("getTaxonomicTrees()");
@@ -145,7 +145,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxontree/?*"},
+			value = {"/portal/taxontree/?*"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getRootTaxa(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getRootTaxa()");
@@ -189,7 +189,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxontree/*/?*", "/*/portal/taxontree/*/**/?*"}, 
+			value = {"/portal/taxontree/*/?*", "/portal/taxontree/*/**/?*"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildTaxa(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getChildTaxa()");
@@ -235,7 +235,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxontree/*/*/path", "/*/portal/taxontree/*/**/*/path"}, 
+			value = {"/portal/taxontree/*/*/path", "/portal/taxontree/*/**/*/path"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathToRoot(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getPathToRoot()");
