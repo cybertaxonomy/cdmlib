@@ -88,9 +88,9 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	 */
 	private DbImportExtensionMapper(String dbAttributeString, ExtensionType extensionType) {
 		super(dbAttributeString, dbAttributeString);
-		this.extensionType  = extensionType;
+		this.extensionType = extensionType;
 	}
-		
+	
 //****************************** METHODS ***************************************************/
 	
 	/* (non-Javadoc)
@@ -102,7 +102,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		CdmImportBase<?, ?> currentImport = state.getCurrentIO();
 		if (currentImport == null){
 			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !"); 
-	}
+		}
 		ITermService service = currentImport.getTermService();
 		
 		try {
@@ -164,8 +164,8 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	 */
 	private IdentifiableEntity invoke(String dbValue, IdentifiableEntity identifiableEntity){
 		if (ignore){
-		return identifiableEntity;
-	}
+			return identifiableEntity;
+		}
 		if (CdmUtils.isNotEmpty(dbValue)){
 			Extension.NewInstance(identifiableEntity, dbValue, extensionType);
 		}
@@ -184,7 +184,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	protected ExtensionType getExtensionType(ITermService service, UUID uuid, String label, String text, String labelAbbrev){
 		ExtensionType extensionType = (ExtensionType)service.find(uuid);
 		if (extensionType == null){
-			extensionType = new ExtensionType(label, text, labelAbbrev);
+			extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 			extensionType.setUuid(uuid);
 			service.save(extensionType);
 		}

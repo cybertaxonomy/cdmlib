@@ -10,15 +10,12 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.mapping.MultipleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.MultipleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

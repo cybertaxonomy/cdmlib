@@ -32,11 +32,10 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenI
 	private boolean reuseTaxon = false;
 	private String taxonReference = null;
 
-		
+	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 		
-
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		System.out.println("makeIOClassList");

@@ -18,6 +18,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
+public class PesiSourceExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiSourceExport.class);
 	private static final Class<? extends CdmBase> standardMethodParameter = ReferenceBase.class;
 
@@ -69,7 +70,10 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try{
-			logger.info("Start: Make " + pluralString + " ...");
+			logger.error("*** Started Making " + pluralString + " ...");
+
+			// Get the limit for objects to save within a single transaction.
+			int limit = state.getConfig().getLimitSave();
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true ;
@@ -77,11 +81,9 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 			// PESI: Clear the database table Source.
 			doDelete(state);
 
-			// Start transaction
-			TransactionStatus txStatus = startTransaction(true);
-
-			// CDM: Get all References
-			List<ReferenceBase> list = getReferenceService().list(null, 100000000, 0, null, null);
+			// CDM: Get the number of all available references.
+//			int maxCount = getReferenceService().count(null);
+//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
 
 			// Get specific mappings: (CDM) Reference -> (PESI) Source
 			PesiExportMapping mapping = getMapping();
@@ -92,17 +94,42 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 			// PESI: Create the Sources
 			// TODO: Store CDM2PESI identifier pairs for later use in other export classes - PesiExportState
 			int count = 0;
-			for (ReferenceBase<?> reference : list) {
-				doCount(count++, modCount, pluralString);
-				success &= mapping.invoke(reference);
-			}
+			int pastCount = 0;
+			TransactionStatus txStatus = null;
+			List<ReferenceBase> list = null;
 
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			while ((list = getReferenceService().list(null, limit, count, null, null)).size() > 0) {
+
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
+				for (ReferenceBase<?> reference : list) {
+					doCount(count++, modCount, pluralString);
+					success &= mapping.invoke(reference);
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
+			}
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.info("End: Make " + pluralString + " ..." + getSuccessString(success));
+			logger.error("Committed transaction.");
+
+			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
 			return success;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return false;
@@ -120,17 +147,28 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 		String sql;
 		Source destination =  pesiConfig.getDestination();
 
+		// Clear Occurrences
+		sql = "DELETE FROM Occurrence";
+		destination.setQuery(sql);
+		destination.update(sql);
+
+		// Clear Taxa
+		sql = "DELETE FROM Taxon";
+		destination.setQuery(sql);
+		destination.update(sql);
+
 		// Clear Sources
 		sql = "DELETE FROM " + dbTableName;
 		destination.setQuery(sql);
 		destination.update(sql);
+		
 		return true;
 	}
 	
 	/**
-	 * Returns the IMIS_Id.
+	 * Returns the <code>IMIS_Id</code> attribute.
 	 * @param reference The {@link ReferenceBase Reference}.
-	 * @return The IMIS_Id
+	 * @return The <code>IMIS_Id</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
@@ -174,7 +212,7 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	}
 
 	/**
-	 * Returns the <code>AuthorString</code> attribute. The corresponding CDM attribute is the <code>titleCache</code> or an <code>authorTeam</code>.
+	 * Returns the <code>AuthorString</code> attribute. The corresponding CDM attribute is the <code>titleCache</code> of an <code>authorTeam</code>.
 	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>AuthorString</code> attribute.
 	 * @see MethodMapper
@@ -183,8 +221,8 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	private static String getAuthorString(ReferenceBase<?> reference) {
 		TeamOrPersonBase team = reference.getAuthorTeam();
 		if (team != null) {
-			return team.getTitleCache();
-			//team.getNomenclaturalTitle();
+//			return team.getTitleCache();
+			return team.getNomenclaturalTitle();
 		} else {
 			return null;
 		}
@@ -223,7 +261,7 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
 		
-		// For sets of size bigger than one, this isn't good at all.
+		// TODO: For sets of size bigger than one, this isn't good at all.
 		for (IdentifiableSource source : reference.getSources()) {
 			if (source != null) {
 				result = source.getIdInSource();
@@ -264,7 +302,7 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-	//	mapping.addMapper(IdMapper.NewInstance("SourceId"));
+		mapping.addMapper(IdMapper.NewInstance("SourceId"));
 		mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryFK", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryCache", this));

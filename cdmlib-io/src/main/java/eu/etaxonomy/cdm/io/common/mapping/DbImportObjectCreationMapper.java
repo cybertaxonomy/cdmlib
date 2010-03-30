@@ -35,7 +35,7 @@ public class DbImportObjectCreationMapper<ANNOTATABLE extends AnnotatableEntity,
 	
 //******************************* ATTRIBUTES ***************************************/
 	private IMappingImport<ANNOTATABLE, STATE> mappingImport;
-	
+		
 	
 //********************************* CONSTRUCTOR ****************************************/
 	/**

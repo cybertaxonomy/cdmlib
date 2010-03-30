@@ -71,7 +71,7 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.IdMapper#getTypeClass()
+	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
 	 */
 	@Override
 	public Class<?> getTypeClass() {

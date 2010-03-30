@@ -94,7 +94,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (extensionType == null){
 			extensionType = (ExtensionType)getTermService().find(uuid);
 			if (extensionType == null){
-				extensionType = new ExtensionType(label, text, labelAbbrev);
+				extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 				extensionType.setUuid(uuid);
 				getTermService().save(extensionType);
 				state.putExtensionType(extensionType);

@@ -16,7 +16,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -24,7 +23,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -75,7 +73,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	private Object source;
 	protected ReferenceBase sourceReference;
 	private ICdmDataSource destination;
-	private Person commentator =  Person.NewTitledInstance("automatic BerlinModel2CDM importer");
+	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 	
 	protected Class<ICdmIO>[] ioClassList;
 	

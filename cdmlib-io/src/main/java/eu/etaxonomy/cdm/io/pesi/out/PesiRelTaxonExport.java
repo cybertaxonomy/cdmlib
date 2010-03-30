@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -34,13 +33,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
+public class PesiRelTaxonExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiRelTaxonExport.class);
 	private static final Class<? extends CdmBase> standardMethodParameter = RelationshipBase.class;
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "RelTaxon";
-	private static final String pluralString = "TaxonRelationships";
+	private static final String pluralString = "Relationships";
 
 	public PesiRelTaxonExport() {
 		super();
@@ -69,41 +68,67 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try {
-			logger.info("Start: Make " + pluralString + " ...");
+			logger.error("*** Started Making " + pluralString + " ...");
 	
+			// Get the limit for objects to save within a single transaction.
+			int limit = state.getConfig().getLimitSave();
+
 			// Stores whether this invoke was successful or not.
-			boolean success = true ;
-	
+			boolean success = true;
+
 			// PESI: Clear the database table RelTaxon.
 			doDelete(state);
 	
-			// Start transaction
-			TransactionStatus txStatus = startTransaction(true);
-	
-			// CDM: Get all Relationships
-			List<RelationshipBase> list = getTaxonService().getAllRelationships(100000000, 0);
-	
-			// Get specific mappings: (CDM) TaxonRelationship -> (PESI) RelTaxon
+			// Get specific mappings: (CDM) Relationship -> (PESI) RelTaxon
 			PesiExportMapping mapping = getMapping();
-	
+
 			// Initialize the db mapper
 			mapping.initialize(state);
-	
+
 			// PESI: Create the RelTaxa
 			int count = 0;
-			for (RelationshipBase<?, ?, ?> relation : list) {
-				if (relation.isInstanceOf(TaxonRelationship.class) || relation.isInstanceOf(SynonymRelationship.class)) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(relation);
+			int taxonCount = 0;
+			int pastCount = 0;
+			TransactionStatus txStatus = null;
+			List<RelationshipBase> list = null;
+
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			while ((list = getTaxonService().getAllRelationships(limit, taxonCount)).size() > 0) {
+
+				taxonCount += list.size();
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
+				for (RelationshipBase<?, ?, ?> relation : list) {
+
+					// Focus on TaxonRelationships and SynonymRelationships.
+					if (relation.isInstanceOf(TaxonRelationship.class) || relation.isInstanceOf(SynonymRelationship.class)) {
+						doCount(count++, modCount, pluralString);
+						success &= mapping.invoke(relation);
+					}
 				}
+				
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
 			}
-	
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
+			}
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.info("End: Make " + pluralString + " ..." + getSuccessString(success));
+			logger.error("Committed transaction.");
 	
+			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
+			
 			return success;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return false;
@@ -137,8 +162,9 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	}
 
 	/**
-	 * Returns the <code>TaxonFk1</code> attribute.
+	 * Returns the <code>TaxonFk1</code> attribute. It corresponds to a CDM <code>TaxonRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>TaxonFk1</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -148,8 +174,9 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	}
 	
 	/**
-	 * Returns the <code>TaxonFk2</code> attribute.
+	 * Returns the <code>TaxonFk2</code> attribute. It corresponds to a CDM <code>SynonymRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>TaxonFk2</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -166,7 +193,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getRelTaxonQualifierFk(RelationshipBase<?, ?, ?> relationship) {
-		return PesiTransformer.taxRelation2RelTaxonQualifierFk(relationship);
+		return PesiTransformer.taxonRelation2RelTaxonQualifierFk(relationship);
 	}
 	
 	/**
@@ -177,8 +204,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	 */
 	@SuppressWarnings("unused")
 	private static String getRelQualifierCache(RelationshipBase<?, ?, ?> relationship) {
-		// TODO
-		return null;
+		return PesiTransformer.taxonRelation2RelTaxonQualifierCache(relationship);
 	}
 	
 	/**
@@ -200,7 +226,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	 * @param isFrom A boolean value indicating whether the database key of the parent or child in this relationship is searched. <code>true</code> means the child is searched. <code>false</code> means the parent is searched.
 	 * @return The database key of an object in the given relationship.
 	 */
-	private static Integer getObjectFk(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state, boolean isFrom){
+	private static Integer getObjectFk(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state, boolean isFrom) {
 		TaxonBase<?> taxon = null;
 		if (relationship.isInstanceOf(TaxonRelationship.class)) {
 			TaxonRelationship tr = (TaxonRelationship)relationship;
@@ -210,8 +236,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 			taxon = (isFrom) ? sr.getSynonym() : sr.getAcceptedTaxon();
 		}
 		if (taxon != null) {
-			CdmBase cdmBase = taxon.getSec();
-			return state.getDbId(cdmBase);
+			return state.getDbId(taxon);
 		}
 		logger.warn("No taxon found for relationship: " + relationship.toString());
 		return null;
@@ -224,13 +249,13 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-//		mapping.addMapper(IdMapper.NewInstance("RelTaxonId"));
+//		mapping.addMapper(IdMapper.NewInstance("RelTaxonId")); // Automagically generated on database level as primary key
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk1", this.getClass(), "getTaxonFk1", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk2", this.getClass(), "getTaxonFk2", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("RelTaxonQualifierFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RelQualifierCache", this));
-//		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
-		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
+		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
+//		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
 
 		return mapping;
 	}

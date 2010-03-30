@@ -280,21 +280,7 @@ public class ImportHelper {
 		String methodName;
 		T result;
 		try {
-			if (isBoolean){
-				if (cdmAttrName == null || cdmAttrName.length() < 3 ||  !( cdmAttrName.startsWith("is") || cdmAttrName.startsWith("use"))     ){
-					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters and start with 'is' or 'use': " + cdmAttrName);
-				}
-				methodName = cdmAttrName ;
-			}else {
-				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
-					throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
-				}
-				methodName = "get" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
-			}
-//			else{
-//				logger.error("Class not supported: " + clazz.toString());
-//				return null;
-//			}
+			methodName = getGetterMethodName(cdmAttrName, isBoolean);
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
 			result = (T)cdmMethod.invoke(cdmBase);
 			return result;

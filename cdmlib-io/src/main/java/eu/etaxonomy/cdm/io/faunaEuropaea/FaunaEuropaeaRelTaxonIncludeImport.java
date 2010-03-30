@@ -338,6 +338,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 
 		String selectQuery = 
 			selectColumns + fromClause + orderClause;
+		logger.debug(selectQuery);
 			
 		try {
 

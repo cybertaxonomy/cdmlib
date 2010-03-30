@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportStateBase<?,?>, CDM_BASE extends CdmBase> extends CdmSingleAttributeMapperBase implements IDbImportMapper<STATE, CDM_BASE>  {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbSingleAttributeImportMapperBase.class);
 	
 	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
@@ -190,13 +189,13 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException {
 		if (ignore){
 			return cdmBase;
-	}
+		}
 		Object dbValue = getValue(rs);
-	
+		
 //		String dbValue = rs.getString(getSourceAttribute());
 		return doInvoke(cdmBase, dbValue);
 	}
-		
+	
 	protected CDM_BASE doInvoke(CDM_BASE cdmBase, Object value) throws SQLException {
 		Method method = getMethod();
 		try {
@@ -205,7 +204,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 				logger.warn("No object defined for invoke. Method will not be invoked");
 			}else{
 				method.invoke(objectToInvoke, value);
-	}
+			}
 			return cdmBase;
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -304,8 +303,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 //		return source.checkColumnExists(tableName, attributeName);
 		//TODO not possible as long as tableName is not initialized
 		return true;
-		}
-		
+	}
 	
 //	protected int getPrecision(){
 //		return this.precision;
