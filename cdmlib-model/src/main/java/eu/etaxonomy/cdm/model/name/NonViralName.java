@@ -1252,6 +1252,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 			}
 		}
 	}
-
-
+	
+	
 }

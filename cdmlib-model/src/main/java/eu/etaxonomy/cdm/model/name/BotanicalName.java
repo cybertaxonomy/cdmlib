@@ -318,7 +318,7 @@ public class BotanicalName extends NonViralName<BotanicalName> /*implements IMer
 	 * @param zoologicalName
 	 * @return
 	 */
-	public static BotanicalName valueOf(ZoologicalName zoologicalName){
+	public static BotanicalName valueOf(TaxonNameBase taxonNameBase){
 		logger.error("Not implemented yet.");
 		return null;
 	}

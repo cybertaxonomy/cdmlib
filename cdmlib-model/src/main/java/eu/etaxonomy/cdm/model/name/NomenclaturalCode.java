@@ -247,6 +247,21 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 		}
 		return result;
 	}	
+	
+	@Transient
+	public TaxonNameBase valueOf(TaxonNameBase taxonNameBase){
+		
+		switch(this){
+		case ICBN:
+			return BotanicalName.valueOf(taxonNameBase);
+		case ICZN:
+			return ZoologicalName.valueOf(taxonNameBase);
+		default:
+			logger.error("Not implemented yet");
+		}
+				
+		return taxonNameBase;
+	}
 }
 
 //@XmlAccessorType(XmlAccessType.FIELD)
