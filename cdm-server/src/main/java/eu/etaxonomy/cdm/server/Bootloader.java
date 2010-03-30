@@ -81,9 +81,16 @@ public final class Bootloader {
     
     private static final String WAR_FILENAME = WAR_NAME + WAR_POSTFIX;
     private static final int KB = 1024;
+    
+    private static Set<DataSourceProperties> configs = null;
+    private static File webappFile = null;
 
     private Bootloader() {
         // is started from main
+    }
+    
+    public static Set<DataSourceProperties> listDataSources(){
+    	return configs;
     }
 
     public static int writeStreamTo(final InputStream input, final OutputStream output, int bufferSize) throws IOException {
@@ -153,6 +160,12 @@ public final class Bootloader {
 	}
     
     
+	/**
+	 * MAIN METHOD
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
     	
     	logger.info("Starting "+APPLICATION_NAME);
@@ -167,7 +180,6 @@ public final class Bootloader {
     	 }
     	 
     	 // WARFILE
-    	 File webappFile = null;
     	 if(cmdLine.hasOption(WEBAPP.getOpt())){
     		 webappFile = new File(cmdLine.getOptionValue(WEBAPP.getOpt()));
     		 if(webappFile.isDirectory()){
@@ -195,9 +207,9 @@ public final class Bootloader {
     		 logger.error(DATASOURCES_FILE.getOpt() + " NOT JET IMPLEMENTED!!!");
     	 }
     	
-
+    	
     	File datasourcesFile = new File(DATASOURCE_BEANDEF_PATH, DATASOURCE_BEANDEF_FILE); 
-    	Set<DataSourceProperties> configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
+    	Bootloader.configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
     	logger.info("cdm server instance names found: "+ configs.toString());
     	
 		Server server = new Server(httpPort);
@@ -214,6 +226,21 @@ public final class Bootloader {
 		
 		// add servelet contexts
 		ContextHandlerCollection contexts = new ContextHandlerCollection();
+		
+		// 1. default context
+		logger.info("Adding default WebAppContext");
+    	WebAppContext defaultWebapp = new WebAppContext();
+    	String defaultWebAppPath = null;
+    	if(isRunningFromSource()){
+    		defaultWebAppPath = "./src/main/webapp";
+    	} 
+    	defaultWebapp.setResourceBase(defaultWebAppPath);
+    	defaultWebapp.setDescriptor(defaultWebAppPath+"/WEB-INF/web.xml");
+        defaultWebapp.setContextPath("/");
+
+    	contexts.addHandler(defaultWebapp);
+    	
+		// 2. cdm server contexts
         for(DataSourceProperties conf : configs){
         	logger.info("Preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
         	WebAppContext webapp = new WebAppContext();
@@ -226,7 +253,7 @@ public final class Bootloader {
 	        if(webappFile.isDirectory()){
 	        	System.getProperty("java.class.path");
 	        	webapp.setResourceBase(webappFile.getAbsolutePath());
-	        	if(false && webappFile.getAbsolutePath().replace('\\', '/').endsWith("src/main/webapp")){
+	        	if(false && isRunningFromSource()){
 	        		//FIXME leads to perm genspace error, is this an hint to a general mem leak?
 	        		/*
 	        		 * running the webapp from the {projectpath}/target/cdmserver or from war or from
@@ -256,4 +283,8 @@ public final class Bootloader {
         logger.info(APPLICATION_NAME+" stopped.");
     	System.exit(0);
     }
+
+	private static boolean isRunningFromSource() {
+		return webappFile.getAbsolutePath().replace('\\', '/').endsWith("src/main/webapp");
+	}
 }
