@@ -101,12 +101,12 @@ public class TaxonNodeDaoHibernateImplTest extends
 		UUID uuidTaxon2 = taxon2.getUuid();
 	
 		List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
-		assertEquals("there should be only two taxa", 2, taxa.size());
+		assertEquals("there should be only two taxa", 5, taxa.size());
 		
 		taxonNodeDao.delete(taxNode2);
 				
 		taxa = taxonDao.getAllTaxonBases(10, 0);
-		assertEquals("there should be only one taxon left", 1, taxa.size());
+		assertEquals("there should be only one taxon left", 4, taxa.size());
 		
 	}
 }
