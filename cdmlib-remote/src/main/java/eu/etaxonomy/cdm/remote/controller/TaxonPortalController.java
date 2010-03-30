@@ -93,7 +93,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
-@RequestMapping(value = {"/*/portal/taxon/*", "/*/portal/taxon/*/*", "/*/portal/name/*/*", "/*/portal/taxon/*/media/*/*", "/*/portal/taxon/*/subtree/media/*/*"})
+@RequestMapping(value = {"/portal/taxon/*", "/portal/taxon/*/*", "/portal/name/*/*", "/portal/taxon/*/media/*/*", "/portal/taxon/*/subtree/media/*/*"})
 public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
@@ -247,12 +247,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	
 	
-	private static final String featureTreeUuidPattern = "^/(?:[^/]+)/taxon(?:(?:/)([^/?#&\\.]+))+.*";
+	private static final String featureTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 	
 	public TaxonPortalController(){
 		super();
 		setInitializationStrategy(TAXON_INIT_STRATEGY);
-		setUuidParameterPattern("^/(?:[^/]+)/portal/(?:[^/]+)/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/portal/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)
@@ -319,7 +319,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.GET,
-			value = {"/*/portal/taxon/find"}) //TODO map to path /*/portal/taxon/
+			value = {"/portal/taxon/find"}) //TODO map to path /*/portal/taxon/
 	public Pager<IdentifiableEntity> doFind(
 			@RequestParam(value = "query", required = false) String query,
 			@RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -385,7 +385,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxon/*/synonymy"},
+			value = {"/portal/taxon/*/synonymy"},
 			method = RequestMethod.GET)
 	public ModelAndView doGetSynonymy(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		
@@ -413,7 +413,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *         {@link #SYNONYMY_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/*/portal/taxon/*/accepted", method = RequestMethod.GET)
+	@RequestMapping(value = "/portal/taxon/*/accepted", method = RequestMethod.GET)
 	public Set<TaxonBase> getAccepted(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		logger.info("getAccepted() " + request.getServletPath());
@@ -453,7 +453,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxon/*/taxonRelationships"},
+			value = {"/portal/taxon/*/taxonRelationships"},
 			method = RequestMethod.GET)
 	public List<TaxonRelationship> doGetTaxonRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
 
@@ -483,7 +483,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxon/*/nameRelationships"},
+			value = {"/portal/taxon/*/nameRelationships"},
 			method = RequestMethod.GET)
 	public List<NameRelationship> doGetNameRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameRelations()" + request.getServletPath());
@@ -506,7 +506,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/portal/name/*/descriptions"},
+			value = {"/portal/name/*/descriptions"},
 			method = RequestMethod.GET)
 	public List<TaxonNameDescription> doGetNameDescriptions(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameDescriptions()" + request.getServletPath());
@@ -530,7 +530,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxon/*/nameTypeDesignations"},
+			value = {"/portal/taxon/*/nameTypeDesignations"},
 			method = RequestMethod.GET)
 	public List<TypeDesignationBase> doGetNameTypeDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameTypeDesignations()" + request.getServletPath());
@@ -553,7 +553,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/*/portal/taxon/*/descriptions"},
+			value = {"/portal/taxon/*/descriptions"},
 			method = RequestMethod.GET)
 	public List<TaxonDescription> doGetDescriptions(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetDescriptions()" + request.getServletPath());
@@ -590,24 +590,24 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-		value = {"/*/portal/taxon/*/media/*/*"},
+		value = {"/portal/taxon/*/media/*/*"},
 		method = RequestMethod.GET)
 	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
 		Taxon t = getCdmBase(request, response, null, Taxon.class);
 		String path = request.getServletPath();
-		List<Media> returnMedia = getMediaForTaxon(t, path, 6);
+		List<Media> returnMedia = getMediaForTaxon(t, path, 5);
 		return returnMedia;
 	}
 	
 	@RequestMapping(
-			value = {"/*/portal/taxon/*/subtree/media/*/*"},
+			value = {"/portal/taxon/*/subtree/media/*/*"},
 			method = RequestMethod.GET)
 		public List<Media> doGetSubtreeMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
 		Taxon t = getCdmBase(request, response, TAXON_WITH_NODES_INIT_STRATEGY, Taxon.class);
 		String path = request.getServletPath();
-		List<Media> returnMedia = getMediaForTaxon(t, path, 7);
+		List<Media> returnMedia = getMediaForTaxon(t, path, 6);
 		TaxonNode node;
 		//looking for all medias of genus
 		if (t.getTaxonNodes().size()>0){
@@ -623,7 +623,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			for (TaxonNode child : children){
 				childTaxon = child.getTaxon();
 				childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), null);
-				returnMedia.addAll(getMediaForTaxon(childTaxon, path, 7));
+				returnMedia.addAll(getMediaForTaxon(childTaxon, path, 6));
 			}
 		}
 		return returnMedia;
@@ -650,11 +650,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 				}
 			}
 		}
-		
-		// move into media ...
-		
-		// find best matching representations of each media
-		//String path = request.getServletPath();
+			
 		String[] pathTokens = path.split("/");
 		
 		String[] mimeTypes = pathTokens[mimeTypeTokenPosition].split(",");
@@ -663,105 +659,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		Integer height = null;
 		Integer size = null;
 		
-		for(int i=0; i<mimeTypes.length; i++){
-			mimeTypes[i] = mimeTypes[i].replace(':', '/');
-		}
-		
-		if(sizeTokens.length > 0){
-			try {
-				size = Integer.valueOf(sizeTokens[0]);
-			} catch (NumberFormatException nfe) {
-				/* IGNORE */
-			}
-		}
-		if(sizeTokens.length > 1){
-			try {
-				widthOrDuration = Integer.valueOf(sizeTokens[1]);
-			} catch (NumberFormatException nfe) {
-				/* IGNORE */
-			}
-		}
-		if(sizeTokens.length > 2){
-			try {
-				height = Integer.valueOf(sizeTokens[2]);
-			} catch (NumberFormatException nfe) {
-				/* IGNORE */
-			}
-		}
-		
-		List<Media> returnMedia = new ArrayList<Media>(taxonMedia.size());
-		for(Media media : taxonMedia){
-			SortedMap<String, MediaRepresentation> prefRepresentations 
-				= orderMediaRepresentations(media, mimeTypes, size, widthOrDuration, height);
-			try {
-				// take first one and remove all other representations
-				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
-				for (MediaRepresentation representation : media.getRepresentations()) {
-					if (representation != prefOne) {
-						media.removeRepresentation(representation);
-					}
-				}
-				returnMedia.add(media);
-			} catch (NoSuchElementException nse) {
-				logger.debug(nse);
-				/* IGNORE */
-			}
-		}
-		
+		List<Media> returnMedia = Media.findPreferredMedia(taxonMedia, mimeTypes,
+				sizeTokens, widthOrDuration, height, size);
 		
 		return returnMedia;
 	}
-	
-	/**
-	 * @param media
-	 * @param mimeTypeRegexes
-	 * @param size
-	 * @param widthOrDuration
-	 * @param height
-	 * @return
-	 * 
-	 * TODO move into a media utils class
-	 * TODO implement the quality filter  
-	 */
-	private SortedMap<String, MediaRepresentation> orderMediaRepresentations(Media media, String[] mimeTypeRegexes,
-			Integer size, Integer widthOrDuration, Integer height) {
-		SortedMap<String, MediaRepresentation> prefRepr = new TreeMap<String, MediaRepresentation>();
-		for (String mimeTypeRegex : mimeTypeRegexes) {
-			// getRepresentationByMimeType
-			Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
-			int representationCnt = 0;
-			for (MediaRepresentation representation : media.getRepresentations()) {
-				int dwa = 0;
-				if(representation.getMimeType() == null){
-					prefRepr.put((dwa + representationCnt++) + "_NA", representation);
-				} else {
-					Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
-					if (mather.matches()) {
-	
-						/* TODO the quality filter part is being skipped 
-						 * // look for representation with the best matching parts
-						for (MediaRepresentationPart part : representation.getParts()) {
-							if (part instanceof ImageFile) {
-								ImageFile image = (ImageFile) part;
-								int dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
-								if (dw < 0) {
-									dw *= -1;
-								}
-								dwa += dw;
-							}
-							dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
-						}*/
-						prefRepr.put((dwa + representationCnt++) + '_' + representation.getMimeType(), representation);
-											
-						// preferred mime type found => end loop
-						break;
-					}
-				}
-			}
-		}
-		return prefRepr;
-	}
-
 	
 	
 // ---------------------- code snippet preserved for possible later use --------------------
