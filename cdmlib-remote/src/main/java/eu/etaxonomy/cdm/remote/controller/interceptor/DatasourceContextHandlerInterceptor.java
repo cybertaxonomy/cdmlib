@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.database.NamedContextHolder;
  * @author a.kohlbecker
  *
  */
+@Deprecated
 public class DatasourceContextHandlerInterceptor extends HandlerInterceptorAdapter {
 	private static final Logger logger = Logger.getLogger(DatasourceContextHandlerInterceptor.class);
 	
