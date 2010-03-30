@@ -25,9 +25,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
@@ -40,13 +37,12 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RelationshipTermBase", propOrder = {
@@ -126,13 +122,13 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		Representation result = null;
 		if (this.isSymmetric()){
 			for (Representation repr : this.getRepresentations()){
-				if (repr.getLanguage() == lang){
+				if (lang.equals(repr.getLanguage())){
 					result = repr;
 				}
 			}
 		}else{
 			for (Representation repr : this.getInverseRepresentations()){
-				if (repr.getLanguage() == lang){
+				if (lang.equals(repr.getLanguage())){
 					result = repr;
 				}
 			}
@@ -218,7 +214,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		String inverseText = csvLine.get(5).trim();
 		String inverseLabel = csvLine.get(4).trim();
 		String inverseLabelAbbrev = null;
-		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.ENGLISH()) );
+		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
 		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(6)));
 		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(7)));
 		return newInstance;

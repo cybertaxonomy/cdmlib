@@ -121,7 +121,7 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	public static MediaRepresentation NewInstance(String mimeType, String suffix, String uri, Integer size){
 		if (CdmUtils.isEmpty(uri)){
 			return null;
-	}
+		}
 		MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, size);
 		MediaRepresentation result  = new MediaRepresentation();
 		result.setMimeType(mimeType);

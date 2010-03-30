@@ -418,7 +418,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	@Deprecated
 	public void setCitationMicroReference(String citationMicroReference){
 		if (this.sources.size() < 1){
-			this.addSource(DescriptionElementSource.NewInstance(null, null, null, citationMicroReference));
+			ReferenceBase citation = null;
+			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, citationMicroReference));
 		}else if (this.sources.size() > 1){
 			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
 		}else{

@@ -176,7 +176,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
 	 */
 	public TermVocabulary<T> readCsvLine(List<String> csvLine) {
-		return readCsvLine(csvLine, Language.ENGLISH());
+		return readCsvLine(csvLine, Language.CSV_LANGUAGE());
 	}
 	
 	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {

@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import java.util.ArrayList;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -20,7 +18,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -74,7 +71,6 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	 * @return
 	 */
 	public static MediaRepresentationPart NewInstance(String uri, Integer size) {
-		logger.debug("NewInstance");
 		MediaRepresentationPart result = new MediaRepresentationPart(uri, size);
 		return result;
 	}

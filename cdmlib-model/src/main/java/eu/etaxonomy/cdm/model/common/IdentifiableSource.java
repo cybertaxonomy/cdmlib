@@ -67,10 +67,10 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}
 	
-	public static IdentifiableSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microReference){
+	public static IdentifiableSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microCitation){
 		IdentifiableSource result = NewInstance(id, idNamespace);
 		result.setCitation(citation);
-		result.setCitationMicroReference(microReference);
+		result.setCitationMicroReference(microCitation);
 		return result;
 	}
 	

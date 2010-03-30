@@ -592,7 +592,7 @@ public class Language extends DefinedTermBase<Language> {
 			
 //			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 //			vocabularyStore.initialize();
-	}
+		}
 		return (Language)termMap.get(uuid);
 	}
 	
@@ -1084,7 +1084,8 @@ public class Language extends DefinedTermBase<Language> {
 	public static final Language ZUNI(){/*@*/ return getTermByUuid(uuidZuni);/*@*/}
 	public static final Language NO_LINGUISTIC_CONTENT(){/*@*/ return getTermByUuid(uuidNoLinguisticContent);/*@*/}
 	public static final Language ZAZA_DIMILI_DIMLI_KIRDKI_KIRMANJKI_ZAZAKI(){/*@*/ return getTermByUuid(uuidZaza_Dimili_Dimli_Kirdki_Kirmanjki_Zazaki);/*@*/}
-
+	
+	
 	private static Language defaultLanguage = null;  //is set in setDefaultTerms()
 	private static Language csvLanguage = null;  //is set in setDefaultTerms()
 	
@@ -1092,7 +1093,7 @@ public class Language extends DefinedTermBase<Language> {
 	public static final Language DEFAULT(){
 		return defaultLanguage;
 	}
-	
+
 	public static final Language CSV_LANGUAGE(){
 		return csvLanguage;
 	}

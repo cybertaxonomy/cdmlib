@@ -49,15 +49,25 @@ import eu.etaxonomy.cdm.model.media.Media;
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
 public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
-	//International Code of Nomenclature of Bacteria
+	/**
+	 * International Code of Nomenclature of Bacteria
+	*/
 	@XmlEnumValue("ICNB") ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e")), 
-	//International Code of Botanical Nomenclature
+	/**
+	 * International Code of Botanical Nomenclature
+	 */
 	@XmlEnumValue("ICBN") ICBN(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482")), 
-	//International Code of Cultivated Plants
+	/**
+	 * International Code of Cultivated Plants
+	 */
 	@XmlEnumValue("ICNCP") ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e")), 
-	//International Code of Zoological Nomenclature
+	/**
+	 * International Code of Zoological Nomenclature
+	 */
 	@XmlEnumValue("ICZN") ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b")), 
-	//International Code for Virus Classification and Nomenclature
+	/**
+	 * International Code for Virus Classification and Nomenclature
+	 */
 	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"));	
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
@@ -237,6 +247,21 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 		}
 		return result;
 	}	
+	
+	@Transient
+	public TaxonNameBase valueOf(TaxonNameBase taxonNameBase){
+		
+		switch(this){
+		case ICBN:
+			return BotanicalName.valueOf(taxonNameBase);
+		case ICZN:
+			return ZoologicalName.valueOf(taxonNameBase);
+		default:
+			logger.error("Not implemented yet");
+		}
+				
+		return taxonNameBase;
+	}
 }
 
 //@XmlAccessorType(XmlAccessType.FIELD)

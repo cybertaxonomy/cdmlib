@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -35,17 +34,13 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.validation.Level2;
+
 
 /**
  * This class represents information pieces expressed in one or several natural
@@ -156,10 +151,20 @@ public class TextData extends DescriptionElementBase {
 	 * 
 	 * @see	#getText(Language)
 	 */
-
     public Map<Language, LanguageString> getMultilanguageText() {
 		return multilanguageText;
 	}
+    
+    /**
+     * Returns the multilanguage text with the content of <i>this</i> text data for
+     * a specific language.
+     * 
+     * @param language the language in which the text string looked for is formulated
+     * @return
+     */
+    public LanguageString getMultilanguageText(Language language){
+    	return multilanguageText.get(language);
+    }
     
     public void setMultilanguageText(Map<Language,LanguageString> multilanguageText) {
     	this.multilanguageText = multilanguageText;
@@ -170,7 +175,7 @@ public class TextData extends DescriptionElementBase {
 	 * of <i>this</i> text data.
 	 * 
 	 * @param language	the language in which the text string looked for is formulated
-	 * @see				#getMultilanguageText()
+	 * @see				#getMultilanguageText(Language)
 	 */ 
 	public String getText(Language language) {
 		LanguageString languageString = multilanguageText.get(language);

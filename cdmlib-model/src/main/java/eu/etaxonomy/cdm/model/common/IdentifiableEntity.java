@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -213,7 +214,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 */
 	@Transient
 	protected String getTruncatedCache(String cache) {
-		if (cache != null && cache.length() > 252){
+		if (cache != null && cache.length() > 255){
 			logger.warn("Truncation of cache: " + this.toString() + "/" + cache);
 			cache = cache.substring(0, 252) + "...";
 		}
@@ -373,6 +374,18 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			source.setSourcedObj(this);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)
+	 */
+	public IdentifiableSource addSource(String id, String idNamespace, ReferenceBase citation, String microCitation) {
+		if (id == null && idNamespace == null && citation == null && microCitation == null){
+			return null;
+		}
+		IdentifiableSource source = IdentifiableSource.NewInstance(id, idNamespace, citation, microCitation);
+		addSource(source);
+		return source;
+	}
 	 
 	 /* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
@@ -397,7 +410,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		return result;	
 	}
 
-
+	
 	public int compareTo(IdentifiableEntity identifiableEntity) {
 
 		 int result = 0;
@@ -415,7 +428,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		 String specifiedTitleCache = "";
 		 String thisTitleCache = "";
 		 String specifiedReferenceTitleCache = "";
-		 String thisReferenceTitleCache = "";	
+		 String thisReferenceTitleCache = "";
+		 String thisGenusString = "";
+		 String specifiedGenusString = "";
+		 int thisrank_order = 0;
 		 
 		 if(identifiableEntity instanceof NonViralName) {
 			 specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
@@ -425,16 +441,18 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			 TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
 			 
 			 TaxonNameBase<?,?> taxonNameBase = taxonBase.getName();
-			 specifiedNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 
+			 
+			 NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
+			 specifiedNameCache = nonViralName.getNameCache();
 			 specifiedTitleCache = taxonNameBase.getTitleCache();
 			 
-			 //specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
-//			 ReferenceBase referenceBase = taxonBase.getSec();
-//			 if (referenceBase != null) {
-//           FIXME: HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class) throws exception
-//				 referenceBase = HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class);
-//				 specifiedReferenceTitleCache = referenceBase.getTitleCache();
-//			 }
+			 specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
+			 ReferenceBase referenceBase = taxonBase.getSec();
+			 if (referenceBase != null) {
+				 referenceBase = HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class);
+				 specifiedReferenceTitleCache = referenceBase.getTitleCache();
+			 }
 		 }
 		 
 		 if(this instanceof NonViralName) {
@@ -442,9 +460,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			 thisTitleCache = getTitleCache();
 		 } else if(this instanceof TaxonBase) {
 			 TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
-			 thisNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
+			 thisNameCache = nonViralName.getNameCache();
 			 thisTitleCache = taxonNameBase.getTitleCache();
 			 thisReferenceTitleCache = getTitleCache();
+			 thisGenusString = nonViralName.getGenusOrUninomial();
 		 }
 		 
 		 // Compare name cache of taxon names
