@@ -280,10 +280,10 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 
 		if (allCommonData.containsKey(MetaDataPropertyName.DB_SCHEMA_VERSION)) {
 			
-			String currentSchemaVersion = getCurrentSchemaVersion(allCommonData);
-			String databaseSchemaVersion = getDatabaseSchemaVersion(allCommonData);
+			String currentSchemaVersionPrefix = CdmMetaData.getCurrentSchemaVersion(index);
+			String databaseSchemaVersionPrefix = CdmMetaData.getDatabaseSchemaVersion(allCommonData, index);
 			
-			if (currentSchemaVersion.equals(databaseSchemaVersion)) {
+			if (areStringsEqual(currentSchemaVersionPrefix, databaseSchemaVersionPrefix)) {
 				return true;
 			}
 		}
@@ -291,51 +291,15 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	}
 
 	/**
-	 * Gets the database schema version.
-	 * @param allCommonData
-	 * @return database schema version.
+	 * Compares version numbers of the current schema version with the database schema version.
+	 * @param currentSchemaVersion
+	 * @param databaseSchemaVersion
+	 * @throws DatabaseSchemaMismatchException
 	 */
-	private String getDatabaseSchemaVersion(
-			Map<MetaDataPropertyName, CdmMetaData> allCommonData) {
-		// Get database schema version
-		CdmMetaData metaData = allCommonData.get(MetaDataPropertyName.DB_SCHEMA_VERSION);
-		String versionProperty = metaData.getMetaDataPropertyName();
-		String databaseSchemaVersion = getVersion(versionProperty);
-		return databaseSchemaVersion;
+	private boolean areStringsEqual(String first,
+			String second) {
+		return first.equals(second);
 	}
 
-	/**
-	 * Gets the current schema version.
-	 * @param allCommonData
-	 * @return Current schema version.
-	 */
-	private String getCurrentSchemaVersion(
-			Map<MetaDataPropertyName, CdmMetaData> allCommonData) {
-		// Get current schema version
-		String versionProperty = allCommonData.get(MetaDataPropertyName.DB_SCHEMA_VERSION).getValue();
-		String currentSchemaVersion = getVersion(versionProperty);
-		return currentSchemaVersion;
-	}
-
-	/**
-	 * @param versionProperty
-	 * @return Version number as string.
-	 */
-	private String getVersion(String versionProperty) {
-		return versionProperty.substring(0, secondIndexOf(versionProperty, ".", 2));
-	}
-
-	/**
-	 * Calculates the n-th occurrence of a string.
-	 * @param versionProperty
-	 * @return Index of N-th occurence of a string.
-	 */
-	private int secondIndexOf(String versionProperty, String pattern, int occurence) {
-		int currentIndex = -1;
-		for (int i=0; i<occurence; i++) {
-			currentIndex = versionProperty.indexOf(pattern, currentIndex + 1);
-		}
-		return currentIndex;
-	}
 	
 }

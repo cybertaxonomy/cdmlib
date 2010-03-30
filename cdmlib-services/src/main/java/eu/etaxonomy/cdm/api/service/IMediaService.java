@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -66,5 +67,28 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 */
 	public Pager<Media> search(Class<? extends Media> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-	public Map<String,String> getImageMetaData(URI uri, Integer timeOut);
+	/**
+	 * 
+	 * 
+	 * @param imageUri
+	 * @param timeOut
+	 * @return
+	 */
+	public Integer getImageSize(URI imageUri, Integer timeOut);
+	
+	/**
+	 * 
+	 * @param imageUri
+	 * @param timeOut
+	 * @return
+	 */
+	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut);
+	
+	/**
+	 * 
+	 * @param imageUri
+	 * @param timeOut
+	 * @return
+	 */
+	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut);
 }

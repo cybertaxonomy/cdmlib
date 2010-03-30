@@ -2727,6 +2727,7 @@ cdmlib-services/src/main/resources/wsdl/LSIDPortTypes.wsdl -text
 cdmlib-services/src/site/site.xml -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
