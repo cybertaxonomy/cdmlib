@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.database;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -17,8 +16,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
@@ -44,6 +41,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  * 
  * @author a.kohlbecker
  */
+@Deprecated
 public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	
 
