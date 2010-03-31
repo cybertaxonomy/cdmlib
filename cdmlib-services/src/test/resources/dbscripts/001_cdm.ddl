@@ -634,7 +634,7 @@
         iso639_2 varchar(3),
         istechnical bit,
         orderindex integer,
-        symmetric bit,
+        symmetrical bit,
         transitive bit,
         defaultcolor varchar(255),
         supportscategoricaldata bit,
@@ -699,7 +699,7 @@
         pointapproximation_referencesystem_id integer,
         shape_id integer,
         type_id integer,
-        symmetric bit,
+        symmetrical bit,
         transitive bit,
         defaultcolor varchar(255),
         iso3166_a2 varchar(2),
@@ -2749,7 +2749,9 @@
         inreference_id integer,
         institution_id integer,
         school_id integer,
-        primary key (id),
+       	abbreviatedReference_id integer,
+        fullReference_id integer,
+		primary key (id),
         unique (uuid)
     );
 
@@ -2796,6 +2798,8 @@
         inreference_id integer,
         institution_id integer,
         school_id integer,
+        abbreviatedReference_id integer,
+        fullReference_id integer,
         primary key (id, REV)
     );
 
