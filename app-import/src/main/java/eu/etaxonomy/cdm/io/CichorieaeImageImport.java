@@ -224,7 +224,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 							textData.addMedia(media);
 							textData.putText(taxonName, Language.ENGLISH());
 
-							textData.setType(Feature.IMAGE());
+							textData.setFeature(Feature.IMAGE());
 							TaxonDescription taxonDescription = taxon.getOrCreateImageGallery(sourceRef == null ? null :sourceRef.getTitleCache());
 							
 							taxonDescription.addElement(textData);
