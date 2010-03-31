@@ -53,7 +53,7 @@ public class TaraxacumActivator {
 	static final UUID treeUuid = UUID.fromString("019c4b4d-736b-4d2e-883c-e3244167080a");
 //	static final UUID treeUuid = UUID.fromString("00db28a7-50e1-4abc-86ec-b2a8ce870de9");
 //	static final UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
-	static final int sourceSecId = 7700000;
+	static final int sourceSecId = 7800000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
 	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
@@ -192,7 +192,8 @@ public class TaraxacumActivator {
 	
 	public boolean mergeIntoCichorieae(CdmApplicationController app){
 		boolean success = true;
-		String taraxTaraxacumUuidStr = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
+	//	String taraxTaraxacumUuidStr = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
+		String taraxTaraxacumUuidStr = "b86f1156-091c-494d-a9c9-c84d71058f98";
 		UUID taraxTaraxacumUUID = UUID.fromString(taraxTaraxacumUuidStr);
 
 		String cichTaraxacumUuidStr = "c946ac62-b6c6-493b-8ed9-278fa38b931a";
