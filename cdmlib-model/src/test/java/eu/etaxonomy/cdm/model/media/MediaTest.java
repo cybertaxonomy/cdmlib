@@ -264,8 +264,8 @@ public class MediaTest {
 	@Test
 	public void testfindBestMatchingRepresentation() {
 		String[] mimetypes = {".*"};
-		Assert.assertEquals(mediaRepresentation1, media1.findBestMatchingRepresentation(100, 100, 100, mimetypes));
-		Assert.assertEquals(mediaRepresentation2, media1.findBestMatchingRepresentation(1000, 100, 100, mimetypes));
+		Assert.assertEquals(mediaRepresentation1, MediaUtils.findBestMatchingRepresentation(media1, 100, 100, 100, mimetypes));
+		Assert.assertEquals(mediaRepresentation2, MediaUtils.findBestMatchingRepresentation(media1,1000, 100, 100, mimetypes));
 	
 	}
 }
