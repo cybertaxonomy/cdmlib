@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -659,7 +660,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		Integer height = null;
 		Integer size = null;
 		
-		List<Media> returnMedia = Media.findPreferredMedia(taxonMedia, mimeTypes,
+		List<Media> returnMedia = MediaUtils.findPreferredMedia(taxonMedia, mimeTypes,
 				sizeTokens, widthOrDuration, height, size);
 		
 		return returnMedia;
