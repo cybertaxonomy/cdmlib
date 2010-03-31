@@ -76,8 +76,8 @@ public class CichorieaeActivator {
 	static final int maximumNumberOfNameFacts = 0;
 	
 	//should the other imports run as well?
-	static final boolean includeTaraxacum = false; 
-	static final boolean includeImages = false;
+	static final boolean includeTaraxacum = true; 
+	static final boolean includeImages = true;
 	
 	
 	//check - import
