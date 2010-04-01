@@ -54,36 +54,7 @@
         <servlet-name>cdmrest</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-    	<servlet-name>cdmrest</servlet-name>
-    	<url-pattern>*.do</url-pattern>
-    </servlet-mapping>
-    
-    <servlet-mapping>
-    	<servlet-name>default</servlet-name>
-    	<url-pattern>/favicon.ico</url-pattern>
-    </servlet-mapping>
-        <servlet-mapping>
-    	<servlet-name>default</servlet-name>
-    	<url-pattern>/robots.txt</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-    	<servlet-name>default</servlet-name>
-    	<url-pattern>/css/*</url-pattern>
-    </servlet-mapping>
-        <servlet-mapping>
-      <servlet-name>default</servlet-name>
-      <url-pattern>/images/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-    	<servlet-name>default</servlet-name>
-    	<url-pattern>/js/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>default</servlet-name>
-      <url-pattern>*.html</url-pattern>
-    </servlet-mapping>
-	
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
