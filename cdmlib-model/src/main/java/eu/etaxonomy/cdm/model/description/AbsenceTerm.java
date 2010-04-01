@@ -10,7 +10,15 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -20,12 +28,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents terms describing different types of absence
@@ -42,10 +44,17 @@ import javax.xml.bind.annotation.XmlType;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
-	private static final long serialVersionUID = -7145360212307512860L;
+	private static final long serialVersionUID = -7125360212309512860L;
 	private static final Logger logger = Logger.getLogger(AbsenceTerm.class);
-	private static AbsenceTerm ABSENT;
 	
+	private static Map<UUID, AbsenceTerm> termMap = null;
+	
+	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
+	private static final UUID uuidNF=UUID.fromString("61cee840-801e-41d8-bead-015ad866c2f1");
+	private static final UUID uuidIF=UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
+	private static final UUID uuidCF=UUID.fromString("9d4d3431-177a-4abe-8e4b-1558573169d6");
+	
+
 	/** 
 	 * Creates a new empty absence term.
 	 * 
@@ -95,17 +104,52 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 		super(term, label, labelAbbrev);
 	}
 
+	
 	//********* METHODS **************************************/
-
-	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
-
-	public static final AbsenceTerm ABSENT(){
-		return ABSENT;
+	protected static AbsenceTerm getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;
+		}else{
+			return (AbsenceTerm)termMap.get(uuid);
+		}
 	}
 
+	
+	public static final AbsenceTerm ABSENT(){
+		return getTermByUuid(uuidAbsence);
+	}
+	
+	public static final AbsenceTerm NATIVE_REPORTED_IN_ERROR(){
+		return getTermByUuid(uuidNF);
+	}
+	
+	public static final AbsenceTerm CULTIVATED_REPORTED_IN_ERROR(){
+		return getTermByUuid(uuidCF);
+	}
+
+	public static final AbsenceTerm INTRODUCED_REPORTED_IN_ERROR(){
+		return getTermByUuid(uuidIF);
+	}
+
+	//TODO make automatic like in TDWGArea
+	public static AbsenceTerm getPresenceTermByAbbreviation(String abbrev) { 
+		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");
+		} else if (abbrev.equalsIgnoreCase("cf")) { return AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+		} else if (abbrev.equalsIgnoreCase("if")) { return AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR();
+		} else if (abbrev.equalsIgnoreCase("nf")) { return AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
+		} else {
+			logger.warn("Unknown absence status term: " + abbrev);
+			return null;
+		}
+	}
+
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<AbsenceTerm> termVocabulary) {
-		AbsenceTerm.ABSENT = termVocabulary.findTermByUuid(AbsenceTerm.uuidAbsence);
+		termMap = new HashMap<UUID, AbsenceTerm>();
+		for (AbsenceTerm term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (AbsenceTerm)term);  //TODO casting
+		}
 	}
 
 }
