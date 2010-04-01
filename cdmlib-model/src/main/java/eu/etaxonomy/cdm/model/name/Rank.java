@@ -905,9 +905,10 @@ public class Rank extends OrderedTermBase<Rank> {
 		else if (this.equals(Rank.SPECIALFORM()) ){return "f.spec.";}
 		else if (this.equals(Rank.INFRAGENERICTAXON()) ){return "t.infgen.";}
 		else if (this.equals(Rank.INFRASPECIFICTAXON()) ){return "t.infr.";}
+		else if (this.equals(Rank.SPECIESGROUP) ){return "sp.grp.";}
 		else {
 			logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
-			return "xxx.";
+			return "no abbreviation available.";
 		}
 	}
 	@Transient
