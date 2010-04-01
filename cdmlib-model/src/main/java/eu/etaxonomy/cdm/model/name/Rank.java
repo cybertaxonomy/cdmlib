@@ -930,7 +930,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		}else if (this.equals(Rank.SPECIESAGGREGATE())){
 			return "aggr.";
 		}else if (this.equals(Rank.SPECIESGROUP())){
-			return "group";
+			return "species group";
 		}else {
 			throw new UnknownCdmTypeException("Abbreviation for rank unknown: " + this.toString());
 		}

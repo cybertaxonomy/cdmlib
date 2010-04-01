@@ -392,8 +392,13 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (nonViralName.isInfraGeneric()){
 			//TODO choose right strategy or generic approach?
 			// --- strategy 1 --- 
-			tags.add(nonViralName.getRank());			
-			tags.add(nonViralName.getInfraGenericEpithet());			
+					
+			if (nonViralName.getRank().isSpeciesAggregate()){
+				tags.add(getSpeciesAggregateEpithet(nonViralName));
+			}else{
+				tags.add(nonViralName.getRank());	
+				tags.add(nonViralName.getInfraGenericEpithet());	
+			}
 			// --- strategy 2 --- 
 //			tags.add('('+nvn.getInfraGenericEpithet()+')');	
 		}
@@ -415,6 +420,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		return tags;
 	}
 	
+
+	
+
 
 	/************** PRIVATES ****************/
 		
@@ -461,7 +469,24 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		protected String getSpeciesAggregateCache(NonViralName nonViralName){
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
-			result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+			
+			result += getSpeciesAggregateEpithet(nonViralName);
+			/*result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+			String marker;
+			try {
+				marker = nonViralName.getRank().getInfraGenericMarker();
+			} catch (UnknownCdmTypeException e) {
+				marker = "'unknown aggregat type'";
+			}
+			result += " " + marker;*/
+			result = addAppendedPhrase(result, nonViralName).trim();
+			return result;
+		}
+		
+		private String getSpeciesAggregateEpithet(NonViralName nonViralName) {
+			String result;
+			
+			result = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
 			String marker;
 			try {
 				marker = nonViralName.getRank().getInfraGenericMarker();
@@ -469,7 +494,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				marker = "'unknown aggregat type'";
 			}
 			result += " " + marker;
-			result = addAppendedPhrase(result, nonViralName).trim();
+			
 			return result;
 		}
 		
