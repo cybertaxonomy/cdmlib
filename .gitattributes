@@ -2412,7 +2412,6 @@ cdmlib-persistence/src/test/resources/log4j.properties -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
 cdmlib-remote/LICENSE.TXT -text
 cdmlib-remote/README.TXT -text
-cdmlib-remote/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]jetty[!!-~]run[!!-~]\[debug\].launch -text
 cdmlib-remote/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug.launch -text
 cdmlib-remote/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text
