@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -525,7 +526,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				for(Media media : descElem.getMedia()){
 									
 					//find the best matching representation
-					medRep.add(media.findBestMatchingRepresentation(size, height, widthOrDuration, mimeTypes));
+					medRep.add(MediaUtils.findBestMatchingRepresentation(media, size, height, widthOrDuration, mimeTypes));
 					
 				}
 			}
