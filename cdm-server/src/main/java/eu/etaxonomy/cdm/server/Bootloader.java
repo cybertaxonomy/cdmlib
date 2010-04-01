@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.naming.NamingException;
@@ -44,8 +45,20 @@ import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * A bootstrap class for starting Jetty Runner using an embedded war
- *
+ * A bootstrap class for starting Jetty Runner using an embedded war.
+ * 
+ * Recommended start options for the java virtual machine: 
+ * <pre>
+ * -Xmx1024M
+ * 
+ * -XX:PermSize=128m 
+ * -XX:MaxPermSize=192m
+ * 
+ * -XX:+UseConcMarkSweepGC 
+ * -XX:+CMSClassUnloadingEnabled
+ * -XX:+CMSPermGenSweepingEnabled
+ * </pre>
+ * 
  * @version $Revision$
  */
 public final class Bootloader {
@@ -65,7 +78,7 @@ public final class Bootloader {
     
     private static final int KB = 1024;
     
-    private static Set<DataSourceProperties> configs = null;
+    private static Set<DataSourceProperties> configs = new HashSet<DataSourceProperties>();
     private static File webappFile = null;
     private static File defaultWebAppFile = null;
 
@@ -221,47 +234,44 @@ public final class Bootloader {
 		// 1. default context
 		//
 		logger.info("preparing default WebAppContext");
-    	WebAppContext defaultWebapp = new WebAppContext();
-    	defaultWebapp.setResourceBase(defaultWebAppFile.getAbsolutePath());
-    	//defaultWebapp.setDescriptor(defaultWebAppFile.getAbsolutePath()+"/WEB-INF/web.xml");
-        defaultWebapp.setContextPath("/");
+    	WebAppContext defaultWebappContext = new WebAppContext();
+    	setWebApp(defaultWebappContext, defaultWebAppFile);
+        defaultWebappContext.setContextPath("/");
+        //defaultWebappContext.setDescriptor(defaultWebAppFile.getAbsolutePath()+"/WEB-INF/web.xml");
+        
 
-    	contexts.addHandler(defaultWebapp);
+    	contexts.addHandler(defaultWebappContext);
     	
     	//
 		// 2. cdm server contexts
     	//
+    	//configs.removeAll(configs);
         for(DataSourceProperties conf : configs){
         	logger.info("preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
-        	WebAppContext webapp = new WebAppContext();
-	        webapp.setContextPath("/"+conf.getDataSourceName());
-	        //webapp.setClassLoader(new MyClassLoader(webapp.getClassLoader()));
+        	WebAppContext cdmWebappContext = new WebAppContext();
+        	
+	        cdmWebappContext.setContextPath("/"+conf.getDataSourceName());
             bindJndiDataSource(conf);
-            
-            webapp.setAttribute(ATTRIBUTE_JDBC_JNDI_NAME, conf.getJdbcJndiName());
+            cdmWebappContext.setAttribute(ATTRIBUTE_JDBC_JNDI_NAME, conf.getJdbcJndiName());
+	        setWebApp(cdmWebappContext, webappFile);
 	        
-	        if(webappFile.isDirectory()){
-	        	System.getProperty("java.class.path");
-	        	webapp.setResourceBase(webappFile.getAbsolutePath());
-	        	if(false && isRunningFromSource()){
-	        		//FIXME leads to perm genspace error, is this an hint to a general mem leak?
-	        		/*
-	        		 * running the webapp from the {projectpath}/target/cdmserver or from war or from
-	        		 * {projectpath} src/main/webapp should produce consistent results during development
-	        		 * thus we tell the WebAppClassLoader where the dependencies of the webapplication can be found.
-	        		 * Otherwise the system classloader would load these resources.
-	        		 */
-	        		logger.info("Running webapp from source folder, thus adding java.class.path to WebAppClassLoader");
-		        	String classPath = System.getProperty("java.class.path");
-		        	WebAppClassLoader classLoader = new WebAppClassLoader(webapp);
-		        	classLoader.addClassPath(classPath);
-		        	webapp.setClassLoader(classLoader);
-	        	}
-	        } else {
-	        	webapp.setWar(webappFile.getAbsolutePath());
-	        	
-	        }
-	        contexts.addHandler(webapp);
+	        if(webappFile.isDirectory() && isRunningFromSource()){
+        		
+				/*
+				 * when running the webapp from {projectpath} src/main/webapp we
+				 * havew to assure that each web application is using it's own
+				 * classloader thus we tell the WebAppClassLoader where the
+				 * dependencies of the webapplication can be found. Otherwise
+				 * the system classloader would load these resources.
+				 */
+        		logger.info("Running webapp from source folder, thus adding java.class.path to WebAppClassLoader");
+	        	String classPath = System.getProperty("java.class.path");
+	        	WebAppClassLoader classLoader = new WebAppClassLoader(cdmWebappContext);
+	        	classLoader.addClassPath(classPath);
+	        	cdmWebappContext.setClassLoader(classLoader);
+        	}
+	        
+	        contexts.addHandler(cdmWebappContext);
 
         }
         logger.info("setting contexts ...");
@@ -273,6 +283,16 @@ public final class Bootloader {
         logger.info(APPLICATION_NAME+" stopped.");
     	System.exit(0);
     }
+
+	private static void setWebApp(WebAppContext context, File webApplicationResource) {
+		if(webApplicationResource.isDirectory()){
+			context.setResourceBase(webApplicationResource.getAbsolutePath());
+			logger.debug("setting directory " + defaultWebAppFile.getAbsolutePath() + " as webapplication");
+		} else {
+			context.setWar(webApplicationResource.getAbsolutePath());
+			logger.debug("setting war file " + defaultWebAppFile.getAbsolutePath() + " as webapplication");
+		}
+	}
 
 	private static boolean isRunningFromSource() {
 		return webappFile.getAbsolutePath().replace('\\', '/').endsWith("src/main/webapp");

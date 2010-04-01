@@ -68,8 +68,10 @@
 											<tr><th>Path</th><th>Database Url</th><th>Status</th></tr>
                                             <%
                                            java.util.Set<DataSourceProperties> dsSet = Bootloader.listDataSources();
-                                           for(DataSourceProperties props : dsSet){
-                                        	   out.append("<tr><td>/" + props.getDataSourceName() + "/</td><td>" + props.getUrl() + "</td><td>" + "OK" + "</td></tr>");
+                                           if(dsSet != null){
+	                                           for(DataSourceProperties props : dsSet){
+	                                        	   out.append("<tr><td>/" + props.getDataSourceName() + "/</td><td>" + props.getUrl() + "</td><td>" + "OK" + "</td></tr>");
+	                                           }
                                            }
                                            %>
 										</table>
