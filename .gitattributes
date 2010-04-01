@@ -249,7 +249,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/out/TcsXmlExportState.java -t
 cdmlib-io/src/main/resources/CatalogManager.properties -text
 cdmlib-io/src/main/resources/catalog.xml -text
 cdmlib-io/src/main/resources/defaultIoApplicationContext.xml -text
-cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/main/resources/schema/cdm/agent.xsd -text
 cdmlib-io/src/main/resources/schema/cdm/cdm.xsd -text
 cdmlib-io/src/main/resources/schema/cdm/common.xsd -text
@@ -324,6 +323,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
+cdmlib-io/src/test/resources/log4j.properties -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text

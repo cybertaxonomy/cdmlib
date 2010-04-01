@@ -30,7 +30,7 @@ public class CdmResourceResolver implements LSResourceResolver {
 	public CdmResourceResolver() throws IOException {
 		Properties properties = new Properties();
 		if(log.isInfoEnabled()) {
-		  //  log.info("Loading /CatalogManager.properties");
+		    log.info("Loading /CatalogManager.properties");
 		}
 		properties.load(this.getClass().getResourceAsStream("/CatalogManager.properties"));
 		
@@ -42,7 +42,7 @@ public class CdmResourceResolver implements LSResourceResolver {
 		
 		for(String catalogFileName : catalogFileNames) {
 			if(log.isInfoEnabled()) {
-			   // log.info("Parsing " + catalogFileName);
+			    log.info("Parsing " + catalogFileName);
 			}
 			catalogResolver.getCatalog().parseCatalog(this.getClass().getResource(catalogFileName));
 		}
@@ -51,18 +51,18 @@ public class CdmResourceResolver implements LSResourceResolver {
 	public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
 		
 		if(log.isInfoEnabled()) {
-		   // log.info("Resolving " + namespaceURI + " with systemId " + systemId + ", trying " + systemId);
+		    log.info("Resolving " + namespaceURI + " with systemId " + systemId + ", trying " + systemId);
 		}
 		InputSource inputSource = catalogResolver.resolveEntity( publicId, systemId );
 		if ( inputSource == null ) {
 			if(log.isInfoEnabled()) {
-			   // log.info("Not found in filesystem: Looking in jar files for /schema/cdm/" + systemId);
+			    log.info("Not found in filesystem: Looking in jar files for /schema/cdm/" + systemId);
 			}
 			inputSource = new InputSource(this.getClass().getResourceAsStream("/schema/cdm/" + systemId));
 			
 			if(inputSource == null) {
 				if(log.isWarnEnabled()) {
-					//log.warn(namespaceURI + " not found");
+					log.warn(namespaceURI + " not found");
 				}
 				return null;
 			}
