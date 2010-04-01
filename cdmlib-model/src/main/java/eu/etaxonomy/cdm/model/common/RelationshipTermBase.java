@@ -67,7 +67,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	
 	@XmlElement(name = "Symmetrical")
 	@Field(index=Index.UN_TOKENIZED)
-	@Column(name="symmetrical") //to be compatile with PostGreSQL 
+	@Column(name="symmetrical") //to be compatible with PostGreSQL 
 	private boolean symmetric;
 	
 	@XmlElement(name = "Transitive")
