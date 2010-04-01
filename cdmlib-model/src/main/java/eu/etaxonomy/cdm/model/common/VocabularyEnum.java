@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.Continent;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -111,10 +110,10 @@ public enum VocabularyEnum {
 		return clazz;
 	}
 	
-	public VocabularyEnum getVocabularyEnum(Class clazz){
+	public static VocabularyEnum getVocabularyEnum(Class clazz){
 		
-		for(VocabularyEnum vocabulary : this.values()){
-			if(vocabulary.getClass().equals(clazz)){
+		for(VocabularyEnum vocabulary : VocabularyEnum.values()){
+			if(vocabulary.getClazz().equals(clazz)){
 				return vocabulary;
 			}
 		}
