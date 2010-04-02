@@ -70,7 +70,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
             " FROM AuthorTeamSequence " + 
             " ORDER By authorTeamFk, Sequence ";
 		rsSequence = source.getResultSet(strQuerySequence) ;
-
+		
 		int recordsPerTransaction = config.getRecordsPerTransaction();
 		try{
 			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
@@ -229,8 +229,18 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 			if (rsSequence.isAfterLast()){
 				return true;
 			}
-			int sequenceTeamFk = rsSequence.getInt("AuthorTeamFk");
+			int sequenceTeamFk;
+			try {
+				sequenceTeamFk = rsSequence.getInt("AuthorTeamFk");
+			} catch (SQLException e) {
+				if (rsSequence.next() == false){
+					return true;
+				}else{
+					throw e;
+				}
+			}
 			while (sequenceTeamFk < teamId){
+				logger.warn("Sequence team FK is smaller then team ID. Some teams for a sequence may not be available");
 				rsSequence.next();
 				sequenceTeamFk = rsSequence.getInt("AuthorTeamFk");
 			}
