@@ -242,7 +242,12 @@ public class TaraxacumActivator {
 			
 			app.getTaxonService().save(parentInCich);
 			app.getTaxonService().delete(taraxacumInCichTaxon);
-			app.getTaxonTreeService().delete(treeInTaraxacum);
+			try {
+				app.getTaxonTreeService().delete(treeInTaraxacum);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
 		}else{
 			logger.warn("Taraxacum in cichorieae not found");
 			success = false;
