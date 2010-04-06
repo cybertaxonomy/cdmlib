@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"    
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/util    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+    
+    <bean id="dataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${db.driver_class}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+    </bean>
+
+<!--  
+    hibernate.dialect=org.hibernate.dialect.MySQLDialect
+    db.driver_class=com.mysql.jdbc.Driver
+    db.url=jdbc:mysql://192.168.2.10/cdm_build
+    db.username=edit
+    db.password=wp5
+    
+    hibernate.dialect=org.hibernate.dialect.SQLServerDialect
+    db.driver_class=com.microsoft.jdbc.sqlserver.SQLServerDriver
+    db.url=jdbc:microsoft:sqlserver://Paddie:1433;DataBase=edit_test;SelectMethod=direct
+    db.username=andreas
+    db.password=r56    
+-->
+    
+    <!-- This configures default properties, which can overridden with the file specified by the location property -->
+    <bean id="hibernateProperties" 
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
+
