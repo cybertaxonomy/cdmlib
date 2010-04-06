@@ -1610,6 +1610,9 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xm
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
+eclipse-feature-source/.project -text
+eclipse-feature-source/build.properties -text
+eclipse-feature-source/feature.xml -text
 eclipse-feature/.classpath -text
 eclipse-feature/.project -text
 eclipse-feature/build.properties -text
