@@ -58,6 +58,17 @@ cdmlib-remote/eu.etaxonomy.cdm.model.taxon.TaxonBase
 cdmlib-remote/null
 cdmlib-remote/secret-accounts.diff
 cdmlib-remote/target
+cdmlib-services/.classpath
+cdmlib-services/.project
+cdmlib-services/.settings
+cdmlib-services/.umlproject
+cdmlib-services/bin
+cdmlib-services/cdmlib-services.uml
+cdmlib-services/src/main/resources/log4j.properties
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PUBLIC.xsd
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/dataset.xsd
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
+cdmlib-services/target
 eclipse-feature/.settings
 eclipse-updateSite/.classpath
 eclipse-updateSite/.settings
