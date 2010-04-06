@@ -1,0 +1,5 @@
+* text=auto !eol
+eclipse-feature/.classpath -text
+eclipse-feature/.project -text
+eclipse-feature/build.properties -text
+eclipse-feature/feature.xml -text
