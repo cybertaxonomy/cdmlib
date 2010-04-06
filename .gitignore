@@ -1,1 +1,9 @@
 eclipse-feature/.settings
+eclipse-updateSite/.classpath
+eclipse-updateSite/.settings
+eclipse-updateSite/artifacts.xml
+eclipse-updateSite/content.xml
+eclipse-updateSite/features/*.jar
+eclipse-updateSite/plugins/*.jar
+eclipse-updateSite/plugins/*.zip
+eclipse-updateSite/src
