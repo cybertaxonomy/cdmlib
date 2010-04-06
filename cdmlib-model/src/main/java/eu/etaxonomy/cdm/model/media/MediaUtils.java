@@ -212,7 +212,7 @@ public class MediaUtils {
 					//keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
 					
 					prefRepr.put((dwa + representationCnt++), representation);
-					System.out.println(prefRepr.get(prefRepr.firstKey()) + " --- " + prefRepr.firstKey());
+					
 				}
 					
 			}				
