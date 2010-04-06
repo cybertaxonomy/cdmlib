@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  -->
+  <parent>
+    <groupId>eu.etaxonomy</groupId>
+    <artifactId>cdmlib-parent</artifactId>
+    <version>2.3</version>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>cdmlib-commons</artifactId>
+  <name>CDM Commons</name>
+  <description>EDIT CDM library - Commons</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-commons/</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-commons/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-commons/</url>
+  </scm>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>org.springframework.test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+    </dependency>
+
+
+    <!--  ImageMetadata  -->
+    <dependency>
+      <!-- deprecated -->
+    <groupId>org.devlib.schmidt</groupId>
+    <artifactId>imageinfo</artifactId>
+    <version>1.7</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.sanselan</groupId>
+      <artifactId>sanselan</artifactId>
+    </dependency>
+    
+
+  </dependencies>
+</project>
