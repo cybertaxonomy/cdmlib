@@ -1,0 +1,48 @@
+ERRORS in ERMS
+=====================
+
+- there is one case, where a nomen nudum is the accepted taxon for an other taxon
+
+SELECT     dbo.tu.tu_status, tu_1.tu_acctaxon, tu_1.id, dbo.tu.tu_displayname
+FROM         dbo.tu INNER JOIN
+                      dbo.tu AS tu_1 ON dbo.tu.id = tu_1.tu_acctaxon
+WHERE     (dbo.tu.tu_status = 3) OR
+                      (tu_1.id = 111846) OR
+                      (tu_1.id = 111850)
+					  
+- there are 448 cases where the tu_acctaxon has not a status "accepted"
+
+SELECT     dbo.tu.tu_status AS acceptedStatus, dbo.tu.tu_displayname AS acceptedName, unaccepted.tu_status AS unacceptedStatus, 
+                      unaccepted.tu_displayname AS unacceptedName
+FROM         dbo.tu INNER JOIN
+                      dbo.tu AS unaccepted ON dbo.tu.id = unaccepted.tu_acctaxon
+WHERE     (dbo.tu.tu_status <> 1)
+ORDER BY acceptedStatus, unacceptedStatus 
+
+- 289 cases where parent taxon is not accepted (is this allowed ?)
+
+- there are 46 taxa with a status not accepted, a parent not accepted and an parent.tu_acctaxon not accepted 
+
+SELECT     TOP (100) PERCENT tu_1.id, tu_1.tu_status, accTaxon.tu_status AS accStatus, parent.tu_status AS parentStatus, 
+                      accParent.tu_status AS accParentStatus, tu_1.tu_displayname AS displayname, parent.tu_displayname AS parentdisplayname, tu_1.tu_acctaxon, 
+                      dbo.status.status_name, dbo.status.status_id AS myStatus, parent.id AS parentId, tu_1.tu_sp
+FROM         dbo.status RIGHT OUTER JOIN
+                      dbo.tu AS accTaxon RIGHT OUTER JOIN
+                      dbo.tu AS tu_1 ON accTaxon.id = tu_1.tu_acctaxon LEFT OUTER JOIN
+                      dbo.tu AS parent ON tu_1.tu_parent = parent.id ON dbo.status.status_id = tu_1.tu_status LEFT OUTER JOIN
+                      dbo.tu AS accParent ON parent.tu_acctaxon = accParent.id
+WHERE     (tu_1.tu_status <> 1) AND (parent.tu_status <> 1) AND (accParent.tu_status <> 1)
+ORDER BY accParentStatus, parentStatus
+
+- there are 27 taxa with a status not accepted, a parent not accepted and an parent.tu_acctaxon not accepted and an tu_acctaxon not accepted
+
+SELECT     TOP (100) PERCENT tu_1.id, tu_1.tu_status, accTaxon.tu_status AS accStatus, parent.tu_status AS parentStatus, 
+                      accParent.tu_status AS accParentStatus, tu_1.tu_displayname AS displayname, parent.tu_displayname AS parentdisplayname, tu_1.tu_acctaxon, 
+                      dbo.status.status_name, dbo.status.status_id AS myStatus, parent.id AS parentId, tu_1.tu_sp
+FROM         dbo.status RIGHT OUTER JOIN
+                      dbo.tu AS accTaxon RIGHT OUTER JOIN
+                      dbo.tu AS tu_1 ON accTaxon.id = tu_1.tu_acctaxon LEFT OUTER JOIN
+                      dbo.tu AS parent ON tu_1.tu_parent = parent.id ON dbo.status.status_id = tu_1.tu_status LEFT OUTER JOIN
+                      dbo.tu AS accParent ON parent.tu_acctaxon = accParent.id
+WHERE     (tu_1.tu_status <> 1) AND (parent.tu_status <> 1) AND (accParent.tu_status <> 1) AND (accTaxon.tu_status <> 1)
+ORDER BY accParentStatus, parentStatus
