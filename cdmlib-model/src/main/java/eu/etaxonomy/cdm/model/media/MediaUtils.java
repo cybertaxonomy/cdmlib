@@ -78,21 +78,23 @@ public class MediaUtils {
 		}
 		
 		List<Media> returnMedia = new ArrayList<Media>(mediaList.size());
-		for(Media media : mediaList){
-			SortedMap<Integer, MediaRepresentation> prefRepresentations 
-				= orderMediaRepresentations(media, mimeTypes, size, widthOrDuration, height);
-			try {
-				// take first one and remove all other representations
-				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
-				for (MediaRepresentation representation : media.getRepresentations()) {
-					if (representation != prefOne) {
-						media.removeRepresentation(representation);
+		if(mediaList != null){
+			for(Media media : mediaList){
+				SortedMap<Integer, MediaRepresentation> prefRepresentations 
+					= orderMediaRepresentations(media, mimeTypes, size, widthOrDuration, height);
+				try {
+					// take first one and remove all other representations
+					MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
+					for (MediaRepresentation representation : media.getRepresentations()) {
+						if (representation != prefOne) {
+							media.removeRepresentation(representation);
+						}
 					}
+					returnMedia.add(media);
+				} catch (NoSuchElementException nse) {
+					logger.debug(nse);
+					/* IGNORE */
 				}
-				returnMedia.add(media);
-			} catch (NoSuchElementException nse) {
-				logger.debug(nse);
-				/* IGNORE */
 			}
 		}
 		return returnMedia;
@@ -160,63 +162,71 @@ public class MediaUtils {
 	 */
 	private static SortedMap<Integer, MediaRepresentation> orderMediaRepresentations(Media media, String[] mimeTypeRegexes,
 			Integer size, Integer widthOrDuration, Integer height) {
+		
 		SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<Integer, MediaRepresentation>();
-		SortedMap<String, MediaRepresentation> sortedForSizeDistance = new TreeMap<String, MediaRepresentation>();		
-		String keyString = "";
-		for (String mimeTypeRegex : mimeTypeRegexes) {
-			// getRepresentationByMimeType
-			Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
-			int representationCnt = 0;
-			for (MediaRepresentation representation : media.getRepresentations()) {
-				
-				Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
-				if (mather.matches()) {
-					int dwa = 0;
+//		SortedMap<String, MediaRepresentation> sortedForSizeDistance = new TreeMap<String, MediaRepresentation>();		
+//		String keyString = "";
+		
+		size = (size == null ? new Integer(0) : size );
+		widthOrDuration = (widthOrDuration == null ? new Integer(0) : widthOrDuration);
+		height = (height == null ? new Integer(0) : height);
+		mimeTypeRegexes = (mimeTypeRegexes == null ? new String[]{} : mimeTypeRegexes);
+		
+		if(media != null){
+			
+			for (String mimeTypeRegex : mimeTypeRegexes) {
+				// getRepresentationByMimeType
+				Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
+				int representationCnt = 0;
+				for (MediaRepresentation representation : media.getRepresentations()) {
 					
-					//first the size is used for comparison
-					for (MediaRepresentationPart part : representation.getParts()) {
-						if (part.getSize()!= null){
-							int sizeOfPart = part.getSize();
-							int distance = sizeOfPart - size;
-							if (distance < 0) {
-								distance*= -1;
+					Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
+					if (mather.matches()) {
+						int dwa = 0;
+						
+						//first the size is used for comparison
+						for (MediaRepresentationPart part : representation.getParts()) {
+							if (part.getSize()!= null){
+								int sizeOfPart = part.getSize();
+								int distance = sizeOfPart - size;
+								if (distance < 0) {
+									distance*= -1;
+								}
+								dwa += distance;
 							}
-							dwa += distance;
-						}
-						//if height and width/duration is defined, add this information, too
-						if (height != 0 && widthOrDuration != 0){
-							int dw = 0;
-							
-							if (part instanceof ImageFile) {
-								ImageFile image = (ImageFile) part;
-								dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
-							}
-							else if (part instanceof MovieFile){
-								MovieFile movie = (MovieFile) part;
-								dw = movie.getDuration() - widthOrDuration;
-										
-							}else if (part instanceof AudioFile){
-								AudioFile audio = (AudioFile) part;
-								dw = audio.getDuration() - widthOrDuration;
+							//if height and width/duration is defined, add this information, too
+							if (height != 0 && widthOrDuration != 0){
+								int dw = 0;
+								
+								if (part instanceof ImageFile) {
+									ImageFile image = (ImageFile) part;
+									dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
+								}
+								else if (part instanceof MovieFile){
+									MovieFile movie = (MovieFile) part;
+									dw = movie.getDuration() - widthOrDuration;
+											
+								}else if (part instanceof AudioFile){
+									AudioFile audio = (AudioFile) part;
+									dw = audio.getDuration() - widthOrDuration;
+									
+								}
+								if (dw < 0) {
+									dw *= -1;
+								}
+								dwa += dw;
 								
 							}
-							if (dw < 0) {
-								dw *= -1;
-							}
-							dwa += dw;
-							
 						}
-					}
-					dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
-					
-					//keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
-					
-					prefRepr.put((dwa + representationCnt++), representation);
-					
-				}
-					
-			}				
+						dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
 						
+						//keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
+						
+						prefRepr.put((dwa + representationCnt++), representation);
+					}
+						
+				}										
+			}
 		}
 		return prefRepr;
 	}
