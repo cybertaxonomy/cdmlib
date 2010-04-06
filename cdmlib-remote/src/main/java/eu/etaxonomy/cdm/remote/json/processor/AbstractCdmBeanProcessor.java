@@ -1,0 +1,133 @@
+// $Id$
+/**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+package eu.etaxonomy.cdm.remote.json.processor;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.processors.JsonBeanProcessor;
+import net.sf.json.processors.JsonValueProcessor;
+import net.sf.json.processors.JsonVerifier;
+import net.sf.json.util.PropertyFilter;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
+
+/**
+ * @author a.kohlbecker
+ * @date 30.03.2009
+ *
+ */
+public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements JsonBeanProcessor{
+	
+	public static final Logger logger = Logger.getLogger(AbstractCdmBeanProcessor.class);
+	
+	/* (non-Javadoc)
+	 * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
+	 */
+	public final JSONObject processBean(Object bean, JsonConfig jsonConfig) {
+
+		if(logger.isDebugEnabled()){
+			logger.debug("processing " + bean.getClass());
+		}
+		
+		JSONObject json =  new JSONObject();
+		Collection exclusions = jsonConfig.getMergedExcludes( bean.getClass() );
+		Set<Class> typeRestrictions = new HashSet<Class>();
+		typeRestrictions.add(CdmBase.class);
+		Set<PropertyDescriptor> props = AbstractBeanInitializer.getProperties(bean, null);
+		PropertyFilter jsonPropertyFilter = jsonConfig.getJsonPropertyFilter();
+		for(PropertyDescriptor prop: props){
+			String key = prop.getName();
+			if(getIgnorePropNames() != null && getIgnorePropNames().contains(key) || exclusions.contains(key)){
+				if(logger.isDebugEnabled()){
+					logger.debug("skipping excluded property " + key);
+				}
+				continue;
+			}
+			
+			try {
+				// ------ reusing snippet from JSONOnbject._fromBean()
+				Class type = prop.getPropertyType();
+				Object value = PropertyUtils.getProperty( bean, key );
+				
+	            if( jsonPropertyFilter != null && jsonPropertyFilter.apply( bean, key, value ) ){
+	               continue;
+	            }
+	            JsonValueProcessor jsonValueProcessor = jsonConfig.findJsonValueProcessor(bean.getClass(), type, key );
+	            if( jsonValueProcessor != null ){
+	               value = jsonValueProcessor.processObjectValue( key, value, jsonConfig );
+	               if( !JsonVerifier.isValidJsonValue( value ) ){
+	                  throw new JSONException( "Value is not a valid JSON value. " + value );
+	               }
+	            }
+	            // ----- END of snipped
+	            if(logger.isDebugEnabled()){
+	            	logger.debug("processing " + key + " of " + bean.getClass());
+	            }
+	            if(Collection.class.isAssignableFrom(type) || Object.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)){
+	            	json.element(key, value, jsonConfig);
+	            } else {
+	            	json.element(key, value);
+	            }
+	            
+			} catch (IllegalAccessException e) {
+				logger.error(e.getMessage(), e);
+			} catch (InvocationTargetException e) {
+				logger.error(e.getMessage(), e);
+			} catch (NoSuchMethodException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		
+		json = processBeanSecondStep((T) bean, json, jsonConfig);
+			
+		return json;
+	}
+	
+	/**
+	 * This method is called ate the end of {@link #processBean(Object, JsonConfig)} just before the JSONObject is returned.
+	 * By overriding this method it is possible to to further processing. 
+	 * <p>
+	 * <b>See also {@link #getIgnorePropNames()}!</b>
+	 * 
+	 * @param bean
+	 * @param json
+	 * @param jsonConfig
+	 * @return
+	 */
+	public abstract JSONObject processBeanSecondStep(T bean, JSONObject json, JsonConfig jsonConfig) ;
+	
+	/**
+	 * Implementations of this abstract class may override this method in order
+	 * to supply a List of property names to be ignored in
+	 * {@link #processBean(Object, JsonConfig)}. This feature generally is used
+	 * when {@link #processBeanSecondStep(CdmBase, JSONObject, JsonConfig)} is
+	 * implemented. such that this method is responsible of serializing this
+	 * property.
+	 * 
+	 * @return a List of property names.
+	 */
+	public abstract List<String> getIgnorePropNames();
+	
+
+}

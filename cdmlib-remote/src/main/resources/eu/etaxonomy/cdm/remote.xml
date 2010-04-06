@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+    
+    <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="classesToBeBound">
+            <list>
+                <value>eu.etaxonomy.remote.dto.rdf.Rdf</value>
+                <value>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept</value>
+                <value>eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel</value>          
+                <value>eu.etaxonomy.cdm.remote.dto.oaipmh.OAIPMH</value>  
+            </list>
+        </property>
+        <property name="marshallerProperties">
+            <map>
+              <entry key="com.sun.xml.bind.namespacePrefixMapper">
+                  <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
+              </entry>
+              <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='/human.xsl'?&gt;"/>
+           </map>
+        </property>
+    </bean>
+    
+    <bean id="dozerMapper"  class="eu.etaxonomy.cdm.remote.dto.assembler.DozerBeanMapperFactoryBean">
+      <property name="mappingFiles">
+        <list>
+          <value>classpath:/eu/etaxonomy/cdm/remote/dto/oaipmh/mappings.xml</value>
+          <value>classpath:/eu/etaxonomy/cdm/remote/dto/tdwg/mappings.xml</value>
+          <value>classpath:/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-deep.xml</value>
+          <!--
+            Substitute mappings-deep.xml to prefer relations in objects over embedded relations
+           <value>classpath:/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-shallow.xml</value>-->			   
+        </list>
+      </property>
+      <property name="customFieldMapper">
+        <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.HibernateProxyFieldMapper"/>
+      </property>
+      <property name="customConvertersWithId">
+        <map>
+          <entry key="relatedPageConverter" value-ref="relatedPageConverter"/>
+          <entry key="lsidProxyConverter" value-ref="lsidProxyConverter"/>
+          <entry key="lsidConverter">
+            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidConverter"/>
+          </entry>
+          <entry key="dateTimeConverter">
+            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.DateTimeConverter"/>
+          </entry>
+          <entry key="hibernateProxyDeepConverter">
+            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.HibernateProxyNullSafeDeepConverter"/>
+          </entry>
+          <entry key="preferLsidToUriConverter">
+            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.PreferLsidToUriConverter"/>
+          </entry>
+          <entry key="stripTagsConverter">
+            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.StripTagsConverter"/>
+          </entry>
+        </map>
+      </property>
+    </bean>
+    
+  <bean name="lsidProxyConverter" class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidProxyConverter"/>
+  
+  <bean name="relatedPageConverter" class="eu.etaxonomy.cdm.remote.dto.assembler.converter.DefaultRelatedPageConverter"/>
+  
+</beans>
