@@ -186,9 +186,9 @@ public class CdmUtils {
 	}
 		
 	/**
-	 * Concatenates the an Array of Strings, using the defined seperator.
-	 * Null values are interpreted as empty Strings
-	 * If all Strings are null a null is returned 
+	 * Concatenates an array of strings using the defined seperator.<BR>
+	 * <code>Null</code> values are interpreted as empty strings.<BR>
+	 * If all strings are <code>null</code> then <code>null</code> is returned.
 	 * @param strings
 	 * @param seperator
 	 * @return String 
@@ -213,6 +213,16 @@ public class CdmUtils {
 		}
 	}
 
+	/**
+	 * Concatenates two strings, using the defined seperator.<BR>
+	 * <code>Null</code> values are interpreted as empty Strings.<BR>
+	 * If both strings are <code>null</code> then <code>null</code> is returned.
+	 * @see #concat(CharSequence, String[]) 
+	 * @param seperator
+	 * @param string1
+	 * @param string2
+	 * @return String 
+	 */
 	static public String concat(CharSequence seperator, String string1, String string2){
 		String[] strings = {string1, string2};
 		return concat(seperator, strings);
