@@ -60,11 +60,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Configurable
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> implements Cloneable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7833674897174732255L;
-
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
 	@XmlElement(name = "Code")
