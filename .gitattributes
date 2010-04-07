@@ -1140,6 +1140,8 @@ app-import/src/main/resources/taxonX/palm_tc_98882.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98886.xml -text
 app-import/src/main/resources/tcsXmlTest.xml -text
 cdm-server/LICENSE.TXT -text
+cdm-server/ide/eclipse/run[!!-~]cdm-server.jar[!!-~]in[!!-~]debugmode.launch -text
+cdm-server/ide/eclipse/run[!!-~]cdm-server.jar.launch -text
 cdm-server/pom.xml -text
 cdm-server/run[!!-~]cdm-server.jar.launch -text
 cdm-server/src/main/assembly/assembly.xml -text
