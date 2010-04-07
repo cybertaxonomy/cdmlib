@@ -42,11 +42,11 @@ public class TaxonNodeBeanProcessor extends CycleSetAcess implements JsonBeanPro
 	
 		TaxonNode node = (TaxonNode)bean;
 		JSONObject json = new JSONObject();
-		json.element("class", node.getClass().getSimpleName(), jsonConfig);
+		json.element("class", "TaxonNodeDao");
 		json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
 		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(node.getTaxon().getName());
 		json.element("taggedTitle", taggedTitle, jsonConfig);
-		json.element("uuid", node.getTaxon().getUuid(), jsonConfig);
+		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
 		json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
 		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
 		json.element("rankLabel", node.getTaxon().getName().getRank().getLabel(), jsonConfig);
