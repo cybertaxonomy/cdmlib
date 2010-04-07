@@ -33,5 +33,5 @@ public class MediaListController extends BaseListController<Media, IMediaService
 	@Autowired
 	public void setService(IMediaService service) {
 		this.service = service; 
-	}	
+	}
 }
