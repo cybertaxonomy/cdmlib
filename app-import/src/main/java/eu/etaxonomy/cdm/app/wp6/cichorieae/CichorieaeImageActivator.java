@@ -38,6 +38,7 @@ public class CichorieaeImageActivator  {
 	static final UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
 	
 	public static void main (String[] cowabunga){
+		
 		ICdmDataSource destination = CdmDestinations.chooseDestination(cowabunga) != null ? CdmDestinations.chooseDestination(cowabunga) : cdmDestination;
 		
 		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
