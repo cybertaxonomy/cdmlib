@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -336,7 +335,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			nameSpace = BerlinModelAuthorTeamImport.NAMESPACE;
 			cdmClass = Team.class;
 			idSet = teamIdSet;
-			Map<String, Person> teamMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Team> teamMap = (Map<String, Team>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, teamMap);
 
 			
@@ -492,7 +491,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		boolean isPreliminary = rs.getBoolean("PreliminaryFlag");
 		String refAuthorString = rs.getString("refAuthorString");
 		Integer nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
-		TeamOrPersonBase<?> nomAuthor = teamMap.get(nomAuthorTeamFk);
+		String strNomAuthorTeamFk = String.valueOf(nomAuthorTeamFk);
+		TeamOrPersonBase<?> nomAuthor = teamMap.get(strNomAuthorTeamFk);
 		ReferenceBase nomReference = null;
 		
 		boolean hasNomRef = false;
