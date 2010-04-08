@@ -138,7 +138,6 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 						taxonName.addStatus(nomStatus);
 						namesToSave.add(taxonName);
 					}catch (UnknownCdmTypeException e) {
-						//TODO
 						logger.warn("NomStatusType " + nomStatusFk + " not yet implemented");
 						success = false;
 					}

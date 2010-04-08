@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -20,7 +22,6 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -56,7 +57,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
 	
-	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
+	private Map<Integer, Feature>  featureMap = new HashMap<Integer, Feature>();
 
 	 /* The taxonomic tree name for the first taxonomic tree.
 	  * Needs only to be defined if the import does not handle the naming 
@@ -348,14 +349,14 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	/**
 	 * @return the featureMap
 	 */
-	public MapWrapper<Feature> getFeatureMap() {
+	public Map<Integer, Feature>  getFeatureMap() {
 		return featureMap;
 	}
 
 	/**
 	 * @param featureMap the featureMap to set
 	 */
-	public void setFeatureMap(MapWrapper<Feature> featureMap) {
+	public void setFeatureMap(Map<Integer, Feature>  featureMap) {
 		this.featureMap = featureMap;
 	}
 

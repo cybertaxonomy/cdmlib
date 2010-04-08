@@ -771,8 +771,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				series = nomTitle;
 			}
 			printSeries = ReferenceFactory.newPrintSeries(series);
-			//TODO only one for ref and nomRef
-			logger.warn("Implementation of printSeries is preliminary");
+			logger.info("Implementation of printSeries is preliminary");
 		}
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		//Series (as Reference)

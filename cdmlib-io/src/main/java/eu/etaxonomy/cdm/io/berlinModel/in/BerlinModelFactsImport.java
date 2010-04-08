@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelFactsImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -68,7 +67,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	private static final String dbTableName = "Fact";
 
 	//FIXME don't use as class variable
-	private MapWrapper<Feature> featureMap;
+	private Map<Integer, Feature> featureMap;
 	
 	public BerlinModelFactsImport(){
 		super();
@@ -87,9 +86,9 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		}
 	}
 	
-	private MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig){
+	private Map<Integer, Feature>  invokeFactCategories(BerlinModelImportConfigurator bmiConfig){
 		
-		MapWrapper<Feature> result = bmiConfig.getFeatureMap();
+		Map<Integer, Feature>  result = bmiConfig.getFeatureMap();
 		Source source = bmiConfig.getSource();
 		
 		try {
@@ -130,7 +129,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 								
 				result.put(factCategoryId, feature);
 			}
-			Collection<Feature> col = result.getAllValues();
+			Collection<Feature> col = result.values();
 			getTermService().save((Collection)col);
 			return result;
 		} catch (SQLException e) {
@@ -473,7 +472,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		
 	}
 	
-	private Feature getFeature(MapWrapper<Feature> featureMap, Object categoryFkObj, Integer categoryFk){
+	private Feature getFeature(Map<Integer, Feature>  featureMap, Object categoryFkObj, Integer categoryFk){
 		if (categoryFkObj != null){
 			return featureMap.get(categoryFk); 
 		}else{
