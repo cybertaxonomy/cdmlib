@@ -58,6 +58,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeActivator
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/TaraxacumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraCollectionImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraDistributionParser.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraPostImportUpdater.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeActivator.java -text

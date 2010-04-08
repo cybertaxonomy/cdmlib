@@ -124,6 +124,11 @@ public class DipteraPostImportUpdater {
 		}
 		
 	}
+	
+	public boolean updateCollections(ICdmDataSource dataSource){
+		DipteraCollectionImport collectionImport = new DipteraCollectionImport();
+		return collectionImport.invoke(dataSource);
+	}
 
 
 	private void fillNameMaps(List<TaxonNameBase> nameList, Map<String, TaxonNameBase> nameMap, Map<String, TaxonNameBase> duplicateMap) {
