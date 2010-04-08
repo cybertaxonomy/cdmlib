@@ -224,12 +224,18 @@ public class CichorieaeActivator {
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 
 
-		if (includeTaraxacum) {
-			System.out.println("Start Taraxacum import from BerlinModel ...");
-			TaraxacumActivator taraxacumActivator = new TaraxacumActivator();
-			success &= taraxacumActivator.doImport(destination, DbSchemaValidation.UPDATE);
-			logger.warn("Taraxacum import still needs to be tested");
-			System.out.println("End Taraxacum import from BerlinModel ...");
+		try {
+			if (includeTaraxacum) {
+				System.out.println("Start Taraxacum import from BerlinModel ...");
+				TaraxacumActivator taraxacumActivator = new TaraxacumActivator();
+				success &= taraxacumActivator.doImport(destination, DbSchemaValidation.UPDATE);
+				logger.warn("Taraxacum import still needs to be tested");
+				System.out.println("End Taraxacum import from BerlinModel ...");
+			}
+		} catch (Exception e) {
+			success = false;
+			logger.error("Exception occurred during Taraxacum import.");
+			e.printStackTrace();	
 		}
 
 
