@@ -17,7 +17,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,6 +36,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
@@ -110,7 +110,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 */
 	public Institution() {
 		super();
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Institution>();
+		this.cacheStrategy = new InstitutionDefaultCacheStrategy();
 	}
 
 	/** 
@@ -165,8 +165,8 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @param  isPartOf  the parent institution
 	 * @see	   #getIsPartOf()
 	 */
-	public void setIsPartOf(Institution isPartOf){
-		this.isPartOf = isPartOf;
+	public void setIsPartOf(Institution parentInstitution){
+		this.isPartOf = parentInstitution;
 	}
 
 	/**

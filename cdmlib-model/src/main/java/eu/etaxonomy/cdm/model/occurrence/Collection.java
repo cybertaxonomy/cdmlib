@@ -1,3 +1,4 @@
+// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
@@ -116,7 +118,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	 */
 	protected Collection() {
 		super();
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Collection>();
+		this.cacheStrategy = new CollectionDefaultCacheStrategy();
 	}
 
 	public Institution getInstitute(){
