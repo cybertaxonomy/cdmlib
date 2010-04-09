@@ -11,7 +11,7 @@
 	<!-- include default application context and customization -->
      <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>  
      <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-     	<property name="omit" value="true" />
+     	<property name="omit" value="false" />
      </bean>
     <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
  
