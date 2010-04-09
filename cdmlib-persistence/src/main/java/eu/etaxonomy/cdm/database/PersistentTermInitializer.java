@@ -89,9 +89,9 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 			
 			TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 			for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
-				Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
-				UUID vocabularyUuid = firstPass(clazz,terms);
-				secondPass(clazz,vocabularyUuid,terms);
+				//Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
+				UUID vocabularyUuid = firstPass(vocabularyType,terms);
+				secondPass(vocabularyType.getClazz(),vocabularyUuid,terms);
 			}
 			transactionManager.commit(txStatus);
 		}
@@ -138,15 +138,15 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 * 						 loaded terms with their <code>UUID</code> as key
 	 * @return the <code>UUID</code> of the loaded vocabulary as found in CSV file
 	 */
-	public UUID firstPass(Class clazz, Map<UUID, DefinedTermBase> persistedTerms) {
-		logger.debug("loading terms for " + clazz.getSimpleName());
+	public UUID firstPass(VocabularyEnum vocabularyType, Map<UUID, DefinedTermBase> persistedTerms) {
+		logger.debug("loading terms for " + vocabularyType.getClazz().getSimpleName());
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
 		for(DefinedTermBase d : persistedTerms.values()) {
 			terms.put(d.getUuid(), d);
 		}
 
-		TermVocabulary loadedVocabulary  = termLoader.loadTerms((Class<? extends DefinedTermBase>)clazz, terms);
+		TermVocabulary loadedVocabulary  = termLoader.loadTerms(vocabularyType, terms);
 
 		UUID vocabularyUuid = loadedVocabulary.getUuid();
 		
