@@ -1564,7 +1564,7 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 			Set<NamedArea> namedAreas) {
 		boolean doCount = true;
 		Query query = prepareTaxaByCommonName(searchString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
-		if (query != null) {
+		if (query != null && !query.list().isEmpty()) {
 			Object o = query.uniqueResult();
 			if(o != null) {
 				return (Long)o;
