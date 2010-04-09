@@ -243,7 +243,7 @@ public class TaraxacumActivator {
 			app.getTaxonService().save(parentInCich);
 			app.getTaxonService().delete(taraxacumInCichTaxon);
 			try {
-				app.getTaxonTreeService().delete(treeInTaraxacum);
+//				app.getTaxonTreeService().delete(treeInTaraxacum); //throws exception
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
