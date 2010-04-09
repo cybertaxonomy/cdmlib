@@ -43,9 +43,7 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	 * @param destination
 	 * @param importerClass
 	 * @return
-	 * @deprecated use {@link #NewInstance(File, ICdmDataSource, String, Class)} instead
 	 */
-	@Deprecated 
 	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
 		return new ImageImportConfigurator(source, destination, null, importerClass);		
 	}
