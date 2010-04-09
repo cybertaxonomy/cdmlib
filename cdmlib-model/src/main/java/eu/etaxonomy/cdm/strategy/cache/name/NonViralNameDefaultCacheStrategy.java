@@ -470,7 +470,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
 			
-			result += getSpeciesAggregateEpithet(nonViralName);
+			result += " "+getSpeciesAggregateEpithet(nonViralName);
 			/*result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
 			String marker;
 			try {
