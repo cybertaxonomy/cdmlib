@@ -11,6 +11,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 public class NameFeature extends DefinedTermBase<NameFeature>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1184467829984777037L;
+		
 	private static NameFeature PROTOLOGUE;
 	private static NameFeature ADDITIONAL_PUBLICATION;
 	

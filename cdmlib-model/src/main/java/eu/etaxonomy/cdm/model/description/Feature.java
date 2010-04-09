@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -97,34 +100,37 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class Feature extends DefinedTermBase<Feature> {
 	private static final long serialVersionUID = 6754598791831848704L;
 	private static final Logger logger = Logger.getLogger(Feature.class);
-	private static Feature IMAGE;
-	private static Feature CULTIVATION;
-	private static Feature CONSERVATION;
-	private static Feature USES;
-	private static Feature ADDITIONAL_PUBLICATION;
-	private static Feature CITATION;
-	private static Feature OCCURRENCE;
-	private static Feature PHENOLOGY;
-	private static Feature COMMON_NAME;
-	private static Feature PROTOLOG;
-	private static Feature INTRODUCTION;
-	private static Feature DIAGNOSIS;
-	private static Feature ETYMOLOGY;
-	private static Feature MATERIALS_METHODS;
-	private static Feature MATERIALS_EXAMINED;
-	private static Feature KEY;
-	private static Feature BIOLOGY_ECOLOGY;
-	private static Feature ECOLOGY;
-	private static Feature DISCUSSION;
-	private static Feature DISTRIBUTION;
-	private static Feature DESCRIPTION;
-	private static Feature UNKNOWN;
-	private static Feature ANATOMY;
-	private static Feature HOSTPLANT;
-	private static Feature PATHOGEN_AGENT;
-	private static Feature INDIVIDUALS_ASSOCIATION;
-	private static Feature SPECIMEN;
-	private static Feature OBSERVATION;
+	
+	protected static Map<UUID, Feature> termMap = null;		
+
+//	private static Feature IMAGE;
+//	private static Feature CULTIVATION;
+//	private static Feature CONSERVATION;
+//	private static Feature USES;
+//	private static Feature ADDITIONAL_PUBLICATION;
+//	private static Feature CITATION;
+//	private static Feature OCCURRENCE;
+//	private static Feature PHENOLOGY;
+//	private static Feature COMMON_NAME;
+//	private static Feature PROTOLOG;
+//	private static Feature INTRODUCTION;
+//	private static Feature DIAGNOSIS;
+//	private static Feature ETYMOLOGY;
+//	private static Feature MATERIALS_METHODS;
+//	private static Feature MATERIALS_EXAMINED;
+//	private static Feature KEY;
+//	private static Feature BIOLOGY_ECOLOGY;
+//	private static Feature ECOLOGY;
+//	private static Feature DISCUSSION;
+//	private static Feature DISTRIBUTION;
+//	private static Feature DESCRIPTION;
+//	private static Feature UNKNOWN;
+//	private static Feature ANATOMY;
+//	private static Feature HOSTPLANT;
+//	private static Feature PATHOGEN_AGENT;
+//	private static Feature INDIVIDUALS_ASSOCIATION;
+//	private static Feature SPECIMEN;
+//	private static Feature OBSERVATION;
 
 	private boolean supportsTextData;
 	
@@ -582,15 +588,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidSpecimen = UUID.fromString("8200e050-d5fd-4cac-8a76-4b47afb13809");
 	private static final UUID uuidObservation = UUID.fromString("f59e747d-0b4f-4bf7-b69a-cbd50bc78595");
 	
-//	private static final UUID uuidDistribution = UUID.fromString("");
-//	private static final UUID uuidDistribution = UUID.fromString("");
-//	private static final UUID uuidDistribution = UUID.fromString("");
-
-//	"86bd920d-f8c5-48b9-af1d-03f63c31de5c",,"Abstract","Abstract"
-//	"489bf358-b78a-45e2-a691-f9f3f10446ce",,"Synopsis","Synopsis"
-//	"89d3b005-9876-4923-89d9-60eb75b9583b",,"Multiple","Multiple"
-//	"555a46bc-211a-476f-a022-c472970d6f8b",,"Acknowledgments","Acknowledgments"
-	
 	
 	/** 
 	 * Creates and returns a new feature instance on the basis of a given string
@@ -621,13 +618,28 @@ public class Feature extends DefinedTermBase<Feature> {
 		return newInstance;
 	}
 	
+//******************************* STATIC METHODS *****************************************
+	
+	protected static Feature getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+			//example for an unwanted initialization: before initializing spring you may use a static method of this class.
+			//This would result in an default terminitialization instead of a database based
+			// term initialization
+			
+//			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+//			vocabularyStore.initialize(); 
+		}
+			return (Feature)termMap.get(uuid);
+	}
+	
 	/**
 	 * Returns the "unknown" feature. This feature allows to store values of
 	 * {@link DescriptionElementBase description elements} even if it is momentarily
 	 * not known what they mean.
 	 */
 	public static final Feature UNKNOWN(){
-		return UNKNOWN;
+		return getTermByUuid(uuidUnknown);
 	}
 	
 	/**
@@ -636,7 +648,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * The "description" feature is the highest level feature. 
 	 */
 	public static final Feature DESCRIPTION(){
-		return DESCRIPTION;
+		return getTermByUuid(uuidDescription);
 	}
 
 	/**
@@ -646,7 +658,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsDistribution()
 	 */
 	public static final Feature DISTRIBUTION(){
-		return DISTRIBUTION;
+		return getTermByUuid(uuidDistribution);
 	}
 
 	/**
@@ -656,7 +668,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature DISCUSSION(){
-		return DISCUSSION;
+		return getTermByUuid(uuidDiscussion);
 	}
 	
 	/**
@@ -666,7 +678,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * ecological matters.
 	 */
 	public static final Feature ECOLOGY(){
-		return ECOLOGY;
+		return getTermByUuid(uuidEcology);
 	}	
 	
 	/**
@@ -678,7 +690,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see #ECOLOGY()
 	 */
 	public static final Feature BIOLOGY_ECOLOGY(){
-		return BIOLOGY_ECOLOGY;
+		return getTermByUuid(uuidBiologyEcology);
 	}
 	
 	/**
@@ -686,7 +698,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * all features being used within an identification key.
 	 */
 	public static final Feature KEY(){
-		return KEY;
+		return getTermByUuid(uuidKey);
 	}		
 	
 	
@@ -698,7 +710,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.
 	 */
 	public static final Feature MATERIALS_EXAMINED(){
-		return MATERIALS_EXAMINED;
+		return getTermByUuid(uuidMaterialsExamined);
 	}
 	
 	/**
@@ -709,7 +721,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.
 	 */
 	public static final Feature MATERIALS_METHODS(){
-		return MATERIALS_METHODS;
+		return getTermByUuid(uuidMaterialsMethods);
 	}
 	
 	/**
@@ -719,7 +731,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link TaxonNameDescription taxon name descriptions}.
 	 */
 	public static final Feature ETYMOLOGY(){
-		return ETYMOLOGY;
+		return getTermByUuid(uuidEtymology);
 	}
 		
 	/**
@@ -729,7 +741,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link TaxonDescription taxon descriptions}.
 	 */
 	public static final Feature DIAGNOSIS(){
-		return DIAGNOSIS;
+		return getTermByUuid(uuidDiagnosis);
 	}
 
 	
@@ -740,7 +752,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature INTRODUCTION(){
-		return INTRODUCTION;
+		return getTermByUuid(uuidIntroduction);
 	}
 
 	/**
@@ -752,7 +764,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature PROTOLOG(){
-		return PROTOLOG;
+		return getTermByUuid(uuidProtolog);
 	}
 	
 	/**
@@ -762,7 +774,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsCommonTaxonName()
 	 */
 	public static final Feature COMMON_NAME(){
-		return COMMON_NAME;
+		return getTermByUuid(uuidCommonName);
 	}
 	
 	/**
@@ -775,33 +787,33 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * (such as "first flight of butterflies").
 	 */
 	public static final Feature PHENOLOGY(){
-		return PHENOLOGY;
+		return getTermByUuid(uuidPhenology);
 	}
 
 	/**
 	 * Returns the "occurrence" feature.
 	 */
 	public static final Feature OCCURRENCE(){
-		return OCCURRENCE;
+		return getTermByUuid(uuidOccurrence);
 	}
 
 	/**
 	 * Returns the "anatomy" feature.
 	 */
 	public static final Feature ANATOMY(){
-		return ANATOMY;
+		return getTermByUuid(uuidAnatomy);
 	}
 	/**
 	 * Returns the "hostplant" feature.
 	 */
 	public static final Feature HOSTPLANT(){
-		return HOSTPLANT;
+		return getTermByUuid(uuidHostPlant);
 	}
 	/**
 	 * Returns the "pathogen agent" feature.
 	 */
 	public static final Feature PATHOGEN_AGENT(){
-		return PATHOGEN_AGENT;
+		return getTermByUuid(uuidPathogenAgent);
 	}
 
 	/**
@@ -811,7 +823,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature CITATION(){
-		return CITATION;
+		return getTermByUuid(uuidCitation);
 	}
 	
 	/**
@@ -824,7 +836,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature ADDITIONAL_PUBLICATION(){
-		return ADDITIONAL_PUBLICATION;
+		return getTermByUuid(uuidAdditionalPublication);
 	}
 	
 	
@@ -835,7 +847,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * particular uses (for instance "industrial use of seeds").
 	 */
 	public static final Feature USES(){
-		return USES;
+		return getTermByUuid(uuidUses);
 	}
 	 
 	
@@ -845,7 +857,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * methods and conditions for the conservation of {@link Specimen specimens}.<BR>
 	 */
 	public static final Feature CONSERVATION(){
-		return CONSERVATION;
+		return getTermByUuid(uuidConservation);
 	}
 	
 	
@@ -853,22 +865,22 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the "cultivation" feature.
 	 */
 	public static final Feature CULTIVATION(){
-		return CULTIVATION;
+		return getTermByUuid(uuidCultivation);
 	}
 	
 	
 	/**
-	 * Returns the "cultivation" feature.
+	 * Returns the "image" feature.
 	 */
 	public static final Feature IMAGE(){
-		return IMAGE;
+		return getTermByUuid(uuidImage);
 	}
 	
 	/**
 	 * Returns the "individuals association" feature.
 	 */
 	public static final Feature INDIVIDUALS_ASSOCIATION(){
-		Feature individuals_association = INDIVIDUALS_ASSOCIATION;
+		Feature individuals_association =  getTermByUuid(uuidIndividualsAssociation);
 		Set<Feature> generalizationOf = new HashSet<Feature>();
 		generalizationOf.add(SPECIMEN());
 		generalizationOf.add(OBSERVATION());
@@ -878,11 +890,11 @@ public class Feature extends DefinedTermBase<Feature> {
 	}
 	
 	public static final Feature SPECIMEN(){
-		return SPECIMEN;
+		return getTermByUuid(uuidSpecimen);
 	}
 	
 	public static final Feature OBSERVATION(){
-		return OBSERVATION;
+		return getTermByUuid(uuidObservation);
 	}
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
@@ -904,34 +916,44 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
-		Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
-		Feature.BIOLOGY_ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidBiologyEcology);
-		Feature.CITATION = termVocabulary.findTermByUuid(Feature.uuidCitation);
-		Feature.COMMON_NAME = termVocabulary.findTermByUuid(Feature.uuidCommonName);
-		Feature.CONSERVATION = termVocabulary.findTermByUuid(Feature.uuidConservation);
-		Feature.CULTIVATION = termVocabulary.findTermByUuid(Feature.uuidCultivation);
-		Feature.DESCRIPTION = termVocabulary.findTermByUuid(Feature.uuidDescription);
-		Feature.DIAGNOSIS = termVocabulary.findTermByUuid(Feature.uuidDiagnosis);
-		Feature.DISCUSSION = termVocabulary.findTermByUuid(Feature.uuidDiscussion);
-		Feature.DISTRIBUTION = termVocabulary.findTermByUuid(Feature.uuidDistribution);
-		Feature.ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidEcology);
-		Feature.ETYMOLOGY = termVocabulary.findTermByUuid(Feature.uuidEtymology);
-		Feature.IMAGE = termVocabulary.findTermByUuid(Feature.uuidImage);
-		Feature.INTRODUCTION = termVocabulary.findTermByUuid(Feature.uuidIntroduction);
-		Feature.KEY = termVocabulary.findTermByUuid(Feature.uuidKey);
-		Feature.MATERIALS_EXAMINED = termVocabulary.findTermByUuid(Feature.uuidMaterialsExamined);
-		Feature.MATERIALS_METHODS = termVocabulary.findTermByUuid(Feature.uuidMaterialsMethods);
-		Feature.OCCURRENCE = termVocabulary.findTermByUuid(Feature.uuidOccurrence);
-		Feature.PHENOLOGY = termVocabulary.findTermByUuid(Feature.uuidPhenology);
-		Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
-		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
-		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
-		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
-		Feature.PATHOGEN_AGENT = termVocabulary.findTermByUuid(Feature.uuidPathogenAgent);
-		Feature.HOSTPLANT = termVocabulary.findTermByUuid(uuidHostPlant); 
-		Feature.INDIVIDUALS_ASSOCIATION = termVocabulary.findTermByUuid(uuidIndividualsAssociation); 
-		Feature.SPECIMEN = termVocabulary.findTermByUuid(uuidSpecimen);
-		Feature.OBSERVATION = termVocabulary.findTermByUuid(uuidObservation);
+		if (termMap == null){
+			termMap = new HashMap<UUID, Feature>();
+		}
+		for (Feature term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (Feature)term);
+		}
 	}
+	
+//	@Override
+//	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
+//		Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
+//		Feature.BIOLOGY_ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidBiologyEcology);
+//		Feature.CITATION = termVocabulary.findTermByUuid(Feature.uuidCitation);
+//		Feature.COMMON_NAME = termVocabulary.findTermByUuid(Feature.uuidCommonName);
+//		Feature.CONSERVATION = termVocabulary.findTermByUuid(Feature.uuidConservation);
+//		Feature.CULTIVATION = termVocabulary.findTermByUuid(Feature.uuidCultivation);
+//		Feature.DESCRIPTION = termVocabulary.findTermByUuid(Feature.uuidDescription);
+//		Feature.DIAGNOSIS = termVocabulary.findTermByUuid(Feature.uuidDiagnosis);
+//		Feature.DISCUSSION = termVocabulary.findTermByUuid(Feature.uuidDiscussion);
+//		Feature.DISTRIBUTION = termVocabulary.findTermByUuid(Feature.uuidDistribution);
+//		Feature.ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidEcology);
+//		Feature.ETYMOLOGY = termVocabulary.findTermByUuid(Feature.uuidEtymology);
+//		Feature.IMAGE = termVocabulary.findTermByUuid(Feature.uuidImage);
+//		Feature.INTRODUCTION = termVocabulary.findTermByUuid(Feature.uuidIntroduction);
+//		Feature.KEY = termVocabulary.findTermByUuid(Feature.uuidKey);
+//		Feature.MATERIALS_EXAMINED = termVocabulary.findTermByUuid(Feature.uuidMaterialsExamined);
+//		Feature.MATERIALS_METHODS = termVocabulary.findTermByUuid(Feature.uuidMaterialsMethods);
+//		Feature.OCCURRENCE = termVocabulary.findTermByUuid(Feature.uuidOccurrence);
+//		Feature.PHENOLOGY = termVocabulary.findTermByUuid(Feature.uuidPhenology);
+//		Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
+//		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
+//		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
+//		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
+//		Feature.PATHOGEN_AGENT = termVocabulary.findTermByUuid(Feature.uuidPathogenAgent);
+//		Feature.HOSTPLANT = termVocabulary.findTermByUuid(uuidHostPlant); 
+//		Feature.INDIVIDUALS_ASSOCIATION = termVocabulary.findTermByUuid(uuidIndividualsAssociation); 
+//		Feature.SPECIMEN = termVocabulary.findTermByUuid(uuidSpecimen);
+//		Feature.OBSERVATION = termVocabulary.findTermByUuid(uuidObservation);
+//	}
 
 }

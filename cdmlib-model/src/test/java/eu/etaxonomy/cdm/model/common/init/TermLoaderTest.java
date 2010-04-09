@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 
@@ -56,14 +57,15 @@ public class TermLoaderTest {
 	 */
 	@Test
 	public void testLoadRanks() {
-        TermVocabulary<Rank> defaultRanks = termLoader.loadTerms(Rank.class, terms);
+		
+        TermVocabulary<Rank> defaultRanks = termLoader.loadTerms(VocabularyEnum.Rank, terms);
 		assertNotNull(defaultRanks.findTermByUuid(uuidGenus));
 		assertTrue(terms.containsKey(uuidGenus));
 	}
 
 	@Test
 	public void testLoadNameTypeDesignationStatus() {
-        TermVocabulary<NameTypeDesignationStatus> defaultStatus = termLoader.loadTerms(NameTypeDesignationStatus.class, terms);
+        TermVocabulary<NameTypeDesignationStatus> defaultStatus = termLoader.loadTerms(VocabularyEnum.NameTypeDesignationStatus, terms);
 		assertNotNull(defaultStatus.findTermByUuid(uuidTautonymy));
 		assertTrue(terms.containsKey(uuidTautonymy));
 	}

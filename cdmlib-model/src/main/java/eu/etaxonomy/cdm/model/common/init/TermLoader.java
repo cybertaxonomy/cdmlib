@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 @Component
@@ -40,17 +41,19 @@ public class TermLoader implements ITermLoader {
 		this.termFileNames = termFileNames;
 	}
 	
-	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(Class<T> termClass, Map<UUID,DefinedTermBase> terms) {
+	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
 		
-		String filename = termClass.getSimpleName()+".csv";
+		String filename = vocType.name()+".csv";
+//		termClass.getSimpleName()+".csv";
 		
-		/**
-		 * Check to see if a non-standard filename should be used 
-		 * ( The file should still reside in the same directory )
-		 */ 
-		if(termFileNames.containsKey(termClass)) {
-			filename = termFileNames.get(termClass);
-		}
+//		/**
+//		 * Check to see if a non-standard filename should be used 
+//		 * ( The file should still reside in the same directory )
+//		 */ 
+//		if(termFileNames.containsKey(termClass)) {
+//			filename = termFileNames.get(termClass);
+//		}
+		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
 		
 		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
 		logger.debug("strResourceFileName is " + strResourceFileName);
@@ -69,7 +72,7 @@ public class TermLoader implements ITermLoader {
 			if (OrderedTermBase.class.isAssignableFrom(termClass)){
 				voc = new OrderedTermVocabulary(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, termClass.getCanonicalName());
 			}else{
-				voc = new TermVocabulary<T>(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, termClass.getCanonicalName());
+				voc = new TermVocabulary<T>(termClass.getCanonicalName(), vocType.name(), labelAbbrev, termClass.getCanonicalName());
 			}
 			
 			String [] nextLine = reader.readNext();
@@ -78,7 +81,7 @@ public class TermLoader implements ITermLoader {
 			}
 			
 			// Ugly, I know, but I don't think we can use a static method here . . 
-			T termInstance = termClass.newInstance(); 
+			T termInstance = ((Class<T>)termClass).newInstance(); 
 			
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
