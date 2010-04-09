@@ -144,10 +144,10 @@ public class ErmsActivator {
 			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
 			logger.info(obj);
 			
-			//make feature tree
-			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
-			app = bmImport.getCdmAppController();
-			app.getFeatureTreeService().saveOrUpdate(tree);
+//			//make feature tree
+//			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
+//			app = bmImport.getCdmAppController();
+//			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
