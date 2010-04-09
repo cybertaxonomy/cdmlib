@@ -78,8 +78,13 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		return loadTaxonNode(node, propertyPaths);
 	}
 	
+	@Deprecated // use loadTaxonNode(UUID, List<String>) instead 
 	public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths){
 		return taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
+	}
+	
+	public TaxonNode loadTaxonNode(UUID taxonNodeUuid, List<String> propertyPaths){
+		return taxonNodeDao.load(taxonNodeUuid, propertyPaths);
 	}
 	
 	/*
@@ -151,6 +156,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
 			List<String> propertyPaths) {
+		taxonNode = taxonNodeDao.load(taxonNode.getUuid());
 		List<TaxonNode> childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
 		Collections.sort(childNodes, taxonNodeComparator);
 		defaultBeanInitializer.initializeAll(childNodes, propertyPaths);

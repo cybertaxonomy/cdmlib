@@ -2436,6 +2436,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AnnotatableContro
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BadResumptionTokenException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BaseController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BaseListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ClassificationListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ExternalGeoController.java -text
@@ -2455,6 +2456,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceControll
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonNodeController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonNodeListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonomicTreePortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonomicTreePortalListController.java -text
@@ -2552,6 +2555,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/PartialJSONVa
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonNameBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonNodeBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonNodeDaoBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonRelationshipBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonomyNodeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TermBaseBeanProcessor.java -text
@@ -2663,6 +2667,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeComparator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonTreeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
@@ -2681,6 +2686,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeByNameComparator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonTreeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text

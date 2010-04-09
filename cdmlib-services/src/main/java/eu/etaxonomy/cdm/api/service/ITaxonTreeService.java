@@ -68,6 +68,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @param taxonNode
 	 * @param propertyPaths
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
 	
@@ -140,6 +141,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @param taxonomicTree
 	 * @param propertyPaths
 	 * @return
+	 * @deprecated move to TaxonNodeService
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
 	
@@ -180,6 +182,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * 
 	 * @param taxonNode
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public UUID removeTaxonNode(TaxonNode taxonNode);
 	
@@ -187,6 +190,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * 
 	 * @param taxonNode
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public UUID saveTaxonNode(TaxonNode taxonNode);
 	
@@ -194,6 +198,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * 
 	 * @param taxonNodeCollection
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
 	

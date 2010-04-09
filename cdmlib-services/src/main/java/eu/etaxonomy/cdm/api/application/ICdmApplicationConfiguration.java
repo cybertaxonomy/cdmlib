@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -54,6 +55,12 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public ITaxonTreeService getTaxonTreeService();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ITaxonNodeService getTaxonNodeService();
 	
 	/**
 	 * @return
