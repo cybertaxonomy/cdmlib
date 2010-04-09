@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.app.berlinModelImport;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -27,7 +29,7 @@ public class TreeCreator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TreeCreator.class);
 
-	public static FeatureTree flatTree(UUID featureTreeUuid, MapWrapper<Feature> featureMap, Object[] featureKeyList){
+	public static FeatureTree flatTree(UUID featureTreeUuid, Map<Integer, Feature> featureMap, Object[] featureKeyList){
 		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
 		FeatureNode root = result.getRoot();
 		
@@ -46,7 +48,7 @@ public class TreeCreator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		MapWrapper<Feature> map = new MapWrapper<Feature>(null);
+		Map<Integer, Feature>  map = new HashMap<Integer, Feature>(null);
 		map.put(1, Feature.DISTRIBUTION());
 		map.put(2, Feature.ECOLOGY());
 
