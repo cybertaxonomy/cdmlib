@@ -189,11 +189,20 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 									break;
 								}
 							}
+							if (taxon == null){
+								taxon = (Taxon)taxa.get(0);
+								logger.warn("Taxon not found in preferred tree. Use " + taxon.getTitleCache() + " instead.");
+							}
 
 						} else {
 							taxon = (Taxon) taxa.get(0);
 						}
-						taxonService.saveOrUpdate(taxon);
+						if (taxon != null){
+							taxonService.saveOrUpdate(taxon);
+						}else{
+							logger.warn("Taxon was null. Did not save taxon");
+						}
+						
 						
 						TextData textData = TextData.NewInstance();
 						logger.info("Importing image for taxon: " + taxa);
