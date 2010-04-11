@@ -178,7 +178,10 @@ http://www.w3.org/2001/XMLSchema
       <xs:element name="FeatureTrees" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="description:FeatureTree" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="description:FeatureTree" />
+              <xs:element ref="description:PolytomousKey"/>
+            </xs:choice>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

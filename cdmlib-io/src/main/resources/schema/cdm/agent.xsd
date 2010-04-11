@@ -77,8 +77,8 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
           <xs:element name="Period" type="common:TimePeriod" minOccurs="0"/>
           <xs:element name="Department" type="xs:string" minOccurs="0"/>
           <xs:element name="Role" type="xs:string" minOccurs="0"/>
-          <xs:element ref="agent:Institution"/>
-          <xs:element ref="agent:Person"/>
+          <xs:element name="Institution" type="xs:IDREF"/>
+          <xs:element name="Person" type="xs:IDREF"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
