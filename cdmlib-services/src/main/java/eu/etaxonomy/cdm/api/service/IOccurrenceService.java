@@ -15,6 +15,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -45,12 +46,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	/**
      * Returns a List of determinations that have been made for a given occurence
      * 
-	 * @param occurence the occurence associated with these determinations
+	 * @param occurence the occurence associated with these determinations (can be null for all occurrences)
+	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
 	 * @param pageSize The maximum number of determinations returned (can be null for all related determinations)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a Pager of determination instances
      */
-	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
      * Returns a list of derivation events that have involved creating new DerivedUnits from this occurence

@@ -239,7 +239,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#saveAll(java.util.Collection)
 	 */
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
 	public void saveAllMetaData(Collection<CdmMetaData> metaData) {
 		Iterator<CdmMetaData> iterator = metaData.iterator();
 		while(iterator.hasNext()){

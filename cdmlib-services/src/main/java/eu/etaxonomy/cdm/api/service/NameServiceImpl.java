@@ -109,17 +109,17 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return super.findByTitle(config);
 	}
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
 		return homotypicalGroupDao.saveAll(homotypicalGroups);
 	}
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
 		return typeDesignationDao.saveAll(typeDesignationCollection);
 	}
 
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection){
 		return referencedEntityDao.saveAll(referencedEntityCollection);
 	}

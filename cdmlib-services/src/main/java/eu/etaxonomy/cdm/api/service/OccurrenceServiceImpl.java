@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -93,12 +94,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDeterminations(occurence);
+	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+        Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);
 		
 		List<DeterminationEvent> results = new ArrayList<DeterminationEvent>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getDeterminations(occurence, pageSize, pageNumber, propertyPaths); 
+			results = dao.getDeterminations(occurrence,taxonBase, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<DeterminationEvent>(pageNumber, numberOfResults, pageSize, results);
