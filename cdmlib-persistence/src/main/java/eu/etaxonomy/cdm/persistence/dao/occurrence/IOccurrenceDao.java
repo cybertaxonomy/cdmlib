@@ -8,18 +8,49 @@ package eu.etaxonomy.cdm.persistence.dao.occurrence;
 
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
+
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
  * @created 01.09.2008
  */
 public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBase> {
+	
+	/**
+	 * Returns the number of occurences belonging to a certain subclass - which must extend SpecimenOrObservationBase
+	 * @param <SpecimenOrObservationBase>
+	 * @param clazz
+	 * @return
+	 */
+	public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
+	
+	/**
+	 * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
+	 * of 'limit' objects are returned, starting at object with index 'start'.
+	 * 
+	 * @param type 
+	 * @param 
+	 * @param limit
+	 *            the maximum number of entities returned (can be null to return
+	 *            all entities)
+	 * @param start
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
      * Returns a count of Media that are associated with a given occurence
@@ -41,23 +72,25 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
-     * Returns a count of determinations that have been made for a given occurence
+     * Returns a count of determinations that have been made for a given occurence and for a given taxon concept
      * 
-	 * @param occurence the occurence associated with these determinations
+	 * @param occurence the occurence associated with these determinations (can be null for all occurrences)
+	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
      * @return a count of determination events
      */
-    public int countDeterminations(SpecimenOrObservationBase occurence);
+    public int countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
 	
     /**
-     * Returns a List of determinations that have been made for a given occurence
+     * Returns a List of determinations that have been made for a given occurence and for a given taxon concept
      * 
-	 * @param occurence the occurence associated with these determinations
+	 * @param occurence the occurence associated with these determinations (can be null for all occurrences)
+	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
 	 * @param pageSize The maximum number of determinations returned (can be null for all related determinations)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
      * @return a List of determination instances
      */
-	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
      * Returns a count of derivation events that have involved creating new DerivedUnits from this occurence

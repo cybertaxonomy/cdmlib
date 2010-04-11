@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextSession;
@@ -30,6 +33,8 @@ import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
@@ -65,15 +70,30 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public int countDeterminations(SpecimenOrObservationBase occurence) {
+	public int countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("select count(determination) from DeterminationEvent determination where determination.identifiedUnit = :occurence");
-		    query.setParameter("occurence", occurence);
-		    return ((Long)query.uniqueResult()).intValue();
+			Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
+            if(occurrence != null) {
+            	criteria.add(Restrictions.eq("identifiedUnit",occurrence));
+            }
+            
+            if(taxonBase != null) {
+            	criteria.add(Restrictions.eq("taxon",taxonBase));
+            }
+			
+            criteria.setProjection(Projections.rowCount());
+			return (Integer)criteria.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("identifiedUnit").eq(occurence.getId()));
+			
+			if(occurrence != null) {
+			    query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
+			}
+			
+			if(taxonBase != null) {
+			    query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
+			}
 			query.addProjection(AuditEntity.id().count("id"));
 
 			return ((Long)query.getSingleResult()).intValue();
@@ -107,26 +127,38 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return result;
 	}
 
-	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Query query = getSession().createQuery("select determination from DeterminationEvent determination where determination.identifiedUnit = :occurence");
-			query.setParameter("occurence", occurence);
+			Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
+			if(occurrence != null) {
+            	criteria.add(Restrictions.eq("identifiedUnit",occurrence));
+            }
+            
+            if(taxonBase != null) {
+            	criteria.add(Restrictions.eq("taxon",taxonBase));
+            }
 
 			if(pageSize != null) {
-				query.setMaxResults(pageSize);
+				criteria.setMaxResults(pageSize);
 				if(pageNumber != null) {
-					query.setFirstResult(pageNumber * pageSize);
+					criteria.setFirstResult(pageNumber * pageSize);
 				} else {
-					query.setFirstResult(0);
+					criteria.setFirstResult(0);
 				}
 			}
-			List<DeterminationEvent> result = (List<DeterminationEvent>)query.list();
+			List<DeterminationEvent> result = (List<DeterminationEvent>)criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);			
 			return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("identifiedUnit").eq(occurence.getId()));
+			if(occurrence != null) {
+			    query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
+			}
+			
+			if(taxonBase != null) {
+			    query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
+			}
 			if(pageSize != null) {
 				query.setMaxResults(pageSize);
 				if(pageNumber != null) {
