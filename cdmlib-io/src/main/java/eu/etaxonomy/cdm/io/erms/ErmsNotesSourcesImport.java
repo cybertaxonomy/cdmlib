@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @Component
 public class ErmsNotesSourcesImport extends ErmsImportBase<CommonTaxonName> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ErmsNotesSourcesImport.class);
 	
 	
