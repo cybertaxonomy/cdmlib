@@ -203,7 +203,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		Integer childId = state.getTaxonLight().getId();
 		
 		Taxon parentTaxon = (Taxon)state.getTaxonBase(parentId);
-		
+		Taxon taxon = (Taxon)state.getTaxonBase(childId);
 		if (CdmUtils.isNotEmpty(taxonNameStr)) {
 			if (nameStatus != null && nameStatus.equalsIgnoreCase("invalid")){
 				//add synonym relationship
@@ -213,7 +213,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				// Add the parent relationship
 				if (state.getTaxonLight().getParentId() != 0) {
 					if (parentTaxon != null) {
-						Taxon taxon = (Taxon)state.getTaxonBase(childId);
+						//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 						
 						ReferenceBase citation = state.getConfig().getSourceReference();
 						String microCitation = null;
@@ -228,8 +228,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 					//do nothing (parent == 0) no parent exists
 				}
 			}
-		} else 	{ 
-			// add common name to parent taxon
+		} 
+		if (CdmUtils.isNotEmpty(commonNameStr))
+		{			// add common name to taxon
 			
 			Language language = getTermService().getLanguageByIso(state.getTaxonLight().getLanguage());
 			if (language == null && CdmUtils.isNotEmpty(state.getTaxonLight().getLanguage())  ){
@@ -239,9 +240,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonNameStr, language);
 			try {
-				TaxonDescription taxonDescription = getDescription(parentTaxon);
+				TaxonDescription taxonDescription = getDescription(taxon);
 				taxonDescription.addElement(commonTaxonName);
-				logger.info("Common name " + commonNameStr + " added to " + parentTaxon.getTitleCache());
+				logger.info("Common name " + commonNameStr + " added to " + taxon.getTitleCache());
 			} catch (ClassCastException ex) {
 				logger.error(taxonNameStr + " is not a taxon instance.");
 			}
