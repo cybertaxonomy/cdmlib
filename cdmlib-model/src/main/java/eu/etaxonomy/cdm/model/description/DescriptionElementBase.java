@@ -177,7 +177,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	}
 
 	/** 
-	 * Returns the set of {@link Media media} (that is pictures, movies,
+	 * Returns the list of {@link Media media} (that is pictures, movies,
 	 * recorded sounds ...) <i>this</i> description element is based on.
 	 */
 	public List<Media> getMedia(){
@@ -185,7 +185,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	}
 
 	/**
-	 * Adds a {@link Media media} to the set of {@link #getMedia() media}
+	 * Adds a {@link Media media} to the list of {@link #getMedia() media}
 	 * <i>this</i> description element is based on.
 	 * 
 	 * @param media	the media to be added to <i>this</i> description element
@@ -195,7 +195,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 		this.media.add(media);
 	}
 	/** 
-	 * Removes one element from the set of {@link #getMedia() media}
+	 * Removes one element from the list of {@link #getMedia() media}
 	 * <i>this</i> description element is based on.
 	 *
 	 * @param  media	the media which should be removed
