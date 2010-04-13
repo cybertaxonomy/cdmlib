@@ -5,6 +5,7 @@ package eu.etaxonomy.cdm.api.service;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +30,7 @@ public class MediaServiceImplTest extends CdmIntegrationTest{
 	
 
 	@Test
-	public void testGetImageMetaData() {
+	public void testGetImageMetaData() throws IOException {
 		File imageFile;
 		imageFile = new File("./src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg");
 		URI uri = imageFile.toURI();

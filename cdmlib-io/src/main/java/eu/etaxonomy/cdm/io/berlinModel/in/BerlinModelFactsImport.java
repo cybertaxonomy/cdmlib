@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -451,7 +452,9 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			imageMetaData.readMetaData(url.toURI(), 0);
 		}
 		catch(URISyntaxException e){
-			e.printStackTrace();
+			logger.error("URISyntaxException reading image metadata." , e);
+		} catch (IOException e) {
+			logger.error("IOError reading image metadata." , e);
 		}
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 		media.addRepresentation(mediaRepresentation);

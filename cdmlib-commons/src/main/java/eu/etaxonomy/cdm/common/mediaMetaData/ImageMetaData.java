@@ -99,7 +99,7 @@ public  class ImageMetaData extends MediaMetaData {
 	
 	
 
-	public void readImageInfo(URI imageUri, Integer timeOut){
+	public void readImageInfo(URI imageUri, Integer timeOut) throws IOException{
 		
 		File image = null;
 		InputStream inputStream;
@@ -119,16 +119,16 @@ public  class ImageMetaData extends MediaMetaData {
 			readImageInfo(imageInfo);
 		    
 		} catch (IOException e) {
-			
 			logger.warn("Could not read: "+ imageUri.toString() + "; reason:"+e.getMessage());
+			throw e;
 		} catch (ImageReadException e) {
-			logger.error("Could not open url: " + image.getPath() + ". " + e.getMessage());
+			logger.error("Could not open url: " + imageUri + ". " + e.getMessage());
 		}
 				
 	}
 
-	@Override
-	public void readMetaData(URI mediaUri, Integer timeOut) {
+	
+	public void readMetaData(URI mediaUri, Integer timeOut) throws IOException {
 		readImageInfo(mediaUri, timeOut);
 		try {
 			File image = null;
@@ -162,6 +162,7 @@ public  class ImageMetaData extends MediaMetaData {
 			e.printStackTrace();
 		} catch (IOException e) {
 			logger.warn("The image server is not available!");
+			throw e;
 		}
 		
 	}

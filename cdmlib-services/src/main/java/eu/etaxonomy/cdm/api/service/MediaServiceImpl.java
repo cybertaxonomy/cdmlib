@@ -70,7 +70,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		
 	}
 	
-	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut){
+	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException{
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		imageMetaData.readImageInfo(imageUri, timeOut);
 		imageMetaData.readMetaData(imageUri, timeOut);
@@ -78,7 +78,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return imageMetaData;
 	}
 	
-	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut){
+	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException{
 		
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		imageMetaData.readMetaData(imageUri, timeOut);
