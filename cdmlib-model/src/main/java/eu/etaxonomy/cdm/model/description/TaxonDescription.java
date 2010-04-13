@@ -35,6 +35,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -131,7 +132,8 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 		return description;
 	}
 	
-
+//******************** CONSTRUCTOR *************************************************/
+	
 	/**
 	 * Class constructor: creates a new empty taxon description instance.
 	 */
@@ -140,6 +142,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 		this.cacheStrategy = new TaxonDescriptionDefaultCacheStrategy();
 		}
 
+//************************** METHODS **********************************************/
 	
 	public Taxon getTaxon() {
 		return taxon;
@@ -210,4 +213,23 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 	public void removeScope(Scope scope){
 		this.scopes.remove(scope);
 	}
+	
+	/**
+	 * Returns the first TextData element of feature type image. If no such element exists,
+	 * a new one is created.
+	 * @return
+	 */
+	public TextData getOrCreateImageTextData(){
+		for (DescriptionElementBase element : this.getElements()){
+			if (element.getFeature().equals(Feature.IMAGE())){
+				if (element.isInstanceOf(TextData.class)){
+					return CdmBase.deproxy(element, TextData.class);
+				}
+			}
+		}
+		TextData textData = TextData.NewInstance(Feature.IMAGE());
+		addElement(textData);
+		return textData;
+	}
+	
 }
