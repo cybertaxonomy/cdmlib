@@ -119,7 +119,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary();
 
-	/** */
+	/**
+	 * Returns a list of taxa that matches the name string and the sec reference
+	 * @param name the name string to search for
+	 * @param sec the taxons sec reference
+	 * @return a list of taxa matching the name and the sec reference 
+	 */
 	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
 		
 	/**
