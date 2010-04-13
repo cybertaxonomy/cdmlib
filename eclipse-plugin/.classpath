@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
@@ -10,8 +10,6 @@
 	<classpathentry exported="true" kind="lib" path="asm-attrs.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="asm.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="aspectjrt-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="aspectjtools-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.5.4.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-commons-2.3.jar" sourcepath="cdmlib-commons-2.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.3.jar" sourcepath="cdmlib-model-2.3src.zip"/>

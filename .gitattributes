@@ -2813,7 +2813,6 @@ eclipse-plugin/asm-attrs.jar -text
 eclipse-plugin/asm.jar -text
 eclipse-plugin/aspectjrt-1.6.3.jar -text
 eclipse-plugin/aspectjtools-1.6.3.jar -text
-eclipse-plugin/aspectjweaver-1.5.4.jar -text
 eclipse-plugin/aspectjweaver-1.6.3.jar -text
 eclipse-plugin/build.properties -text
 eclipse-plugin/build_ant.xml -text

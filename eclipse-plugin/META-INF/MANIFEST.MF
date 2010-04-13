@@ -9,8 +9,6 @@ Bundle-ClassPath: activation-1.1.jar,
  asm-attrs.jar,
  asm.jar,
  aspectjrt-1.6.3.jar,
- aspectjtools-1.6.3.jar,
- aspectjweaver-1.5.4.jar,
  aspectjweaver-1.6.3.jar,
  cdmlib-commons-2.3.jar,
  cdmlib-model-2.3.jar,
@@ -518,8 +516,6 @@ Export-Package: eu.etaxonomy.cdm,
    org.w3c.dom,
    org.apache.log4j.helpers,
    org.apache.log4j.config",
- org.eclipse.core.runtime,
- org.eclipse.core.runtime.jobs,
  org.joda.time;
   uses:="org.joda.time.chrono,
    org.joda.time.format,
@@ -630,5 +626,6 @@ Export-Package: eu.etaxonomy.cdm,
    org.apache.commons.logging,
    new org.springframework.transaction.support,
    org.springframework.beans.factory"
-Require-Bundle: org.eclipse.osgi
 Bundle-Vendor: EDIT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.osgi;bundle-version="3.5.2"
