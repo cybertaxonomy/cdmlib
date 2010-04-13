@@ -81,7 +81,7 @@ public class DataSourceConfig {
 	}
 
 	private DataSource useJndiDataSource(String jndiName) {
-		logger.info("using jndi datasource '" + jndiName);
+		logger.info("using jndi datasource '" + jndiName + "'");
 
 		JndiObjectFactoryBean jndiFactory = new JndiObjectFactoryBean();
 		/*
