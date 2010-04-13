@@ -68,10 +68,10 @@ public class CichorieaeActivator {
 	//Mac
 	//static final File protologuePath = new File("/Volumes/protolog/protolog/");
 	//Windows
-//	public static final File imageFolder  = new File("/media/editwp6\\photos");
-//	static final File protologuePath = new File("/media/editwp6\\protolog");
-	public static final File imageFolder  = new File("/media/photos");
-	static final File protologuePath = new File("/media/protolog");
+	public static final File imageFolder  = new File("//media/editwp6/photos");
+	static final File protologuePath = new File("//media/editwp6/protolog");
+//	public static final File imageFolder  = new File("/media/photos");
+//	static final File protologuePath = new File("/media/protolog");
 	/* -------------------------------------- */
 	
 	// set to zero for unlimited nameFacts
