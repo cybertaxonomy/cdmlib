@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,9 +42,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
+
 
 /**
  * A bootstrap class for starting Jetty Runner using an embedded war.
@@ -67,12 +71,16 @@ public final class Bootloader {
 	private static final Logger logger = Logger.getLogger(Bootloader.class);
 	
 	private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
-	private static final String DATASOURCE_BEANDEF_PATH = System.getProperty("user.home")+File.separator+".cdmLibrary"+File.separator;
+	private static final String USERHOME_CDM_LIBRARY_PATH = System.getProperty("user.home")+File.separator+".cdmLibrary"+File.separator;
+	private static final String TMP_PATH = USERHOME_CDM_LIBRARY_PATH + "tmp" + File.separator;
 	
 	private static final String APPLICATION_NAME = "CDM Server";
     private static final String WAR_POSTFIX = ".war";
-    private static final String WAR_NAME = "cdmserver";
+    
+    private static final String CDM_WEBAPP_WAR_NAME = "cdmserver";
     private static final String DEFAULT_WEBAPP_WAR_NAME = "default-webapp";
+    private static final File DEFAULT_WEBAPP_TEMP_FOLDER = new File(TMP_PATH + DEFAULT_WEBAPP_WAR_NAME);
+    private static final File CDM_WEBAPP_TEMP_FOLDER = new File(TMP_PATH + CDM_WEBAPP_WAR_NAME);
     
     private static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
     
@@ -103,16 +111,35 @@ public final class Bootloader {
         return answer;
     }
 
-	private static void bindJndiDataSource(DataSourceProperties conf) {
+	private static boolean bindJndiDataSource(DataSourceProperties conf) {
 		try {
-			Class<DataSource> datasource = (Class<DataSource>) Thread.currentThread().getContextClassLoader().loadClass("com.mchange.v2.c3p0.ComboPooledDataSource");
-			Object o = datasource.newInstance();
-			datasource.getMethod("setDriverClass", new Class[] {String.class}).invoke(o, new Object[] {conf.getDriverClass()});
-			datasource.getMethod("setJdbcUrl", new Class[] {String.class}).invoke(o, new Object[] {conf.getUrl()});
-			datasource.getMethod("setUser", new Class[] {String.class}).invoke(o, new Object[] {conf.getUsername()});
-			datasource.getMethod("setPassword", new Class[] {String.class}).invoke(o, new Object[] {conf.getPassword()});
-			logger.info("binding jndi datasource at " + conf.getJdbcJndiName() + " with "+conf.getUsername() +"@"+ conf.getUrl());
-			org.eclipse.jetty.plus.jndi.Resource jdbcResource = new org.eclipse.jetty.plus.jndi.Resource(conf.getJdbcJndiName(), o);
+			Class<DataSource> dsCass = (Class<DataSource>) Thread.currentThread().getContextClassLoader().loadClass("com.mchange.v2.c3p0.ComboPooledDataSource");
+			DataSource datasource = dsCass.newInstance();
+			dsCass.getMethod("setDriverClass", new Class[] {String.class}).invoke(datasource, new Object[] {conf.getDriverClass()});
+			dsCass.getMethod("setJdbcUrl", new Class[] {String.class}).invoke(datasource, new Object[] {conf.getUrl()});
+			dsCass.getMethod("setUser", new Class[] {String.class}).invoke(datasource, new Object[] {conf.getUsername()});
+			dsCass.getMethod("setPassword", new Class[] {String.class}).invoke(datasource, new Object[] {conf.getPassword()});
+			
+			Connection connection = null;
+			String sqlerror = null;
+			try {
+				connection = datasource.getConnection();
+				connection.close();
+			} catch (SQLException e) {
+				sqlerror = e.getMessage() + "["+ e.getSQLState() + "]";
+				conf.getProblems().add(sqlerror);
+				if(connection !=  null){
+					try {connection.close();} catch (SQLException e1) { /* IGNORE */ }
+				}
+				logger.error(conf.toString() + " has problem : "+ sqlerror );
+			}
+			
+			if(!conf.hasProblems()){
+				logger.info("binding jndi datasource at " + conf.getJdbcJndiName() + " with "+conf.getUsername() +"@"+ conf.getUrl());
+				org.eclipse.jetty.plus.jndi.Resource jdbcResource = new org.eclipse.jetty.plus.jndi.Resource(conf.getJdbcJndiName(), datasource);
+				return true;				
+			}
+			
 		} catch (IllegalArgumentException e) {
 			logger.error(e);
 			e.printStackTrace();
@@ -131,6 +158,7 @@ public final class Bootloader {
 		} catch (NamingException e) {
 			logger.error(e);
 		}
+		return false;
 	}
 	
 	private static CommandLine parseCommandOptions(String[] args) throws ParseException {
@@ -148,7 +176,7 @@ public final class Bootloader {
     		System.exit(1);
     	}
     	
-    	File warFile = File.createTempFile(warName + "-", WAR_POSTFIX);
+    	File warFile = new File(TMP_PATH, warName + "-" + WAR_POSTFIX);
     	logger.info("Extracting " + warFileName + " to " + warFile + " ...");
     	
     	writeStreamTo(resource.openStream(), new FileOutputStream(warFile), 8 * KB);
@@ -188,10 +216,10 @@ public final class Bootloader {
     		 if(isRunningFromSource()){
     	    	defaultWebAppFile = new File("./src/main/webapp");	
     	     } else {
-    	    	defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
+    	    	//defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
     	     }
     	 } else {    		 
-    		 webappFile = extractWar(WAR_NAME);
+    		 webappFile = extractWar(CDM_WEBAPP_WAR_NAME);
     		 defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
     	 }
     	 
@@ -212,9 +240,17 @@ public final class Bootloader {
     	 }
     	
     	
-    	File datasourcesFile = new File(DATASOURCE_BEANDEF_PATH, DATASOURCE_BEANDEF_FILE); 
+    	File datasourcesFile = new File(USERHOME_CDM_LIBRARY_PATH, DATASOURCE_BEANDEF_FILE); 
     	Bootloader.configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
     	logger.info("cdm server instance names found: "+ configs.toString());
+    	
+    	//assure TMP_PATH exists
+    	File tempDir = new File(TMP_PATH);
+    	if(!tempDir.exists() && !tempDir.mkdirs()){
+    		logger.error("Error creating temporary directory for webapplications " + tempDir.getAbsolutePath());
+    		System.exit(-1);
+    	}
+    	tempDir = null;
     	
 		Server server = new Server(httpPort);
 		
@@ -237,21 +273,26 @@ public final class Bootloader {
     	WebAppContext defaultWebappContext = new WebAppContext();
     	setWebApp(defaultWebappContext, defaultWebAppFile);
         defaultWebappContext.setContextPath("/");
-        //defaultWebappContext.setDescriptor(defaultWebAppFile.getAbsolutePath()+"/WEB-INF/web.xml");
-        
-
+        defaultWebappContext.setTempDirectory(DEFAULT_WEBAPP_TEMP_FOLDER);
     	contexts.addHandler(defaultWebappContext);
     	
     	//
 		// 2. cdm server contexts
     	//
-    	//configs.removeAll(configs);
         for(DataSourceProperties conf : configs){
         	logger.info("preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
         	WebAppContext cdmWebappContext = new WebAppContext();
         	
 	        cdmWebappContext.setContextPath("/"+conf.getDataSourceName());
-            bindJndiDataSource(conf);
+	        cdmWebappContext.setTempDirectory(CDM_WEBAPP_TEMP_FOLDER);
+	        
+            if(!bindJndiDataSource(conf)){
+            	// a problem with the datasource occurred skip this webapp
+            	cdmWebappContext = null;
+            	logger.error("a problem with the datasource occurred -> skipping /"+conf.getDataSourceName());
+            	continue;
+            }
+            
             cdmWebappContext.setAttribute(ATTRIBUTE_JDBC_JNDI_NAME, conf.getJdbcJndiName());
 	        setWebApp(cdmWebappContext, webappFile);
 	        
@@ -287,10 +328,10 @@ public final class Bootloader {
 	private static void setWebApp(WebAppContext context, File webApplicationResource) {
 		if(webApplicationResource.isDirectory()){
 			context.setResourceBase(webApplicationResource.getAbsolutePath());
-			logger.debug("setting directory " + defaultWebAppFile.getAbsolutePath() + " as webapplication");
+			logger.debug("setting directory " + webApplicationResource.getAbsolutePath() + " as webapplication");
 		} else {
 			context.setWar(webApplicationResource.getAbsolutePath());
-			logger.debug("setting war file " + defaultWebAppFile.getAbsolutePath() + " as webapplication");
+			logger.debug("setting war file " + webApplicationResource.getAbsolutePath() + " as webapplication");
 		}
 	}
 

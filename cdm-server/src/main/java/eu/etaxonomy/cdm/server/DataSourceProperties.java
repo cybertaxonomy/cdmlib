@@ -10,6 +10,9 @@
 
 package eu.etaxonomy.cdm.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 public class DataSourceProperties {
@@ -21,14 +24,27 @@ public class DataSourceProperties {
 	private String username;
 	private String url;
 	private String driverClass;
+	
+	List<String> problems;
+	public List<String> getProblems() {
+		if(problems == null){
+			problems = new ArrayList<String>();
+		}
+		return problems;
+	}
+	public void setProblems(List<String> problems) {
+		this.problems = problems;
+	}
+	public boolean hasProblems() {
+		return getProblems().size() > 0;
+	}
+	
 	public String getDataSourceName() {
 		return dataSourceName;
 	}
 	public String getJdbcJndiName() {
 		return "jdbc/"+dataSourceName;
 	}
-	
-	
 	
 	public void setDataSourceName(String dataSourceName) {
 		this.dataSourceName = dataSourceName;
@@ -60,7 +76,7 @@ public class DataSourceProperties {
 	
 	@Override
 	public String toString(){
-		return dataSourceName ;
+		return dataSourceName + " : " +  username + "@" + url;
 		
 	}
 }

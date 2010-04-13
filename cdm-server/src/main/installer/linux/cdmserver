@@ -24,8 +24,7 @@ DESC="CDM Server"
 NAME=cdmserver
 LOG="$CDM_HOME/$NAME.log"
 DAEMON=/usr/bin/java
-DAEMON_ARGS="-Xmx1024M -jar "$CDM_HOME/cdmserver-standalone.jar""
-#DAEMON_ARGS="-Xmx1024M -jar "$CDM_HOME/cdmserver-standalone.jar" --httpPort=8080 --ajp13Port=-1 --logfile=$LOG"
+DAEMON_ARGS="-Xmx1024M -XX:PermSize=128m -XX:MaxPermSize=192m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled -jar "$CDM_HOME/cdmserver-standalone.jar""
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 

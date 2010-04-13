@@ -1145,7 +1145,6 @@ cdm-server/LICENSE.TXT -text
 cdm-server/ide/eclipse/run[!!-~]cdm-server.jar[!!-~]in[!!-~]debugmode.launch -text
 cdm-server/ide/eclipse/run[!!-~]cdm-server.jar.launch -text
 cdm-server/pom.xml -text
-cdm-server/run[!!-~]cdm-server.jar.launch -text
 cdm-server/src/main/assembly/assembly.xml -text
 cdm-server/src/main/installer/lib/ant-deb-task-0.0.1.jar -text
 cdm-server/src/main/installer/linux/Makefile -text
