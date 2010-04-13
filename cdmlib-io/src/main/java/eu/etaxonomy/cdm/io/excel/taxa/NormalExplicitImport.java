@@ -279,7 +279,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		if (tree == null){
 			tree = makeTree(state, sec);
 		}
-		success = tree.addParentChild(parentTaxon, childTaxon, citation, microCitation);
+		success &=  (null !=  tree.addParentChild(parentTaxon, childTaxon, citation, microCitation));
 		return success;
 	}
 	

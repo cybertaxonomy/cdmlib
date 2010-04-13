@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.kohsuke.rngom.dt.DoNothingDatatypeLibraryFactoryImpl;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -99,6 +101,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				String refDetail = rs.getString("refDetail");
 				String status = rs.getString("Status");
 				String typePhrase = rs.getString("typePhrase");
+				String notes = rs.getString("notes");
 				
 				//TODO 
 				boolean isNotDesignated = false;
@@ -118,22 +121,18 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 						if (refFkObj != null){
 							String relRefFk = String.valueOf(refFkObj);
 							//get nomRef
-							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, 
-									relRefFk);
+							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, relRefFk);
 							}
 						
 						Specimen specimen = Specimen.NewInstance();
 						specimen.setTitleCache(typePhrase);
 						boolean addToAllNames = true;
 						String originalNameString = null;
-						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
-												
+						SpecimenTypeDesignation type = taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
+						this.doNotes(type, notes);
+						
 						typeMap.put(typeDesignationId, specimen);
 						namesToSave.add(taxonNameBase);
-						
-						//TODO
-						//Update, Created, Notes, origId
-						//doIdCreatedUpdatedNotes(bmiConfig, media, rs, nameFactId);
 
 					}catch (UnknownCdmTypeException e) {
 						logger.warn("TypeStatus '" + status + "' not yet implemented");

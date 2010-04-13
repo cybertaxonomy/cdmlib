@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonNameRelatio
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -129,77 +130,9 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				String rule = null;  
 				
 				if (nameFrom != null && nameTo != null){
-					if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
-						nameTo.addBasionym(nameFrom, citation, microcitation, rule);
-					}else if (relQualifierFk == NAME_REL_IS_LATER_HOMONYM_OF){
-						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), citation, microcitation, rule) ;
-					}else if (relQualifierFk == NAME_REL_IS_REPLACED_SYNONYM_FOR){
-						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, rule) ;
-					}else if (relQualifierFk == NAME_REL_HAS_SAME_TYPE_AS){
-						nameTo.getHomotypicalGroup().merge(nameFrom.getHomotypicalGroup());//nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), rule) ;
-					}else if (relQualifierFk == NAME_REL_IS_TYPE_OF || relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF ||  relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF || relQualifierFk == NAME_REL_IS_LECTOTYPE_OF || relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED ){
-						boolean isRejectedType = (relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF);
-						boolean isConservedType = (relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF);
-						boolean isLectoType = (relQualifierFk == NAME_REL_IS_LECTOTYPE_OF);
-						boolean isNotDesignated = (relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED);
-						
-						NameTypeDesignationStatus status = null;
-						String originalNameString = null;
-						//TODO addToAllNames true or false?
-						boolean addToAllNames = false;
-						if (config.getNameTypeDesignationStatusMethod() != null){
-							Method method = config.getNameTypeDesignationStatusMethod();
-							method.setAccessible(true);
-							try {
-								status = (NameTypeDesignationStatus)method.invoke(null, notes);
-								nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, addToAllNames);
-							} catch (Exception e) {
-								throw new RuntimeException(e);
-							}
-						}else{
-							if (isLectoType){
-								status = NameTypeDesignationStatus.LECTOTYPE();
-							}
-							nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, isRejectedType, isConservedType, /*isLectoType,*/ isNotDesignated, addToAllNames);
-						}
-						
-					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
-						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
-					}else if (relQualifierFk == NAME_REL_IS_FIRST_PARENT_OF || relQualifierFk == NAME_REL_IS_SECOND_PARENT_OF || relQualifierFk == NAME_REL_IS_FEMALE_PARENT_OF || relQualifierFk == NAME_REL_IS_MALE_PARENT_OF){
-						//HybridRelationships
-						if (! (nameTo instanceof NonViralName ) || ! (nameFrom instanceof NonViralName)){
-							logger.warn("HybridrelationshipNames ("+name1Id +"," + name2Id +") must be of type NonViralNameName but are not");
-							success = false;
-						}
-						try {
-							HybridRelationshipType hybridRelType = BerlinModelTransformer.relNameId2HybridRel(relQualifierFk);
-							BotanicalName parent = (BotanicalName)nameFrom;
-							BotanicalName child = (BotanicalName)nameTo;
-							
-							//TODO bug when trying to persist
-							parent.addHybridChild(child, hybridRelType, rule);
-//							logger.warn("HybridRelationships not yet implemented");
-							
-						} catch (UnknownCdmTypeException e) {
-							logger.warn(e);
-							success = false;
-						}
-					}else {
-						//TODO
-						Method method = config.getNamerelationshipTypeMethod();
-						if (method != null){
-							try {
-								method.invoke(null, relQualifierFk, nameTo, nameFrom);
-							} catch (Exception e) {
-								logger.error(e.getMessage());
-								logger.warn("NameRelationship could not be imported");
-								success = false;
-							} 
-						}else{
-							logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
-							success = false;
-						}
-					}
+					success = handleNameRelationship(success, config, name1Id, name2Id,
+							relQualifierFk, notes, nameFrom, nameTo, citation,
+							microcitation, rule);
 					nameToSave.add(nameFrom);
 					
 					//TODO
@@ -216,6 +149,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 					success = false;
 				}
 			}
+			
+			
 			partitioner.startDoSave();
 			getNameService().save(nameToSave);
 			
@@ -224,6 +159,99 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
+	}
+
+	/**
+	 * @param success
+	 * @param config
+	 * @param name1Id
+	 * @param name2Id
+	 * @param relQualifierFk
+	 * @param notes
+	 * @param nameFrom
+	 * @param nameTo
+	 * @param citation
+	 * @param microcitation
+	 * @param rule
+	 * @return
+	 */
+	private boolean handleNameRelationship(boolean success,
+			BerlinModelImportConfigurator config, int name1Id, int name2Id,
+			int relQualifierFk, String notes, TaxonNameBase nameFrom,
+			TaxonNameBase nameTo, ReferenceBase<?> citation,
+			String microcitation, String rule) {
+		AnnotatableEntity nameRelationship = null;
+		if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
+			nameRelationship = nameTo.addBasionym(nameFrom, citation, microcitation, rule);
+		}else if (relQualifierFk == NAME_REL_IS_LATER_HOMONYM_OF){
+			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), citation, microcitation, rule) ;
+		}else if (relQualifierFk == NAME_REL_IS_REPLACED_SYNONYM_FOR){
+			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, rule) ;
+		}else if (relQualifierFk == NAME_REL_HAS_SAME_TYPE_AS){
+			nameTo.getHomotypicalGroup().merge(nameFrom.getHomotypicalGroup());
+		}else if (relQualifierFk == NAME_REL_IS_TYPE_OF || relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF ||  relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF || relQualifierFk == NAME_REL_IS_LECTOTYPE_OF || relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED ){
+			boolean isRejectedType = (relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF);
+			boolean isConservedType = (relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF);
+			boolean isLectoType = (relQualifierFk == NAME_REL_IS_LECTOTYPE_OF);
+			boolean isNotDesignated = (relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED);
+			
+			NameTypeDesignationStatus status = null;
+			String originalNameString = null;
+			//TODO addToAllNames true or false?
+			boolean addToAllNames = false;
+			if (config.getNameTypeDesignationStatusMethod() != null){
+				Method method = config.getNameTypeDesignationStatusMethod();
+				method.setAccessible(true);
+				try {
+					status = (NameTypeDesignationStatus)method.invoke(null, notes);
+					nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, addToAllNames);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}else{
+				if (isLectoType){
+					status = NameTypeDesignationStatus.LECTOTYPE();
+				}
+				nameRelationship = nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, isRejectedType, isConservedType, /*isLectoType,*/ isNotDesignated, addToAllNames);
+			}
+			
+		}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
+			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
+		}else if (relQualifierFk == NAME_REL_IS_FIRST_PARENT_OF || relQualifierFk == NAME_REL_IS_SECOND_PARENT_OF || relQualifierFk == NAME_REL_IS_FEMALE_PARENT_OF || relQualifierFk == NAME_REL_IS_MALE_PARENT_OF){
+			//HybridRelationships
+			if (! (nameTo instanceof NonViralName ) || ! (nameFrom instanceof NonViralName)){
+				logger.warn("HybridrelationshipNames ("+name1Id +"," + name2Id +") must be of type NonViralNameName but are not");
+				success = false;
+			}
+			try {
+				HybridRelationshipType hybridRelType = BerlinModelTransformer.relNameId2HybridRel(relQualifierFk);
+				BotanicalName parent = (BotanicalName)nameFrom;
+				BotanicalName child = (BotanicalName)nameTo;
+				
+				nameRelationship = parent.addHybridChild(child, hybridRelType, rule);
+				
+			} catch (UnknownCdmTypeException e) {
+				logger.warn(e);
+				success = false;
+			}
+		}else {
+			//TODO
+			Method method = config.getNamerelationshipTypeMethod();
+			if (method != null){
+				try {
+					method.invoke(null, relQualifierFk, nameTo, nameFrom);
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					logger.warn("NameRelationship could not be imported");
+					success = false;
+				} 
+			}else{
+				logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
+				success = false;
+			}
+		}
+		doNotes(nameRelationship, notes);
+		return success;
 	}
 
 	/* (non-Javadoc)

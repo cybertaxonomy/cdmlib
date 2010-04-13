@@ -597,6 +597,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param type			the taxon relationship type for the new taxon relationship
 	 * @param citation		the reference source for the new taxon relationship
 	 * @param microcitation	the string with the details describing the exact localisation within the reference
+	 * @return 
 	 * @see    	   			#addTaxonRelation(TaxonRelationship)
 	 * @see    	   			#getTaxonRelations()
 	 * @see    	   			#getRelationsFromThisTaxon()
@@ -604,8 +605,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			#getTaxonomicParent()
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
-	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
-		TaxonRelationship rel = new TaxonRelationship(this, toTaxon, type, citation, microcitation);
+	public TaxonRelationship addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
+		return new TaxonRelationship(this, toTaxon, type, citation, microcitation);
 	}
 	/**
 	 * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
@@ -617,6 +618,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param misappliedNameTaxon	the taxon which plays the target role in the new taxon relationship
 	 * @param citation				the reference source for the new taxon relationship
 	 * @param microcitation			the string with the details describing the exact localisation within the reference
+	 * @return 
 	 * @see    	   					#getMisappliedNames()
 	 * @see    	   					#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
 	 * @see    	   					#addTaxonRelation(TaxonRelationship)
@@ -624,8 +626,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   					#getRelationsFromThisTaxon()
 	 * @see    	   					#getRelationsToThisTaxon()
 	 */
-	public void addMisappliedName(Taxon misappliedNameTaxon, ReferenceBase citation, String microcitation) {
-		misappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), citation, microcitation);
+	public TaxonRelationship addMisappliedName(Taxon misappliedNameTaxon, ReferenceBase citation, String microcitation) {
+		return misappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), citation, microcitation);
 	}
 
 //	public void removeMisappliedName(Taxon misappliedNameTaxon){

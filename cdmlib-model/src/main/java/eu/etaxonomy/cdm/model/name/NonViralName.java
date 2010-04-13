@@ -1165,14 +1165,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @param parentName	  the botanical name of the parent for this new hybrid name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @return 
 	 * @see    				  #addHybridChild(BotanicalName, HybridRelationshipType,String )
 	 * @see    				  #getRelationsToThisName()
 	 * @see    				  #getNameRelations()
 	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
-	public void addHybridParent(NonViralName parentName, HybridRelationshipType type, String ruleConsidered){
-		HybridRelationship rel = new HybridRelationship(this, parentName, type, ruleConsidered);
+	public HybridRelationship addHybridParent(NonViralName parentName, HybridRelationshipType type, String ruleConsidered){
+		return new HybridRelationship(this, parentName, type, ruleConsidered);
 	}
 	
 	/**
@@ -1185,14 +1186,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @param childName		  the botanical name of the child for this new hybrid name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @return 
 	 * @see    				  #addHybridParent(BotanicalName, HybridRelationshipType,String )
 	 * @see    				  #getRelationsToThisName()
 	 * @see    				  #getNameRelations()
 	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
-	public void addHybridChild(NonViralName childName, HybridRelationshipType type, String ruleConsidered){
-		HybridRelationship rel = new HybridRelationship(childName, this, type, ruleConsidered);
+	public HybridRelationship addHybridChild(NonViralName childName, HybridRelationshipType type, String ruleConsidered){
+		return new HybridRelationship(childName, this, type, ruleConsidered);
 	}
 	
 	

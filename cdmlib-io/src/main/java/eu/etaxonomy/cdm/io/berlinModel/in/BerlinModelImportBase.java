@@ -159,18 +159,28 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		
 		
 		//notes
-		if (CdmUtils.isNotEmpty(notes)){
+		doNotes(annotatableEntity, notes);
+		return success;
+	}
+
+	/**
+	 * Adds a note to the annotatable entity.
+	 * Nothing happens if annotatableEntity is <code>null</code> or notes is empty or <code>null</code>.
+	 * @param annotatableEntity
+	 * @param notes
+	 */
+	protected void doNotes(AnnotatableEntity annotatableEntity, String notes) {
+		if (CdmUtils.isNotEmpty(notes) && annotatableEntity != null ){
 			String notesString = String.valueOf(notes);
 			if (notesString.length() > 65530 ){
 				notesString = notesString.substring(0, 65530) + "...";
 				logger.warn("Notes string is longer than 65530 and was truncated: " + annotatableEntity);
 			}
-			Annotation notesAnnotation = Annotation.NewInstance(notesString, null);
+			Annotation notesAnnotation = Annotation.NewInstance(notesString, Language.DEFAULT());
 			//notesAnnotation.setAnnotationType(AnnotationType.EDITORIAL());
 			//notes.setCommentator(bmiConfig.getCommentator());
 			annotatableEntity.addAnnotation(notesAnnotation);
 		}
-		return success;
 	}
 	
 	/**

@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonRelationImp
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -207,6 +209,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				Object relRefFkObj = rs.getObject("relRefFk");
 				int treeRefFk = rs.getInt("treeRefFk");
 				int relQualifierFk = rs.getInt("relQualifierFk");
+				String notes = rs.getString("notes");
 				boolean isConceptRelationship = rs.getBoolean("is_concept_relation");
 				
 				TaxonBase taxon1 = taxonMap.get(String.valueOf(taxon1Id));
@@ -223,6 +226,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						success = false;
 						continue;
 					}
+					AnnotatableEntity taxonRelationship = null;
 					Taxon toTaxon = (Taxon)taxon2;
 					if (isTaxonRelationship(relQualifierFk)){
 						if (!(taxon1 instanceof Taxon)){
@@ -232,9 +236,9 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						}
 						Taxon fromTaxon = (Taxon)taxon1;
 						if (relQualifierFk == TAX_REL_IS_INCLUDED_IN){
-							makeTaxonomicallyIncluded(state, taxonTreeMap, treeRefFk, fromTaxon, toTaxon, citation, microcitation);
+							taxonRelationship = makeTaxonomicallyIncluded(state, taxonTreeMap, treeRefFk, fromTaxon, toTaxon, citation, microcitation);
 						}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
-							toTaxon.addMisappliedName(fromTaxon, citation, microcitation);
+							 taxonRelationship = toTaxon.addMisappliedName(fromTaxon, citation, microcitation);
 						}
 					}else if (isSynonymRelationship(relQualifierFk)){
 						if (!(taxon1 instanceof Synonym)){
@@ -244,7 +248,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						}
 						Synonym synonym = (Synonym)taxon1;
 						SynonymRelationship synRel = getSynRel(relQualifierFk, toTaxon, synonym, citation, microcitation);
-							
+						taxonRelationship = synRel;
+						
 						if (relQualifierFk == TAX_REL_IS_SYNONYM_OF || 
 								relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||
 								relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
@@ -270,7 +275,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
 							}else{
 								Taxon fromTaxon = (Taxon)taxon1;
-								fromTaxon.addTaxonRelation(toTaxon, relType, citation, microcitation);
+								taxonRelationship = fromTaxon.addTaxonRelation(toTaxon, relType, citation, microcitation);
 							}
 						} catch (UnknownCdmTypeException e) {
 							//TODO other relationships
@@ -282,6 +287,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
 						success = false;
 					}
+					
+					doNotes(taxonRelationship, notes);
 					taxaToSave.add(taxon2);
 					
 					//TODO
@@ -436,7 +443,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 	}
 	
-	private boolean makeTaxonomicallyIncluded(BerlinModelImportState state, Map<Integer, TaxonomicTree> taxonTreeMap, int treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
+	private TaxonNode makeTaxonomicallyIncluded(BerlinModelImportState state, Map<Integer, TaxonomicTree> taxonTreeMap, int treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
 		TaxonomicTree tree = taxonTreeMap.get(treeRefFk);
 		if (tree == null){
 			UUID treeUuid = state.getTreeUuidByIntTreeKey(treeRefFk);

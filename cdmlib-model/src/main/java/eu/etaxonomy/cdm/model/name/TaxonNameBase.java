@@ -395,19 +395,18 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @param toName		  the taxon name of the target for this new name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @return 
 	 * @see    				  #getRelationsToThisName()
 	 * @see    				  #getNameRelations()
 	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
-public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
 		if (toName == null){
 			throw new NullPointerException("Null is not allowed as name for a name relationship");
 		}
 		NameRelationship rel = new NameRelationship(toName, this, type, citation, microCitation, ruleConsidered);
-//		if (type.isBasionymRelation() || type.isReplacedSynonymRelation()){
-//			this.getHomotypicalGroup().merge(toName.getHomotypicalGroup());
-//		}
+		return rel;
 	}
 	
 	/**
@@ -698,12 +697,15 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * 
 	 * @param  basionym			the taxon name to be set as the basionym of <i>this</i> taxon name
 	 * @param  ruleConsidered	the string identifying the nomenclatural rule
+	 * @return 
 	 * @see  					#getBasionym()
 	 * @see  					#addBasionym(TaxonNameBase)
 	 */
-	public void addBasionym(T basionym, ReferenceBase citation, String microcitation, String ruleConsidered){
+	public NameRelationship addBasionym(T basionym, ReferenceBase citation, String microcitation, String ruleConsidered){
 		if (basionym != null){
-			basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
+			return basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
+		}else{
+			return null;
 		}
 	}
 	
@@ -993,11 +995,12 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @param  isNotDesignated			the boolean status for a name type designation without name type
 	 * @param  addToAllHomotypicNames	the boolean indicating whether the name type designation should be
 	 * 									added to all taxon names of the homotypical group this taxon name belongs to
+	 * @return 
 	 * @see 			  				#getNameTypeDesignations()
 	 * @see 			  				NameTypeDesignation
 	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
-	public void addNameTypeDesignation(TaxonNameBase typeSpecies, 
+	public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies, 
 				ReferenceBase citation, 
 				String citationMicroReference, 
 				String originalNameString, 
@@ -1010,6 +1013,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, status, isRejectedType, isConservedType, isNotDesignated);
 		//nameTypeDesignation.setLectoType(isLectoType);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
+		return nameTypeDesignation;
 	}
 	
 	/** 
@@ -1023,11 +1027,12 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @param  status                   the name type designation status
 	 * @param  addToAllHomotypicNames	the boolean indicating whether the name type designation should be
 	 * 									added to all taxon names of the homotypical group this taxon name belongs to
+	 * @return 
 	 * @see 			  				#getNameTypeDesignations()
 	 * @see 			  				NameTypeDesignation
 	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
-	public void addNameTypeDesignation(TaxonNameBase typeSpecies, 
+	public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies, 
 				ReferenceBase citation, 
 				String citationMicroReference, 
 				String originalNameString,
@@ -1035,6 +1040,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 				boolean addToAllHomotypicNames) {
 		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, status, citation, citationMicroReference, originalNameString);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
+		return nameTypeDesignation;
 	}
 	
 //*********************** SPECIMEN TYPE DESIGNATION *********************************************//	
@@ -1068,12 +1074,13 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @param  addToAllHomotypicNames	the boolean indicating whether the specimen type designation should be
 	 * 									added to all taxon names of the homotypical group the typified
 	 * 									taxon name belongs to
+	 * @return 
 	 * @see 			  				#getSpecimenTypeDesignations()
 	 * @see 			  				SpecimenTypeDesignationStatus
 	 * @see 			  				SpecimenTypeDesignation
 	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
-	public void addSpecimenTypeDesignation(Specimen typeSpecimen, 
+	public SpecimenTypeDesignation addSpecimenTypeDesignation(Specimen typeSpecimen, 
 				SpecimenTypeDesignationStatus status, 
 				ReferenceBase citation, 
 				String citationMicroReference, 
@@ -1082,6 +1089,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 				boolean addToAllHomotypicNames) {
 		SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated);
 		addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
+		return specimenTypeDesignation;
 	}
 	
 	//used by merge strategy
