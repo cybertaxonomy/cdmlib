@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.babadshanjan
@@ -151,21 +152,24 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
             // Create the taxon name object depending on the setting of the nomenclatural code 
 			// in the configurator (botanical code, zoological code, etc.) 
 			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-			TaxonNameBase taxonNameBase;
+			NonViralName taxonNameBase;
 			if (nc == NomenclaturalCode.ICVCN){
 				logger.warn("ICVCN not yet supported");
 				return false;
 			}else{
-				taxonNameBase = nc.getNewTaxonNameInstance(rank);
-				NonViralName nonViralName = (NonViralName)taxonNameBase;
+				taxonNameBase =(NonViralName) nc.getNewTaxonNameInstance(rank);
+				//NonViralName nonViralName = (NonViralName)taxonNameBase;
 				//TODO parse name
-				nonViralName.setNameCache(taxonNameStr);
+				NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+				taxonNameBase = parser.parseFullName(taxonNameStr, nc, rank);
+				
+				taxonNameBase.setNameCache(taxonNameStr);
 				
 				// Create the author
 				if (CdmUtils.isNotEmpty(authorStr)) {
 					//TODO parse authors
 					//if (state.getAuthor(authorStr)!= null) {
-						nonViralName.setAuthorshipCache(authorStr);
+					taxonNameBase.setAuthorshipCache(authorStr);
 //					} else {
 //						state.putAuthor(authorStr, null);
 //						Person author = Person.NewTitledInstance(authorStr);
