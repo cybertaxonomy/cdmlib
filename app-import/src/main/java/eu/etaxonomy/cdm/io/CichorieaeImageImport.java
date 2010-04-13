@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.common.mediaMetaData.MetaDataFactory;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -36,7 +35,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -161,7 +159,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 	 * @throws MalformedURLException
 	 * @throws IOException 
 	 */
-	private Media getMedia(String fileName, String taxonName) throws IOException {
+	private Media getMedia(String fileName, String taxonName) throws MalformedURLException, IOException {
 		String urlPrefix = "http://media.bgbm.org/erez/erez?src=EditWP6/photos/";
 		String urlString = urlPrefix + fileName;
 		logger.info(urlString);
