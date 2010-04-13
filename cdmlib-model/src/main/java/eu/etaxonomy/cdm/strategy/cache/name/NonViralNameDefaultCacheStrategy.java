@@ -378,7 +378,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	@Override
 	public List<Object> getTaggedName(T nonViralName) {
 		List<Object> tags = new ArrayList<Object>();
-		tags.add(nonViralName.getGenusOrUninomial());
+		if (nonViralName.getGenusOrUninomial() == null){
+			tags.add(nonViralName.getNameCache());
+		}else{
+			tags.add(nonViralName.getGenusOrUninomial());
+		}
 		if (nonViralName.isSpecies() || nonViralName.isInfraSpecific()){
 			tags.add(nonViralName.getSpecificEpithet());			
 		}
