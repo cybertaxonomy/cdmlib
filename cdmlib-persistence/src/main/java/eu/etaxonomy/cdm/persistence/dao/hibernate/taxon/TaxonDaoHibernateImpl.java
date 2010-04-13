@@ -1249,7 +1249,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		// TODO Auto-generated method stub
 		return null;
 	}
-public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree){
+	
+	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree){
 		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
 		
 		inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF()));
