@@ -153,29 +153,15 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 		}
 	}
 
-	/**
-	 * @param imageGallery
-	 * @return
-	 */
-	private TextData getMediaHoldingTextData(TaxonDescription imageGallery) {
-		for (DescriptionElementBase element : imageGallery.getElements()){
-			if (element.getFeature().equals(Feature.IMAGE())){
-				if (element.isInstanceOf(TextData.class)){
-					return CdmBase.deproxy(element, TextData.class);
-				}
-			}
-		}
-		return null;
-	}
 
 	/**
 	 * @param fileName
 	 * @param taxonName 
 	 * @return
-	 * @throws MalformedURLException 
 	 * @throws MalformedURLException
+	 * @throws IOException 
 	 */
-	private Media getMedia(String fileName, String taxonName) throws MalformedURLException {
+	private Media getMedia(String fileName, String taxonName) throws IOException {
 		String urlPrefix = "http://media.bgbm.org/erez/erez?src=EditWP6/photos/";
 		String urlString = urlPrefix + fileName;
 		logger.info(urlString);
