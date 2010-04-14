@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
@@ -223,5 +225,45 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 			fullTextSession.index(occurrence);
 		}
 		fullTextSession.flushToIndexes();
+	}
+
+	public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
+
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type);
+		} else {
+		    criteria = getSession().createCriteria(clazz);
+		}
+		
+		criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		return (Integer) criteria.uniqueResult();
+	}
+
+	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonBase determinedAs, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths) {
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type); 
+		} else {
+		    criteria = getSession().createCriteria(clazz);	
+		} 
+		
+		criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
+		
+		if(limit != null) {
+			if(start != null) {
+			    criteria.setFirstResult(start);
+			} else {
+				criteria.setFirstResult(0);
+			}
+			criteria.setMaxResults(limit);
+		}
+		
+		addOrder(criteria,orderHints);
+		
+		List<SpecimenOrObservationBase> results = (List<SpecimenOrObservationBase>)criteria.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results; 
 	}
 }

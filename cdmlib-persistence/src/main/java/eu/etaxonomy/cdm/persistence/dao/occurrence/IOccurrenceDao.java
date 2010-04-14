@@ -27,18 +27,19 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	
 	/**
 	 * Returns the number of occurences belonging to a certain subclass - which must extend SpecimenOrObservationBase
-	 * @param <SpecimenOrObservationBase>
-	 * @param clazz
+	 * @param clazz optionally restrict the counted occurrences to those of a certain subclass of SpecimenOrObservationBase
+	 * @param determinedAs the taxon concept that these specimens are determined to belong to 
 	 * @return
 	 */
 	public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
 	
 	/**
 	 * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
-	 * of 'limit' objects are returned, starting at object with index 'start'.
+	 * of 'limit' objects are returned, starting at object with index 'start'. Only occurrences which 
+	 * have been determined to belong to the supplied concept are returned.
 	 * 
 	 * @param type 
-	 * @param 
+	 * @param determinedAs the taxon concept that these specimens are determined to belong to 
 	 * @param limit
 	 *            the maximum number of entities returned (can be null to return
 	 *            all entities)
@@ -50,7 +51,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
      * Returns a count of Media that are associated with a given occurence
