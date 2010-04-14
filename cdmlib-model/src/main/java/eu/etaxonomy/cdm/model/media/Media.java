@@ -24,6 +24,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,6 +53,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -160,7 +164,16 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	 */
 	protected Media() {
 		super();
+		setMediaCacheStrategy();
 	}
+
+	private void setMediaCacheStrategy() {
+		if (getClass() == Media.class){
+			this.cacheStrategy = MediaDefaultCacheStrategy.NewInstance();
+		}
+		
+	}
+
 
 	public Set<MediaRepresentation> getRepresentations(){
 		if(representations == null) {
@@ -287,27 +300,16 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	}
 	
 	
- 
-	
-	/*
-	 * Overriding the title cache methods here to avoid confusion with the title field
-	 */
-	
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-	 */
-	@Override
-	public String getTitleCache() {
-		List<Language> languages = Arrays.asList(new Language[]{Language.DEFAULT()});
-		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(title, languages);
-		return languageString != null ? languageString.getText() : null;
+	@Transient 
+	public String getTitleCacheByLanguage(Language lang){
+		if (cacheStrategy != null){
+			return ((MediaDefaultCacheStrategy)cacheStrategy).getTitleCacheByLanguage(this, lang);
+		}else{
+			return null;
+		}
+			
 	}
 	
-	@Override
-	public String generateTitle() {
-		return getTitleCache();
-	}
 	
 	/*
 	 * (non-Javadoc)
