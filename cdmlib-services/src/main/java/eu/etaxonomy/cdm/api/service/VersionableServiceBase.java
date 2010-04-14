@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.envers.query.criteria.AuditCriterion;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -26,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 public abstract class VersionableServiceBase<T extends VersionableEntity, DAO extends IVersionableDao<T>> extends ServiceBase<T,DAO> implements IVersionableService<T> {
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAuditEvents(t, sort);
 			
@@ -38,17 +37,17 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 		return new DefaultPagerImpl<AuditEventRecord<T>>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public AuditEventRecord<T> getNextAuditEvent(T t) {
 		return dao.getNextAuditEvent(t);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public AuditEventRecord<T> getPreviousAuditEvent(T t) {
 		return dao.getPreviousAuditEvent(t);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(Class<? extends T> clazz,AuditEvent from,AuditEvent to, List<AuditCriterion> criteria, Integer pageSize, Integer pageNumber, AuditEventSort sort,List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAuditEvents(clazz, from, to, criteria);
 		

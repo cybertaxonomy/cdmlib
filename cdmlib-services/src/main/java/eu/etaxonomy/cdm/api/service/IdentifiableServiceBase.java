@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
@@ -38,7 +37,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	protected
 	static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRights(t);
 		
@@ -50,7 +49,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
 			
@@ -62,14 +61,14 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	protected List<T> findByTitle(IIdentifiableEntityServiceConfigurator config){
 		return ((IIdentifiableDao)dao).findByTitle(config.getTitleSearchString(),
 				config.getMatchMode(), 0, -1, null);
 		// TODO: Implement parameters pageSize, pageNumber, and criteria
 	}
 	
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public T replace(T x, T y) {
 		return dao.replace(x, y);
 	}
@@ -82,16 +81,16 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @param title
 	 * @return
 	 */
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	protected List<T> findCdmObjectsByTitle(String title){
 		return ((IIdentifiableDao)dao).findByTitle(title);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	protected List<T> findCdmObjectsByTitle(String title, Class<T> clazz){
 		return ((IIdentifiableDao)dao).findByTitleAndClass(title, clazz);
 	}
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	protected List<T> findCdmObjectsByTitle(String title, CdmBase sessionObject){
 		return ((IIdentifiableDao)dao).findByTitle(title, sessionObject);
 	}
@@ -101,7 +100,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
 
@@ -115,12 +114,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#getUuidAndTitleCache()
 	 */
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
 		return dao.getUuidAndTitleCache();
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
@@ -132,12 +131,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public T find(LSID lsid) {
 		return dao.find(lsid);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(clazz,queryString);
 		

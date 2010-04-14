@@ -22,7 +22,6 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -41,77 +40,77 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
 	protected DAO dao;
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public void lock(T t, LockMode lockMode) {
 		dao.lock(t, lockMode);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
 		dao.refresh(t, lockMode, propertyPaths);
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public void clear() {
 		dao.clear();
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public int count(Class<? extends T> clazz) {
 		return dao.count(clazz);
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public UUID delete(T persistentObject) {
 		return dao.delete(persistentObject);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public boolean exists(UUID uuid) {
 		return dao.exists(uuid);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public List<T> find(Set<UUID> uuidSet) {
 		return dao.findByUuid(uuidSet);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public T find(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Session getSession() {
 		return dao.getSession();
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {
 		return dao.group(clazz, limit, start, groups, propertyPaths);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public  List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
 		return dao.list(type,limit, start, orderHints,propertyPaths);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public T load(UUID uuid) {
 		return dao.load(uuid);
 	}
 		
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public T load(UUID uuid, List<String> propertyPaths){
 		return dao.load(uuid, propertyPaths);
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public UUID merge(T newInstance) {
 		return dao.merge(newInstance);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public  Pager<T> page(Class<? extends T> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = dao.count(type);
 		List<T> results = new ArrayList<T>();
@@ -123,7 +122,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
     public UUID refresh(T persistentObject) {
 		return dao.refresh(persistentObject);
 	}
@@ -134,22 +133,22 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	 * it seems a bit incongruous that we use an ORM to hide the fact that there is a 
 	 * database, then expose a method that talks about "rows" . . .
 	 */
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public List<T> rows(String tableName, int limit, int start) {
 		return dao.rows(tableName, limit, start);
 	}
 	
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public Map<UUID, T> save(Collection<T> newInstances) {
 		return dao.saveAll(newInstances);
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public UUID save(T newInstance) {
 		return dao.save(newInstance);
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);
 	}
@@ -164,12 +163,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
 	protected abstract void setDao(DAO dao);
 	
-	@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = false)
 	public UUID update(T transientObject) {
 		return dao.update(transientObject);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
 	}

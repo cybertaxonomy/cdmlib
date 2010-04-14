@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -27,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO extends IAnnotatableDao<T>> extends VersionableServiceBase<T, DAO>
 		implements IAnnotatableService<T> {
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public Pager<Annotation> getAnnotations(T annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAnnotations(annotatedObj, status);
 		
@@ -39,7 +38,7 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
 		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
     public Pager<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countMarkers(annotatableEntity, technical);
 		
@@ -52,12 +51,12 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
     }
 	
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		return dao.groupMarkers(clazz, technical, pageSize, pageNumber, propertyPaths);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly = true)
 	public int countMarkers(Class<? extends T> clazz, Boolean technical) {
 		return dao.countMarkers(clazz, technical);
 	}

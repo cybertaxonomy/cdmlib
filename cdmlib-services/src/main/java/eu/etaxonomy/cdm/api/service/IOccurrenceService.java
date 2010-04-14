@@ -33,6 +33,25 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name);
 	
 	/**
+	 * Returns a paged list of occurrences that have been determined to belong to the taxon concept
+	 * determinedAs, optionally restricted to objects belonging to a class that that extends 
+	 * SpecimenOrObservationBase
+	 * 
+	 * @param type  The type of entities to return (can be null to count all entities of type <T>)
+	 * @param determinedAs the taxon concept that the occurrences have been determined to belong to
+	 	 * @param pageSize The maximum number of objects returned (can be null for all matching objects)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based, 
+	 *                   can be null, equivalent of starting at the beginning of the recordset)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return
+	 */
+	public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
      * Returns a List of Media that are associated with a given occurence
      * 
 	 * @param occurence the occurence associated with these media

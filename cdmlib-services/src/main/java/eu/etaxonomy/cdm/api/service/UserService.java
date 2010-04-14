@@ -98,7 +98,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		this.grantedAuthorityDao = grantedAuthorityDao;
 	}
 	
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	protected Authentication createNewAuthentication(Authentication currentAuth, String newPassword) {
 		UserDetails user = loadUserByUsername(currentAuth.getName());
 			
@@ -108,7 +108,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return newAuthentication;
 	}
 	
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void changePassword(String oldPassword, String newPassword) {
 		Assert.hasText(oldPassword);
 		Assert.hasText(newPassword);
@@ -131,7 +131,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}		
 	}
 	
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void changePasswordForUser(String username, String newPassword) {
 		Assert.hasText(username);
 		Assert.hasText(newPassword);
@@ -154,7 +154,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void createUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -167,7 +167,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		dao.save((User)user);
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void deleteUser(String username) {
 		Assert.hasLength(username);
 		
@@ -179,7 +179,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(username);
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -212,7 +212,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void addGroupAuthority(String groupName, GrantedAuthority authority) {
 		Assert.hasText(groupName);
 		Assert.notNull(authority);
@@ -223,7 +223,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void addUserToGroup(String username, String groupName) {
 		Assert.hasText(username);
 		Assert.hasText(groupName);
@@ -237,7 +237,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}		
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void createGroup(String groupName, List<GrantedAuthority> authorities) {
 		Assert.hasText(groupName);
 		Assert.notNull(authorities);
@@ -252,7 +252,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		groupDao.save(group);
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void deleteGroup(String groupName) {
 		Assert.hasText(groupName);
 		
@@ -280,7 +280,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return users;
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void removeGroupAuthority(String groupName,	GrantedAuthority authority) {
 		Assert.hasText(groupName);
 		Assert.notNull(authority);
@@ -292,7 +292,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void removeUserFromGroup(String username, String groupName) {
 		Assert.hasText(username);
 		Assert.hasText(groupName);
@@ -306,7 +306,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public void renameGroup(String oldName, String newName) {
 		Assert.hasText(oldName);
 		Assert.hasText(newName);
@@ -317,7 +317,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		groupDao.update(group);
 	}
 	
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public UUID save(User user) {
 		if(user.getId() == 0 || dao.load(user.getUuid()) == null){
 			createUser(user);
@@ -333,12 +333,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return user.getUuid(); 
 	}
 
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
 		return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
 	}
 	
-	@Transactional(readOnly=false, propagation = Propagation.SUPPORTS)
+	@Transactional(readOnly=false)
 	public UUID saveGroup(Group group) {
 		return groupDao.save(group);
 	}
