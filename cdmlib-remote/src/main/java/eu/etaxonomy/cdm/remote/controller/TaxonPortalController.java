@@ -128,6 +128,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"descriptions.elements.area.$",
 			"descriptions.elements.multilanguageText",
 			"descriptions.elements.media.representations.parts",
+			"descriptions.elements.media.title",
 						
 //			// typeDesignations
 //			"name.typeDesignations.$",
@@ -209,6 +210,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"elements.sources.citation.authorTeam.titleCache",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
+			"elements.media.title",
 	});
 	
 	
