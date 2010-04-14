@@ -33,8 +33,8 @@ public class LanguageStringTest {
 			Media media = (Media)dataSet.getMedia().get(0);	
 			assertNotNull("Media must not be null",media);
 			assertNotNull("Media.title must not be null", media.getTitle());
-			assertFalse("Media.title must contain LanguageString elements",media.getTitle().isEmpty());
-			LanguageString languageString = media.getTitle().values().iterator().next();
+			assertFalse("Media.title must contain LanguageString elements",media.getAllTitles().isEmpty());
+			LanguageString languageString = media.getAllTitles().values().iterator().next();
 			assertNotNull("LanguageString.text must not be null", languageString.getText());
 			assertEquals("LanguageString.text must contain the expected value","<i xmlns=\"http://www.w3.org/1999/xhtml\">English</i> Title",languageString.getText());
 	    }
