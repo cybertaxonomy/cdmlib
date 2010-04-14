@@ -207,20 +207,20 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.artist = artist;
 	}
 
-	@Deprecated // will be removed in next release; use getAllTitles instead
-	public Map<Language,LanguageString> getTitle(){
-		return getAllTitles();
+	public LanguageString getTitle(){
+		return getTitle(Language.DEFAULT());
 	}
 	
+	public LanguageString getTitle(Language language){
+		return title.get(language);
+	}
+	
+	@Transient
 	public Map<Language,LanguageString> getAllTitles(){
 		if(title == null) {
 			this.title = new HashMap<Language,LanguageString>();
 		}
 		return this.title;
-	}
-	
-	public LanguageString getTitle(Language language){
-		return getAllTitles().get(language);
 	}
 	
 	public void addTitle(LanguageString title){
