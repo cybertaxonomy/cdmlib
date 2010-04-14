@@ -106,6 +106,10 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 		this.cacheStrategy = new TaxonDescriptionDefaultCacheStrategy();
 		}
 	
+	public void setTaxon(Taxon taxon) {
+		this.taxon = taxon;
+	}
+
 	/**
 	 * Creates a new empty taxon description instance.
 	 * 
