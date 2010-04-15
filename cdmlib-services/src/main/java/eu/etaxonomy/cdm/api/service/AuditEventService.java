@@ -56,15 +56,15 @@ public class AuditEventService implements IAuditEventService {
 		return dao.getPreviousAuditEvent(auditEvent);
 	}
 
-	public Pager<AuditEvent> list(Integer pageNumber, Integer pageSize,	AuditEventSort sort) {
+	public List<AuditEvent> list(Integer limit, Integer start, AuditEventSort sort) {
 		 Integer numberOfResults = dao.count();
 			
 		List<AuditEvent> results = new ArrayList<AuditEvent>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.list(pageNumber, pageSize, sort); 
+			results = dao.list(limit, start, sort); 
 		}
 			
-		return new DefaultPagerImpl<AuditEvent>(pageNumber, numberOfResults, pageSize, results);
+		return results;
 	}
 
 	public AuditEvent find(DateTime dateTime) {
