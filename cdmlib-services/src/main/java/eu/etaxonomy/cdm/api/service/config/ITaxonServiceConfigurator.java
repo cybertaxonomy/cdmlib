@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -81,4 +82,8 @@ public interface ITaxonServiceConfigurator {
 	public ReferenceBase getSec();
 	@Deprecated
 	public void setSec(ReferenceBase sec);
+
+	public List<String> getSynonymPropertyPath();
+	
+	public void setSynonymPropertyPath(List<String> synonymPropertyPath);
 }

@@ -37,6 +37,7 @@ implements ITaxonServiceConfigurator {
 	private ReferenceBase sec = null;
 	private TaxonomicTree taxonomicTree = null;
 	private List<String> taxonPropertyPath;
+	private List<String> synonymPropertyPath;
 	private List<String> taxonNamePropertyPath;
 	private List<String> commonNamePropertyPath;
 	private Set<NamedArea> namedAreas;
@@ -163,6 +164,14 @@ implements ITaxonServiceConfigurator {
 	 */
 	public void setNamedAreas(Set<NamedArea> namedAreas) {
 		this.namedAreas = namedAreas;
+	}
+
+	public List<String> getSynonymPropertyPath() {
+		return synonymPropertyPath;
+	}
+	
+	public void setSynonymPropertyPath(List<String> synonymPropertyPath){
+		this.synonymPropertyPath = synonymPropertyPath;
 	}
 	
 }

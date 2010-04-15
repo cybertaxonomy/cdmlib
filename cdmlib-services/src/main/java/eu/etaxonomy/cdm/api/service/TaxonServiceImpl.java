@@ -433,12 +433,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		long numberTaxaResults = 0L;
 		
 		Class<? extends TaxonBase> clazz = null;
+		List<String> propertyPath = new ArrayList<String>();
 		if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
 			clazz = TaxonBase.class;
+			propertyPath.addAll(configurator.getTaxonPropertyPath());
+			propertyPath.addAll(configurator.getSynonymPropertyPath());
 		} else if(configurator.isDoTaxa()) {
 			clazz = Taxon.class;
+			propertyPath = configurator.getTaxonPropertyPath();
 		} else if (configurator.isDoSynonyms()) {
 			clazz = Synonym.class;
+			propertyPath = configurator.getSynonymPropertyPath();
 		}
 		
 		if(clazz != null){
@@ -450,7 +455,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				taxa = dao.getTaxaByName(clazz, 
 					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
-					configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+					configurator.getPageNumber(), propertyPath);
 			}
 		}
 
