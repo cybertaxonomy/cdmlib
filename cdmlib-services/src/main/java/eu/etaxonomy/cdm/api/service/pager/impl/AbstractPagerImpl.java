@@ -58,7 +58,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	 * 
 	 * @param currentIndex the page of this result set (0-based), can be null 
 	 * @param count the total number of results available for this query
-	 * @param pageSize The size of pages (can be null if all results should be returned if available)
+	 * @param pageSize The size of pages (can be null or 0 if all results should be returned if available)
 	 * @param records A list of objects in this page (can be empty if there were no results)
 	 */
 	public AbstractPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records) {
@@ -73,7 +73,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 		indices = new ArrayList<Integer>();
 		if(count == 0) {
 			pagesAvailable = 1;
-		} else if(pageSize != null) {
+		} else if(pageSize != null && pageSize != 0) {
 			 if( 0 == count % pageSize) {
 				pagesAvailable = count / pageSize;
 
