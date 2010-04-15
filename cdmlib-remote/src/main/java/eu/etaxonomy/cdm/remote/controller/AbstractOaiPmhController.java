@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IAuditEventService;
@@ -39,6 +38,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     protected SERVICE service;
 
+    @Autowired
     protected IAuditEventService auditEventService;
 
 	private String repositoryName;
@@ -189,8 +189,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         modelAndView.addObject("deletedRecord",DeletedRecord.PERSISTENT);
         modelAndView.addObject("granularity",Granularity.YYYY_MM_DD_THH_MM_SS_Z);
 
-        Pager<AuditEvent> auditEvents = auditEventService.list(1,0,AuditEventSort.FORWARDS);
-        modelAndView.addObject("earliestDatestamp",auditEvents.getRecords().get(0).getDate());
+        List<AuditEvent> auditEvents = auditEventService.list(1,0,AuditEventSort.FORWARDS);
+        modelAndView.addObject("earliestDatestamp",auditEvents.get(0).getDate());
         modelAndView.addObject("adminEmail",adminEmail);
         modelAndView.addObject("description",description);
 

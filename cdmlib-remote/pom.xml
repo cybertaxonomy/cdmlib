@@ -74,6 +74,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.web.servlet</artifactId>
 		</dependency>
+		<!--
+		<dependency>
+		   <groupId>org.springmodules</groupId>
+		   <artifactId>spring-modules-cache</artifactId>
+		   <version>0.8</version>
+		</dependency>-->
 		<dependency>
 			<groupId>com.ibm.lsid</groupId>
 			<artifactId>lsid-server</artifactId>

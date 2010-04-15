@@ -230,8 +230,8 @@
 		<property name="ignoreDefaultExcludes" value="true" />
 		<property name="excludes">
 			<list value-type="java.lang.String">
-				        <value>declaringClass</value><!-- DefaultExclude -->
-				        <value>metaClass</value><!-- DefaultExclude -->
+				<value>declaringClass</value><!-- DefaultExclude -->
+				<value>metaClass</value><!-- DefaultExclude -->
 				<value>id</value>
 				<value>annotations</value>
 				<value>cacheStrategy</value>
