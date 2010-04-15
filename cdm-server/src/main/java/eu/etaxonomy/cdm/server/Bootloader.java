@@ -38,6 +38,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
@@ -196,6 +197,17 @@ public final class Bootloader {
     	
     	logger.info("Starting "+APPLICATION_NAME);
     	
+    	//assure TMP_PATH exists and clean it up
+    	File tempDir = new File(TMP_PATH);
+    	if(!tempDir.exists() && !tempDir.mkdirs()){
+    		logger.error("Error creating temporary directory for webapplications " + tempDir.getAbsolutePath());
+    		System.exit(-1);
+    	} else {
+    		FileUtils.deleteQuietly(tempDir);
+    		tempDir.mkdirs();
+    	}
+    	tempDir = null;
+    	
     	 CommandLine cmdLine = parseCommandOptions(args);
     	 
     	 // print the help message
@@ -244,13 +256,7 @@ public final class Bootloader {
     	Bootloader.configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
     	logger.info("cdm server instance names found: "+ configs.toString());
     	
-    	//assure TMP_PATH exists
-    	File tempDir = new File(TMP_PATH);
-    	if(!tempDir.exists() && !tempDir.mkdirs()){
-    		logger.error("Error creating temporary directory for webapplications " + tempDir.getAbsolutePath());
-    		System.exit(-1);
-    	}
-    	tempDir = null;
+    	
     	
 		Server server = new Server(httpPort);
 		
