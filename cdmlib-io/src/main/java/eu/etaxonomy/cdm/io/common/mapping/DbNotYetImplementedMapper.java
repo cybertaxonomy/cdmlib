@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -30,16 +31,26 @@ public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase
 	private static final Logger logger = Logger.getLogger(DbNotYetImplementedMapper.class);
 	
 	public static DbNotYetImplementedMapper NewInstance(String dbAttributeToIgnore){
-		return new DbNotYetImplementedMapper(dbAttributeToIgnore, null, null);
+		return new DbNotYetImplementedMapper(dbAttributeToIgnore, null, null, null);
 	}
+
+	public static DbNotYetImplementedMapper NewInstance(String dbAttributeToIgnore, String reason){
+		return new DbNotYetImplementedMapper(dbAttributeToIgnore, null, null, reason);
+	}
+
+//*************************** VARIABLES ***************************************************************//
+	private String unimplementedReason;
+	
+//*************************** CONSTRUCTOR ***************************************************************//
 	
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
 	 * @param defaultValue
 	 */
-	protected DbNotYetImplementedMapper(String dbAttributString, String cdmAttributeString, Object defaultValue) {
+	protected DbNotYetImplementedMapper(String dbAttributString, String cdmAttributeString, Object defaultValue, String unimplementedReason) {
 		super(dbAttributString, cdmAttributeString, defaultValue);
+		this.unimplementedReason = unimplementedReason;
 	}
 
 	/* (non-Javadoc)
@@ -64,7 +75,11 @@ public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase
 	@Override
 	public void initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass) {
 		String attributeName = this.getSourceAttribute();
-		logger.warn(attributeName + " not yet implemented for class " + destinationClass.getSimpleName() );
+		String localReason = "";
+		if (CdmUtils.isNotEmpty(unimplementedReason)){
+			localReason = " (" + unimplementedReason +")";
+		}
+		logger.warn(attributeName + " not yet implemented for class " + destinationClass.getSimpleName() +  localReason);
 	}
 
 	

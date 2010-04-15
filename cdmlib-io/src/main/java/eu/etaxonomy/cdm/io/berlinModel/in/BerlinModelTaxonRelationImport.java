@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -141,6 +142,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		return result;
 	}
+	
 	
 
 	/* (non-Javadoc)
@@ -306,7 +308,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		
 		return success;
 	}
-
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)

@@ -226,7 +226,7 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 									
 									if (namedArea == null){
 										UUID areaUuid= FaunaEuropaeaTransformer.getUUIDByAreaAbbr(fauEuHelperDistribution.getAreaCode());
-										getNamedArea(state, areaUuid, fauEuHelperDistribution.getAreaName(), null, fauEuHelperDistribution.getAreaCode(), null, null);
+										namedArea = getNamedArea(state, areaUuid, fauEuHelperDistribution.getAreaName(), null, fauEuHelperDistribution.getAreaCode(), null, null);
 									}
 									
 									Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);

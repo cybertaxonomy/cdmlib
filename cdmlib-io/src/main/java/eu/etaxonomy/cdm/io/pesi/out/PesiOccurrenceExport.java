@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -120,33 +120,41 @@ public class PesiOccurrenceExport extends PesiExportBase {
 					if (taxonBase.isInstanceOf(Taxon.class)) {
 
 						// Set the current Taxon
-						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+						setTaxon(CdmBase.deproxy(taxonBase, Taxon.class));
 
 						// Determine the TaxonDescriptions
-						Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
+						Set<TaxonDescription> taxonDescriptions = getTaxon().getDescriptions();
 
 						// Determine the DescriptionElements (Citations) for the current Taxon
 						for (TaxonDescription taxonDescription : taxonDescriptions) {
 							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
 							for (DescriptionElementBase descriptionElement : descriptionElements) {
-								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
 								
 								if (descriptionElement.isInstanceOf(Distribution.class)) {
+//									logger.error("Distribution instance found.");
 									Distribution distribution = CdmBase.deproxy(descriptionElement, Distribution.class);
 									setNamedArea(distribution.getArea());
 									setDistribution(distribution);
-
+									Set<DescriptionElementSource> elementSources = distribution.getSources();
+									
 									// Differentiate between descriptionElements with and without sources.
-									if (elementSources.size() == 0) {
-										success &= mapping.invoke(descriptionElement);
+									if (! hasCitations(elementSources)) {
+//										logger.error("Distribution has no sources. Exporting ...");
+										doCount(count++, modCount, pluralString);
+										success &= mapping.invoke(distribution);
 									} else {
+//										logger.error("Distribution has " + elementSources.size() + " sources. Exporting ...");
 										for (DescriptionElementSource elementSource : elementSources) {
 											ReferenceBase reference = elementSource.getCitation();
 	
 											// Citations can be empty (null): Is it wrong data or just a normal case?
 											if (reference != null) {
+//												logger.error("Exporting Reference " + reference.getTitleCache() + " ...");
 												doCount(count++, modCount, pluralString);
 												success &= mapping.invoke(reference);
+											} else {
+												// This should never be the case. Testing purpose only.
+//												logger.error("Citation of ElementSource is NULL. Nothing to export for ElementSource: " + elementSource.getUuid());
 											}
 										}
 										
@@ -168,7 +176,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
+				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
 			}
 			if (list.size() == 0) {
 				logger.error("No " + pluralString + " left to fetch.");
@@ -188,37 +196,39 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the identifier of the last occurrence committed to the database.
-	 * @param state
+	 * Returns whether the given Set of DescriptionElementSources have a citation or not.
+	 * @param elementSources
 	 * @return
 	 */
-	private static Integer getLastOccurrenceId(PesiExportState state) {
-		// Retrieve the identifier of the last stored record
-		// Retrieve database identifier of the last created occurrence record.
-		String lastRecordSql = "Select @@Identity From OccurrenceSource";
-		Connection con = state.getConfig().getDestination().getConnection();
-		PreparedStatement stmt = null;
-		
-		Integer occurrenceId = 0;
-		try {
-			stmt = con.prepareStatement(lastRecordSql);
-	//		stmt.setString(1, dbTableName);
-			ResultSet resultSet = stmt.executeQuery();
-			while (resultSet.next()) {
-				// Count of this resultset should be 1
-				occurrenceId = resultSet.getInt(1);
+	public static boolean hasCitations(Set<DescriptionElementSource> elementSources) {
+		boolean notFound = true;
+		if (elementSources.size() == 0) {
+			return false;
+		} else {
+			for (DescriptionElementSource elementSource : elementSources) {
+				notFound &= elementSource.getCitation() == null;
 			}
-			if (occurrenceId == 0) {
-				throw new RuntimeException();
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException during getOccurrenceId invoke.");
-			e.printStackTrace();
 		}
-
-		return occurrenceId;
+		if (notFound) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
+	/**
+	 * @return the taxon
+	 */
+	public static Taxon getTaxon() {
+		return taxon;
+	}
+
+	/**
+	 * @param taxon the taxon to set
+	 */
+	public static void setTaxon(Taxon taxon) {
+		PesiOccurrenceExport.taxon = taxon;
+	}
 
 	/**
 	 * Creates the entries for the database table 'OccurrenceSource'.
@@ -245,7 +255,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 				stmt.executeUpdate();
 				return true;
 			} catch (SQLException e) {
-				logger.error("SQLException during getOccurrenceId invoke...");
+				logger.error("SQLException during update into " + dbTableName + ". Entity: " + entity.getUuid());
 				e.printStackTrace();
 				return false;
 			}
@@ -280,6 +290,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
+	 * @param entity
 	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
@@ -304,7 +315,12 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getTaxonFullNameCache(AnnotatableEntity entity) {
 		String result = null;
-		result = taxon.getName().getTitleCache();
+		if (getTaxon() != null) {
+			TaxonNameBase taxonName = getTaxon().getName();
+			if (taxonName != null) {
+				result = taxonName.getTitleCache();
+			}
+		}
 		return result;
 	}
 
@@ -320,7 +336,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		if (getNamedArea() != null) {
 			result = PesiTransformer.area2AreaId(namedArea);
 		} else {
-			logger.warn("This should never happen, but a NamedArea could not be found for entity: " + entity.getUuid());
+			logger.warn("A NamedArea could not be found for entity: " + entity.getUuid());
 		}
 		return result;
 	}
@@ -337,7 +353,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		if (getNamedArea() != null) {
 			result = PesiTransformer.area2AreaCache(namedArea);
 		} else {
-			logger.warn("This should never happen, but a NamedArea could not be found for entity: " + entity.getUuid());
+			logger.warn("A NamedArea could not be found for entity: " + entity.getUuid());
 		}
 		return result;
 	}
@@ -413,7 +429,9 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		Integer result = null;		
 		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = state.getDbId(reference);
+			if (reference != null) {
+				result = state.getDbId(reference);
+			}
 		}
 		return result;
 	}
@@ -428,7 +446,9 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		String result = null;
 		if (entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = reference.getTitle();
+			if (reference != null) {
+				result = reference.getTitle();
+			}
 		}
 		return result;
 	}

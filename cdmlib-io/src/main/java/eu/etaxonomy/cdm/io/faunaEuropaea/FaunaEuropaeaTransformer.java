@@ -275,7 +275,7 @@ public final class FaunaEuropaeaTransformer {
 			
 		} catch (Exception e) {
 			//e.printStackTrace();
-			logger.warn("Exception occurred. Area could not be mapped.");
+			logger.warn("Area could not be mapped.");
 			return null;
 		}	
 		

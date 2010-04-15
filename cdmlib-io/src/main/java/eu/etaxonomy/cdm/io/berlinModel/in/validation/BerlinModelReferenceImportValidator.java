@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,12 +20,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelReferenceImport;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
 
 /**
  * @author a.mueller

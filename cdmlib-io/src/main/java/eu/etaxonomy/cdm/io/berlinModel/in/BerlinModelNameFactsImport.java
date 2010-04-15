@@ -13,6 +13,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_A
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_PROTOLOGUE;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -341,7 +342,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+	
 		imageMetaData.readMetaData(file.toURI(), 0);
+		
 		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
 		return image;
 	}

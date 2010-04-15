@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -22,8 +23,11 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -81,10 +85,6 @@ public class PesiSourceExport extends PesiExportBase {
 			// PESI: Clear the database table Source.
 			doDelete(state);
 
-			// CDM: Get the number of all available references.
-//			int maxCount = getReferenceService().count(null);
-//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
-
 			// Get specific mappings: (CDM) Reference -> (PESI) Source
 			PesiExportMapping mapping = getMapping();
 
@@ -92,7 +92,6 @@ public class PesiSourceExport extends PesiExportBase {
 			mapping.initialize(state);
 
 			// PESI: Create the Sources
-			// TODO: Store CDM2PESI identifier pairs for later use in other export classes - PesiExportState
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
@@ -173,9 +172,22 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getIMIS_Id(ReferenceBase<?> reference) {
-		// TODO
-		// Where is the IMIS_Id from an ERMS import stored in CDM?
-		return null;
+		Integer result = null;
+		if (reference != null) {
+			Set<Extension> extensions = reference.getExtensions();
+			for (Extension extension : extensions) {
+				try {
+					if (extension.getType().getUuid().equals(ErmsTransformer.IMIS_UUID)) {
+						// IMIS_ID found
+						result = Integer.parseInt(extension.getValue().trim());
+					}
+				} catch (NumberFormatException e) {
+					logger.warn("String could not be parsed to int: " + extension.getValue() + " / Reference: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+					result = null;
+				}
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -248,7 +260,16 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNotes(ReferenceBase<?> reference) {
 		// TODO
-		return null;
+		String result = null;
+		if (reference != null) {
+			Set<Annotation> annotations = reference.getAnnotations();
+			if (annotations.size() == 1) {
+				result = annotations.iterator().next().getText();
+			} else {
+				logger.warn("Reference has more than one Annotation: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -260,12 +281,11 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
-		
-		// TODO: For sets of size bigger than one, this isn't good at all.
-		for (IdentifiableSource source : reference.getSources()) {
-			if (source != null) {
-				result = source.getIdInSource();
-			}
+		Set<IdentifiableSource> sources = reference.getSources();
+		if (sources.size() == 1) {
+			result = sources.iterator().next().getIdInSource();
+		} else {
+			logger.warn("Reference has more than one source: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
 		}
 		return result;
 	}
@@ -279,9 +299,12 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getOriginalDB(ReferenceBase<?> reference) {
 		String result = null;
-		for (IdentifiableSource source : reference.getSources()) {
-			if (source != null) {
-				result = source.getCitation().getTitleCache();  //or just title
+		if (reference != null) {
+			for (IdentifiableSource source : reference.getSources()) {
+				ReferenceBase citation = source.getCitation();
+				if (source != null && citation != null) {
+					result = citation.getTitleCache();  //or just title
+				}
 			}
 		}
 		return result;

@@ -17,7 +17,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportTransformer;
+import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -30,7 +32,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @created 01.03.2010
  * @version 1.0
  */
-public final class ErmsTransformer extends InputTransformerBase implements IDbImportTransformer{
+public final class ErmsTransformer extends InputTransformerBase {
 	private static final Logger logger = Logger.getLogger(ErmsTransformer.class);
 	
 	public static final int SOURCE_USE_ORIGINAL_DESCRIPTION = 1;
@@ -125,6 +127,18 @@ public final class ErmsTransformer extends InputTransformerBase implements IDbIm
 	public static final UUID uuidIdentification = UUID.fromString("dec3cd5b-0690-4035-825d-bda9aee96bc1");
 	public static final UUID uuidSynonymy = UUID.fromString("f5c8be5f-8d33-47df-838e-55fc7999fc81");
 
+	//extension type uuids
+	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
+	public static final UUID IMIS_UUID = UUID.fromString("ee2ac2ca-b60c-4e6f-9cad-720fcdb0a6ae");
+	public static final UUID uuidFossilStatus = UUID.fromString("ec3dffbe-a0c8-4d76-845f-5fc166a33d5b");
+	public static final UUID uuidTsn = UUID.fromString("6b0df02b-7278-4ce0-8fc9-0e6523832eb5");
+	public static final UUID uuidDisplayName = UUID.fromString("cd72225d-32c7-4b2d-a973-a95184392690");
+	public static final UUID uuidFuzzyName = UUID.fromString("8870dc69-d3a4-425f-a5a8-093a79f527a8");
+	public static final UUID uuidCredibility = UUID.fromString("909a3886-8744-49dc-b9cc-277378b81b42");
+	public static final UUID uuidCompleteness = UUID.fromString("141f4816-78c0-4da1-8a79-5c9031e6b149");
+	public static final UUID uuidUnacceptReason = UUID.fromString("3883fb79-374d-4120-964b-9666307e3567");
+	public static final UUID uuidQualityStatus = UUID.fromString("4de84c6e-41bd-4a0e-894d-77e9ec3103d2");
+	
 	
 	public static NomenclaturalCode kingdomId2NomCode(Integer kingdomId){
 		switch (kingdomId){
@@ -142,21 +156,41 @@ public final class ErmsTransformer extends InputTransformerBase implements IDbIm
 	
 	}
 	
-	public NameTypeDesignationStatus transformNameTypeDesignationStatus(Object statusId){
-		if (statusId == null){
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNameTypeDesignationStatusByKey(java.lang.String)
+	 */
+	@Override
+	public NameTypeDesignationStatus getNameTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
+		if (key == null){
 			return null;
 		}
-		Integer intDesignationId = (Integer)statusId;
+		Integer intDesignationId = Integer.valueOf(key);
 		switch (intDesignationId){
 			case 1: return NameTypeDesignationStatus.ORIGINAL_DESIGNATION();
 			case 2: return NameTypeDesignationStatus.SUBSEQUENT_DESIGNATION();
 			case 3: return NameTypeDesignationStatus.MONOTYPY();
 			default: 
-				String warning = "Unknown name type designation status id " + statusId;
+				String warning = "Unknown name type designation status id " + key;
 				logger.warn(warning);
-				throw new IllegalArgumentException(warning);
+				return null;
 		}
 	}
+
+
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNameTypeDesignationStatusUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNameTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException {
+		//nott needed
+		return super.getNameTypeDesignationStatusUuid(key);
+	}
+
 
 	public Language getLanguageByKey(String ermsAbbrev) throws IllegalArgumentException {
 		Set<String> unhandledLanguages = new HashSet<String>();
@@ -298,6 +332,44 @@ public final class ErmsTransformer extends InputTransformerBase implements IDbIm
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getLanguageUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getLanguageUuid(String key)
+			throws UndefinedTransformerMethodException {
+		return super.getLanguageUuid(key);
+	}
+	
+	
+	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getExtensionTypeByKey(java.lang.String)
+	 */
+	@Override
+	public ExtensionType getExtensionTypeByKey(String key) throws UndefinedTransformerMethodException {
+		if (key == null){return null;
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getExtensionTypeUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getExtensionTypeUuid(String key)
+			throws UndefinedTransformerMethodException {
+		if (key == null){return null;
+//		}else if (key.equalsIgnoreCase("recent only")){return uuidRecentOnly;
+//		}else if (key.equalsIgnoreCase("recent + fossil")){return uuidRecentAndFossil;
+//		}else if (key.equalsIgnoreCase("fossil only")){return uuidFossilOnly;
+		}
+		return null;
+	}
+
 	public static UUID uuidFromGuName(String guName){
 		if (CdmUtils.isEmpty(guName)){return null;
 		}else if (guName.equalsIgnoreCase("European Marine Waters")){ return uuidEuropeanMarineWaters;

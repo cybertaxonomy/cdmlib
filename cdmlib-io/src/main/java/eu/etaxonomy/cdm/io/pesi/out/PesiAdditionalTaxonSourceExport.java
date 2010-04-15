@@ -91,10 +91,6 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 			// PESI: Clear the database table Note.
 			doDelete(state);
 	
-			// CDM: Get the number of all available description elements.
-//			int maxCount = getDescriptionService().count(null);
-//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
-
 			// Get specific mappings: (CDM) DescriptionElement -> (PESI) Note
 			PesiExportMapping mapping = getMapping();
 	
@@ -118,10 +114,10 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 				
 				logger.error("Looking for " + pluralString + " to export:");
 				logger.error("PHASE 1: Check for SourceUse 'NomenclaturalReference'");
-				sourceUse_NomenclaturalReference = true;
+				setSourceUse_NomenclaturalReference(true);
 				for (TaxonBase taxonBase : list) {
 					// Set the current Taxon
-					currentTaxon = taxonBase;
+					setCurrentTaxon(taxonBase);
 
 					ReferenceBase<?> nomenclaturalReference = (ReferenceBase)taxonBase.getName().getNomenclaturalReference();
 					if (nomenclaturalReference != null) {
@@ -129,14 +125,14 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 						success &= mapping.invoke(nomenclaturalReference);
 					}
 				}
-				sourceUse_NomenclaturalReference = false;
+				setSourceUse_NomenclaturalReference(false);
 				logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
 				
 				logger.error("PHASE 2: Check for SourceUse 'Additional Source'");
-				sourceUse_AdditionalSource = true;
+				setSourceUse_AdditionalSource(true);
 				for (TaxonBase taxonBase : list) {
 					// Set the current Taxon
-					currentTaxon = taxonBase;
+					setCurrentTaxon(taxonBase);
 
 					if (taxonBase.isInstanceOf(Taxon.class)) {
 						
@@ -153,7 +149,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 								
 								for (DescriptionElementSource elementSource : elementSources) {
 									
-									// Set the CitationMicroReference so it is accessible later in getSourceDetail()
+									// Set the CitationMicroReference for later use in getSourceDetail()
 									setCitationMicroReference(elementSource.getCitationMicroReference());
 
 									// Get the citation
@@ -169,19 +165,20 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 						}
 					}
 				}
-				sourceUse_AdditionalSource = false;
+				setSourceUse_AdditionalSource(false);
 				logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
 				
 				logger.error("PHASE 3: Check for SourceUse 'Source of Synonymy'");
 				ReferenceBase reference = null;
-				sourceUse_SourceOfSynonymy = true;
+				setSourceUse_SourceOfSynonymy(true);
 				for (TaxonBase taxonBase : list) {
 					if (taxonBase.isInstanceOf(Synonym.class)) {
 						Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 						Set<SynonymRelationship> synonymRelations = synonym.getSynonymRelations();
 						for (SynonymRelationship relation : synonymRelations) {
 
-							currentTaxon = relation.getAcceptedTaxon();
+							// Set the current Taxon
+							setCurrentTaxon(relation.getAcceptedTaxon());
 							reference = relation.getCitation();
 
 							// Citations can be empty (null): Is it wrong data or just a normal case?
@@ -192,7 +189,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 						}
 					}
 				}
-				sourceUse_SourceOfSynonymy = false;
+				setSourceUse_SourceOfSynonymy(false);
 				
 				// Commit transaction
 				commitTransaction(txStatus);
@@ -219,6 +216,65 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 			logger.error(e.getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * @return the sourceUse_AdditionalSource
+	 */
+	public static boolean isSourceUse_AdditionalSource() {
+		return sourceUse_AdditionalSource;
+	}
+
+	/**
+	 * @param sourceUseAdditionalSource the sourceUse_AdditionalSource to set
+	 */
+	public static void setSourceUse_AdditionalSource(
+			boolean sourceUseAdditionalSource) {
+		sourceUse_AdditionalSource = sourceUseAdditionalSource;
+	}
+
+	/**
+	 * @return the sourceUse_NomenclaturalReference
+	 */
+	public static boolean isSourceUse_NomenclaturalReference() {
+		return sourceUse_NomenclaturalReference;
+	}
+
+	/**
+	 * @param sourceUseNomenclaturalReference the sourceUse_NomenclaturalReference to set
+	 */
+	public static void setSourceUse_NomenclaturalReference(
+			boolean sourceUseNomenclaturalReference) {
+		sourceUse_NomenclaturalReference = sourceUseNomenclaturalReference;
+	}
+
+	/**
+	 * @return the sourceUse_SourceOfSynonymy
+	 */
+	public static boolean isSourceUse_SourceOfSynonymy() {
+		return sourceUse_SourceOfSynonymy;
+	}
+
+	/**
+	 * @param sourceUseSourceOfSynonymy the sourceUse_SourceOfSynonymy to set
+	 */
+	public static void setSourceUse_SourceOfSynonymy(
+			boolean sourceUseSourceOfSynonymy) {
+		sourceUse_SourceOfSynonymy = sourceUseSourceOfSynonymy;
+	}
+
+	/**
+	 * @return the currentTaxon
+	 */
+	public static TaxonBase getCurrentTaxon() {
+		return currentTaxon;
+	}
+
+	/**
+	 * @param currentTaxon the currentTaxon to set
+	 */
+	public static void setCurrentTaxon(TaxonBase currentTaxon) {
+		PesiAdditionalTaxonSourceExport.currentTaxon = currentTaxon;
 	}
 
 	/**
@@ -251,7 +307,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase reference}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -260,15 +316,15 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 		// ReferenceBase parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
 		Integer result = null;
-		if (state != null && currentTaxon != null) {
-			result = state.getDbId(currentTaxon);
+		if (state != null && getCurrentTaxon() != null) {
+			result = state.getDbId(getCurrentTaxon());
 		}
 		return result;
 	}
 	
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase reference}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -298,19 +354,19 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceUseFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase reference}.
 	 * @return The <code>SourceUseFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getSourceUseFk(ReferenceBase<?> reference) {
-		// TODO
+		// TODO: CDM sourceUseId and PESI sourceUseId are equal for now.
 		Integer result = null;
-		if (sourceUse_AdditionalSource) {
+		if (isSourceUse_AdditionalSource()) {
 			result = PesiTransformer.sourceUseIdSourceUseId(3);
-		} else if (sourceUse_SourceOfSynonymy) {
+		} else if (isSourceUse_SourceOfSynonymy()) {
 			result = PesiTransformer.sourceUseIdSourceUseId(4);
-		} else if (sourceUse_NomenclaturalReference) {
+		} else if (isSourceUse_NomenclaturalReference()) {
 			result = PesiTransformer.sourceUseIdSourceUseId(8);
 		}
 		return result;
@@ -318,19 +374,19 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceUseCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase reference}.
 	 * @return The <code>SourceUseCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceUseCache(ReferenceBase<?> reference) {
-		// TODO
+		// TODO: CDM sourceUseId and PESI sourceUseId are equal for now.
 		String result = null;
-		if (sourceUse_AdditionalSource) {
+		if (isSourceUse_AdditionalSource()) {
 			result = PesiTransformer.sourceUseId2SourceUseCache(3);
-		} else if (sourceUse_SourceOfSynonymy) {
+		} else if (isSourceUse_SourceOfSynonymy()) {
 			result = PesiTransformer.sourceUseId2SourceUseCache(4);
-		} else if (sourceUse_NomenclaturalReference) {
+		} else if (isSourceUse_NomenclaturalReference()) {
 			result = PesiTransformer.sourceUseId2SourceUseCache(8);
 		}
 		return result;
@@ -338,7 +394,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceNameCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase reference}.
 	 * @return The <code>SourceNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -353,7 +409,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceDetail</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase reference}.
 	 * @return The <code>SourceDetail</code> attribute.
 	 * @see MethodMapper
 	 */

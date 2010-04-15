@@ -66,11 +66,8 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	protected static final String NAME_NAMESPACE = "TaxonName";
 	protected static final String VERNACULAR_NAMESPACE = "Vernaculars";
 	protected static final String FEATURE_NAMESPACE = "note.type";
+	protected static final String EXTENSION_TYPE_NAMESPACE = "ExtensionType";
 	
-	//UUIDS
-	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
-	public static final UUID IMIS_UUID = UUID.fromString("ee2ac2ca-b60c-4e6f-9cad-720fcdb0a6ae");
-	public static final UUID TNS_EXT_UUID = UUID.fromString("41cb0450-ac84-4d73-905e-9c7773c23b05");
 	
 
 	private String pluralString;

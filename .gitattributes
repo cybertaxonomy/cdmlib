@@ -1323,6 +1323,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDescriptionEl
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDistributionCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionTypeCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportFeatureCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageGalleryMapper.java -text
@@ -1341,11 +1342,10 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportSupplementCre
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportSynonymMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTaxIncludedInMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTextDataCreationMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTruncatedStringMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbNotYetImplementedMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbSingleAttributeImportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportMapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformed.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IInputTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IMappingImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text

@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
@@ -45,20 +44,26 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	
 //******************************** FACTORY METHOD ***************************************************/
 	
-	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
-		return new DbImportTaxIncludedInMapper(dbChildAttribute, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute);
+	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
+		String citationNamespace = null;
+		String citationAttribute = null;
+		return new DbImportTaxIncludedInMapper(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute, citationAttribute, citationNamespace);
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
-	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
 	private String fromAttribute;
 	private String toAttribute;
 
-	private String relatedObjectNamespace;
+	private String fromNamespace;
+	private String toNamespace;
+	
 	private String citationAttribute;
+	private String citationNamespace;
+	
 	private String microCitationAttribute;
 	private String treeAttribute;
 	private String alternativeAttribute;
+	private String alternativeNamespace;
 	
 	
 //********************************* CONSTRUCTOR ****************************************/
@@ -66,14 +71,18 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 * @param relatedObjectNamespace 
 	 * @param mappingImport
 	 */
-	protected DbImportTaxIncludedInMapper(String fromAttribute, String fromNamespace, String toAttribute, String alternativeNamespace, String alternativeAttribute, String treeAttribute) {
+	protected DbImportTaxIncludedInMapper(String fromAttribute, String fromNamespace, String toAttribute, String toNamespace, String alternativeAttribute, String alternativeNamespace, String treeAttribute, String citationAttribute, String citationNamespace) {
 		super();
 		//TODO make it a single attribute mapper
 		this.fromAttribute = fromAttribute;
+		this.fromNamespace = fromNamespace;
 		this.toAttribute = toAttribute;
-		this.relatedObjectNamespace = relatedObjectNamespace;
+		this.toNamespace = toNamespace;
 		this.treeAttribute = treeAttribute;
 		this.alternativeAttribute = alternativeAttribute;
+		this.alternativeNamespace = alternativeNamespace;
+		this.citationAttribute = citationAttribute;
+		this.citationNamespace = citationNamespace;
 	}
 
 //************************************ METHODS *******************************************/
@@ -92,20 +101,19 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			}
 		}
 		
-		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute);
-		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute);
-		TaxonBase alternativeToObject = (TaxonBase)getRelatedObject(rs, alternativeAttribute);
+		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute, fromNamespace);
+		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute, toNamespace);
+		TaxonBase alternativeToObject = (TaxonBase)getRelatedObject(rs, alternativeAttribute, alternativeNamespace);
 		
 		String fromId = String.valueOf(rs.getObject(fromAttribute));
 		String toId = String.valueOf(rs.getObject(toAttribute));
 		String alternativeToId = String.valueOf(rs.getObject(alternativeAttribute));
 
-		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
+		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute, citationNamespace);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);
 		}
-		
 		//TODO check int
 		Integer treeFk = null;
 		if (treeAttribute != null){
@@ -117,21 +125,33 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Taxon fromTaxon = checkTaxonType(fromObject, "Child", fromId);
+		Taxon fromTaxon;
+		try {
+			fromTaxon = checkTaxonType(fromObject, "Child", fromId);
+		} catch (IllegalArgumentException e2) {
+			//fromTaxon is null
+			return cdmBase;
+		}
 		
 		if (toObject == null){
 			String warning  = "The parent taxon could not be found. Child taxon not added to the tree";
 			logger.warn(warning);
 			return cdmBase;
 		}
+		
 		Taxon toTaxon;
 		try {
 			toTaxon = checkTaxonType(toObject, "Parent", toId);
 		} catch (IllegalArgumentException e) {
 			if (alternativeToObject != null){
-				toTaxon = checkTaxonType(alternativeToObject, "Alternative parent", alternativeToId);
+				try {
+					toTaxon = checkTaxonType(alternativeToObject, "Alternative parent", alternativeToId);
+				} catch (IllegalArgumentException e1) {
+					return cdmBase;
+				}
 			}else{
-				throw e;
+				
+				return cdmBase;
 			}
 		}
 		
@@ -147,6 +167,8 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 
 	
 	
+
+
 	/**
 	 * TODO copied from BM import. May be more generic
 	 * @param state
@@ -219,13 +241,13 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 * @return
 	 * @throws SQLException
 	 */
-	protected CdmBase getRelatedObject(ResultSet rs, String dbAttribute) throws SQLException {
+	protected CdmBase getRelatedObject(ResultSet rs, String dbAttribute, String namespace) throws SQLException {
 		CdmBase result = null;
 		if (dbAttribute != null){
 			Object dbValue = rs.getObject(dbAttribute);
 			String id = String.valueOf(dbValue);
 			DbImportStateBase state = importMapperHelper.getState();
-			result = state.getRelatedObject(relatedObjectNamespace, id);
+			result = state.getRelatedObject(namespace, id);
 		}
 		return result;
 	}

@@ -107,6 +107,12 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends DbIm
 		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute);
 		String fromId = String.valueOf(rs.getObject(fromAttribute));
 		String toId = String.valueOf(rs.getObject(toAttribute));
+		if (fromId.equals(toId)){
+			String warning = "An unaccepted taxon (id = " + fromId + ", status = " + rs.getInt("tu_status") + ") can't have itself as an accepted taxon. " ;
+			logger.warn(warning);
+			return cdmBase;
+			//throw new RuntimeException (warning);
+		}
 		
 		//TODO cast
 		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
@@ -129,6 +135,9 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends DbIm
 			return cdmBase;
 		}
 		Taxon taxon = checkTaxonType(toObject, "Accepted taxon", toId);
+		if (taxon == null){
+			return cdmBase;
+		}
 		
 		SynonymRelationshipType relType = SynonymRelationshipType.SYNONYM_OF();
 		
@@ -163,7 +172,8 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends DbIm
 		if (! taxonBase.isInstanceOf(Taxon.class)){
 			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);
-			throw new IllegalArgumentException(warning);
+			return null;
+//			throw new IllegalArgumentException(warning);
 		}
 		return (taxonBase.deproxy(taxonBase, Taxon.class));
 	}
