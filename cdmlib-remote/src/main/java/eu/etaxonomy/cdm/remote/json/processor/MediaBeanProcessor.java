@@ -40,6 +40,7 @@ public class MediaBeanProcessor extends AbstractCdmBeanProcessor<Media> {
 
 	private static final List<String> IGNORE_LIST = Arrays.asList(new String[] { 
 			"title",
+			"titleCache",
 			"description",
 			});
 
@@ -82,7 +83,7 @@ public class MediaBeanProcessor extends AbstractCdmBeanProcessor<Media> {
 		
 		// title
 		if(Hibernate.isInitialized(media.getTitle())){
-			langString = MultilanguageTextHelper.getPreferredLanguageString(media.getTitle(), languages);
+			langString = MultilanguageTextHelper.getPreferredLanguageString(media.getAllTitles(), languages);
 			if(langString != null){
 				if(langString.getText() != null && langString.getText().length() != 0){
 					json.element("title_L10n", langString.getText());
