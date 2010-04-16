@@ -11,18 +11,27 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 
 /**
@@ -36,6 +45,9 @@ public class TaxonomicTreeDaoHibernateImpl extends IdentifiableDaoBase<Taxonomic
 		implements ITaxonomicTreeDao {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonomicTreeDaoHibernateImpl.class);
+	
+	@Autowired
+	private ITaxonNodeDao taxonNodeDao;
 	
 	public TaxonomicTreeDaoHibernateImpl() {
 		super(TaxonomicTree.class);
@@ -66,6 +78,24 @@ public class TaxonomicTreeDaoHibernateImpl extends IdentifiableDaoBase<Taxonomic
 		return results;
 		
 	}
+	
+	@Override
+	public UUID delete(TaxonomicTree persistentObject){
+		//delete all childnodes, then delete the tree
+		
+		Set<TaxonNode> nodes = persistentObject.getChildNodes();
+		Iterator<TaxonNode> nodesIterator = nodes.iterator();
+		
+		while(nodesIterator.hasNext()){
+			TaxonNode node = nodesIterator.next();
+			taxonNodeDao.delete(node);
+		}
+				
+		super.delete(persistentObject);
+		
+		return persistentObject.getUuid();
+	}
+
 	
 	
 }
