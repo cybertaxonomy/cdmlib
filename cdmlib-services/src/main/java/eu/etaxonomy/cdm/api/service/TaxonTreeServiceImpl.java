@@ -158,8 +158,8 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 			List<String> propertyPaths) {
 		taxonNode = taxonNodeDao.load(taxonNode.getUuid());
 		List<TaxonNode> childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
-		Collections.sort(childNodes, taxonNodeComparator);
 		defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
+		Collections.sort(childNodes, taxonNodeComparator);
 		return childNodes;
 	}
 	
