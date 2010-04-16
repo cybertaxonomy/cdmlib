@@ -31,11 +31,11 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Component
 public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,Set<DescriptionBase> descriptions) {
+	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,Set<TaxonDescription> descriptions) {
 		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), descriptions, false);
 	}
 	
-	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, Set<DescriptionBase> descriptions, boolean leaf) {
+	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, Set<TaxonDescription> descriptions, boolean leaf) {
 		List<TextData> listTextData = new ArrayList<TextData>(); ;
 		if (!parent.isLeaf()){
 			Feature fref = parent.getFeature();
@@ -47,8 +47,8 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		else {
 			Feature fref = parent.getFeature();
 			if (fref!=null) { // needs a better algorithm
-				for (Iterator<DescriptionBase> db = descriptions.iterator() ; db.hasNext() ;){
-					DescriptionBase descriptionBase = db.next();
+				for (Iterator<TaxonDescription> db = descriptions.iterator() ; db.hasNext() ;){
+					TaxonDescription descriptionBase = db.next();
 					Set<DescriptionElementBase> elements = descriptionBase.getElements();
 					for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){
 						DescriptionElementBase descriptionElement = deb.next();
