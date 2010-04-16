@@ -434,16 +434,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		Class<? extends TaxonBase> clazz = null;
 		List<String> propertyPath = new ArrayList<String>();
+		propertyPath.addAll(configurator.getTaxonPropertyPath());
 		if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
 			clazz = TaxonBase.class;
-			propertyPath.addAll(configurator.getTaxonPropertyPath());
-			propertyPath.addAll(configurator.getSynonymPropertyPath());
+			//propertyPath.addAll(configurator.getTaxonPropertyPath());
+			//propertyPath.addAll(configurator.getSynonymPropertyPath());
 		} else if(configurator.isDoTaxa()) {
 			clazz = Taxon.class;
-			propertyPath = configurator.getTaxonPropertyPath();
+			//propertyPath = configurator.getTaxonPropertyPath();
 		} else if (configurator.isDoSynonyms()) {
 			clazz = Synonym.class;
-			propertyPath = configurator.getSynonymPropertyPath();
+			//propertyPath = configurator.getSynonymPropertyPath();
 		}
 		
 		if(clazz != null){
