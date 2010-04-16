@@ -18,5 +18,5 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
  */
 
 public interface INaturalLanguageGenerator {
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, Set<DescriptionBase> descriptions);
+	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, Set<TaxonDescription> descriptions);
 }
