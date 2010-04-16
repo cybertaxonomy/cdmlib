@@ -124,6 +124,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 				}
 				ReferenceBase ref = (ReferenceBase)state.getRelatedObject(ErmsReferenceImport.REFERENCE_NAMESPACE, strSourceId);
 				
+				try {
 				IdentifiableEntity objectToSave = null;
 				//invoke methods for each sourceUse type
 				if (sourceUseId == SOURCE_USE_ORIGINAL_DESCRIPTION){
@@ -146,6 +147,10 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 				if(objectToSave != null){
 					objectsToSave.add(objectToSave);
 				}
+				} catch (Exception e) {
+					e.printStackTrace();
+					success = false;
+			}
 			}
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -200,6 +205,10 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		Feature citationFeature = Feature.CITATION();
 		DescriptionElementBase element = TextData.NewInstance(citationFeature);
 		DescriptionElementSource source = element.addSource(null, null, ref, strPageNr);
+		if (source == null){
+			logger.warn("Source is null");
+			return null;
+		}
 		TaxonBase taxonBase = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, strTaxonId);
 		Taxon taxon;
 		
@@ -207,9 +216,16 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		if (taxonBase.isInstanceOf(Synonym.class)){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<Taxon> taxa = synonym.getAcceptedTaxa();
-			if (taxa.size() != 1){
-				String warning = "Synonym "+ strTaxonId + " has more or less then 1 accepted taxon";
-				throw new IllegalStateException(warning);
+			if (taxa.size() < 1){
+				String warning = "Synonym "+ strTaxonId + " has no accepted taxon";
+				logger.warn(warning);
+				return null;
+				//throw new IllegalStateException(warning);
+			}else if (taxa.size() > 1){
+				String warning = "Synonym "+ strTaxonId + " has more than 1 accepted taxon";
+				logger.warn(warning);
+				return null;
+				//throw new IllegalStateException(warning);
 			}
 			taxon = taxa.iterator().next();
 			//add synonym name as name used in source
@@ -238,7 +254,16 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 */
 	private IdentifiableEntity makeSourceOfSynonymy(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		TaxonBase taxonBase = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, strTaxonId);
-		Synonym synonym = (Synonym)taxonBase;
+		if (taxonBase == null){
+			String warning = "taxonBase (id = " + strTaxonId + ") could not be found ";
+			logger.warn(warning);
+			return null;
+		}else if (! taxonBase.isInstanceOf(Synonym.class)){
+			String warning = "TaxonBase is not of class Synonym but " + taxonBase.getClass().getSimpleName();
+			logger.warn(warning);
+			return null;
+		}
+		Synonym synonym =CdmBase.deproxy(taxonBase, Synonym.class);
 		Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
 		if (synRels.size() != 1){
 			logger.warn("Synonym has not 1 but " + synRels.size() + " relations!");

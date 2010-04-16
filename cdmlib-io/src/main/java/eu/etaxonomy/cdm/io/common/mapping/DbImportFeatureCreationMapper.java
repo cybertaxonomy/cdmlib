@@ -16,12 +16,10 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
-import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.description.TextFormat;
 
 /**
  * This class retrives or creates an existing or a new feature.
@@ -31,7 +29,7 @@ import eu.etaxonomy.cdm.model.description.TextFormat;
  * @created 11.03.2010
  * @version 1.0
  */
-public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDefinedTermCreationMapperBase<Feature, DbImportStateBase<?,?>> {
+public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDefinedTermCreationMapperBase<Feature, DescriptionElementBase, DbImportStateBase<?,?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportFeatureCreationMapper.class);
 
@@ -118,12 +116,29 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
 	}
 
 
+//
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
+//	 */
+//	@Override
+//	protected Feature createObject(ResultSet rs) throws SQLException {
+//		String term = this.getStringDbValue(rs, dbTermAttribute);
+//		String label = this.getStringDbValue(rs, dbLabelAttribute);
+//		String labelAbbrev = this.getStringDbValue(rs, dbLabelAbbrevAttribute);
+//		if (term != null || label != null || labelAbbrev != null){
+//			Feature feature = Feature.NewInstance(term, label, labelAbbrev);
+//			return feature;
+//		}else{
+//			return null;
+//		}
+//	}
+
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportDefinedTermCreationMapperBase#createDefinedTerm(java.sql.ResultSet)
 	 */
 	@Override
-	protected Feature createObject(ResultSet rs) throws SQLException {
+	protected Feature createDefinedTerm(ResultSet rs) throws SQLException {
 		String term = this.getStringDbValue(rs, dbTermAttribute);
 		String label = this.getStringDbValue(rs, dbLabelAttribute);
 		String labelAbbrev = this.getStringDbValue(rs, dbLabelAbbrevAttribute);

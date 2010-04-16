@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -26,20 +27,31 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase, CdmBase> {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbIgnoreMapper.class);
 	
+//*************************** FACTORY ***************************************************************//
+
 	public static DbIgnoreMapper NewInstance(String dbAttributeToIgnore){
-		return new DbIgnoreMapper(dbAttributeToIgnore, null, null);
+		return new DbIgnoreMapper(dbAttributeToIgnore, null, null, null);
 	}
+	
+	public static DbIgnoreMapper NewInstance(String dbAttributeToIgnore, String ignoreReason){
+		return new DbIgnoreMapper(dbAttributeToIgnore, null, null, ignoreReason);
+	}
+	
+//*************************** VARIABLES ***************************************************************//
+	private String ignoreReason;
+	
+//*************************** CONSTRUCTOR ***************************************************************//
 	
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
 	 * @param defaultValue
 	 */
-	protected DbIgnoreMapper(String dbAttributString, String cdmAttributeString, Object defaultValue) {
+	protected DbIgnoreMapper(String dbAttributString, String cdmAttributeString, Object defaultValue, String ignoreReason) {
 		super(dbAttributString, cdmAttributeString, defaultValue);
+		this.ignoreReason = ignoreReason;
 	}
 
 	/* (non-Javadoc)
@@ -64,7 +76,11 @@ public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportSt
 	 */
 	@Override
 	public void initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass) {
-		//super.initialize(state, destinationClass); not needed
+		String localIgnoreReason = "";
+		if (CdmUtils.isNotEmpty(ignoreReason)){
+			localIgnoreReason = "(" + ignoreReason +")";
+	}
+		logger.warn(this.getSourceAttribute() +  " ignored" +  localIgnoreReason);
 	}
 	
 	

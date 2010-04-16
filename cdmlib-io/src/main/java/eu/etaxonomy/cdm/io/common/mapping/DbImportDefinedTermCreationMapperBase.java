@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * This class either retrieves a defined Term from the database or creates and saves it in the database.
@@ -28,10 +30,11 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * @author a.mueller
  * @created 12.05.2009
  * @version 1.0
- * @param <TERM>The class of the term to be created or retrieved
- * @param <STATE>The class of the import state thate is available during import
+ * @param <TERM>The class of the term to be created or retrieved.
+ * @param <TERMED>The class of the object the term is added to.
+ * @param <STATE>The class of the import state thate is available during import.
  */
-public abstract class DbImportDefinedTermCreationMapperBase<TERM extends DefinedTermBase, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<TERM, STATE>  {
+public abstract class DbImportDefinedTermCreationMapperBase<TERM extends DefinedTermBase, TERMED extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<TERMED, STATE>  {
 	private static final Logger logger = Logger.getLogger(DbImportDefinedTermCreationMapperBase.class);
 	
 
@@ -57,17 +60,50 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.VersionableEntity)
 	 */
 	@Override
-	public TERM invoke(ResultSet rs, TERM noObject) throws SQLException {
-		TERM definedTerm = getDefinedTermIfExist(rs);
-		if (definedTerm == null){
-			definedTerm = super.invoke(rs, noObject);
-			getState().getCurrentIO().getTermService().save(definedTerm);
+	public TERMED invoke(ResultSet rs, TERMED noObject) throws SQLException {
+		String key = getKeyString(rs);
+		if (key != null){
+			TERM definedTerm = getDefinedTermIfExist(rs);
+			if (definedTerm == null){
+				definedTerm = createDefinedTerm(rs);
+				ReferenceBase citation = null;
+				getState().getCurrentIO().addOriginalSource(rs, definedTerm, dbIdAttribute, objectToCreateNamespace, citation);
+				
+				UUID transformerUuid = getUuidFromTransformer(rs);
+				if (transformerUuid != null){
+					definedTerm.setUuid(transformerUuid);
+				}
+				getState().getCurrentIO().getTermService().save(definedTerm);
+				saveTermToState(definedTerm);
+				if (transformerUuid == null){
+					getState().addRelatedObject(objectToCreateNamespace, getKeyString(rs), definedTerm);
+				}
+			}
 		}
-		getState().addRelatedObject(objectToCreateNamespace, getKeyString(rs), definedTerm);
-		return definedTerm;
+		return noObject;
 	}
 
 	/**
+	 * @param rs
+	 * @param definedTerm
+	 * @throws SQLException
+	 */
+	private void makeUuid(ResultSet rs, TERM definedTerm) throws SQLException {
+		UUID uuid = getUuidFromTransformer(rs);
+		if (uuid != null){
+			definedTerm.setUuid(uuid);
+		}
+	}
+
+	/**
+	 * @param rs
+	 * @return
+	 * @throws SQLException 
+	 */
+	protected abstract TERM createDefinedTerm(ResultSet rs) throws SQLException;
+
+	/**
+	 * Returns the term if it is available via the transformer, or via the state (uuidMap or relatedObject)
 	 * @return
 	 * @throws SQLException 
 	 */
@@ -190,7 +226,11 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 	 */
 	protected String getKeyString(ResultSet rs) throws SQLException {
 		Object oKey = rs.getString(dbIdAttribute);
+		if (oKey == null){
+			return null;
+		}
 		String key = String.valueOf(oKey);
+		key = key.trim();
 		return key;
 	}
 	
@@ -198,10 +238,20 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#doInvoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.VersionableEntity)
 	 */
 	@Override
-	protected TERM doInvoke(ResultSet rs, TERM createdObject)
+	protected TERMED doInvoke(ResultSet rs, TERMED createdObject)
 			throws SQLException {
 		return createdObject; //not needed because invoke is implemented separately
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
+	 */
+	@Override
+	protected TERMED createObject(ResultSet rs) throws SQLException {
+		logger.warn("Never should read this");
+		return null; //not needed, object is created in createDefineTerm(rs)
+	}
+
+	
 	
 }

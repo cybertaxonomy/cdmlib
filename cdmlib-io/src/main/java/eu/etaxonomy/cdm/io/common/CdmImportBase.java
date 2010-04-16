@@ -158,7 +158,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	protected void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, ReferenceBase citation) throws SQLException {
+	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, ReferenceBase citation) throws SQLException {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable)cdmBase;

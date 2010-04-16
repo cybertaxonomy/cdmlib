@@ -16,10 +16,13 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -36,7 +39,9 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	protected String taxonNamespace;
 	protected String dbTaxonFkAttribute;
 	protected boolean isImageGallery = false;
-	
+	protected String dbCitationAttribute;  //if there is a single source available
+	protected String sourceNamespace;
+	protected String dbMicroCitationAttribute;
 	
 	
 //********************************* CONSTRUCTOR ****************************************/
@@ -51,6 +56,13 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 
 //************************************ METHODS *******************************************/
 
+	public DbImportDescriptionElementCreationMapperBase setSource(String dbCitationAttribute, String sourceNamespace, String dbMicroCitationAttribute){
+		this.dbCitationAttribute = dbCitationAttribute;
+		this.sourceNamespace = sourceNamespace;
+		this.dbMicroCitationAttribute = dbMicroCitationAttribute;
+		return this;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
@@ -59,12 +71,26 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 		Taxon taxon = getAcceptedTaxon(rs);
 		if (taxon != null){
 			addDescriptionElement(taxon, element);
-			return element;
 		}else{
-			logger.warn("Taxon could not be determined. Description element was not add to any description or taxon");
-			return element;
+			logger.info("Taxon could not be determined. Description element was not add to any description or taxon");
 		}
+		//Source
+		if (CdmUtils.isNotEmpty(dbCitationAttribute)){
+			addSource(rs, element);
+		}
+		return element;
 		
+	}
+
+	/**
+	 * @param rs
+	 * @param element
+	 * @throws SQLException 
+	 */
+	private void addSource(ResultSet rs, ELEMENT element) throws SQLException {
+		String microCitation = getStringDbValue(rs, dbMicroCitationAttribute);
+		ReferenceBase citation = (ReferenceBase) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
+		element.addSource(null, null, citation, microCitation);
 	}
 
 	/**

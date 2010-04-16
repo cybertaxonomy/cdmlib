@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportTruncatedStringMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
@@ -77,9 +78,9 @@ public class ErmsReferenceImport  extends ErmsImportBase<ReferenceBase> implemen
 			mapping = new DbImportMapping();
 			
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", REFERENCE_NAMESPACE)); //id
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("imis_id", IMIS_UUID, "imis", "imis", "imis"));
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("imis_id", ErmsTransformer.IMIS_UUID, "imis", "imis", "imis"));
 			
-			mapping.addMapper(DbImportStringMapper.NewInstance("source_name", "titleCache"));
+			mapping.addMapper(DbImportTruncatedStringMapper.NewInstance("source_name", "titleCache", "title"));
 			mapping.addMapper(DbImportStringMapper.NewInstance("source_abstract", "referenceAbstract"));
 			mapping.addMapper(DbImportAnnotationMapper.NewInstance("source_note", AnnotationType.EDITORIAL(), Language.DEFAULT()));
 			

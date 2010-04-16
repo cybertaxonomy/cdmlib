@@ -12,8 +12,10 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 
 
 /**
@@ -31,5 +33,13 @@ public interface IInputTransformer {
 	
 	public UUID getLanguageUuid(String key) throws UndefinedTransformerMethodException;
 
+	public ExtensionType getExtensionTypeByKey(String key) throws UndefinedTransformerMethodException;
+	
+	public UUID getExtensionTypeUuid(String key) throws UndefinedTransformerMethodException;
+
+	public NameTypeDesignationStatus getNameTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException;
+	
+	public UUID getNameTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException;
+ 
 	
 }
