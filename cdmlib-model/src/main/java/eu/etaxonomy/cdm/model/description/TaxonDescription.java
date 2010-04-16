@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -219,6 +220,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 	 * a new one is created.
 	 * @return
 	 */
+	@Transient
 	public TextData getOrCreateImageTextData(){
 		for (DescriptionElementBase element : this.getElements()){
 			if (element.getFeature().equals(Feature.IMAGE())){
