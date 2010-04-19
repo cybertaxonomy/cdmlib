@@ -158,7 +158,7 @@ public class BotanicNameCacheStrategyTest {
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
-		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getTitleCache(subSpeciesName));
+		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex " + exBasAuthorString + ")" +  " " + authorString + " ex " + exAuthorString  , strategy.getTitleCache(subSpeciesName));
 		
 		//Autonym
 		subSpeciesName.setInfraSpecificEpithet("alba");
@@ -192,13 +192,13 @@ public class BotanicNameCacheStrategyTest {
 		assertEquals(authorString, strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
-		assertEquals(exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals(authorString + " ex " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
-		assertEquals("(" + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
-		assertEquals("(" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + " ex " + exBasAuthorString + ")" +  " " + authorString + " ex " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
 		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
 	}
