@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.kohsuke.rngom.dt.DoNothingDatatypeLibraryFactoryImpl;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
