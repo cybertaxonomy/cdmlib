@@ -48,9 +48,10 @@ public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends No
 		String authorString = "";
 		String exAuthorString = "";
 		if (author != null){
-			authorString = CdmUtils.Nz(author.getNomenclaturalTitle()) + ExAuthorSeperator;
+			authorString = CdmUtils.Nz(author.getNomenclaturalTitle());
 		}
 		if (exAuthor != null){
+			authorString += ExAuthorSeperator;
 			exAuthorString = CdmUtils.Nz(exAuthor.getNomenclaturalTitle());
 		}
 		if (exAuthorString.length() > 0 ){
