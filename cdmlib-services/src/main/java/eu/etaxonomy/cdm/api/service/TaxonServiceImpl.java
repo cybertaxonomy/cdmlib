@@ -503,11 +503,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			numberOfResults += numberTaxaResults;
 			 
 		}
-		
-		
-		//FIXME does not work any more after model change
-		logger.warn("Sort does currently not work on identifiable entities due to model changes (duplicated implementation of the Comparable interface).");
-		//Collections.sort(results);
+				
 		return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
