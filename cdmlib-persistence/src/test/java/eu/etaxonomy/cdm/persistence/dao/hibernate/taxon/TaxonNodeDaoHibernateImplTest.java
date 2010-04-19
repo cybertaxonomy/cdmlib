@@ -47,10 +47,11 @@ public class TaxonNodeDaoHibernateImplTest extends
 	
 	private UUID uuid1;
 	private UUID uuid2;
+	private UUID uuid3;
 	
 	@Before
 	public void setUp(){
-		uuid1 = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
+		uuid1 = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
 		uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
 		AuditEventContextHolder.clearContext(); 
 	}
@@ -88,10 +89,15 @@ public class TaxonNodeDaoHibernateImplTest extends
 		TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.findByUuid(uuid2);
 		Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
 		
-		rootNodes.add(taxNode2);
+		rootNodes.add(taxNode);
+		
+	
 		for (TaxonNode rootNode : rootNodes){
 			taxonTree.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
 		}
+		
+		//taxonTree.addChildNode(taxNode, taxNode.getReference(), taxNode.getMicroReference(), taxNode.getSynonymToBeUsed());
+		
 		//old: taxonTree.setRootNodes(rootNodes);
 		taxNode.addChildNode(taxNode2, null, null,null);
 		
@@ -107,6 +113,11 @@ public class TaxonNodeDaoHibernateImplTest extends
 				
 		taxa = taxonDao.getAllTaxonBases(10, 0);
 		assertEquals("there should be only one taxon left", 4, taxa.size());
+		
+		taxonomicTreeDao.delete(taxonTree);
+		taxonTree = taxonomicTreeDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+		assertEquals("The tree should be null", null, taxonTree);
+		
 		
 	}
 }
