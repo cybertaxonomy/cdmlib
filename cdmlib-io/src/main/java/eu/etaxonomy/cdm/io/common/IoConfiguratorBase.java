@@ -192,6 +192,9 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public void setDoFacts(boolean doFacts) {
 		this.doFacts = doFacts;
 	}
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoOccurrence()
 	 */

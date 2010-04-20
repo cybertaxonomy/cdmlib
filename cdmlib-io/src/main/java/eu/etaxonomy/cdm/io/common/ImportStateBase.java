@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -48,6 +49,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
 	private Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
+	private Map<UUID, AnnotationType> annotationTypeMap = new HashMap<UUID, AnnotationType>();
+	
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	
@@ -171,6 +174,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public void putMarkerType(MarkerType markerType){
 		markerTypeMap.put(markerType.getUuid(), markerType);
+	}
+	
+	public AnnotationType getAnnotationType(UUID uuid){
+		return annotationTypeMap.get(uuid);
+	}
+	
+	public void putAnnotationType(AnnotationType annotationType){
+		annotationTypeMap.put(annotationType.getUuid(), annotationType);
 	}
 	
 	public NamedArea getNamedArea(UUID uuid){
