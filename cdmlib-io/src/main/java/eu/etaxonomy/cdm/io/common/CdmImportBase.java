@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -115,6 +116,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}
 		}
 		return markerType;
+	}
+	
+	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		AnnotationType annotationType = state.getAnnotationType(uuid);
+		if (annotationType == null){
+			annotationType = (AnnotationType)getTermService().find(uuid);
+			if (annotationType == null){
+				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
+				annotationType.setUuid(uuid);
+				getTermService().save(annotationType);
+				state.putAnnotationType(annotationType);
+			}
+		}
+		return annotationType;
 	}
 	
 	/**
