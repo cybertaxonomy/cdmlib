@@ -17,8 +17,10 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -159,7 +161,8 @@ public final class BerlinModelTransformer {
 		}else if (nomStatus.equalsIgnoreCase("comb. ined.")){
 			if (nomStatusCombIned == null){
 				nomStatusCombIned = new NomenclaturalStatusType();
-				nomStatusCombIned.setLabel("comb. ined.");
+				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
+				nomStatusCombIned.addRepresentation(representation);
 				nomStatusCombIned.setUuid(uuidRelNameCombIned);
 			}
 			result = nomStatusCombIned;
