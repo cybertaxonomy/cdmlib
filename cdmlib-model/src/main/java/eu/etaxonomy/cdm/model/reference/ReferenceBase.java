@@ -101,9 +101,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "institution",
     "school",
     "organization",
-    "inReference",
-    "fullReference",
-    "abbreviatedReference"
+    "inReference"
+//    ,"fullReference",
+//    "abbreviatedReference"
 })
 @XmlRootElement(name = "ReferenceBase")
 @Entity
@@ -227,21 +227,21 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @Cascade(CascadeType.SAVE_UPDATE)
 	protected ReferenceBase inReference;
     
-    @XmlElement(name = "FullReference")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
-    protected ReferenceBase fullReference;
-    
-    @XmlElement(name = "AbbreviatedReference")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
-    protected ReferenceBase abbreviatedReference;
+//    @XmlElement(name = "FullReference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+////    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    protected ReferenceBase fullReference;
+//    
+//    @XmlElement(name = "AbbreviatedReference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+////    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    protected ReferenceBase abbreviatedReference;
     
     
 //********************************************************/    
@@ -568,51 +568,51 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 	
 
-	/**
-	 * Returns the full reference that belongs to this abbreviated reference. If this 
-	 * reference is not abbreviated the full reference should be <code>null</code>.<BR>
-	 * A full reference should be added to a reference
-	 * which represents the abbreviated form of a reference. The full reference can be used
-	 * by publication tools to link to the unabbreviated and therefore more complete version
-	 * of the reference.
-	 * 
-	 * @see #getAbbreviatedReference()
-	 * @return the full reference
-	 */
-	public ReferenceBase getFullReference() {
-		return fullReference;
-	}
-
-	/**
-	 * @see #getFullReference()
-	 * @param fullReference
-	 */
-	public void setFullReference(ReferenceBase fullReference) {
-		this.fullReference = fullReference;
-	}
-
-	/**
-	 * Returns the abbreviated reference that belongs to this full reference. If this 
-	 * reference is not a full reference the abbeviated referece must be <code>null</code>.<BR>
-	 * An abbreviated reference should be added to a reference which represents the long (full)
-	 * form of a reference.
-	 * In future this may become a set or handled differently as there are multiple 
-	 * 
-	 * @see #getFullReference()
-	 * @return the full reference
-	 */
-	public ReferenceBase getAbbreviatedReference() {
-		return abbreviatedReference;
-	}
-
-	/**
-	 * @see #getAbbreviatedReference()
-	 * @param abbreviatedReference
-	 * 
-	 */
-	public void setAbbreviatedReference(ReferenceBase abbreviatedReference) {
-		this.abbreviatedReference = abbreviatedReference;
-	}
+//	/**
+//	 * Returns the full reference that belongs to this abbreviated reference. If this 
+//	 * reference is not abbreviated the full reference should be <code>null</code>.<BR>
+//	 * A full reference should be added to a reference
+//	 * which represents the abbreviated form of a reference. The full reference can be used
+//	 * by publication tools to link to the unabbreviated and therefore more complete version
+//	 * of the reference.
+//	 * 
+//	 * @see #getAbbreviatedReference()
+//	 * @return the full reference
+//	 */
+//	public ReferenceBase getFullReference() {
+//		return fullReference;
+//	}
+//
+//	/**
+//	 * @see #getFullReference()
+//	 * @param fullReference
+//	 */
+//	public void setFullReference(ReferenceBase fullReference) {
+//		this.fullReference = fullReference;
+//	}
+//
+//	/**
+//	 * Returns the abbreviated reference that belongs to this full reference. If this 
+//	 * reference is not a full reference the abbeviated referece must be <code>null</code>.<BR>
+//	 * An abbreviated reference should be added to a reference which represents the long (full)
+//	 * form of a reference.
+//	 * In future this may become a set or handled differently as there are multiple 
+//	 * 
+//	 * @see #getFullReference()
+//	 * @return the full reference
+//	 */
+//	public ReferenceBase getAbbreviatedReference() {
+//		return abbreviatedReference;
+//	}
+//
+//	/**
+//	 * @see #getAbbreviatedReference()
+//	 * @param abbreviatedReference
+//	 * 
+//	 */
+//	public void setAbbreviatedReference(ReferenceBase abbreviatedReference) {
+//		this.abbreviatedReference = abbreviatedReference;
+//	}
 	
 //****************************************************  /	
 	
