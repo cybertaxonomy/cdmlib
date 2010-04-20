@@ -98,8 +98,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 				extensionType.setUuid(uuid);
 				getTermService().save(extensionType);
-				state.putExtensionType(extensionType);
 			}
+			state.putExtensionType(extensionType);
 		}
 		return extensionType;
 	}
@@ -112,8 +112,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				markerType = MarkerType.NewInstance(label, text, labelAbbrev);
 				markerType.setUuid(uuid);
 				getTermService().save(markerType);
-				state.putMarkerType(markerType);
 			}
+			state.putMarkerType(markerType);
 		}
 		return markerType;
 	}
@@ -126,8 +126,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
 				annotationType.setUuid(uuid);
 				getTermService().save(annotationType);
-				state.putAnnotationType(annotationType);
 			}
+			state.putAnnotationType(annotationType);
 		}
 		return annotationType;
 	}
@@ -153,8 +153,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
 				getTermService().save(namedArea);
-				state.putNamedArea(namedArea);
 			}
+			state.putNamedArea(namedArea);
 		}
 		return namedArea;
 	}

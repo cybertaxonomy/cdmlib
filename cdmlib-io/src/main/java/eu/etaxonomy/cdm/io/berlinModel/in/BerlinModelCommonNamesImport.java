@@ -9,11 +9,6 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_ACCEPTED;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PARTIAL_SYN;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PRO_PARTE_SYN;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_SYNONYM;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -29,7 +24,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelCommonNamesImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -37,14 +31,11 @@ import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -92,8 +83,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String recordQuery = "";
 		recordQuery = 
-			" SELECT emCommonName.CommonNameId, emCommonName.CommonName, PTaxon.RIdentifier AS taxonId, emCommonName.RefFk AS refId, emCommonName.Status, emCommonName.RegionFks, emCommonName.MisNameRefFk, emCommonName.NameInSourceFk , " + 
-        		" regionLanguage.Language AS regionLanguage, languageCommonName.Language, languageCommonName.LanguageOriginal, languageCommonName.ISO639_2, " + 
+			" SELECT emCommonName.CommonNameId, emCommonName.CommonName, PTaxon.RIdentifier AS taxonId, emCommonName.RefFk AS refId, emCommonName.Status, " + 
+				" emCommonName.RegionFks, emCommonName.MisNameRefFk, emCommonName.NameInSourceFk , emCommonName.Created_When, emCommonName.Updated_When, emCommonName.Created_Who, emCommonName.Updated_Who, emCommonName.Note as Notes," + 
+        		" regionLanguage.Language AS regionLanguage, languageCommonName.Language, languageCommonName.LanguageOriginal, languageCommonName.ISO639_1, languageCommonName.ISO639_2, " + 
         		" emLanguageRegion.Region, emLanguageReference.RefFk as languageRefRefFk, emLanguageReference.ReferenceShort, " + 
         		" emLanguageReference.ReferenceLong, emLanguageReference.LanguageFk, languageReferenceLanguage.Language AS refLanguage, " +
         		" languageReferenceLanguage.ISO639_2 AS refLanguageIso639_2, regionLanguage.ISO639_2 AS regionLanguageIso " +
@@ -123,6 +115,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		Map<String, ReferenceBase> biblioRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
 		Map<String, ReferenceBase> nomRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
 		
+		Map<String, Language> iso6392Map = new HashMap<String, Language>();
+		
 		logger.warn("Regions not yet implemented for Common Names");
 		logger.warn("MisappliedNameRefFk  not yet implemented for Common Names");
 		
@@ -132,10 +126,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 				//create TaxonName element
 				Object commonNameId = rs.getObject("CommonNameId");
-				int taxonId = rs.getInt("RIdentifier");
+				int taxonId = rs.getInt("taxonId");
 				Object refId = rs.getObject("refId");
 				String commonNameString = rs.getString("CommonName");
 				String iso639_2 = rs.getString("ISO639_2");
+				String iso639_1 = rs.getString("ISO639_1");
 				String languageString = rs.getString("Language");
 				String originalLanguageString = rs.getString("LanguageOriginal");
 				Object misNameRefFk = rs.getObject("MisNameRefFk");
@@ -149,57 +144,69 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				//String region = rs.getString("Region");
 				//String regionFk  = rs.getString("RegionFks");
 				
-				
+				//commonNameString
 				if (CdmUtils.isEmpty(commonNameString)){
 					String message = "CommonName is empty or null. Do not import record for taxon " + taxonId;
 					logger.warn(message);
 					continue;
 				}
 				
+				//taxon
 				Taxon taxon;
 				TaxonBase taxonBase = null;
 				taxonBase  = taxonMap.get(String.valueOf(taxonId));
-				if (! taxonBase.isInstanceOf(Taxon.class)){
+				if (taxonBase == null){
+					logger.warn("Taxon (" + taxonId + ") could not be found. Common name " + commonNameString + " not imported");
+					continue;
+				}else if (! taxonBase.isInstanceOf(Taxon.class)){
 					logger.warn("taxon (" + taxonId + ") is not accepted. Can't import common name " +  commonNameId);
 					continue;
 				}else{
 					taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 				}
 				
-				//TODO test performance, implement in state
-				Language language = getTermService().getLanguageByIso(iso639_2);
-				addOriginalLanguage(language, originalLanguageString);
-				if (language == null && CdmUtils.isNotEmpty(iso639_2)){
-					logger.warn("Language for iso code '" + iso639_2 + "' and common name " + commonNameString + " was not found");
-				}
+				//Language
+				Language language = getAndHandleLanguage(iso6392Map, iso639_2, iso639_1, languageString, originalLanguageString);
+				
+				//CommonTaxonName
 				CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonNameString, language);
 				TaxonDescription description = getDescription(taxon);
 				description.addElement(commonTaxonName);
 				
+				//Reference/Source
 				String strRefId = String.valueOf(refId);
 				String languageRefFk = String.valueOf(languageRefRefFk);
-				if (! CdmUtils.nullSafeEqual(strRefId, languageRefRefFk)){
+				if (! CdmUtils.nullSafeEqual(strRefId, languageRefFk)){
 					logger.warn("CommonName.RefFk (" + CdmUtils.Nz(strRefId) + ") and LanguageReference.RefFk " + CdmUtils.Nz(languageRefFk) + " are not equal. I will import only languageRefFk");
 				}
 						
 				ReferenceBase reference = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(languageRefRefFk));
 				String microCitation = null;
 				String originalNameString = null;
+				
 				TaxonNameBase nameUsedInSource = taxonNameMap.get(String.valueOf(nameInSourceFk));
+				if (nameInSourceFk != null && nameUsedInSource == null){
+					logger.info("Name used in source (" + nameInSourceFk + ") was not found");
+				}
 				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
 				commonTaxonName.addSource(source);
 				
-				
-				if (CdmUtils.isNotEmpty(refLanguage)){
-					ExtensionType refLanguageExtensionType = getExtensionType( state, REFERENCE_LANGUAGE_STRING_UUID, "reference language","The language of the reference","ref. lang.");
-					Extension.NewInstance(reference, refLanguage, refLanguageExtensionType);
+				//reference extensions
+				if (reference != null){
+					if (CdmUtils.isNotEmpty(refLanguage)){
+						ExtensionType refLanguageExtensionType = getExtensionType( state, REFERENCE_LANGUAGE_STRING_UUID, "reference language","The language of the reference","ref. lang.");
+						Extension.NewInstance(reference, refLanguage, refLanguageExtensionType);
+					}
+					
+					if (CdmUtils.isNotEmpty(refLanguageIso639_2)){
+						ExtensionType refLanguageIsoExtensionType = getExtensionType( state, REFERENCE_LANGUAGE_ISO639_2_UUID, "reference language iso 639-2","The iso 639-2 code of the references language","ref. lang. 639-2");
+						Extension.NewInstance(reference, refLanguageIso639_2, refLanguageIsoExtensionType);
+					}
+				}else if (CdmUtils.isNotEmpty(refLanguage) || CdmUtils.isNotEmpty(refLanguageIso639_2)){
+					logger.warn("Reference is null (" + languageRefRefFk + ") but refLanguage (" + CdmUtils.Nz(refLanguage) + ") or iso639_2 (" + CdmUtils.Nz(refLanguageIso639_2) + ") was not null");
 				}
 				
-				if (CdmUtils.isNotEmpty(refLanguageIso639_2)){
-					ExtensionType refLanguageIsoExtensionType = getExtensionType( state, REFERENCE_LANGUAGE_ISO639_2_UUID, "reference language iso 639-2","The iso 639-2 code of the references language","ref. lang. 639-2");
-					Extension.NewInstance(reference, refLanguageIso639_2, refLanguageIsoExtensionType);
-				}
-				
+				//status
 				if (CdmUtils.isNotEmpty(status)){
 					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status");
 					Annotation annotation = Annotation.NewInstance(status, statusAnnotationType, Language.DEFAULT());
@@ -223,6 +230,57 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		getTaxonService().save(taxaToSave);
 		return success;
 
+	}
+
+
+
+	/**
+	 * @param iso6392Map
+	 * @param iso639_2
+	 * @param languageString
+	 * @param originalLanguageString
+	 * @return
+	 */
+	private Language getAndHandleLanguage(Map<String, Language> iso639Map,	String iso639_2, String iso639_1, String languageString, String originalLanguageString) {
+		Language language;
+		if (CdmUtils.isNotEmpty(iso639_2)|| CdmUtils.isNotEmpty(iso639_1)  ){
+			//TODO test performance, implement in state
+			language = getLanguageFromIsoMap(iso639Map, iso639_2, iso639_1);
+			
+			if (language == null){
+				language = getTermService().getLanguageByIso(iso639_2);
+				iso639Map.put(iso639_2, language);
+				if (language == null){
+					language = getTermService().getLanguageByIso(iso639_1);
+					iso639Map.put(iso639_1, language);
+				}
+				if (language == null){
+					logger.warn("Language for code ISO693-2 '" + iso639_2 + "' and ISO693-1 '" + iso639_1 + "' was not found");
+				}
+			}
+		}else{
+			logger.warn("language ISO 639_1 and ISO 639_2 were empty for " + languageString);
+			language = null;
+		}
+		addOriginalLanguage(language, originalLanguageString);
+		return language;
+	}
+
+
+	/**
+	 * @param iso639Map
+	 * @param iso639_2
+	 * @param iso639_1
+	 * @return
+	 */
+	private Language getLanguageFromIsoMap(Map<String, Language> iso639Map,
+			String iso639_2, String iso639_1) {
+		Language language;
+		language = iso639Map.get(iso639_2);
+		if (language == null){
+			language = iso639Map.get(iso639_1);
+		}
+		return language;
 	}
 
 	/**
@@ -290,7 +348,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			result.put(nameSpace, nameMap);
 
 			//name map
-			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
+			nameSpace = BerlinModelTaxonImport.NAMESPACE;
 			cdmClass = Taxon.class;
 			idSet = taxonIdSet;
 			Map<String, Taxon> taxonMap = (Map<String, Taxon>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
