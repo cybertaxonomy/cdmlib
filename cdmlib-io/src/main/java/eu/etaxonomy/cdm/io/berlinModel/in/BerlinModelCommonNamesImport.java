@@ -74,6 +74,16 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	public BerlinModelCommonNamesImport(){
 		super();
 	}
+	
+	
+
+	@Override
+	protected String getIdQuery() {
+		String result = " SELECT CommonNameId FROM emCommonName ";
+		return result;
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
