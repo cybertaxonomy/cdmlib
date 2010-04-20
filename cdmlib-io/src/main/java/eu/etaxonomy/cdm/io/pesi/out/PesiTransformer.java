@@ -866,9 +866,9 @@ public final class PesiTransformer {
 	public static int PESI_CORVO = 9;
 	public static int PESI_FAIAL = 10;
 	public static int PESI_GRACIOSA = 11;
-	public static int PESI_SÃO_JORGE = 12;
+	public static int PESI_SAO_JORGE = 12;
 	public static int PESI_FLORES = 13;
-	public static int PESI_SÃO_MIGUEL = 14;
+	public static int PESI_SAO_MIGUEL = 14;
 	public static int PESI_PICO = 15;
 	public static int PESI_SANTA_MARIA = 16;
 	public static int PESI_TERCEIRA = 17;
@@ -1065,9 +1065,9 @@ public final class PesiTransformer {
 	public static String STR_PESI_CORVO = "Corvo";
 	public static String STR_PESI_FAIAL = "Faial";
 	public static String STR_PESI_GRACIOSA = "Graciosa";
-	public static String STR_PESI_SÃO_JORGE = "São Jorge";
+	public static String STR_PESI_SAO_JORGE = "São Jorge";
 	public static String STR_PESI_FLORES = "Flores";
-	public static String STR_PESI_SÃO_MIGUEL = "São Miguel";
+	public static String STR_PESI_SAO_MIGUEL = "São Miguel";
 	public static String STR_PESI_PICO = "Pico";
 	public static String STR_PESI_SANTA_MARIA = "Santa Maria";
 	public static String STR_PESI_TERCEIRA = "Terceira";
