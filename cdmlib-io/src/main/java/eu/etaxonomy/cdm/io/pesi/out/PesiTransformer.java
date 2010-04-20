@@ -1150,7 +1150,7 @@ public final class PesiTransformer {
 	public static String STR_PESI_RUSSIA_NORTHERN = "Russia Northern";
 	public static String STR_PESI_RUSSIA_SOUTHWEST = "Russia Southwest";
 	public static String STR_PESI_SARDEGNA = "Sardegna";
-	public static String STR_PESI_SVALBARD_WITH_BJÖRNÖYA_AND_JAN_MAYEN = "Svalbard with Björnöya and Jan Mayen";
+	public static String STR_PESI_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN = "Svalbard with Björnöya and Jan Mayen";
 	public static String STR_PESI_SELVAGENS_ISLANDS = "Selvagens Islands";
 	public static String STR_PESI_SICILY_WITH_MALTA = "Sicily with Malta";
 	public static String STR_PESI_MALTA = "Malta";
