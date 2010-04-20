@@ -71,6 +71,7 @@ public class AlgaTerraActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = false;
+	static final boolean doCommonNames = false;
 
 // ************************ NONE **************************************** //
 	
@@ -121,6 +122,8 @@ public class AlgaTerraActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		bmImportConfigurator.setDoCommonNames(doCommonNames);
+		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		bmImportConfigurator.setCheck(check);

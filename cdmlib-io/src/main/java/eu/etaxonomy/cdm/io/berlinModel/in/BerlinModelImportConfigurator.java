@@ -48,6 +48,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 	
+	private boolean doCommonNames = true;
+	
 	
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
@@ -81,11 +83,12 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 				, BerlinModelTypesImport.class
 				, BerlinModelTaxonImport.class
 				, BerlinModelTaxonRelationImport.class
+				, BerlinModelCommonNamesImport.class
 				, BerlinModelFactsImport.class
 				, BerlinModelOccurrenceImport.class
+				, BerlinModelOccurrenceSourceImport.class
 				, BerlinModelWebMarkerCategoryImport.class
 				, BerlinModelWebMarkerImport.class
-				, BerlinModelOccurrenceSourceImport.class
 		};	
 	}
 	
@@ -323,5 +326,22 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setRecordsPerTransaction(int recordsPerTransaction) {
 		this.recordsPerTransaction = recordsPerTransaction;
 	}
+
+
+	public boolean isDoCommonNames() {
+		return doCommonNames;
+	}
+
+
+	/**
+	 * @param doCommonNames
+	 */
+	public void setDoCommonNames(boolean doCommonNames) {
+		this.doCommonNames = doCommonNames;
+		
+	}
+
+
+
 
 }

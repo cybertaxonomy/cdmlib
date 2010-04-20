@@ -98,6 +98,7 @@ public class DipteraActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = false; //There are no occurrence data in diptera
+	static final boolean doCommonNames = false; //no common names in diptera
 	
 	//etc.
 	static final boolean doMarker = true;
@@ -159,6 +160,7 @@ public class DipteraActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		bmImportConfigurator.setDoCommonNames(doCommonNames);
 		
 		bmImportConfigurator.setDoMarker(doMarker);
 		bmImportConfigurator.setDoUser(doUser);

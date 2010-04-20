@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -101,6 +102,15 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	 * @return
 	 */
 	protected abstract String getTableName();
+	
+	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, DescriptionElementBase descriptionElement, ResultSet rs, String id, String namespace) throws SQLException{
+		boolean success = true;
+		//id
+		success &= ImportHelper.setOriginalSource(descriptionElement, state.getConfig().getSourceReference(), id, namespace);
+		//createdUpdateNotes
+		success &= doCreatedUpdatedNotes(state, descriptionElement, rs);
+		return success;
+	}
 	
 	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
