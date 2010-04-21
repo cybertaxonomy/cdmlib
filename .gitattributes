@@ -1356,6 +1356,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDescriptionEl
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDistributionCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionTypeCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportFeatureCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageGalleryMapper.java -text
