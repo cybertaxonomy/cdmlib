@@ -99,52 +99,52 @@ public class CichorieaeActivator {
 
 // **************** ALL *********************	
 
-//	static final boolean doUser = true;
-//	//authors
-//	static final boolean doAuthors = true;
-//	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-//	//names
-//	static final boolean doTaxonNames = true;
-//	static final boolean doRelNames = true;
-//	static final boolean doNameStatus = true;
-//	static final boolean doTypes = true;
-//	static final boolean doNameFacts = true;
-//	
-//	//taxa
-//	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = true;
-//	static final boolean doFacts = true;
-//	static final boolean doOccurences = true;
-//	static final boolean doCommonNames = true;
-//
-//	//etc.
-//	static final boolean doMarker = true;
-
-	
-// **************** SELECTED *********************
-//
 	static final boolean doUser = true;
 	//authors
-	static final boolean doAuthors = false;
+	static final boolean doAuthors = true;
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
 	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = false;
-	static final boolean doNameStatus = false;
-	static final boolean doTypes = false;
-	static final boolean doNameFacts = false;
+	static final boolean doRelNames = true;
+	static final boolean doNameStatus = true;
+	static final boolean doTypes = true;
+	static final boolean doNameFacts = true;
 	
-	//taxa 
+	//taxa
 	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = false;
-	static final boolean doFacts = false;
+	static final boolean doRelTaxa = true;
+	static final boolean doFacts = true;
+	static final boolean doOccurences = true;
 	static final boolean doCommonNames = true;
-	static final boolean doOccurences = false;
-	
+
 	//etc.
-	static final boolean doMarker = false;
+	static final boolean doMarker = true;
+
+	
+// **************** SELECTED *********************
+
+//	static final boolean doUser = false;
+//	//authors
+//	static final boolean doAuthors = false;
+//	//references
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	//names
+//	static final boolean doTaxonNames = false;
+//	static final boolean doRelNames = false;
+//	static final boolean doNameStatus = false;
+//	static final boolean doTypes = false;
+//	static final boolean doNameFacts = false;
+//	
+//	//taxa 
+//	static final boolean doTaxa = false;
+//	static final boolean doRelTaxa = false;
+//	static final boolean doFacts = false;
+//	static final boolean doCommonNames = false;
+//	static final boolean doOccurences = false;
+//	
+//	//etc.
+//	static final boolean doMarker = false;
 	
 	
 	private boolean doInvoke(ICdmDataSource destination){
