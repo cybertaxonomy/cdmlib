@@ -96,6 +96,7 @@ public class TaraxacumActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = true;
+	static final boolean doCommonNames = true;
 
 	
 // **************** SELECTED *********************
@@ -148,6 +149,8 @@ public class TaraxacumActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		bmImportConfigurator.setDoCommonNames(doCommonNames);
+		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		
