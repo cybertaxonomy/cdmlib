@@ -257,7 +257,13 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				NomenclaturalStatusType statusType =  ncStatus.getType();
 				Language lang = Language.LATIN();
 				Representation repr = statusType.getRepresentation(lang);
-				suffix = repr.getAbbreviatedLabel();
+				if (repr != null){
+					suffix = repr.getAbbreviatedLabel();
+				}else{
+					String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+					logger.warn(message);
+					throw new IllegalStateException(message);
+				}
 			}else if(ncStatus.getRuleConsidered() != null && ! ncStatus.getRuleConsidered().equals("")){
 				suffix = ncStatus.getRuleConsidered();
 			}
