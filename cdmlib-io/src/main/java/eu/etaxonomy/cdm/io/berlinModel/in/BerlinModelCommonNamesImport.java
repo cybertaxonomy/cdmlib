@@ -97,7 +97,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
         		" PTaxon ON emCommonName.PTNameFk = PTaxon.PTNameFk AND emCommonName.PTRefFk = PTaxon.PTRefFk ON " + 
         		" emLanguageReference.ReferenceId = emCommonName.LanguageRefFk LEFT OUTER JOIN " +
         		" emLanguage AS languageCommonName ON emCommonName.LanguageFk = languageCommonName.LanguageId ON " + 
-        		" emLanguageRegion.RegionId = emCommonName.RegionFks ";
+        		" emLanguageRegion.RegionId = emCommonName.RegionFks " +
+			" WHERE emCommonName.CommonNameId IN (" + ID_LIST_TOKEN + ")";
 		return recordQuery;
 	}
 	
