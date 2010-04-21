@@ -72,6 +72,12 @@ app-import/src/main/java/eu/etaxonomy/cdm/io/CichorieaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeProtologueImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/ProtologueImport.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportBase.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportConfigurator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportState.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisReferenceImport.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisTransformer.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/globis/validation/GlobisReferenceImportValidator.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
 app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
 app-import/src/main/resources/arecaceae.rdf -text
