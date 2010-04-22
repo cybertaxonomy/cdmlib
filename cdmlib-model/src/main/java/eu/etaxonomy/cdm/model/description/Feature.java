@@ -569,7 +569,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidMaterialsMethods = UUID.fromString("1e87d9c3-0844-4a03-9686-773e2ccb3ab6");
 	private static final UUID uuidEtymology = UUID.fromString("dd653d48-355c-4aec-a4e7-724f6eb29f8d");
 	private static final UUID uuidDiagnosis = UUID.fromString("d43d8501-ceab-4caa-9e51-e87138528fac");
-	private static final UUID uuidProtolog = UUID.fromString("7f1fd111-fc52-49f0-9e75-d0097f576b2d");
+	private static final UUID uuidProtologue = UUID.fromString("7f1fd111-fc52-49f0-9e75-d0097f576b2d");
 	private static final UUID uuidCommonName = UUID.fromString("fc810911-51f0-4a46-ab97-6562fe263ae5");
 	private static final UUID uuidPhenology = UUID.fromString("a7786d3e-7c58-4141-8416-346d4c80c4a2");
 	private static final UUID uuidOccurrence = UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630");
@@ -763,8 +763,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * 
 	 * @see	#isSupportsTextData()
 	 */
-	public static final Feature PROTOLOG(){
-		return getTermByUuid(uuidProtolog);
+	public static final Feature PROTOLOGUE(){
+		return getTermByUuid(uuidProtologue);
 	}
 	
 	/**
