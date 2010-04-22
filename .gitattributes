@@ -2035,6 +2035,7 @@ cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TdwgArea.csv -text
 cdmlib-model/src/main/resources/terms/TextFormat.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
+cdmlib-model/src/main/resources/update/update_rXXX_rYYY.mysql.sql -text
 cdmlib-model/src/site/resources/images/uml/Agent.png -text
 cdmlib-model/src/site/resources/images/uml/Base_classes.png -text
 cdmlib-model/src/site/resources/images/uml/Defined_terms.png -text

@@ -102,6 +102,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "school",
     "organization",
     "inReference"
+//    ,"fullReference",
+//    "abbreviatedReference"
 })
 @XmlRootElement(name = "ReferenceBase")
 @Entity
@@ -224,6 +226,23 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
 	protected ReferenceBase inReference;
+    
+//    @XmlElement(name = "FullReference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+////    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    protected ReferenceBase fullReference;
+//    
+//    @XmlElement(name = "AbbreviatedReference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+////    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    protected ReferenceBase abbreviatedReference;
+    
     
 //********************************************************/    
     
@@ -521,6 +540,9 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setReferenceAbstract(String referenceAbstract) {
 		this.referenceAbstract = referenceAbstract;
 	}
+	
+	
+	
 
 	/**
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This 
@@ -528,7 +550,11 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	 * published in <i>this</i> reference following the rules of a
 	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalCode nomenclature code} and is therefore used for
 	 * nomenclatural citations. This flag will be set as soon as <i>this</i>
-	 * reference is used as a nomenclatural reference for any taxon name.
+	 * reference is used as a nomenclatural reference for any taxon name.<BR>
+	 * FIXME what happens if the only taxon name referencing this reference is not 
+	 * any longer using this reference as a nomenclatural reference. How does the 
+	 * reference get informed about the fact that it is not nomenclaturally relevant 
+	 * anymore? 
 	 */
 	public boolean isNomenclaturallyRelevant(){
 		return this.nomenclaturallyRelevant;
@@ -540,6 +566,53 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setNomenclaturallyRelevant(boolean nomenclaturallyRelevant){
 		this.nomenclaturallyRelevant = nomenclaturallyRelevant;
 	}
+	
+
+//	/**
+//	 * Returns the full reference that belongs to this abbreviated reference. If this 
+//	 * reference is not abbreviated the full reference should be <code>null</code>.<BR>
+//	 * A full reference should be added to a reference
+//	 * which represents the abbreviated form of a reference. The full reference can be used
+//	 * by publication tools to link to the unabbreviated and therefore more complete version
+//	 * of the reference.
+//	 * 
+//	 * @see #getAbbreviatedReference()
+//	 * @return the full reference
+//	 */
+//	public ReferenceBase getFullReference() {
+//		return fullReference;
+//	}
+//
+//	/**
+//	 * @see #getFullReference()
+//	 * @param fullReference
+//	 */
+//	public void setFullReference(ReferenceBase fullReference) {
+//		this.fullReference = fullReference;
+//	}
+//
+//	/**
+//	 * Returns the abbreviated reference that belongs to this full reference. If this 
+//	 * reference is not a full reference the abbeviated referece must be <code>null</code>.<BR>
+//	 * An abbreviated reference should be added to a reference which represents the long (full)
+//	 * form of a reference.
+//	 * In future this may become a set or handled differently as there are multiple 
+//	 * 
+//	 * @see #getFullReference()
+//	 * @return the full reference
+//	 */
+//	public ReferenceBase getAbbreviatedReference() {
+//		return abbreviatedReference;
+//	}
+//
+//	/**
+//	 * @see #getAbbreviatedReference()
+//	 * @param abbreviatedReference
+//	 * 
+//	 */
+//	public void setAbbreviatedReference(ReferenceBase abbreviatedReference) {
+//		this.abbreviatedReference = abbreviatedReference;
+//	}
 	
 //****************************************************  /	
 	
@@ -626,6 +699,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //	protected void setPages(String pages){
 //		this.pages = pages;
 //	}
+
 
 	/**
 	 * Returns a formatted string containing the entire reference citation,

@@ -29,8 +29,8 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.Language;
-
-import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * This class represents common or vernacular names for {@link Taxon taxa}.
@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CommonTaxonName", propOrder = {
     "name",
-    "language"
+    "language",
+    "area"
 })
 @XmlRootElement(name = "CommonTaxonName")
 @Entity
@@ -68,6 +69,12 @@ public class CommonTaxonName extends DescriptionElementBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded(depth = 2)
 	private Language language;
+	
+	@XmlElement(name = "Area")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private NamedArea area;
 
 	/**
 	 * Class constructor: creates a new empty common name instance.
@@ -136,4 +143,22 @@ public class CommonTaxonName extends DescriptionElementBase {
 		this.name = name;
 	}
 
+	/**
+	 * The area where the name is used
+	 * @return
+	 */
+	public NamedArea getArea() {
+		return area;
+	}
+
+	/**
+	 * @see #getArea()
+	 * @param area
+	 */
+	public void setArea(NamedArea area) {
+		this.area = area;
+	}
+
+	
+	
 }
