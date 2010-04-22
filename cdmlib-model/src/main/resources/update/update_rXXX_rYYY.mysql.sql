@@ -58,3 +58,13 @@ FROM Representation;
   -- defTerm <-> representation
 INSERT INTO DefinedTermBase_Representation (DefinedTermBase_id, representations_id) 
 VALUES (@defTermId,@repId);
+
+ -- insert new vocabulary NameFeature----
+ INSERT INTO TermVocabulary (DTYPE, id, uuid, protectedTitleCache, titleCache, termsourceuri) 
+ VALUES ('TermVocabulary',16, 'a7ca3eef-4092-49e1-beec-ed5096193e5e', FALSE, 'class eu.etaxonomy.cdm.model.common.TermVocabulary: a7ca3eef-4092-49e1-beec-ed5096193e5e', 'eu.etaxonomy.cdm.model.description.Feature')
+
+ -- change the vocabulary id for "Protologue" and "Additional Publication"
+ UPDATE DefinedTermBase SET vocabulary_id = 16 WHERE uuid = 'cb2eab09-6d9d-4e43-8ad2-873f23400930' or uuid = '7f1fd111-fc52-49f0-9e75-d0097f576b2d'  ;
+ 
+ -- change the text of Protolog to Protologue --
+  UPDATE Representation SET text = 'Protologue', label = 'Protologue' WHERE text like 'Protol%' 
