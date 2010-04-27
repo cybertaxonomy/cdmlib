@@ -122,6 +122,12 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	@XmlElement(name = "AppendedPhrase")
 	private String appendedPhrase;
 
+	
+	/**
+	 * If true the cache strategy should use only the names 
+	 * name cache instead of the names title cache.
+	 * This usually result in leaving out the authorship. 
+	 */
 	@XmlAttribute(name= "UseNameCache")
 	private boolean useNameCache = false;
     
