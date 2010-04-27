@@ -28,6 +28,7 @@ cdm-server/${basedir}
 cdm-server/${user.home}
 cdm-server/.classpath
 cdm-server/.project
+cdm-server/.settings
 cdm-server/dist
 cdm-server/pom.xml.01
 cdm-server/target
