@@ -123,7 +123,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@Size(max = 330)
 	protected String fullTitleCache;
 	
-	//if true titleCache will not be automatically generated/updated
+	//if true fullTitleCache will not be automatically generated/updated
 	@XmlElement(name = "ProtectedFullTitleCache")
 	@CacheUpdate(value ="fullTitleCache", noUpdate ="titleCache")
 	private boolean protectedFullTitleCache;
