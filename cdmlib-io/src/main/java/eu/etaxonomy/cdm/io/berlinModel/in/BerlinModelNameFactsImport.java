@@ -125,7 +125,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							Media media = getMedia(nameFact, config.getMediaUrl(), config.getMediaPath());
 							if (media.getRepresentations().size() > 0){
 								TaxonNameDescription description = TaxonNameDescription.NewInstance();
-								TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
+								TextData protolog = TextData.NewInstance(Feature.PROTOLOGUE());
 								protolog.addMedia(media);
 								protolog.addSource(String.valueOf(nameFactId), NAMESPACE, null, null, null, null);
 								description.addElement(protolog);
