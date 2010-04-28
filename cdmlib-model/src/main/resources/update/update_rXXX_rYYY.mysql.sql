@@ -4,19 +4,6 @@
 -- change symmetric to symmetrical to be compatible with PostGreSQL
  ALTER TABLE `DefinedTermBase` CHANGE `symmetric` `symmetrical` bit(1) NULL  ;
  
--- new attribute fullReference in ReferenceBase
--- ALTER TABLE `Reference` ADD `fullreference_id` INT(11) NULL COMMENT 'added by CDM schema version 2.4 updater' AFTER `school_id` ;
-  -- set foreign key
--- ALTER TABLE `Reference` ADD CONSTRAINT FKA81607BA22D949E FOREIGN KEY (fullreference_id) REFERENCES `Reference` ;
- 
--- new attribute abbreviatedReference in ReferenceBase 
--- ALTER TABLE `Reference` ADD `abbreviatedreference_id` INT(11) NULL COMMENT 'added by CDM schema version 2.4 updater' AFTER `fullreference_id` ;
---   -- set foreign key
--- ALTER TABLE `Reference` ADD CONSTRAINT FKA215077A21D842A FOREIGN KEY (abbreviatedreference_id) REFERENCES `Reference` ;
-
-
-
-
 -- ##################### TERMS ########################################################
 
 --absence term max orderindex
