@@ -107,7 +107,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 * 						 loaded terms with their <code>UUID</code> as key
 	 */
 	protected void secondPass(Class clazz, UUID vocabularyUuid, Map<UUID,DefinedTermBase> terms) {
-		logger.info("Initializing vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
+		logger.debug("Initializing vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
 		
 		TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
 		
