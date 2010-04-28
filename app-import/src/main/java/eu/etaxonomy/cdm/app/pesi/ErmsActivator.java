@@ -42,7 +42,7 @@ public class ErmsActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.PESI_ERMS();
+	static final Source berlinModelSource = FaunaEuropaeaSources.PESI_ERMS();
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_pesi_erms();
 	static final UUID treeUuid = UUID.fromString("8bd27d84-fd4f-4bfa-bde0-3e6b7311b334");
 	static final int sourceSecId = 500000;
