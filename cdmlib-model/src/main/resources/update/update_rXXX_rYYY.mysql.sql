@@ -2,7 +2,7 @@
 
 
 -- change symmetric to symmetrical to be compatible with PostGreSQL
--- ALTER TABLE `DefinedTermBase` CHANGE `symmetric` `symmetrical` bit(1) NULL  ;
+ ALTER TABLE `DefinedTermBase` CHANGE `symmetric` `symmetrical` bit(1) NULL  ;
  
 -- new attribute fullReference in ReferenceBase
 -- ALTER TABLE `Reference` ADD `fullreference_id` INT(11) NULL COMMENT 'added by CDM schema version 2.4 updater' AFTER `school_id` ;
