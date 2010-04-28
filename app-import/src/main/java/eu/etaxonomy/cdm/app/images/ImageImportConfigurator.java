@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class ImageImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(ImageImportConfigurator.class);
 
+
 	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
 		return new ImageImportConfigurator(source, destination, mediaUrlString, importerClass);		
 	}
@@ -44,6 +45,7 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	 * @param importerClass
 	 * @return
 	 */
+	 
 	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
 		return new ImageImportConfigurator(source, destination, null, importerClass);		
 	}
