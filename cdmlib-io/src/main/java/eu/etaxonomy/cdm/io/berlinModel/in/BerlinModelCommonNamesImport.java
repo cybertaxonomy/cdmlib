@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -192,6 +193,20 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
 				commonTaxonName.addSource(source);
 				
+				//MisNameRef
+				if (misNameRefFk != null){
+					Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
+					taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
+					TaxonDescription misNameDesc = getDescription(taxon);
+					try {
+						CommonTaxonName misAppliedCommonName = CdmBase.deproxy(commonTaxonName.clone(), CommonTaxonName.class);
+						misNameDesc.addElement(misAppliedCommonName);
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
 				//reference extensions
 				if (reference != null){
 					if (CdmUtils.isNotEmpty(refLanguage)){
@@ -224,6 +239,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
+		} catch (ClassCastException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	
 			
@@ -231,6 +249,38 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		getTaxonService().save(taxaToSave);
 		return success;
 
+	}
+
+
+
+	/**
+	 * @param biblioRefMap
+	 * @param nomRefMap
+	 * @param misNameRefFk
+	 * @param taxon
+	 */
+	private boolean isFirstMisappliedName = true;
+	private Taxon getMisappliedName(Map<String, ReferenceBase> biblioRefMap,
+			Map<String, ReferenceBase> nomRefMap, Object misNameRefFk,
+			Taxon taxon) {
+		Taxon misappliedTaxon = null;
+		ReferenceBase misNameRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
+		misappliedTaxon = Taxon.NewInstance(taxon.getName(), misNameRef);
+		Set<String> includeProperty = new HashSet();
+		//TODO or findMatching
+		try {
+			List<TaxonBase> misappliedList = getTaxonService().list(misappliedTaxon, includeProperty, null, null, null, null);
+			if (misappliedList.size() > 0){
+				misappliedTaxon = CdmBase.deproxy(misappliedList.get(0), Taxon.class);
+			}
+		} catch (ClassCastException e) {
+			logger.error(e.getMessage());
+			if (isFirstMisappliedName){
+				e.printStackTrace();
+				isFirstMisappliedName = false;
+			}
+		}
+		return misappliedTaxon;
 	}
 
 
@@ -304,6 +354,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	}
 
 	/**
+	 * Returns the first non-image gallery description. Creates a new one if no description exists.
 	 * @param taxon
 	 * @return
 	 */
