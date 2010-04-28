@@ -1750,7 +1750,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MediaKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Modifier.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MultiAccessKey.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NameFeature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
