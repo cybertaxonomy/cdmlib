@@ -33,16 +33,12 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.IReferenceBase;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -59,6 +55,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	
 	final static boolean MAKE_EMPTY = true;
 	final static boolean MAKE_NOT_EMPTY = false;
+	
+	private boolean authorIsAlwaysTeam = true;
 	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	
@@ -1071,7 +1069,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			return null;
 		}else if ((authorString = authorString.trim()).length() == 0){
 			return null;
-		}else if (! teamSplitterPattern.matcher(authorString).find()){
+		}else if (! teamSplitterPattern.matcher(authorString).find() && ! authorIsAlwaysTeam){
 			//1 Person
 			Person result = Person.NewInstance();
 			result.setNomenclaturalTitle(authorString);
