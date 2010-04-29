@@ -160,6 +160,13 @@ public class BotanicNameCacheStrategyTest {
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
 		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex " + exBasAuthorString + ")" +  " " + authorString + " ex " + exAuthorString  , strategy.getTitleCache(subSpeciesName));
 		
+		subSpeciesName.setExCombinationAuthorTeam(null);
+		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex " + exBasAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
+				
+		subSpeciesName.setExBasionymAuthorTeam(null);
+		assertEquals(subSpeciesNameString + " (" + basAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
+			
+		
 		//Autonym
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorTeam(author);
@@ -169,7 +176,10 @@ public class BotanicNameCacheStrategyTest {
 		//changed 2009-09-04
 		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
-	}
+		
+		
+		
+		}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
