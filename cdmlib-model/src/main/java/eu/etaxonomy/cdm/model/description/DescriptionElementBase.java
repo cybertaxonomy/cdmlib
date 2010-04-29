@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -135,14 +134,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded
     private DescriptionBase inDescription;
-	
-	//TODO can this be handled together with ReferencedEntityBase.originalNameString??
-//	@XmlElement(name = "nameUsedInReference")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@Cascade({CascadeType.SAVE_UPDATE})
-//	private TaxonNameBase nameUsedInReference;
 	
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
