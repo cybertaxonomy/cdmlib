@@ -195,15 +195,15 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				//MisNameRef
 				if (misNameRefFk != null){
-					Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
-					taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
-					TaxonDescription misNameDesc = getDescription(taxon);
-					try {
-						CommonTaxonName misAppliedCommonName = CdmBase.deproxy(commonTaxonName.clone(), CommonTaxonName.class);
-						misNameDesc.addElement(misAppliedCommonName);
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
+//					Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
+//					taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
+//					TaxonDescription misNameDesc = getDescription(taxon);
+//					try {
+//						CommonTaxonName misAppliedCommonName = CdmBase.deproxy(commonTaxonName.clone(), CommonTaxonName.class);
+//						misNameDesc.addElement(misAppliedCommonName);
+//					} catch (CloneNotSupportedException e) {
+//						e.printStackTrace();
+//					}
 				}
 				
 				
