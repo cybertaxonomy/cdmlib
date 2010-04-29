@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class CommonTaxonName extends DescriptionElementBase {
+public class CommonTaxonName extends DescriptionElementBase implements Cloneable {
 	private static final long serialVersionUID = 2643808051976643339L;
 	private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 	
@@ -159,6 +159,14 @@ public class CommonTaxonName extends DescriptionElementBase {
 		this.area = area;
 	}
 
+
+//****************** clone *****************************************/
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		//no changes to name, language, area
+		return super.clone();
+	}	
 	
 	
 }
