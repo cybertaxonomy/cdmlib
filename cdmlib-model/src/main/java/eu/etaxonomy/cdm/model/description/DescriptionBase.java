@@ -260,11 +260,16 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * Adds an existing {@link DescriptionElementBase elementary description} to the set of
 	 * {@link #getElements() elementary description data} which constitute <i>this</i>
 	 * description as a whole.
+	 * If the elementary descriptions already belongs to a description it is first removed from
+	 * the old description.
 	 * 
 	 * @param element	the elementary description to be added to <i>this</i> description
 	 * @see    	   		#getDescriptionSources()
 	 */
 	public void addElement(DescriptionElementBase element) {
+//		if (element.getInDescription() != null){
+//			element.getInDescription().removeElement(element);
+//		}
 		element.setInDescription(this);
 		this.descriptionElements.add(element);
 	}
