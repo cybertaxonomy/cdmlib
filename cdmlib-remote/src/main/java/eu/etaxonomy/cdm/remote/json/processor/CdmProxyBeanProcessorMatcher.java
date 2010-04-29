@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
@@ -64,6 +65,9 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 		}
 		if (Media.class.isAssignableFrom(target)) {
 			return DEFAULT.getMatch(Media.class, set);
+		}
+		if (ReferenceBase.class.isAssignableFrom(target)) {
+			return DEFAULT.getMatch(ReferenceBase.class, set);
 		}
 		return DEFAULT.getMatch(target, set);
 	}

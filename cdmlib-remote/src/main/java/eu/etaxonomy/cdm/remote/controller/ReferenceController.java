@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 
 @Controller
-@RequestMapping(value = {"/reference/*","/reference/*/annotation", "/reference/*/nomenclaturalCitation"})
+@RequestMapping(value = {"/reference/*","/reference/*/annotation", "/reference/*/authorTeam", "/reference/*/nomenclaturalCitation"})
 public class ReferenceController extends AnnotatableController<ReferenceBase, IReferenceService>
 {
 	
@@ -48,12 +48,18 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 			"inProceedings",
 	});
 	
+	private static final List<String> CITATION_WITH_AUTHORTEAM_INIT_STRATEGY = Arrays.asList(new String []{
+			"authorTeam.$",
+			"authorTeam.titleCache",
+	});
+	
 	public ReferenceController(){
 		super();
 		setUuidParameterPattern("^/reference/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{
 				"$",
-				"authorTeam.$"}));
+				"authorTeam.$" // TODO obsolete??
+				}));
 	}
 	
 	/* (non-Javadoc)
@@ -90,6 +96,19 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 		} else {
 			response.sendError(400, "The supplied reference-uuid must specify a INomenclaturalReference.");
 		}
+		return mv;
+	}
+	
+	@RequestMapping(
+			value = {"/reference/*/authorTeam"},
+			method = RequestMethod.GET)
+		public ModelAndView doGetAuthorTeam(
+				HttpServletRequest request, 
+				HttpServletResponse response) {
+		ModelAndView mv = new ModelAndView();
+		UUID refUuid = readValueUuid(request, null);
+		ReferenceBase rb = service.load(refUuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
+		mv.addObject(rb.getAuthorTeam());
 		return mv;
 	}
 

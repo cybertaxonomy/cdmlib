@@ -54,10 +54,10 @@ public class ClassificationListController extends BaseListController<TaxonomicTr
 		return Arrays.asList(new String[]{
 			"taxon.sec", 
 			"taxon.name.taggedName",
-			"taxon.name.combinationAuthorTeam.*",
-			"taxon.name.exCombinationAuthorTeam.*",
-			"taxon.name.basionymAuthorTeam.*",
-			"taxon.name.exBasionymAuthorTeam.*",
+//			"taxon.name.combinationAuthorTeam.*",
+//			"taxon.name.exCombinationAuthorTeam.*",
+//			"taxon.name.basionymAuthorTeam.*",
+//			"taxon.name.exBasionymAuthorTeam.*",
 			"taxon.name.titleCache",
 			"taxonomicTree"
 	});}

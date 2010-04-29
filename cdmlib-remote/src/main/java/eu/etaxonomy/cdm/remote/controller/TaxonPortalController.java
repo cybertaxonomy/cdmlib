@@ -117,10 +117,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.rank.representations",
 			"name.status.type.representations",
 			
-			"name.combinationAuthorTeam.titleCache",
-			"name.basionymAuthorTeam.titleCache",
-			"name.exCombinationAuthorTeam.titleCache",
-			"name.exBasionymAuthorTeam.titleCache",
+//			"name.combinationAuthorTeam.titleCache",
+//			"name.basionymAuthorTeam.titleCache",
+//			"name.exCombinationAuthorTeam.titleCache",
+//			"name.exBasionymAuthorTeam.titleCache",
 			
 			// taxon descriptions
 			"descriptions.elements.$",
@@ -155,10 +155,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.rank.representations",
 			"name.status.type.representations",
 			
-			"name.combinationAuthorTeam.titleCache",
-			"name.basionymAuthorTeam.titleCache",
-			"name.exCombinationAuthorTeam.titleCache",
-			"name.exBasionymAuthorTeam.titleCache",
+//			"name.combinationAuthorTeam.titleCache",
+//			"name.basionymAuthorTeam.titleCache",
+//			"name.exCombinationAuthorTeam.titleCache",
+//			"name.exBasionymAuthorTeam.titleCache",
 			});
 	
 	private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
@@ -166,7 +166,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.$",
 			"synonymRelations.synonym.$",
 			"synonymRelations.synonym.name.taggedName",
-			"synonymRelations.synonym.name.nomenclaturalReference.inBook.authorTeam.titleCache",
+//			"synonymRelations.synonym.name.nomenclaturalReference.inBook.authorTeam.titleCache",
 			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",
 			"synonymRelations.synonym.name.nomenclaturalReference.inProceedings",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
@@ -189,7 +189,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private static final List<String> TAXONRELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
 			"$",
 			"type.inverseRepresentations",
-			"fromTaxon.sec.authorTeam",
+//			"fromTaxon.sec.authorTeam",
 			"fromTaxon.name.taggedName"
 	});
 	
@@ -204,10 +204,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"$",
 			"elements.$",
 			"elements.sources.citation.",
-			"elements.sources.citation.authorTeam.$",
+//			"elements.sources.citation.authorTeam.$",		
+//			"elements.sources.citation.authorTeam.titleCache",
+//			"elements.sources.citation.authorTeam.nomenclaturalTitleCache",
 			"elements.sources.nameUsedInSource.titleCache",
 			"elements.sources.nameUsedInSource.originalNameString",
-			"elements.sources.citation.authorTeam.titleCache",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
 			"elements.media.title",
@@ -233,7 +234,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			//"$",
 			"typeSpecimen.$",
 			"typeStatus.representations",
-			"citation.authorTeam",			
+//			"citation.authorTeam",			
 			"typeName.taggedName",
 	});
 	

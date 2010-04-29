@@ -191,6 +191,9 @@
 						<property name="replaceDescription" value="true" />
 					</bean>
 				</entry>
+			  <entry key="eu.etaxonomy.cdm.model.reference.ReferenceBase">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.ReferenceBaseBeanProcessor"/>
+        </entry>
 			</map>
 		</property>
 		<property name="jsonPropertyFilters">

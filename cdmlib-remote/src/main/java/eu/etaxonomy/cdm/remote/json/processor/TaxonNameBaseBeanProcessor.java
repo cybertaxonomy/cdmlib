@@ -53,7 +53,11 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 				// from NameRelationshipBeanProcessor.secondStep() in which 
 				// the transient field fromName is added to the serialization
 				"relationsFromThisName",
-				"relationsToThisName"
+				"relationsToThisName",
+				"combinationAuthorTeam",
+				"basionymAuthorTeam",
+				"exCombinationAuthorTeam",
+				"exBasionymAuthorTeam"
 		});
 	}
 
@@ -90,7 +94,7 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 //		}
 		taxonNameBase = HibernateProxyHelper.deproxy(taxonNameBase, TaxonNameBase.class);
 		
-			//FIXME rude hack:
+		//FIXME rude hack:
 		if(!(taxonNameBase instanceof NonViralName)){
 			return tags;
 		}
