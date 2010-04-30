@@ -166,7 +166,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.$",
 			"synonymRelations.synonym.$",
 			"synonymRelations.synonym.name.taggedName",
-//			"synonymRelations.synonym.name.nomenclaturalReference.inBook.authorTeam.titleCache",
+			"synonymRelations.synonym.name.nomenclaturalReference.inBook",
 			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",
 			"synonymRelations.synonym.name.nomenclaturalReference.inProceedings",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
@@ -189,7 +189,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private static final List<String> TAXONRELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
 			"$",
 			"type.inverseRepresentations",
-//			"fromTaxon.sec.authorTeam",
+			"fromTaxon.sec",
 			"fromTaxon.name.taggedName"
 	});
 	
@@ -234,7 +234,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			//"$",
 			"typeSpecimen.$",
 			"typeStatus.representations",
-//			"citation.authorTeam",			
+			"citation",			
 			"typeName.taggedName",
 	});
 	
@@ -559,8 +559,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	public List<TaxonDescription> doGetDescriptions(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetDescriptions()" + request.getServletPath());
 		Taxon t = getCdmBase(request, response, null, Taxon.class);
-		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, 
-			TAXONDESCRIPTION_INIT_STRATEGY);
+		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 		return p.getRecords();
 	}
 

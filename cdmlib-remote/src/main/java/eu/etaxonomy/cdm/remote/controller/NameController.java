@@ -14,22 +14,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonName;
+import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * TODO write controller documentation
@@ -39,7 +45,7 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonName;
  */
 
 @Controller
-@RequestMapping(value = {"/name/*", "/name/*/*", "/name/*/annotation", "/name/*/nameCache"})
+@RequestMapping(value = {"/name/*", "/name/{uuid}"})
 public class NameController extends AnnotatableController<TaxonNameBase, INameService>
 {
 	
@@ -68,6 +74,11 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 		this.service = service;
 	}
 	
+	@InitBinder
+    public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+	}
+	
 	/**
      * Get the list of {@link TypeDesignationBase}s of the 
 	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
@@ -81,7 +92,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/name/*/typeDesignations"},
+			value = {"*/typeDesignations"},
 			method = RequestMethod.GET)
 	public List<TypeDesignationBase> doGetNameDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		TaxonNameBase tnb = getCdmBase(request, response, null, TaxonNameBase.class);
@@ -90,7 +101,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	}
 	
 	@RequestMapping(
-			value = {"/name/*/nameCache"},
+			value = {"*/nameCache"},
 			method = RequestMethod.GET)
 	public List<String> doGetNameCache(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		TaxonNameBase tnb = getCdmBase(request, response, NAME_CACHE_INIT_STRATEGY, TaxonNameBase.class);

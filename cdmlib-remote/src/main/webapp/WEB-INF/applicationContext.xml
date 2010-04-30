@@ -47,7 +47,6 @@
 	    <property name="cacheManager" ref="cacheManager" />
 	    <property name="serializableFactory" ref="serializableFactory"/>
 	</bean>
-     -->
-	
+     -->	
 
 </beans>

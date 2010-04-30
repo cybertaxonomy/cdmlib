@@ -40,6 +40,20 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 	
 	public static final Logger logger = Logger.getLogger(AbstractCdmBeanProcessor.class);
 	
+	boolean includeToOneRelations = true;
+	
+	boolean includeToManyRelations = true;
+	
+	
+	public void setIncludeToOneRelations(boolean includeToOneRelations) {
+		this.includeToOneRelations = includeToOneRelations;
+	}
+
+	public void setIncludeToManyRelations(boolean includeToManyRelations) {
+		this.includeToManyRelations = includeToManyRelations;
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
 	 */
@@ -83,7 +97,15 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 	            if(logger.isDebugEnabled()){
 	            	logger.debug("processing " + key + " of " + bean.getClass());
 	            }
-	            if(Collection.class.isAssignableFrom(type) || Object.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)){
+	            if(CdmBase.class.isAssignableFrom(type)){
+	            	if(includeToOneRelations){
+	            		json.element(key, value, jsonConfig);
+	            	}
+	            } else if(Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)){
+	            	if(includeToManyRelations){
+	            		json.element(key, value, jsonConfig);
+	            	}
+	            }  else if(Object.class.isAssignableFrom(type)){
 	            	json.element(key, value, jsonConfig);
 	            } else {
 	            	json.element(key, value);

@@ -59,8 +59,10 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	}
 	*/
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.GET)
 	public T doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		logger.info("doGet() " + request.getServletPath());
 		T obj = (T) getCdmBase(request, response, initializationStrategy, CdmBase.class);
 		return obj;
 	}

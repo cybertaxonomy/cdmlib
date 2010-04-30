@@ -175,7 +175,13 @@
 		    <artifactId>p6spy</artifactId>
 		    <version>1.3</version>
 		</dependency>
-
+	    <!--  OAI-PMH related dependencies  -->
+		<dependency>
+		   <groupId>org.springmodules</groupId>
+		   <artifactId>spring-modules-cache</artifactId>
+		   <version>0.7</version>
+		</dependency>
+		<!--  END OF ......... OAI-PMH ... -->
 	</dependencies>
 	<build>
 		<!-- Configure the webapp -->

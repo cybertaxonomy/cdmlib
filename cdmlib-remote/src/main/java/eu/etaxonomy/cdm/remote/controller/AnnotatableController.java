@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -41,21 +42,12 @@ public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE
 			"$"
 	});
 
-	@RequestMapping(value = "/*/*/annotation", method = RequestMethod.GET)
-	public Pager<Annotation> getAnnotations(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		T annotatableEntity;
-		try {
-			UUID uuid = readValueUuid(request, null);
-			Assert.notNull(uuid, HttpStatusMessage.UUID_NOT_FOUND.toString());
-			
-			annotatableEntity = service.find(uuid);
-			Assert.notNull(annotatableEntity, HttpStatusMessage.UUID_NOT_FOUND.toString());
-		} catch (IllegalArgumentException iae) {
-			HttpStatusMessage.fromString(iae.getMessage()).send(response);
-			return null;
-		}
-		
+	@RequestMapping(value = "{uuid}/annotation", method = RequestMethod.GET)
+	public Pager<Annotation> getAnnotations(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletResponse response) throws IOException {
+		logger.info("getAnnotations()");
+		T annotatableEntity = service.find(uuid);
 		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
