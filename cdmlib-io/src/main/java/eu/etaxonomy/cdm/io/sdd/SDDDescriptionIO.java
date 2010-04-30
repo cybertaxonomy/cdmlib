@@ -115,6 +115,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
 	private Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
 	private Map<String,StateData> stateDatas = new HashMap<String,StateData>();
+	private Map<String,State> states = new HashMap<String,State>();
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
@@ -126,6 +127,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
 
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
+	private Set<TermVocabulary<Modifier>> termVocabularyStates = new HashSet<TermVocabulary<Modifier>>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
 	ReferenceFactory refFactory = ReferenceFactory.newInstance();
@@ -147,7 +149,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Rights copyright = null;
 
 	private int taxonNamesCount = 0; //XIM ajout
-	
 	
 	public SDDDescriptionIO(){
 		super();
@@ -425,7 +426,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 								this.associateImageWithCdmBase(ref,descriptionSource);
 							}
 						} else {
-							//System.out.println(parent.getName());
 							this.associateImageWithCdmBase(ref,ve);
 						}
 					}
@@ -513,13 +513,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			sec.setAuthorTeam(team);
 			sourceReference.setAuthorTeam(team);
 		}
-		/*XIM
-		if (editors != null) {
-			Person ed = Person.NewInstance();
-			for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
-				ed = editor.next();
-			}
-		}*/
 
 		if (copyright != null) {
 			sourceReference.addRights(copyright);
@@ -539,7 +532,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
 			String ref = refCD.next();
 			TaxonDescription td = taxonDescriptions.get(ref);
-			//XIM BUG ONAFILE td.addDescriptionSource(sec);
 			if (citations.containsKey(ref)) {
 				IArticle publication = (IArticle) publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
@@ -553,12 +545,38 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");
+		
+		
+//		for (Iterator<TermVocabulary<Modifier>> k = termVocabularyStates.iterator() ; k.hasNext() ;){
+//			TermVocabulary<Modifier> termVocabulary = k.next();
+//			getVocabularyService().save(termVocabulary); //XIM
+//		}
+		
 
 		//sddConfig.setSourceReference(sourceReference);
 
 		//saving of all imported data into the CDM db
 		ITermService termService = getTermService();
 		
+//		Modifier odif = new Modifier("zoub","zab","zib");
+//		Modifier odif2 = new Modifier("zouba","zaba","ziba");
+//		modifiers.put("yy", odif);
+//		State st = State.NewInstance();
+//		StateData stat = StateData.NewInstance();
+		//StateData stat2 = StateData.NewInstance();
+		//termService.save(stat2);
+//		stat2.setState(st);
+//		stat.setState(st);
+//		stateDatas.put("yy", stat);
+//		stateDatas.put("yy", stat2);
+//		stat.addModifier(odif);
+//		stat.addModifier(odif2);
+//		stat2.addModifier(odif);
+		
+		for (Iterator<Modifier> k = modifiers.values().iterator() ; k.hasNext() ;){
+			Modifier modifier = k.next();
+			termService.save(modifier);
+		}
 		
 		//termService.save(descriptiveConceptMarkerType);
 		if (descriptiveConcepts != null) {
@@ -570,9 +588,9 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			}
 		}
 		
-		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
-			StateData sd = k.next();
-			termService.save(sd.getState()); 
+		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
+			State state = k.next();
+			termService.save(state);
 		}
 		
 		/*Marker markerd = Marker.NewInstance();
@@ -586,11 +604,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		fiture.addRecommendedModifierEnumeration(termVocabularyState);
 		termService.save(modif);
 		termService.save(fiture);*/
-		
-		for (Iterator<Modifier> k = modifiers.values().iterator() ; k.hasNext() ;){
-			Modifier modifier = k.next();
-			termService.save(modifier); 
-		}
 		
 		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
 			Feature feature = k.next();
@@ -610,7 +623,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			marker.setMarkerType(geographicAreaMarkerType);
 			NamedArea area = k.next();
 			area.addMarker(marker);
-			//XIMgetTermService().save(area);
+			//getTermService().save(area);
 			termService.save(area);
 		}		
 		
@@ -626,7 +639,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			StatisticalMeasure sm = k.next();
 			termService.save(sm); 
 		}
-
 		for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
 			AnnotationType annotationType = at.next();
 			termService.save(annotationType); 
@@ -643,12 +655,10 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			FeatureTree tree = k.next();
 			getFeatureTreeService().save(tree);
 		}
-		
 		for (Iterator<TaxonomicTree> k = taxonomicTrees.iterator() ; k.hasNext() ;) {
 			TaxonomicTree tree = k.next();
 			getTaxonTreeService().save(tree);
 		}
-		
 		for (Iterator<Specimen> k = specimens.values().iterator() ; k.hasNext() ;) {
 			Specimen specimen = k.next();
 			getOccurrenceService().save(specimen);
@@ -874,14 +884,14 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 						if ((++k % modCount) == 0){ logger.info("StateDefinitions handled: " + (k-1));}
 
-						String idSD = elStateDefinition.getAttributeValue("id");
+						String idS = elStateDefinition.getAttributeValue("id");
 						State state = State.NewInstance();
-						importRepresentation(elStateDefinition, sddNamespace, state, idSD, sddConfig);
+						importRepresentation(elStateDefinition, sddNamespace, state, idS, sddConfig);
 
-						StateData stateData = StateData.NewInstance();
-						stateData.setState(state);
+						//StateData stateData = StateData.NewInstance();
+						//stateData.setState(state);
 						termVocabularyState.addTerm(state);
-						stateDatas.put(idSD,stateData);
+						states.put(idS,state);
 					}
 					categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
 					features.put(idCC, categoricalCharacter);
@@ -1008,7 +1018,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		// <CodedDescriptions>
 		logger.info("start CodedDescriptions ...");
 		Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
-
 		// <CodedDescription id="D101">
 
 		if (elCodedDescriptions != null) {
@@ -1042,7 +1051,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 						NonViralName taxonNameBase = taxonNameBases.get(ref);
 						taxon = Taxon.NewInstance(taxonNameBase, sec);
 					}
-					else {//XIM c quoi cette m### ?
+					else {//XIM what is it ?
 						NonViralName tnb = NonViralName.NewInstance(null);
 						String id = new String(""+taxonNamesCount);
 						IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
@@ -1066,7 +1075,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 					// <SummaryData>
 					Element elSummaryData = elCodedDescription.getChild("SummaryData",sddNamespace);
-
 					if (elSummaryData != null) {
 
 						// <Categorical ref="c4">
@@ -1083,16 +1091,28 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							// <State ref="s3"/>
 							List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
 							int l = 0;
+							
 							//for each State
 							for (Element elState : elStates){
 								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
 								ref = elState.getAttributeValue("ref");
-								StateData stateData = stateDatas.get(ref);
-								categoricalData.addState(stateData);
+								State state = states.get(ref);
+								if (state!=null) {
+									StateData stateData = StateData.NewInstance();
+									stateData.setState(state);
+									List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
+									for (Element elModifier : elModifiers){
+										ref = elModifier.getAttributeValue("ref");
+										Modifier modifier = modifiers.get(ref);
+										if (modifier!=null) {
+											stateData.addModifier(modifier);
+										}
+									}
+									categoricalData.addState(stateData);
+								}
+								taxonDescription.addElement(categoricalData);
 							}
-							taxonDescription.addElement(categoricalData);
 						}
-
 						// <Quantitative ref="c2">
 						List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
 						k = 0;
@@ -1193,14 +1213,13 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					
 					taxonDescription.setDescriptiveSystem(featureSet);
 
-					taxonDescriptions.put(idCD, taxonDescription);//XIM PB ici
+					taxonDescriptions.put(idCD, taxonDescription);//FIXME
 
 				} catch (Exception e) {
 					//FIXME
 					logger.warn("Import of CodedDescription " + j + " failed.");
 					success = false;
 				}
-
 				if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + j);}
 
 			}
@@ -1325,7 +1344,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		}
 	}
 
-	// imports media objects such as images //XIM media obj ˆ vŽrifier
+	// imports media objects such as images //FIXME check mediaobj
 	protected void importMediaObjects(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
 		// <MediaObjects>
 		logger.info("start MediaObjects ...");
@@ -1373,7 +1392,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							File f = new File(sns);
 							File parent = f.getParentFile();
 							String fi = href;
-							//XIMString fi = parent.toString() + File.separator + href; enlever le file:/ ou truc du genre
+							//String fi = parent.toString() + File.separator + href; //TODO erase file:/
 							File file = new File(fi);
 							imageMetaData.readMetaData(file.toURI(), 0);
 							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
@@ -1482,6 +1501,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 								String idmod = elModifier.getAttributeValue("id");
 								importRepresentation(elModifier, sddNamespace, modif, idmod, sddConfig);
 								termVocabularyState.addTerm(modif);
+								//termVocabularyStates.add(termVocabularyState);
 								getVocabularyService().save(termVocabularyState);//XIM
 								modifiers.put(idmod, modif);
 							}
@@ -1512,7 +1532,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				try {
 					Element elRepresentation = elCharacterTree.getChild("Representation",sddNamespace);
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
-					//XIMElement elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);
+					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
 					FeatureTree feattree =  FeatureTree.NewInstance();
 					importRepresentation(elCharacterTree, sddNamespace, feattree, "", sddConfig);
