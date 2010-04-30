@@ -2554,12 +2554,10 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/JsonConfigFactoryBean.j
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/AbstractCdmBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CGLibEnhancedBeanProcessorMatcher.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CalendarJSONValueProcessor.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmBeanProcessingRegistry.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmProxyBeanProcessorMatcher.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/ClassJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/DateTimeJSONValueProcessor.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/FeatureNodeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/HibernateJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/HibernateJSONValueProcessorMatcher.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/HibernateProxyBeanProcessor.java -text
@@ -2577,6 +2575,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonomyNodeB
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TermBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TextDataBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/UUIDJSONValueProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/util/CardinalityPropertyFilter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/util/InitializedHibernatePropertyFilter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/l10n/LocaleContext.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/AuthorityController.java -text

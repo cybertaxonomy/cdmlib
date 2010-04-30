@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -71,16 +72,7 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 		if (ReferenceBase.class.isAssignableFrom(target)) {
 			return DEFAULT.getMatch(ReferenceBase.class, set);
 		}
-		if (FeatureNode.class.isAssignableFrom(target)) {
-			return DEFAULT.getMatch(FeatureNodeBeanProcessor.class, set);
-		}
-		/* =====================================================
-		 *  !!! CdmBase must be the last one in this list !!!!
-		 * ===================================================== */
-		
-		if (CdmBase.class.isAssignableFrom(target)) {
-			return DEFAULT.getMatch(CdmBase.class, set);
-		}
+
 		return DEFAULT.getMatch(target, set);
 	}
 	

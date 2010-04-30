@@ -50,7 +50,7 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	private boolean ignoreJPATransient = true;
 	
 	private Map<Class,JsonBeanProcessor> jsonBeanProcessors = new HashMap<Class,JsonBeanProcessor>();
-	private List<PropertyFilter> jsonPropertyFilters = new ArrayList<PropertyFilter>();
+	private PropertyFilter jsonPropertyFilter = null;
 	private Map<Class,JsonValueProcessor> jsonValueProcessors = new HashMap<Class,JsonValueProcessor>();
 	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
 	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
@@ -105,8 +105,8 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		this.jsonBeanProcessors = jsonBeanProcessors;
 	}
 
-	public void setJsonPropertyFilters(List<PropertyFilter> jsonPropertyFilters) {
-		this.jsonPropertyFilters = jsonPropertyFilters;
+	public void setJsonPropertyFilter(PropertyFilter jsonPropertyFilter) {
+		this.jsonPropertyFilter = jsonPropertyFilter;
 	}
 
 	public void setJsonBeanProcessorMatcher(JsonBeanProcessorMatcher jsonBeanProcessorMatcher) {
@@ -144,13 +144,13 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		
 		jsonConfig.setIgnoreDefaultExcludes(ignoreDefaultExcludes);
 		
+		jsonConfig.setJsonPropertyFilter(jsonPropertyFilter);
+
 		for(Class clazz : jsonBeanProcessors.keySet()) {
 			jsonConfig.registerJsonBeanProcessor(clazz, jsonBeanProcessors.get(clazz));
 		}
 		
-		for(PropertyFilter propertyFilter : jsonPropertyFilters) {
-		    jsonConfig.setJsonPropertyFilter(propertyFilter);
-		}
+		
 
 		
 		for(Class clazz : jsonValueProcessors.keySet()) {

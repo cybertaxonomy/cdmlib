@@ -20,15 +20,6 @@
 				<entry key="org.hibernate.proxy.HibernateProxy">
 					<bean class="eu.etaxonomy.cdm.remote.json.processor.HibernateProxyBeanProcessor" />
 				</entry>
-				<entry key="eu.etaxonomy.cdm.model.common.CdmBase">
-                    <bean class="eu.etaxonomy.cdm.remote.json.processor.CdmBaseBeanProcessor">
-                        <property name="includeToOneRelations" value="false" />
-                        <property name="includeToManyRelations" value="false" />
-                    </bean>
-                </entry>
-                <entry key="eu.etaxonomy.cdm.model.description.FeatureNode">
-                    <bean class="eu.etaxonomy.cdm.remote.json.processor.FeatureNodeBeanProcessor" />
-                </entry>
 				<entry key="eu.etaxonomy.cdm.model.common.TermBase">
 					<bean class="eu.etaxonomy.cdm.remote.json.processor.TermBaseBeanProcessor" />
 				</entry>
@@ -43,12 +34,26 @@
                 </entry>
 			</map>
 		</property>
-		<property name="jsonPropertyFilters">
-			<list>
-				<bean
-					class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
-			</list>
-		</property>
+		<property name="jsonPropertyFilter">
+            <bean class="net.sf.json.filters.OrPropertyFilter">
+              <constructor-arg>
+                  <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+              </constructor-arg>
+              <constructor-arg>
+                  <bean class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
+                      <property name="includeToOneRelations" value="false" />
+                      <property name="includeToManyRelations" value="false" />
+                      <property name="exceptions">
+                        <set>
+                            <value>FeatureTree.root</value>
+                            <value>FeatureNode.children</value>
+                            <value>FeatureNode.feature</value>
+                        </set>
+                      </property>
+                    </bean>
+              </constructor-arg>
+            </bean>
+        </property>
 		<property name="jsonValueProcessors">
 			<map>
 				<entry key="org.hibernate.proxy.HibernateProxy">
@@ -107,12 +112,9 @@
 				</entry>
 			</map>
 		</property>
-		<property name="jsonPropertyFilters">
-			<list>
-				<bean
-					class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
-			</list>
-		</property>
+		<property name="jsonPropertyFilter">
+            <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+        </property>
 		<property name="jsonValueProcessors">
 			<map>
 				<entry key="org.hibernate.proxy.HibernateProxy">
@@ -204,12 +206,9 @@
               </entry>
 			</map>
 		</property>
-		<property name="jsonPropertyFilters">
-			<list>
-				<bean
-					class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
-			</list>
-		</property>
+        <property name="jsonPropertyFilter">
+            <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+        </property>
 		<property name="jsonValueProcessors">
 			<map>
 				<entry key="org.hibernate.proxy.HibernateProxy">
