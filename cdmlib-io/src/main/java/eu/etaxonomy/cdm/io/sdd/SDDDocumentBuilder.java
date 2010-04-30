@@ -286,11 +286,13 @@ public class SDDDocumentBuilder {
 	public void buildNaturalLanguageDescription(ElementImpl dataset) {
 		List<TextData> listTextData = null;
 		Set<TaxonDescription> descriptions = null;
+		TaxonDescription description = null;
 		FeatureTree featureTree = null;
 		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
 			Taxon taxon = (Taxon) tb.next();
 			if (taxon.generateTitle().contains("Podosperm")) {
 				descriptions = taxon.getDescriptions();
+				description = descriptions.iterator().next();
 				System.out.println("P. canum");
 			}
 		}
@@ -305,7 +307,7 @@ public class SDDDocumentBuilder {
 			}
 		}
 		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
-		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, descriptions);
+		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, description);
 		for (Iterator<TextData> td = listTextData.iterator() ; td.hasNext();) {
 			TextData textD = td.next();
 			System.out.println(textD.getText(Language.ENGLISH()));
@@ -1248,7 +1250,7 @@ public class SDDDocumentBuilder {
 				for (Iterator<Annotation> a = annotations.iterator() ; a.hasNext() ;){
 					Annotation annotation = a.next();
 					AnnotationType annotationType = annotation.getAnnotationType();
-					if (annotationType == AnnotationType.EDITORIAL()) {
+					if (annotationType.equals(AnnotationType.EDITORIAL())) {
 						editorial = true;
 					}
 					else {
