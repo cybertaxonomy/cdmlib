@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -31,29 +32,28 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Component
 public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,Set<TaxonDescription> descriptions) {
-		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), descriptions, false);
+	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description) {
+		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, false);
 	}
 	
-	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, Set<TaxonDescription> descriptions, boolean leaf) {
+	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, TaxonDescription description, boolean leaf) {
 		List<TextData> listTextData = new ArrayList<TextData>(); ;
 		if (!parent.isLeaf()){
 			Feature fref = parent.getFeature();
 			for (Iterator<FeatureNode> ifn = children.iterator() ; ifn.hasNext() ;){
 				FeatureNode fn = ifn.next();
-				listTextData.addAll(buildBranchesDescr(fn.getChildren(),fn,descriptions, leaf));
+				listTextData.addAll(buildBranchesDescr(fn.getChildren(),fn,description, leaf));
 			}
 		}
 		else {
 			Feature fref = parent.getFeature();
 			if (fref!=null) { // needs a better algorithm
-				for (Iterator<TaxonDescription> db = descriptions.iterator() ; db.hasNext() ;){
-					TaxonDescription descriptionBase = db.next();
-					Set<DescriptionElementBase> elements = descriptionBase.getElements();
+				int k=0;
+					Set<DescriptionElementBase> elements = description.getElements();
 					for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){
 						DescriptionElementBase descriptionElement = deb.next();
 						TextData textData = TextData.NewInstance();
-						if (descriptionElement.getFeature().getLabel().equals(fref.getLabel())){
+						if (descriptionElement.getFeature().equals(fref)){
 							if (descriptionElement instanceof CategoricalData) {
 								CategoricalData categoricalData = (CategoricalData) descriptionElement;
 								textData = buildCategoricalDescr(categoricalData);
@@ -66,14 +66,13 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 							}
 						}
 					}
-				}
 				leaf = true;
 			}
 		}
 		return listTextData;
 	}
 
-	//TODO manage different languages
+	//TODO manage different languages ?
 	private TextData buildQuantitativeDescr (QuantitativeData quantitativeData) throws ParseException {
 
 		boolean average = false;
@@ -98,23 +97,22 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		for (Iterator<StatisticalMeasurementValue> smv = statisticalValues.iterator() ; smv.hasNext() ;){
 			StatisticalMeasurementValue statisticalValue = smv.next();
 			StatisticalMeasure type = statisticalValue.getType();
-			String label = type.getLabel();
-			if (label.equals("Average")) {
+			if (type.equals(StatisticalMeasure.AVERAGE())) {
 				average = true;
 				averagevalue = statisticalValue.getValue();
-			} else if (label.equals("StandardDeviation")) {
+			} else if(type.equals(StatisticalMeasure.STANDARD_DEVIATION())) {
 				sd = true;
 				sdvalue = statisticalValue.getValue();
-			} else if (label.equals("Min")) {
+			} else if (type.equals(StatisticalMeasure.MIN())) {
 				min = true;
 				minvalue = statisticalValue.getValue();
-			} else if (label.equals("Max")) {
+			} else if (type.equals(StatisticalMeasure.MAX())) {
 				max = true;
 				maxvalue = statisticalValue.getValue();
-			} else if (label.equals("TypicalLowerBoundary")) {
+			} else if (type.equals(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY())) {
 				lowerb = true;
 				lowerbvalue = statisticalValue.getValue();
-			} else if (label.equals("TypicalUpperBoundary")) {
+			} else if (type.equals(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY())) {
 				upperb = true;
 				upperbvalue = statisticalValue.getValue();
 			}
@@ -160,11 +158,18 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		Feature feature = categoricalData.getFeature();
 		TextData textData = TextData.NewInstance(feature); 
 		List<StateData> states = categoricalData.getStates();
+		
 		StringBuilder CategoricalDescription = new StringBuilder();
-		CategoricalDescription.append(" "+feature.getLabel());
+		//CategoricalDescription.append(" "+feature.getLabel());
+
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
 			State s = stateData.getState();
+			Set<Modifier> modifiers = stateData.getModifiers();
+			for (Iterator<Modifier> mod = modifiers.iterator() ; mod.hasNext() ;){
+				Modifier modifier = mod.next();
+				CategoricalDescription.append(" " + modifier.getLabel());
+			}
 			CategoricalDescription.append(" " + s.getLabel());
 		}
 		textData.putText(CategoricalDescription.toString(), Language.ENGLISH());
