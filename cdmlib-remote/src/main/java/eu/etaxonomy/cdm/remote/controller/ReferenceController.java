@@ -20,6 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * TODO write controller documentation
@@ -37,7 +41,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 
 @Controller
-@RequestMapping(value = {"/reference/*","/reference/*/annotation", "/reference/*/authorTeam", "/reference/*/nomenclaturalCitation"})
+@RequestMapping(value = {"/reference/*","/reference/{uuid}"})
 public class ReferenceController extends AnnotatableController<ReferenceBase, IReferenceService>
 {
 	
@@ -52,6 +56,11 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 			"authorTeam.$",
 			"authorTeam.titleCache",
 	});
+	
+	@InitBinder
+    public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+	}
 	
 	public ReferenceController(){
 		super();
@@ -80,15 +89,15 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	 * @throws IOException
 	 */
 	@RequestMapping(
-		value = {"/reference/*/nomenclaturalCitation"},
+		value = {"{uuid}/nomenclaturalCitation"},
 		method = RequestMethod.GET)
 	public ModelAndView doGetNomenclaturalCitation(
+			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, 
 			HttpServletResponse response,
 			@RequestParam(value = "microReference", required = false) String microReference)throws IOException {
 		ModelAndView mv = new ModelAndView();
-		UUID nomRefUuid = readValueUuid(request, null);
-		ReferenceBase rb = service.load(nomRefUuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
+		ReferenceBase rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
 		if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
 			String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
 			mv.addObject(nomRefCit);
@@ -100,15 +109,17 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	}
 	
 	@RequestMapping(
-			value = {"/reference/*/authorTeam"},
+			value = {"{uuid}/authorTeam"},
 			method = RequestMethod.GET)
 		public ModelAndView doGetAuthorTeam(
+				@PathVariable("uuid") UUID uuid,
 				HttpServletRequest request, 
 				HttpServletResponse response) {
 		ModelAndView mv = new ModelAndView();
-		UUID refUuid = readValueUuid(request, null);
-		ReferenceBase rb = service.load(refUuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
-		mv.addObject(rb.getAuthorTeam());
+		ReferenceBase rb = service.load(uuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
+		if(rb.getAuthorTeam() != null){
+			mv.addObject(rb.getAuthorTeam());
+		}
 		return mv;
 	}
 

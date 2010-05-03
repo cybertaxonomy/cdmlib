@@ -45,8 +45,9 @@ public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE
 	@RequestMapping(value = "{uuid}/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
 			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		logger.info("getAnnotations()");
+		logger.info("getAnnotations() - " + request.getServletPath());
 		T annotatableEntity = service.find(uuid);
 		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
