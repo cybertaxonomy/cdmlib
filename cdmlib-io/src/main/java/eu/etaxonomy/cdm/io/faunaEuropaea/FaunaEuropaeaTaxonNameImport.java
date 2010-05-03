@@ -704,6 +704,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					nameCacheStringBuilder.append(genusPart);
 
 				}
+				nameCacheStringBuilder.append(localName);
+				specificEpithet.append(localName);
 
 			} else if (rank == R_SUBSPECIES) {
 				
@@ -726,10 +728,11 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				nameCacheStringBuilder.append(grandParentName);
 				nameCacheStringBuilder.append(" ");
 				specificEpithet.append(grandParentName);
+				nameCacheStringBuilder.append(localName);
+				infraSpecificEpithet.append(localName);
 			}
 			
-			nameCacheStringBuilder.append(fauEuTaxon.getLocalName());
-			infraSpecificEpithet.append(fauEuTaxon.getLocalName());
+			
 			
 		}
 		
