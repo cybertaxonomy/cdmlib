@@ -12,7 +12,12 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0"
 xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
 xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0"
 xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
-xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0">
+xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.w3.org/XML/1998/namespace
+http://www.w3.org/2005/08/xml.xsd
+http://www.w3.org/2001/XMLSchema
+  http://www.w3.org/2001/XMLSchema.xsd">
 
   <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
 
@@ -173,7 +178,10 @@ xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0">
       <xs:element name="FeatureTrees" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="description:FeatureTree" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="description:FeatureTree" />
+              <xs:element ref="description:PolytomousKey"/>
+            </xs:choice>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

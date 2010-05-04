@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * 
  */
 @XmlEnum
-public enum OAIPMHerrorcode {
+public enum ErrorCode {
 
     @XmlEnumValue("cannotDisseminateFormat")
     CANNOT_DISSEMINATE_FORMAT("cannotDisseminateFormat"),
@@ -54,7 +54,7 @@ public enum OAIPMHerrorcode {
     NO_SET_HIERARCHY("noSetHierarchy");
     private final String value;
 
-    OAIPMHerrorcode(String v) {
+    ErrorCode(String v) {
         value = v;
     }
 
@@ -62,8 +62,8 @@ public enum OAIPMHerrorcode {
         return value;
     }
 
-    public static OAIPMHerrorcode fromValue(String v) {
-        for (OAIPMHerrorcode c: OAIPMHerrorcode.values()) {
+    public static ErrorCode fromValue(String v) {
+        for (ErrorCode c: ErrorCode.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

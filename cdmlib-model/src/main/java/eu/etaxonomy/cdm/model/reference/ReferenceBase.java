@@ -168,14 +168,14 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @Field(index=Index.TOKENIZED)
     @NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "ISBN\\x20(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
+	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
 	protected String isbn;
     
 	@XmlElement(name = "ISSN")
 	@Field(index=Index.TOKENIZED)
 	@NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "ISSN\\x20(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
+	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.issn.message}") 
 	protected String issn;
 	
     @XmlElement(name = "SeriesPart")

@@ -309,9 +309,9 @@
             </xs:complexType>
           </xs:element>
           <xs:element name="IsHybridFormula" type="xs:boolean"/>
-          <xs:element name="IsMonomHybrid" type="xs:boolean"/>
-          <xs:element name="IsBinomHybrid" type="xs:boolean"/>
-          <xs:element name="IsTrinomHybrid" type="xs:boolean"/>
+          <xs:element name="IsMonomHybrid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="IsBinomHybrid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="IsTrinomHybrid" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

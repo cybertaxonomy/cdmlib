@@ -340,4 +340,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 			
 		  return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+	public HomotypicalGroup findHomotypicalGroup(UUID uuid) {
+		return homotypicalGroupDao.findByUuid(uuid);
+	}
 }

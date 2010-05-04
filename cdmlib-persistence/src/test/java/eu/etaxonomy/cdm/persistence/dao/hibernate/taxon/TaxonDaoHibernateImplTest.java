@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -775,6 +776,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		System.out.println("count\tclass");
 		for(Object[] result : results) {
 			System.out.println(result[0] + "\t" + result[1]);
+		}
+	}
+	
+	@Test
+	@DataSet
+	public void testNativeSQLOrder() { 
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end",SortOrder.ASCENDING));
+		
+		List<TaxonBase> results = taxonDao.list(null, null, orderHints);
+		System.out.println("native SQL order");
+		for(TaxonBase result : results) {
+			System.out.println(result.getTitleCache());
 		}
 	}
 	

@@ -8,6 +8,7 @@
 
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.UUID;
 
@@ -55,8 +56,13 @@ import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 @XmlType(name = "resumptionTokenType", propOrder = {
     "value"
 })
-public class ResumptionToken {
+public class ResumptionToken implements Serializable {
 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
     @XmlValue
     protected String value;
     @XmlAttribute

@@ -60,6 +60,9 @@ public class OaiDc {
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String coverage;
     
+    @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
+    private String rights;
+    
     public String getTitle() {
 		return title;
 	}
@@ -147,7 +150,4 @@ public class OaiDc {
 	public void setRights(String rights) {
 		this.rights = rights;
 	}
-
-	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
-    private String rights;
 }

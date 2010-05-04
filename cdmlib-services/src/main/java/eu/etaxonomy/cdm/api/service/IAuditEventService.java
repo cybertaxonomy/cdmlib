@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -31,7 +30,7 @@ public interface IAuditEventService {
      * or backwards (AuditEventSort.BACKWARDS)
      * @return a Pager containing AuditEvent instances
      */  
-	public List<AuditEvent> list(Integer limit, Integer start, AuditEventSort sort);
+	public Pager<AuditEvent> list(Integer limit, Integer start, AuditEventSort sort);
 	
 	/**
 	 * Find the AuditEvent with an identifier equal to the parameter

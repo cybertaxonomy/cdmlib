@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN"
     "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">
-<mappings>   
+<mappings>
+    <configuration>
+        <wildcard>false</wildcard>
+    </configuration>
     <!-- header -->
     <mapping>
         <class-a>eu.etaxonomy.cdm.model.common.IdentifiableEntity</class-a>
@@ -36,8 +39,8 @@
             <a>updated</a>
             <b>date</b>
         </field>
-        <field>
-            <a>createdBy.username</a>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="username">
+            <a>createdBy</a>
             <b>creator</b>
         </field>
         <field>
@@ -46,9 +49,4 @@
         </field>
     </mapping>
     
-    
-    
-    
-    
-      
 </mappings>

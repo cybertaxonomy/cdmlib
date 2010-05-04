@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.MarkerDaoImpl;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -35,4 +37,19 @@ public class MarkerServiceImpl extends	VersionableServiceBase<Marker, MarkerDaoI
 		return new DefaultPagerImpl<Marker>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	public Pager<Marker> list(User creator, MarkerType markerType,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+        Integer numberOfResults = dao.count(creator,markerType);
+		
+		List<Marker> results = new ArrayList<Marker>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.list(creator,markerType, pageSize, pageNumber, orderHints, propertyPaths);
+		}
+		
+		return new DefaultPagerImpl<Marker>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public int count(User creator, MarkerType markerType) {
+        return dao.count(creator,markerType);
+	}
 }
+

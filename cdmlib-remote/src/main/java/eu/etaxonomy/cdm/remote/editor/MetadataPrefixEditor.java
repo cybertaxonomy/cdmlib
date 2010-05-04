@@ -2,26 +2,30 @@ package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
+import eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix;
+import eu.etaxonomy.cdm.remote.exception.CannotDisseminateFormatException;
 
 public class MetadataPrefixEditor extends PropertyEditorSupport {
-
-	private static DateTimeFormatter parser;
-	private static DateTimeFormatter printer;
-
-	static {
-		parser = new DateTimeFormatterBuilder().appendPattern("dd/MM/YYYY").appendOptional(new DateTimeFormatterBuilder().appendPattern(" HH:mm:ss").toParser()).toFormatter();
-		printer = new DateTimeFormatterBuilder().appendPattern("dd/MM/YYYY HH:mm:ss").toFormatter();
-	}
 	
 	public void setAsText(String text) {
-		setValue(parser.parseDateTime(text));
+		if(text == null) {
+			throw new IllegalArgumentException("null is not an acceptable metadata format");
+		} else {
+			if(text.equals("rdf")) {
+				setValue(MetadataPrefix.RDF);
+			} else if(text.equals("oai_dc")) {
+				setValue(MetadataPrefix.OAI_DC);
+			} else {
+				throw new CannotDisseminateFormatException(text + " is not an acceptable metadata format");
+	}
+		}
 	}
 	
 	public String getAsText() {
-		return printer.print((DateTime)getValue());
+		if(getValue() == null) {
+			return null;
+		} else {
+		    return ((MetadataPrefix)getValue()).name();
 	}
-
+	}
 }

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,34 +49,41 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
-public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
+public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serializable {
 	/**
 	 * International Code of Nomenclature of Bacteria
 	*/
-	@XmlEnumValue("ICNB") ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e")), 
+	@XmlEnumValue("ICNB") ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"), 
 	/**
 	 * International Code of Botanical Nomenclature
 	 */
-	@XmlEnumValue("ICBN") ICBN(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482")), 
+	@XmlEnumValue("ICBN") ICBN(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICBN"), 
 	/**
 	 * International Code of Cultivated Plants
 	 */
-	@XmlEnumValue("ICNCP") ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e")), 
+	@XmlEnumValue("ICNCP") ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP"), 
 	/**
 	 * International Code of Zoological Nomenclature
 	 */
-	@XmlEnumValue("ICZN") ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b")), 
+	@XmlEnumValue("ICZN") ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN"), 
 	/**
 	 * International Code for Virus Classification and Nomenclature
 	 */
-	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"));	
+	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN");	
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 	
 	private UUID uuid;
+
+	private String titleCache;
 	
-	private NomenclaturalCode(UUID uuid){
+	public String getTitleCache() {
+		return titleCache;
+	}
+	
+	private NomenclaturalCode(UUID uuid, String titleCache){
 		this.uuid = uuid;
+		this.titleCache = titleCache;
 	}
 	
 	

@@ -1632,6 +1632,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
+cdmlib-io/src/test/resources/log4j.properties -text
 cdmlib-io/src/test/resources/termCodeCreator.xls -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
@@ -1979,6 +1980,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level3.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/BasionymsMustShareEpithetsAndAuthors.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustBeLowerRankThanParent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustDeriveNameFromParent.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustNotSkipRanks.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/CorrectEpithetsForRank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/HomotypicSynonymsShouldBelongToGroup.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/MustHaveAuthority.java -text
@@ -1989,6 +1991,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/TaxonNameCanno
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/BasionymsMustShareEpithetsAndAuthorsValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustBeLowerRankThanParentValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustDeriveNameFromParentValidator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustNotSkipRanksValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/CorrectEpithetsForRankValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/HomotypicSynonymsShouldBelongToGroupValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/MustHaveAuthorityValidator.java -text
@@ -2278,6 +2281,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/GroupByCount
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/GroupByDate.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/Grouping.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/MatchMode.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/NativeSqlOrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/OrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/RandomOrder.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/view/IAuditEventDao.java -text
@@ -2495,6 +2499,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dc/Relation.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/About.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/DeletedRecord.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Description.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Error.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/ErrorCode.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/GetRecord.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Granularity.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Header.java -text
@@ -2507,8 +2513,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Metadata.java -te
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/MetadataFormat.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/MetadataPrefix.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/OAIPMH.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/OAIPMHerror.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/OAIPMHerrorcode.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/OaiDc.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/ObjectFactory.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Record.java -text
@@ -2542,14 +2546,18 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonRelationsh
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/Team.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/ClassPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/DateTimeEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/IsoDateTimeEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDAuthorityPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/MatchModePropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/MetadataPrefixEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/NamedAreaPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/RankPropertyEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/SetSpecEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/UUIDPropertyEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/CannotDisseminateFormatException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/CdmExceptionResolver.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/NoRecordsMatchException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/JsonConfigFactoryBean.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/AbstractCdmBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CGLibEnhancedBeanProcessorMatcher.java -text
@@ -2591,6 +2599,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/PatternViewResolver.jav
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/RdfView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/WsdlView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/ExceptionView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/GetRecordView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/IdentifyView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/ListIdentifiersView.java -text

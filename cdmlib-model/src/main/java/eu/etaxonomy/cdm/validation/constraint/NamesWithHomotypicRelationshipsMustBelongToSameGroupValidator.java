@@ -31,7 +31,7 @@ public class NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator imple
 		   nameRelationship.getType().equals(NameRelationshipType.MISSPELLING()) ||
 		   nameRelationship.getType().equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT()) ||
 		   nameRelationship.getType().equals(NameRelationshipType.REPLACED_SYNONYM())) {
-			if(nameRelationship.getFromName().getHomotypicalGroup().equals(nameRelationship.getToName().getHomotypicalGroup())) {
+			if(!nameRelationship.getFromName().getHomotypicalGroup().equals(nameRelationship.getToName().getHomotypicalGroup())) {
 				valid = false;
 				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}").addSubNode("fromName").addSubNode("homotypicalGroup").addError();				
 				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}").addSubNode("toName").addSubNode("homotypicalGroup").addError();

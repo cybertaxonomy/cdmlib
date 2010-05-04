@@ -1231,7 +1231,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			propertyPaths.add("relationsToThisTaxon.fromTaxon");
 			propertyPaths.add("relationsToThisTaxon.toTaxon");
 			propertyPaths.add("relationsFromThisTaxon");
-			propertyPaths.add("relationsFromThisTaxon.toTaxon");
+			propertyPaths.add("relationsFromThisTaxon.toTaxon");			
 			propertyPaths.add("relationsToThisTaxon.type");
 			propertyPaths.add("synonymRelations");
 			propertyPaths.add("synonymRelations.synonym");
