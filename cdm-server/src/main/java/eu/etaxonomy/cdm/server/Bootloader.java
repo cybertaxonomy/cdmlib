@@ -27,7 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.naming.NamingException;
@@ -43,7 +42,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -73,7 +71,7 @@ public final class Bootloader {
 	
 	private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
 	private static final String USERHOME_CDM_LIBRARY_PATH = System.getProperty("user.home")+File.separator+".cdmLibrary"+File.separator;
-	private static final String TMP_PATH = USERHOME_CDM_LIBRARY_PATH + "tmp" + File.separator;
+	private static final String TMP_PATH = USERHOME_CDM_LIBRARY_PATH + "server" + File.separator;
 	
 	private static final String APPLICATION_NAME = "CDM Server";
     private static final String WAR_POSTFIX = ".war";
@@ -87,7 +85,7 @@ public final class Bootloader {
     
     private static final int KB = 1024;
     
-    private static Set<DataSourceProperties> configs = new HashSet<DataSourceProperties>();
+    private static Set<DataSourceProperties> configs = null;
     private static File webappFile = null;
     private static File defaultWebAppFile = null;
 
@@ -95,7 +93,12 @@ public final class Bootloader {
         // is started from main
     }
     
-    public static Set<DataSourceProperties> listDataSources(){
+    public static Set<DataSourceProperties> loadDataSources(){
+    	if(configs == null){
+    		File datasourcesFile = new File(USERHOME_CDM_LIBRARY_PATH, DATASOURCE_BEANDEF_FILE); 
+    		configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
+        	logger.info("cdm server instance names loaded: "+ configs.toString());
+    	}
     	return configs;
     }
 
@@ -203,8 +206,10 @@ public final class Bootloader {
     		logger.error("Error creating temporary directory for webapplications " + tempDir.getAbsolutePath());
     		System.exit(-1);
     	} else {
-    		FileUtils.deleteQuietly(tempDir);
-    		tempDir.mkdirs();
+    		if(FileUtils.deleteQuietly(tempDir)){
+    			tempDir.mkdirs();
+    			logger.info("Old webapplications successfully cleared");
+    		}
     	}
     	tempDir = null;
     	
@@ -251,12 +256,7 @@ public final class Bootloader {
     		 logger.error(DATASOURCES_FILE.getOpt() + " NOT JET IMPLEMENTED!!!");
     	 }
     	
-    	
-    	File datasourcesFile = new File(USERHOME_CDM_LIBRARY_PATH, DATASOURCE_BEANDEF_FILE); 
-    	Bootloader.configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
-    	logger.info("cdm server instance names found: "+ configs.toString());
-    	
-    	
+    	loadDataSources();
     	
 		Server server = new Server(httpPort);
 		
