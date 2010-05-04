@@ -2617,6 +2617,7 @@ cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/oaipmh/mappings.xml
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-deep.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-shallow.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings.xml -text
+cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/ehcache.xml -text
 cdmlib-remote/src/main/resources/log4j.properties -text
 cdmlib-remote/src/main/resources/oai-pmh.xsd -text
 cdmlib-remote/src/main/resources/spy.properties -text

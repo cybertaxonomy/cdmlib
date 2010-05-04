@@ -15,7 +15,17 @@
      </bean>
     <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
     
-    <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/> 
+    <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
+    
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="properties">
+		  <props>
+		      <prop key="eu.etaxonomy.cdm.base.path">${user.home}/.cdmLibrary/</prop>
+		      <prop key="eu.etaxonomy.cdm.search.index.path">${user.home}/.cdmLibrary/index/</prop>
+		      <prop key="eu.etaxonomy.cdm.ehcache.diskstore.path">${user.home}/.cdmLibrary/ehcache</prop>
+		  </props>
+        </property>
+	</bean>
  
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
@@ -28,7 +38,6 @@
     
     
     <!-- OAI-PMH TODO externalize? -->
-    <!-- 
      <bean name="taxonOaiPmhController" class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
 	  <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/>
 	 </bean>
@@ -37,7 +46,7 @@
 	        <property name="cacheName" value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken"/>
 	</bean>
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-    <property name="configLocation" value="classpath:/org/cateproject/web/ehcache.xml" />
+    <property name="configLocation" value="classpath:/eu/etaxonomy/cdm/remote/ehcache.xml" />
         <property name="shared" value="true"/>
     </bean>
 
@@ -47,6 +56,7 @@
 	    <property name="cacheManager" ref="cacheManager" />
 	    <property name="serializableFactory" ref="serializableFactory"/>
 	</bean>
+    <!-- 
      -->	
 
 </beans>

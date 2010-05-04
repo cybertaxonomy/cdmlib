@@ -54,7 +54,7 @@
     </bean>
      -->
      
-    <!-- 
+
     <bean name="oai/identify" class="eu.etaxonomy.cdm.remote.view.oaipmh.IdentifyView">
         <property name="contentType" value="text/xml; charset=UTF-8"/>
         <property name="marshaller" ref="marshaller"/>
@@ -102,6 +102,7 @@
         <property name="marshaller" ref="marshaller"/>
         <property name="mapper" ref="dozerMapper"/>
     </bean>
+    <!-- 
 
     -->
 
