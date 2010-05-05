@@ -11,6 +11,8 @@
 package eu.etaxonomy.cdm.ext;
 
 import java.awt.Color;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,6 +77,7 @@ public class EditGeoServiceUtilities {
 		String adLayerSeparator = ":";
 		String styleInAreaDataSeparator = "|";
 		String msSeparator = ","; //Separator for the ms parameter values , e.g. 'x' => ms=600x400
+		//double borderWidth = 0.1;
 		double borderWidth = 0.1;
 		
 		
@@ -164,6 +167,10 @@ public class EditGeoServiceUtilities {
 			}
 			Representation representation = status.getPreferredRepresentation(languages);
 			String statusLabel = representation.getLabel();
+			logger.warn(statusLabel);
+			//statusLabel.replace('introduced: ', '');
+			statusLabel = statusLabel.replace("introduced: ", "introduced, ");
+			statusLabel = statusLabel.replace("native: ", "native,  ");
 			areaTitle += "|" + style + ":" + statusLabel;
 			
 			//getting the area color
@@ -188,10 +195,10 @@ public class EditGeoServiceUtilities {
 		}
 		
 		if(areaStyle.length() > 0){
-			areaStyle = "as=" + areaStyle.substring(1); //remove first |
+			areaStyle = "as=" + encode(areaStyle); //remove first |
 		}
 		if(areaTitle.length() > 0){
-			areaTitle = "title=" + areaTitle.substring(1); //remove first |
+			areaTitle = "title=" + encode(areaTitle); //remove first |
 		}
 		
 		boolean separateLevels = false; //FIXME as parameter
@@ -222,6 +229,7 @@ public class EditGeoServiceUtilities {
 			if(separateLevels){
 				//result per level
 				result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, areaTitle, bbox, ms});
+				//result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, bbox, ms});
 				resultMap.put(layerString, result);
 			}
 		}
@@ -230,9 +238,20 @@ public class EditGeoServiceUtilities {
 		
 		//result
 		result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, areaTitle, bbox, ms});
+		//result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, ms});
 		if (logger.isDebugEnabled()){logger.debug("getEditGeoServiceUrlParameterString end");}
 		
 		return result;
+	}
+
+	private static String encode(String areaStyle) {
+		String encoded = areaStyle;
+		try {
+			encoded = URLEncoder.encode(areaStyle.substring(1), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error(e);
+		}
+		return encoded;
 	}
 	
 	private static Map<PresenceAbsenceTermBase<?>,Color> makeDefaultColorMap(){
