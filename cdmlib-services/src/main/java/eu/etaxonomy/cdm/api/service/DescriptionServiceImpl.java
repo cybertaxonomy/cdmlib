@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -145,6 +147,19 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		return results;
 	}
+	
+	public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+		Integer numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
+		
+		List<Annotation> results = new ArrayList<Annotation>();
+		if(numberOfResults > 0) { // no point checking again
+			results = descriptionElementDao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	
 
 	public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);

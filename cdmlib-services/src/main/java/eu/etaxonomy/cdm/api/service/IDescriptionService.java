@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -146,6 +148,19 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 */
 	public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+	/**
+	 * Return a Pager containing Annotation entities belonging to the DescriptionElementBase instance supplied, optionally filtered by MarkerType
+     * @param annotatedObj The object that "owns" the annotations returned
+	 * @param status Only return annotations which are marked with a Marker of this type (can be null to return all annotations)
+	 * @param pageSize The maximum number of terms returned (can be null for all annotations)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of Annotation entities
+	 */
+	public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+		
+	
 	/**
 	 * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
 	 * 
