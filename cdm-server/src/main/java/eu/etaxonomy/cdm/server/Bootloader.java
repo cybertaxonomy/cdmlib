@@ -198,7 +198,10 @@ public final class Bootloader {
 	 */
 	public static void main(String[] args) throws Exception {
     	
-    	logger.info("Starting "+APPLICATION_NAME);
+		CommandLine cmdLine = parseCommandOptions(args);
+
+		logger.info("Starting "+APPLICATION_NAME);
+		logger.info("Using  " + System.getProperty("user.home") + " as home directory. Can be specified by -Duser.home=<FOLDER>");
     	
     	//assure TMP_PATH exists and clean it up
     	File tempDir = new File(TMP_PATH);
@@ -213,7 +216,6 @@ public final class Bootloader {
     	}
     	tempDir = null;
     	
-    	 CommandLine cmdLine = parseCommandOptions(args);
     	 
     	 // print the help message
     	 if(cmdLine.hasOption(HELP.getOpt())){
@@ -235,7 +237,7 @@ public final class Bootloader {
     	     } else {
     	    	//defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
     	     }
-    	 } else {    		 
+    	 } else {    	 
     		 webappFile = extractWar(CDM_WEBAPP_WAR_NAME);
     		 defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
     	 }

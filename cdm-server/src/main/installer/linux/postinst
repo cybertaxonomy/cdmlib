@@ -15,7 +15,7 @@ bindir="/etc/init.d/"
 TMP="/usr/bin/"
 
 SERVERSCRIPT="cdmserver"
-SERVERJAR="cdmserver-standalone.jar"
+SERVERJAR="cdm-server.jar"
 SERVERCONF="datasources.xml"
 PROPERTIES="cdmserver.properties"
 
@@ -69,8 +69,8 @@ case "$1" in
     #
     if ( groupExist $CDM_GROUP  )
     then
-    echo GROUP ALREADY EXISTS!!!!
-    groupdel $CDM_GROUP
+        echo GROUP ALREADY EXISTS!!!!
+        groupdel $CDM_GROUP
     fi
     groupadd $CDM_GROUP
 
@@ -83,16 +83,23 @@ case "$1" in
     update-rc.d $SERVERSCRIPT defaults 98 02
 
     #creating the directories
-    mkdir -p $CDM_HOME
-    mkdir -p $CDM_LIBRARY
-    mkdir -p $CDM_LOG
+    if [ ! -d $CDM_HOME ]; then
+        mkdir -p $CDM_HOME
+    fi
+    if [ ! -d $CDM_LIBRARY ]; then
+        mkdir -p $CDM_LIBRARY
+    fi
+    if [ ! -d $CDM_LOG ]; then
+        mkdir -p $CDM_LOG
+    fi
 
     #installing the server and the configfile
     cp $TMP$SERVERCONF $CDM_LIBRARY
     cp $TMP$SERVERJAR $CDM_HOME
     #cp $TMP$PROPERTIES $CDM_LIBRARY
-    mkdir /root/.cdmLibrary
-    cp $TMP$SERVERCONF /root/.cdmLibrary/
+    #mkdir -p /root/.cdmLibrary
+    #cp $TMP$SERVERCONF /root/.cdmLibrary/
+    cp $TMP$SERVERCONF $CDM_LIBRARY
 
     #starting the script
     $bindir$SERVERSCRIPT start

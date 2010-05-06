@@ -12,7 +12,7 @@ LOG="/var/log/cdmserver/"
 bindir="/etc/init.d/"
 
 SERVERSCRIPT="cdmserver"
-SERVERJAR="cdmserver-standalone.jar"
+SERVERJAR="cdm-server.jar"
 SERVERCONF="datasources.xml"
 
 CDM_USER="cdmuser"
@@ -45,24 +45,16 @@ groupExist(){
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+do_remove(){
 
-case "$1" in
-    purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-    
     #stopping the server
     if [ -e $bindir$SERVERSCRIPT ]
     then
     $bindir$SERVERSCRIPT stop
     fi
-
-    #removing the daemon script
-    rm -f $bindir$SERVERSCRIPT
-    update-rc.d -f $SERVERSCRIPT remove
-
-    #removing the directories
-    rm -rf $CDM_LIBRARY
-    rm -rf $CDM_HOME
-
+    
+   
+    
     #removing the user and group
     if ( userExist $CDM_USER  )
     then
@@ -73,9 +65,35 @@ case "$1" in
     then
     groupdel $CDM_GROUP
     fi
+    
+    # remove the binary
+    rm $CDM_HOME$SERVERJAR
+    
+    return $TRUE
+    
+}
 
+do_purge(){
+    do_remove
+    
+    #removing the daemon script
+    rm -f $bindir$SERVERSCRIPT
+    update-rc.d -f $SERVERSCRIPT remove
+    
+    #removing the directories
+    rm -rf $CDM_LIBRARY
+    rm -rf $CDM_HOME
+
+    return $TRUE
+}
+
+case "$1" in
+    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        do_remove
     ;;
-
+    purge)
+        do_purge
+    ;;
     *)
         echo "postrm called with unknown argument \`$1'" >&2
         exit 1

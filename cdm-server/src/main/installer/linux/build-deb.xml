@@ -18,8 +18,8 @@
 	<!-- Various Filenames -->
 	<property name="cdmserverscript.filename" value="cdmserver" />
 	<property name="datasources.filename" value="datasources.xml" />
-	<property name="cdmserver.filename" value="cdm-server-2.3.jar" />
-  <property name="cdmserver.destinationfilename" value="cdmserver-standalone.jar" />
+	<property name="cdmserver.filename" value="cdm-server-2.4.jar" />
+  <property name="cdmserver.destinationfilename" value="cdm-server.jar" />
 
 	<!-- Various Paths -->
 	<property name="installer.path" value="src/main/installer" />

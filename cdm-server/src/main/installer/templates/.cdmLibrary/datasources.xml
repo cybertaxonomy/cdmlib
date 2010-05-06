@@ -11,15 +11,12 @@
     <!-- ======================================================
        NOTICE: 
        
-       These datasources are being used if the routing-datasource.xml is used in the 
-       application-context.xml
+       For each bean defined herein the cdm server will create
+       and start an internal cdm server instance.
+        
+       These id of the datasource beans are being used as name 
+       and root path for the dem server instances
        
-       The bean ids will be used as key for the routing datasource 
-       
-       You MUST specify a default datasource
-         a) implicit: by default the SimpleDriverDataSource with id="empty_default" will be used.
-         b) Set the UpdatableRoutingDataSource property "defaultDatasourceName" 
-            to the bean id of the datasource to define the default explicitely
        ======================================================-->
        
      <!-- ======================================================
@@ -29,33 +26,26 @@
        and also 'driverClass' if you are not using mySQL.
        ======================================================-->
  
-    <!-- setting a default data sources is mandatory   -->
-    <bean id="default"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="user"/>
-        <property name="password" value="123"/>
-        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase"/>
-    </bean>
     <!-- the default data sources can be mapped to a specific URL root folder   -->
-    <bean id="myCDMdatabase"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <bean id="myCDMServerInstance1"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="user"/>
-        <property name="password" value="123"/>
-        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase"/>
+        <property name="user" value="edit"/>
+        <property name="password" value="wp5"/>
+        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_1"/>
     </bean>
     <!-- additional data sources mapped to other URL rot folders -->
     <!--  
-        <bean id="myCDMdatabase_2"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <bean id="myCDMServerInstance2"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="username" value="user"/>
         <property name="password" value="123"/>
                 <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_2"/>
     </bean>
-     <bean id="myCDMdatabase_3"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+     <bean id="myCDMServerInstance3"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="username" value="user"/>
         <property name="password" value="123"/>
-                <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_3"/>
+        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_3"/>
     </bean>
     -->
 </beans>
