@@ -25,8 +25,6 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -387,15 +385,13 @@ public class NonViralNameDefaultCacheStrategyTest {
 		nonViralName.setRank(Rank.SPECIESAGGREGATE());
 		nonViralName.setSpecificEpithet("species");
 		String aggrNameCache = strategy.getInfraGenusNameCache(nonViralName);
-		System.err.println(aggrNameCache);
 		assertEquals("Species aggregate name should be 'Genus species aggr.'.", "Genus species aggr.", aggrNameCache);
 		String aggrNameTitle = strategy.getTitleCache(nonViralName);
 		Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
 		assertEquals("Species aggregate name should be 'Genus species aggr.'.", "Genus species aggr.", aggrNameTitle);
 		nonViralName.setRank(Rank.SPECIESGROUP());
 		String groupNameTitle = strategy.getTitleCache(nonViralName);
-		System.err.println(groupNameTitle);
-		assertEquals("Species group name should be 'Genus species species group'.", "Genus species species group", groupNameTitle);
+		assertEquals("Species group name should be 'Genus species group'.", "Genus species group", groupNameTitle);
 		
 	}
 
