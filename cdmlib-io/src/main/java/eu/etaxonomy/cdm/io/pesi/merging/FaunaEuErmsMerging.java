@@ -2,6 +2,9 @@ package eu.etaxonomy.cdm.io.pesi.merging;
 
 public class FaunaEuErmsMerging {
 	
+	private String uuidFaunaEu;
+	private String uuidErms;
+	
 	private String idInFaunaEu;
 	private String idInErms;
 	
@@ -26,6 +29,21 @@ public class FaunaEuErmsMerging {
 	private String parentRankStringInFaunaEu;
 	private String parentRankStringInErms;
 	
+	
+	public String getUuidFaunaEu() {
+		return uuidFaunaEu;
+	}
+
+	public void setUuidFaunaEu(String uuidFaunaEu) {
+		this.uuidFaunaEu = uuidFaunaEu;
+	}
+	public String getUuidErms() {
+		return uuidErms;
+	}
+
+	public void setUuidErms(String uuidErms) {
+		this.uuidErms = uuidErms;
+	}
 	
 	public String getParentRankStringInFaunaEu() {
 		return parentRankStringInFaunaEu;

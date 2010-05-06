@@ -28,7 +28,8 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/FaunaEuropaeaSources.java -te
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/PesiDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/PesiExportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/erms/ErmsActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/merging/FaunaEuErmsMergingActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/merging/FaunaEuErmsFindIdenticalNamesActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/merging/FaunaEuErmsMergeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pilotOutputHtml/SimpleDescriptionOutput.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/references/EndNoteImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/AnthuriumActivator.java -text

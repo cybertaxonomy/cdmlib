@@ -773,6 +773,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			completeString = localString;
 			if (rank == R_SUBGENUS) {
 				infraGenericEpithet.append(localString);
+				genusOrUninomial.append(originalGenus);
 			} else {
 				genusOrUninomial.append(localString);
 			}

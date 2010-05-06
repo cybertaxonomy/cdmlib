@@ -253,4 +253,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {
 		return (TermVocabulary)vocabularyDao.findByUuid(uuid);
 	}
+
+	public List<DescriptionElementBase> getDescriptionElementsForTaxon(
+			Taxon taxon, Set<Feature> features,
+			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths) {
+		 return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+	}
 }

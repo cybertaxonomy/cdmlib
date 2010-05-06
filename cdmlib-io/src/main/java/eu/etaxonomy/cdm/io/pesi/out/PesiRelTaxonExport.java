@@ -20,6 +20,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.pesi.out.PesiTransformer;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -206,7 +207,8 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getRelQualifierCache(RelationshipBase<?, ?, ?> relationship) {
-		return PesiTransformer.taxonRelation2RelTaxonQualifierCache(relationship);
+		// TODO
+		return null;
 	}
 	
 	/**

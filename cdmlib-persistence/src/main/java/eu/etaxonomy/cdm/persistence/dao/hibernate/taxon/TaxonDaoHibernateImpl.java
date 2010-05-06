@@ -27,6 +27,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -1538,10 +1539,12 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		List<String> identicalNames = new ArrayList<String>();
 		//hole alle TaxonNames, die es mindestens zweimal gibt.
 		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.nameCache = tmb2.nameCache and tmb.id != tmb2.id");
+		System.err.println("query: " + query.getQueryString());
 		List<TaxonNameBase> zooNames = query.list();
+		System.err.println("number of identical names"+zooNames.size());
 		TaxonNameComparator taxComp = new TaxonNameComparator();
 		Collections.sort(zooNames, taxComp);
-		
+		System.err.println("list is sorted");
 		for (TaxonNameBase taxonNameBase: zooNames){
 			defaultBeanInitializer.initialize(taxonNameBase, propertyPaths);
 		}
@@ -1567,6 +1570,24 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		}
 		return 0;
 		
+	}
+
+
+	public long deleteSynonyms(Synonym syn) {
+		
+		/*
+		 * DELETE RT
+FROM         RelTaxon AS RT INNER JOIN
+                      Taxon AS FaEuSyn ON RT.TaxonFk1 = FaEuSyn.TaxonId INNER JOIN
+                      Taxon AS ERMSAcc ON FaEuSyn.RankFk = ERMSAcc.RankFk AND FaEuSyn.FullName = ERMSAcc.FullName AND ISNULL(FaEuSyn.TaxonStatusFk, 0)
+                      <> ERMSAcc.TaxonStatusFk
+WHERE     (FaEuSyn.OriginalDB = N'FaEu') AND (ERMSAcc.OriginalDB = N'ERMS') AND (ERMSAcc.TaxonStatusFk = 1) AND (ERMSAcc.KingdomFk = 2) AND
+                      (RT.RelTaxonQualifierFk > 100)
+		 */
+		Session session = this.getSession();
+		Query q = session.createQuery("delete SynonymRelationship sr where sr.relatedFrom = :syn");
+		q.setParameter("syn", syn);
+		return q.executeUpdate();
 	}
 	
 	

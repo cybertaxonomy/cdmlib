@@ -41,7 +41,7 @@ public class ErmsActivator {
 	private static final Logger logger = Logger.getLogger(ErmsActivator.class);
 
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 	static final Source ermsSource = FaunaEuropaeaSources.PESI_ERMS();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Erms();
 	static final UUID treeUuid = UUID.fromString("8bd27d84-fd4f-4bfa-bde0-3e6b7311b334");
@@ -116,7 +116,11 @@ public class ErmsActivator {
 
 		// invoke import
 		CdmDefaultImport<ErmsImportConfigurator> ermsImport = new CdmDefaultImport<ErmsImportConfigurator>();
-		ermsImport.invoke(ermsImportConfigurator);
+		
+		boolean omitTermLoading = false;
+		ermsImport.invoke(ermsImportConfigurator, ermsImportConfigurator.getDestination(), omitTermLoading);
+	
+		//ermsImport.invoke(ermsImportConfigurator);
 		
 		if (ermsImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || ermsImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = ermsImport.getCdmAppController();

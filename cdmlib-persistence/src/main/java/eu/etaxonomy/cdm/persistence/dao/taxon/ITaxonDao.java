@@ -391,4 +391,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public long countTaxaByCommonName(String searchString,
 			TaxonomicTree taxonomicTree, MatchMode matchMode,
 			Set<NamedArea> namedAreas);
+	
+	public long deleteSynonyms(Synonym syn);
 }

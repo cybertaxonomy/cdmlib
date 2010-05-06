@@ -18,6 +18,10 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
+
+import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
+
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;

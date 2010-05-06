@@ -570,4 +570,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 	}
+
+	public long deleteSynonyms(Synonym syn) {
+		
+		return dao.deleteSynonyms(syn);
+	}
 }

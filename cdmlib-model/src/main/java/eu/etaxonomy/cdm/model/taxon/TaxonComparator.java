@@ -62,6 +62,13 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		}else{
 				result = date1.compareTo(date2);
 		}
+		if (result == 0){
+			TaxonNameBase taxName1 = taxonBase1.getName();
+			TaxonNameBase taxName2 = taxonBase2.getName();
+			
+			return taxName1.compareTo(taxName2);
+			
+		}
 
 		if (result == 0){
 			DateTime date11 = taxonBase1.getCreated();
@@ -78,15 +85,8 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 			result = date11.compareTo(date12);
 		}
 		
-		//for ticket #393 if the publication year is the same, the order is alphabetically
 		
-		if (result == 0){
-			TaxonNameBase taxName1 = taxonBase1.getName();
-			TaxonNameBase taxName2 = taxonBase2.getName();
-			
-			return taxName1.compareTo(taxName2);
-			
-		}
+		
 		
 		return result;
 

@@ -346,4 +346,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
 	public String getPhylumName(TaxonNameBase name);
+	
+	public long deleteSynonyms(Synonym syn);
 }
