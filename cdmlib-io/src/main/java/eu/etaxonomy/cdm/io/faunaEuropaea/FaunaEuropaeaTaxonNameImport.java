@@ -774,6 +774,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			if (rank == R_SUBGENUS) {
 				infraGenericEpithet.append(localString);
 				genusOrUninomial.append(originalGenus);
+				completeString = originalGenus + " ("+ localString + ")";
 			} else {
 				genusOrUninomial.append(localString);
 			}
@@ -832,18 +833,22 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.debug("infraSpecificEpithet: " + infraSpecificEpithet); 
 			}
 		}
-
-		zooName.setNameCache(concatString);
-		String titleCache = buildNameTitleCache(concatString, useOriginalGenus, fauEuTaxon);
-		zooName.setTitleCache(titleCache);
+		//TODO: use generate NameCache
+		//zooName.setNameCache(concatString);
+		zooName.getNameCache();
+		zooName.generateTitle();
+		//String titleCache = buildNameTitleCache(concatString, useOriginalGenus, fauEuTaxon);
+		//zooName.setTitleCache(titleCache);
 		//titleCache = buildNameFullTitleCache(concatString, fauEuConfig);
-		zooName.setFullTitleCache(titleCache); // TODO: Add reference, NC status
+		zooName.generateFullTitle();
+		//zooName.setFullTitleCache(titleCache); // TODO: Add reference, NC status
 		
 //		ImportHelper.setOriginalSource(taxonName, fauEuConfig.getSourceReference(), 
 //				fauEuTaxon.getId(), "TaxonName");
-
-		titleCache = buildTaxonTitleCache(concatString, fauEuConfig.getSourceReference());
-		taxonBase.setTitleCache(titleCache);
+		taxonBase.setSec(fauEuConfig.getSourceReference());
+		taxonBase.generateTitle();
+		//titleCache = buildTaxonTitleCache(concatString, fauEuConfig.getSourceReference());
+		//taxonBase.setTitleCache(titleCache);
 		
 		if (logger.isDebugEnabled()) { 
 			logger.debug("Name stored: " + concatString); 
