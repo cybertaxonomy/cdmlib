@@ -11,10 +11,15 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -51,6 +56,25 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	 */
 	public int compare(TaxonBase taxonBase1, TaxonBase taxonBase2) {
 		int result;
+		
+		//if a taxon has nomenclatural status "nom. inval." or "nom. nud."
+		//TODO: überprüfen!!!
+		Set status = taxonBase1.getName().getStatus();
+		Iterator iterator = status.iterator();
+		if (iterator.hasNext()){
+			NomenclaturalStatus nomStatus1 = (NomenclaturalStatus) iterator.next();
+		
+			Set status2 = taxonBase2.getName().getStatus();
+			iterator = status.iterator();
+			if (iterator.hasNext()){
+				NomenclaturalStatus nomStatus2 = (NomenclaturalStatus)iterator.next();
+				if (nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM()) || nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
+					return 1;
+				} else if (nomStatus2.getType().equals(NomenclaturalStatusType.NUDUM()) || nomStatus2.getType().equals(NomenclaturalStatusType.INVALID())){
+					return -1;
+				}
+			}
+		}
 		String date1 = getDate(taxonBase1);;
 		String date2 = getDate(taxonBase2);
 		if (date1 == null && date2 == null){
