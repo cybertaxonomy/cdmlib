@@ -4,6 +4,9 @@
 -- change symmetric to symmetrical to be compatible with PostGreSQL
  ALTER TABLE `DefinedTermBase` CHANGE `symmetric` `symmetrical` bit(1) NULL  ;
  
+-- change model version to 2.4
+UPDATE CdmMetaData SET value = '2.4.1.2.201004231015' WHERE propertyname = 0
+ 
 -- ##################### TERMS ########################################################
 
 --absence term max orderindex
