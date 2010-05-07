@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDM Library Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmlib;singleton:=true
-Bundle-Version: 2.3.0.qualifier
+Bundle-Version: 2.4.0.qualifier
 Bundle-ClassPath: activation-1.1.jar,
  antlr-2.7.6.jar,
  aopalliance-1.0.jar,

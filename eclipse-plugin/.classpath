@@ -11,12 +11,6 @@
 	<classpathentry exported="true" kind="lib" path="asm.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="aspectjrt-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-commons-2.3.jar" sourcepath="cdmlib-commons-2.3src.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.3.jar" sourcepath="cdmlib-model-2.3src.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.3.jar" sourcepath="cdmlib-persistence-2.3src.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-ext-2.3.jar" sourcepath="cdmlib-ext-2.3src.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.3.jar" sourcepath="cdmlib-services-2.3src.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-io-2.3.jar" sourcepath="cdmlib-io-2.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cglib-2.1.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="commons-beanutils-1.7.0.jar" sourcepath="commons-beanutils-1.7.0src.zip"/>
 	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.jar" sourcepath="commons-collections-3.2src.zip"/>
@@ -84,5 +78,11 @@
 	<classpathentry exported="true" kind="lib" path="spring-tx-3.0.0.RELEASE.jar" sourcepath="spring-tx-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.beans-3.0.0.RC1.jar" sourcepath="org.springframework.beans-3.0.0.RC1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.oxm-3.0.0.RC1.jar" sourcepath="org.springframework.oxm-3.0.0.RC1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-commons-2.4.jar" sourcepath="cdmlib-commons-2.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-ext-2.4.jar" sourcepath="cdmlib-ext-2.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-io-2.4.jar" sourcepath="cdmlib-io-2.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.4.jar" sourcepath="cdmlib-model-2.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.4.jar" sourcepath="cdmlib-persistence-2.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.4.jar" sourcepath="cdmlib-services-2.4src.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
