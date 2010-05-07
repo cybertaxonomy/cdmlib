@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -324,7 +325,12 @@ public class PesiNoteExport extends PesiExportBase {
 			DateTime updated = descriptionElement.getUpdated();
 			if (updated != null) {
 //				logger.error("Note Updated: " + updated);
-				result = new DateTime(updated.toDate());  // Unfortunately the time information gets lost here.
+				Date updatedDate = updated.toDate();
+				if (updatedDate != null) {
+					result = new DateTime(updated.toDate());  // Unfortunately the time information gets lost here.
+				} else {
+					result = null;
+				}
 			}
 		}
 		return result;
