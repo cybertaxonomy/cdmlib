@@ -75,8 +75,21 @@
        <groupId>org.springframework.ws</groupId>
        <artifactId>spring-xml</artifactId>
        <version>1.5.6</version>
+       <exclusions>
+         <exclusion>
+           <groupId>org.springframework</groupId>
+           <artifactId>spring-core</artifactId>
+         </exclusion>
+         <exclusion>
+           <groupId>org.springframework</groupId>
+           <artifactId>spring-context</artifactId>
+         </exclusion>
+         <exclusion>
+           <groupId>org.springframework</groupId>
+           <artifactId>spring-beans</artifactId>
+         </exclusion>
+       </exclusions>       
      </dependency>
   </dependencies>
 </project>
-
 

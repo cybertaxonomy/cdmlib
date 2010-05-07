@@ -25,7 +25,8 @@
 	</modules>
   
   <properties>
-    <spring.version>3.0.0.RC1</spring.version>
+   <!--<spring.version>3.0.0.RC1</spring.version>-->
+    <spring.version>3.0.0.RELEASE</spring.version>
   </properties>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
