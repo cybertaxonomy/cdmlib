@@ -294,6 +294,14 @@ public final class PesiTransformer {
 	public static String Animalia_STR_Variety = "Variety";
 	public static String Animalia_STR_Subvariety = "Subvariety";
 	public static String Animalia_STR_Forma = "Forma";
+	
+	// Animalia Rank Abbreviations only for used Ranks
+	public static String Animalia_Abbrev_Subgenus = "subg.";
+	public static String Animalia_Abbrev_Species = "sp.";
+	public static String Animalia_Abbrev_Subspecies = "subsp.";
+	public static String Animalia_Abbrev_Variety = "var.";
+	public static String Animalia_Abbrev_Subvariety = "subvar.";
+	public static String Animalia_Abbrev_Forma = "f.";
 
 	// Plantae Ranks
 	public static int Plantae_Kingdom = 10;
@@ -361,6 +369,40 @@ public final class PesiTransformer {
 	public static String Plantae_STR_Forma_spec = "Forma spec.";
 	public static String Plantae_STR_Taxa_infragen = "Taxa infragen.";
 	public static String Plantae_STR_Taxa_infraspec = "Taxa infraspec.";
+	
+	// Plantae Rank Abbreviations
+	public static String Plantae_Abbrev_Kingdom = "reg.";
+	public static String Plantae_Abbrev_Subkingdom = "subreg.";
+	public static String Plantae_Abbrev_Division = "div.";
+	public static String Plantae_Abbrev_Subdivision = "subdiv.";
+	public static String Plantae_Abbrev_Class = "cl.";
+	public static String Plantae_Abbrev_Subclass = "subcl.";
+	public static String Plantae_Abbrev_Order = "ordo";
+	public static String Plantae_Abbrev_Suborder = "subor.";
+	public static String Plantae_Abbrev_Family = "fam.";
+	public static String Plantae_Abbrev_Subfamily = "subfam.";
+	public static String Plantae_Abbrev_Tribe	= "trib.";
+	public static String Plantae_Abbrev_Subtribe = "subtrib.";
+	public static String Plantae_Abbrev_Genus = "gen.";
+	public static String Plantae_Abbrev_Subgenus = "subg.";
+	public static String Plantae_Abbrev_Section = "sect.";
+	public static String Plantae_Abbrev_Subsection = "subsect.";
+	public static String Plantae_Abbrev_Series = "ser.";
+	public static String Plantae_Abbrev_Subseries	= "subser.";
+	public static String Plantae_Abbrev_Aggregate	= "aggr.";
+	public static String Plantae_Abbrev_Coll_Species = "coll. sp.";
+	public static String Plantae_Abbrev_Species = "sp.";
+	public static String Plantae_Abbrev_Subspecies = "subsp.";
+	public static String Plantae_Abbrev_Proles = "prol.";
+	public static String Plantae_Abbrev_Race = "race";
+	public static String Plantae_Abbrev_Convarietas = "convar.";
+	public static String Plantae_Abbrev_Variety = "var.";
+	public static String Plantae_Abbrev_Subvariety = "subvar.";
+	public static String Plantae_Abbrev_Forma	= "f.";
+	public static String Plantae_Abbrev_Subforma = "subf.";
+	public static String Plantae_Abbrev_Forma_spec = "f.spec.";
+	public static String Plantae_Abbrev_Taxa_infragen = "t.infgen.";
+	public static String Plantae_Abbrev_Taxa_infraspec = "t.infr.";
 	
 	// Fungi Ranks
 	public static int Fungi_Kingdom = 10;
@@ -4503,6 +4545,117 @@ public final class PesiTransformer {
 		return result;
 	}
 	
+	/**
+	 * Returns the abbreviation for a given rank.
+	 * @param rank
+	 * @param pesiKingdomId
+	 * @return
+	 */
+	public static String rank2RankAbbrev(Rank rank, Integer pesiKingdomId) {
+		String result = null;
+		if (rank == null) {
+			return null;
+		}
+		
+		// We differentiate between Animalia and Plantae only for now.
+		if (pesiKingdomId == KINGDOM_ANIMALIA) {
+			if (rank.equals(Rank.SUBGENUS())) {
+				result = Animalia_Abbrev_Subgenus;
+			} else if (rank.equals(Rank.SPECIES())) {
+				result = Animalia_Abbrev_Species;
+			} else if (rank.equals(Rank.SUBSPECIES())) {
+				result = Animalia_Abbrev_Subspecies;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Animalia_STR_Natio;
+			} else if (rank.equals(Rank.VARIETY())) {
+				result = Animalia_Abbrev_Variety;
+			} else if (rank.equals(Rank.SUBVARIETY())) {
+				result = Animalia_Abbrev_Subvariety;
+			} else if (rank.equals(Rank.FORM())) {
+				result = Animalia_Abbrev_Forma;
+			} else {
+				//TODO Exception
+				logger.warn("Abbreviation for Rank of Kingdom Animalia not supported in CDM: "+ rank.getLabel());
+				return null;
+			}
+		} else if (pesiKingdomId == KINGDOM_PLANTAE) {
+			if (rank.equals(Rank.KINGDOM())) {
+				result = Plantae_Abbrev_Kingdom;
+			} else if (rank.equals(Rank.SUBKINGDOM())) {
+				result = Plantae_Abbrev_Subkingdom;
+			} else if (rank.equals(Rank.DIVISION())) {
+				result = Plantae_Abbrev_Division;
+			} else if (rank.equals(Rank.SUBDIVISION())) {
+				result = Plantae_Abbrev_Subdivision;
+			} else if (rank.equals(Rank.CLASS())) {
+				result = Plantae_Abbrev_Class;
+			} else if (rank.equals(Rank.SUBCLASS())) {
+				result = Plantae_Abbrev_Subclass;
+			} else if (rank.equals(Rank.ORDER())) {
+				result = Plantae_Abbrev_Order;
+			} else if (rank.equals(Rank.SUBORDER())) {
+				result = Plantae_Abbrev_Suborder;
+			} else if (rank.equals(Rank.FAMILY())) {
+				result = Plantae_Abbrev_Family;
+			} else if (rank.equals(Rank.SUBFAMILY())) {
+				result = Plantae_Abbrev_Subfamily;
+			} else if (rank.equals(Rank.TRIBE())) {
+				result = Plantae_Abbrev_Tribe;
+			} else if (rank.equals(Rank.SUBTRIBE())) {
+				result = Plantae_Abbrev_Subtribe;
+			} else if (rank.equals(Rank.GENUS())) {
+				result = Plantae_Abbrev_Genus;
+			} else if (rank.equals(Rank.SUBGENUS())) {
+				result = Plantae_Abbrev_Subgenus;
+			} else if (rank.equals(Rank.SECTION_BOTANY())) {
+				result = Plantae_Abbrev_Section;
+			} else if (rank.equals(Rank.SUBSECTION_BOTANY())) {
+				result = Plantae_Abbrev_Subsection;
+			} else if (rank.equals(Rank.SERIES())) {
+				result = Plantae_Abbrev_Series;
+			} else if (rank.equals(Rank.SUBSERIES())) {
+				result = Plantae_Abbrev_Subseries;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Plantae_Abbrev_Aggregate;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Plantae_Abbrev_Coll_Species;
+			} else if (rank.equals(Rank.SPECIES())) {
+				result = Plantae_Abbrev_Species;
+			} else if (rank.equals(Rank.SUBSPECIES())) {
+				result = Plantae_Abbrev_Subspecies;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Plantae_Abbrev_Proles;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Plantae_Abbrev_Race;
+			} else if (rank.equals(Rank.CONVAR())) {
+				result = Plantae_Abbrev_Convarietas;
+			} else if (rank.equals(Rank.VARIETY())) {
+				result = Plantae_Abbrev_Variety;
+			} else if (rank.equals(Rank.SUBVARIETY())) {
+				result = Plantae_Abbrev_Subvariety;
+			} else if (rank.equals(Rank.FORM())) {
+				result = Plantae_Abbrev_Forma;
+			} else if (rank.equals(Rank.SUBFORM())) {
+				result = Plantae_Abbrev_Subforma;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Plantae_Abbrev_Forma_spec;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Plantae_Abbrev_Taxa_infragen;
+//			} else if (rank.equals(Rank.)) { // not yet specified
+//				result = Plantae_Abbrev_Taxa_infraspec;
+			} else {
+				//TODO Exception
+				logger.warn("Abbreviation for Rank of Kingdom Plantae not supported in CDM: "+ rank.getLabel());
+				return null;
+			}
+		} else {
+			//TODO Exception
+			logger.warn("Kingdom not yet supported in CDM: "+ pesiKingdomId);
+			return null;
+		}
+		return result;
+	}
+
 	/**
 	 * Returns the identifier of a PESI specific kingdom for a given CDM nomenclatural code.
 	 * @param nomenclaturalCode

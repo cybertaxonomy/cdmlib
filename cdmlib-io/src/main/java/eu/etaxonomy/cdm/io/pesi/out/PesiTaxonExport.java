@@ -20,6 +20,7 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -58,6 +60,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static final String dbTableName = "Taxon";
 	private static final String pluralString = "Taxa";
 	private static NomenclaturalCode nomenclaturalCode;
+	
+	private static String specificEpithet = null;
+	private static String infraSpecificEpithet = null;
+	private static String infraGenericEpithet = null;
+	private static Integer rank = null;
+	private static String genusOrUninomial = null;
 
 	public PesiTaxonExport() {
 		super();
@@ -128,6 +136,32 @@ public class PesiTaxonExport extends PesiExportBase {
 				for (TaxonBase taxonBase : list) {
 					doCount(count++, modCount, pluralString);
 					success &= mapping.invoke(taxonBase);
+					
+					// Check whether some rules are violated for Fauna Europaea CDM data
+					if (rank == null) {
+						logger.error("Rank was not determined: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+					} else {
+						if (infraSpecificEpithet == null && rank.intValue() == 190) {
+							logger.error("InfraSpecificEpithet was not determined although it should exist for rank 190: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+						}
+						if (specificEpithet != null && rank.intValue() < 220) {
+							logger.error("SpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 220: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+						}
+						if (infraSpecificEpithet != null && rank.intValue() < 230) {
+							logger.error("InfraSpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 230: "  + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+						}
+					}
+					if (infraSpecificEpithet != null && specificEpithet == null) {
+						logger.error("An infraSpecificEpithet was determined, but a specificEpithet was not determined: "  + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+					}
+					if (genusOrUninomial == null) {
+						logger.error("GenusOrUninomial was not determined: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+					}
+					
+					rank = null;
+					infraSpecificEpithet = null;
+					genusOrUninomial = null;
+					specificEpithet = null;
 				}
 
 				// Commit transaction
@@ -317,9 +351,16 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getRankFk(TaxonBase<?> taxon) {
 		Integer result = null;
-		if (nomenclaturalCode != null && taxon.isInstanceOf(Taxon.class)) {
+		if (nomenclaturalCode != null && taxon != null) {
+			if (taxon.getName() != null && taxon.getName().getRank() == null) {
+				logger.warn("Rank is null: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
+			}
 			result = PesiTransformer.rank2RankId(taxon.getName().getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+			if (result == null) {
+				logger.warn("Rank " + taxon.getName().getRank().getLabel() + " could not be determined for PESI-Kingdom-Id " + PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+			}
 		}
+		rank  = result;
 		return result;
 	}
 
@@ -351,6 +392,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 			result = nonViralName.getGenusOrUninomial();
 		}
+		genusOrUninomial = result;
 		return result;
 	}
 
@@ -367,6 +409,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 			result = nonViralName.getInfraGenericEpithet();
 		}
+		infraGenericEpithet = result;
 		return result;
 	}
 
@@ -383,6 +426,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 			result = nonViralName.getSpecificEpithet();
 		}
+		specificEpithet = result;
 		return result;
 	}
 
@@ -399,6 +443,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 			result = nonViralName.getInfraSpecificEpithet();
 		}
+		infraSpecificEpithet = result;
 		return result;
 	}
 
@@ -427,10 +472,20 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getWebShowName(TaxonBase<?> taxon) {
 		String result = null;
-		if (taxon != null) {
-			result = taxon.getName().getTitleCache();
-//			List resultList = taxon.getName().getTaggedName();
+		TaxonNameBase taxonName = taxon.getName();
+		if (taxon != null && taxonName != null && taxonName.isInstanceOf(NonViralName.class)) {
+			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
+			if (rank != null && rank.intValue() <= 180) {
+				result = "<i>" + nonViralName.getNameCache() + "</i> ";
+				result += CdmUtils.Nz(getAuthorString(taxon));
+			} else if (rank != null && rank.intValue() > 180) {
+				result = "<i>" + nonViralName.getNameCache() + "</i> ";
+				result += CdmUtils.Nz(PesiTransformer.rank2RankAbbrev(taxon.getName().getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode)));
+				result += (infraSpecificEpithet == null ? " " : " <i>" + infraSpecificEpithet + "</i> ");
+				result += CdmUtils.Nz(getAuthorString(taxon));
+			}
 		}
+		logger.error("webShowName: " + result);
 		return result;
 	}
 
@@ -442,12 +497,16 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getAuthorString(TaxonBase<?> taxon) {
-		TeamOrPersonBase team = taxon.getSec().getAuthorTeam();
-		if (team != null) {
-			return team.getTitleCache();
-		} else {
-			return null;
+		String result = null;
+		if (taxon != null) {
+			if (taxon.getName() != null && taxon.getName().isInstanceOf(NonViralName.class)) {
+				NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+				result = nonViralName.getAuthorshipCache();
+			} else {
+				logger.warn("Taxon is not of instance NonViralName: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
+			}
 		}
+		return result;
 	}
 
 	/**
