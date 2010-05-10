@@ -16,7 +16,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
 	@SuppressWarnings("unused")
@@ -46,8 +48,38 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	private ZooNameDefaultCacheStrategy(){
 		super();
 	}
-
 	
+	@Override
+	protected String getSpeciesNameCache(NonViralName nonViralName){
+		String result;
+		result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+		if (CdmUtils.isNotEmpty(nonViralName.getInfraGenericEpithet())){
+			result += " (" + nonViralName.getInfraGenericEpithet().trim() + ")";
+		}
+		
+		result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+		result = addAppendedPhrase(result, nonViralName).trim();
+		result = result.replace("\\s\\", " ");
+		return result;
+	}
+	
+	/*@Override
+	protected String getInfraGenusNameCache(NonViralName zooName){
+		String result;
+		Rank rank = zooName.getRank();
+		if (rank.isSpeciesAggregate()){
+			return getSpeciesAggregateCache(zooName);
+		}
+		//String infraGenericMarker = "'unhandled infrageneric rank'";
+		
+		result = CdmUtils.Nz(zooName.getGenusOrUninomial());
+		if (zooName.getInfraGenericEpithet() != null){
+				result = zooName.getInfraGenericEpithet();
+		} 
+		//result += " " + infraGenericMarker + " " + (CdmUtils.Nz(zooName.getInfraGenericEpithet())).trim().replace("null", "");
+		result = addAppendedPhrase(result, zooName).trim();
+		return result;
+	}*/
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNonCacheAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)

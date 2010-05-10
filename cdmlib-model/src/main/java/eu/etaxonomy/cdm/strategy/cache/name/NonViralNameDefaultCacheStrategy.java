@@ -432,7 +432,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			if (rank.isSpeciesAggregate()){
 				return getSpeciesAggregateCache(nonViralName);
 			}
-			String infraGenericMarker = "xxx.";
+			String infraGenericMarker = "'unhandled infrageneric rank'";
 			if (rank != null){
 				try {
 					infraGenericMarker = rank.getInfraGenericMarker();
