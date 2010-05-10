@@ -56,25 +56,44 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	 */
 	public int compare(TaxonBase taxonBase1, TaxonBase taxonBase2) {
 		int result;
+		boolean invalOrNudForTaxon1 = false;
+		boolean invalOrNudForTaxon2 = false;
 		
 		//if a taxon has nomenclatural status "nom. inval." or "nom. nud."
 		//TODO: überprüfen!!!
 		Set status = taxonBase1.getName().getStatus();
 		Iterator iterator = status.iterator();
 		if (iterator.hasNext()){
-			NomenclaturalStatus nomStatus1 = (NomenclaturalStatus) iterator.next();
-		
+			NomenclaturalStatus nomStatus1 = (NomenclaturalStatus) iterator.next();		
 			Set status2 = taxonBase2.getName().getStatus();
-			iterator = status.iterator();
+			iterator = status2.iterator(); // is that right? or better iterator = status2.iterator(); ???
 			if (iterator.hasNext()){
 				NomenclaturalStatus nomStatus2 = (NomenclaturalStatus)iterator.next();
-				if (nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM()) || nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
+				if (nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM()) ||
+						nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
+					invalOrNudForTaxon1 = true;
+				}
+				if (nomStatus2.getType().equals(NomenclaturalStatusType.NUDUM()) || nomStatus2.getType().equals(NomenclaturalStatusType.INVALID())){
+					invalOrNudForTaxon2 = true;
+				}
+				if (invalOrNudForTaxon1 && !invalOrNudForTaxon2){
 					return 1;
-				} else if (nomStatus2.getType().equals(NomenclaturalStatusType.NUDUM()) || nomStatus2.getType().equals(NomenclaturalStatusType.INVALID())){
+				}else if (!invalOrNudForTaxon1 && invalOrNudForTaxon2){
 					return -1;
 				}
+				else{ // both taxon are invalid or nudum
+					//result = 0;
+				}
+			}else{//if taxonbase2.getName().getStatus = NULL and taxonbase2 not
+				return 1;
+			}
+		}else{//if taxonbase1.getName().getStatus = NULL  
+			if (taxonBase2.getName().getStatus() == null){ // both are null, continue checking				
+			}else{
+				return -1;
 			}
 		}
+		
 		String date1 = getDate(taxonBase1);;
 		String date2 = getDate(taxonBase2);
 		if (date1 == null && date2 == null){
