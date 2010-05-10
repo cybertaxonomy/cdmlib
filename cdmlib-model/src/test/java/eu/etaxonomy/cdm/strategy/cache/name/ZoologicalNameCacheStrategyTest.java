@@ -193,7 +193,13 @@ public class ZoologicalNameCacheStrategyTest {
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
 		
 		this.getValue(method, strategy, subGenusName);
+		
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
+	
+		subGenusName.setSpecificEpithet("test");
+		subGenusName.setRank(Rank.SPECIES());
+		
+		assertEquals("Genus (InfraGenericPart) test", strategy.getNameCache(subGenusName));
 	}
 
 	/**
