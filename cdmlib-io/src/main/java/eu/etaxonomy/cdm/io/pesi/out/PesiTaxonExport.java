@@ -485,7 +485,6 @@ public class PesiTaxonExport extends PesiExportBase {
 				result += CdmUtils.Nz(getAuthorString(taxon));
 			}
 		}
-		logger.error("webShowName: " + result);
 		return result;
 	}
 
