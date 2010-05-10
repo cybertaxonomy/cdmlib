@@ -649,11 +649,12 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			if (rank == R_SPECIES) {
 
 				if(parentRankId == R_SUBGENUS) {
-
+					//differ between isParanthesis= true and false
 					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
 							genusOrUninomial.append(grandParentName), 
 							infraGenericEpithet.append(parentName));
-					nameCacheStringBuilder.append(genusSubGenusPart);
+						nameCacheStringBuilder.append(genusSubGenusPart);
+					
 
 				} else if(parentRankId == R_GENUS) {
 
@@ -791,16 +792,16 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			completeString = (String) CdmUtils.removeDuplicateWhitespace(completeString.trim());
 
 		}
-		setCompleteTaxonName(completeString, useOriginalGenus,
+		return setCompleteTaxonName(completeString, useOriginalGenus,
 				genusOrUninomial.toString(), infraGenericEpithet.toString(), 
 				specificEpithet.toString(), infraSpecificEpithet.toString(),
 				fauEuTaxon, taxonBase, fauEuConfig);
-		return completeString;
+		 
 	}
 	
 	
 	/** Sets name parts and caches */
-	private boolean setCompleteTaxonName(String concatString, boolean useOriginalGenus,
+	private String setCompleteTaxonName(String concatString, boolean useOriginalGenus,
 			String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, 
 			FaunaEuropaeaTaxon fauEuTaxon, TaxonBase<?> taxonBase, FaunaEuropaeaImportConfigurator fauEuConfig) {
 
@@ -815,7 +816,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.debug("genusOrUninomial: " + genusOrUninomial); 
 			}
 		}
-		if (!infraGenericEpithet.equals("")) {
+		//wenn es species ist, dann überprüfe paranthesis, sonst nicht
+		//if ((!infraGenericEpithet.equals("") && fauEuTaxon.isParenthesis()) || (!infraGenericEpithet.equals("") && fauEuTaxon.)) {
+		if ((fauEuTaxon.getRankId() == R_SPECIES && fauEuTaxon.getParentRankId() == R_SUBGENUS && fauEuTaxon.isParenthesis()) || (fauEuTaxon.getRankId() == R_SUBGENUS)){
 			zooName.setInfraGenericEpithet(infraGenericEpithet);
 			if (logger.isDebugEnabled()) { 
 				logger.debug("infraGenericEpithet: " + infraGenericEpithet); 
@@ -835,7 +838,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		}
 		//TODO: use generate NameCache
 		//zooName.setNameCache(concatString);
-		zooName.getNameCache();
+		String result = zooName.getNameCache();
 		zooName.generateTitle();
 		//String titleCache = buildNameTitleCache(concatString, useOriginalGenus, fauEuTaxon);
 		//zooName.setTitleCache(titleCache);
@@ -851,9 +854,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		//taxonBase.setTitleCache(titleCache);
 		
 		if (logger.isDebugEnabled()) { 
-			logger.debug("Name stored: " + concatString); 
+			logger.debug("Name stored: " + result); 
 		}
-		return success;
+		return result;
 	}
 
 }
