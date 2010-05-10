@@ -59,6 +59,11 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		boolean invalOrNudForTaxon1 = false;
 		boolean invalOrNudForTaxon2 = false;
 		
+		boolean invalTaxon1 = false;
+		boolean invalTaxon2 = false;
+		boolean nudumTaxon1 = false;
+		boolean nudumTaxon2 = false;
+		
 		//if a taxon has nomenclatural status "nom. inval." or "nom. nud."
 		//TODO: überprüfen!!!
 		Set status = taxonBase1.getName().getStatus();
@@ -69,6 +74,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 			iterator = status2.iterator(); // is that right? or better iterator = status2.iterator(); ???
 			if (iterator.hasNext()){
 				NomenclaturalStatus nomStatus2 = (NomenclaturalStatus)iterator.next();
+/*				
 				if (nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM()) ||
 						nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
 					invalOrNudForTaxon1 = true;
@@ -84,6 +90,38 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 				else{ // both taxon are invalid or nudum
 					//result = 0;
 				}
+*/				
+				// #####
+				if (nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
+					invalTaxon1 = true;
+				}
+				if (nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM())){
+					nudumTaxon1 = true;
+				}
+				if (nomStatus2.getType().equals(NomenclaturalStatusType.INVALID())){
+					invalTaxon2 = true;
+				}
+				if (nomStatus2.getType().equals(NomenclaturalStatusType.NUDUM())){
+					nudumTaxon2 = true;
+				}
+				if (nudumTaxon1 && !nudumTaxon2){
+					return 1;
+				}else if (nudumTaxon1 && nudumTaxon2){
+					//continue
+				}else if (invalTaxon1 && !nudumTaxon2){
+					if (invalTaxon2){
+						//continue
+					}else{
+						return 1;
+					}										
+				}else if (nudumTaxon2 && !nudumTaxon1){
+					return -1;
+				}else if(invalTaxon2){
+					return -1;
+				}
+				// #####
+				
+				
 			}else{//if taxonbase2.getName().getStatus = NULL and taxonbase2 not
 				return 1;
 			}
