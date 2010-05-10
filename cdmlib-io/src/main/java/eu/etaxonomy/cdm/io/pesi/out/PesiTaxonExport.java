@@ -648,7 +648,8 @@ public class PesiTaxonExport extends PesiExportBase {
 		Integer result = null;
 		Taxon taxon = null;
 		if (taxonBase.isInstanceOf(Synonym.class)) {
-			Synonym synonym = (Synonym)taxonBase;
+//			Synonym synonym = (Synonym)taxonBase;
+			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<SynonymRelationship> relations = synonym.getSynonymRelations();
 			if (relations.size() == 1) {
 				taxon = relations.iterator().next().getAcceptedTaxon();
@@ -788,7 +789,8 @@ public class PesiTaxonExport extends PesiExportBase {
 		
 		Taxon taxon = null;
 		if (taxonBase.isInstanceOf(Synonym.class)) {
-			Synonym synonym = (Synonym)taxonBase;
+//			Synonym synonym = (Synonym)taxonBase;
+			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<SynonymRelationship> relations = synonym.getSynonymRelations();
 			if (relations.size() == 1) {
 				taxon  = relations.iterator().next().getAcceptedTaxon();
