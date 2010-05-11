@@ -11,13 +11,17 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +29,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelCommonNamesImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -35,6 +40,8 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -62,6 +69,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	private static final String pluralString = "common names";
 	private static final String dbTableName = "emCommonName";
 
+
+	//map that stores the regions (named areas) and makes them accessible via the regionFk
+	private Map<String, NamedArea> regionMap = new HashMap<String, NamedArea>();
+
+	
 
 	public BerlinModelCommonNamesImport(){
 		super();
@@ -103,11 +115,55 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		return recordQuery;
 	}
 	
+	
+
+	@Override
+	protected boolean doInvoke(BerlinModelImportState state) {
+		boolean result = true;
+		try {
+			result &= makeRegions(state);
+		} catch (Exception e) {
+			logger.error("Error when creating common name regions:" + e.getMessage());
+			result = false;
+		}
+		result &= super.doInvoke(state);
+		return result;
+	}
+	
+	/**
+	 * @param state 
+	 * 
+	 */
+	private boolean makeRegions(BerlinModelImportState state) {
+		boolean result = true;
+		try {
+			SortedSet<Integer> regionFks = new TreeSet<Integer>();
+			Source source = state.getConfig().getSource();
+			
+			result = getRegionFks(result, regionFks, source);
+			//concat filter string
+			String sqlWhere = getSqlWhere(regionFks);
+			
+			//get E+M - TDWG Mapping
+			Map<String, String> emTdwgMap = getEmTdwgMap(source);
+			//fill regionMap
+			fillRegionMap(source, sqlWhere, emTdwgMap);
+			
+			return result;
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
-	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state)  {
 		boolean success = true ;
 		BerlinModelImportConfigurator config = state.getConfig();
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
@@ -119,7 +175,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		
 		Map<String, Language> iso6392Map = new HashMap<String, Language>();
 		
-		logger.warn("Regions not yet implemented for Common Names");
 		logger.warn("MisappliedNameRefFk  not yet implemented for Common Names");
 		
 		ResultSet rs = partitioner.getResultSet();
@@ -142,9 +197,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String status = rs.getString("Status");
 				Object nameInSourceFk = rs.getObject("NameInSourceFk");
 				
-				//TODO
-				//String region = rs.getString("Region");
-				//String regionFk  = rs.getString("RegionFks");
+				//regions
+				String region = rs.getString("Region");
+				String regionFks  = rs.getString("RegionFks");
+				String[] regionFkSplit = regionFks.split(",");
 				
 				//commonNameString
 				if (CdmUtils.isEmpty(commonNameString)){
@@ -154,7 +210,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				}
 				
 				//taxon
-				Taxon taxon;
+				Taxon taxon = null;
 				TaxonBase taxonBase = null;
 				taxonBase  = taxonMap.get(String.valueOf(taxonId));
 				if (taxonBase == null){
@@ -171,10 +227,26 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				Language language = getAndHandleLanguage(iso6392Map, iso639_2, iso639_1, languageString, originalLanguageString);
 				
 				//CommonTaxonName
-				CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonNameString, language);
-				TaxonDescription description = getDescription(taxon);
-				description.addElement(commonTaxonName);
-				
+				List<CommonTaxonName> commonTaxonNames = new ArrayList<CommonTaxonName>();
+				for (String regionFk : regionFkSplit){ 
+					CommonTaxonName commonTaxonName;
+					if (commonTaxonNames.size() == 0){
+						commonTaxonName = CommonTaxonName.NewInstance(commonNameString, language);
+					}else{
+						commonTaxonName = (CommonTaxonName)commonTaxonNames.get(0).clone();
+					}
+					commonTaxonNames.add(commonTaxonName);
+					regionFk = regionFk.trim();
+					NamedArea area = regionMap.get(regionFk);
+					if (area == null){
+						logger.warn("Area for " + regionFk + " not defined.");
+					}else{
+						commonTaxonName.setArea(area);
+						TaxonDescription description = getDescription(taxon);
+						description.addElement(commonTaxonName);
+					}
+				}
+					
 				//Reference/Source
 				String strRefId = String.valueOf(refId);
 				String languageRefFk = String.valueOf(languageRefRefFk);
@@ -191,7 +263,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					logger.info("Name used in source (" + nameInSourceFk + ") was not found");
 				}
 				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
-				commonTaxonName.addSource(source);
+				for (CommonTaxonName commonTaxonName : commonTaxonNames){
+					commonTaxonName.addSource(source);
+				}
 				
 				//MisNameRef
 				if (misNameRefFk != null){
@@ -226,12 +300,16 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				if (CdmUtils.isNotEmpty(status)){
 					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status");
 					Annotation annotation = Annotation.NewInstance(status, statusAnnotationType, Language.DEFAULT());
-					commonTaxonName.addAnnotation(annotation);
+					for (CommonTaxonName commonTaxonName : commonTaxonNames){
+						commonTaxonName.addAnnotation(annotation);
+					}
+					
 				}
 				
 				//Notes
-				doIdCreatedUpdatedNotes(state, commonTaxonName, rs, String.valueOf(commonNameId), NAMESPACE);
-				
+				for (CommonTaxonName commonTaxonName : commonTaxonNames){
+					doIdCreatedUpdatedNotes(state, commonTaxonName, rs, String.valueOf(commonNameId), NAMESPACE);
+				}
 				partitioner.startDoSave();
 				taxaToSave.add(taxon);
 
@@ -240,8 +318,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			logger.error("SQLException:" +  e);
 			return false;
 		} catch (ClassCastException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			logger.error("Clone not supported by CommonTaxonName");
+			e.printStackTrace();
+			return false;
 		}
 	
 			
@@ -352,6 +433,136 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		}
 		
 	}
+	
+
+
+	/**
+	 * @param result
+	 * @param regionFks
+	 * @param source
+	 * @return
+	 * @throws SQLException
+	 */
+	private boolean getRegionFks(boolean result, SortedSet<Integer> regionFks,
+			Source source) throws SQLException {
+		String sql = " SELECT DISTINCT RegionFks FROM emCommonName";
+		ResultSet rs = source.getResultSet(sql);
+		while (rs.next()){
+			String strRegionFks = rs.getString("RegionFks"); 
+			String[] regionFkArray = strRegionFks.split(",");
+			for (String regionFk: regionFkArray){
+				regionFk = regionFk.trim();
+				if (! StringUtils.isNumeric(regionFk)){
+					result = false;
+					logger.warn("RegionFk is not numeric: " + regionFk);
+				}else{
+					regionFks.add(Integer.valueOf(regionFk));
+				}
+			}
+		}
+		return result;
+	}
+
+
+
+	/**
+	 * @param source
+	 * @param sqlWhere
+	 * @param emTdwgMap
+	 * @throws SQLException
+	 */
+	private void fillRegionMap(Source source, String sqlWhere,
+			Map<String, String> emTdwgMap) throws SQLException {
+		String sql;
+		ResultSet rs;
+		sql = " SELECT RegionId, Region FROM emLanguageRegion WHERE RegionId IN ("+ sqlWhere+ ") ";
+		rs = source.getResultSet(sql);
+		while (rs.next()){
+			Object regionId = rs.getObject("RegionId");
+			String region = rs.getString("Region");
+			String[] splitRegion = region.split("-");
+			if (splitRegion.length <= 1){
+				NamedArea newArea = NamedArea.NewInstance(region, region, null);
+				getTermService().save(newArea);
+				regionMap.put(String.valueOf(regionId), newArea);
+				logger.warn("Found new area: " +  region);
+			}else if (splitRegion.length == 2){
+				String emCode = splitRegion[1].trim();
+				String tdwgCode = emTdwgMap.get(emCode);
+				if (StringUtils.isNotBlank(tdwgCode) ){
+					NamedArea tdwgArea = getNamedArea(tdwgCode);
+					regionMap.put(String.valueOf(regionId), tdwgArea);
+				}else{
+					logger.warn("emCode did not map to valid tdwgCode: " +  CdmUtils.Nz(emCode) + "->" + CdmUtils.Nz(tdwgCode));
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * @param tdwgCode
+	 */
+	private NamedArea getNamedArea(String tdwgCode) {
+		NamedArea area;
+		if (tdwgCode.equalsIgnoreCase("Ab")){
+			area = NamedArea.NewInstance("Azerbaijan (including Nakhichevan)", "Azerbaijan & Nakhichevan", "Ab");
+			getTermService().save(area);
+		}else if (tdwgCode.equalsIgnoreCase("Rf")){
+			area = NamedArea.NewInstance("The Russian Federation", "The Russian Federation", "Rf");
+			getTermService().save(area);
+		}else if (tdwgCode.equalsIgnoreCase("Uk")){
+			area = NamedArea.NewInstance("Ukraine (including Crimea)", "Ukraine & Crimea", "Uk");
+			getTermService().save(area);
+		}else{
+			area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode);
+		}
+		return area;
+	}
+
+
+
+	/**
+	 * @param regionFks
+	 * @return
+	 */
+	private String getSqlWhere(SortedSet<Integer> regionFks) {
+		String sqlWhere = "";
+		for (Integer regionFk : regionFks){
+			sqlWhere += regionFk + ","; 
+		}
+		sqlWhere = sqlWhere.substring(0, sqlWhere.length()-1);
+		return sqlWhere;
+	}
+
+
+
+	/**
+	 * @param source
+	 * @throws SQLException
+	 */
+	private Map<String, String> getEmTdwgMap(Source source) throws SQLException {
+		String sql;
+		ResultSet rs;
+		Map<String, String> emTdwgMap = new HashMap<String, String>();
+		sql = " SELECT EmCode, TDWGCode FROM emArea ";
+		rs = source.getResultSet(sql);
+		while (rs.next()){
+			String emCode = rs.getString("EMCode");
+			String TDWGCode = rs.getString("TDWGCode");
+			if (StringUtils.isNotBlank(emCode) ){
+				if (emCode.equalsIgnoreCase("Ab") || emCode.equalsIgnoreCase("Rf") ){
+					emTdwgMap.put(emCode.trim(), emCode.trim());
+				}else if (StringUtils.isNotBlank(TDWGCode)){
+					emTdwgMap.put(emCode.trim(), TDWGCode.trim());
+				}
+			}
+		}
+		return emTdwgMap;
+	}
+
+
+
 
 	/**
 	 * Returns the first non-image gallery description. Creates a new one if no description exists.
