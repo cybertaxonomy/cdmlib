@@ -410,7 +410,15 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				
 				if (actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) { 
 					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
+				} else if (fauEuTaxon.isParenthesis()){
+					//the authorteam should be set in parenthesis because there should be a basionym, but we do not know it?
+					ZoologicalName zooName = taxonName.deproxy(taxonName, ZoologicalName.class);
+					zooName.setBasionymAuthorTeam(zooName.getCombinationAuthorTeam());
+					zooName.setCombinationAuthorTeam(null);
+					zooName.setOriginalPublicationYear(zooName.getPublicationYear());
+					zooName.setPublicationYear(null);
 				}
+				
 			}
 		}
 		return success;	
@@ -835,19 +843,19 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		}
 		//wenn es species ist, dann überprüfe paranthesis, sonst nicht
 		//if ((!infraGenericEpithet.equals("") && fauEuTaxon.isParenthesis()) || (!infraGenericEpithet.equals("") && fauEuTaxon.)) {
-		if ((fauEuTaxon.getRankId() == R_SPECIES && fauEuTaxon.getParentRankId() == R_SUBGENUS ) || (fauEuTaxon.getRankId() == R_SUBGENUS)){
+		if (fauEuTaxon.getParentRankId() == R_SUBGENUS || (fauEuTaxon.getRankId() == R_SUBGENUS)){
 			zooName.setInfraGenericEpithet(infraGenericEpithet);
 			if (logger.isDebugEnabled()) { 
 				logger.debug("infraGenericEpithet: " + infraGenericEpithet); 
 			}
 		}
-		if (!specificEpithet.equals("")) {
+		if ((fauEuTaxon.getRankId() == R_SPECIES || fauEuTaxon.getRankId() == R_SUBSPECIES)) {
 			zooName.setSpecificEpithet(specificEpithet);
 			if (logger.isDebugEnabled()) { 
 				logger.debug("specificEpithet: " + specificEpithet); 
 			}
 		}
-		if (!infraSpecificEpithet.equals("")) {
+		if (fauEuTaxon.getRankId() == R_SUBSPECIES) {
 			zooName.setInfraSpecificEpithet(infraSpecificEpithet);
 			if (logger.isDebugEnabled()) { 
 				logger.debug("infraSpecificEpithet: " + infraSpecificEpithet); 
