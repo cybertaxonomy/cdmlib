@@ -52,7 +52,7 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_cichorieae_a();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
 	static final UUID taxonomicTreeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
@@ -76,6 +76,7 @@ public class CichorieaeActivator {
 	
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
+	static final int recordsPerTransaction = 5000;
 	
 	//should the other imports run as well?
 	static final boolean includeTaraxacum = true; 
@@ -178,6 +179,7 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDoUser(doUser);
 		bmImportConfigurator.setEditor(editor);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
+		bmImportConfigurator.setRecordsPerTransaction(recordsPerTransaction);
 		
 
 		// protologueResourceLocations
