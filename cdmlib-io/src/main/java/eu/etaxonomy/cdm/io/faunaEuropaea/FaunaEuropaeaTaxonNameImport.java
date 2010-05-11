@@ -436,12 +436,14 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			// create basionym
 			ZoologicalName basionym = ZoologicalName.NewInstance(taxonName.getRank());
 			basionym.setCombinationAuthorTeam(zooName.getCombinationAuthorTeam());
-			zooName.setCombinationAuthorTeam(null);
+			
 			zooName.setOriginalPublicationYear(zooName.getPublicationYear());
 			basionym.setPublicationYear(zooName.getPublicationYear());
-			zooName.setPublicationYear(null);
+			
 			zooName.addBasionym(basionym, fauEuConfig.getSourceReference(), null, null);
 			zooName.setBasionymAuthorTeam(zooName.getCombinationAuthorTeam());
+			zooName.setCombinationAuthorTeam(null);
+			zooName.setPublicationYear(null);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Basionym created (" + fauEuTaxon.getId() + ")");
 			}
@@ -841,7 +843,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.debug("genusOrUninomial: " + genusOrUninomial); 
 			}
 		}
-		//wenn es species ist, dann überprüfe paranthesis, sonst nicht
+		//wenn es species ist, dann ï¿½berprï¿½fe paranthesis, sonst nicht
 		//if ((!infraGenericEpithet.equals("") && fauEuTaxon.isParenthesis()) || (!infraGenericEpithet.equals("") && fauEuTaxon.)) {
 		if (fauEuTaxon.getParentRankId() == R_SUBGENUS || (fauEuTaxon.getRankId() == R_SUBGENUS)){
 			zooName.setInfraGenericEpithet(infraGenericEpithet);
