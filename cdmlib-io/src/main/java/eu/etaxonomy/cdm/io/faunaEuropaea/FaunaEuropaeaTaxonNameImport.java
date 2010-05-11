@@ -835,7 +835,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		}
 		//wenn es species ist, dann überprüfe paranthesis, sonst nicht
 		//if ((!infraGenericEpithet.equals("") && fauEuTaxon.isParenthesis()) || (!infraGenericEpithet.equals("") && fauEuTaxon.)) {
-		if ((fauEuTaxon.getRankId() == R_SPECIES && fauEuTaxon.getParentRankId() == R_SUBGENUS && fauEuTaxon.isParenthesis()) || (fauEuTaxon.getRankId() == R_SUBGENUS)){
+		if ((fauEuTaxon.getRankId() == R_SPECIES && fauEuTaxon.getParentRankId() == R_SUBGENUS ) || (fauEuTaxon.getRankId() == R_SUBGENUS)){
 			zooName.setInfraGenericEpithet(infraGenericEpithet);
 			if (logger.isDebugEnabled()) { 
 				logger.debug("infraGenericEpithet: " + infraGenericEpithet); 
