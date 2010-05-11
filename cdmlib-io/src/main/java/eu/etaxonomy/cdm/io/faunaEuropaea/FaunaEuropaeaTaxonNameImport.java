@@ -444,6 +444,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			zooName.setBasionymAuthorTeam(zooName.getCombinationAuthorTeam());
 			zooName.setCombinationAuthorTeam(null);
 			zooName.setPublicationYear(null);
+			zooName.generateTitle();
 			if (logger.isDebugEnabled()) {
 				logger.debug("Basionym created (" + fauEuTaxon.getId() + ")");
 			}
