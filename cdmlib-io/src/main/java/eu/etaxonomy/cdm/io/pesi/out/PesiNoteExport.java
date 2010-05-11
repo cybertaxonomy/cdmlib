@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -25,10 +26,14 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -241,7 +246,34 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getLanguageFk(DescriptionElementBase descriptionElement) {
-		return PesiTransformer.language2LanguageId(Language.DEFAULT());
+		Language language = null;
+		Map<Language, LanguageString> multilanguageText = null;
+		if (descriptionElement.isInstanceOf(CommonTaxonName.class)) {
+			CommonTaxonName commonTaxonName = CdmBase.deproxy(descriptionElement, CommonTaxonName.class);
+			language = commonTaxonName.getLanguage();
+		} else if (descriptionElement.isInstanceOf(TextData.class)) {
+			TextData textData = CdmBase.deproxy(descriptionElement, TextData.class);
+			multilanguageText = textData.getMultilanguageText();
+		} else if (descriptionElement.isInstanceOf(IndividualsAssociation.class)) {
+			IndividualsAssociation individualsAssociation = CdmBase.deproxy(descriptionElement, IndividualsAssociation.class);
+			multilanguageText = individualsAssociation.getDescription();
+		} else if (descriptionElement.isInstanceOf(TaxonInteraction.class)) {
+			TaxonInteraction taxonInteraction = CdmBase.deproxy(descriptionElement, TaxonInteraction.class);
+			multilanguageText = taxonInteraction.getDescriptions();
+		} else {
+			logger.warn("Given descriptionElement is not of appropriate instance. Hence LanguageCache could not be determined.");
+		}
+		
+		if (multilanguageText != null) {
+			Set<Language> languages = multilanguageText.keySet();
+
+			// TODO: Think of something more sophisticated than this
+			if (languages.size() > 0) {
+				language = languages.iterator().next();
+			}
+		}
+
+		return PesiTransformer.language2LanguageId(language);
 	}
 
 	/**
@@ -252,7 +284,34 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getLanguageCache(DescriptionElementBase descriptionElement) {
-		return PesiTransformer.language2LanguageCache(Language.DEFAULT());
+		Language language = null;
+		Map<Language, LanguageString> multilanguageText = null;
+		if (descriptionElement.isInstanceOf(CommonTaxonName.class)) {
+			CommonTaxonName commonTaxonName = CdmBase.deproxy(descriptionElement, CommonTaxonName.class);
+			language = commonTaxonName.getLanguage();
+		} else if (descriptionElement.isInstanceOf(TextData.class)) {
+			TextData textData = CdmBase.deproxy(descriptionElement, TextData.class);
+			multilanguageText = textData.getMultilanguageText();
+		} else if (descriptionElement.isInstanceOf(IndividualsAssociation.class)) {
+			IndividualsAssociation individualsAssociation = CdmBase.deproxy(descriptionElement, IndividualsAssociation.class);
+			multilanguageText = individualsAssociation.getDescription();
+		} else if (descriptionElement.isInstanceOf(TaxonInteraction.class)) {
+			TaxonInteraction taxonInteraction = CdmBase.deproxy(descriptionElement, TaxonInteraction.class);
+			multilanguageText = taxonInteraction.getDescriptions();
+		} else {
+			logger.warn("Given descriptionElement is not of appropriate instance. Hence LanguageCache could not be determined.");
+		}
+		
+		if (multilanguageText != null) {
+			Set<Language> languages = multilanguageText.keySet();
+
+			// TODO: Think of something more sophisticated than this
+			if (languages.size() > 0) {
+				language = languages.iterator().next();
+			}
+		}
+
+		return PesiTransformer.language2LanguageCache(language);
 	}
 
 	/**
