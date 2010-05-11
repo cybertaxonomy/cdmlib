@@ -130,7 +130,8 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	}
 	
 	protected String getInfraSpeciesNameCache(NonViralName nonViralName){
-		boolean includeMarker = ! isAutonym(nonViralName);
+		//boolean includeMarker = ! isAutonym(nonViralName);
+		boolean includeMarker = false;
 		return getInfraSpeciesNameCache(nonViralName, includeMarker);
 	}
 
