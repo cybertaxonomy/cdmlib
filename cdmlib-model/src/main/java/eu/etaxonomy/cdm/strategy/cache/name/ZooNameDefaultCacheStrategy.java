@@ -134,5 +134,56 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		boolean includeMarker = false;
 		return getInfraSpeciesNameCache(nonViralName, includeMarker);
 	}
+	
+	@Override
+	public String getTitleCache(T nonViralName) {
+		if (nonViralName == null){
+			return null;
+		}
+		
+		if (nonViralName.isProtectedTitleCache()){
+			return nonViralName.getTitleCache();
+		}
+		String result = "";
+		//Autonym
+		/*if (isAutonym(nonViralName)){
+			String speciesPart = getSpeciesNameCache(nonViralName);
+			//TODO should this include basionym authors and ex authors
+			INomenclaturalAuthor author = nonViralName.getCombinationAuthorTeam();
+			String authorPart = "";
+			if (author != null){
+				authorPart = CdmUtils.Nz(author.getNomenclaturalTitle());
+			}
+			INomenclaturalAuthor basAuthor = nonViralName.getBasionymAuthorTeam();
+			String basAuthorPart = "";
+			if (basAuthor != null){
+				basAuthorPart = CdmUtils.Nz(basAuthor.getNomenclaturalTitle());
+			}
+			if (! "".equals(basAuthorPart)){
+				authorPart = "("+ basAuthorPart +")" + authorPart;
+			}
+			String infraSpeciesPart = (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()));
+
+			String infraSpeciesSeparator = "";
+			if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
+				//TODO handle exception
+				logger.warn("Rank for autonym does not exist or is not lower than species !!");
+			}else{
+				infraSpeciesSeparator = nonViralName.getRank().getAbbreviation();
+			}
+			
+			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesSeparator, infraSpeciesPart});
+			result = result.trim().replace("null", "");
+		}else{ //not Autonym*/
+			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
+			if (nameIncludesAuthorship(nonViralName)){
+				String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
+				result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);
+			}else{
+				result = nameCache;
+			}
+		//}
+		return result;
+	}
 
 }
