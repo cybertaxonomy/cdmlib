@@ -63,7 +63,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		return result;
 	}
 	
-	/*@Override
+	@Override
 	protected String getInfraGenusNameCache(NonViralName zooName){
 		String result;
 		Rank rank = zooName.getRank();
@@ -79,7 +79,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		//result += " " + infraGenericMarker + " " + (CdmUtils.Nz(zooName.getInfraGenericEpithet())).trim().replace("null", "");
 		result = addAppendedPhrase(result, zooName).trim();
 		return result;
-	}*/
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNonCacheAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)
