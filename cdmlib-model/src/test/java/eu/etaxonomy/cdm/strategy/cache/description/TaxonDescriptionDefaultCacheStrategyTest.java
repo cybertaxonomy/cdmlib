@@ -47,7 +47,7 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		botName.setSpecificEpithet("species");
 		
 		ReferenceBase sec = refFactory.newGeneric();
-		sec.setTitleCache("My sec");
+		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
 		Assert.assertEquals("Wrong title cache for description", "Taxon description for Genus species", taxonDescription.getTitleCache());

@@ -325,14 +325,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					String title = elToTaxonConcept.getTextNormalize();
 					//TODO synonym?
 					TaxonNameBase<?,?> taxonName = NonViralName.NewInstance(null);
-					taxonName.setTitleCache(title);
+					taxonName.setTitleCache(title, true);
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
 						result = Synonym.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());
 					}else{
 						result = Taxon.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());	
 					}
-					result.setTitleCache(title);
+					result.setTitleCache(title, true);
 				}
 			}else{
 				logger.warn("External link types for synonym not yet implemented");

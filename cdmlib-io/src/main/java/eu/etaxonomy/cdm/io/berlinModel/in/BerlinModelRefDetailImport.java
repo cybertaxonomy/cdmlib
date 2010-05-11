@@ -122,7 +122,7 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 				String fullNomRefCache = rs.getString("fullNomRefCache"); 
 				if ( CdmUtils.isNotEmpty(fullNomRefCache) ){
 					ReferenceBase genericReference = refFactory.newGeneric();
-					genericReference.setTitleCache(fullNomRefCache);
+					genericReference.setTitleCache(fullNomRefCache, true);
 					nomRefDetailsToSave.put(refDetailId, genericReference);
 					//year
 					genericReference.setDatePublished(ImportHelper.getDatePublished(refYear)); 
@@ -135,7 +135,7 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 				String fullRefCache = rs.getString("fullRefCache"); 
 				if ( CdmUtils.isNotEmpty(fullRefCache) && ! fullRefCache.equals(fullNomRefCache)){
 					ReferenceBase genericReference = refFactory.newGeneric();
-					genericReference.setTitleCache(fullRefCache);
+					genericReference.setTitleCache(fullRefCache, true);
 					biblioRefDetailsToSave.put(refDetailId, genericReference);
 					//year
 					genericReference.setDatePublished(ImportHelper.getDatePublished(refYear)); 

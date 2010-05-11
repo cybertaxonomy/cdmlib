@@ -126,7 +126,7 @@ public class SDDImportConfigurator extends ImportConfiguratorBase implements IIm
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("XXX");
+			sourceReference.setTitleCache("XXX", true);
 		}
 		return sourceReference;
 	}

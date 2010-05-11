@@ -197,7 +197,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			result = getInstance(clazz);
 			if (result != null){
 				String title = element.getTextNormalize();
-				result.setTitleCache(title);
+				result.setTitleCache(title, true);
 			}
 		}else if (linkType == null || linkType.equals("local")){
 			//TODO
@@ -235,7 +235,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			}else{
 				result = refFactory.newGeneric();
 				String title = elSimple.getTextNormalize();
-				result.setTitleCache(title);
+				result.setTitleCache(title, true);
 			}
 		}
 		return result;

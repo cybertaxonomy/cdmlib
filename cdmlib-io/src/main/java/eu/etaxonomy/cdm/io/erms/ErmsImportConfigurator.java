@@ -109,7 +109,7 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 		if (sourceReference == null){
 			sourceReference =  refFactory.newDatabase();
 			if (getSource() != null){
-				sourceReference.setTitleCache(getSource().getDatabase());
+				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
 		}
 		return sourceReference;

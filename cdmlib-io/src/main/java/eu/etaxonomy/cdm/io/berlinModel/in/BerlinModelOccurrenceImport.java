@@ -271,7 +271,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 				result = descriptionSet.iterator().next(); 
 			}else{
 				result = TaxonDescription.NewInstance();
-				result.setTitleCache(sourceSec.getTitleCache());
+				result.setTitleCache(sourceSec.getTitleCache(), true);
 				taxon.addDescription(result);
 			}
 		}else{

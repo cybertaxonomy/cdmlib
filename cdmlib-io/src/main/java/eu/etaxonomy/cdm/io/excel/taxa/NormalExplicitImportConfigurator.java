@@ -86,7 +86,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newGeneric();
-			sourceReference.setTitleCache("Excel Taxon import");
+			sourceReference.setTitleCache("Excel Taxon import", true);
 		}
 		return sourceReference;
 	}

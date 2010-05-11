@@ -221,7 +221,7 @@ public class SynthesysCacheActivator {
 		try {
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			ReferenceBase sec = refFactory.newDatabase();
-			sec.setTitleCache("SYNTHESYS CACHE DATA");
+			sec.setTitleCache("SYNTHESYS CACHE DATA", true);
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
@@ -438,7 +438,7 @@ public class SynthesysCacheActivator {
 					System.out.println("a trouve l'agent");
 				}catch (Exception e) {
 					collector = Person.NewInstance();
-					collector.setTitleCache(collName);
+					collector.setTitleCache(collName, true);
 				}
 				gatheringEvent.setCollector(collector);
 			}

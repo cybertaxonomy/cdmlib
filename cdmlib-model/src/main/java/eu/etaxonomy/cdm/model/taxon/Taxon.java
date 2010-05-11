@@ -1553,7 +1553,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		}
 		if (result == null){
 			result = TaxonDescription.NewInstance();
-			result.setTitleCache(titleCache);
+			result.setTitleCache(titleCache, true);
 			this.addDescription(result);
 			result.setImageGallery(true);
 		}

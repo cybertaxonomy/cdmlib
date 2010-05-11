@@ -78,11 +78,11 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	public final void testGetReferencingObjects() {
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
-		name.setTitleCache("A name");
+		name.setTitleCache("A name", true);
 		ReferenceBase ref1 = refFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);
 		Person author = Person.NewInstance();
-		author.setTitleCache("Author");
+		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
 		ref1.setAuthorTeam(author);
 		name.setBasionymAuthorTeam(author);

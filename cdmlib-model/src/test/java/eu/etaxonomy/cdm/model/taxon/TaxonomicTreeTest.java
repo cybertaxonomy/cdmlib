@@ -331,10 +331,10 @@ public class TaxonomicTreeTest {
 			
 			
 			BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
-			name.setTitleCache("A dummy name");
+			name.setTitleCache("A dummy name", true);
 			result.add(name);
 			ReferenceBase ref = refFactory.newBook();
-			ref.setTitleCache("A dummy book");
+			ref.setTitleCache("A dummy book", true);
 			result.add(ref);
 			
 			return result;

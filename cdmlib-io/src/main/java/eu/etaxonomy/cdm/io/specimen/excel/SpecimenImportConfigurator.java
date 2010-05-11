@@ -96,7 +96,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenI
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("SYNTHESYS specimen import");
+			sourceReference.setTitleCache("SYNTHESYS specimen import", true);
 		}
 		return sourceReference;
 	}

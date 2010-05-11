@@ -65,9 +65,9 @@ public class TaxonTest extends EntityTestBase {
 		Person linne =new Person("Carl", "Linné", "L.");
 		sec= refFactory.newBook();
 		sec.setAuthorTeam(linne);
-		sec.setTitleCache("Schönes saftiges Allgäu");
+		sec.setTitleCache("Schönes saftiges Allgäu", true);
 		misSec = refFactory.newBook();
-		misSec.setTitleCache("Stupid book");
+		misSec.setTitleCache("Stupid book", true);
 		
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
 		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);

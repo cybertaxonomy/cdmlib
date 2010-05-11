@@ -444,7 +444,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 					specimen = (Specimen)originalSpecimen.clone();
 					String title = originalSpecimen.getTitleCache();
 					title = title + "(" + tmpCollString + ")";
-					specimen.setTitleCache(title );
+					specimen.setTitleCache(title, true );
 					result.put(specimen, status);
 				//}
 			}

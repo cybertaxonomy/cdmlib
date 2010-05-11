@@ -72,7 +72,7 @@ public class NameValidCharactersTest extends CdmIntegrationTest {
 		name.setSpecificEpithet("balsamea");
 		name.setNameCache("Abies balsamea");
 		name.setAuthorshipCache("L.");
-		name.setTitleCache("Abies balsamea L.");
+		name.setTitleCache("Abies balsamea L.", true);
 		name.setFullTitleCache("Abies balsamea L.");
 	}
 	

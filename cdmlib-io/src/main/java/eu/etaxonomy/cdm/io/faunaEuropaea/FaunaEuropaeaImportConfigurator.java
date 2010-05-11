@@ -102,7 +102,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
 			
-			sourceReference.setTitleCache("Fauna Europaea database");
+			sourceReference.setTitleCache("Fauna Europaea database", true);
 		}
 		return sourceReference;
 	}
@@ -117,7 +117,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			auctReference = refFactory.newDatabase();
 			
-			auctReference.setTitleCache("auct.");
+			auctReference.setTitleCache("auct.", true);
 		}
 		return auctReference;
 	}

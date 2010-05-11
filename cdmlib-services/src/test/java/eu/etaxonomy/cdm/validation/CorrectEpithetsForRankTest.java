@@ -55,7 +55,7 @@ public class CorrectEpithetsForRankTest extends CdmIntegrationTest {
 		name.setNameCache("Aus aus");
 		name.setAuthorshipCache("L.");
 		name.setFullTitleCache("Aus aus L.");
-		name.setTitleCache("Aus aus L.");
+		name.setTitleCache("Aus aus L.", true);
 	}
 	
 	

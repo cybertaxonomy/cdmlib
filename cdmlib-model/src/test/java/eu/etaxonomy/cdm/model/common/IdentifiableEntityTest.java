@@ -59,23 +59,23 @@ public class IdentifiableEntityTest {
 
 		abies = NonViralName.NewInstance(Rank.GENUS(), null);
 		abies.setNameCache("Abies");
-		abies.setTitleCache("Abies");
+		abies.setTitleCache("Abies", true);
 		
 		abiesMill = NonViralName.NewInstance(Rank.GENUS(), null);
 		abiesMill.setNameCache("Abies");
-		abiesMill.setTitleCache("Abies Mill.");
+		abiesMill.setTitleCache("Abies Mill.", true);
 		
 		abiesAlba = NonViralName.NewInstance(Rank.SPECIES(), null);
 		abiesAlba.setNameCache("Abies alba");
-		abiesAlba.setTitleCache("Abies alba");
+		abiesAlba.setTitleCache("Abies alba", true);
 		
 		abiesAlbaMichx = NonViralName.NewInstance(Rank.SPECIES(), null);
 		abiesAlbaMichx.setNameCache("Abies alba");
-		abiesAlbaMichx.setTitleCache("Abies alba Michx.");
+		abiesAlbaMichx.setTitleCache("Abies alba Michx.", true);
 		
 		abiesAlbaMill = NonViralName.NewInstance(Rank.SPECIES(), null);
 		abiesAlbaMill.setNameCache("Abies alba");
-		abiesAlbaMill.setTitleCache("Abies alba Mill.");
+		abiesAlbaMill.setTitleCache("Abies alba Mill.", true);
 	}
 
 	/**

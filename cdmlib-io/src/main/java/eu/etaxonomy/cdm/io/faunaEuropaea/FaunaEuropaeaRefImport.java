@@ -190,10 +190,10 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				TeamOrPersonBase<Team> author = null;
 				ReferenceFactory refFactory = ReferenceFactory.newInstance();
 				reference = refFactory.newGeneric();
-				reference.setTitleCache(title);
+				reference.setTitleCache(title, true);
 				reference.setDatePublished(ImportHelper.getDatePublished(year));
 				author = Team.NewInstance();
-				author.setTitleCache(refAuthor);
+				author.setTitleCache(refAuthor, true);
 
 				ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
 				ImportHelper.setOriginalSource(author, fauEuConfig.getSourceReference(), refId, namespace);

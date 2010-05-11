@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -154,7 +153,7 @@ public class SynthesysCacheActivator {
 		try {
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			ReferenceBase sec = refFactory.newDatabase();
-			sec.setTitleCache("SYNTHESYS CACHE DATA");
+			sec.setTitleCache("SYNTHESYS CACHE DATA", true);
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
@@ -372,7 +371,7 @@ public class SynthesysCacheActivator {
 					System.out.println("a trouve l'agent");
 				}catch (Exception e) {
 					collector = Person.NewInstance();
-					collector.setTitleCache(collName);
+					collector.setTitleCache(collName, true);
 				}
 				gatheringEvent.setCollector(collector);
 			}

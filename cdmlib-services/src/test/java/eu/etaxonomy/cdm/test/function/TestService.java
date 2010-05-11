@@ -63,7 +63,7 @@ public class TestService {
 		logger.info("Create reference objects...");
 		
 		ReferenceBase sec = refFactory.newJournal();
-		sec.setTitleCache("TestJournal");
+		sec.setTitleCache("TestJournal", true);
 		
 		logger.info("Create taxon objects...");
 		Taxon childTaxon = Taxon.NewInstance(nvn, sec);
@@ -85,7 +85,7 @@ public class TestService {
 		
 		logger.info("Create new Author agent...");
 		Person team= Person.NewInstance();
-		team.setTitleCache("AuthorAgent1");
+		team.setTitleCache("AuthorAgent1", true);
 		nvn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");
@@ -252,10 +252,10 @@ public class TestService {
 			
 			
 			TaxonNameBase<?,?> name = NonViralName.NewInstance(null);
-			name.setTitleCache("Abies alba");
+			name.setTitleCache("Abies alba", true);
 
 			TaxonNameBase<?,?> name2 = NonViralName.NewInstance(null);
-			name2.setTitleCache("Abies beta");
+			name2.setTitleCache("Abies beta", true);
 			
 			//appCtr.getNameService().saveTaxonName(name);
 			//appCtr.getNameService().saveTaxonName(name2);

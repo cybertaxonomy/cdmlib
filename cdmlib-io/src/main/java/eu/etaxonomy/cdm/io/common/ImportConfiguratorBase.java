@@ -275,7 +275,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReferenceTitle(java.lang.String)
 	 */
 	public void setSourceReferenceTitle(String sourceReferenceTitle) {
-		getSourceReference().setTitleCache(sourceReferenceTitle);
+		getSourceReference().setTitleCache(sourceReferenceTitle, true);
 	}
 
 

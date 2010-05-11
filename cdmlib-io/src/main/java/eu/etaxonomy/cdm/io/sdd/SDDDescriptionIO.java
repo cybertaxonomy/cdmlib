@@ -225,7 +225,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 		String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
-		sec.setTitleCache(label);
+		sec.setTitleCache(label, true);
 
 		if (detail != null) {
 			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
@@ -349,7 +349,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				labDet = langLabDet.get(langLabDet.keySet().iterator().next());
 			}
 
-			ie.setTitleCache(labDet.get(0));
+			ie.setTitleCache(labDet.get(0), true);
 
 			if (labDet.size()>1) {
 				Annotation annotation = null;

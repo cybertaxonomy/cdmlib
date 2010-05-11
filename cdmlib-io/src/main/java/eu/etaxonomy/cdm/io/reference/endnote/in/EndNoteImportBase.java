@@ -199,7 +199,7 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 				
 			if (result != null){
 				String title = element.getTextNormalize();
-				result.setTitleCache(title);
+				result.setTitleCache(title, true);
 			}
 		}else if (linkType == null || linkType.equals("local")){
 			//TODO
@@ -237,7 +237,7 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 			}else{
 				result = refFactory.newGeneric();
 				String title = elSimple.getTextNormalize();
-				result.setTitleCache(title);
+				result.setTitleCache(title, true);
 			}
 		}
 		return result;

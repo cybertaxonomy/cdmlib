@@ -506,7 +506,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			referenceBase.setAuthorTeam(author);
 			//referenceBase.setNomenclaturallyRelevant(true);
 			if (isPreliminary){
-				referenceBase.setTitleCache(nomRefCache);
+				referenceBase.setTitleCache(nomRefCache, true);
 			}
 			if (! nomRefToSave.containsKey(refId)){
 				if (referenceBase == null){
@@ -536,7 +536,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			referenceBase.setAuthorTeam(author);
 			referenceBase.setNomenclaturallyRelevant(false);
 			if (isPreliminary){
-				referenceBase.setTitleCache(refCache);
+				referenceBase.setTitleCache(refCache, true);
 			}
 			if (! biblioRefToSave.containsKey(refId)){
 				biblioRefToSave.put(refId, referenceBase);
@@ -939,7 +939,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					TeamOrPersonBase<?> team = Team.NewInstance();
 					//TODO which one to use??
 					team.setNomenclaturalTitle(authorString);
-					team.setTitleCache(authorString);
+					team.setTitleCache(authorString, true);
 					result = team;
 				}
 			}
@@ -948,7 +948,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				TeamOrPersonBase<?> team = Team.NewInstance();
 				//TODO which one to use??
 				team.setNomenclaturalTitle(authorString);
-				team.setTitleCache(authorString);
+				team.setTitleCache(authorString, true);
 				result = team;
 			}else{
 				result = nomAuthor;

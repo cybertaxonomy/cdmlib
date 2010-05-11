@@ -60,7 +60,7 @@ public class MustHaveAuthorityTest extends CdmIntegrationTest {
 		name.setSpecificEpithet("aus");
 		name.setAuthorshipCache("L.");
 		name.setFullTitleCache("Aus aus L.");
-		name.setTitleCache("Aus aus L.");
+		name.setTitleCache("Aus aus L.", true);
 	}
 	
 	

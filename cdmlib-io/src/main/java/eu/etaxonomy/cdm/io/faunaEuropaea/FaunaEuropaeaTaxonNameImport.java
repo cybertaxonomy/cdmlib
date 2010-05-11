@@ -829,7 +829,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 		zooName.setNameCache(concatString);
 		String titleCache = buildNameTitleCache(concatString, useOriginalGenus, fauEuTaxon);
-		zooName.setTitleCache(titleCache);
+		zooName.setTitleCache(titleCache, true);
 		//titleCache = buildNameFullTitleCache(concatString, fauEuConfig);
 		zooName.setFullTitleCache(titleCache); // TODO: Add reference, NC status
 		
@@ -837,7 +837,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 //				fauEuTaxon.getId(), "TaxonName");
 
 		titleCache = buildTaxonTitleCache(concatString, fauEuConfig.getSourceReference());
-		taxonBase.setTitleCache(titleCache);
+		taxonBase.setTitleCache(titleCache, true);
 		
 		if (logger.isDebugEnabled()) { 
 			logger.debug("Name stored: " + concatString); 

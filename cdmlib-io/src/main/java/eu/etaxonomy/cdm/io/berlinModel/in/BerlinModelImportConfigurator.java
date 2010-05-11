@@ -131,7 +131,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 		if (sourceReference == null){
 			sourceReference =  refFactory.newDatabase();
 			if (getSource() != null){
-				sourceReference.setTitleCache(getSource().getDatabase());
+				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
 		}
 		return sourceReference;

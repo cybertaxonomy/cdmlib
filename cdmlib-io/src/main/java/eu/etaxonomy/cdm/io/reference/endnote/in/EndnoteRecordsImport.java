@@ -346,7 +346,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String  secondary_author=  elStyle_secondary.getTextNormalize();
  					 
 							reference.setAuthorTeam(authorTeam);
-							authorTeam.setTitleCache(secondary_author);
+							authorTeam.setTitleCache(secondary_author, true);
 						}
 					}
 				}

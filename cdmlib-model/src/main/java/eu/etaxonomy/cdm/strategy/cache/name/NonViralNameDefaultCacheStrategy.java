@@ -414,7 +414,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		Team authorTeam = Team.NewInstance();
 		authorTeam.setProtectedTitleCache(true);
-		authorTeam.setTitleCache(nonViralName.getAuthorshipCache());
+		authorTeam.setTitleCache(nonViralName.getAuthorshipCache(), true);
 		tags.add(authorTeam);
 		
 		// Name is an autonym. Rank and infraspecific eitheton follow the author

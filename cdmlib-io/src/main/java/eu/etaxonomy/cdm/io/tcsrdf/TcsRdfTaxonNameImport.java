@@ -145,7 +145,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (value != null){
 					ReferenceFactory refFactory = ReferenceFactory.newInstance();
 					IGeneric nomRef = refFactory.newGeneric(); //TODO
-					nomRef.setTitleCache(value);
+					nomRef.setTitleCache(value, true);
 					nameBase.setNomenclaturalReference(nomRef);
 					
 					//TODO

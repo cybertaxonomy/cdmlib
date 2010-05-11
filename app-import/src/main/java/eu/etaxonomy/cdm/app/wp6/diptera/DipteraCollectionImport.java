@@ -241,7 +241,7 @@ public class DipteraCollectionImport {
 		collection.setTownOrLocation(locationAndCountry);
 		
 		String titleCache = CdmUtils.concat(", ", new String[]{instituteName, lowerInstitutionName, higherInstitutionName, location, country});
-		collection.setTitleCache(titleCache);
+		collection.setTitleCache(titleCache, true);
 		
 		return collection;
 	}

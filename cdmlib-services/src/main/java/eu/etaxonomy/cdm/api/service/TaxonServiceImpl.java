@@ -245,7 +245,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		for(TaxonDescription oldDescription : oldTaxon.getDescriptions()){
 			
 			TaxonDescription newDescription = TaxonDescription.NewInstance(newAcceptedTaxon);
-			newDescription.setTitleCache("Description copied from " + oldTaxon + ". Old title: " + oldDescription.getTitleCache());
+			newDescription.setTitleCache("Description copied from " + oldTaxon + ". Old title: " + oldDescription.getTitleCache(), true);
 			
 			for(DescriptionElementBase element : oldDescription.getElements()){
 				newDescription.addElement(element);

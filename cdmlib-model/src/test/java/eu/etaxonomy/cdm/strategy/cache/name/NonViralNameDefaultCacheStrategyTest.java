@@ -204,7 +204,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
 		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache());
 
-		subSpeciesName.setTitleCache("Pinus beta C.");
+		subSpeciesName.setTitleCache("Pinus beta C.", true);
 		Assert.assertEquals("Expected full title cache has error", "Pinus beta C., GenericRef", subSpeciesName.getFullTitleCache());
 		subSpeciesName.setProtectedTitleCache(false);
 		

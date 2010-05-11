@@ -109,7 +109,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		
 		//unlazyDescription(txConfig, taxon);
 		TaxonDescription description = TaxonDescription.NewInstance();
-		description.setTitleCache(getDescriptionTitle(state));
+		description.setTitleCache(getDescriptionTitle(state), true);
 		if (modsReference != null){
 			description.addDescriptionSource(modsReference);
 		}

@@ -114,9 +114,9 @@ public class DefaultMergeStrategyTest {
 		refFactory = ReferenceFactory.newInstance();
 		bookMergeStrategy = DefaultMergeStrategy.NewInstance(ReferenceBase.class);
 		team1 = Team.NewInstance();
-		team1.setTitleCache("Team1");
+		team1.setTitleCache("Team1", true);
 		team2 = Team.NewInstance();
-		team2.setTitleCache("Team2");
+		team2.setTitleCache("Team2", true);
 		printSeries1 = refFactory.newPrintSeries("Series1");
 		printSeries2 = refFactory.newPrintSeries("Series2");
 		annotation1 = Annotation.NewInstance("Annotation1", null);
@@ -414,7 +414,7 @@ public class DefaultMergeStrategyTest {
 		Person person2 = Person.NewTitledInstance("person2");
 		Person person3 = Person.NewTitledInstance("person3");
 		
-		team1.setTitleCache("Team1");
+		team1.setTitleCache("Team1", true);
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
 		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", WaterbodyOrCountry.ARGENTINA_ARGENTINE_REPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
@@ -466,9 +466,9 @@ public class DefaultMergeStrategyTest {
 		
 		//Person
 		Institution institution1 = Institution.NewInstance();
-		institution1.setTitleCache("inst1");
+		institution1.setTitleCache("inst1", true);
 		Institution institution2 = Institution.NewInstance();
-		institution2.setTitleCache("inst2");
+		institution2.setTitleCache("inst2", true);
 		
 		TimePeriod period1 = TimePeriod.NewInstance(2002, 2004);
 		TimePeriod period2 = TimePeriod.NewInstance(2004, 2006);

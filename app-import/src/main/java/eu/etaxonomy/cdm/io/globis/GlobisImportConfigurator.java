@@ -93,7 +93,7 @@ public class GlobisImportConfigurator extends ImportConfiguratorBase<GlobisImpor
 		if (sourceReference == null){
 			sourceReference =  refFactory.newDatabase();
 			if (getSource() != null){
-				sourceReference.setTitleCache(getSource().getDatabase());
+				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
 		}
 		return sourceReference;

@@ -105,7 +105,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 			String simple = elSimple.getTextNormalize();
 			Specimen specimen = Specimen.NewInstance();
-			specimen.setTitleCache(simple);
+			specimen.setTitleCache(simple, true);
 			
 			
 			childName = "Collection";

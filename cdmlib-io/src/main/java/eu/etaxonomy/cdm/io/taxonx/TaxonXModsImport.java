@@ -190,7 +190,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			if (elNamePart != null){
 				String namePart = elNamePart.getTextNormalize();
 				contentList.remove(elNamePart);
-				authorTeam.setTitleCache(namePart);
+				authorTeam.setTitleCache(namePart, true);
 			}
 			if (elNameParts.size()> 1){
 				logger.warn("Multiple nameparts of unexpected type");

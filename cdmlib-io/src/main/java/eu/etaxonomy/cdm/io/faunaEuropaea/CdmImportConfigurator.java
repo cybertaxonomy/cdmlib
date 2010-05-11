@@ -98,7 +98,7 @@ public class CdmImportConfigurator extends ImportConfiguratorBase<CdmImportState
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("Fauna Europaea database");
+			sourceReference.setTitleCache("Fauna Europaea database", true);
 		}
 		return sourceReference;
 	}

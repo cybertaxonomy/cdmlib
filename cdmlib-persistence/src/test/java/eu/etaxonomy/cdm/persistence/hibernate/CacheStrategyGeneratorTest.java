@@ -118,7 +118,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		logger.debug("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
 		BotanicalName name3 = BotanicalName.NewInstance(Rank.GENUS());
 		name3.setFullTitleCache("Test: MyBook");
-		name3.setTitleCache("Test");
+		name3.setTitleCache("Test", true);
 		cdmEntityDaoBase.saveOrUpdate(name3);
 		List<TaxonNameBase> taxa = cdmEntityDaoBase.findByTitle("Test");
 		

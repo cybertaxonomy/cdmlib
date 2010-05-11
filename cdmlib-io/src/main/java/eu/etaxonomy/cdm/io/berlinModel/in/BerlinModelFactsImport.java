@@ -239,7 +239,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							}
 							if (taxonDescription == null){
 								taxonDescription = TaxonDescription.NewInstance();
-								taxonDescription.setTitleCache(sourceRef == null ? null : sourceRef.getTitleCache());
+								taxonDescription.setTitleCache(sourceRef == null ? null : sourceRef.getTitleCache(), true);
 								taxon.addDescription(taxonDescription);
 							}
 						}

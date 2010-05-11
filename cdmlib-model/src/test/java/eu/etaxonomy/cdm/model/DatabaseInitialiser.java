@@ -44,7 +44,7 @@ public class DatabaseInitialiser {
 		Taxon tax = Taxon.NewInstance(nvName, (ReferenceBase)sec);
 		//BotanicalName ve = nm.getNextVersion();
 		nvName.setNameCache(speciesname);
-		nvName.setTitleCache(speciesname);
+		nvName.setTitleCache(speciesname, true);
 		save(tax);
 		return tax.getId();
 	}

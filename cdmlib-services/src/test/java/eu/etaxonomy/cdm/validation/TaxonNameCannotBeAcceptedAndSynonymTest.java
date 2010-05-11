@@ -70,11 +70,11 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest 
 		sec2 = Generic.NewInstance();
 		
 		taxon1 = Taxon.NewInstance(name1, sec1);
-		taxon1.setTitleCache("Aus aus");
+		taxon1.setTitleCache("Aus aus", true);
 		taxon2 = Taxon.NewInstance(name2, sec1);
-		taxon2.setTitleCache("Aus bus");
+		taxon2.setTitleCache("Aus bus", true);
 		synonym = Synonym.NewInstance(name3, sec1);
-		synonym.setTitleCache("Aus ceus");
+		synonym.setTitleCache("Aus ceus", true);
 	}
 	
 	
