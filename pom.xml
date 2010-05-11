@@ -1015,6 +1015,11 @@
                 </dependency>
                 <dependency>
                   <groupId>org.springframework</groupId>
+                  <artifactId>org.springframework.oxm</artifactId>
+                  <version>${spring.version}</version>
+                </dependency>
+  				<dependency>
+                  <groupId>org.springframework</groupId>
                   <artifactId>org.springframework.agent</artifactId>
                   <version>${spring.version}</version>
                 </dependency>
