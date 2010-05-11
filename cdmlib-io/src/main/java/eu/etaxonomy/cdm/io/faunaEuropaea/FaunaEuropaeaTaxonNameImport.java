@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.record.formula.functions.Isblank;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -274,9 +275,10 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 				ZoologicalName zooName = ZoologicalName.NewInstance(rank);
 				TeamOrPersonBase<?> author = authorStore.get(autId);
+				
 				zooName.setCombinationAuthorTeam(author);
 				zooName.setPublicationYear(year);
-
+				
 				TaxonBase<?> taxonBase;
 
 				Synonym synonym;
@@ -426,7 +428,10 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			// create basionym
 			ZoologicalName basionym = ZoologicalName.NewInstance(taxonName.getRank());
 			basionym.setCombinationAuthorTeam(zooName.getCombinationAuthorTeam());
+			zooName.setCombinationAuthorTeam(null);
+			zooName.setOriginalPublicationYear(zooName.getPublicationYear());
 			basionym.setPublicationYear(zooName.getPublicationYear());
+			zooName.setPublicationYear(null);
 			zooName.addBasionym(basionym, fauEuConfig.getSourceReference(), null, null);
 			zooName.setBasionymAuthorTeam(zooName.getCombinationAuthorTeam());
 			if (logger.isDebugEnabled()) {
@@ -751,11 +756,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		String completeString = "";
 
 		StringBuilder originalGenus = null;
-		String originalGenusString = fauEuTaxon.getOriginalGenusName();
 		
-		if (useOriginalGenus && originalGenusString != null) {
-			originalGenus = new StringBuilder(originalGenusString);
-		}
+		
 		StringBuilder genusOrUninomial = new StringBuilder();
 		StringBuilder infraGenericEpithet = new StringBuilder(); 
 		StringBuilder specificEpithet = new StringBuilder();
@@ -764,7 +766,19 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		localString = fauEuTaxon.getLocalName();
 
 		int rank = fauEuTaxon.getRankId();
-
+		
+		String originalGenusString; 
+		if (rank == R_SUBGENUS && fauEuTaxon.isValid()){
+			originalGenusString = fauEuTaxon.getParentName();
+		} else if (rank == R_SUBGENUS && !fauEuTaxon.isValid()){
+			originalGenusString = fauEuTaxon.getGrandParentName();
+		}else{
+			originalGenusString = fauEuTaxon.getOriginalGenusName();
+		}
+		if (useOriginalGenus && originalGenusString != null) {
+			originalGenus = new StringBuilder(originalGenusString);
+		}
+		
 		if(logger.isDebugEnabled()) { 
 			logger.debug("Local taxon name (rank = " + rank + "): " + localString); 
 		}
