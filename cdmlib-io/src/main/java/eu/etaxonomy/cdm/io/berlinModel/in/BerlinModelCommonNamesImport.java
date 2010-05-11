@@ -101,7 +101,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
         		" regionLanguage.Language AS regionLanguage, languageCommonName.Language, languageCommonName.LanguageOriginal, languageCommonName.ISO639_1, languageCommonName.ISO639_2, " + 
         		" emLanguageRegion.Region, emLanguageReference.RefFk as languageRefRefFk, emLanguageReference.ReferenceShort, " + 
         		" emLanguageReference.ReferenceLong, emLanguageReference.LanguageFk, languageReferenceLanguage.Language AS refLanguage, " +
-        		" languageReferenceLanguage.ISO639_2 AS refLanguageIso639_2, regionLanguage.ISO639_2 AS regionLanguageIso " +
+        		" languageReferenceLanguage.ISO639_2 AS refLanguageIso639_2, regionLanguage.ISO639_2 AS regionLanguageIso, " +
+        		" misappliedTaxon.RIdentifier AS misappliedTaxonId " + 
         	" FROM emLanguage as regionLanguage RIGHT OUTER JOIN " + 
         		" emLanguageRegion ON regionLanguage.LanguageId = emLanguageRegion.LanguageFk RIGHT OUTER JOIN " +
         		" emLanguage AS languageReferenceLanguage RIGHT OUTER JOIN " +
@@ -110,7 +111,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
         		" PTaxon ON emCommonName.PTNameFk = PTaxon.PTNameFk AND emCommonName.PTRefFk = PTaxon.PTRefFk ON " + 
         		" emLanguageReference.ReferenceId = emCommonName.LanguageRefFk LEFT OUTER JOIN " +
         		" emLanguage AS languageCommonName ON emCommonName.LanguageFk = languageCommonName.LanguageId ON " + 
-        		" emLanguageRegion.RegionId = emCommonName.RegionFks " +
+        		" emLanguageRegion.RegionId = emCommonName.RegionFks LEFT OUTER JOIN " +
+        		" PTaxon as misappliedTaxon ON emCommonName.PTNameFk = misappliedTaxon.PTNameFk AND emCommonName.MisNameRefFk = misappliedTaxon.PTRefFk " + 
 			" WHERE emCommonName.CommonNameId IN (" + ID_LIST_TOKEN + ")";
 		return recordQuery;
 	}
@@ -175,7 +177,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		
 		Map<String, Language> iso6392Map = new HashMap<String, Language>();
 		
-		logger.warn("MisappliedNameRefFk  not yet implemented for Common Names");
+	//	logger.warn("MisappliedNameRefFk  not yet implemented for Common Names");
 		
 		ResultSet rs = partitioner.getResultSet();
 		try{
@@ -196,6 +198,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String refLanguageIso639_2 = rs.getString("refLanguageIso639_2");
 				String status = rs.getString("Status");
 				Object nameInSourceFk = rs.getObject("NameInSourceFk");
+				Object misappliedTaxonId = rs.getObject("misappliedTaxonId");
 				
 				//regions
 				String region = rs.getString("Region");
@@ -260,7 +263,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				TaxonNameBase nameUsedInSource = taxonNameMap.get(String.valueOf(nameInSourceFk));
 				if (nameInSourceFk != null && nameUsedInSource == null){
-					logger.info("Name used in source (" + nameInSourceFk + ") was not found");
+					logger.warn("Name used in source (" + nameInSourceFk + ") was not found");
 				}
 				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
 				for (CommonTaxonName commonTaxonName : commonTaxonNames){
@@ -268,16 +271,19 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				}
 				
 				//MisNameRef
-				if (misNameRefFk != null){
-//					Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
-//					taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
-//					TaxonDescription misNameDesc = getDescription(taxon);
-//					try {
-//						CommonTaxonName misAppliedCommonName = CdmBase.deproxy(commonTaxonName.clone(), CommonTaxonName.class);
-//						misNameDesc.addElement(misAppliedCommonName);
-//					} catch (CloneNotSupportedException e) {
-//						e.printStackTrace();
-//					}
+				if (false && misNameRefFk != null){
+					//Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
+					Taxon misappliedName = taxonMap.get(String.valueOf(misappliedTaxonId));
+					taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
+					TaxonDescription misNameDesc = getDescription(taxon);
+					try {
+						for (CommonTaxonName commonTaxonName : commonTaxonNames){
+							CommonTaxonName misAppliedCommonName = CdmBase.deproxy(commonTaxonName.clone(), CommonTaxonName.class);
+							misNameDesc.addElement(misAppliedCommonName);
+						}
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
 				}
 				
 				
@@ -335,21 +341,22 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
+	 * Not used anymore. Use MisappliedName RIdentifier instead
 	 * @param biblioRefMap
 	 * @param nomRefMap
 	 * @param misNameRefFk
 	 * @param taxon
 	 */
 	private boolean isFirstMisappliedName = true;
-	private Taxon getMisappliedName(Map<String, ReferenceBase> biblioRefMap,
-			Map<String, ReferenceBase> nomRefMap, Object misNameRefFk,
-			Taxon taxon) {
+	private Taxon getMisappliedName(Map<String, ReferenceBase> biblioRefMap, Map<String, ReferenceBase> nomRefMap, 
+			Object misNameRefFk, Taxon taxon) {
 		Taxon misappliedTaxon = null;
 		ReferenceBase misNameRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
 		misappliedTaxon = Taxon.NewInstance(taxon.getName(), misNameRef);
-		Set<String> includeProperty = new HashSet();
-		//TODO or findMatching
+		Set<String> includeProperty = new HashSet<String>();
 		try {
+//			//IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(TaxonBase.class);
+//			//List<TaxonBase> misappliedList1 = getCommonService().findMatching(misappliedTaxon, matchStrategy);
 			List<TaxonBase> misappliedList = getTaxonService().list(misappliedTaxon, includeProperty, null, null, null, null);
 			if (misappliedList.size() > 0){
 				misappliedTaxon = CdmBase.deproxy(misappliedList.get(0), Taxon.class);
@@ -551,10 +558,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			String emCode = rs.getString("EMCode");
 			String TDWGCode = rs.getString("TDWGCode");
 			if (StringUtils.isNotBlank(emCode) ){
-				if (emCode.equalsIgnoreCase("Ab") || emCode.equalsIgnoreCase("Rf") ){
-					emTdwgMap.put(emCode.trim(), emCode.trim());
+				emCode = emCode.trim();
+				if (emCode.equalsIgnoreCase("Ab") || emCode.equalsIgnoreCase("Rf")|| emCode.equalsIgnoreCase("Uk") ){
+					emTdwgMap.put(emCode, emCode);
 				}else if (StringUtils.isNotBlank(TDWGCode)){
-					emTdwgMap.put(emCode.trim(), TDWGCode.trim());
+					emTdwgMap.put(emCode, TDWGCode.trim());
 				}
 			}
 		}
@@ -597,16 +605,17 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Set<String> referenceIdSet = new HashSet<String>();
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "taxonId");
+				handleForeignKey(rs, taxonIdSet, "misappliedTaxonId");
 				handleForeignKey(rs, referenceIdSet, "refId");
 				handleForeignKey(rs, referenceIdSet, "languageRefRefFk");
-				handleForeignKey(rs, referenceIdSet, "NameInSourceFk");
+				handleForeignKey(rs, nameIdSet, "NameInSourceFk");
 				handleForeignKey(rs, referenceIdSet, "MisNameRefFk");
 			}
 			
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
-			idSet = taxonIdSet;
+			idSet = nameIdSet;
 			Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
 
