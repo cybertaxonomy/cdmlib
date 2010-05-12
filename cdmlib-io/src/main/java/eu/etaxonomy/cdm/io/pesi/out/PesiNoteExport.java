@@ -261,7 +261,7 @@ public class PesiNoteExport extends PesiExportBase {
 			TaxonInteraction taxonInteraction = CdmBase.deproxy(descriptionElement, TaxonInteraction.class);
 			multilanguageText = taxonInteraction.getDescriptions();
 		} else {
-			logger.warn("Given descriptionElement is not of appropriate instance. Hence LanguageCache could not be determined.");
+			logger.warn("Given descriptionElement is not of appropriate instance. Hence LanguageCache could not be determined: " + descriptionElement.getUuid());
 		}
 		
 		if (multilanguageText != null) {
@@ -299,7 +299,7 @@ public class PesiNoteExport extends PesiExportBase {
 			TaxonInteraction taxonInteraction = CdmBase.deproxy(descriptionElement, TaxonInteraction.class);
 			multilanguageText = taxonInteraction.getDescriptions();
 		} else {
-			logger.warn("Given descriptionElement is not of appropriate instance. Hence LanguageCache could not be determined.");
+			logger.warn("Given descriptionElement is not of appropriate instance. Hence LanguageCache could not be determined: " + descriptionElement.getUuid());
 		}
 		
 		if (multilanguageText != null) {
