@@ -111,18 +111,25 @@ public class Team extends TeamOrPersonBase<Team> {
 	private void addListenersToMembers() {
 		List<Person> members = getTeamMembers();
 		for (Person member : members){
-			PropertyChangeListener listener = new PropertyChangeListener() {
-	        	public void propertyChange(PropertyChangeEvent e) {
-	        		if (! isProtectedTitleCache()){
-	        			titleCache = null;
-	        		}
-	        		if (! isProtectedNomenclaturalTitleCache()){
-	        			nomenclaturalTitle = null;
-	        		}
-	        	}
-	    	};
-			member.addPropertyChangeListener(listener);
+			addListenerForTeamMember(member);
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private void addListenerForTeamMember(Person member) {
+		PropertyChangeListener listener = new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent e) {
+				if (! isProtectedTitleCache()){
+					titleCache = null;
+				}
+				if (! isProtectedNomenclaturalTitleCache()){
+					nomenclaturalTitle = null;
+				}
+			}
+		};
+		member.addPropertyChangeListener(listener);
 	}
 
 	/** 
@@ -138,6 +145,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	
 	protected void setTeamMembers(List<Person> teamMembers) {
 		this.teamMembers = teamMembers;
+		addListenersToMembers();
 	}
 	
 	/** 
@@ -149,6 +157,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	public void addTeamMember(Person person){
 		getTeamMembers().add(person);
+		addListenerForTeamMember(person);
 	}
 	
 	/** 
@@ -171,6 +180,7 @@ public class Team extends TeamOrPersonBase<Team> {
 			getTeamMembers().remove(person);
 		}
 		getTeamMembers().add(index, person);
+		addListenerForTeamMember(person);
 	}
 	
 	/** 
