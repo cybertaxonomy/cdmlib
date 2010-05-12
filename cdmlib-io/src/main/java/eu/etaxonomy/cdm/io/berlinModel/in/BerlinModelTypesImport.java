@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -124,7 +125,11 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 							}
 						
 						Specimen specimen = Specimen.NewInstance();
-						specimen.setTitleCache(typePhrase);
+						specimen.addDefinition(typePhrase, Language.DEFAULT());
+						if (typePhrase.length()> 255){
+							typePhrase = typePhrase.substring(0, 255);
+						}
+						specimen.setTitleCache(typePhrase, true);
 						boolean addToAllNames = true;
 						String originalNameString = null;
 						SpecimenTypeDesignation type = taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
