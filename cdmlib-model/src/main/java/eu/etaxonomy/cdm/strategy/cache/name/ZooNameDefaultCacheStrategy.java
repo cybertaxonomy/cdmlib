@@ -96,10 +96,11 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	public void setAuthorYearSeperator(String authorYearSeperator) {
 		AuthorYearSeperator = authorYearSeperator;
 	}
-	
+	/*
 	protected String getInfraSpeciesNameCache(NonViralName nonViralName){
 		boolean includeMarker = ! isAutonym(nonViralName);
 		return getInfraSpeciesNameCache(nonViralName, includeMarker);
 	}
+	*/
 
 }
