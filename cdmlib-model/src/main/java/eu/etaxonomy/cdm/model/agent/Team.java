@@ -122,10 +122,10 @@ public class Team extends TeamOrPersonBase<Team> {
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (! isProtectedTitleCache()){
-					titleCache = null;
+					titleCache = titleCache;
 				}
 				if (! isProtectedNomenclaturalTitleCache()){
-					nomenclaturalTitle = null;
+					nomenclaturalTitle = nomenclaturalTitle;
 				}
 			}
 		};
@@ -156,8 +156,11 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see 		   Person
 	 */
 	public void addTeamMember(Person person){
-		getTeamMembers().add(person);
-		addListenerForTeamMember(person);
+		if (person != null){
+			getTeamMembers().add(person);
+			firePropertyChange("teamMember", null, person);
+			addListenerForTeamMember(person);
+		}
 	}
 	
 	/** 
@@ -175,12 +178,15 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void addTeamMember(Person person, int index){
 		// TODO is still not fully implemented (range for index!)
 		logger.warn("not yet fully implemented (range for index!)");
-		int oldIndex = getTeamMembers().indexOf(person);
-		if (oldIndex != -1 ){
-			getTeamMembers().remove(person);
+		if (person != null){
+			int oldIndex = getTeamMembers().indexOf(person);
+			if (oldIndex != -1 ){
+				getTeamMembers().remove(person);
+			}
+			getTeamMembers().add(index, person);
+			addListenerForTeamMember(person);
+			firePropertyChange("teamMember", null, person);
 		}
-		getTeamMembers().add(index, person);
-		addListenerForTeamMember(person);
 	}
 	
 	/** 
@@ -190,24 +196,13 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see            #getTeamMembers()
 	 */
 	public void removeTeamMember(Person person){
-		getTeamMembers().remove(person);
+		boolean wasMember = getTeamMembers().remove(person);
+		if (wasMember){
+			firePropertyChange("teamMember", person, null);
+		}
+		
 	}
 
-	/**
-	 * Generates an identification string for <i>this</i> team according to the strategy
-	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}. This string is built
-	 * with the full names of all persons belonging to its (ordered) members' list.
-	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
-	 * 
-	 * @return  a string which identifies <i>this</i> team
-	 */
-//	@Override
-//	public String generateTitle() {
-//		return cacheStrategy.getTitleCache(this);
-//	}
-	
 	
 	/**
 	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.
@@ -271,7 +266,7 @@ public class Team extends TeamOrPersonBase<Team> {
 		isGeneratingTitleCache = true;
 		String result = "";
 		if (isProtectedTitleCache()){
-			result =  this.titleCache;			
+			result = this.titleCache;			
 		}else{
 			result = generateTitle();
 			result = replaceEmptyTitleByNomTitle(result);
