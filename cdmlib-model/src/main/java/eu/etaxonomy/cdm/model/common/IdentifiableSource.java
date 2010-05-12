@@ -99,6 +99,8 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	public void setSourcedObj(IdentifiableEntity sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}
+
+//*********************************** CLONE *********************************************************/
 	
 	/**
 	 * Clones this original source and sets the clones sourced object to 'sourceObj'
@@ -108,7 +110,7 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		IdentifiableSource result = (IdentifiableSource)clone();
 		result.setSourcedObj(sourcedObj);
 		return result;
-}
+	}
 
 	
 }

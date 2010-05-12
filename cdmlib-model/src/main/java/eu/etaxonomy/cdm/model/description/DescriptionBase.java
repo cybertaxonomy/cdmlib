@@ -267,9 +267,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see    	   		#getDescriptionSources()
 	 */
 	public void addElement(DescriptionElementBase element) {
-//		if (element.getInDescription() != null){
-//			element.getInDescription().removeElement(element);
-//		}
+		if (element.getInDescription() != null){
+			element.getInDescription().removeElement(element);
+		}
 		element.setInDescription(this);
 		this.descriptionElements.add(element);
 	}

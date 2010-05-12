@@ -23,7 +23,6 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -546,17 +545,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
 
 		
-		//Rights
+		//Credits
 		result.credits = new ArrayList<Credit>();
         for(Credit credit : getCredits()) {
         	result.addCredit(credit);
         }
 
-        
-		//result.setLsid(lsid);
-		//result.setTitleCache(titleCache); 
-		//result.setProtectedTitleCache(protectedTitleCache);  //must be after setTitleCache
-		
 		//no changes to: lsid, titleCache, protectedTitleCache
 		
 		//empty titleCache

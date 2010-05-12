@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -160,13 +161,22 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
 	}
 
 
-//****************** clone *****************************************/
+//*********************************** CLONE *****************************************/
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		//no changes to name, language, area
 		return super.clone();
 	}	
-	
-	
+
+//*********************************** toString *****************************************/
+
+	@Override
+	public String toString(){
+		if (StringUtils.isNotBlank(name)){
+			return name;
+		}else{
+			return super.toString();
+		}
+	}
 }

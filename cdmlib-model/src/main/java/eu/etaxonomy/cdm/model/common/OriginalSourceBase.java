@@ -24,11 +24,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}.
@@ -79,10 +82,9 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 		super();
 	}
 
-/* (non-Javadoc)
- * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getIdInSource()
- */
-	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getIdInSource()
+	 */
 	public String getIdInSource(){
 		return this.idInSource;
 	}
@@ -109,7 +111,7 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	}
 
 	
-//****************** CLONE ************************************************/
+//********************** CLONE ************************************************/
 	 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
@@ -121,15 +123,15 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 		//no changes to: idInSource, sourcedObj
 		return result;
 	}
-	
-	/**
-	 * Clones this original source and sets the clones sourced object to 'sourceObj'
-	 * @see java.lang.Object#clone()
-	 */
-	public OriginalSourceBase clone(IdentifiableEntity sourcedObj) throws CloneNotSupportedException{
-		OriginalSourceBase result = (OriginalSourceBase)clone();
-		result.setSourcedObj(sourcedObj);
-		return result;
-	}
 
+	
+//************************ toString ***************************************/
+	@Override
+	public String toString(){
+		if (StringUtils.isNotBlank(idInSource) || StringUtils.isNotBlank(idNamespace) ){
+			return "OriginalSource:" + CdmUtils.concat(":", idNamespace, idInSource);
+		}else{
+			return super.toString();
+		}
+	}
 }

@@ -44,8 +44,10 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -511,21 +513,39 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 			this.sources.iterator().next().setNameUsedInSource(nameUsedInSource);
 		}
 	}
+
+//************************** CLONE **********************************************************/	
 	
+	/** 
+	 * Clones the description element. The element is <b>not</b> added to the same 
+	 * description as the orginal element (inDescription is set to <code>null</null>.
+	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
+	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		DescriptionElementBase result = (DescriptionElementBase)super.clone();
 		
+		//Sources
+		result.sources = new HashSet<DescriptionElementSource>();
+		for (DescriptionElementSource source : getSources()){
+			DescriptionElementSource newSource = (DescriptionElementSource)source.clone();
+			result.addSource(newSource);
+		}
+		
+		//inDescription
+		this.inDescription = null;
+
 		return result;
 	}
-	
-	/**
-	 * Clones this original source and sets the clones sourced object to 'sourceObj'
-	 * @see java.lang.Object#clone()
+
+	/** 
+	 * Clones the description element.<BR> 
+	 * The new element is added to the <code>description</code>.<BR>
+	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
 	 */
-	public DescriptionElementSource clone(DescriptionElementBase sourcedObj) throws CloneNotSupportedException{
-		DescriptionElementSource result = (DescriptionElementSource)clone();
-		result.setSourcedObj(sourcedObj);
+	public DescriptionElementBase clone(DescriptionBase description) throws CloneNotSupportedException{
+		DescriptionElementBase result = (DescriptionElementBase)clone();
+		description.addElement(result);
 		return result;
 	}
 
