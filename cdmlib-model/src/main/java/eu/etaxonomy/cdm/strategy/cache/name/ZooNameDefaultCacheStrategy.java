@@ -16,7 +16,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
 	@SuppressWarnings("unused")
@@ -46,8 +48,38 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	private ZooNameDefaultCacheStrategy(){
 		super();
 	}
-
 	
+	@Override
+	protected String getSpeciesNameCache(NonViralName nonViralName){
+		String result;
+		result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+		if (CdmUtils.isNotEmpty(nonViralName.getInfraGenericEpithet())){
+			result += " (" + nonViralName.getInfraGenericEpithet().trim() + ")";
+		}
+		
+		result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+		result = addAppendedPhrase(result, nonViralName).trim();
+		result = result.replace("\\s\\", " ");
+		return result;
+	}
+	
+	@Override
+	protected String getInfraGenusNameCache(NonViralName zooName){
+		String result;
+		Rank rank = zooName.getRank();
+		if (rank.isSpeciesAggregate()){
+			return getSpeciesAggregateCache(zooName);
+		}
+		//String infraGenericMarker = "'unhandled infrageneric rank'";
+		
+		result = CdmUtils.Nz(zooName.getGenusOrUninomial());
+		if (zooName.getInfraGenericEpithet() != null){
+				result = zooName.getInfraGenericEpithet();
+		} 
+		//result += " " + infraGenericMarker + " " + (CdmUtils.Nz(zooName.getInfraGenericEpithet())).trim().replace("null", "");
+		result = addAppendedPhrase(result, zooName).trim();
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNonCacheAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)
@@ -96,11 +128,62 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	public void setAuthorYearSeperator(String authorYearSeperator) {
 		AuthorYearSeperator = authorYearSeperator;
 	}
-	/*
+	
 	protected String getInfraSpeciesNameCache(NonViralName nonViralName){
-		boolean includeMarker = ! isAutonym(nonViralName);
+		//boolean includeMarker = ! isAutonym(nonViralName);
+		boolean includeMarker = false;
 		return getInfraSpeciesNameCache(nonViralName, includeMarker);
 	}
-	*/
+	
+	@Override
+	public String getTitleCache(T nonViralName) {
+		if (nonViralName == null){
+			return null;
+		}
+		
+		if (nonViralName.isProtectedTitleCache()){
+			return nonViralName.getTitleCache();
+		}
+		String result = "";
+		//Autonym
+		/*if (isAutonym(nonViralName)){
+			String speciesPart = getSpeciesNameCache(nonViralName);
+			//TODO should this include basionym authors and ex authors
+			INomenclaturalAuthor author = nonViralName.getCombinationAuthorTeam();
+			String authorPart = "";
+			if (author != null){
+				authorPart = CdmUtils.Nz(author.getNomenclaturalTitle());
+			}
+			INomenclaturalAuthor basAuthor = nonViralName.getBasionymAuthorTeam();
+			String basAuthorPart = "";
+			if (basAuthor != null){
+				basAuthorPart = CdmUtils.Nz(basAuthor.getNomenclaturalTitle());
+			}
+			if (! "".equals(basAuthorPart)){
+				authorPart = "("+ basAuthorPart +")" + authorPart;
+			}
+			String infraSpeciesPart = (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()));
+
+			String infraSpeciesSeparator = "";
+			if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
+				//TODO handle exception
+				logger.warn("Rank for autonym does not exist or is not lower than species !!");
+			}else{
+				infraSpeciesSeparator = nonViralName.getRank().getAbbreviation();
+			}
+			
+			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesSeparator, infraSpeciesPart});
+			result = result.trim().replace("null", "");
+		}else{ //not Autonym*/
+			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
+			if (nameIncludesAuthorship(nonViralName)){
+				String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
+				result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);
+			}else{
+				result = nameCache;
+			}
+		//}
+		return result;
+	}
 
 }
