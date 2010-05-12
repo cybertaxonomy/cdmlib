@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -101,6 +102,27 @@ public class Team extends TeamOrPersonBase<Team> {
 	public Team() {
 		super();
 		this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
+		addListenersToMembers();
+	}
+
+	/**
+	 * Adds a property change listener to all team members.
+	 */
+	private void addListenersToMembers() {
+		List<Person> members = getTeamMembers();
+		for (Person member : members){
+			PropertyChangeListener listener = new PropertyChangeListener() {
+	        	public void propertyChange(PropertyChangeEvent e) {
+	        		if (! isProtectedTitleCache()){
+	        			titleCache = null;
+	        		}
+	        		if (! isProtectedNomenclaturalTitleCache()){
+	        			nomenclaturalTitle = null;
+	        		}
+	        	}
+	    	};
+			member.addPropertyChangeListener(listener);
+		}
 	}
 
 	/** 
