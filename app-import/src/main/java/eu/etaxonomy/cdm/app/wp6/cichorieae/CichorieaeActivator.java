@@ -125,7 +125,6 @@ public class CichorieaeActivator {
 	
 // **************** SELECTED *********************
 //
-//	static final boolean doUser = true;
 //	static final boolean doUser = false;
 //	//authors
 //	static final boolean doAuthors = false;
@@ -152,7 +151,6 @@ public class CichorieaeActivator {
 	private boolean doInvoke(ICdmDataSource destination){
 		boolean success = true;
 		Source source = berlinModelSource;
-		//ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
 				
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
@@ -269,10 +267,9 @@ public class CichorieaeActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
-		
-		//make BerlinModel Source
 		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
+		
+		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + destination.getDatabase() + " ...");
 		CichorieaeActivator me = new CichorieaeActivator();
 		me.doInvoke(destination);
 		
