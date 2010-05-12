@@ -1003,14 +1003,15 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	
 	public String getNomenclaturalCitation(String microReference) {
 		rectifyCacheStrategy();
+		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
 		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 			return null;
 		}else{
 			if (cacheStrategy instanceof INomenclaturalReferenceCacheStrategy){
 				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
 			}else {
-				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
 				return null;
 			}
 		}
