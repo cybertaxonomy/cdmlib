@@ -286,6 +286,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				try {
 					if ((status == T_STATUS_ACCEPTED) || (autId == A_AUCT)) { // taxon
 						if (autId == A_AUCT) { // misapplied name
+							zooName.setCombinationAuthorTeam(null);
+							zooName.setPublicationYear(null);
 							taxon = Taxon.NewInstance(zooName, auctReference);
 							if (logger.isDebugEnabled()) {
 								logger.debug("Misapplied name created (" + taxonId + ")");
@@ -844,7 +846,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.debug("genusOrUninomial: " + genusOrUninomial); 
 			}
 		}
-		//wenn es species ist, dann �berpr�fe paranthesis, sonst nicht
+		
 		//if ((!infraGenericEpithet.equals("") && fauEuTaxon.isParenthesis()) || (!infraGenericEpithet.equals("") && fauEuTaxon.)) {
 		if (fauEuTaxon.getParentRankId() == R_SUBGENUS || (fauEuTaxon.getRankId() == R_SUBGENUS)){
 			zooName.setInfraGenericEpithet(infraGenericEpithet);
