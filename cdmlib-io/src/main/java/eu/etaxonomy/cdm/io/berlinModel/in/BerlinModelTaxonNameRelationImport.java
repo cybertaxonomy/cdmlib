@@ -176,10 +176,10 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	 * @return
 	 */
 	private boolean handleNameRelationship(boolean success,
-			BerlinModelImportConfigurator config, int name1Id, int name2Id,
-			int relQualifierFk, String notes, TaxonNameBase nameFrom,
-			TaxonNameBase nameTo, ReferenceBase<?> citation,
-			String microcitation, String rule) {
+				BerlinModelImportConfigurator config, int name1Id, int name2Id,
+				int relQualifierFk, String notes, TaxonNameBase nameFrom,
+				TaxonNameBase nameTo, ReferenceBase<?> citation,
+				String microcitation, String rule) {
 		AnnotatableEntity nameRelationship = null;
 		if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
 			nameRelationship = nameTo.addBasionym(nameFrom, citation, microcitation, rule);
@@ -204,7 +204,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				method.setAccessible(true);
 				try {
 					status = (NameTypeDesignationStatus)method.invoke(null, notes);
-					nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, addToAllNames);
+					nameRelationship = nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, addToAllNames);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
