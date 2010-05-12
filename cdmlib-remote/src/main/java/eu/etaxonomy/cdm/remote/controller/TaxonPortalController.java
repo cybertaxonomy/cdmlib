@@ -165,6 +165,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			// initialize homotypical and heterotypical groups; needs synonyms
 			"synonymRelations.$",
 			"synonymRelations.synonym.$",
+			"synonymRelations.synonym.name.status.type",
 			"synonymRelations.synonym.name.taggedName",
 			"synonymRelations.synonym.name.nomenclaturalReference.inBook",
 			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",
@@ -592,7 +593,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	@RequestMapping(
 		value = {"/portal/taxon/*/media/*/*"},
 		method = RequestMethod.GET)
-	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
 		Taxon t = getCdmBase(request, response, null, Taxon.class);
 		String path = request.getServletPath();
