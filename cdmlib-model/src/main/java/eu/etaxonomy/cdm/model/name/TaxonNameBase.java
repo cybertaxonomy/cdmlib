@@ -1097,10 +1097,26 @@ public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelation
 		return addTypeDesignation(typeDesignation, true);
 	}
 	
-	private boolean addTypeDesignation(TypeDesignationBase typeDesignation, boolean addToAllNames){
+	/**
+	 * Adds a {@link TypeDesignationBase type designation} to <code>this</code> taxon name's set of type designations 
+	 * 
+	 * @param typeDesignation			the typeDesignation to be added to <code>this</code> taxon name
+	 * @param addToAllNames				the boolean indicating whether the type designation should be
+	 * 									added to all taxon names of the homotypical group the typified
+	 * 									taxon name belongs to
+	 * @return							true if the operation was succesful
+	 * 
+	 * @throws IllegalArgumentException	if the type designation already has typified names, an {@link IllegalArgumentException exception}
+	 * 									is thrown. We do this to prevent a type designation to be used for multiple taxon names.
+	 * 
+	 */
+	public boolean addTypeDesignation(TypeDesignationBase typeDesignation, boolean addToAllNames){
 		//at them moment typeDesignations are not persisted with the homotypical group
 		//so explicit adding to the homotypical group is not necessary.
-		if (typeDesignation != null){
+		if (typeDesignation != null){		
+			if(typeDesignation.getTypifiedNames().size() > 0){
+				throw new IllegalArgumentException("TypeDesignation already has typified names.");
+			}
 			this.typeDesignations.add(typeDesignation);
 			typeDesignation.addTypifiedName(this);
 			
