@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -393,4 +394,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			Set<NamedArea> namedAreas);
 	
 	public long deleteSynonyms(Synonym syn);
+
+	public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
+
+	public List<TaxonNameBase> findIdenticalNamesNew(List <String> propertyPaths);
 }

@@ -1534,14 +1534,29 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		return taxonNames;
 	}
 
-
+	//TODO: mal nur mit UUID probieren (ohne fetch all properties), vielleicht geht das schneller?
+	public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPaths){
+		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
+		System.err.println("query: " + query.getQueryString());
+		List<UUID> zooNames = query.list();
+		System.err.println("number of identical names"+zooNames.size());
+		
+						
+		return zooNames;
+		
+	}
+	
 	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPaths) {
-		List<String> identicalNames = new ArrayList<String>();
+		
 		//hole alle TaxonNames, die es mindestens zweimal gibt.
-		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.nameCache = tmb2.nameCache and tmb.id != tmb2.id");
+		
+		
+		
+		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
 		System.err.println("query: " + query.getQueryString());
 		List<TaxonNameBase> zooNames = query.list();
 		System.err.println("number of identical names"+zooNames.size());
+		
 		TaxonNameComparator taxComp = new TaxonNameComparator();
 		Collections.sort(zooNames, taxComp);
 		System.err.println("list is sorted");
@@ -1551,6 +1566,36 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		
 		return zooNames;
 	}
+	
+	public List<TaxonNameBase> findIdenticalNamesNew(List<String> propertyPaths){
+		
+		//Hole die beiden Sources "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
+		Query query = getSession().createQuery("select tmb2.nameCache from ZoologicalName tmb, TaxonBase tb1, ZoologicalName tmb2, TaxonBase tb2 where tmb.id != tmb2.id and tb1.name = tmb and tb2.name = tmb2 and tmb.nameCache = tmb2.nameCache and tb1.sec != tb2.sec");
+		List<String> nameCaches = query.list();
+		Collections.sort(nameCaches);
+		List <String> identicalNames = new ArrayList<String>();
+		String predecessor = "";
+		for (String nameCache: nameCaches){
+			if (nameCache.equals(predecessor)){
+				identicalNames.add(nameCache);
+				System.err.println ("identical: " +nameCache + " - " + predecessor);
+			}
+			else{
+				System.err.println ("different: " +nameCache + " - " + predecessor);
+			}
+			predecessor = nameCache;
+		}
+		System.err.println("number of identical names: " + identicalNames.size());
+		
+		/*query = getSession().createQuery("from ZoologicalName zn where zn.nameCache IN (:identicalNames)");
+		query.setParameterList("identicalNames", identicalNames);
+		List<TaxonNameBase> result = query.list();
+		return result;
+		*/
+		return null;
+	}
+	
+	
 	
 	public String getPhylumName(TaxonNameBase name){
 		Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");
