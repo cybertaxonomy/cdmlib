@@ -88,8 +88,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 		TransactionStatus txStatus = null;
 		List<TaxonBase> taxonList = null;
 		Set<UUID> taxonUuids = null;
-		Set<ReferenceBase> references = null;
-		Set<TeamOrPersonBase> authors = null;
+		Map<Integer,ReferenceBase> references = null;
+		Map<String,TeamOrPersonBase> authors = null;
 		Map<UUID, FaunaEuropaeaReferenceTaxon> fauEuTaxonMap = null;
 		int limit = state.getConfig().getLimitSave();
 
@@ -141,8 +141,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 					txStatus = startTransaction();
 					taxonUuids = new HashSet<UUID>(limit);
-					references = new HashSet<ReferenceBase>(limit);
-					authors = new HashSet<TeamOrPersonBase>(limit);
+					references = new HashMap<Integer,ReferenceBase>(limit);
+					authors = new HashMap<String,TeamOrPersonBase>(limit);
 					fauEuTaxonMap = new HashMap<UUID, FaunaEuropaeaReferenceTaxon>(limit);
 
 					if(logger.isInfoEnabled()) {
@@ -155,6 +155,16 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				String refAuthor = rs.getString("ref_author");
 				String year = rs.getString("ref_year");
 				String title = rs.getString("ref_title");
+				
+				if (year == null){
+					try{		
+						year = String.valueOf((Integer.parseInt(title)));
+					}
+					catch(Exception ex)   
+					{
+						logger.info("year is empty and " +title + " contains no integer");
+				    }
+				}
 				String refSource = rs.getString("ref_source");
 				String page = rs.getString("trf_page");
 				UUID currentTaxonUuid = null;
@@ -188,23 +198,23 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 				ReferenceBase<?> reference = null;
 				TeamOrPersonBase<Team> author = null;
-				ReferenceFactory refFactory = ReferenceFactory.newInstance();
-				reference = refFactory.newGeneric();
+				reference = ReferenceFactory.newGeneric();
 				reference.setTitleCache(title);
 				reference.setDatePublished(ImportHelper.getDatePublished(year));
 				author = Team.NewInstance();
 				author.setTitleCache(refAuthor);
+				reference.setAuthorTeam(author);
 
 				ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
 				ImportHelper.setOriginalSource(author, fauEuConfig.getSourceReference(), refId, namespace);
 
 				// Store reference
 
-				if (!references.contains(refId)) {
+				if (!references.containsKey(refId)) {
 					if (reference == null) {
 						logger.warn("Reference is null");
 					}
-					references.add(reference);
+					references.put(refId, reference);
 					if (logger.isTraceEnabled()) { 
 						logger.trace("Stored reference (" + refAuthor + ")"); 
 					}
@@ -217,13 +227,13 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 				// Store author
 
-				boolean store = true;
-				if (!authors.contains(refId)) {
+				//boolean store = true;
+				if (!authors.containsKey(refAuthor)) {
 					if (refAuthor == null) {
 						logger.warn("Reference author is null");
 					}
 					String storedAuthorTitleCache = null;
-					for (TeamOrPersonBase<?> storedAuthor : authors) {
+					/*for (TeamOrPersonBase<?> storedAuthor : authors.values()) {
 						storedAuthorTitleCache = storedAuthor.getTitleCache();
 						if (storedAuthorTitleCache.equals(refAuthor)) {
 							store = false;
@@ -232,13 +242,13 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 							}
 							break;
 						}
-					}
-					if (store == true) { 
-						authors.add(author); 
+					}*/
+					//if (store == true) { 
+						authors.put(refAuthor,author); 
 						if (logger.isTraceEnabled()) { 
 							logger.trace("Stored author (" + refAuthor + ")");
 						}
-					}
+					//}
 
 				} else {
 					if (logger.isDebugEnabled()) { 
@@ -317,11 +327,12 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 						// save taxa, references, and authors
 						getTaxonService().save(taxonList);
-						getReferenceService().save(references);
-						getAgentService().save((Collection)authors);
+						getReferenceService().save(references.values());
+						getAgentService().save((Collection)authors.values());
 
 						taxonUuids = null;
 						references = null;
+						reference = null;
 						authors = null;
 						taxonList = null;
 						fauEuTaxonMap = null;
