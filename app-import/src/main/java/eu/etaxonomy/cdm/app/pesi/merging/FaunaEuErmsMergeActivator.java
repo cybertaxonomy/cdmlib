@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -47,39 +48,42 @@ public class FaunaEuErmsMergeActivator {
 	
 	static final int faunaEuUuid = 0;
 	static final int ermsUuid = 9;
+	static final int rankFaunaEu = 4;
+	static final int rankErms = 13;
+	
+	CdmApplicationController appCtrInit;
+	
 	private static final Logger logger = Logger.getLogger(FaunaEuErmsMergeActivator.class);
 	
 	//csv files starting with...
 	static String sFileName = "c:\\test";
 	
-	private CdmApplicationController initDb(ICdmDataSource db) {
+	private void initDb(ICdmDataSource db) {
 
 		// Init source DB
-		CdmApplicationController appCtrInit = null;
-
 		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.VALIDATE, false);
 
-		return appCtrInit;
+		
 	}
 	
 	public static void main(String[] args) {
 		
 		FaunaEuErmsMergeActivator sc = new FaunaEuErmsMergeActivator();
 		
-		CdmApplicationController appCtrFaunaEu = sc.initDb(faunaEuropaeaSource);
+		sc.initDb(faunaEuropaeaSource);
 			
-		mergeAuthors(appCtrFaunaEu);
+		sc.mergeAuthors();
 		
 		//set the ranks of Agnatha and Gnathostomata to 50 instead of 45
 		List<TaxonBase> taxaToChangeRank = new ArrayList<TaxonBase>();
-		Pager<TaxonBase> agnatha = appCtrFaunaEu.getTaxonService().findTaxaByName(TaxonBase.class, "Agnatha", null, null, null, Rank.INFRAPHYLUM(), 10, 0);
+		Pager<TaxonBase> agnatha = sc.appCtrInit.getTaxonService().findTaxaByName(TaxonBase.class, "Agnatha", null, null, null, Rank.INFRAPHYLUM(), 10, 0);
 		List<TaxonBase> agnathaList = agnatha.getRecords();
 		taxaToChangeRank.addAll(agnathaList);
-		Pager<TaxonBase> gnathostomata = appCtrFaunaEu.getTaxonService().findTaxaByName(TaxonBase.class, "Gnathostomata", null, null, null, Rank.INFRAPHYLUM(), 10, 0);
+		Pager<TaxonBase> gnathostomata = sc.appCtrInit.getTaxonService().findTaxaByName(TaxonBase.class, "Gnathostomata", null, null, null, Rank.INFRAPHYLUM(), 10, 0);
 		List<TaxonBase> gnathostomataList = gnathostomata.getRecords();
 		taxaToChangeRank.addAll(gnathostomataList);
 		
-		setSpecificRank(taxaToChangeRank,Rank.SUPERCLASS());
+		sc.setSpecificRank(taxaToChangeRank,Rank.SUPERCLASS());
 		
 		//ermsTaxon is accepted, fauna eu taxon is synonym
 		
@@ -126,7 +130,7 @@ public class FaunaEuErmsMergeActivator {
 	}
 	
 	
-	private static void mergeAuthors(CdmApplicationController appCtrFaunaEu){
+	private void mergeAuthors(){
 		List<List<String>> authors = readCsvFile(sFileName + "_authors.csv");
 		//authors: get firstAuthor if isFauEu = 1 otherwise get secondAuthor
 		
@@ -139,8 +143,8 @@ public class FaunaEuErmsMergeActivator {
 			row = authorIterator.next();
 			UUID uuidFaunaEu = UUID.fromString(row.get(faunaEuUuid));
 			UUID uuidErms = UUID.fromString(row.get(ermsUuid));
-			taxonFaunaEu = appCtrFaunaEu.getTaxonService().find(uuidFaunaEu);
-			taxonErms = appCtrFaunaEu.getTaxonService().find(uuidFaunaEu);
+			taxonFaunaEu = appCtrInit.getTaxonService().find(uuidFaunaEu);
+			taxonErms = appCtrInit.getTaxonService().find(uuidFaunaEu);
 			
 			if (Integer.parseInt(row.get(18)) == 1){
 				//isFaunaEu = 1 -> copy the author of Fauna Europaea to Erms
@@ -167,32 +171,57 @@ public class FaunaEuErmsMergeActivator {
 		}
 	}
 	
-	public static void setSpecificRank(List<TaxonBase> taxa, Rank rank){
+	public void setSpecificRank(List<TaxonBase> taxa, Rank rank){
 		
 		for (TaxonBase taxon: taxa){
 			taxon.getName().setRank(rank);
 		}
 	}
 	
-	private static void mergeDiffStatus(CdmApplicationController appCtrFaunaEu){
+	private void mergeDiffStatus(){
 		List<List<String>> diffStatus = readCsvFile(sFileName + "_status.csv");
 		
 		//find all taxa accepted in erms, but synonyms in FauEu  and the same rank
 		List<List<String>> accErmsSynFaunaEu = new ArrayList<List<String>>();
 		for (List<String> rowList: diffStatus){
-			if ((rowList.get(5).equals("synonym")) && (rowList.get(4).equals(rowList.get(12)))){
+			if ((rowList.get(5).equals("synonym")) && (rowList.get(rankFaunaEu).equals(rowList.get(rankErms)))){
 				//both conditions are true
 				accErmsSynFaunaEu.add(rowList);
 			}
 		}
-		mergeErmsAccFaEuSyn(appCtrFaunaEu, accErmsSynFaunaEu);
-		
+		mergeErmsAccFaEuSyn(accErmsSynFaunaEu);
+		List<List<String>> synErmsAccFaunaEu = new ArrayList<List<String>>();
+		for (List<String> rowList: diffStatus){
+			if ((rowList.get(5).equals("accepted")) && (rowList.get(rankFaunaEu).equals(rowList.get(rankErms)))){
+				//both conditions are true
+				synErmsAccFaunaEu.add(rowList);
+			}
+		}
+		mergeErmsSynFaunaEuAcc(synErmsAccFaunaEu);
 	
 	}
 	
-	private static void mergeErmsAccFaEuSyn(CdmApplicationController appCtrFaunaEu, List<List<String>> ermsAccFaEuSyn){
+	private void mergeSameStatus(){
+		List<List<String>> sameStatus = readCsvFile(sFileName + "_names.csv");
 		
-		//finde NameRelationships, jeweils identischen Namen (titleCache) der beiden Homonyme
+		TaxonBase taxonFaunaEu;
+		TaxonBase taxonErms;
+		
+		for (List<String> row: sameStatus){
+			taxonFaunaEu = appCtrInit.getTaxonService().find(UUID.fromString(row.get(faunaEuUuid)));
+			taxonErms = appCtrInit.getTaxonService().find(UUID.fromString(row.get(ermsUuid)));
+			moveAllInformationsFromFaunaEuToErms(taxonFaunaEu, taxonErms);
+			if (taxonErms instanceof Taxon){
+				moveFaunaEuSynonymsToErmsTaxon((Taxon)taxonFaunaEu, (Taxon)taxonErms);
+			}
+		}
+	}
+	
+	
+
+	private void mergeErmsAccFaEuSyn(List<List<String>> ermsAccFaEuSyn){
+		
+		//finde NameRelationships, jeweils identischen Namen (titleCache) 
 		 
 		/*
 UPDATE RT SET TaxonFk2 = ERMSAcc.TaxonId
@@ -228,8 +257,8 @@ WHERE     (ERMSAcc.OriginalDB = N'ERMS') AND (FaEuSyn.OriginalDB = N'FaEu') AND 
 		for (List<String> rowList: ermsAccFaEuSyn){
 			UUID faunaUUID = UUID.fromString(rowList.get(faunaEuUuid));
 			//UUID ermsUUID = UUID.fromString(rowList.get(ermsUuid));
-			Synonym syn = (Synonym)appCtrFaunaEu.getTaxonService().find(faunaUUID);
-			appCtrFaunaEu.getTaxonService().deleteSynonyms(syn);
+			Synonym syn = (Synonym)appCtrInit.getTaxonService().find(faunaUUID);
+			appCtrInit.getTaxonService().deleteSynonyms(syn);
 			
 			
 		
@@ -238,15 +267,15 @@ WHERE     (ERMSAcc.OriginalDB = N'ERMS') AND (FaEuSyn.OriginalDB = N'FaEu') AND 
 		
 	}
 	
-	private static void mergeFaunaEuAccErmsSyn (CdmApplicationController appCtrFaunaEu, List<List<String>> ermsAccFaEuSyn){
+	private  void mergeErmsSynFaunaEuAcc (List<List<String>> ermsAccFaEuSyn){
 		//occurence: verknüpfe statt dem Fauna Europaea Taxon das akzeptierte Taxon, des Synonyms mit der Occurence (CDM -> distribution)
 		//suche distribution (über das Taxon der TaxonDescription), dessen Taxon, das entsprechende Fauna Eu Taxon ist und verknüpfe es mit dem akzeptieren Taxon des Erms Syn
-		Taxon taxonFaunaEu = null;;
+		Taxon taxonFaunaEu = null;
 		Taxon taxonErms = null;
 		Synonym synErms = null;
 		for (List<String> row: ermsAccFaEuSyn){
-			taxonFaunaEu = (Taxon)appCtrFaunaEu.getTaxonService().find(UUID.fromString(row.get(faunaEuUuid)));
-			synErms = (Synonym)appCtrFaunaEu.getTaxonService().find(UUID.fromString(row.get(ermsUuid)));
+			taxonFaunaEu = (Taxon)appCtrInit.getTaxonService().find(UUID.fromString(row.get(faunaEuUuid)));
+			synErms = (Synonym)appCtrInit.getTaxonService().find(UUID.fromString(row.get(ermsUuid)));
 			synErms = HibernateProxyHelper.deproxy(synErms, Synonym.class);
 			Set<SynonymRelationship> synRel=synErms.getSynonymRelations();
 			
@@ -266,14 +295,14 @@ WHERE     (ERMSAcc.OriginalDB = N'ERMS') AND (FaEuSyn.OriginalDB = N'FaEu') AND 
 			features.add(Feature.DISTRIBUTION());
 			List<String> propertyPaths = new ArrayList<String>();
 			propertyPaths.add("inDescription.Taxon.*");
-			List<DescriptionElementBase> distributions = appCtrFaunaEu.getDescriptionService().getDescriptionElementsForTaxon(taxonFaunaEu, features, Distribution.class, 10, 0, null);
+			List<DescriptionElementBase> distributions = appCtrInit.getDescriptionService().getDescriptionElementsForTaxon(taxonFaunaEu, features, Distribution.class, 10, 0, null);
 			
 			
 			for(DescriptionElementBase distribution: distributions){
 				TaxonDescription description = (TaxonDescription)distribution.getInDescription();
 				TaxonDescription newDescription = TaxonDescription.NewInstance(taxonErms);
 				newDescription.addElement(distribution);
-				appCtrFaunaEu.getDescriptionService().delete(description);
+				appCtrInit.getDescriptionService().delete(description);
 			}
 			
 			//Child-Parent Relationship aktualisieren -> dem Child des Fauna Europaea Taxons als parent das akzeptierte Taxon von synErms
@@ -300,8 +329,8 @@ WHERE     (ERMSAcc.OriginalDB = N'ERMS') AND (FaEuSyn.OriginalDB = N'FaEu') AND 
 			}
 			moveFaunaEuSynonymsToErmsTaxon(taxonFaunaEu, taxonErms);
 			moveAllInformationsFromFaunaEuToErms(taxonFaunaEu, taxonErms);
-			moveFaunaEuSynonymsToErmsTaxon(taxonFaunaEu, taxonErms);
 			moveOriginalDbToErmsTaxon(taxonFaunaEu, taxonErms);
+			deleteFaunaEuTaxon(taxonFaunaEu);
 			
 		}
 		
@@ -313,9 +342,14 @@ WHERE     (ERMSAcc.OriginalDB = N'ERMS') AND (FaEuSyn.OriginalDB = N'FaEu') AND 
 	
 	}
 	
+	private void deleteFaunaEuTaxon(Taxon taxonFaunaEu) {
+		appCtrInit.getTaxonService().delete(taxonFaunaEu);
+		
+	}
+
 	//wenn Name und Rang identisch sind und auch der Status gleich, dann alle Informationen vom Fauna Europaea Taxon/Synonym zum Erms Taxon/Synonym
 	
-	private static void moveAllInformationsFromFaunaEuToErms(TaxonBase faunaEu, TaxonBase erms){
+	private void moveAllInformationsFromFaunaEuToErms(TaxonBase faunaEu, TaxonBase erms){
 		Set<Annotation> annotations = faunaEu.getAnnotations();
 		Set<Extension> extensions = faunaEu.getExtensions();
 		Set<Marker> markers = faunaEu.getMarkers();
@@ -372,7 +406,7 @@ WHERE     (ERMSAcc.OriginalDB = N'ERMS') AND (FaEuSyn.OriginalDB = N'FaEu') AND 
 	
 	//wenn Name, Rang und Status (=1) gleich sind, alle Synonyme zum ErmsTaxon
 	
-	private static void moveFaunaEuSynonymsToErmsTaxon(Taxon faunaEu, Taxon erms){
+	private void moveFaunaEuSynonymsToErmsTaxon(Taxon faunaEu, Taxon erms){
 		Set<SynonymRelationship> synRel =faunaEu.getSynonymRelations();
 		Iterator<SynonymRelationship> synRelIterator = synRel.iterator();
 		SynonymRelationship rel;
@@ -383,11 +417,17 @@ WHERE     (ERMSAcc.OriginalDB = N'ERMS') AND (FaEuSyn.OriginalDB = N'FaEu') AND 
 		}
 	}
 	
-	private static void moveOriginalDbToErmsTaxon(TaxonBase faunaEu, TaxonBase erms){
+	private void moveOriginalDbToErmsTaxon(TaxonBase faunaEu, TaxonBase erms){
 		Set<IdentifiableSource> sourcesFaunaEu = faunaEu.getSources();
 		IdentifiableSource sourceFaunaEu = sourcesFaunaEu.iterator().next();
 		erms.addSource(sourceFaunaEu);
 	}
+	
+	private void addNewSecForMergedTaxon(Taxon taxon, ReferenceBase sec){
+		taxon.setSec(sec);
+	}
+	
+	// ----------- methods for merging Erms synonyms and Fauna Europaea Taxon
 	
 	
 	

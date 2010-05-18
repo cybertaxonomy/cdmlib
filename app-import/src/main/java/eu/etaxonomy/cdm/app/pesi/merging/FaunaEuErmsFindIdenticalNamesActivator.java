@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
 
 public class FaunaEuErmsFindIdenticalNamesActivator {
 
-	static final ICdmDataSource faunaEuropaeaSource = CdmDestinations.cdm_test_jaxb();
+	static final ICdmDataSource faunaEuropaeaSource = CdmDestinations.cdm_test_patricia();
 	//static final ICdmDataSource ermsSource = CdmDestinations.cdm_test_andreasM();
 	
 	//TODO hole aus beiden DB alle TaxonNameBases
@@ -74,7 +74,9 @@ public class FaunaEuErmsFindIdenticalNamesActivator {
 		propertyPaths.add("taxonBases.relationsFromThisTaxon");
 		propertyPaths.add("taxonBases.taxonNodes.parent.taxon.name.*");
 		System.err.println("Start getIdenticalNames...");
-		List<TaxonNameBase> namesOfIdenticalTaxa = appCtrFaunaEu.getTaxonService().findIdenticalTaxonNames(propertyPaths);
+		List<TaxonNameBase> namesOfIdenticalTaxa = appCtrFaunaEu.getTaxonService().findIdenticalTaxonNameIds(propertyPaths);
+		//List<UUID> namesOfIdenticalTaxa = appCtrFaunaEu.getTaxonService().findIdenticalTaxonNameIds(propertyPaths);
+		
 		System.err.println("first name: " + namesOfIdenticalTaxa.get(0) + " " + namesOfIdenticalTaxa.size());
 		TaxonNameBase zooName = (TaxonNameBase)namesOfIdenticalTaxa.get(0);
 		System.err.println(zooName + " nr of taxa " + namesOfIdenticalTaxa.size());
@@ -95,6 +97,7 @@ public class FaunaEuErmsFindIdenticalNamesActivator {
 		
 		
 		System.out.println("End merging Fauna Europaea and Erms");
+		
 	}
 	
 	private boolean writeSameNamesToCsVFile(
