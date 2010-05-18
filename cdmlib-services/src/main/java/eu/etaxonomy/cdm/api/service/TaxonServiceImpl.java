@@ -557,6 +557,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return this.dao.findIdenticalTaxonNames(propertyPath);
 	}
 	
+	public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath) {
+		
+		return this.dao.findIdenticalNamesNew(propertyPath);
+	}
+	
 	public String getPhylumName(TaxonNameBase name){
 		return this.dao.getPhylumName(name);
 	}

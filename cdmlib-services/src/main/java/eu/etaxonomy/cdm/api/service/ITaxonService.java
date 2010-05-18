@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -345,6 +346,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public int countAllRelationships();
 	
 	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+	public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath);
 	public String getPhylumName(TaxonNameBase name);
 	
 	public long deleteSynonyms(Synonym syn);
