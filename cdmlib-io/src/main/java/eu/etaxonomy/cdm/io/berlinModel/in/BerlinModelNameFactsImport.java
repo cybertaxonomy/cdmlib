@@ -264,7 +264,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 		if (file.exists()){
 			representationTif.addRepresentationPart(makeImage(urlStringTif, size, file));
 		}
-		media.addRepresentation(representationTif);
+		if(representationTif.getParts().size() > 0){
+			media.addRepresentation(representationTif);
+		}
 		// end tif
 		// jpg
 		boolean fileExists = true;
@@ -280,7 +282,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				fileExists = false;
 			}
 		}
-		media.addRepresentation(representationJpg);
+		if(representationJpg.getParts().size() > 0){
+			media.addRepresentation(representationJpg);
+		}
 		// end jpg
 		//png
 		String urlStringPng = mediaUrlString + "png/" + nameFact + "." + suffixPng;
@@ -303,7 +307,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				}
 			}
 		} 
-		media.addRepresentation(representationPng);
+		if(representationPng.getParts().size() > 0){
+			media.addRepresentation(representationPng);
+		}
 		//end png
         //pdf 
         String urlStringPdf = mediaUrlString + "pdf/" + nameFact + "." + suffixPdf; 
@@ -326,7 +332,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
                         } 
                 } 
         }  
-        media.addRepresentation(representationPdf); 
+        if(representationPdf.getParts().size() > 0){
+        	media.addRepresentation(representationPdf);
+        }
         //end pdf 
 		
 		if(logger.isDebugEnabled()){
