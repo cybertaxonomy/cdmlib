@@ -10,15 +10,8 @@
 package eu.etaxonomy.cdm.strategy;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-
-import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
