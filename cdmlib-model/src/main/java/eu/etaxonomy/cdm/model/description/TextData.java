@@ -162,10 +162,17 @@ public class TextData extends DescriptionElementBase {
      * @param language the language in which the text string looked for is formulated
      * @return
      */
-    public LanguageString getMultilanguageText(Language language){
+    public LanguageString getLanguageText(Language language){
     	return multilanguageText.get(language);
     }
     
+    /**
+     * @deprecated Method name is misleading. Use {@link #getLanguageText(Language)} instead.
+     */
+    @Deprecated
+    public LanguageString getMultilanguageText(Language language){
+    	return multilanguageText.get(language);
+    }
     public void setMultilanguageText(Map<Language,LanguageString> multilanguageText) {
     	this.multilanguageText = multilanguageText;
     }
