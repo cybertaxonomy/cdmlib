@@ -52,6 +52,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -139,11 +141,34 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		super();
 	}
 	
+	/**
+	 * The descriptions this specimen or observation is part of.<BR>
+	 * A specimen can not only have it's own {@link SpecimenDescription specimen description }
+	 * but can also be part of a {@link TaxonDescription taxon description} or a 
+	 * {@link TaxonNameDescription taxon name description}.<BR>
+	 * @see #getSpecimenDescriptions()
+	 * @return
+	 */
 	public Set<DescriptionBase> getDescriptions() {
 		if(descriptions == null) {
 			this.descriptions = new HashSet<DescriptionBase>();
 		}
 		return this.descriptions;
+	}
+	
+	/**
+	 * Returns the {@link SpecimenDescription specimen descriptions} this specimen is part of.
+	 * @see #getDescriptions()
+	 * @return
+	 */
+	public Set<SpecimenDescription> getSpecimenDescriptions() {
+		Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
+		for (DescriptionBase descriptionBase : getDescriptions()){
+			if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
+				specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
+			}
+		}
+		return specimenDescriptions;
 	}
 
 	/**
@@ -261,6 +286,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 */
 	@Transient
 	public SpecimenOrObservationBase getOriginalUnit(){
+		logger.warn("GetOriginalUnit not yet implemented");
 		return null;
 	}
 
