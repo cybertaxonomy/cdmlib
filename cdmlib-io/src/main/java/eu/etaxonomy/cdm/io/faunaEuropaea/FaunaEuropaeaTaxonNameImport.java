@@ -395,7 +395,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				buildTaxonName(fauEuTaxon, taxonBase, taxonName, useOriginalGenus, fauEuConfig);
 			
 			if (taxonBase instanceof Synonym){
-				logger.info("Name of Synonym: " + nameString);
+				//logger.info("Name of Synonym: " + nameString);
 			}
 			
 			

@@ -172,7 +172,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					currentTaxonUuid = UUID.fromString(rs.getString("UUID"));
 				} else {
 					logger.error("Taxon (" + taxonId + ") without UUID ignored");
-					continue;
+					//continue;
 				}
 
 				FaunaEuropaeaReference fauEuReference = new FaunaEuropaeaReference();
@@ -192,7 +192,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				} else {
 					if (logger.isTraceEnabled()) { 
 						logger.trace("Taxon (" + currentTaxonUuid + ") already stored.");
-						continue;
+						//continue;
 					}
 				}
 
@@ -222,7 +222,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					if (logger.isDebugEnabled()) { 
 						logger.debug("Duplicated reference (" + refId + ", " + refAuthor + ")");
 					}
-					continue;
+					//continue;
 				}
 
 				// Store author
@@ -459,7 +459,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				} else {
 					if (logger.isTraceEnabled()) { 
 						logger.trace("Taxon (" + currentTaxonId + ") already stored.");
-						continue;
+						//continue;
 					}
 				}
 
@@ -489,7 +489,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					if (logger.isDebugEnabled()) { 
 						logger.debug("Duplicated reference (" + refId + ", " + refAuthor + ")");
 					}
-					continue;
+					//continue;
 				}
 
 				// Store author
