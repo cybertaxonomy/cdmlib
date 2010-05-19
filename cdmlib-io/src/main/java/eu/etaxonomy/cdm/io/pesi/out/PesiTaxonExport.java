@@ -524,10 +524,14 @@ public class PesiTaxonExport extends PesiExportBase {
 				if (nonViralName != null) {
 					try {
 						String fullName = nonViralName.getTitleCache();
+
 						String genusOrUninomialRegEx = nonViralName.getGenusOrUninomial() + singleWhitespace;
 						String genusOrUninomialReplacement = italicBeginTag + nonViralName.getGenusOrUninomial() + italicEndTag + singleBlank;
 						Pattern genusOrUninomialPattern = Pattern.compile(genusOrUninomialRegEx);
-	
+						
+						String genusOrUninomialNoWhitespaceRegEx = nonViralName.getGenusOrUninomial();
+						Pattern genusOrUninomialNoWhitespacePattern = Pattern.compile(genusOrUninomialNoWhitespaceRegEx);
+
 						String infraSpecificEpithetRegEx = singleWhitespace + nonViralName.getInfraSpecificEpithet() + singleWhitespace;
 						String infraSpecificEpithetReplacement = singleBlank + italicBeginTag + nonViralName.getInfraSpecificEpithet() + italicEndTag + singleBlank;
 						Pattern infraspecificEpithetPattern = Pattern.compile(infraSpecificEpithetRegEx);
@@ -541,6 +545,12 @@ public class PesiTaxonExport extends PesiExportBase {
 //									logger.error("genusOrUninomial result: " + result);
 								} else {
 	//								logger.error("genusOrUninomial does not match");
+									if (genusOrUninomialNoWhitespacePattern != null) {
+										Matcher genusOrUninomialNoWhitespaceMatcher = genusOrUninomialNoWhitespacePattern.matcher(nonViralName.getTitleCache());
+										if (genusOrUninomialNoWhitespaceMatcher.find()) {
+											result = fullName.replaceFirst(genusOrUninomialNoWhitespaceRegEx, genusOrUninomialReplacement);
+										}
+									}
 								}
 							} else {
 	//							logger.error("genusOrUninomialMatcher is null");
