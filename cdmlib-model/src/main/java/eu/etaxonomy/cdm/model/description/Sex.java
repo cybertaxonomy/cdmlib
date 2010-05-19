@@ -52,6 +52,31 @@ public class Sex extends Scope {
 	private static final UUID uuidFemale = UUID.fromString("b4cfe0cb-b35c-4f97-9b6b-2b3c096ea2c0");
 	private static Sex MALE;
 	private static Sex FEMALE;	
+
+
+	/** 
+	 * Creates a new empty sex instance.
+	 * 
+	 * @see #Sex(String, String, String)
+	 */
+	public static Sex NewInstance(){
+		return new Sex();
+	}
+	
+	/** 
+	 * Creates a new sex instance with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new sex to be created 
+	 * @param	label  		 the string identifying the new sex to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new sex to be created
+	 * @see 				 #NewInstance()
+	 */
+	public static Sex NewInstance(String term, String label, String labelAbbrev){
+		return new Sex(term, label, labelAbbrev);
+	}	
 	
 	/** 
 	 * Class constructor: creates a new empty sex instance.
@@ -76,14 +101,6 @@ public class Sex extends Scope {
 		super(term, label, labelAbbrev);
 	}
 
-	/** 
-	 * Creates a new empty sex instance.
-	 * 
-	 * @see #Sex(String, String, String)
-	 */
-	public static Sex NewInstance(){
-		return new Sex();
-	}
 	
 	public static Sex MALE(){
 		return MALE;
