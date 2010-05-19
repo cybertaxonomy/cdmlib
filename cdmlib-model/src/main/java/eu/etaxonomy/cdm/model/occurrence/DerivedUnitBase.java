@@ -128,7 +128,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	 */
 	protected DerivedUnitBase(GatheringEvent gatheringEvent) {
 		this(new FieldObservation());
-		FieldObservation field = (FieldObservation) this.getOriginalUnit();
+		FieldObservation field = (FieldObservation)this.getOriginalUnit();
 		field.setGatheringEvent(gatheringEvent);
 	}
 
@@ -143,7 +143,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		}
 		this.derivationEvent = derivedFrom;
 		if (derivedFrom != null){
-			derivedFrom.getDerivatives().add(this);
+			derivedFrom.addDerivative(this);
 		}
 	}
 	
@@ -202,7 +202,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		return storedUnder;
 	}
 	
-	//*********** CLONE **********************************/	
+//*********** CLONE **********************************/	
 	
 	/** 
 	 * Clones <i>this</i> derivedUnitBase. This is a shortcut that enables to
