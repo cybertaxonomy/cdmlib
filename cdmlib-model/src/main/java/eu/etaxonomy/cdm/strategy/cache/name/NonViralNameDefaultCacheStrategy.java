@@ -431,10 +431,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 	
 
-	
-
-
-	/************** PRIVATES ****************/
+//***************************** PRIVATES ***************************************/
 		
 		protected String getRanklessNameCache(NonViralName nonViralName){
 			String result = "";
