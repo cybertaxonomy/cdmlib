@@ -354,7 +354,7 @@ public class PesiNoteExport extends PesiExportBase {
 		if (description.isInstanceOf(TaxonDescription.class)) {
 			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
 			Taxon taxon = taxonDescription.getTaxon();
-			result = state.getDbId(taxon);
+			result = state.getDbId(taxon.getName());
 		}
 		return result;
 	}

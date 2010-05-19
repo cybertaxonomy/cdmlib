@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -260,13 +261,22 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
-		
-		// TODO: For sets of size bigger than one, this isn't good at all.
-		for (IdentifiableSource source : reference.getSources()) {
-			if (source != null) {
-				result = source.getIdInSource();
+
+		Set<IdentifiableSource> sources = reference.getSources();
+		if (sources.size() == 1) {
+			result = sources.iterator().next().getIdInSource();
+		} else if (sources.size() > 1) {
+			logger.warn("Reference has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+			int count = 1;
+			for (IdentifiableSource source : sources) {
+				result += source.getIdInSource();
+				if (count < sources.size()) {
+					result += "; ";
+				}
+				count++;
 			}
 		}
+
 		return result;
 	}
 
@@ -278,11 +288,22 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getOriginalDB(ReferenceBase<?> reference) {
-		String result = null;
-		for (IdentifiableSource source : reference.getSources()) {
-			if (source != null) {
-				result = source.getCitation().getTitleCache();  //or just title
+		String result = "";
+		Set<IdentifiableSource> sources = reference.getSources();
+		if (sources.size() == 1) {
+			result = PesiTransformer.databaseString2Abbreviation(sources.iterator().next().getCitation().getTitleCache()); //or just title
+		} else if (sources.size() > 1) {
+			logger.warn("Taxon has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+			int count = 1;
+			for (IdentifiableSource source : sources) {
+				result += PesiTransformer.databaseString2Abbreviation(source.getCitation().getTitleCache());
+				if (count < sources.size()) {
+					result += "; ";
+				}
+				count++;
 			}
+		} else {
+			result = null;
 		}
 		return result;
 	}

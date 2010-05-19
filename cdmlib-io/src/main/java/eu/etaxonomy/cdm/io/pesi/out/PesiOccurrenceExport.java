@@ -290,7 +290,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
 		Integer result = null;
 		if (state != null && taxon != null) {
-			result = state.getDbId(taxon);
+			result = state.getDbId(taxon.getName());
 		}
 		return result;
 	}

@@ -261,7 +261,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
 		Integer result = null;
 		if (state != null && currentTaxon != null) {
-			result = state.getDbId(currentTaxon);
+			result = state.getDbId(currentTaxon.getName());
 		}
 		return result;
 	}

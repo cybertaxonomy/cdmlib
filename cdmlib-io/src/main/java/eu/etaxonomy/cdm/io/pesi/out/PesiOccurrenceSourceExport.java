@@ -142,7 +142,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 											// Lookup sourceFk by using getSourceFk()
 											Integer sourceFk = getSourceFk(reference, state);
 											
-											if (sourceFk != null && ! allreadyProcessed(sourceFk)) {
+											if (sourceFk != null && ! alreadyProcessed(sourceFk)) {
 												// Add to processed sourceFk's since sourceFk's can be scanned more than once.
 												addToProcessed(sourceFk);
 												
@@ -217,7 +217,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	 * @param sourceFk
 	 * @return
 	 */
-	private static boolean allreadyProcessed(Integer sourceFk) {
+	private static boolean alreadyProcessed(Integer sourceFk) {
 		if (processedList.contains(sourceFk)) {
 			return true;
 		} else {

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -2920,14 +2920,35 @@ public final class PesiTransformer {
 			return STR_IS_HOMOTYPIC_SYNONYM_OF;
 		} else if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())) {
 			return STR_IS_HETEROTYPIC_SYNONYM_OF;
+		} else if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())) {
+			return STR_IS_INFERRED_EPITHET_FOR;
+		} else if (type.equals(SynonymRelationshipType.INFERRED_GENUS_OF())) {
+			return STR_IS_INFERRED_GENUS_FOR;
+		} else if (type.equals(SynonymRelationshipType.POTENTIAL_COMBINATION_OF())) {
+			return STR_IS_POTENTIAL_COMBINATION_FOR;
+		} else if (type.equals(NameRelationshipType.BASIONYM())) {
+			return STR_IS_BASIONYM_FOR;
+		} else if (type.equals(NameRelationshipType.LATER_HOMONYM())) {
+			return STR_IS_LATER_HOMONYM_OF;
+		} else if (type.equals(NameRelationshipType.REPLACED_SYNONYM())) {
+			return STR_IS_REPLACED_SYNONYM_FOR;
+		} else if (type.equals(NameRelationshipType.VALIDATED_BY_NAME())) {
+			return STR_IS_VALIDATION_OF;
+		} else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {
+			return STR_IS_LATER_VALIDATION_OF;
+		} else if (type.equals(NameRelationshipType.CONSERVED_AGAINST())) {
+			return STR_IS_CONSERVED_AGAINST;
+		} else if (type.equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())) {
+			return STR_IS_TREATED_AS_LATER_HOMONYM_OF;
+		} else if (type.equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())) {
+			return STR_IS_ORTHOGRAPHIC_VARIANT_OF;
+		} else if (type.equals(NameRelationshipType.ALTERNATIVE_NAME())) {
+			return STR_IS_ALTERNATIVE_NAME_FOR;
+		} else {
+			logger.warn("No equivalent RelationshipType found in datawarehouse for: " + type.getTitleCache());
 		}
-
+			
 		// The following have no equivalent attribute in CDM
-//		IS_BASIONYM_FOR
-//		IS_LATER_HOMONYM_OF
-//		IS_REPLACED_SYNONYM_FOR
-//		IS_VALIDATION_OF
-//		IS_LATER_VALIDATION_OF
 //		IS_TYPE_OF
 //		IS_CONSERVED_TYPE_OF
 //		IS_REJECTED_TYPE_OF
@@ -2935,11 +2956,7 @@ public final class PesiTransformer {
 //		IS_SECOND_PARENT_OF
 //		IS_FEMALE_PARENT_OF
 //		IS_MALE_PARENT_OF
-//		IS_CONSERVED_AGAINST
 //		IS_REJECTED_IN_FAVOUR_OF
-//		IS_TREATED_AS_LATER_HOMONYM_OF
-//		IS_ORTHOGRAPHIC_VARIANT_OF
-//		IS_ALTERNATIVE_NAME_FOR
 //		HAS_SAME_TYPE_AS
 //		IS_LECTOTYPE_OF
 //		TYPE_NOT_DESIGNATED
@@ -2949,9 +2966,6 @@ public final class PesiTransformer {
 //		IS_PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF
 //		IS_PARTIAL_AND_HOMOTYPIC_SYNONYM_OF
 //		IS_PARTIAL_AND_HETEROTYPIC_SYNONYM_OF
-//		IS_INFERRED_EPITHET_FOR
-//		IS_INFERRED_GENUS_FOR
-//		IS_POTENTIAL_COMBINATION_FOR
 
 		return null;
 	}
@@ -2976,14 +2990,35 @@ public final class PesiTransformer {
 			return IS_HOMOTYPIC_SYNONYM_OF;
 		} else if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())) {
 			return IS_HETEROTYPIC_SYNONYM_OF;
+		} else if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())) {
+			return IS_INFERRED_EPITHET_FOR;
+		} else if (type.equals(SynonymRelationshipType.INFERRED_GENUS_OF())) {
+			return IS_INFERRED_GENUS_FOR;
+		} else if (type.equals(SynonymRelationshipType.POTENTIAL_COMBINATION_OF())) {
+			return IS_POTENTIAL_COMBINATION_FOR;
+		} else if (type.equals(NameRelationshipType.BASIONYM())) {
+			return IS_BASIONYM_FOR;
+		} else if (type.equals(NameRelationshipType.LATER_HOMONYM())) {
+			return IS_LATER_HOMONYM_OF;
+		} else if (type.equals(NameRelationshipType.REPLACED_SYNONYM())) {
+			return IS_REPLACED_SYNONYM_FOR;
+		} else if (type.equals(NameRelationshipType.VALIDATED_BY_NAME())) {
+			return IS_VALIDATION_OF;
+		} else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {
+			return IS_LATER_VALIDATION_OF;
+		} else if (type.equals(NameRelationshipType.CONSERVED_AGAINST())) {
+			return IS_CONSERVED_AGAINST;
+		} else if (type.equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())) {
+			return IS_TREATED_AS_LATER_HOMONYM_OF;
+		} else if (type.equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())) {
+			return IS_ORTHOGRAPHIC_VARIANT_OF;
+		} else if (type.equals(NameRelationshipType.ALTERNATIVE_NAME())) {
+			return IS_ALTERNATIVE_NAME_FOR;
+		} else {
+			logger.warn("No equivalent RelationshipType found in datawarehouse for: " + type.getTitleCache());
 		}
 
 		// The following have no equivalent attribute in CDM
-//		IS_BASIONYM_FOR
-//		IS_LATER_HOMONYM_OF
-//		IS_REPLACED_SYNONYM_FOR
-//		IS_VALIDATION_OF
-//		IS_LATER_VALIDATION_OF
 //		IS_TYPE_OF
 //		IS_CONSERVED_TYPE_OF
 //		IS_REJECTED_TYPE_OF
@@ -2991,11 +3026,7 @@ public final class PesiTransformer {
 //		IS_SECOND_PARENT_OF
 //		IS_FEMALE_PARENT_OF
 //		IS_MALE_PARENT_OF
-//		IS_CONSERVED_AGAINST
 //		IS_REJECTED_IN_FAVOUR_OF
-//		IS_TREATED_AS_LATER_HOMONYM_OF
-//		IS_ORTHOGRAPHIC_VARIANT_OF
-//		IS_ALTERNATIVE_NAME_FOR
 //		HAS_SAME_TYPE_AS
 //		IS_LECTOTYPE_OF
 //		TYPE_NOT_DESIGNATED
@@ -3005,9 +3036,6 @@ public final class PesiTransformer {
 //		IS_PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF
 //		IS_PARTIAL_AND_HOMOTYPIC_SYNONYM_OF
 //		IS_PARTIAL_AND_HETEROTYPIC_SYNONYM_OF
-//		IS_INFERRED_EPITHET_FOR
-//		IS_INFERRED_GENUS_FOR
-//		IS_POTENTIAL_COMBINATION_FOR
 
 		return null;
 	}
