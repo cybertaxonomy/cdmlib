@@ -743,7 +743,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
 			result = PesiTransformer.taxonBase2statusFk((TaxonBase<?>) taxa.iterator().next());
-		} else {
+		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 		}
 		return result;
@@ -761,7 +761,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
 			result = PesiTransformer.taxonBase2statusCache((TaxonBase<?>) taxa.iterator().next());
-		} else {
+		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 		}
 		return result;
