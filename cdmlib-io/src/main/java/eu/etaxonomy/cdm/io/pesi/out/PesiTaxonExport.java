@@ -519,6 +519,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 				String singleWhitespace = "\\s";
 				String singleBlank = " ";
+				String anyNumberOfCharacters = ".*";
 				String italicBeginTag = "<i>";
 				String italicEndTag = "</i>";
 				if (nonViralName != null) {
@@ -531,32 +532,43 @@ public class PesiTaxonExport extends PesiExportBase {
 						
 						String genusOrUninomialNoWhitespaceRegEx = nonViralName.getGenusOrUninomial();
 						Pattern genusOrUninomialNoWhitespacePattern = Pattern.compile(genusOrUninomialNoWhitespaceRegEx);
+						
+						String genusOrUninomialAndSpecificEpithetRegEx = nonViralName.getGenusOrUninomial() + anyNumberOfCharacters + nonViralName.getSpecificEpithet();
+						Pattern genusOrUninomialAndSpecificEpithetPattern = Pattern.compile(genusOrUninomialAndSpecificEpithetRegEx);
+						String genusOrUninomialAndSpecificEpithetReplacement = italicBeginTag + nonViralName.getGenusOrUninomial() + singleBlank + nonViralName.getSpecificEpithet() + italicEndTag + singleBlank;
 
 						String infraSpecificEpithetRegEx = singleWhitespace + nonViralName.getInfraSpecificEpithet() + singleWhitespace;
 						String infraSpecificEpithetReplacement = singleBlank + italicBeginTag + nonViralName.getInfraSpecificEpithet() + italicEndTag + singleBlank;
 						Pattern infraspecificEpithetPattern = Pattern.compile(infraSpecificEpithetRegEx);
-	
-						if (genusOrUninomialPattern != null) {
-							Matcher genusOrUninomialMatcher = genusOrUninomialPattern.matcher(nonViralName.getTitleCache());
-							if (genusOrUninomialMatcher != null) {
-								if (genusOrUninomialMatcher.find()) {
-	//								logger.error("genusOrUninomial matches");
-									result = fullName.replaceFirst(genusOrUninomialRegEx, genusOrUninomialReplacement);
-//									logger.error("genusOrUninomial result: " + result);
-								} else {
-	//								logger.error("genusOrUninomial does not match");
-									if (genusOrUninomialNoWhitespacePattern != null) {
-										Matcher genusOrUninomialNoWhitespaceMatcher = genusOrUninomialNoWhitespacePattern.matcher(nonViralName.getTitleCache());
-										if (genusOrUninomialNoWhitespaceMatcher.find()) {
-											result = fullName.replaceFirst(genusOrUninomialNoWhitespaceRegEx, genusOrUninomialReplacement);
-										}
-									}
-								}
+
+						if (genusOrUninomialAndSpecificEpithetPattern != null) {
+							Matcher genusOrUninomialAndspecificEpithetMatcher = genusOrUninomialAndSpecificEpithetPattern.matcher(nonViralName.getTitleCache());
+							if (genusOrUninomialAndspecificEpithetMatcher.find()) {
+								result = fullName.replaceFirst(genusOrUninomialAndSpecificEpithetRegEx, genusOrUninomialAndSpecificEpithetReplacement);
 							} else {
-	//							logger.error("genusOrUninomialMatcher is null");
+								if (genusOrUninomialPattern != null) {
+									Matcher genusOrUninomialMatcher = genusOrUninomialPattern.matcher(nonViralName.getTitleCache());
+									if (genusOrUninomialMatcher != null) {
+										if (genusOrUninomialMatcher.find()) {
+			//								logger.error("genusOrUninomial matches");
+											result = fullName.replaceFirst(genusOrUninomialRegEx, genusOrUninomialReplacement);
+		//									logger.error("genusOrUninomial result: " + result);
+										} else {
+			//								logger.error("genusOrUninomial does not match");
+											if (genusOrUninomialNoWhitespacePattern != null) {
+												Matcher genusOrUninomialNoWhitespaceMatcher = genusOrUninomialNoWhitespacePattern.matcher(nonViralName.getTitleCache());
+												if (genusOrUninomialNoWhitespaceMatcher.find()) {
+													result = fullName.replaceFirst(genusOrUninomialNoWhitespaceRegEx, genusOrUninomialReplacement);
+												}
+											}
+										}
+									} else {
+			//							logger.error("genusOrUninomialMatcher is null");
+									}
+								} else {
+			//						logger.error("genusOrUninomialPattern is null");
+								}
 							}
-						} else {
-	//						logger.error("genusOrUninomialPattern is null");
 						}
 						
 						if (infraspecificEpithetPattern != null) {
