@@ -1114,9 +1114,7 @@ public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelation
 		//at them moment typeDesignations are not persisted with the homotypical group
 		//so explicit adding to the homotypical group is not necessary.
 		if (typeDesignation != null){		
-			if(typeDesignation.getTypifiedNames().size() > 0){
-				throw new IllegalArgumentException("TypeDesignation already has typified names.");
-			}
+			checkHomotypicalGroup(typeDesignation);
 			this.typeDesignations.add(typeDesignation);
 			typeDesignation.addTypifiedName(this);
 			
@@ -1129,6 +1127,23 @@ public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelation
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Throws an Exception this type designation already has typified names from another homotypical group.
+	 * @param typeDesignation
+	 */
+	private void checkHomotypicalGroup(TypeDesignationBase typeDesignation) {
+		if(typeDesignation.getTypifiedNames().size() > 0){
+			Set<HomotypicalGroup> groups = new HashSet<HomotypicalGroup>();
+			Set<TaxonNameBase> names = typeDesignation.getTypifiedNames();
+			for (TaxonNameBase taxonName: names){
+				groups.add(taxonName.getHomotypicalGroup());
+			}
+			if (groups.size() > 1){
+				throw new IllegalArgumentException("TypeDesignation already has typified names from another homotypical group.");
+			}
+		}
 	}
 	
 
