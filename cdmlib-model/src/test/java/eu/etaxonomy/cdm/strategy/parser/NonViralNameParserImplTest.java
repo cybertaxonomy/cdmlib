@@ -203,6 +203,19 @@ public class NonViralNameParserImplTest {
 		assertEquals("Ciardelli", basionymTeam2.getNomenclaturalTitle());
 		INomenclaturalAuthor exBasionymTeam2 = nameBasionymExAuthor.getExBasionymAuthorTeam();
 		assertEquals("D\u00F6ring", exBasionymTeam2.getNomenclaturalTitle());
+		
+		BotanicalName nameBasionymExAuthor2 = (BotanicalName)parser.parseFullName("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", null, Rank.SPECIES());
+		assertEquals("Washingtonia", nameBasionymExAuthor2.getGenusOrUninomial());
+		assertEquals("filifera", nameBasionymExAuthor2.getSpecificEpithet());
+		assertEquals("H.Wendl.", nameBasionymExAuthor2.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("de Bary", nameBasionymExAuthor2.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		INomenclaturalAuthor basionymTeam3 = nameBasionymExAuthor2.getBasionymAuthorTeam();
+		assertEquals("Linden", basionymTeam3.getNomenclaturalTitle());
+		INomenclaturalAuthor exBasionymTeam3 = nameBasionymExAuthor2.getExBasionymAuthorTeam();
+		assertEquals("Andre", exBasionymTeam3.getNomenclaturalTitle());
+		String title = nameBasionymExAuthor2.generateTitle();
+		assertEquals("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", title);
+	
 	}
 	
 	
