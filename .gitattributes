@@ -1975,6 +1975,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/INonViralNameParser.
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplRegExBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ParserProblem.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserHistory.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level2.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level3.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/BasionymsMustShareEpithetsAndAuthors.java -text
