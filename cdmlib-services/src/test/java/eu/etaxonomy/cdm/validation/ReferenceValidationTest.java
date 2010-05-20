@@ -67,7 +67,7 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	public void setUp() {
 		refFactory = ReferenceFactory.newInstance();
 		book = refFactory.newBook();
-		book.setTitleCache("Lorem ipsum");
+		book.setTitleCache("Lorem ipsum",true);
 	}
 	
 	
