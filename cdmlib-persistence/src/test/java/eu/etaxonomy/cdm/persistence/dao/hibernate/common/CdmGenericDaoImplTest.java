@@ -987,8 +987,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		IBook book1 = refFactory.newBook();
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
-		team1.setTitleCache("Team1");
-		team2.setTitleCache("Team1");
+		team1.setTitleCache("Team1",true);
+		team2.setTitleCache("Team1",true);
 		
 		book1.setTitle("Title1");
 		book1.setEdition("Edition1");
@@ -1028,7 +1028,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
 			
-			book1.setTitleCache("cache1");
+			book1.setTitleCache("cache1",true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
@@ -1042,7 +1042,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 0 entries", 0, matchResult.size());
 			
-			book3.setTitleCache("cache1");
+			book3.setTitleCache("cache1",true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
@@ -1061,13 +1061,13 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 			
-			book2.setTitleCache(book3.getTitleCache());
+			book2.setTitleCache(book3.getTitleCache(),true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
 			
-			team2.setTitleCache("team2");
+			team2.setTitleCache("team2",true);
 			teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertFalse("Team1 and team2 should not match" ,teamsMatch);
 			

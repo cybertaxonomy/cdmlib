@@ -9,20 +9,16 @@
 
 package eu.etaxonomy.cdm.persistence.query;
 
-import java.util.List;
+import java.io.Serializable;
 import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.search.FullTextQuery;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
-public class OrderHint {
+public class OrderHint implements Serializable {
 
 	public enum SortOrder {
 
