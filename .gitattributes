@@ -2847,6 +2847,8 @@ eclipse-plugin/aspectjtools-1.6.3.jar -text
 eclipse-plugin/aspectjweaver-1.6.3.jar -text
 eclipse-plugin/build.properties -text
 eclipse-plugin/build_ant.xml -text
+eclipse-plugin/c3p0-0.9.1.jar -text
+eclipse-plugin/c3p0-0.9.1src.zip -text
 eclipse-plugin/cglib-2.1.3.jar -text
 eclipse-plugin/commons-beanutils-1.7.0.jar -text
 eclipse-plugin/commons-beanutils-1.7.0src.zip -text

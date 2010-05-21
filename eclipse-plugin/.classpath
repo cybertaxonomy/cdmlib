@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="c3p0-0.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.transaction-3.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.asm-3.0.0.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.beans-3.0.0.RELEASE.jar"/>

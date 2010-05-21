@@ -79,7 +79,8 @@ Bundle-ClassPath: activation-1.1.jar,
  cdmlib-io-2.4.jar,
  cdmlib-model-2.4.jar,
  cdmlib-persistence-2.4.jar,
- cdmlib-services-2.4.jar
+ cdmlib-services-2.4.jar,
+ c3p0-0.9.1.jar
 Export-Package: eu.etaxonomy.cdm,
  eu.etaxonomy.cdm.api.application;
   uses:="org.springframework.transaction,
