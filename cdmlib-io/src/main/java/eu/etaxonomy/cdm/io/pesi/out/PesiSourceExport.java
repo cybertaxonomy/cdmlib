@@ -82,6 +82,9 @@ public class PesiSourceExport extends PesiExportBase {
 			// PESI: Clear the database table Source.
 			doDelete(state);
 
+			// Create the database table that hosts state information
+			state.createStateTables();
+
 			// CDM: Get the number of all available references.
 //			int maxCount = getReferenceService().count(null);
 //			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
