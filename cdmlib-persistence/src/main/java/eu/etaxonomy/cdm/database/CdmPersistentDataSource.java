@@ -41,6 +41,8 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -101,10 +103,13 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		}
 	}
 
-
-	private static String dataSourceClassName = BasicDataSource.class.getName();
+	/**
+	 * The Datasource class that Spring will use to set up the connection to the database
+	 */
+	private static String dataSourceClassName = ComboPooledDataSource.class.getName();
+	// we used dbcps BasicDataSource before
+//	private static String dataSourceClassName = BasicDataSource.class.getName();
 	
-
 	//name
 	protected String dataSourceName;
 
