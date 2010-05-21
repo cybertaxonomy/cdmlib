@@ -512,6 +512,7 @@ Export-Package: eu.etaxonomy.cdm,
    org.w3c.dom,
    org.apache.log4j.helpers,
    org.apache.log4j.config",
+ org.apache.sanselan,
  org.joda.time;
   uses:="org.joda.time.chrono,
    org.joda.time.format,
