@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class FaunaEuropaeaReference {
 	
 	private UUID taxonUuid;
-	private ReferenceBase cdmReference;
+	//private ReferenceBase cdmReference;
 //	private int taxonId;
 	private int referenceId;
 	private String referenceAuthor;
@@ -118,14 +118,14 @@ public class FaunaEuropaeaReference {
 	/**
 	 * @return the cdmReference
 	 */
-	public ReferenceBase getCdmReference() {
+	/*public ReferenceBase getCdmReference() {
 		return cdmReference;
-	}
+	}*/
 	/**
 	 * @param cdmReference the cdmReference to set
 	 */
-	public void setCdmReference(ReferenceBase cdmReference) {
+	/*public void setCdmReference(ReferenceBase cdmReference) {
 		this.cdmReference = cdmReference;
-	}
+	}*/
 
 }

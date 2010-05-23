@@ -39,7 +39,9 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	private boolean doHeterotypicSynonymsForBasionyms;
 	
 	/* Max number of taxa to be saved with one service call */
+
 	private int limitSave = 1200;
+
 	private ReferenceBase<?> auctReference;
 	
 	@SuppressWarnings("unchecked")
@@ -47,10 +49,10 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		ioClassList = new Class[] {
 				FaunaEuropaeaAuthorImport.class,
 				FaunaEuropaeaTaxonNameImport.class,
-				FaunaEuropaeaRelTaxonIncludeImport.class,
-				FaunaEuropaeaRefImport.class,
-				FaunaEuropaeaDistributionImport.class,
-				FaunaEuropaeaHeterotypicSynonymImport.class
+				//FaunaEuropaeaRelTaxonIncludeImport.class,
+				//FaunaEuropaeaDistributionImport.class,
+				//FaunaEuropaeaHeterotypicSynonymImport.class,
+				FaunaEuropaeaRefImport.class
 		};
 	};
 	

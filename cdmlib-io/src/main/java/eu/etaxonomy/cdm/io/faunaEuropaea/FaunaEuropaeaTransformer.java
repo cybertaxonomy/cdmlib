@@ -94,8 +94,8 @@ public final class FaunaEuropaeaTransformer {
 		switch (occStatusId){
 		case 0: return PresenceTerm.PRESENT();
 		case 2: return AbsenceTerm.ABSENT();
-
-
+	
+	
 		default: {
 
 			return null;
