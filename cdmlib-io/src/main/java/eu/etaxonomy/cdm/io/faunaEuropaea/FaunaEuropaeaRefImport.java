@@ -249,6 +249,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					}
 					references= null;
 					getAgentService().save((Collection)authors.values());
+					getReferenceService().save(references.values());
 					authors = null;
 				}
 				
