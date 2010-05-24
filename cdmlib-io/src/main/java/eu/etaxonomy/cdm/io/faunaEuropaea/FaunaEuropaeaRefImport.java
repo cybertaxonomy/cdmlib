@@ -240,6 +240,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				if (((i % limit) == 0 && i > 1 ) || i == count) { 
 					
 					Map <UUID, ReferenceBase> referenceMap =getReferenceService().save(references.values());
+					logger.info("i = " + i + " - references saved"); 
+
 					Iterator<Entry<UUID, ReferenceBase>> it = referenceMap.entrySet().iterator();
 					while (it.hasNext()){
 						ReferenceBase ref = it.next().getValue();
@@ -249,7 +251,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					}
 					references= null;
 					getAgentService().save((Collection)authors.values());
-					getReferenceService().save(references.values());
+					
 					authors = null;
 				}
 				
@@ -272,7 +274,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				
 				rsTaxRefs = source.getResultSet(selectQueryTaxRefs);
 	        
-	        
+				logger.info("Start taxon reference-relationships");
 				while (rsTaxRefs.next()) {
 					
 					
