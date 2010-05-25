@@ -533,7 +533,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 		}
 		
 		//inDescription
-		this.inDescription = null;
+		result.inDescription = null;
 
 		return result;
 	}
