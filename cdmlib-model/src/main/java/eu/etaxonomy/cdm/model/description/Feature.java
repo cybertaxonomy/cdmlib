@@ -35,13 +35,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -614,6 +613,8 @@ public class Feature extends DefinedTermBase<Feature> {
 			if ("1".equals(text.substring(4, 5))){newInstance.setSupportsTaxonInteraction(true);};
 			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);};
 			// if ("1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);};
+			//there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
+			newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
 		}
 		return newInstance;
 	}
