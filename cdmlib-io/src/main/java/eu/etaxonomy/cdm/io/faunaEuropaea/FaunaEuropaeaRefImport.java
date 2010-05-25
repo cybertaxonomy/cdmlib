@@ -337,7 +337,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 							//continue; ein Taxon kann mehr als eine Referenz haben
 						}
 					}
-	
+	/*
 					ReferenceBase<?> reference = null;
 					TeamOrPersonBase<Team> author = null;
 					//ReferenceFactory refFactory = ReferenceFactory.newInstance();
@@ -373,12 +373,10 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	
 					// Store reference
 	
-	
+	*/
 					if (!referenceIDs.contains(refId)) {
 	
-						if (reference == null) {
-							logger.warn("Reference is null");
-						}
+						
 						referenceIDs.add(refId);
 						if (logger.isTraceEnabled()) { 
 							logger.trace("Stored reference (" + refAuthor + ")"); 
