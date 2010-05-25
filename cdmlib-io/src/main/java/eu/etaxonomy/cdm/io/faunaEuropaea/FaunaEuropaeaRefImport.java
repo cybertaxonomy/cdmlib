@@ -267,6 +267,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	 //create the relationships between references and taxa       
 	        
 	        Taxon taxon = null;
+	        i = 0;
 	        try{
 	        	ResultSet rsTaxRefs = source.getResultSet(countQueryTaxRefs);
 	        	rsTaxRefs.next();
