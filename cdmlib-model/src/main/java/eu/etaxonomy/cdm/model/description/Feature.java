@@ -102,35 +102,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	
 	protected static Map<UUID, Feature> termMap = null;		
 
-//	private static Feature IMAGE;
-//	private static Feature CULTIVATION;
-//	private static Feature CONSERVATION;
-//	private static Feature USES;
-//	private static Feature ADDITIONAL_PUBLICATION;
-//	private static Feature CITATION;
-//	private static Feature OCCURRENCE;
-//	private static Feature PHENOLOGY;
-//	private static Feature COMMON_NAME;
-//	private static Feature PROTOLOG;
-//	private static Feature INTRODUCTION;
-//	private static Feature DIAGNOSIS;
-//	private static Feature ETYMOLOGY;
-//	private static Feature MATERIALS_METHODS;
-//	private static Feature MATERIALS_EXAMINED;
-//	private static Feature KEY;
-//	private static Feature BIOLOGY_ECOLOGY;
-//	private static Feature ECOLOGY;
-//	private static Feature DISCUSSION;
-//	private static Feature DISTRIBUTION;
-//	private static Feature DESCRIPTION;
-//	private static Feature UNKNOWN;
-//	private static Feature ANATOMY;
-//	private static Feature HOSTPLANT;
-//	private static Feature PATHOGEN_AGENT;
-//	private static Feature INDIVIDUALS_ASSOCIATION;
-//	private static Feature SPECIMEN;
-//	private static Feature OBSERVATION;
-
 	private boolean supportsTextData;
 	
 	private boolean supportsQuantitativeData;
@@ -924,37 +895,5 @@ public class Feature extends DefinedTermBase<Feature> {
 			termMap.put(term.getUuid(), (Feature)term);
 		}
 	}
-	
-//	@Override
-//	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
-//		Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
-//		Feature.BIOLOGY_ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidBiologyEcology);
-//		Feature.CITATION = termVocabulary.findTermByUuid(Feature.uuidCitation);
-//		Feature.COMMON_NAME = termVocabulary.findTermByUuid(Feature.uuidCommonName);
-//		Feature.CONSERVATION = termVocabulary.findTermByUuid(Feature.uuidConservation);
-//		Feature.CULTIVATION = termVocabulary.findTermByUuid(Feature.uuidCultivation);
-//		Feature.DESCRIPTION = termVocabulary.findTermByUuid(Feature.uuidDescription);
-//		Feature.DIAGNOSIS = termVocabulary.findTermByUuid(Feature.uuidDiagnosis);
-//		Feature.DISCUSSION = termVocabulary.findTermByUuid(Feature.uuidDiscussion);
-//		Feature.DISTRIBUTION = termVocabulary.findTermByUuid(Feature.uuidDistribution);
-//		Feature.ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidEcology);
-//		Feature.ETYMOLOGY = termVocabulary.findTermByUuid(Feature.uuidEtymology);
-//		Feature.IMAGE = termVocabulary.findTermByUuid(Feature.uuidImage);
-//		Feature.INTRODUCTION = termVocabulary.findTermByUuid(Feature.uuidIntroduction);
-//		Feature.KEY = termVocabulary.findTermByUuid(Feature.uuidKey);
-//		Feature.MATERIALS_EXAMINED = termVocabulary.findTermByUuid(Feature.uuidMaterialsExamined);
-//		Feature.MATERIALS_METHODS = termVocabulary.findTermByUuid(Feature.uuidMaterialsMethods);
-//		Feature.OCCURRENCE = termVocabulary.findTermByUuid(Feature.uuidOccurrence);
-//		Feature.PHENOLOGY = termVocabulary.findTermByUuid(Feature.uuidPhenology);
-//		Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
-//		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
-//		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
-//		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
-//		Feature.PATHOGEN_AGENT = termVocabulary.findTermByUuid(Feature.uuidPathogenAgent);
-//		Feature.HOSTPLANT = termVocabulary.findTermByUuid(uuidHostPlant); 
-//		Feature.INDIVIDUALS_ASSOCIATION = termVocabulary.findTermByUuid(uuidIndividualsAssociation); 
-//		Feature.SPECIMEN = termVocabulary.findTermByUuid(uuidSpecimen);
-//		Feature.OBSERVATION = termVocabulary.findTermByUuid(uuidObservation);
-//	}
 
 }
