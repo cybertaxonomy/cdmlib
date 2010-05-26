@@ -10,15 +10,16 @@
 package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase.IdType;
+import eu.etaxonomy.cdm.io.pesi.out.PesiTaxonExport.Data;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -33,7 +34,8 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	private static final String state_db_table = "tmp_state";
 	private static final String processed_taxonname_db_table = "tmp_processed_taxonname";
 	private static final String processed_source_db_table = "tmp_processed_source";
-
+	private static final String processed_treeindex_and_kingdomfk_db_table = "tmp_processed_treeindex_kingdomfk";
+	
 	/**
 	 * @param config
 	 */
@@ -84,6 +86,17 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	            e.printStackTrace();
 	            throw new RuntimeException("Couldn't create database table for processed sources.");
 	        }
+
+	        try {
+                query="CREATE TABLE " + processed_treeindex_and_kingdomfk_db_table + " (kingdom_id int, tree_index varchar(100))";
+                stmt = connection.createStatement();
+                stmt.executeUpdate(query);
+                stmt.close();
+	        } catch (Exception e) {
+	        	logger.error("Couldn't create database table for processed treeindex and kingdomfk.");
+	            e.printStackTrace();
+	            throw new RuntimeException("Couldn't create database table for processed treeindex and kingdomfk.");
+	        }
         }
 
         return true;
@@ -128,6 +141,16 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
         	logger.error("Couldn't drop database table for processed sources.");
 //            result = false;
         }
+
+        try {
+            query="DROP TABLE " + processed_treeindex_and_kingdomfk_db_table;
+            stmt = connection.createStatement();
+            stmt.executeUpdate(query);
+            stmt.close();
+    } catch (Exception e) {
+    	logger.error("Couldn't drop database table for treeindex and kingdomfk.");
+//        result = false;
+    }
 
         return result;
 	}
@@ -226,11 +249,11 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 		Source destination =  getConfig().getDestination();
 
 		if (object instanceof TaxonNameBase) {
-			// Add TaxonName to table of processed TaxonNames
+			// Count occurrence of taxonName in table of processed TaxonNames
 			TaxonNameBase taxonName = CdmBase.deproxy(object, TaxonNameBase.class);
 			sql = "SELECT count(*) FROM " + processed_taxonname_db_table + " WHERE cdm_id = '" + taxonName.getUuid() + "'";
 		} else if (object instanceof Integer) {
-			// Add SourceFk to table of processed Sources
+			// Count occurrence of source in table of processed Sources
 			sql = "SELECT count(*) FROM " + processed_source_db_table + " WHERE cdm_id = " + (Integer)object;
 		}
 		if (sql != null) {
@@ -276,6 +299,82 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 			sql = "INSERT INTO " + processed_source_db_table + " VALUES (" + (Integer)object + ")";
 		}
 		
+		if (sql != null) {
+			destination.setQuery(sql);
+			destination.update(sql);
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param taxonId
+	 * @return
+	 */
+	public boolean alreadyProcessedTreeIndexAndKingdomFk(String taxonId, Data newData) {
+		String sql = null;
+		Source destination =  getConfig().getDestination();
+
+		// Retrieve treeIndex and kingdomId from table of processed TreeIndex and KingdomFk
+		sql = "SELECT kingdom_id, tree_index FROM " + processed_treeindex_and_kingdomfk_db_table + " WHERE tree_index like '%#" + taxonId + "#%'";
+
+		int count = 0;
+		if (sql != null) {
+			destination.setQuery(sql);
+			ResultSet resultSet = destination.getResultSet(sql);
+			if (resultSet != null) {
+				try {
+					while (resultSet.next()) {
+						newData.setKingdomId(resultSet.getInt(1));
+						newData.setTreeIndex(resultSet.getString(2));
+						count++;
+					}
+				} catch (SQLException e) {
+					logger.error("Couldn't match: " + e.getMessage());
+				}
+				
+				if (count > 1) {
+					logger.warn("Select retrieved more than one column for taxonId " + taxonId);
+				}
+			}
+		}
+
+		if (count == 1 && newData.getTreeIndex() != null) {
+			// Determine parentTaxonId for given TaxonId
+			StringTokenizer tokenizer = new StringTokenizer(newData.getTreeIndex(), "#");
+			String parentTaxonIdString = null;
+			while (tokenizer.hasMoreTokens()) {
+				parentTaxonIdString = (String) tokenizer.nextElement();
+			}
+//			String parentTaxonIdString = treeIndex.substring(treeIndex.lastIndexOf("#", treeIndex.length()-1)+1, treeIndex.length()-1);
+
+			// Determine treeIndex for the given TaxonId
+			newData.setTreeIndex(newData.getTreeIndex().substring(0, newData.getTreeIndex().indexOf(taxonId)) + taxonId + "#");
+
+			try {
+				newData.setParentTaxonId(Integer.parseInt(parentTaxonIdString));
+			} catch (NumberFormatException e) {
+				logger.warn("String " + parentTaxonIdString + " could not be parsed to int for taxonId " + taxonId);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * 
+	 * @param kingdomFk
+	 * @param treeIndex
+	 * @return
+	 */
+	public boolean addToAlreadyProcessedTreeIndexAndKingdomFk(Integer kingdomFk, String treeIndex) {
+		String sql = null;
+		Source destination =  getConfig().getDestination();
+
+		// Add TreeIndex and KingdomFk to table of processed TreeIndex and KingdomFk
+		sql = "INSERT INTO " + processed_treeindex_and_kingdomfk_db_table + " VALUES (" + kingdomFk + ", '" + treeIndex + "')";
+
 		if (sql != null) {
 			destination.setQuery(sql);
 			destination.update(sql);
