@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;

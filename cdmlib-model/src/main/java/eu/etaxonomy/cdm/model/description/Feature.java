@@ -888,9 +888,7 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
-		if (termMap == null){
-			termMap = new HashMap<UUID, Feature>();
-		}
+		termMap = new HashMap<UUID, Feature>();
 		for (Feature term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), (Feature)term);
 		}

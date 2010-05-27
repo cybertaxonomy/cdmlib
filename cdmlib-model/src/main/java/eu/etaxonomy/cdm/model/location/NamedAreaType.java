@@ -10,8 +10,11 @@
 package eu.etaxonomy.cdm.model.location;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -42,11 +45,10 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	private static final long serialVersionUID = 8280172429797206548L;
 	private static final Logger logger = Logger.getLogger(NamedAreaType.class);
 
+	protected static Map<UUID, NamedAreaType> termMap = null;		
+	
 	private static final UUID uuidNaturalArea = UUID.fromString("cc33167c-d366-4030-b984-6b14e4f5fd22");
 	private static final UUID uuidAdministrationArea = UUID.fromString("1799f581-f425-40d6-a4db-ec2c638c0e92");
-	private static NamedAreaType NATURAL_AREA;
-	private static NamedAreaType ADMINISTRATION_AREA;
-
 	
 	
 	/**
@@ -68,24 +70,35 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	public NamedAreaType(){
 	}	
 	
+//************************** METHODS ********************************
+	
+	protected static NamedAreaType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (NamedAreaType)termMap.get(uuid);
+	}
+	
 	/**
 	 * The boundaries are given by natural factors (mountains, valleys, climate, etc.)
 	 */
 	public static final NamedAreaType NATURAL_AREA(){
-		return NATURAL_AREA;
+		return getTermByUuid(uuidNaturalArea);
 	}
 
 	/**
 	 * The boundaries depend on administration (county, state, reserve, etc.)
 	 */
 	public static final NamedAreaType ADMINISTRATION_AREA(){
-		return ADMINISTRATION_AREA;
+		return getTermByUuid(uuidAdministrationArea);
 	}
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedAreaType> termVocabulary) {
-		NamedAreaType.ADMINISTRATION_AREA = termVocabulary.findTermByUuid(NamedAreaType.uuidAdministrationArea);
-		NamedAreaType.NATURAL_AREA = termVocabulary.findTermByUuid(NamedAreaType.uuidNaturalArea);
+		termMap = new HashMap<UUID, NamedAreaType>();
+		for (NamedAreaType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (NamedAreaType)term);
+		}	
 	}
 	
 }

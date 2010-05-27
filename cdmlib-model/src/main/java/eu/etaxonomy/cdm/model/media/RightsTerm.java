@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -21,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -38,9 +41,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public class RightsTerm extends DefinedTermBase<RightsTerm> {
 	private static final long serialVersionUID = -5823263624000932116L;
 	private static final Logger logger = Logger.getLogger(RightsTerm.class);
-	private static RightsTerm LICENSE;
-	private static RightsTerm COPYRIGHT;
-	private static RightsTerm ACCESS_RIGHTS;
+
+	protected static Map<UUID, RightsTerm> termMap = null;		
 
 	
 	/**
@@ -73,19 +75,29 @@ public class RightsTerm extends DefinedTermBase<RightsTerm> {
 		super(term, label, labelAbbrev);
 	}
 
+	
+//************************** METHODS ********************************
+	
+	protected static RightsTerm getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (RightsTerm)termMap.get(uuid);
+	}
+	
 	/**
 	 * http://purl.org/dc/terms/accessRights
 	 */
 	public static final RightsTerm ACCESS_RIGHTS(){
-		return ACCESS_RIGHTS;
+		return getTermByUuid(uuidAccessRights);
 	}
 
 	public static final RightsTerm COPYRIGHT(){
-		return COPYRIGHT;
+		return getTermByUuid(uuidCopyright);
 	}
 
 	public static final RightsTerm LICENSE(){
-		return LICENSE;
+		return getTermByUuid(uuidLicense);
 	}
 	
 	private static final UUID uuidLicense = UUID.fromString("67c0d47e-8985-1014-8845-c84599f9992c");
@@ -95,9 +107,10 @@ public class RightsTerm extends DefinedTermBase<RightsTerm> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<RightsTerm> termVocabulary) {
-		RightsTerm.ACCESS_RIGHTS = termVocabulary.findTermByUuid(RightsTerm.uuidAccessRights);
-		RightsTerm.COPYRIGHT = termVocabulary.findTermByUuid(RightsTerm.uuidCopyright);
-		RightsTerm.LICENSE = termVocabulary.findTermByUuid(RightsTerm.uuidLicense);		
+		termMap = new HashMap<UUID, RightsTerm>();
+		for (RightsTerm term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (RightsTerm)term);
+		}	
 	}
 
 }

@@ -51,9 +51,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Audited
 public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<?>> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 1596291470042068880L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
-	private static Map<String, UUID> map = new HashMap<String, UUID>();
 	private String defaultColor = "000000";
 	
 
@@ -94,16 +94,6 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
 		newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
 		return newInstance;
 	}
-	
-//	public PresenceTerm getPresenceAbsenceTermByAbbreviation(String abbrev){
-//		UUID uuid = map.get(abbrev);
-//		if (uuid == null){
-//			logger.warn("Unknown Abbreviation for PresenceAbsenceTerm: " + CdmUtils.Nz(abbrev));
-//			return null;
-//		}
-//		return (uuid);
-//	}
-
 	
 	/**
 	 * @return the defaultColor

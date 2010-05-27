@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -54,14 +56,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
-	private static SynonymRelationshipType SYNONYM_OF;
-	private static SynonymRelationshipType HOMOTYPIC_SYNONYM_OF;
-	private static SynonymRelationshipType HETEROTYPIC_SYNONYM_OF;
-	private static SynonymRelationshipType INFERRED_SYNONYM_OF;
-	
-	private static SynonymRelationshipType INFERRED_GENUS_OF; 
-	private static SynonymRelationshipType INFERRED_EPITHET_OF;
-	private static SynonymRelationshipType POTENTIAL_COMBINATION_OF;
+	protected static Map<UUID, SynonymRelationshipType> termMap = null;		
 
 	private static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");
 	private static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
@@ -99,7 +94,15 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 		super(term, label, labelAbbrev, false, false);
 	}
 
-	//********* METHODS **************************************/
+	
+//************************** METHODS ********************************
+	
+	protected static SynonymRelationshipType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (SynonymRelationshipType)termMap.get(uuid);
+	}
 	
 	/**
 	 * Returns the synonym relationship type "is synonym of". This indicates
@@ -111,7 +114,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#HETEROTYPIC_SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType SYNONYM_OF(){
-		return SYNONYM_OF;
+		return getTermByUuid(uuidSynonymOf);
 	}
 
 	/**
@@ -126,7 +129,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
-		return HOMOTYPIC_SYNONYM_OF;
+		return getTermByUuid(uuidHomotypicSynonymOf);
 	}
 
 	/**
@@ -141,7 +144,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
-		return HETEROTYPIC_SYNONYM_OF;
+		return getTermByUuid(uuidHeterotypicSynonymOf);
 	}
 	
 	/**
@@ -150,7 +153,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * level is derived from a genus synonymy.
 	 */
 	public static final SynonymRelationshipType INFERRED_SYNONYM_OF(){
-		return INFERRED_SYNONYM_OF;
+		return getTermByUuid(uuidInferredSynonymOf);
 	}
 	
 	/**
@@ -159,7 +162,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * level is derived from a epithet synonymy.
 	 */
 	public static final SynonymRelationshipType INFERRED_GENUS_OF(){
-		return INFERRED_GENUS_OF;
+		return getTermByUuid(uuidInferredGenusOf);
 	}
 	
 	/**
@@ -168,11 +171,11 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * level is derived from a genus synonymy.
 	 */
 	public static final SynonymRelationshipType INFERRED_EPITHET_OF(){
-		return INFERRED_EPITHET_OF;
+		return getTermByUuid(uuidInferredEpithetOf);
 	}
 	
 	public static SynonymRelationshipType POTENTIAL_COMBINATION_OF() {
-		return POTENTIAL_COMBINATION_OF;
+		return getTermByUuid(uuidPotentialCombinationOf);
 	}
 
 	@Override
@@ -182,13 +185,10 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<SynonymRelationshipType> termVocabulary) {
-		SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidHeterotypicSynonymOf);
-		SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidHomotypicSynonymOf);
-		SynonymRelationshipType.SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidSynonymOf);
-		SynonymRelationshipType.INFERRED_SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidInferredSynonymOf);
-		SynonymRelationshipType.INFERRED_GENUS_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidInferredGenusOf);
-		SynonymRelationshipType.INFERRED_EPITHET_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidInferredEpithetOf);
-		SynonymRelationshipType.POTENTIAL_COMBINATION_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidPotentialCombinationOf);
+		termMap = new HashMap<UUID, SynonymRelationshipType>();
+		for (SynonymRelationshipType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (SynonymRelationshipType)term);
+		}	
 	}
 
 	

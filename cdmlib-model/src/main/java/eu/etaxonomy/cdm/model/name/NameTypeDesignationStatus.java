@@ -93,7 +93,7 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 		super(term, label, labelAbbrev);
 	}
 
-	//********* METHODS **************************************
+//********* METHODS **************************************
 	
 
 	/**

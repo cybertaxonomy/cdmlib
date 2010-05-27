@@ -9,10 +9,12 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -62,10 +64,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HybridRelationshipType.class);
 
-	private static HybridRelationshipType FIRST_PARENT;
-	private static HybridRelationshipType SECOND_PARENT;
-	private static HybridRelationshipType FEMALE_PARENT;
-	private static HybridRelationshipType MALE_PARENT;
+	protected static Map<UUID, HybridRelationshipType> termMap = null;		
 
 	private static final UUID uuidFirstParent = UUID.fromString("83ae9e56-18f2-46b6-b211-45cdee775bf3");
 	private static final UUID uuidSecondParent = UUID.fromString("0485fc3d-4755-4f53-8832-b82774484c43");
@@ -99,9 +98,16 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 		super(term, label, labelAbbrev, false, false);
 	}
 
-
-	//********* METHODS **************************************/
-
+	
+//************************** METHODS ********************************
+	
+	protected static HybridRelationshipType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (HybridRelationshipType)termMap.get(uuid);
+	}
+	
 	/**
 	 * Returns the "first parent" hybrid relationship type. The elements of the
 	 * {@link BotanicalName botanical taxon name} used as "first parent" affect the
@@ -110,7 +116,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#SECOND_PARENT()
 	 */
 	public static final HybridRelationshipType FIRST_PARENT(){
-		return FIRST_PARENT;
+		return getTermByUuid(uuidFirstParent);
 	}
 
 	/**
@@ -121,7 +127,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType SECOND_PARENT(){
-		return SECOND_PARENT;
+		return getTermByUuid(uuidSecondParent);
 	}
 
 	/**
@@ -134,7 +140,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType FEMALE_PARENT(){
-		return FEMALE_PARENT;
+		return getTermByUuid(uuidFemaleParent);
 	}
 
 	/**
@@ -147,15 +153,15 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#SECOND_PARENT()
 	 */
 	public static final HybridRelationshipType MALE_PARENT(){
-		return MALE_PARENT;
+		return getTermByUuid(uuidMaleParent);
 	}
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<HybridRelationshipType> termVocabulary) {
-		HybridRelationshipType.FEMALE_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidFemaleParent);
-		HybridRelationshipType.FIRST_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidFirstParent);
-		HybridRelationshipType.MALE_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidMaleParent);
-		HybridRelationshipType.SECOND_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidSecondParent);
+		termMap = new HashMap<UUID, HybridRelationshipType>();
+		for (HybridRelationshipType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (HybridRelationshipType)term);
+		}	
 	}
 	
 	@Override

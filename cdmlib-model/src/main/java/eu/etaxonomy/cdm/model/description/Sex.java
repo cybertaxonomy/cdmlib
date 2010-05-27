@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -22,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -48,10 +51,11 @@ public class Sex extends Scope {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Sex.class);
 
+	protected static Map<UUID, Sex> termMap = null;		
+
 	private static final UUID uuidMale = UUID.fromString("600a5212-cc02-431d-8a80-2bf595bd1eab");
 	private static final UUID uuidFemale = UUID.fromString("b4cfe0cb-b35c-4f97-9b6b-2b3c096ea2c0");
-	private static Sex MALE;
-	private static Sex FEMALE;	
+
 
 
 	/** 
@@ -102,18 +106,30 @@ public class Sex extends Scope {
 	}
 
 	
+//************************** METHODS ********************************
+	
+	protected static Sex getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (Sex)termMap.get(uuid);
+	}
+	
+
 	public static Sex MALE(){
-		return MALE;
+		return getTermByUuid(uuidMale);
 	}
 
 	public static Sex FEMALE(){
-		return FEMALE;
+		return getTermByUuid(uuidFemale);
 	}
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
-		Sex.MALE = (Sex)termVocabulary.findTermByUuid(Sex.uuidMale);
-		Sex.FEMALE = (Sex)termVocabulary.findTermByUuid(Sex.uuidFemale);
+		termMap = new HashMap<UUID, Sex>();
+		for (Modifier term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (Sex)term);
+		}	
 	}
 
 	

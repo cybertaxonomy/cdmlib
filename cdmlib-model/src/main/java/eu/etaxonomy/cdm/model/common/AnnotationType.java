@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -39,12 +41,11 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotationType.class);
 
+	protected static Map<UUID, AnnotationType> termMap = null;		
+	
 	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
-	private static final UUID uuidEditorial = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");
-	
-	private static AnnotationType TECHNICAL;
-	private static AnnotationType EDITORIAL;
-	
+	private static final UUID uuidEditorial = UUID.fromString("e780d5fd-abfc-4025-938a-46deb751d808");
+
 	public static AnnotationType NewInstance(String term, String label, String labelAbbrev){
 		return new AnnotationType(term, label, labelAbbrev);
 	}
@@ -66,17 +67,30 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 		super(term, label, labelAbbrev);
 	}
 
+	
+//************************** METHODS ********************************
+	
+	protected static AnnotationType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (AnnotationType)termMap.get(uuid);
+	}
+	
+	
 	public static final AnnotationType TECHNICAL(){
-		return AnnotationType.TECHNICAL;
+		return getTermByUuid(uuidTechnical);
 	}
 
 	public static final AnnotationType EDITORIAL(){
-		return AnnotationType.EDITORIAL;
+		return getTermByUuid(uuidEditorial);
 	}
 
 	protected void setDefaultTerms(TermVocabulary<AnnotationType> termVocabulary) {
-		AnnotationType.TECHNICAL = termVocabulary.findTermByUuid(uuidTechnical);
-		AnnotationType.EDITORIAL = termVocabulary.findTermByUuid(uuidEditorial);	
+		termMap = new HashMap<UUID, AnnotationType>();
+		for (AnnotationType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (AnnotationType)term);
+		}	
 	}
 
 }

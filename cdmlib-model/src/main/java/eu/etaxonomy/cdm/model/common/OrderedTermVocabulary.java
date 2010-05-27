@@ -167,7 +167,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super.addTerm(term);	
 	}
 
-	public void addTermAbove(T termToBeAdded, T lowerTerm) throws WrongTermTypeException {
+	public void addTermAbove(T termToBeAdded, T lowerTerm)  {
 		int orderInd = lowerTerm.orderIndex;
 		termToBeAdded.orderIndex = orderInd;
 		//increment all orderIndexes of terms below 
@@ -181,7 +181,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super.addTerm(termToBeAdded);
 	}
 
-	public void addTermBelow(T termToBeAdded, T higherTerm) throws WrongTermTypeException {
+	public void addTermBelow(T termToBeAdded, T higherTerm)  {
 		int orderInd = higherTerm.orderIndex;
 		termToBeAdded.orderIndex = orderInd + 1;
 		//increment all orderIndexes of terms below 

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -46,6 +48,9 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StatisticalMeasure.class);
 	
+	protected static Map<UUID, StatisticalMeasure> termMap = null;		
+
+	
 	private static final UUID uuidMin = UUID.fromString("2c8b42e5-154c-42bd-a301-03b483275dd6");
 	private static final UUID uuidMax = UUID.fromString("8955815b-7d21-4149-b1b7-d37af3c2046c");
 	private static final UUID uuidAverage = UUID.fromString("264c3979-d551-4795-9e25-24c6b533fbb1");
@@ -54,14 +59,6 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final UUID uuidTypicalLowerBoundary = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
 	private static final UUID uuidTypicalUpperBoundary = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
 	private static final UUID uuidStandardDeviation = UUID.fromString("9ee4397e-3496-4fe1-9114-afc7d7bdc652");
-	private static StatisticalMeasure STANDARD_DEVIATION;
-	private static StatisticalMeasure TYPICAL_UPPER_BOUNDARY;
-	private static StatisticalMeasure TYPICAL_LOWER_BOUNDARY;
-	private static StatisticalMeasure VARIANCE;
-	private static StatisticalMeasure SAMPLE_SIZE;
-	private static StatisticalMeasure AVERAGE;
-	private static StatisticalMeasure MAX;
-	private static StatisticalMeasure MIN;
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -99,48 +96,56 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	public static StatisticalMeasure NewInstance(String term, String label, String labelAbbrev){
 		return new StatisticalMeasure(term, label, labelAbbrev);
 	}	
+	
+	
+//************************** METHODS ********************************
+	
+	protected static StatisticalMeasure getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (StatisticalMeasure)termMap.get(uuid);
+	}
 
 	public static final StatisticalMeasure MIN(){
-		return MIN;
+		return getTermByUuid(uuidMin);
 	}
 
 	public static final StatisticalMeasure MAX(){
-		return MAX;
+		return getTermByUuid(uuidMax);
 	}
 
 	public static final StatisticalMeasure AVERAGE(){
-		return AVERAGE;
+		return getTermByUuid(uuidAverage);
 	}
 
 	public static final StatisticalMeasure SAMPLE_SIZE(){
-		return SAMPLE_SIZE;
+		return getTermByUuid(uuidSampleSize);
 	}
 
 	public static final StatisticalMeasure VARIANCE(){
-		return VARIANCE;
+		return getTermByUuid(uuidVariance);
 	}
 
 	public static final StatisticalMeasure TYPICAL_LOWER_BOUNDARY(){
-		return TYPICAL_LOWER_BOUNDARY;
+		return getTermByUuid(uuidTypicalLowerBoundary);
 	}
 
 	public static final StatisticalMeasure TYPICAL_UPPER_BOUNDARY(){
-		return TYPICAL_UPPER_BOUNDARY;
+		return getTermByUuid(uuidTypicalUpperBoundary);
 	}
 
 	public static final StatisticalMeasure STANDARD_DEVIATION(){
-		return STANDARD_DEVIATION;
+		return getTermByUuid(uuidStandardDeviation);
 	}
+	
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<StatisticalMeasure> termVocabulary) {
-		StatisticalMeasure.AVERAGE = termVocabulary.findTermByUuid(StatisticalMeasure.uuidAverage);
-		StatisticalMeasure.MAX = termVocabulary.findTermByUuid(StatisticalMeasure.uuidMax);
-		StatisticalMeasure.MIN = termVocabulary.findTermByUuid(StatisticalMeasure.uuidMin);
-		StatisticalMeasure.SAMPLE_SIZE = termVocabulary.findTermByUuid(StatisticalMeasure.uuidSampleSize);
-		StatisticalMeasure.STANDARD_DEVIATION = termVocabulary.findTermByUuid(StatisticalMeasure.uuidStandardDeviation);
-		StatisticalMeasure.TYPICAL_LOWER_BOUNDARY = termVocabulary.findTermByUuid(StatisticalMeasure.uuidTypicalLowerBoundary);
-		StatisticalMeasure.TYPICAL_UPPER_BOUNDARY = termVocabulary.findTermByUuid(StatisticalMeasure.uuidTypicalUpperBoundary);
-		StatisticalMeasure.VARIANCE = termVocabulary.findTermByUuid(StatisticalMeasure.uuidVariance);
+		termMap = new HashMap<UUID, StatisticalMeasure>();
+		for (StatisticalMeasure term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (StatisticalMeasure)term);
+		}
 	}
 	
 }

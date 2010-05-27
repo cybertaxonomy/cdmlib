@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.name;
 
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -57,46 +59,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<SpecimenTypeDesignationStatus> {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignationStatus.class);
 
-	private static SpecimenTypeDesignationStatus PHOTOTYPE;
+	protected static Map<UUID, SpecimenTypeDesignationStatus> termMap = null;		
 
-	private static SpecimenTypeDesignationStatus ICONOTYPE;
-
-	private static SpecimenTypeDesignationStatus ISOEPITYPE;
-
-	private static SpecimenTypeDesignationStatus PARALECTOTYPE;
-
-	private static SpecimenTypeDesignationStatus SECOND_STEP_NEOTYPE;
-
-	private static SpecimenTypeDesignationStatus SECOND_STEP_LECTOTYPE;
-
-	private static SpecimenTypeDesignationStatus PARANEOTYPE;
-
-	private static SpecimenTypeDesignationStatus ISONEOTYPE;
-
-	private static SpecimenTypeDesignationStatus ISOLECTOTYPE;
-
-	private static SpecimenTypeDesignationStatus PARATYPE;
-
-	private static SpecimenTypeDesignationStatus SYNTYPE;
-
-	private static SpecimenTypeDesignationStatus ISOTYPE;
-
-	private static SpecimenTypeDesignationStatus EPITYPE;
-
-	private static SpecimenTypeDesignationStatus NEOTYPE;
-
-	private static SpecimenTypeDesignationStatus LECTOTYPE;
-
-	private static SpecimenTypeDesignationStatus HOLOTYPE;
-
-	private static SpecimenTypeDesignationStatus UNSPECIFIED;
-	
-	private static SpecimenTypeDesignationStatus ORIGINAL_MATERIAL;
-	
-	private static SpecimenTypeDesignationStatus ISOSYNTYPE;
-	
-	
-	
 	private static final UUID uuidHolotype = UUID.fromString("a407dbc7-e60c-46ff-be11-eddf4c5a970d");
 	private static final UUID uuidLectotype = UUID.fromString("05002d46-083e-4b27-8731-2e7c28a8825c");
 	private static final UUID uuidNeotype = UUID.fromString("26e13359-8f77-4e40-a85a-56c01782fce0");
@@ -144,10 +108,17 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	public SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
-
-	//********* METHODS **************************************
 	
+//********* METHODS **************************************
+	
+	protected static SpecimenTypeDesignationStatus findTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;
+		}
+		return (SpecimenTypeDesignationStatus)termMap.get(uuid);
+	}
 
+	
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> type designation
 	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
@@ -185,7 +156,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see		NameRelationshipType#VALIDATED_BY_NAME()
 	 */
 	public static final SpecimenTypeDesignationStatus HOLOTYPE(){
-		return HOLOTYPE;
+		return findTermByUuid(uuidHolotype);
 	}
 
 	/**
@@ -199,7 +170,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus LECTOTYPE(){
-		return LECTOTYPE;
+		return findTermByUuid(uuidLectotype);
 	}
 
 	/**
@@ -211,7 +182,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus NEOTYPE(){
-		return NEOTYPE;
+		return findTermByUuid(uuidNeotype);
 	}
 
 	/**
@@ -229,7 +200,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#NEOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus EPITYPE(){
-		return EPITYPE;
+		return findTermByUuid(uuidEpitype);
 	}
 
 	/**
@@ -239,7 +210,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOTYPE(){
-		return ISOTYPE;
+		return findTermByUuid(uuidIsotype);
 	}
 
 	/**
@@ -251,7 +222,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus SYNTYPE(){
-		return SYNTYPE;
+		return findTermByUuid(uuidSyntype);
 	}
 	
 	/**
@@ -264,7 +235,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOSYNTYPE(){
-		return ISOSYNTYPE;
+		return findTermByUuid(uuidIsosyntype);
 	}
 
 	/**
@@ -279,7 +250,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#SYNTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus PARATYPE(){
-		return PARATYPE;
+		return findTermByUuid(uuidParatype);
 	}
 
 	/**
@@ -290,7 +261,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOLECTOTYPE(){
-		return ISOLECTOTYPE;
+		return findTermByUuid(uuidIsolectotype);
 	}
 
 	/**
@@ -301,7 +272,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#NEOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISONEOTYPE(){
-		return ISONEOTYPE;
+		return findTermByUuid(uuidIsoneotype);
 	}
 	/**
 	 * Returns the "paraneotype" designation status. </BR>
@@ -312,7 +283,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#NEOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus PARANEOTYPE(){
-		return PARANEOTYPE;
+		return findTermByUuid(uuidParaneotype);
 	}
 
 	/**
@@ -323,7 +294,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus SECOND_STEP_LECTOTYPE(){
-		return SECOND_STEP_LECTOTYPE;
+		return findTermByUuid(uuidSecondStepLectotype);
 	}
 
 	/**
@@ -334,7 +305,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus SECOND_STEP_NEOTYPE(){
-		return SECOND_STEP_NEOTYPE;
+		return findTermByUuid(uuidSecondStepNeotype);
 	}
 
 	/**
@@ -345,7 +316,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus PARALECTOTYPE(){
-		return PARALECTOTYPE;
+		return findTermByUuid(uuidParalectotype);
 	}
 
 	/**
@@ -355,7 +326,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#EPITYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOEPITYPE(){
-		return ISOEPITYPE;
+		return findTermByUuid(uuidIsoepitype);
 	}
 
 	/**
@@ -368,7 +339,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ICONOTYPE(){
-		return ICONOTYPE;
+		return findTermByUuid(uuidIconotype);
 	}
 
 	/**
@@ -377,7 +348,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * 
 	 */
 	public static final SpecimenTypeDesignationStatus UNSPECIFIC(){
-		return UNSPECIFIED;
+		return findTermByUuid(uuidUnspecified);
 	}
 
 	/**
@@ -387,7 +358,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * 
 	 */
 	public static final SpecimenTypeDesignationStatus ORIGINAL_MATERIAL(){
-		return ORIGINAL_MATERIAL;
+		return findTermByUuid(uuidOriginalMaterial);
 	}
 	
 	
@@ -397,30 +368,16 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * 
 	 */
 	public static final SpecimenTypeDesignationStatus PHOTOTYPE(){
-		return PHOTOTYPE;
+		return findTermByUuid(uuidPhototype);
 	}
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<SpecimenTypeDesignationStatus> termVocabulary) {
-		SpecimenTypeDesignationStatus.EPITYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidEpitype);
-		SpecimenTypeDesignationStatus.HOLOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidHolotype);
-		SpecimenTypeDesignationStatus.ICONOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIconotype);
-		SpecimenTypeDesignationStatus.ISOEPITYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsoepitype);
-		SpecimenTypeDesignationStatus.ISOLECTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsolectotype);
-		SpecimenTypeDesignationStatus.ISONEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsoneotype);
-		SpecimenTypeDesignationStatus.ISOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsotype);
-		SpecimenTypeDesignationStatus.LECTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidLectotype);
-		SpecimenTypeDesignationStatus.NEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidNeotype);
-		SpecimenTypeDesignationStatus.PARALECTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidParalectotype);
-		SpecimenTypeDesignationStatus.PARANEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidParaneotype);
-		SpecimenTypeDesignationStatus.PARATYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidParatype);
-		SpecimenTypeDesignationStatus.PHOTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidPhototype);
-		SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE= termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSecondStepLectotype);
-		SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSecondStepNeotype);
-		SpecimenTypeDesignationStatus.SYNTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSyntype);		
-		SpecimenTypeDesignationStatus.ISOSYNTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsosyntype);
-		SpecimenTypeDesignationStatus.UNSPECIFIED = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidUnspecified);		
-		SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidOriginalMaterial);
+		termMap = new HashMap<UUID, SpecimenTypeDesignationStatus>();
+		for (SpecimenTypeDesignationStatus term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term);
+		}
+
 	}
 
 }
