@@ -310,6 +310,7 @@ public final class FaunaEuropaeaTransformer {
 	public final static HashMap<String, UUID> abbrToUUID = new HashMap<String,UUID>();
 	 	static
 	 	{	
+	 		abbrToUUID.put("AUS", UUID.fromString("cf979ca8-8cb6-42df-b2ce-1f432ec7c26b"));
 	 		abbrToUUID.put("AFR", UUID.fromString("07ac5e75-9fc9-4aa0-938c-1324c9618b97"));
 	 		abbrToUUID.put("EPA", UUID.fromString("e83446d7-7379-4beb-be05-295f8da6f5ae"));
 	 		abbrToUUID.put("GR-AEG", UUID.fromString("6bd422aa-9911-4b80-8595-0f6d1ecd5eee"));

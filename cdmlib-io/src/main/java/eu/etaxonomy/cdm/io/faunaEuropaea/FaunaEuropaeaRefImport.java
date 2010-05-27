@@ -276,6 +276,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				rsTaxRefs = source.getResultSet(selectQueryTaxRefs);
 	        
 				logger.info("Start taxon reference-relationships");
+				FaunaEuropaeaReference fauEuReference;
+				FaunaEuropaeaReferenceTaxon fauEuReferenceTaxon;
 				while (rsTaxRefs.next()) {
 					
 					
@@ -318,7 +320,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 						continue;
 					}
 	
-					FaunaEuropaeaReference fauEuReference = new FaunaEuropaeaReference();
+					fauEuReference = new FaunaEuropaeaReference();
 					fauEuReference.setTaxonUuid(currentTaxonUuid);
 					fauEuReference.setReferenceId(refId);
 					fauEuReference.setReferenceAuthor(refAuthor);
@@ -329,7 +331,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	
 					if (!taxonUuids.contains(currentTaxonUuid)) {
 						taxonUuids.add(currentTaxonUuid);
-						FaunaEuropaeaReferenceTaxon fauEuReferenceTaxon = 
+						fauEuReferenceTaxon = 
 							new FaunaEuropaeaReferenceTaxon(currentTaxonUuid);
 						fauEuTaxonMap.put(currentTaxonUuid, fauEuReferenceTaxon);
 					} else {
@@ -338,43 +340,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 							//continue; ein Taxon kann mehr als eine Referenz haben
 						}
 					}
-	/*
-					ReferenceBase<?> reference = null;
-					TeamOrPersonBase<Team> author = null;
-					//ReferenceFactory refFactory = ReferenceFactory.newInstance();
-					reference = ReferenceFactory.newGeneric();
 	
-					reference.setTitleCache(title);
-					reference.setDatePublished(ImportHelper.getDatePublished(year));
-					
-					if (!authors.containsKey(refAuthor)) {
-						if (refAuthor == null) {
-							logger.warn("Reference author is null");
-						}
-						author = Team.NewInstance();
-						author.setTitleCache(refAuthor);
-						authors.put(refAuthor,author); 
-						if (logger.isTraceEnabled()) { 
-							logger.trace("Stored author (" + refAuthor + ")");
-						}
-					//}
-	
-					} else {
-						author = authors.get(refAuthor);
-						if (logger.isDebugEnabled()) { 
-							logger.debug("Not imported author with duplicated aut_id (" + refId + 
-								") " + refAuthor);
-						}
-					}
-					
-					reference.setAuthorTeam(author);
-					
-					ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
-					ImportHelper.setOriginalSource(author, fauEuConfig.getSourceReference(), refId, namespace);
-	
-					// Store reference
-	
-	*/
 					if (!referenceIDs.contains(refId)) {
 	
 						
@@ -451,16 +417,19 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	
 								UUID taxonUuid = taxonBase.getUuid();
 								FaunaEuropaeaReferenceTaxon fauEuHelperTaxon = fauEuTaxonMap.get(taxonUuid);
-	
+								ReferenceBase citation;
+								String microCitation;
+								DescriptionElementSource originalSource;
+								Synonym syn;
 								for (FaunaEuropaeaReference storedReference : fauEuHelperTaxon.getReferences()) {
 	
 									TextData textData = TextData.NewInstance(Feature.CITATION());
 									
-									ReferenceBase citation = references.get(storedReference.getReferenceId());
-									String microCitation = storedReference.getPage();
-									DescriptionElementSource originalSource = DescriptionElementSource.NewInstance(null, null, citation, microCitation, null, null);
+									citation = references.get(storedReference.getReferenceId());
+									microCitation = storedReference.getPage();
+									originalSource = DescriptionElementSource.NewInstance(null, null, citation, microCitation, null, null);
 									if (isSynonym){
-										Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
+										syn = CdmBase.deproxy(taxonBase, Synonym.class);
 										originalSource.setNameUsedInSource(syn.getName());
 									}
 									textData.addSource(originalSource);
@@ -480,6 +449,9 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 						references = null;
 						taxonList = null;
 						fauEuTaxonMap = null;
+						referenceIDs = null;
+						referenceList = null;
+						uuidSet = null;
 						commitTransaction(txStatus);
 	
 					} catch (Exception e) {
