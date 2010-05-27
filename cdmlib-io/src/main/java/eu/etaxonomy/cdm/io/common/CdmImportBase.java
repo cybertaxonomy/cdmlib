@@ -97,6 +97,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (extensionType == null){
 				extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 				extensionType.setUuid(uuid);
+				extensionType.setVocabulary(ExtensionType.DOI().getVocabulary());
 				getTermService().save(extensionType);
 			}
 			state.putExtensionType(extensionType);
@@ -111,6 +112,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (markerType == null){
 				markerType = MarkerType.NewInstance(label, text, labelAbbrev);
 				markerType.setUuid(uuid);
+				markerType.setVocabulary(MarkerType.COMPLETE().getVocabulary());
 				getTermService().save(markerType);
 			}
 			state.putMarkerType(markerType);
@@ -125,6 +127,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (annotationType == null){
 				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
 				annotationType.setUuid(uuid);
+				annotationType.setVocabulary(AnnotationType.EDITORIAL().getVocabulary());
 				getTermService().save(annotationType);
 			}
 			state.putAnnotationType(annotationType);

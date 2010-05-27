@@ -21,12 +21,17 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelOccurrenceImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -75,7 +80,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
-            " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
+            " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurrence.Native, emOccurrence.Introduced, " +
+            		" emOccurrence.Cultivated, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
                 	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
                 	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
                 " FROM emOccurrence INNER JOIN " +  
@@ -122,8 +128,12 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 try {
                     //status
                      PresenceAbsenceTermBase<?> status = null;
+                     String alternativeStatusString = null;
                      if (emStatusId != null){
                     	status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
+                     }else{
+                    	 String[] stringArray = new String[]{rs.getString("Native"), rs.getString("Introduced"), rs.getString("Cultivated")};
+                    	 alternativeStatusString = CdmUtils.concat(",", stringArray);
                      }
                      
                      //Create area list
@@ -145,6 +155,12 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                      }
                      for (NamedArea tdwgArea : tdwgAreas){
                            Distribution distribution = Distribution.NewInstance(tdwgArea, status);
+                           if (status == null){
+                        	   AnnotationType annotationType = AnnotationType.EDITORIAL();
+                        	   Annotation annotation = Annotation.NewInstance(alternativeStatusString, annotationType, null);
+                        	   distribution.addAnnotation(annotation);
+                        	   distribution.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+                           }
 //                         distribution.setCitation(sourceRef);
                            if (taxonDescription != null) { 
                         	   Distribution duplicate = checkIsNoDuplicate(taxonDescription, distribution, duplicateMap , occurrenceId);

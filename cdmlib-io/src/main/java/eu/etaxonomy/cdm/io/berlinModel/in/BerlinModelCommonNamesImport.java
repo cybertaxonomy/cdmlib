@@ -274,24 +274,26 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				//MisNameRef
 				if (misNameRefFk != null){
 					//Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
-					Taxon misappliedName;
+					Taxon misappliedName = null;
 					if (misappliedTaxonId != null){
 						misappliedName = taxonMap.get(String.valueOf(misappliedTaxonId));
 					}else{
 						TaxonNameBase taxonName = taxonNameMap.get(String.valueOf(ptNameFk));
 						ReferenceBase sec = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
 						if (taxonName == null || sec == null){
-							logger.warn("Taxon name or misapplied name reference is null for common name " + commonNameId);
+							logger.info("Taxon name or misapplied name reference is null for common name " + commonNameId);
+						}else{
+							misappliedName = Taxon.NewInstance(taxonName, sec);
+							taxaToSave.add(misappliedName);
 						}
-						misappliedName = Taxon.NewInstance(taxonName, sec);
-						taxaToSave.add(misappliedName);
 					}
 					if (misappliedName != null){
 						taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
 						TaxonDescription misappliedNameDescription = getDescription(misappliedName);
 						try {
 							for (CommonTaxonName commonTaxonName : commonTaxonNames){
-								commonTaxonName.clone(misappliedNameDescription);
+								CommonTaxonName commonNameClone = (CommonTaxonName)commonTaxonName.clone();
+								misappliedNameDescription.addElement(commonNameClone);
 							}
 						} catch (CloneNotSupportedException e) {
 							e.printStackTrace();
