@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -163,11 +164,13 @@ public final class BerlinModelTransformer {
 				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
 				nomStatusCombIned.addRepresentation(representation);
 				nomStatusCombIned.setUuid(uuidRelNameCombIned);
+				nomStatusCombIned.setVocabulary(NomenclaturalStatusType.ALTERNATIVE().getVocabulary());
 			}
 			result = nomStatusCombIned;
 		}
 		return result;
 	}
+
 	
 	public static NomenclaturalStatus nomStatusFkToNomStatus(int nomStatusFk, String nomStatusLabel)  throws UnknownCdmTypeException{
 		if (nomStatusFk == NAME_ST_NOM_INVAL){
@@ -336,6 +339,29 @@ public final class BerlinModelTransformer {
 	}
 	
 	
+	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
+	static Rank collSpeciesRank;
+	/**
+	 * @param i
+	 * @return
+	 */
+	private static Rank rankId2NewRank(Integer rankId) {
+		Rank result = null;
+		if (rankId == null){
+			return null;
+		}else if (rankId == 57){
+			if (collSpeciesRank == null){
+				collSpeciesRank = new Rank();
+				Representation representation = Representation.NewInstance("Collective species", "Coll. species", "coll.", Language.ENGLISH());
+				collSpeciesRank.addRepresentation(representation);
+				collSpeciesRank.setUuid(uuidRankCollSpecies);
+				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
+				voc.addTermAbove(collSpeciesRank, Rank.SPECIES());
+			}
+			result = collSpeciesRank;
+		}
+		return result;
+	}
 	
 	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown) throws UnknownCdmTypeException{
 		Rank result;
@@ -398,6 +424,10 @@ public final class BerlinModelTransformer {
 						case 830: return Rank.SUPERFAMILY();
 						
 						default: {
+							Rank rank = rankId2NewRank(57);
+							if (rank != null){
+								return rank;
+							}
 							if (useUnknown){
 								logger.error("Rank unknown: " + rankId + ". Created UNKNOWN_RANK");
 								return Rank.UNKNOWN_RANK();
@@ -414,7 +444,6 @@ public final class BerlinModelTransformer {
 			return Rank.UNKNOWN_RANK();
 		}		
 	}
-	
 	
 	public static Integer rank2RankId (Rank rank){
 		if (rank == null){
