@@ -51,7 +51,7 @@ VALUES (@defTermId,@repId);
 
 -- insert new vocabulary NameFeature----
  INSERT INTO TermVocabulary (id, DTYPE, uuid, protectedTitleCache, titleCache, termsourceuri) 
- VALUES (@vocId := max(id)+1 ) AS maxId , 'TermVocabulary', 'a7ca3eef-4092-49e1-beec-ed5096193e5e', FALSE, 'class eu.etaxonomy.cdm.model.common.TermVocabulary: a7ca3eef-4092-49e1-beec-ed5096193e5e', 'eu.etaxonomy.cdm.model.description.Feature');
+SELECT ( @vocId := max(id)+1 ) AS maxId , 'TermVocabulary', 'a7ca3eef-4092-49e1-beec-ed5096193e5e', FALSE, 'class eu.etaxonomy.cdm.model.common.TermVocabulary: a7ca3eef-4092-49e1-beec-ed5096193e5e', 'eu.etaxonomy.cdm.model.description.Feature' 
 FROM TermVocabulary;
 
 INSERT INTO Representation (id, created, uuid, text, abbreviatedlabel, label, language_id) 
