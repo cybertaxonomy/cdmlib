@@ -64,7 +64,11 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefinedTermBase", propOrder = {
     "media",
-    "vocabulary"
+    "vocabulary",
+    "kindOf",
+	"generalizationOf",
+	"partOf",
+	"includes"
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
@@ -91,10 +95,9 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	private static final long serialVersionUID = 2931811562248571531L;
 	private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
 		
-//	@XmlElement(name = "KindOf")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-	@XmlTransient
+	@XmlElement(name = "KindOf")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
 	private T kindOf;
@@ -103,19 +106,17 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * which can't be cast to instances of T - can we explicitly initialize these terms using 
 	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
 	 */
-//	@XmlElementWrapper(name = "Generalizations")
-//	@XmlElement(name = "GeneralizationOf")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-	@XmlTransient
+	@XmlElementWrapper(name = "Generalizations")
+	@XmlElement(name = "GeneralizationOf")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<T> generalizationOf = new HashSet<T>();
 	
-//	@XmlElement(name = "PartOf")
-//	@XmlIDREF
-//  @XmlSchemaType(name = "IDREF")
-	@XmlTransient
+	@XmlElement(name = "PartOf")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	protected T partOf;
@@ -125,11 +126,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * which can't be cast to instances of T - can we explicitly initialize these terms using 
 	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
 	 */
-//	@XmlElementWrapper(name = "Includes")
-//	@XmlElement(name = "Include")
-//	@XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-	@XmlTransient
+	@XmlElementWrapper(name = "Includes")
+	@XmlElement(name = "Include")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<T> includes = new HashSet<T>();

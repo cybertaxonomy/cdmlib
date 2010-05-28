@@ -28,13 +28,16 @@ public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextElemen
 	@Override
 	public MultilanguageTextElement marshal(Map<Language, LanguageString> value)
 			throws Exception {
+		if(value != null) {
+		    MultilanguageTextElement multilanguageTextElement = new MultilanguageTextElement();
 		
-		MultilanguageTextElement multilanguageTextElement = new MultilanguageTextElement();
-		
-		for(Language l : value.keySet()) {
+		  for(Language l : value.keySet()) {
 			multilanguageTextElement.getLanguageString().add(value.get(l));
+		  }
+		  return multilanguageTextElement;
+		} else {
+			return null;
 		}
-		return multilanguageTextElement;
 	}
 
     @Override

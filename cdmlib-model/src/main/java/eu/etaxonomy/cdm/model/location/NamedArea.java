@@ -52,10 +52,6 @@ import eu.etaxonomy.cdm.model.media.Media;
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "NamedArea", propOrder = {
-	"kindOf",
-	"generalizationOf",
-	"partOf",
-	"includes",
     "validPeriod",
     "shape",
     "pointApproximation",
@@ -188,26 +184,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	}
 	public void setPointApproximation(Point pointApproximation) {
 		this.pointApproximation = pointApproximation;
-	}
-	
-	@XmlElement(name = "KindOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	public NamedArea getKindOf(){
-		return super.getKindOf();
-	}
-
-	public void setKindOf(NamedArea kindOf){
-		super.setKindOf(kindOf);
-	}
-	
-	@XmlElement(name = "PartOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-	@XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @Override
-	public NamedArea getPartOf(){
-		return super.getPartOf();
-	}
+	}	
 	
 	/**
 	 * FIXME this method is a workaround for a casting problem in the getPartOf implementation
@@ -230,34 +207,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		}
 		
 		return (NamedArea) area;
-	}
-	
-	public void setPartOf(NamedArea partOf){
-		this.partOf = partOf;
-	}
-	
-	@XmlElementWrapper(name = "Generalizations", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-	@XmlElement(name = "GeneralizationOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	public Set<NamedArea> getGeneralizationOf(){
-		return super.getGeneralizationOf();
-	}
-	
-	protected void setGeneralizationOf(Set<NamedArea> value){
-		super.setGeneralizationOf(value);
-	}
-	
-	@XmlElementWrapper(name = "Includes", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-	@XmlElement(name = "Include", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-	@XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	public Set<NamedArea> getIncludes(){
-		return super.getIncludes();
-	}
-	
-	protected void setIncludes(Set<NamedArea> includes) {
-		super.setIncludes(includes);
 	}
 	
 
