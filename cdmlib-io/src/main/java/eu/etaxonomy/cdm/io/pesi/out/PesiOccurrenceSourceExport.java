@@ -50,7 +50,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	private static final String pluralString = "OccurrenceSources";
 	private static final String parentPluralString = "Taxa";
 	private static Taxon taxon = null;
-	private static ArrayList processedList = new ArrayList();
 
 	public PesiOccurrenceSourceExport() {
 		super();
@@ -142,9 +141,9 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 											// Lookup sourceFk by using getSourceFk()
 											Integer sourceFk = getSourceFk(reference, state);
 											
-											if (sourceFk != null && ! state.alreadyProcessed(sourceFk)) {
+											if (sourceFk != null && ! state.alreadyProcessedSource(sourceFk)) {
 												// Add to processed sourceFk's since sourceFk's can be scanned more than once.
-												state.addToProcessed(sourceFk);
+												state.addToProcessedSources(sourceFk);
 												
 												// Query the database for all entries in table 'Occurrence' with the sourceFk just determined.
 												Set<Integer> occurrenceIds = getOccurrenceIds(sourceFk, state);
@@ -161,6 +160,8 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 						}
 					}
 				}
+				
+				state.clearAlreadyProcessedSources();
 				
 				// Commit transaction
 				commitTransaction(txStatus);

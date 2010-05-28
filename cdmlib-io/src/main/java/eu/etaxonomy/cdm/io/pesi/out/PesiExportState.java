@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -31,6 +33,9 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  */
 public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	private static final Logger logger = Logger.getLogger(PesiExportState.class);
+	private static List<Integer> processedTaxonNameList = new ArrayList<Integer>();
+	private static List<Integer> processedSourceList = new ArrayList<Integer>();
+	private List<Integer> treeIndexList = new ArrayList<Integer>();
 	private static final String state_db_table = "tmp_state";
 	private static final String processed_taxonname_db_table = "tmp_processed_taxonname";
 	private static final String processed_source_db_table = "tmp_processed_source";
@@ -88,7 +93,7 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	        }
 
 	        try {
-                query="CREATE TABLE " + processed_treeindex_and_kingdomfk_db_table + " (kingdom_id int, tree_index varchar(100))";
+                query="CREATE TABLE " + processed_treeindex_and_kingdomfk_db_table + " (kingdom_id int, tree_index varchar(200), nomenclatural_code varchar(100))";
                 stmt = connection.createStatement();
                 stmt.executeUpdate(query);
                 stmt.close();
@@ -237,119 +242,89 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 * @param
 	 * @return
 	 */
-	public boolean alreadyProcessed(Object object) {
-//		if (processedList.contains(taxonName)) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-		
-		boolean result = false;
-		String sql = null;
-		Source destination =  getConfig().getDestination();
-
-		if (object instanceof TaxonNameBase) {
-			// Count occurrence of taxonName in table of processed TaxonNames
-			TaxonNameBase taxonName = CdmBase.deproxy(object, TaxonNameBase.class);
-			sql = "SELECT count(*) FROM " + processed_taxonname_db_table + " WHERE cdm_id = '" + taxonName.getUuid() + "'";
-		} else if (object instanceof Integer) {
-			// Count occurrence of source in table of processed Sources
-			sql = "SELECT count(*) FROM " + processed_source_db_table + " WHERE cdm_id = " + (Integer)object;
+	public boolean alreadyProcessedSource(Integer sourceId) {
+		if (processedSourceList.contains(sourceId)) {
+			return true;
+		} else {
+			return false;
 		}
-		if (sql != null) {
-			destination.setQuery(sql);
-			ResultSet resultSet = destination.getResultSet(sql);
-			int count = 0;
-			if (resultSet != null) {
-				try {
-					resultSet.next();
-					count = resultSet.getInt(1);
-				} catch (SQLException e) {
-					logger.error("Couldn't match.");
-				}
-				
-				if (count == 1) {
-					result = true;
-				} else if (count == 0) {
-					result = false;
-				} else if (count > 1) {
-					logger.error("This object exists more than once in database table: " + object);
-				}
-			}
-		}
-		return result;
 	}
-
+	
 	/**
-	 * Add given TaxonName to the list of processed TaxonName's.
-	 * @param sourceFk
+	 * Adds given Source to the list of processed Sources.
 	 */
-	public boolean addToProcessed(Object object) {
-//		processedList.add(taxonName);
+	public boolean addToProcessedSources(Integer sourceId) {
+		processedSourceList.add(sourceId);
 		
-		String sql = null;
-		Source destination =  getConfig().getDestination();
-
-		if (object instanceof TaxonNameBase) {
-			// Add TaxonName to table of processed TaxonNames
-			TaxonNameBase taxonName = CdmBase.deproxy(object, TaxonNameBase.class);
-			sql = "INSERT INTO " + processed_taxonname_db_table + " VALUES ('" + taxonName.getUuid() + "')";
-		} else if (object instanceof Integer) {
-			// Add SourceFk to table of processed Sources
-			sql = "INSERT INTO " + processed_source_db_table + " VALUES (" + (Integer)object + ")";
-		}
-		
-		if (sql != null) {
-			destination.setQuery(sql);
-			destination.update(sql);
-		}
 		return true;
 	}
 
 	/**
-	 * 
-	 * @param taxonId
+	 * Returns whether the given object was processed before or not.
+	 * @param
 	 * @return
 	 */
-	public boolean alreadyProcessedTreeIndexAndKingdomFk(String taxonId, Data newData) {
+	public boolean alreadyProcessedTaxonName(Integer taxonNameId) {
+		if (processedTaxonNameList.contains(taxonNameId)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Adds given TaxonName to the list of processed TaxonNames.
+	 */
+	public boolean addToProcessedTaxonNames(Integer taxonNameId) {
+		processedTaxonNameList.add(taxonNameId);
+		
+		return true;
+	}
+
+	/**
+	 * Determines ParentTaxonFk, TreeIndex and KingdomFk from database.
+	 * @param taxonId
+	 * @return ParentTaxonFk, TreeIndex and KingdomFk
+	 */
+	public boolean getParentTaxonFkAndTreeIndexAndKingdomFk(String taxonId, Data newData) {
 		String sql = null;
 		Source destination =  getConfig().getDestination();
 
 		// Retrieve treeIndex and kingdomId from table of processed TreeIndex and KingdomFk
-		sql = "SELECT kingdom_id, tree_index FROM " + processed_treeindex_and_kingdomfk_db_table + " WHERE tree_index like '%#" + taxonId + "#%'";
+		sql = "SELECT kingdom_id, tree_index, nomenclatural_code FROM " + processed_treeindex_and_kingdomfk_db_table + " WHERE tree_index like '%#" + taxonId + "#%'";
 
-		int count = 0;
+		boolean set = false;
 		if (sql != null) {
 			destination.setQuery(sql);
 			ResultSet resultSet = destination.getResultSet(sql);
 			if (resultSet != null) {
 				try {
 					while (resultSet.next()) {
+						// Only the first row is of interest
 						newData.setKingdomId(resultSet.getInt(1));
 						newData.setTreeIndex(resultSet.getString(2));
-						count++;
+						newData.setNomenclaturalCode(resultSet.getString(3));
+
+						set = true;
+						break;
 					}
 				} catch (SQLException e) {
 					logger.error("Couldn't match: " + e.getMessage());
 				}
-				
-				if (count > 1) {
-					logger.warn("Select retrieved more than one column for taxonId " + taxonId);
-				}
 			}
 		}
 
-		if (count == 1 && newData.getTreeIndex() != null) {
+		if (set && newData.getTreeIndex() != null) {
+			// Determine treeIndex for the given TaxonId
+			String treeIndexWithoutTaxonId = newData.getTreeIndex().substring(0, newData.getTreeIndex().indexOf(taxonId));
+			newData.setTreeIndex(treeIndexWithoutTaxonId + taxonId + "#");
+
 			// Determine parentTaxonId for given TaxonId
-			StringTokenizer tokenizer = new StringTokenizer(newData.getTreeIndex(), "#");
+			StringTokenizer tokenizer = new StringTokenizer(treeIndexWithoutTaxonId, "#");
 			String parentTaxonIdString = null;
 			while (tokenizer.hasMoreTokens()) {
 				parentTaxonIdString = (String) tokenizer.nextElement();
 			}
-//			String parentTaxonIdString = treeIndex.substring(treeIndex.lastIndexOf("#", treeIndex.length()-1)+1, treeIndex.length()-1);
-
-			// Determine treeIndex for the given TaxonId
-			newData.setTreeIndex(newData.getTreeIndex().substring(0, newData.getTreeIndex().indexOf(taxonId)) + taxonId + "#");
 
 			try {
 				newData.setParentTaxonId(Integer.parseInt(parentTaxonIdString));
@@ -363,17 +338,18 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	}
 
 	/**
-	 * 
+	 * Stores KingdomFk and TreeIndex in database.
 	 * @param kingdomFk
 	 * @param treeIndex
 	 * @return
 	 */
-	public boolean addToAlreadyProcessedTreeIndexAndKingdomFk(Integer kingdomFk, String treeIndex) {
+	public boolean addToAlreadyProcessedTreeIndexAndKingdomFk(Data newData) {
 		String sql = null;
 		Source destination =  getConfig().getDestination();
 
-		// Add TreeIndex and KingdomFk to table of processed TreeIndex and KingdomFk
-		sql = "INSERT INTO " + processed_treeindex_and_kingdomfk_db_table + " VALUES (" + kingdomFk + ", '" + treeIndex + "')";
+		// Add TreeIndex, KingdomFk and nomenclaturalCode to database table
+		sql = "INSERT INTO " + processed_treeindex_and_kingdomfk_db_table + " VALUES (" + newData.getKingdomId() + ", '" + 
+			newData.getTreeIndex() + "', '" + newData.getNomenclaturalCode() + "')";
 
 		if (sql != null) {
 			destination.setQuery(sql);
@@ -383,15 +359,41 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	}
 
 	/**
-	 * Clears the database table containing already processed TaxonNames.
+	 * Clears the list of processed TaxonNames.
 	 */
 	public void clearAlreadyProcessedTaxonNames() {
-		String sql;
-		Source destination =  getConfig().getDestination();
-
-		sql = "DELETE FROM " + processed_taxonname_db_table;
-		destination.setQuery(sql);
-		destination.update(sql);
+		processedTaxonNameList.clear();
 	}
 
+	/**
+	 * Clears the list of already processed Sources.
+	 */
+	public void clearAlreadyProcessedSources() {
+		processedSourceList.clear();
+	}
+
+	/**
+	 * Clears the list of taxonNameId's processed in TreeIndex.
+	 */
+	public void clearIncludedInTreeIndex() {
+		treeIndexList.clear();
+	}
+
+	/**
+	 * Adds a taxonNameId to the list of taxonNameId's included in any known treeIndex.
+	 */
+	public void addToTreeIndex(Integer taxonNameId) {
+		treeIndexList.add(taxonNameId);
+	}
+	
+	/**
+	 * Checks whether a taxonNameId was added to any known treeIndex.
+	 */
+	public boolean isIncludedInTreeIndex(Integer taxonNameId) {
+		if (treeIndexList.contains(taxonNameId)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

@@ -2459,10 +2459,10 @@ public final class PesiTransformer {
 	 * @param nomenclaturalCode
 	 * @return KINGDOM_ANIMALIA for NomenclaturalCode.ICZN, KINGDOM_PLANTAE for NomenclaturalCode.ICBN
 	 */
-	public static Integer nomenClaturalCode2Kingdom(NomenclaturalCode nomenclaturalCode) {
+	public static Integer nomenClaturalCode2Kingdom(String nomenclaturalCode) {
 		Integer result = null;
 		// TODO: This needs to be refined. For now we differentiate between Animalia and Plantae only.
-		if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)) {
+		if (nomenclaturalCode.equals(NomenclaturalCode.ICZN.getTitleCache())) {
 			result = KINGDOM_ANIMALIA;
 		} else if (nomenclaturalCode.equals(NomenclaturalCode.ICBN)) {
 			result = KINGDOM_PLANTAE;

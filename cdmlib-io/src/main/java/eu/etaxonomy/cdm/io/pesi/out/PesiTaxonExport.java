@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -60,20 +61,32 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "Taxon";
 	private static final String pluralString = "Taxa";
-	private static NomenclaturalCode nomenclaturalCode;
 	
 	private static String specificEpithet = null;
 	private static String infraSpecificEpithet = null;
 	private static String infraGenericEpithet = null;
 	private static Integer rank = null;
 	private static String genusOrUninomial = null;
-	private static ArrayList processedList = new ArrayList();
 	
 	public class Data {
 		Integer kingdomId = null;
 		Integer parentTaxonId = null;
 		String treeIndex = null;
+		String nomenclaturalCode = null;
 
+		/**
+		 * @return the nomenclaturalCode
+		 */
+		protected String getNomenclaturalCode() {
+			return nomenclaturalCode;
+		}
+		/**
+		 * @param nomenclaturalCode the nomenclaturalCode to set
+		 */
+		protected void setNomenclaturalCode(String nomenclaturalCode) {
+			this.nomenclaturalCode = nomenclaturalCode;
+		}
+		
 		/**
 		 * @return the kingdomId
 		 */
@@ -86,6 +99,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		protected void setKingdomId(Integer kingdomId) {
 			this.kingdomId = kingdomId;
 		}
+		
 		/**
 		 * @return the parentTaxonId
 		 */
@@ -98,6 +112,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		protected void setParentTaxonId(Integer parentTaxonId) {
 			this.parentTaxonId = parentTaxonId;
 		}
+		
 		/**
 		 * @return the treeIndex
 		 */
@@ -143,7 +158,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 			// Prepare TreeIndex-And-KingdomFk-Statement
 			Connection con = state.getConfig().getDestination().getConnection();
-			String parentTaxonFk_TreeIndex_KingdomFkSql = "UPDATE Taxon SET ParentTaxonFk = ?, TreeIndex = ?, KingdomFk = ? WHERE TaxonId = ?"; 
+			String parentTaxonFk_TreeIndex_KingdomFkSql = "UPDATE Taxon SET ParentTaxonFk = ?, TreeIndex = ?, " +
+					"KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
 			PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt = con.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
 
 			// Get the limit for objects to save within a single transaction.
@@ -181,35 +197,35 @@ public class PesiTaxonExport extends PesiExportBase {
 				for (TaxonBase taxonBase : list) {
 					doCount(count++, modCount, pluralString);
 					TaxonNameBase taxonName = taxonBase.getName();
-					if (! state.alreadyProcessed(taxonName)) {
+					if (! state.alreadyProcessedTaxonName(taxonName.getId())) {
 						success &= mapping.invoke(taxonName);
-						state.addToProcessed(taxonName);
+						state.addToProcessedTaxonNames(taxonName.getId());
 	
 						// Check whether some rules are violated
-						if (rank == null) {
-							logger.error("Rank was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-						} else {
-							if (infraSpecificEpithet == null && rank.intValue() == 190) {
-								logger.error("InfraSpecificEpithet was not determined although it should exist for rank 190: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-							}
-							if (specificEpithet != null && rank.intValue() < 220) {
-								logger.error("SpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 220: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-							}
-							if (infraSpecificEpithet != null && rank.intValue() < 230) {
-								logger.error("InfraSpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 230: "  + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-							}
-						}
-						if (infraSpecificEpithet != null && specificEpithet == null) {
-							logger.error("An infraSpecificEpithet was determined, but a specificEpithet was not determined: "  + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-						}
-						if (genusOrUninomial == null) {
-							logger.error("GenusOrUninomial was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-						}
-						
-						rank = null;
-						infraSpecificEpithet = null;
-						genusOrUninomial = null;
-						specificEpithet = null;
+//						if (rank == null) {
+//							logger.error("Rank was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//						} else {
+//							if (infraSpecificEpithet == null && rank.intValue() == 190) {
+//								logger.error("InfraSpecificEpithet was not determined although it should exist for rank 190: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//							}
+//							if (specificEpithet != null && rank.intValue() < 220) {
+//								logger.error("SpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 220: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//							}
+//							if (infraSpecificEpithet != null && rank.intValue() < 230) {
+//								logger.error("InfraSpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 230: "  + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//							}
+//						}
+//						if (infraSpecificEpithet != null && specificEpithet == null) {
+//							logger.error("An infraSpecificEpithet was determined, but a specificEpithet was not determined: "  + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//						}
+//						if (genusOrUninomial == null) {
+//							logger.error("GenusOrUninomial was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//						}
+//						
+//						rank = null;
+//						infraSpecificEpithet = null;
+//						genusOrUninomial = null;
+//						specificEpithet = null;
 					}
 				}
 
@@ -232,7 +248,6 @@ public class PesiTaxonExport extends PesiExportBase {
 
 			count = 0;
 			pastCount = 0;
-			processedList = new ArrayList();
 			// 2nd Round: Add ParentTaxonFk to each Taxon
 			logger.error("PHASE 2...");
 			// Start transaction
@@ -245,9 +260,9 @@ public class PesiTaxonExport extends PesiExportBase {
 				for (TaxonBase taxonBase : list) {
 					doCount(count++, modCount, "ParentTaxonFk");
 					TaxonNameBase taxonName = taxonBase.getName();
-					if (! state.alreadyProcessed(taxonName)) {
+					if (! state.alreadyProcessedTaxonName(taxonName.getId())) {
 						success &= invokeParentTaxonFkAndTreeIndexAndKindomFk(taxonName, state, parentTaxonFk_TreeIndex_KingdomFkStmt);
-						state.addToProcessed(taxonName);
+						state.addToProcessedTaxonNames(taxonName.getId());
 					}
 				}
 
@@ -269,7 +284,10 @@ public class PesiTaxonExport extends PesiExportBase {
 			logger.error("Committed transaction.");
 
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
-	
+
+			state.clearAlreadyProcessedTaxonNames();
+			state.clearIncludedInTreeIndex();
+
 			return success;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -291,7 +309,8 @@ public class PesiTaxonExport extends PesiExportBase {
 		} else {
 			Data newData = new Data();
 			getParentTaxonFkAndTreeIndexAndKingdomFk(taxonNameBase, newData, state);
-			if (newData.getTreeIndex() == null || newData.getKingdomId() == null || newData.getParentTaxonId() == null) {
+			if (newData.getTreeIndex() == null || newData.getKingdomId() == null ||
+					newData.getParentTaxonId() == null || newData.getNomenclaturalCode() == null) {
 				return true;
 			} else {
 				Integer taxonId = state.getDbId(taxonNameBase);
@@ -299,7 +318,9 @@ public class PesiTaxonExport extends PesiExportBase {
 					treeIndexAndKingdomFkStmt.setInt(1, newData.getParentTaxonId());
 					treeIndexAndKingdomFkStmt.setString(2, newData.getTreeIndex());
 					treeIndexAndKingdomFkStmt.setInt(3, newData.getKingdomId());
-					treeIndexAndKingdomFkStmt.setInt(4, taxonId);
+					treeIndexAndKingdomFkStmt.setInt(4, getRankFk(taxonNameBase, newData.getNomenclaturalCode()));
+					treeIndexAndKingdomFkStmt.setString(5, getRankCache(taxonNameBase, newData.getNomenclaturalCode()));
+					treeIndexAndKingdomFkStmt.setInt(6, taxonId);
 					treeIndexAndKingdomFkStmt.executeUpdate();
 					return true;
 				} catch (SQLException e) {
@@ -338,84 +359,13 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * NOT USED ANYMORE
-	 * Returns the <code>KingdomFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
-	 * @return The <code>KingdomFk</code> attribute.
-	 * @see MethodMapper
-	 */
-	@SuppressWarnings("unused")
-	private static Integer getKingdomFk(TaxonNameBase taxonNameBase, PesiExportState state) {
-		// Traverse taxon tree up until root is reached.
-		Integer result = null;
-		Taxon taxon = null;
-		Set taxa = taxonNameBase.getTaxa();
-		if (taxa.size() == 1) {
-			CdmBase singleTaxon = (CdmBase) taxa.iterator().next();
-			if (singleTaxon.isInstanceOf(Synonym.class)) {
-				Synonym synonym = CdmBase.deproxy(singleTaxon, Synonym.class);
-				Set<SynonymRelationship> relations = synonym.getSynonymRelations();
-				if (relations.size() == 1) {
-					taxon = relations.iterator().next().getAcceptedTaxon();
-				}
-			} else {
-				taxon = CdmBase.deproxy(singleTaxon, Taxon.class);
-			}
-		} else if (taxa.size() > 1) {
-			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-			return null;
-		}
-
-		boolean root = false;
-		boolean error = false;
-		if (taxon != null) {
-			while (! root && ! error) {
-				Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
-				if (taxonNodes.size() == 1) {
-					TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
-					ITreeNode parentNode = taxonNode.getParent();
-					if (HibernateProxyHelper.isInstanceOf(parentNode, TaxonNode.class)) {
-						TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
-						taxon = node.getTaxon();
-//						logger.error("current taxon: " + state.getDbId(taxon));
-					} else {
-						// Root element reached
-						result = state.getDbId(taxon.getName());
-//						logger.error("Root element reached. Highest Taxon: " + state.getDbId(taxon));
-						root = true;
-					}
-				} else {
-					// This should not be the case.
-					taxon = null;
-					result = null;
-					error = true;
-				}
-			}
-		}
-		if (error) {
-			// TODO: Handle this gracefully. For now 'result' is left as null.
-		} else if (taxon != null) {
-		
-			// TODO: Set current nomenclatural code
-			// We are differentiating kingdoms by the nomenclatural code for now.
-			// This needs to be handled in a better way as soon as we know how to differentiate between more kingdoms.
-			nomenclaturalCode = taxon.getName().getNomenclaturalCode();
-
-			// Set result
-			result = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
-		}
-
-		return result;
-	}
-
-	/**
 	 * Returns the <code>RankFk</code> attribute.
 	 * @param taxon The {@link TaxonBase Taxon}.
 	 * @return The <code>RankFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getRankFk(TaxonNameBase taxonName) {
+	private static Integer getRankFk(TaxonNameBase taxonName, String nomenclaturalCode) {
 		Integer result = null;
 		if (nomenclaturalCode != null) {
 			if (taxonName != null && taxonName.getRank() == null) {
@@ -437,7 +387,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getRankCache(TaxonNameBase taxonName) {
+	private static String getRankCache(TaxonNameBase taxonName, String nomenclaturalCode) {
 		String result = null;
 		if (nomenclaturalCode != null) {
 			result = PesiTransformer.rank2RankCache(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
@@ -538,7 +488,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getWebShowName(TaxonNameBase taxonName) {
 		String result = null;
-
+		try {
 		if (taxonName != null) {
 			if (taxonName != null && taxonName.isInstanceOf(NonViralName.class)) {
 				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
@@ -845,7 +795,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 		
 //		logger.error("final result: " + result);
-
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 
@@ -895,9 +847,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		if (taxonName != null) {
 			try {
-				if (taxonName.getNomenclaturalReference() != null) {
-					result = taxonName.getNomenclaturalMicroReference();
-				}
+				result = taxonName.getNomenclaturalMicroReference();
 			} catch (Exception e) {
 				logger.error("While getting NomRefString");
 				e.printStackTrace();
@@ -943,15 +893,27 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getNameStatusFk(TaxonNameBase taxonName) {
 		Integer result = null;
+		
+		try {
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			Set<NomenclaturalStatus> states = nonViralName.getStatus();
 			if (states.size() == 1) {
-				NomenclaturalStatusType statusType = states.iterator().next().getType();
-				result = PesiTransformer.nomStatus2nomStatusFk(statusType);
+				NomenclaturalStatus state = states.iterator().next();
+				NomenclaturalStatusType statusType = null;
+				if (state != null) {
+					statusType = state.getType();
+				}
+				if (statusType != null) {
+					result = PesiTransformer.nomStatus2nomStatusFk(statusType);
+				}
 			} else if (states.size() > 1) {
 				logger.error("This TaxonName has more than one Nomenclatural Status: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -965,14 +927,23 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNameStatusCache(TaxonNameBase taxonName) {
 		String result = null;
+		
+		try {
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			Set<NomenclaturalStatus> states = nonViralName.getStatus();
 			if (states.size() == 1) {
-				result = PesiTransformer.nomStatus2NomStatusCache(states.iterator().next().getType());
+				NomenclaturalStatus state = states.iterator().next();
+				if (state != null) {
+					result = PesiTransformer.nomStatus2NomStatusCache(state.getType());
+				}
 			} else if (states.size() > 1) {
 				logger.error("This TaxonName has more than one Nomenclatural Status: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -986,11 +957,17 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getTaxonStatusFk(TaxonNameBase taxonName) {
 		Integer result = null;
+		
+		try {
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
 			result = PesiTransformer.taxonBase2statusFk((TaxonBase<?>) taxa.iterator().next());
 		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1004,58 +981,17 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getTaxonStatusCache(TaxonNameBase taxonName) {
 		String result = null;
+		
+		try {
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
 			result = PesiTransformer.taxonBase2statusCache((TaxonBase<?>) taxa.iterator().next());
 		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 		}
-		return result;
-	}
-	
-	/**
-	 * NOT USED ANYMORE
-	 * Returns the <code>ParentTaxonFk</code> attribute. Used by invokeParentTaxonFk().
-	 * @param taxon The {@link TaxonBase Taxon}.
-	 * @return The <code>ParentTaxonFk</code> attribute.
-	 * @see MethodMapper
-	 */
-	private static Integer getParentTaxonFk(TaxonNameBase taxonNameBase, PesiExportState state) {
-		Integer result = null;
-		Taxon taxon = null;
-		Set taxa = taxonNameBase.getTaxa();
-		if (taxa.size() == 1) {
-			CdmBase singleTaxon = (CdmBase) taxa.iterator().next();
-			if (singleTaxon.isInstanceOf(Synonym.class)) {
-				Synonym synonym = CdmBase.deproxy(singleTaxon, Synonym.class);
-				Set<SynonymRelationship> relations = synonym.getSynonymRelations();
-				if (relations.size() == 1) {
-					taxon = relations.iterator().next().getAcceptedTaxon();
-				}
-			} else {
-				taxon = CdmBase.deproxy(singleTaxon, Taxon.class);
-			}
-		} else if (taxa.size() > 1) {
-			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-			return null;
-		}
-		if (taxon != null) {
-			Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
-			if (taxonNodes.size() == 1) {
-				TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
-				ITreeNode parentNode = taxonNode.getParent();
-				if (HibernateProxyHelper.isInstanceOf(parentNode, TaxonNode.class)) {
-					TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
-					Taxon parent = node.getTaxon();
-					result = state.getDbId(parent.getName());
-				} else {
-					logger.error("No parent taxon could be determined for taxon: " + taxon.getTitleCache());
-				}
-			} else if (taxonNodes.size() > 1) {
-				logger.warn("This Taxon has " + taxonNodes.size() + " TaxonNodes: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
-			} else if (taxonNodes.size() == 0) {
-				logger.warn("This Taxon has no TaxonNode: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
-			}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1105,17 +1041,25 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getTypeFullnameCache(TaxonNameBase taxonName) {
 		String result = null;
+		
+		try {
 		if (taxonName != null) {
 			Set<NameTypeDesignation> nameTypeDesignations = taxonName.getNameTypeDesignations();
 			if (nameTypeDesignations.size() == 1) {
 				NameTypeDesignation nameTypeDesignation = nameTypeDesignations.iterator().next();
 				if (nameTypeDesignation != null) {
 					TaxonNameBase typeName = nameTypeDesignation.getTypeName();
-					result = typeName.getTitleCache();
+					if (typeName != null) {
+						result = typeName.getTitleCache();
+					}
 				}
 			} else if (nameTypeDesignations.size() > 1) {
 				logger.warn("This TaxonName has " + nameTypeDesignations.size() + " NameTypeDesignations: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1155,6 +1099,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getTypeDesignationStatusFk(TaxonNameBase taxonName) {
 		Integer result = null;
+		
+		try {
 		if (taxonName != null) {
 			Set<NameTypeDesignation> typeDesignations = taxonName.getNameTypeDesignations();
 			if (typeDesignations.size() == 1) {
@@ -1164,6 +1110,10 @@ public class PesiTaxonExport extends PesiExportBase {
 			} else if (typeDesignations.size() > 1) {
 				logger.error("Found a TaxonName with more than one NameTypeDesignation: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1177,6 +1127,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getTypeDesignationStatusCache(TaxonNameBase taxonName) {
 		String result = null;
+		
+		try {
 		if (taxonName != null) {
 			Set<NameTypeDesignation> typeDesignations = taxonName.getNameTypeDesignations();
 			if (typeDesignations.size() == 1) {
@@ -1186,6 +1138,10 @@ public class PesiTaxonExport extends PesiExportBase {
 			} else if (typeDesignations.size() > 1) {
 				logger.error("Found a TaxonName with more than one NameTypeDesignation: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1200,9 +1156,11 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static boolean getParentTaxonFkAndTreeIndexAndKingdomFk(TaxonNameBase taxonNameBase, Data newData, PesiExportState state) {
 		// Traverse taxon tree up until root is reached.
 		String result = "";
-
+		try {
 		String taxonIdString = "" + state.getDbId(taxonNameBase);
-		if (!parentTaxonFkAndTreeIndexAndKingdomFkExistInDatabase(taxonIdString, newData, state)) {
+		if (state.isIncludedInTreeIndex(taxonNameBase.getId())) {
+			getParentTaxonFkAndTreeIndexAndKingdomFkFromDatabase(taxonIdString, newData, state);
+		} else {
 			Taxon taxon = null;
 			Set taxa = taxonNameBase.getTaxa();
 			if (taxa.size() == 1) {
@@ -1211,7 +1169,10 @@ public class PesiTaxonExport extends PesiExportBase {
 					Synonym synonym = CdmBase.deproxy(singleTaxon, Synonym.class);
 					Set<SynonymRelationship> relations = synonym.getSynonymRelations();
 					if (relations.size() == 1) {
-						taxon = relations.iterator().next().getAcceptedTaxon();
+						SynonymRelationship relation = relations.iterator().next();
+						if (relation != null) {
+							taxon = relation.getAcceptedTaxon();
+						}
 					}
 				} else {
 					taxon = CdmBase.deproxy(singleTaxon, Taxon.class);
@@ -1232,7 +1193,10 @@ public class PesiTaxonExport extends PesiExportBase {
 					if (taxon != null) {
 						// Add the current taxon
 						result = "#" + state.getDbId(taxon.getName()) + "#";
-			
+						if (taxon.getName() != null) {
+							state.addToTreeIndex(taxon.getName().getId());
+						}
+						
 						while (! root && ! error) {
 							if (taxonNodes.size() == 1) {
 								TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
@@ -1247,6 +1211,9 @@ public class PesiTaxonExport extends PesiExportBase {
 									}
 									
 									result = "#" + state.getDbId(taxon.getName()) + result;
+									if (taxon.getName() != null) {
+										state.addToTreeIndex(taxon.getName().getId());
+									}
 								} else {
 									// Root element reached
 									root = true;
@@ -1254,13 +1221,15 @@ public class PesiTaxonExport extends PesiExportBase {
 									// TODO: Set current nomenclatural code
 									// We are differentiating kingdoms by the nomenclatural code for now.
 									// This needs to be handled in a better way as soon as we know how to differentiate between more kingdoms.
-									nomenclaturalCode = taxon.getName().getNomenclaturalCode();
+									String nomenclaturalCode = taxon.getName().getNomenclaturalCode().getTitleCache();
 
-									// Set KingdomFk
+									// Set newData
 									newData.setKingdomId(PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+									newData.setNomenclaturalCode(nomenclaturalCode);
+									newData.setTreeIndex(result);
 									
 									// Add new entry into processed parentTaxonFk and treeIndex database table
-									state.addToAlreadyProcessedTreeIndexAndKingdomFk(newData.getKingdomId(), result);
+									state.addToAlreadyProcessedTreeIndexAndKingdomFk(newData);
 								}
 								start = false;
 							} else if (taxonNodes.size() > 1) {
@@ -1278,9 +1247,12 @@ public class PesiTaxonExport extends PesiExportBase {
 					}
 				}
 			}
+
 		}
 
-		newData.setTreeIndex(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return true;
 	}
 	
@@ -1288,8 +1260,10 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @param taxonNameBase
 	 * @return
 	 */
-	private static boolean parentTaxonFkAndTreeIndexAndKingdomFkExistInDatabase(String taxonId, Data newData, PesiExportState state) {
-		return state.alreadyProcessedTreeIndexAndKingdomFk(taxonId, newData);
+	private static void getParentTaxonFkAndTreeIndexAndKingdomFkFromDatabase(String taxonId, Data newData, PesiExportState state) {
+		if (!state.getParentTaxonFkAndTreeIndexAndKingdomFk(taxonId, newData)) {
+			logger.error("ParentTaxonFk, TreeIndex and KingdomFk could not be determined from database even though they should exist.");
+		}
 	}
 
 	/**
@@ -1332,30 +1306,48 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getIdInSource(TaxonNameBase taxonName) {
 		String result = "Nominal Taxon from TAX_ID: ";
+		boolean set = false;
 		
+		try {
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
 			IdentifiableEntity singleTaxon = (IdentifiableEntity) taxa.iterator().next();
-			Set<IdentifiableSource> sources = singleTaxon.getSources();
-			if (sources.size() == 1) {
-				result += sources.iterator().next().getIdInSource();
-			} else if (sources.size() > 1) {
-				logger.warn("Taxon has multiple IdentifiableSources: " + singleTaxon.getUuid() + " (" + singleTaxon.getTitleCache() + ")");
-				int count = 1;
-				for (IdentifiableSource source : sources) {
-					result += source.getIdInSource();
-					if (count < sources.size()) {
-						result += "; ";
+			if (singleTaxon != null) {
+				Set<IdentifiableSource> sources = singleTaxon.getSources();
+				if (sources.size() == 1) {
+					IdentifiableSource source = sources.iterator().next();
+					if (source != null) {
+						result += source.getIdInSource();
+						set = true;
 					}
-					count++;
+				} else if (sources.size() > 1) {
+					logger.warn("Taxon has multiple IdentifiableSources: " + singleTaxon.getUuid() + " (" + singleTaxon.getTitleCache() + ")");
+					int count = 1;
+					for (IdentifiableSource source : sources) {
+						result += source.getIdInSource();
+						if (count < sources.size()) {
+							result += "; ";
+						}
+						count++;
+						set = true;
+					}
+				} else {
+					result = null;
 				}
-			} else {
-				result = null;
 			}
 		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 		}
-		return result;
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (set) {
+			return result;
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -1393,30 +1385,46 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getOriginalDB(TaxonNameBase taxonName) {
 		String result = "";
-		
+		try {
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
 			IdentifiableEntity singleTaxon = (IdentifiableEntity) taxa.iterator().next();
-			Set<IdentifiableSource> sources = singleTaxon.getSources();
-			if (sources.size() == 1) {
-				result = PesiTransformer.databaseString2Abbreviation(sources.iterator().next().getCitation().getTitleCache());
-			} else if (sources.size() > 1) {
-				logger.warn("Taxon has multiple IdentifiableSources: " + singleTaxon.getUuid() + " (" + singleTaxon.getTitleCache() + ")");
-				int count = 1;
-				for (IdentifiableSource source : sources) {
-					result += PesiTransformer.databaseString2Abbreviation(source.getCitation().getTitleCache());
-					if (count < sources.size()) {
-						result += "; ";
+			if (singleTaxon != null) {
+				Set<IdentifiableSource> sources = singleTaxon.getSources();
+				if (sources.size() == 1) {
+					IdentifiableSource source = sources.iterator().next();
+					if (source != null) {
+						ReferenceBase citation = source.getCitation();
+						if (citation != null) {
+							result = PesiTransformer.databaseString2Abbreviation(citation.getTitleCache());
+						}
 					}
-					count++;
+				} else if (sources.size() > 1) {
+					logger.warn("Taxon has multiple IdentifiableSources: " + singleTaxon.getUuid() + " (" + singleTaxon.getTitleCache() + ")");
+					int count = 1;
+					for (IdentifiableSource source : sources) {
+						result += PesiTransformer.databaseString2Abbreviation(source.getCitation().getTitleCache());
+						if (count < sources.size()) {
+							result += "; ";
+						}
+						count++;
+					}
+				} else {
+					result = null;
 				}
-			} else {
-				result = null;
 			}
 		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 		}
-		return result;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if ("".equals(result)) {
+			return null;
+		} else {
+			return result;
+		}
 	}
 	
 	/**
@@ -1440,18 +1448,26 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static DateTime getLastActionDate(TaxonNameBase taxonNameBase) {
 		DateTime result = null;
+		
+		try {
 		if (taxonNameBase != null) {
 			Set taxa = taxonNameBase.getTaxa();
 			if (taxa.size() == 1) {
 				VersionableEntity singleTaxon = (VersionableEntity) taxa.iterator().next();
-				DateTime updated = singleTaxon.getUpdated();
-				if (updated != null) {
-	//				logger.error("Taxon Updated: " + updated);
-					result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
+				if (singleTaxon != null) {
+					DateTime updated = singleTaxon.getUpdated();
+					if (updated != null) {
+		//				logger.error("Taxon Updated: " + updated);
+						result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
+					}
 				}
 			} else if (taxa.size() > 1) {
 				logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
 			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1483,6 +1499,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getSourceFk(TaxonNameBase taxonName, PesiExportState state) {
 		Integer result = null;
+		
+		try {
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
 			TaxonBase singleTaxon = CdmBase.deproxy(taxa.iterator().next(), TaxonBase.class);
@@ -1492,6 +1510,10 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1506,8 +1528,8 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(IdMapper.NewInstance("TaxonId"));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFK", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 //		mapping.addMapper(MethodMapper.NewInstance("KingdomFk", this.getClass(), "getKingdomFk", standardMethodParameter, PesiExportState.class));
-		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("RankCache", this));
+//		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));
+//		mapping.addMapper(MethodMapper.NewInstance("RankCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("GenusOrUninomial", this));
 		mapping.addMapper(MethodMapper.NewInstance("InfraGenericEpithet", this));
 		mapping.addMapper(MethodMapper.NewInstance("SpecificEpithet", this));

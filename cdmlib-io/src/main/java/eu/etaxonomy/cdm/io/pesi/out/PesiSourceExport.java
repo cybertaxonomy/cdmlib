@@ -212,7 +212,11 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getName(ReferenceBase<?> reference) {
-		return reference.getTitle();
+		if (reference != null) {
+			return reference.getTitle();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -223,13 +227,19 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getAuthorString(ReferenceBase<?> reference) {
-		TeamOrPersonBase team = reference.getAuthorTeam();
-		if (team != null) {
-//			return team.getTitleCache();
-			return team.getNomenclaturalTitle();
-		} else {
-			return null;
+		String result = null;
+
+		if (reference != null) {
+			TeamOrPersonBase team = reference.getAuthorTeam();
+			if (team != null) {
+	//			result = team.getTitleCache();
+				result = team.getNomenclaturalTitle();
+			} else {
+				result = null;
+			}
 		}
+		
+		return result;
 	}
 
 	/**
@@ -240,7 +250,11 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getNomRefCache(ReferenceBase<?> reference) {
-		return reference.getTitleCache();
+		if (reference != null) {
+			return reference.getTitleCache();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -265,18 +279,20 @@ public class PesiSourceExport extends PesiExportBase {
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
 
-		Set<IdentifiableSource> sources = reference.getSources();
-		if (sources.size() == 1) {
-			result = sources.iterator().next().getIdInSource();
-		} else if (sources.size() > 1) {
-			logger.warn("Reference has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
-			int count = 1;
-			for (IdentifiableSource source : sources) {
-				result += source.getIdInSource();
-				if (count < sources.size()) {
-					result += "; ";
+		if (reference != null) {
+			Set<IdentifiableSource> sources = reference.getSources();
+			if (sources.size() == 1) {
+				result = sources.iterator().next().getIdInSource();
+			} else if (sources.size() > 1) {
+				logger.warn("Reference has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+				int count = 1;
+				for (IdentifiableSource source : sources) {
+					result += source.getIdInSource();
+					if (count < sources.size()) {
+						result += "; ";
+					}
+					count++;
 				}
-				count++;
 			}
 		}
 
@@ -292,22 +308,34 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getOriginalDB(ReferenceBase<?> reference) {
 		String result = "";
-		Set<IdentifiableSource> sources = reference.getSources();
-		if (sources.size() == 1) {
-			result = PesiTransformer.databaseString2Abbreviation(sources.iterator().next().getCitation().getTitleCache()); //or just title
-		} else if (sources.size() > 1) {
-			logger.warn("Taxon has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
-			int count = 1;
-			for (IdentifiableSource source : sources) {
-				result += PesiTransformer.databaseString2Abbreviation(source.getCitation().getTitleCache());
-				if (count < sources.size()) {
-					result += "; ";
+
+		if (reference != null) {
+			Set<IdentifiableSource> sources = reference.getSources();
+			if (sources.size() == 1) {
+				ReferenceBase citation = sources.iterator().next().getCitation();
+				if (citation != null) {
+					result = PesiTransformer.databaseString2Abbreviation(citation.getTitleCache()); //or just title
+				} else {
+					logger.warn("OriginalDB can not be determined because the citation of this source is NULL: " + sources.iterator().next().getUuid());
 				}
-				count++;
+			} else if (sources.size() > 1) {
+				logger.warn("Taxon has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+				int count = 1;
+				for (IdentifiableSource source : sources) {
+					ReferenceBase citation = source.getCitation();
+					if (citation != null) {
+						result += PesiTransformer.databaseString2Abbreviation(citation.getTitleCache());
+						if (count < sources.size()) {
+							result += "; ";
+						}
+						count++;
+					}
+				}
+			} else {
+				result = null;
 			}
-		} else {
-			result = null;
 		}
+
 		return result;
 	}
 
