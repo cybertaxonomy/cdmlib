@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.jaxb;
+package eu.etaxonomy.cdm.io.jaxb.model;
 
 import java.util.ArrayList;
 import java.util.List;
