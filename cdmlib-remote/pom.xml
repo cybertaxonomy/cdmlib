@@ -160,7 +160,7 @@
        <dependency>
          <groupId>org.springmodules</groupId>
          <artifactId>spring-modules-cache</artifactId>
-         <version>0.7</version>
+         <version>1.0</version>
          <exclusions>
           <exclusion>
             <groupId>org.springframework</groupId>
