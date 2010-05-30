@@ -77,6 +77,27 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		indexedClasses[12] = Proceedings.class;
 		indexedClasses[13] = Report.class;
 		indexedClasses[14] = Thesis.class;
+		defaultMultiFields = new String[19];
+		defaultMultiFields[0] = "titleCache";
+		defaultMultiFields[1] = "datePublished.start";
+		defaultMultiFields[2] = "datePublished.end";
+		defaultMultiFields[3] = "edition";
+		defaultMultiFields[4] = "editor";
+		defaultMultiFields[5] = "institution.titleCache";
+		defaultMultiFields[6] = "isbn";
+		defaultMultiFields[7] = "issn";
+		defaultMultiFields[8] = "organization.titleCache";
+		defaultMultiFields[9] = "pages";
+		defaultMultiFields[10] = "placePublished";
+		defaultMultiFields[11] = "publisher";
+		defaultMultiFields[12] = "referenceAbstract";
+		defaultMultiFields[13] = "school.titleCache";
+		defaultMultiFields[14] = "series";
+		defaultMultiFields[15] = "seriesPart";
+		defaultMultiFields[16] = "title";
+		defaultMultiFields[17] = "uri";
+		defaultMultiFields[18] = "volume";
+		
 	}
 
 	@Override

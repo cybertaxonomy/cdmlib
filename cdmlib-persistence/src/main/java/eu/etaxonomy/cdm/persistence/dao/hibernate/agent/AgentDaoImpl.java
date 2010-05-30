@@ -47,6 +47,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		indexedClasses[0] = Institution.class;
 		indexedClasses[1] = Person.class;
 		indexedClasses[2] = Team.class;
+		defaultMultiFields = new String[9];
+		defaultMultiFields[0] = "titleCache";
+		defaultMultiFields[1] = "firstname";
+		defaultMultiFields[2] = "lastname";
+		defaultMultiFields[3] = "prefix";
+		defaultMultiFields[4] = "suffix";
+		defaultMultiFields[5] = "nomenclaturalTitle";
+		defaultMultiFields[6] = "code";
+		defaultMultiFields[7] = "name";
 	}
 
 	public List<Institution> getInstitutionByCode(String code) {

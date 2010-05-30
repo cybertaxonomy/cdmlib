@@ -53,6 +53,11 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		indexedClasses[0] = Media.class;
 		indexedClasses[1] = MediaKey.class;
 		indexedClasses[2] = PhylogeneticTree.class;
+		defaultMultiFields = new String[4];
+		defaultMultiFields[0] = "titleCache";
+		defaultMultiFields[1] = "artist.titleCache";
+		defaultMultiFields[2] = "title.text";
+		defaultMultiFields[3] = "description.text";
 	}
 
 	public int countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {

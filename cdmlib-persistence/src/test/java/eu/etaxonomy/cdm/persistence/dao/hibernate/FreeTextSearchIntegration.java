@@ -55,7 +55,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 //		descriptionElementDao.optimizeIndex();
 //		setComplete();
 //		endTransaction();
-//		taxonDao.countTaxa("Arum",null); // For some reason this flushes the indexes and allows the next method to create the spellings index
+//		taxonDao.count(null,"Arum"); // For some reason this flushes the indexes and allows the next method to create the spellings index
 //	}
 //	
 //	@Test
@@ -71,6 +71,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("inDescription");
 		propertyPaths.add("inDescription.taxon");
+		propertyPaths.add("feature");
 		List<DescriptionElementBase> results = descriptionElementDao.search(TextData.class,"Lorem",null,null,orderHints,propertyPaths);
 		
 		assertNotNull("searchTextData should return a List",results);
@@ -98,7 +99,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     	propertyPaths.add("name");
     	
     	List<TaxonBase> results = taxonDao.search(null,"Arum", null, null, orderHints, propertyPaths);
-		assertEquals("searchTaxa should return 463 results",46,results.size());
+		assertEquals("searchTaxa should return 46 results",46,results.size());
 		assertTrue("TaxonBase.name should be initialized",Hibernate.isInitialized(results.get(0).getName()));
     }
     
@@ -123,7 +124,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 		assertEquals("page 1 should be sorted alphabetically","Arum lucanum Cavara & Grande",page1.get(29).getName().getTitleCache());
 		assertEquals("page 2 should contain 16 taxa",16,page2.size());
 		assertEquals("page 2 should be sorted alphabetically","Arum maculatum L.",page2.get(0).getName().getTitleCache());
-		assertEquals("page 2 should be sorted alphabetically","Arum x sooi Terpó",page2.get(15).getName().getTitleCache());
+		assertEquals("page 2 should be sorted alphabetically","Arum x sooi Terpï¿½",page2.get(15).getName().getTitleCache());
     }
     
     @Test
@@ -175,4 +176,18 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     	assertNotNull("suggestQuery should return a String",suggestion);
     	assertEquals("The spelling suggestion for \"Aram AND italocum\" should be \"+arum +italicum\"","+arum +italicum",suggestion);
     }
+    
+    @Test 
+    public void testQueryWithISOLatinChar() {
+    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+    	
+    	List<TaxonBase> results = taxonDao.search(null,"ArÃ¼m", null, null, orderHints, propertyPaths);
+		assertEquals("searchTaxa should return 46 results",46,results.size());
+		assertTrue("TaxonBase.name should be initialized",Hibernate.isInitialized(results.get(0).getName()));
+    }
+    
+    
 }

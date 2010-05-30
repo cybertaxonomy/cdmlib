@@ -29,6 +29,9 @@ public interface ISearchableDao<T extends CdmBase> {
 	
 	/**
 	 * Returns a List of T instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * If there are no fields specified in the queryString (the parser matches colon preceded by one or more word characters)
+	 * then a multi-field query will be performed, otherwise a standard query will be performed, using the specified default field where none are
+	 * indicated. 
 	 * 
 	 * @param clazz filter the results by class (or pass null to return all entities of type T)
 	 * @param queryString

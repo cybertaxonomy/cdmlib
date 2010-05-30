@@ -79,6 +79,26 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		indexedClasses[3] = NonViralName.class;
 		indexedClasses[4] = ViralName.class;
 		indexedClasses[5] = ZoologicalName.class;
+		defaultMultiFields = new String[17];
+		defaultMultiFields[0] = "titleCache";
+		defaultMultiFields[1] = "appendedPhrase";
+		defaultMultiFields[2] = "nomenclaturalMicroReference";
+		defaultMultiFields[3] = "fullTitleCache";
+		defaultMultiFields[4] = "authorshipCache";
+		defaultMultiFields[5] = "basionymAuthorTeam.nomenclaturalTitle";
+		defaultMultiFields[6] = "combinationAuthorTeam.nomenclaturalTitle";
+		defaultMultiFields[7] = "exBasionymAuthorTeam.nomenclaturalTitle";
+		defaultMultiFields[8] = "exCombinationAuthorTeam.nomenclaturalTitle";
+		defaultMultiFields[9] = "genusOrUninomial";
+		defaultMultiFields[10] = "infraGenericEpithet";
+		defaultMultiFields[11] = "infraSpecificEpithet";
+		defaultMultiFields[12] = "nameCache";
+		defaultMultiFields[13] = "specificEpithet";
+		defaultMultiFields[14] = "cultivarName";
+		defaultMultiFields[15] = "acronym";
+		defaultMultiFields[16] = "breed";
+		
+		
 	}
 
 	public int countHybridNames(NonViralName name, HybridRelationshipType type) {

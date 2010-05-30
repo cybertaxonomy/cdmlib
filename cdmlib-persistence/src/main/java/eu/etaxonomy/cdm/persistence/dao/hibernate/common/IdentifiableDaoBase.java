@@ -12,9 +12,12 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Criteria;
@@ -39,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.query.CdmAnalyzer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -47,7 +51,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableDaoBase.class);
 	protected String defaultField = "titleCache_tokenized";
-	protected Class<? extends T> indexedClasses[]; 
+	protected String[]  defaultMultiFields = {"titleCache_tokenized"};
+	protected Pattern pattern = Pattern.compile("\\w+:"); // regex that matches queries with terms in them
+	protected Class<? extends T> indexedClasses[];
+	protected Analyzer analyzer = new CdmAnalyzer(); 
 
 	public IdentifiableDaoBase(Class<T> type) {
 		super(type);
@@ -308,7 +315,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
 	public int count(Class<? extends T> clazz, String queryString) {
 		checkNotInPriorView("IdentifiableDaoBase.count(Class<? extends T> clazz, String queryString)");
-        QueryParser queryParser = new QueryParser(defaultField , new StandardAnalyzer());
+		Matcher matcher = pattern.matcher(queryString);
+		QueryParser queryParser = null;
+		if(matcher.matches()) {
+		  queryParser = new QueryParser(defaultField, analyzer);
+		} else {
+			queryParser = new MultiFieldQueryParser(defaultMultiFields, analyzer);
+		}
 		
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -358,7 +371,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
 	public List<T> search(Class<? extends T> clazz, String queryString,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
 		checkNotInPriorView("IdentifiableDaoBase.search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths)");
-		QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
+		Matcher matcher = pattern.matcher(queryString);
+		QueryParser queryParser = null;
+		if(matcher.matches()) {
+		  queryParser = new QueryParser(defaultField, analyzer);
+		} else {
+			queryParser = new MultiFieldQueryParser(defaultMultiFields, analyzer);
+		}
 		List<T> results = new ArrayList<T>();
 		 
 		try {

@@ -62,6 +62,20 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		indexedClasses[4] = Specimen.class;
 		indexedClasses[5] = DnaSample.class;
 		indexedClasses[6] = Fossil.class;
+		defaultMultiFields = new String[11];
+		defaultMultiFields[0] = "titleCache";
+		defaultMultiFields[1] = "description";
+		defaultMultiFields[2] = "accessionNumber";
+		defaultMultiFields[3] = "catalogNumber";
+		defaultMultiFields[4] = "collection.titleCache";
+		defaultMultiFields[5] = "collectorsNumber";
+		defaultMultiFields[6] = "storedUnder.titleCache";
+		defaultMultiFields[7] = "fieldNotes";
+		defaultMultiFields[8] = "fieldNumber";
+		defaultMultiFields[9] = "gathering.locality";
+		defaultMultiFields[10] = "gathering.actor.titleCache";
+		
+		
 	}
 
 	public int countDerivationEvents(SpecimenOrObservationBase occurence) {

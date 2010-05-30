@@ -33,6 +33,12 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
 		super(Collection.class);
 		indexedClasses = new Class[1];
 		indexedClasses[0] = Collection.class;
+		defaultMultiFields = new String[5];
+		defaultMultiFields[0] = "titleCache";
+		defaultMultiFields[1] = "institute.titleCache";
+		defaultMultiFields[2] = "code";
+		defaultMultiFields[3] = "name";
+		defaultMultiFields[4] = "townOrLocation";
 	}
 
 	public List<Collection> getCollectionByCode(String code) {
