@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,10 +21,7 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.pesi.out.PesiTaxonExport.Data;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author a.mueller
@@ -40,12 +38,31 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	private static final String processed_taxonname_db_table = "tmp_processed_taxonname";
 	private static final String processed_source_db_table = "tmp_processed_source";
 	private static final String processed_treeindex_and_kingdomfk_db_table = "tmp_processed_treeindex_kingdomfk";
+	private Connection connection;
+	private ResultSet resultSet = null;
+	private PreparedStatement Select_KingdomId_TreeIndex_NomenclaturalCode_Stmt;
+	private PreparedStatement Insert_KingdomId_TreeIndex_NomenclaturalCode_Stmt;
 	
 	/**
 	 * @param config
 	 */
 	public PesiExportState(PesiExportConfigurator config) {
 		super(config);
+		
+		try {
+			// Retrieve treeIndex, kingdomId and nomenclaturalCode from database table
+			String sql = "SELECT kingdom_id, tree_index, nomenclatural_code FROM " + processed_treeindex_and_kingdomfk_db_table + " WHERE tree_index like ?";
+			Select_KingdomId_TreeIndex_NomenclaturalCode_Stmt = connection.prepareStatement(sql);
+			
+			// Add TreeIndex, KingdomFk and nomenclaturalCode to database table
+			sql = "INSERT INTO " + processed_treeindex_and_kingdomfk_db_table + " VALUES (?, ?, ?)";
+			Insert_KingdomId_TreeIndex_NomenclaturalCode_Stmt = connection.prepareStatement(sql);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		createStateTables();
 	}
 	
@@ -53,13 +70,13 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 * Create the database table that hosts state information.
 	 */
 	public boolean createStateTables() {
-		Connection connection = getConfig().getDestination().getConnection();
+		connection = getConfig().getDestination().getConnection();
 		
 		String query;
         Statement stmt;
         
         if (deleteStateTables()) {
-	        try {
+/*	        try {
 	                query="CREATE TABLE " + state_db_table + " (cdm_id varchar(100), pesi_id int)";
 	                stmt = connection.createStatement();
 	                stmt.executeUpdate(query);
@@ -79,7 +96,7 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	        	logger.error("Couldn't create database table for processed taxonnames.");
 	            e.printStackTrace();
 	            throw new RuntimeException("Couldn't create database table for processed taxonnames.");
-	        }
+	        }*/
 	
 	        try {
 	                query="CREATE TABLE " + processed_source_db_table + " (cdm_id int)";
@@ -112,12 +129,11 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 */
 	public boolean deleteStateTables() {
 		boolean result = true;
-		Connection connection = getConfig().getDestination().getConnection();
 		
 		String query;
         Statement stmt;
         
-        try {
+/*        try {
                 query="DROP TABLE " + state_db_table;
                 stmt = connection.createStatement();
                 stmt.executeUpdate(query);
@@ -135,7 +151,7 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
         } catch (Exception e) {
         	logger.error("Couldn't drop database table for processed taxonnames.");
 //            result = false;
-        }
+        }*/
 
         try {
                 query="DROP TABLE " + processed_source_db_table;
@@ -163,16 +179,16 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.DbExportStateBase#putDbId(eu.etaxonomy.cdm.model.common.CdmBase, int)
 	 */
-	@Override
-	public void putDbId(CdmBase cdmBase, int dbId) {
-		String sql;
-		Source destination =  getConfig().getDestination();
-
-		// Add TaxonName to table of processed TaxonNames
-		sql = "INSERT INTO " + state_db_table + " VALUES ('" + cdmBase.getUuid() + "', " + dbId + ")";
-		destination.setQuery(sql);
-		destination.update(sql);
-	}
+//	@Override
+//	public void putDbId(CdmBase cdmBase, int dbId) {
+//		String sql;
+//		Source destination =  getConfig().getDestination();
+//
+//		// Add TaxonName to table of processed TaxonNames
+//		sql = "INSERT INTO " + state_db_table + " VALUES ('" + cdmBase.getUuid() + "', " + dbId + ")";
+//		destination.setQuery(sql);
+//		destination.update(sql);
+//	}
 
 	
 //	@Override
@@ -193,29 +209,29 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.DbExportStateBase#getDbId(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	@Override
-	public Integer getDbId(CdmBase cdmBase) {
-		String sql;
-		Source destination =  getConfig().getDestination();
-
-		// Get datawarehouse database identifier from table for state information
-		sql = "SELECT pesi_id FROM " + state_db_table + " WHERE cdm_id = '" + cdmBase.getUuid() + "'";
-		destination.setQuery(sql);
-		ResultSet resultSet = destination.getResultSet(sql);
-		int pesiDbKey = 0;
-		try {
-			while (resultSet.next()) {
-				pesiDbKey = resultSet.getInt("pesi_id");
-			}
-		} catch (SQLException e) {
-			logger.error("Couldn't determine number of matching TaxonNames.");
-			throw new RuntimeException("Couldn't determine number of matching TaxonNames.");
-		}
-//		if (pesiDbKey == 0) {
-//			logger.warn("A datawarehouse database identifier could not be determined for this cdmBase entity: " + cdmBase.getUuid());
+//	@Override
+//	public Integer getDbId(CdmBase cdmBase) {
+//		String sql;
+//		Source destination =  getConfig().getDestination();
+//
+//		// Get datawarehouse database identifier from table for state information
+//		sql = "SELECT pesi_id FROM " + state_db_table + " WHERE cdm_id = '" + cdmBase.getUuid() + "'";
+//		destination.setQuery(sql);
+//		ResultSet resultSet = destination.getResultSet(sql);
+//		int pesiDbKey = 0;
+//		try {
+//			while (resultSet.next()) {
+//				pesiDbKey = resultSet.getInt("pesi_id");
+//			}
+//		} catch (SQLException e) {
+//			logger.error("Couldn't determine number of matching TaxonNames.");
+//			throw new RuntimeException("Couldn't determine number of matching TaxonNames.");
 //		}
-		return pesiDbKey;
-	}
+////		if (pesiDbKey == 0) {
+////			logger.warn("A datawarehouse database identifier could not be determined for this cdmBase entity: " + cdmBase.getUuid());
+////		}
+//		return pesiDbKey;
+//	}
 	
 	/**
 	 * Removes a {@link CdmBase CdmBase} entry from this state's {@link java.util.Map Map}.
@@ -254,7 +270,9 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 * Adds given Source to the list of processed Sources.
 	 */
 	public boolean addToProcessedSources(Integer sourceId) {
-		processedSourceList.add(sourceId);
+		if (! processedSourceList.contains(sourceId)) {
+			processedSourceList.add(sourceId);
+		}
 		
 		return true;
 	}
@@ -264,22 +282,22 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 * @param
 	 * @return
 	 */
-	public boolean alreadyProcessedTaxonName(Integer taxonNameId) {
-		if (processedTaxonNameList.contains(taxonNameId)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+//	public boolean alreadyProcessedTaxonName(Integer taxonNameId) {
+//		if (processedTaxonNameList.contains(taxonNameId)) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
 
 	/**
 	 * Adds given TaxonName to the list of processed TaxonNames.
 	 */
-	public boolean addToProcessedTaxonNames(Integer taxonNameId) {
-		processedTaxonNameList.add(taxonNameId);
-		
-		return true;
-	}
+//	public boolean addToProcessedTaxonNames(Integer taxonNameId) {
+//		processedTaxonNameList.add(taxonNameId);
+//		
+//		return true;
+//	}
 
 	/**
 	 * Determines ParentTaxonFk, TreeIndex and KingdomFk from database.
@@ -287,30 +305,26 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 * @return ParentTaxonFk, TreeIndex and KingdomFk
 	 */
 	public boolean getParentTaxonFkAndTreeIndexAndKingdomFk(String taxonId, Data newData) {
-		String sql = null;
-		Source destination =  getConfig().getDestination();
-
-		// Retrieve treeIndex and kingdomId from table of processed TreeIndex and KingdomFk
-		sql = "SELECT kingdom_id, tree_index, nomenclatural_code FROM " + processed_treeindex_and_kingdomfk_db_table + " WHERE tree_index like '%#" + taxonId + "#%'";
-
 		boolean set = false;
-		if (sql != null) {
-			destination.setQuery(sql);
-			ResultSet resultSet = destination.getResultSet(sql);
-			if (resultSet != null) {
-				try {
-					while (resultSet.next()) {
-						// Only the first row is of interest
-						newData.setKingdomId(resultSet.getInt(1));
-						newData.setTreeIndex(resultSet.getString(2));
-						newData.setNomenclaturalCode(resultSet.getString(3));
+		try {
+			Select_KingdomId_TreeIndex_NomenclaturalCode_Stmt.setString(1, "%#" + taxonId + "#%");
+			resultSet  = Select_KingdomId_TreeIndex_NomenclaturalCode_Stmt.executeQuery();
+		} catch (SQLException e) {
+			logger.error("Could not retrieve kingdomId, TreeIndex and nomenclaturalCode from database: " + e.getMessage());
+		}
+		if (resultSet != null) {
+			try {
+				while (resultSet.next()) {
+					// Only one row is of interest
+					newData.setKingdomId(resultSet.getInt(1));
+					newData.setTreeIndex(resultSet.getString(2));
+					newData.setNomenclaturalCode(resultSet.getString(3));
 
-						set = true;
-						break;
-					}
-				} catch (SQLException e) {
-					logger.error("Couldn't match: " + e.getMessage());
+					set = true;
+					break;
 				}
+			} catch (SQLException e) {
+				logger.error("Couldn't match: " + e.getMessage());
 			}
 		}
 
@@ -338,23 +352,21 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	}
 
 	/**
-	 * Stores KingdomFk and TreeIndex in database.
+	 * Stores KingdomFk, TreeIndex and NomenclaturalCode in database.
 	 * @param kingdomFk
 	 * @param treeIndex
 	 * @return
 	 */
 	public boolean addToAlreadyProcessedTreeIndexAndKingdomFk(Data newData) {
-		String sql = null;
-		Source destination =  getConfig().getDestination();
-
-		// Add TreeIndex, KingdomFk and nomenclaturalCode to database table
-		sql = "INSERT INTO " + processed_treeindex_and_kingdomfk_db_table + " VALUES (" + newData.getKingdomId() + ", '" + 
-			newData.getTreeIndex() + "', '" + newData.getNomenclaturalCode() + "')";
-
-		if (sql != null) {
-			destination.setQuery(sql);
-			destination.update(sql);
+		try {
+			Insert_KingdomId_TreeIndex_NomenclaturalCode_Stmt.setInt(1, newData.getKingdomId());
+			Insert_KingdomId_TreeIndex_NomenclaturalCode_Stmt.setString(2, newData.getTreeIndex());
+			Insert_KingdomId_TreeIndex_NomenclaturalCode_Stmt.setString(3, newData.getNomenclaturalCode());
+			Insert_KingdomId_TreeIndex_NomenclaturalCode_Stmt.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Could not store kingdomId, TreeIndex and nomenclaturalCode in database: " + e.getMessage());
 		}
+
 		return true;
 	}
 
@@ -383,7 +395,9 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 * Adds a taxonNameId to the list of taxonNameId's included in any known treeIndex.
 	 */
 	public void addToTreeIndex(Integer taxonNameId) {
-		treeIndexList.add(taxonNameId);
+		if (! treeIndexList.contains(taxonNameId)) {
+			treeIndexList.add(taxonNameId);
+		}
 	}
 	
 	/**

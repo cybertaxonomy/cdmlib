@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.pesi.out;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -33,7 +32,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -61,12 +59,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "Taxon";
 	private static final String pluralString = "Taxa";
-	
-	private static String specificEpithet = null;
-	private static String infraSpecificEpithet = null;
-	private static String infraGenericEpithet = null;
-	private static Integer rank = null;
-	private static String genusOrUninomial = null;
 	
 	public class Data {
 		Integer kingdomId = null;
@@ -184,24 +176,21 @@ public class PesiTaxonExport extends PesiExportBase {
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
-			List<TaxonBase> list = null;
+			List<TaxonNameBase> list = null;
 
 			// 1st Round: Make Taxa
 			logger.error("PHASE 1...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+			while ((list = getNameService().list(null, limit, count, null, null)).size() > 0) {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (TaxonBase taxonBase : list) {
+				for (TaxonNameBase taxonName : list) {
 					doCount(count++, modCount, pluralString);
-					TaxonNameBase taxonName = taxonBase.getName();
-					if (! state.alreadyProcessedTaxonName(taxonName.getId())) {
-						success &= mapping.invoke(taxonName);
-						state.addToProcessedTaxonNames(taxonName.getId());
-	
-						// Check whether some rules are violated
+					success &= mapping.invoke(taxonName);
+
+					// Check whether some rules are violated
 //						if (rank == null) {
 //							logger.error("Rank was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 //						} else {
@@ -226,7 +215,7 @@ public class PesiTaxonExport extends PesiExportBase {
 //						infraSpecificEpithet = null;
 //						genusOrUninomial = null;
 //						specificEpithet = null;
-					}
+
 				}
 
 				// Commit transaction
@@ -252,18 +241,13 @@ public class PesiTaxonExport extends PesiExportBase {
 			logger.error("PHASE 2...");
 			// Start transaction
 			txStatus = startTransaction(true);
-			state.clearAlreadyProcessedTaxonNames();
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+			while ((list = getNameService().list(null, limit, count, null, null)).size() > 0) {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (TaxonBase taxonBase : list) {
+				for (TaxonNameBase taxonName : list) {
 					doCount(count++, modCount, "ParentTaxonFk");
-					TaxonNameBase taxonName = taxonBase.getName();
-					if (! state.alreadyProcessedTaxonName(taxonName.getId())) {
-						success &= invokeParentTaxonFkAndTreeIndexAndKindomFk(taxonName, state, parentTaxonFk_TreeIndex_KingdomFkStmt);
-						state.addToProcessedTaxonNames(taxonName.getId());
-					}
+					success &= invokeParentTaxonFkAndTreeIndexAndKindomFk(taxonName, state, parentTaxonFk_TreeIndex_KingdomFkStmt);
 				}
 
 				// Commit transaction
@@ -285,7 +269,6 @@ public class PesiTaxonExport extends PesiExportBase {
 
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
-			state.clearAlreadyProcessedTaxonNames();
 			state.clearIncludedInTreeIndex();
 
 			return success;
@@ -364,7 +347,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>RankFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getRankFk(TaxonNameBase taxonName, String nomenclaturalCode) {
 		Integer result = null;
 		if (nomenclaturalCode != null) {
@@ -376,7 +358,6 @@ public class PesiTaxonExport extends PesiExportBase {
 				logger.warn("Rank " + taxonName.getRank().getLabel() + " could not be determined for PESI-Kingdom-Id " + PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
 			}
 		}
-		rank  = result;
 		return result;
 	}
 
@@ -386,7 +367,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>RankCache</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getRankCache(TaxonNameBase taxonName, String nomenclaturalCode) {
 		String result = null;
 		if (nomenclaturalCode != null) {
@@ -408,7 +388,6 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getGenusOrUninomial();
 		}
-		genusOrUninomial = result;
 		return result;
 	}
 
@@ -425,7 +404,6 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getInfraGenericEpithet();
 		}
-		infraGenericEpithet = result;
 		return result;
 	}
 
@@ -442,7 +420,6 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getSpecificEpithet();
 		}
-		specificEpithet = result;
 		return result;
 	}
 
@@ -459,7 +436,6 @@ public class PesiTaxonExport extends PesiExportBase {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getInfraSpecificEpithet();
 		}
-		infraSpecificEpithet = result;
 		return result;
 	}
 
@@ -488,12 +464,13 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getWebShowName(TaxonNameBase taxonName) {
 		String result = null;
-		try {
+/*		try {
 		if (taxonName != null) {
 			if (taxonName != null && taxonName.isInstanceOf(NonViralName.class)) {
 				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 				String singleWhitespace = "\\s";
 				String multipleWhitespaces = "\\s*";
+				String whitespaceOrNothing = "\\s?";
 				String singleBlank = " ";
 				String anyNumberOfCharacters = ".*";
 				String backSlashRegEx = "\\";
@@ -529,242 +506,111 @@ public class PesiTaxonExport extends PesiExportBase {
 						if (nonViralName.getTitleCache() != null) {
 							try {
 								String fullName = nonViralName.getTitleCache();
-		
+								
+								// This deals with question marks that are reserved in regular expressions
+								fullName = fullName.replaceAll(questionMarkRegEx, questionMarkReplacement);
+
 								String genusOrUninomial = nonViralName.getGenusOrUninomial();
+								String infraGenericEpithet = nonViralName.getInfraGenericEpithet();
 								String specificEpithet = nonViralName.getSpecificEpithet();
 								String infraSpecificEpithet = nonViralName.getInfraSpecificEpithet();
-								
-								// TODO move this to a separate method
-								// Add escape character to reserved characters
-								if (genusOrUninomial != null) {
-									genusOrUninomial = genusOrUninomial.replaceAll(questionMarkRegEx, questionMarkReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(backSlashRegEx, backSlashReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(periodRegEx, periodReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(asterixRegEx, asterixReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(plusRegEx, plusReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(squareBracketRegEx, squareBracketReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(curlyBracketRegEx, curlyBracketReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(pipeRegEx, pipeReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(accentRegEx, accentReplacement);
-	//								genusOrUninomial = genusOrUninomial.replaceAll(dollarSignRegEx, dollarSignReplacement);
-								}
+								boolean genusOrUninomialExist = false;
+								boolean infraGenericEpithetExists = false;
+								boolean specificEpithetExists = false;
+								boolean infraSpecificEpithetExists = false;
 
-								if (specificEpithet != null) {
-									specificEpithet = specificEpithet.replaceAll(questionMarkRegEx, questionMarkReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(backSlashRegEx, backSlashReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(periodRegEx, periodReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(asterixRegEx, asterixReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(plusRegEx, plusReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(squareBracketRegEx, squareBracketReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(curlyBracketRegEx, curlyBracketReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(pipeRegEx, pipeReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(accentRegEx, accentReplacement);
-	//								specificEpithet = specificEpithet.replaceAll(dollarSignRegEx, dollarSignReplacement);
-								}
-
-								if (infraSpecificEpithet != null) {
-									infraSpecificEpithet = infraSpecificEpithet.replaceAll(questionMarkRegEx, questionMarkReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(backSlashRegEx, backSlashReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(periodRegEx, periodReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(asterixRegEx, asterixReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(plusRegEx, plusReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(squareBracketRegEx, squareBracketReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(curlyBracketRegEx, curlyBracketReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(pipeRegEx, pipeReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(accentRegEx, accentReplacement);
-	//								infraSpecificEpithet = infraSpecificEpithet.replaceAll(dollarSignRegEx, dollarSignReplacement);
-								}
-								
+								// Define specific regular expressions and patterns
 								String genusOrUninomialRegEx = genusOrUninomial + singleWhitespace;
-								String genusOrUninomialReplacement = italicBeginTag + genusOrUninomial + italicEndTag + singleBlank;
 								Pattern genusOrUninomialPattern = Pattern.compile(genusOrUninomialRegEx);
-								
-								String genusOrUninomialNoWhitespaceRegEx = genusOrUninomial;
-								Pattern genusOrUninomialNoWhitespacePattern = Pattern.compile(genusOrUninomialNoWhitespaceRegEx);
-								
-								String genusOrUninomialAndSpecificEpithetRegEx = null;
-								Pattern genusOrUninomialAndSpecificEpithetPattern = null;
-								String genusOrUninomialAndSpecificEpithetReplacement = null;
-								String genusOrUninomialAndSpecificEpithetNoParenthesisRegEx = null;
-								Pattern genusOrUninomialAndSpecificEpithetNoParenthesisPattern = null;
-								String genusOrUninomialAndSpecificEpithetNoParenthesisReplacement = null;
-								if (specificEpithet != null) {
-									genusOrUninomialAndSpecificEpithetRegEx = genusOrUninomial +  singleWhitespace +
-									openingParenthesisRegEx + specificEpithet + closingParenthesisRegEx;
+								Matcher genusOrUninomialMatcher = genusOrUninomialPattern.matcher(fullName);
 
-									genusOrUninomialAndSpecificEpithetPattern = Pattern.compile(genusOrUninomialAndSpecificEpithetRegEx);
-									genusOrUninomialAndSpecificEpithetReplacement = italicBeginTag + genusOrUninomial + 
-											singleBlank + openParenthesis + specificEpithet + closeParenthesis + italicEndTag + singleBlank;
-
-									genusOrUninomialAndSpecificEpithetNoParenthesisRegEx = genusOrUninomial + singleWhitespace + specificEpithet;
-									genusOrUninomialAndSpecificEpithetNoParenthesisPattern = Pattern.compile(genusOrUninomialAndSpecificEpithetNoParenthesisRegEx);
-									genusOrUninomialAndSpecificEpithetNoParenthesisReplacement = italicBeginTag + genusOrUninomial + 
-									singleBlank + specificEpithet + italicEndTag + singleBlank;
-								}
-		
-								String infraSpecificEpithetRegEx = singleWhitespace + infraSpecificEpithet + singleWhitespace;
-								String infraSpecificEpithetReplacement = singleBlank + italicBeginTag + infraSpecificEpithet + italicEndTag + singleBlank;
-								Pattern infraspecificEpithetPattern = Pattern.compile(infraSpecificEpithetRegEx);
-		
-								if (genusOrUninomialAndSpecificEpithetPattern != null) {
-									Matcher genusOrUninomialAndspecificEpithetMatcher = genusOrUninomialAndSpecificEpithetPattern.matcher(nonViralName.getTitleCache());
-									if (genusOrUninomialAndspecificEpithetMatcher.find()) {
-										result = fullName.replaceFirst(genusOrUninomialAndSpecificEpithetRegEx, genusOrUninomialAndSpecificEpithetReplacement);
-									} else {
-										if (genusOrUninomialAndSpecificEpithetNoParenthesisPattern != null) {
-											Matcher genusOrUninomialAndSpecificEpithetNoParenthesisMatcher = genusOrUninomialAndSpecificEpithetNoParenthesisPattern.matcher(nonViralName.getTitleCache());
-											if (genusOrUninomialAndSpecificEpithetNoParenthesisMatcher.find()) {
-												result = fullName.replaceFirst(genusOrUninomialAndSpecificEpithetNoParenthesisRegEx, genusOrUninomialAndSpecificEpithetNoParenthesisReplacement);
-											} else {
-												if (genusOrUninomialPattern != null) {
-													Matcher genusOrUninomialMatcher = genusOrUninomialPattern.matcher(nonViralName.getTitleCache());
-													if (genusOrUninomialMatcher != null) {
-														if (genusOrUninomialMatcher.find()) {
-							//								logger.error("genusOrUninomial matches");
-															result = fullName.replaceFirst(genusOrUninomialRegEx, genusOrUninomialReplacement);
-						//									logger.error("genusOrUninomial result: " + result);
-														} else {
-							//								logger.error("genusOrUninomial does not match");
-															if (genusOrUninomialNoWhitespacePattern != null) {
-																Matcher genusOrUninomialNoWhitespaceMatcher = genusOrUninomialNoWhitespacePattern.matcher(nonViralName.getTitleCache());
-																if (genusOrUninomialNoWhitespaceMatcher.find()) {
-																	result = fullName.replaceFirst(genusOrUninomialNoWhitespaceRegEx, genusOrUninomialReplacement);
-																}
-															}
-														}
-													} else {
-							//							logger.error("genusOrUninomialMatcher is null");
-													}
-												} else {
-							//						logger.error("genusOrUninomialPattern is null");
-												}
-											}
-										}
-									}
-								}
-								else if (genusOrUninomialAndSpecificEpithetNoParenthesisPattern != null) {
-									Matcher genusOrUninomialAndSpecificEpithetNoParenthesisMatcher = genusOrUninomialAndSpecificEpithetNoParenthesisPattern.matcher(nonViralName.getTitleCache());
-									if (genusOrUninomialAndSpecificEpithetNoParenthesisMatcher.find()) {
-										result = fullName.replaceFirst(genusOrUninomialAndSpecificEpithetNoParenthesisRegEx, genusOrUninomialAndSpecificEpithetNoParenthesisReplacement);
-									} else {
-										if (genusOrUninomialPattern != null) {
-											Matcher genusOrUninomialMatcher = genusOrUninomialPattern.matcher(nonViralName.getTitleCache());
-											if (genusOrUninomialMatcher != null) {
-												if (genusOrUninomialMatcher.find()) {
-					//								logger.error("genusOrUninomial matches");
-													result = fullName.replaceFirst(genusOrUninomialRegEx, genusOrUninomialReplacement);
-				//									logger.error("genusOrUninomial result: " + result);
-												} else {
-					//								logger.error("genusOrUninomial does not match");
-													if (genusOrUninomialNoWhitespacePattern != null) {
-														Matcher genusOrUninomialNoWhitespaceMatcher = genusOrUninomialNoWhitespacePattern.matcher(nonViralName.getTitleCache());
-														if (genusOrUninomialNoWhitespaceMatcher.find()) {
-															result = fullName.replaceFirst(genusOrUninomialNoWhitespaceRegEx, genusOrUninomialReplacement);
-														}
-													}
-												}
-											} else {
-					//							logger.error("genusOrUninomialMatcher is null");
-											}
-										} else {
-					//						logger.error("genusOrUninomialPattern is null");
-										}
-									}
-								} else if (genusOrUninomialPattern != null) {
-									Matcher genusOrUninomialMatcher = genusOrUninomialPattern.matcher(nonViralName.getTitleCache());
-									if (genusOrUninomialMatcher != null) {
-										if (genusOrUninomialMatcher.find()) {
-			//								logger.error("genusOrUninomial matches");
-											result = fullName.replaceFirst(genusOrUninomialRegEx, genusOrUninomialReplacement);
-		//									logger.error("genusOrUninomial result: " + result);
-										} else {
-			//								logger.error("genusOrUninomial does not match");
-											if (genusOrUninomialNoWhitespacePattern != null) {
-												Matcher genusOrUninomialNoWhitespaceMatcher = genusOrUninomialNoWhitespacePattern.matcher(nonViralName.getTitleCache());
-												if (genusOrUninomialNoWhitespaceMatcher.find()) {
-													result = fullName.replaceFirst(genusOrUninomialNoWhitespaceRegEx, genusOrUninomialReplacement);
-												}
-											}
-										}
-									} else {
-			//							logger.error("genusOrUninomialMatcher is null");
-									}
-								} else {
-			//						logger.error("genusOrUninomialPattern is null");
-								}
-								
-								if (infraspecificEpithetPattern != null) {
-									Matcher infraSpecificEpithetMatcher;
-									if (result == null) {
-										infraSpecificEpithetMatcher = infraspecificEpithetPattern.matcher(fullName);
-									} else {
-										infraSpecificEpithetMatcher = infraspecificEpithetPattern.matcher(result);
-									}
-									if (infraSpecificEpithetMatcher != null) {
-										if (infraSpecificEpithetMatcher.find()) {
-			//								logger.error("infraSpecificEpithet matches");
-											if (result == null) {
-												result = fullName.replaceFirst(infraSpecificEpithetRegEx, infraSpecificEpithetReplacement);
-											} else {
-												result = result.replaceFirst(infraSpecificEpithetRegEx, infraSpecificEpithetReplacement);
-											}
-		//									logger.error("infraSpecificEpithet result: " + result);
-										} else {
-			//								logger.error("infraSpecificEpithet does not match");
-										}
-									} else {
-			//							logger.error("infraSpecificEpithetMatcher is null");
-									}
-								} else {
-			//						logger.error("infraSpecificEpithetPattern is null");
-								}
+								String infraGenericEpithetRegEx = openingParenthesisRegEx + infraGenericEpithet + closingParenthesisRegEx;
+								Pattern infraGenericEpithetPattern = Pattern.compile(infraGenericEpithetRegEx);
+								Matcher infraGenericEpithetMatcher = infraGenericEpithetPattern.matcher(fullName);
 
 								String specificEpithetRegEx = singleWhitespace + specificEpithet + singleWhitespace;
-								String specificEpithetReplacement = singleBlank + italicBeginTag + specificEpithet + italicEndTag + singleBlank;
 								Pattern specificEpithetPattern = Pattern.compile(specificEpithetRegEx);
-		
-								if (specificEpithetPattern != null) {
-									Matcher specificEpithetMatcher;
-									if (result == null) {
-										specificEpithetMatcher = specificEpithetPattern.matcher(fullName);
-									} else {
-										specificEpithetMatcher = specificEpithetPattern.matcher(result);
-									}
-									if (specificEpithetMatcher != null) {
-										if (specificEpithetMatcher.find()) {
-			//								logger.error("specificEpithet matches");
-											if (result == null) {
-												result = fullName.replaceFirst(specificEpithetRegEx, specificEpithetReplacement);
-											} else {
-												result = result.replaceFirst(specificEpithetRegEx, specificEpithetReplacement);
-											}
-		//									logger.error("specificEpithet result: " + result);
-										} else {
-			//								logger.error("specificEpithet does not match");
-										}
-									} else {
-			//							logger.error("specificEpithetMatcher is null");
-									}
+								Matcher specificEpithetMatcher = specificEpithetPattern.matcher(fullName);
+
+								String infraSpecificEpithetRegEx = infraSpecificEpithet;
+								Pattern infraSpecificEpithetPattern = Pattern.compile(infraSpecificEpithetRegEx);
+								Matcher infraSpecificEpithetMatcher = infraSpecificEpithetPattern.matcher(fullName);
+								
+								
+								// Check whether specific parts of a scientific name exist and count them
+								// Genus or uninomial
+								if (genusOrUninomialMatcher.find()) {
+									genusOrUninomialExist = true;
+								}
+								
+								// Infra generic epithet
+								if (infraGenericEpithetMatcher.find()) {
+									infraGenericEpithetExists = true;
+								}
+								
+								// Specific epithet
+								if (genusOrUninomialExist || infraGenericEpithetExists) {
+									// it's in between somewhere
+									specificEpithetRegEx = singleWhitespace + specificEpithet + singleWhitespace;
 								} else {
-			//						logger.error("specificEpithetPattern is null");
+									// it's at the beginning
+									if (fullName.length() > specificEpithet.length()) {
+										// It's an assumption that there is a blank right after the specific epithet in this case. Keep an eye on it.
+										specificEpithetRegEx = specificEpithet + singleWhitespace;
+									} else {
+										specificEpithetRegEx = specificEpithet;
+									}
+								}
+								specificEpithetPattern = Pattern.compile(specificEpithetRegEx);
+								specificEpithetMatcher = specificEpithetPattern.matcher(fullName);
+								if (specificEpithetMatcher.find()) {
+									specificEpithetExists = true;
+								}
+								
+								int count;
+								// Infra specific epithet
+								if (specificEpithet.equals(infraSpecificEpithet)) {
+									count = 2;
+								} else {
+									count = 1;
+								}
+								if (infraSpecificEpithetMatcher.groupCount() == count) {
+									specificEpithetExists = true;
+								} else {
+									specificEpithetExists = false;
+								}
+								
+								// Replace
+								String specificEpithetReplacement = specificEpithet + italicEndTag;
+								String infraGenericEpithetReplacement = openParenthesis + infraGenericEpithet + closeParenthesis + italicEndTag;
+								if (genusOrUninomialExist || infraGenericEpithetExists || specificEpithetExists) {
+									fullName = italicBeginTag + fullName;
 								}
 
-					//			if (rank != null && rank.intValue() <= 180) {
-					//				result = "<i>" + nonViralName.getNameCache() + "</i> ";
-					//				result += CdmUtils.Nz(getAuthorString(taxon));
-					//			} else if (rank != null && rank.intValue() > 180) {
-					//				result = "<i>" + nonViralName.getNameCache() + "</i> ";
-					//				
-					//				if (infraSpecificEpithet != null) {
-					//					result += CdmUtils.Nz(PesiTransformer.rank2RankAbbrev(taxon.getName().getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode)));
-					//					result += " <i>" + infraSpecificEpithet + "</i> ";
-					//				}
-					//
-					//				result += CdmUtils.Nz(getAuthorString(taxon));
-					//			}
-			
+								StringBuffer replaceFullName = new StringBuffer(fullName);
+								if (specificEpithetExists) {
+									// Determine index of specificEpithet and place italic end tag right after its position
+									int specificEpithetPosition = fullName.indexOf(specificEpithet) + specificEpithet.length() + 1;
+									replaceFullName.insert(specificEpithetPosition, italicEndTag);
+								} else if (infraGenericEpithetExists) {
+									int infraGenericEpithetPosition = fullName.indexOf(infraGenericEpithet) + infraGenericEpithet.length() + 1;
+									replaceFullName.insert(infraGenericEpithetPosition, italicEndTag);
+								} else if (genusOrUninomialExist) {
+									replaceFullName.insert(genusOrUninomial.length() + 1, italicEndTag);
+								}
+								
+								if (infraSpecificEpithetExists) {
+									int infraSpecificEpithetPosition = fullName.lastIndexOf(infraSpecificEpithet);
+									int infraSpecificEpithetBeginPosition = infraSpecificEpithetPosition - 1;
+									int infraSpecificEpithetEndPosition = infraSpecificEpithetPosition + infraSpecificEpithet.length() + 1;
+									replaceFullName.insert(infraSpecificEpithetBeginPosition, italicBeginTag);
+									replaceFullName.insert(infraSpecificEpithetEndPosition, italicEndTag);
+								}
+								
+								result = replaceFullName.toString();
+
 							} catch (Exception e) {
-								// This needs a workaround
+								// This needs a workaround since very likely there is a character in the fullName that is reserved in regular expressions
 								logger.warn("WebShowName could not be determined for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + "): " + e.getMessage());
 								result = nonViralName.getTitleCache();
 							}
@@ -785,7 +631,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					Pattern obsoleteItalicsPattern = Pattern.compile(obsoleteItalicsRegEx);
 					Matcher obsoleteItalicsMatcher = obsoleteItalicsPattern.matcher(result);
 					if (obsoleteItalicsMatcher.find()) {
-						result = result.replaceFirst(obsoleteItalicsRegEx, obsoleteItalicsReplacement);
+						result = result.replaceAll(obsoleteItalicsRegEx, obsoleteItalicsReplacement);
 					}
 				}
 
@@ -797,7 +643,7 @@ public class PesiTaxonExport extends PesiExportBase {
 //		logger.error("final result: " + result);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		return result;
 	}
 
