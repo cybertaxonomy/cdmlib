@@ -9,26 +9,24 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 
 /**
@@ -94,7 +92,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidCongruentToOrOverlapsOrExcludes = UUID.fromString("6fabef72-5264-44f1-bfc0-8e2e141375f2");
 	private static final UUID uuidIncludesOrOverlapsOrExcludes = UUID.fromString("b7153c89-cc6c-4f8c-bf74-216f10feac46");
 	
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	private static final UUID uuidAllRelationships = UUID.fromString("831fcd88-e5c9-49e0-b06e-bbb67d1c05c9");
+	
 	
 // ************* CONSTRUCTORS *************/	
 
@@ -396,6 +395,10 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	//TODO ohter relationshipTypes
 
+	public static final TaxonRelationshipType ALL_RELATIONSHIPS(){
+		return getTermByUuid(uuidAllRelationships);
+	}
+	
 	@Override
 	public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		return super.readCsvLine(termClass, csvLine, terms);
