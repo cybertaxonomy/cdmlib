@@ -167,7 +167,6 @@ public class EditGeoServiceUtilities {
 			}
 			Representation representation = status.getPreferredRepresentation(languages);
 			String statusLabel = representation.getLabel();
-			logger.warn(statusLabel);
 			//statusLabel.replace('introduced: ', '');
 			statusLabel = statusLabel.replace("introduced: ", "introduced, ");
 			statusLabel = statusLabel.replace("native: ", "native,  ");
