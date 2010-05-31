@@ -356,7 +356,7 @@ public final class BerlinModelTransformer {
 				collSpeciesRank.addRepresentation(representation);
 				collSpeciesRank.setUuid(uuidRankCollSpecies);
 				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
-				voc.addTermAbove(collSpeciesRank, Rank.SPECIES());
+				voc.addTermBelow(collSpeciesRank, Rank.SPECIESGROUP());
 			}
 			result = collSpeciesRank;
 		}
