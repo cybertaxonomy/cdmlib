@@ -50,6 +50,8 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 		super(config);
 		
 		try {
+			connection = getConfig().getDestination().getConnection();
+
 			// Retrieve treeIndex, kingdomId and nomenclaturalCode from database table
 			String sql = "SELECT kingdom_id, tree_index, nomenclatural_code FROM " + processed_treeindex_and_kingdomfk_db_table + " WHERE tree_index like ?";
 			Select_KingdomId_TreeIndex_NomenclaturalCode_Stmt = connection.prepareStatement(sql);
@@ -70,7 +72,6 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 * Create the database table that hosts state information.
 	 */
 	public boolean createStateTables() {
-		connection = getConfig().getDestination().getConnection();
 		
 		String query;
         Statement stmt;
