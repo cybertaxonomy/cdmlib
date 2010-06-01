@@ -35,8 +35,8 @@ public class PesiExportActivator {
 	private static final Logger logger = Logger.getLogger(PesiExportActivator.class);
 
 	//database validation status (create, update, validate ...)
-	static final Source pesiDestination = PesiDestinations.pesi_test_bgbm42_CDM_DWH_FaEu();
-	static final ICdmDataSource cdmSource = CdmDestinations.cdm_test_patricia();
+	static final Source pesiDestination = PesiDestinations.pesi_test_local_CDM_DWH_FaEu();
+	static final ICdmDataSource cdmSource = CdmDestinations.cdm_test_jaxb();
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
 	static final int isHomotypicId = 72;
@@ -65,7 +65,7 @@ public class PesiExportActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doOccurences = true;
 
 // ************************ NONE **************************************** //
 	
