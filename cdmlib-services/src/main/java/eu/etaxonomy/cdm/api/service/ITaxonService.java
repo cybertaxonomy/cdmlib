@@ -12,12 +12,14 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -204,6 +206,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 		
+	
+		
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this arguement is supplied) 
 	 * where the supplied taxon is relatedTo.
@@ -231,6 +235,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return a List of TaxonRelationship instances
 	 */
 	public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
@@ -350,5 +355,24 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public int countAllRelationships();
 	
 	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+	public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath);
 	public String getPhylumName(TaxonNameBase name);
+	
+	public long deleteSynonymRelationships(Synonym syn);
+	/**
+	 * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied) 
+	 * depending on direction, where the supplied taxon is relatedTo or the supplied synonym is relatedFrom.
+	 * 
+	 * @param taxonBase The taxon or synonym that is relatedTo or relatedFrom
+	 * @param type The type of SynonymRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param direction The direction of the relationship
+	 * @return a List of SynonymRelationship instances
+	 */
+	public List<SynonymRelationship> listSynonymRelationships(
+			TaxonBase taxonBase, SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
+			List<OrderHint> orderHints, List<String> propertyPaths, Direction direction);
 }
