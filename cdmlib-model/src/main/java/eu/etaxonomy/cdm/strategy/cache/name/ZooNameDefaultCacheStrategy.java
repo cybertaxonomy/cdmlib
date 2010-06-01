@@ -135,8 +135,8 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		return getInfraSpeciesNameCache(nonViralName, includeMarker);
 	}
 	
-	@Override
-	public String getTitleCache(T nonViralName) {
+	
+	/*public String getTitleCache(T nonViralName) {
 		if (nonViralName == null){
 			return null;
 		}
@@ -174,7 +174,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 			
 			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesSeparator, infraSpeciesPart});
 			result = result.trim().replace("null", "");
-		}else{ //not Autonym*/
+		}else{ //not Autonym
 			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
 			if (nameIncludesAuthorship(nonViralName)){
 				String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
@@ -185,5 +185,5 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		//}
 		return result;
 	}
-
+*/
 }
