@@ -160,6 +160,13 @@ public class TeamTest {
 		teamProtected.addTeamMember(member1, 3);
 		Assert.assertEquals("Number of team members should be 1", 1,teamProtected.getTeamMembers().size());
 	}
+	
+	@Test
+	public void testAddRemoveTeamMemberPersonFireEvent() {
+		eventWasFired = false;
+		teamProtected.addTeamMember(member2);
+		Assert.assertTrue("addTeamMember(Person) needs to fire property change event", eventWasFired);
+	}
 
 
 
