@@ -2068,6 +2068,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/TeamTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/AnnotationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmMetaDataTest.java -text

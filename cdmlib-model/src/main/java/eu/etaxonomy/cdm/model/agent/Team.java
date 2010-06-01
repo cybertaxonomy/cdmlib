@@ -167,21 +167,22 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * Adds a new {@link Person person} to <i>this</i> team
 	 * at the given index place of the members' list. If the person is already
 	 * a member of the list he will be moved to the given index place. 
-	 * The index must be a positive integer. If the index is bigger than
+	 * The index must be an integer (>=0). If the index is larger than
 	 * the present number of members the person will be added at the end of the list.
 	 *
 	 * @param  person  the person who should be added to the other team members
-	 * @param  index   the position at which the new person should be placed within the members' list
+	 * @param  index   the position at which the person should be placed within the members' list (starting with 0)
 	 * @see     	   #getTeamMembers()
 	 * @see 		   Person
 	 */
 	public void addTeamMember(Person person, int index){
-		// TODO is still not fully implemented (range for index!)
-		logger.warn("not yet fully implemented (range for index!)");
 		if (person != null){
 			int oldIndex = getTeamMembers().indexOf(person);
 			if (oldIndex != -1 ){
 				getTeamMembers().remove(person);
+			}
+			if (index >= getTeamMembers().size()){
+				index = getTeamMembers().size();
 			}
 			getTeamMembers().add(index, person);
 			addListenerForTeamMember(person);
@@ -253,6 +254,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see  #getNomenclaturalTitle()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
+		firePropertyChange("nomenclaturalTitle", this.nomenclaturalTitle, nomenclaturalTitle);
 		this.nomenclaturalTitle = nomenclaturalTitle;
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
