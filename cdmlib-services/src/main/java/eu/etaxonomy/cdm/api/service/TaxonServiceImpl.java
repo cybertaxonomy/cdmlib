@@ -11,8 +11,10 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -31,20 +33,24 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -270,6 +276,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		// store the synonyms name
 		TaxonNameBase newAcceptedTaxonName = synonym.getName();
 		
+		Set<SynonymRelationship> synrels = acceptedTaxon.getSynonymRelations();
+		Iterator<SynonymRelationship> synRelIterator = synrels.iterator();
+		SynonymRelationshipType type = null;
+		while (synRelIterator.hasNext()){
+			SynonymRelationship synRel = synRelIterator.next();
+			if (synRel.getSynonym().equals(synonym)){
+				type = synRel.getType();
+				break;
+			}
+		}
+		
 		// remove synonym from oldAcceptedTaxon
 		acceptedTaxon.removeSynonym(synonym);
 		
@@ -278,11 +295,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		// add the new synonym to the acceptedTaxon
 		if(synonymRelationshipType == null){
-			synonymRelationshipType = SynonymRelationshipType.SYNONYM_OF();
+			//synonymRelationshipType = SynonymRelationshipType.SYNONYM_OF();
+			synonymRelationshipType = type;
 		}
-		
-		acceptedTaxon.addSynonymName(oldAcceptedTaxonName, synonymRelationshipType);
+		if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+			acceptedTaxon.addHomotypicSynonymName(oldAcceptedTaxonName, null, null);
+		}else{
+			acceptedTaxon.addSynonymName(oldAcceptedTaxonName, synonymRelationshipType);
+		}
 	}
+		
 	
 	/*
 	 * (non-Javadoc)
@@ -503,7 +525,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			numberOfResults += numberTaxaResults;
 			 
 		}
-				
+		
 		return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
@@ -554,6 +576,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return this.dao.findIdenticalTaxonNames(propertyPath);
 	}
 	
+	public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath) {
+		
+		return this.dao.findIdenticalNamesNew(propertyPath);
+	}
+	
 	public String getPhylumName(TaxonNameBase name){
 		return this.dao.getPhylumName(name);
 	}
@@ -566,5 +593,26 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			return castArg0.compareTo(castArg1);
 		}
 		
+	}
+
+	public long deleteSynonymRelationships(Synonym syn) {
+		
+		return dao.deleteSynonymRelationships(syn);
+	}
+
+	
+
+	
+	@Override
+	public List<SynonymRelationship> listSynonymRelationships(
+			TaxonBase taxonBase, SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
+			List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
+		Integer numberOfResults = dao.countSynonymRelationships(taxonBase, type, direction);
+		
+		List<SynonymRelationship> results = new ArrayList<SynonymRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getSynonymRelationships(taxonBase, type, pageSize, pageNumber, orderHints, propertyPaths, direction); 
+		}
+		return results;
 	}
 }
