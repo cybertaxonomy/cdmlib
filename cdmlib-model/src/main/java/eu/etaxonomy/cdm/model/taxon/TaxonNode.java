@@ -215,7 +215,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 * @return the child node in the state of having a new parent
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
-		ITreeNode parentNode = childNode.getParent();
+		ITreeNode parentNode = childNode.getParentTreeNode();
 		
 		// check if this node is a descendant of the childNode 
 		if(parentNode != this && childNode.isAncestor(this)){
@@ -351,11 +351,17 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 			taxon.addTaxonNode(this);
 		}
 	}
-	public ITreeNode getParent() {
+	@Transient
+	public ITreeNode getParentTreeNode() {
 		if(isTopmostNode())
 			return getTaxonomicTree();
 		return parent;
 	}
+	
+	public TaxonNode getParent(){
+		return parent;
+	}
+	
 	protected void setParent(ITreeNode parent) {
 		if(parent instanceof TaxonomicTree)
 			this.parent = null;
@@ -401,7 +407,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 		
 		nodeSet.add(this);
 		
-		if(this.getParent() instanceof TaxonNode){
+		if(this.getParent() != null){
 			nodeSet.addAll(((TaxonNode) this.getParent()).getAncestors());
 		}
 		
