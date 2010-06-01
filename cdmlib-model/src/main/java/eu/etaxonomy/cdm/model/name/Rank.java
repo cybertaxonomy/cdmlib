@@ -446,7 +446,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 */
 	@Transient
 	public boolean isSpeciesAggregate(){
-		return (this.equals(Rank.SPECIESAGGREGATE()) || this.isLower(Rank.SPECIESAGGREGATE()) || this.isHigher(Rank.SPECIES()));
+		return (this.equals(Rank.SPECIESAGGREGATE()) || (this.isLower(Rank.SPECIESAGGREGATE()) && this.isHigher(Rank.SPECIES())));
 	}	
 	
 	/**
