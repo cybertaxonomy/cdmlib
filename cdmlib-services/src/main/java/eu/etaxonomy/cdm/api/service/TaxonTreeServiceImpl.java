@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import javax.swing.tree.TreeNode;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,9 +118,9 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
 		pathToRoot.add(thisNode);
 		
-		ITreeNode parentNode = thisNode.getParent();
-		while(parentNode instanceof TaxonNode){
-			TaxonNode parent = (TaxonNode) parentNode;
+		TaxonNode parentNode = thisNode.getParent();
+		while(parentNode != null){
+			TaxonNode parent = parentNode;
 			Rank parentNodeRank = parent.getTaxon().getName().getRank();
 			// stop if the next parent is higher than the baseRank
 			if(baseRank != null && baseRank.isLower(parentNodeRank)){
