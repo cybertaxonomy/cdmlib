@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -391,4 +392,21 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public long countTaxaByCommonName(String searchString,
 			TaxonomicTree taxonomicTree, MatchMode matchMode,
 			Set<NamedArea> namedAreas);
+	
+	public long deleteSynonymRelationships(Synonym syn);
+
+	public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
+
+	public List<TaxonNameBase> findIdenticalNamesNew(List <String> propertyPaths);
+
+	
+	public Integer countSynonymRelationships(TaxonBase taxonBase,
+			SynonymRelationshipType type, Direction relatedfrom);
+
+	public List<SynonymRelationship> getSynonymRelationships(TaxonBase taxonBase,
+			SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
+			List<OrderHint> orderHints, List<String> propertyPaths,
+			Direction relatedfrom);
+
+	
 }
