@@ -789,7 +789,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		//the rank is subgenus and not accepted -> the parent is the accepted taxon and the grandparent name is the genusepithet
 			originalGenusString = fauEuTaxon.getGrandParentName();
 		}else{
-			originalGenusString = fauEuTaxon.getOriginalGenusName();
+			originalGenusString = fauEuTaxon.getParentName();
 		}
 		if (useOriginalGenus && originalGenusString != null) {
 			originalGenus = new StringBuilder(originalGenusString);
