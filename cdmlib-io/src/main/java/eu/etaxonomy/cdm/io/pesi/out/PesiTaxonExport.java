@@ -464,7 +464,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getWebShowName(TaxonNameBase taxonName) {
 		String result = null;
-/*		try {
+		try {
 		if (taxonName != null) {
 			if (taxonName != null && taxonName.isInstanceOf(NonViralName.class)) {
 				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
@@ -474,15 +474,15 @@ public class PesiTaxonExport extends PesiExportBase {
 				String singleBlank = " ";
 				String anyNumberOfCharacters = ".*";
 				String backSlashRegEx = "\\";
-				String periodRegEx = "\\.";
-				String asterixRegEx = "\\*";
+//				String periodRegEx = "\\.";
+//				String asterixRegEx = "\\*";
 				String questionMarkRegEx = "\\?";
-				String plusRegEx = "\\+";
-				String squareBracketRegEx = "\\[";
-				String curlyBracketRegEx = "\\{";
-				String pipeRegEx = "\\|";
-				String accentRegEx = "\\^";
-				String dollarSignRegEx = "\\$";
+//				String plusRegEx = "\\+";
+//				String squareBracketRegEx = "\\[";
+//				String curlyBracketRegEx = "\\{";
+//				String pipeRegEx = "\\|";
+//				String accentRegEx = "\\^";
+//				String dollarSignRegEx = "\\$";
 				String openingParenthesisRegEx = "\\(";
 				String closingParenthesisRegEx = "\\)";
 				String openParenthesis = "(";
@@ -491,15 +491,15 @@ public class PesiTaxonExport extends PesiExportBase {
 				String italicEndTag = "</i>";
 				
 				String questionMarkReplacement = backSlashRegEx + questionMarkRegEx;
-				String backSlashReplacement = backSlashRegEx + backSlashRegEx;
-				String periodReplacement = backSlashRegEx + periodRegEx;
-				String asterixReplacement = backSlashRegEx + asterixRegEx;
-				String plusReplacement = backSlashRegEx + plusRegEx;
-				String squareBracketReplacement = backSlashRegEx + squareBracketRegEx;
-				String curlyBracketReplacement = backSlashRegEx + curlyBracketRegEx;
-				String pipeReplacement = backSlashRegEx + pipeRegEx;
-				String accentReplacement = backSlashRegEx + accentRegEx;
-				String dollarSignReplacement = backSlashRegEx + dollarSignRegEx;
+//				String backSlashReplacement = backSlashRegEx + backSlashRegEx;
+//				String periodReplacement = backSlashRegEx + periodRegEx;
+//				String asterixReplacement = backSlashRegEx + asterixRegEx;
+//				String plusReplacement = backSlashRegEx + plusRegEx;
+//				String squareBracketReplacement = backSlashRegEx + squareBracketRegEx;
+//				String curlyBracketReplacement = backSlashRegEx + curlyBracketRegEx;
+//				String pipeReplacement = backSlashRegEx + pipeRegEx;
+//				String accentReplacement = backSlashRegEx + accentRegEx;
+//				String dollarSignReplacement = backSlashRegEx + dollarSignRegEx;
 
 				if (nonViralName != null) {
 					if (nonViralName.getGenusOrUninomial() != null) {
@@ -514,70 +514,106 @@ public class PesiTaxonExport extends PesiExportBase {
 								String infraGenericEpithet = nonViralName.getInfraGenericEpithet();
 								String specificEpithet = nonViralName.getSpecificEpithet();
 								String infraSpecificEpithet = nonViralName.getInfraSpecificEpithet();
+								
 								boolean genusOrUninomialExist = false;
 								boolean infraGenericEpithetExists = false;
 								boolean specificEpithetExists = false;
 								boolean infraSpecificEpithetExists = false;
+								boolean rankExists = false;
 
+								Matcher genusOrUninomialMatcher = null;
 								// Define specific regular expressions and patterns
-								String genusOrUninomialRegEx = genusOrUninomial + singleWhitespace;
-								Pattern genusOrUninomialPattern = Pattern.compile(genusOrUninomialRegEx);
-								Matcher genusOrUninomialMatcher = genusOrUninomialPattern.matcher(fullName);
-
-								String infraGenericEpithetRegEx = openingParenthesisRegEx + infraGenericEpithet + closingParenthesisRegEx;
-								Pattern infraGenericEpithetPattern = Pattern.compile(infraGenericEpithetRegEx);
-								Matcher infraGenericEpithetMatcher = infraGenericEpithetPattern.matcher(fullName);
-
-								String specificEpithetRegEx = singleWhitespace + specificEpithet + singleWhitespace;
-								Pattern specificEpithetPattern = Pattern.compile(specificEpithetRegEx);
-								Matcher specificEpithetMatcher = specificEpithetPattern.matcher(fullName);
-
-								String infraSpecificEpithetRegEx = infraSpecificEpithet;
-								Pattern infraSpecificEpithetPattern = Pattern.compile(infraSpecificEpithetRegEx);
-								Matcher infraSpecificEpithetMatcher = infraSpecificEpithetPattern.matcher(fullName);
-								
-								
-								// Check whether specific parts of a scientific name exist and count them
-								// Genus or uninomial
-								if (genusOrUninomialMatcher.find()) {
-									genusOrUninomialExist = true;
-								}
-								
-								// Infra generic epithet
-								if (infraGenericEpithetMatcher.find()) {
-									infraGenericEpithetExists = true;
-								}
-								
-								// Specific epithet
-								if (genusOrUninomialExist || infraGenericEpithetExists) {
-									// it's in between somewhere
-									specificEpithetRegEx = singleWhitespace + specificEpithet + singleWhitespace;
-								} else {
-									// it's at the beginning
-									if (fullName.length() > specificEpithet.length()) {
+								if (genusOrUninomial != null) {
+									String genusOrUninomialRegEx;
+									if (fullName.length() > genusOrUninomial.length()) {
 										// It's an assumption that there is a blank right after the specific epithet in this case. Keep an eye on it.
-										specificEpithetRegEx = specificEpithet + singleWhitespace;
+										genusOrUninomialRegEx = genusOrUninomial + singleWhitespace;
 									} else {
-										specificEpithetRegEx = specificEpithet;
+										genusOrUninomialRegEx = genusOrUninomial;
+									}
+									Pattern genusOrUninomialPattern = Pattern.compile(genusOrUninomialRegEx);
+									genusOrUninomialMatcher = genusOrUninomialPattern.matcher(fullName);
+									
+									if (genusOrUninomialMatcher.find()) {
+										genusOrUninomialExist = true;
 									}
 								}
-								specificEpithetPattern = Pattern.compile(specificEpithetRegEx);
-								specificEpithetMatcher = specificEpithetPattern.matcher(fullName);
-								if (specificEpithetMatcher.find()) {
-									specificEpithetExists = true;
+
+								Matcher infraGenericEpithetMatcher = null;
+								if (infraGenericEpithet != null) {
+									String infraGenericEpithetRegEx = openingParenthesisRegEx + infraGenericEpithet + closingParenthesisRegEx;
+									Pattern infraGenericEpithetPattern = Pattern.compile(infraGenericEpithetRegEx);
+									infraGenericEpithetMatcher = infraGenericEpithetPattern.matcher(fullName);
+									
+									if (infraGenericEpithetMatcher.find()) {
+										infraGenericEpithetExists = true;
+									}
 								}
-								
-								int count;
-								// Infra specific epithet
-								if (specificEpithet.equals(infraSpecificEpithet)) {
-									count = 2;
-								} else {
-									count = 1;
+
+								Matcher specificEpithetMatcher;
+								String specificEpithetRegEx;
+								Pattern specificEpithetPattern;
+								if (specificEpithet != null) {
+									specificEpithetRegEx = singleWhitespace + specificEpithet + singleWhitespace;
+									specificEpithetPattern = Pattern.compile(specificEpithetRegEx);
+									specificEpithetMatcher = specificEpithetPattern.matcher(fullName);
+									
+									if (genusOrUninomialExist || infraGenericEpithetExists) {
+										// it's in between somewhere
+										specificEpithetRegEx = singleWhitespace + specificEpithet + singleWhitespace;
+									} else {
+										// it's at the beginning
+										if (fullName.length() > specificEpithet.length()) {
+											// It's an assumption that there is a blank right after the specific epithet in this case. Keep an eye on it.
+											specificEpithetRegEx = specificEpithet + singleWhitespace;
+										} else {
+											specificEpithetRegEx = specificEpithet;
+										}
+									}
+									specificEpithetPattern = Pattern.compile(specificEpithetRegEx);
+									specificEpithetMatcher = specificEpithetPattern.matcher(fullName);
+									if (specificEpithetMatcher.find()) {
+										specificEpithetExists = true;
+									}
 								}
-								if (infraSpecificEpithetMatcher.groupCount() == count) {
-									specificEpithetExists = true;
-								} else {
-									specificEpithetExists = false;
+
+								if (infraSpecificEpithet != null) {
+									String infraSpecificEpithetRegEx = infraSpecificEpithet;
+									Pattern infraSpecificEpithetPattern = Pattern.compile(infraSpecificEpithetRegEx);
+									Matcher infraSpecificEpithetMatcher = infraSpecificEpithetPattern.matcher(fullName);
+
+									int count;
+									// Infra specific epithet
+									if (specificEpithet.equals(infraSpecificEpithet)) {
+										count = 2;
+									} else {
+										count = 1;
+									}
+									
+									int infraSpecificCount = 0;
+									int index = 0;
+									while ((index = fullName.indexOf(infraSpecificEpithet, index)) != -1) {
+										infraSpecificCount++;
+										index++;
+									}
+									if (infraSpecificCount == count) {
+										infraSpecificEpithetExists = true;
+									} else {
+										infraSpecificEpithetExists = false;
+									}
+								}
+
+								String rankExistsRegEx = null;
+								// Check whether rank information is included in fullName
+								if (specificEpithetExists && infraSpecificEpithetExists) {
+									rankExistsRegEx = specificEpithet + singleWhitespace + anyNumberOfCharacters + singleWhitespace + infraSpecificEpithet;
+									Pattern rankExistsPattern = Pattern.compile(rankExistsRegEx);
+									Matcher rankExistsMatcher = rankExistsPattern.matcher(fullName);
+									if (rankExistsMatcher.find()) {
+										rankExists = true;
+									} else {
+										rankExists = false;
+									}
 								}
 								
 								// Replace
@@ -590,51 +626,43 @@ public class PesiTaxonExport extends PesiExportBase {
 								StringBuffer replaceFullName = new StringBuffer(fullName);
 								if (specificEpithetExists) {
 									// Determine index of specificEpithet and place italic end tag right after its position
-									int specificEpithetPosition = fullName.indexOf(specificEpithet) + specificEpithet.length() + 1;
+									int specificEpithetPosition = replaceFullName.indexOf(specificEpithet) + specificEpithet.length();
 									replaceFullName.insert(specificEpithetPosition, italicEndTag);
 								} else if (infraGenericEpithetExists) {
-									int infraGenericEpithetPosition = fullName.indexOf(infraGenericEpithet) + infraGenericEpithet.length() + 1;
+									int infraGenericEpithetPosition = replaceFullName.indexOf(infraGenericEpithet) + infraGenericEpithet.length();
 									replaceFullName.insert(infraGenericEpithetPosition, italicEndTag);
 								} else if (genusOrUninomialExist) {
-									replaceFullName.insert(genusOrUninomial.length() + 1, italicEndTag);
+									replaceFullName.insert(genusOrUninomial.length() + italicBeginTag.length(), italicEndTag);
 								}
 								
 								if (infraSpecificEpithetExists) {
-									int infraSpecificEpithetPosition = fullName.lastIndexOf(infraSpecificEpithet);
-									int infraSpecificEpithetBeginPosition = infraSpecificEpithetPosition - 1;
-									int infraSpecificEpithetEndPosition = infraSpecificEpithetPosition + infraSpecificEpithet.length() + 1;
-									replaceFullName.insert(infraSpecificEpithetBeginPosition, italicBeginTag);
-									replaceFullName.insert(infraSpecificEpithetEndPosition, italicEndTag);
+									int infraSpecificEpithetPosition = replaceFullName.lastIndexOf(infraSpecificEpithet);
+									int infraSpecificEpithetBeginPosition = infraSpecificEpithetPosition;
+									int infraSpecificEpithetEndPosition = infraSpecificEpithetPosition + infraSpecificEpithet.length();
+									
+									if (rankExists) {
+										replaceFullName.insert(infraSpecificEpithetBeginPosition, italicBeginTag);
+									}
+									replaceFullName.insert(infraSpecificEpithetEndPosition + italicBeginTag.length(), italicEndTag);
 								}
 								
 								result = replaceFullName.toString();
 
 							} catch (Exception e) {
 								// This needs a workaround since very likely there is a character in the fullName that is reserved in regular expressions
-								logger.warn("WebShowName could not be determined for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + "): " + e.getMessage());
+								logger.error("WebShowName could not be determined for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + "): " + e.getMessage());
 								result = nonViralName.getTitleCache();
 							}
 						} else {
-							logger.warn("WebShowName could not be determined: Fullname is NULL for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + ")");
+							logger.error("WebShowName could not be determined: Fullname is NULL for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + ")");
 						}
 					} else {
-						logger.warn("WebShowName could not be determined: GenusOrUninomial is NULL for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + ")");
+						logger.error("WebShowName could not be determined: GenusOrUninomial is NULL for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + ")");
 					}
 				} else {
 					logger.error("WebShowName could not be determined: NonViralName is NULL for TaxonName" + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 				}
 				
-				if (result != null) {
-					// Get rid of </i> <i> combinations
-					String obsoleteItalicsRegEx = "</i>" + multipleWhitespaces + "<i>";
-					String obsoleteItalicsReplacement = singleBlank;
-					Pattern obsoleteItalicsPattern = Pattern.compile(obsoleteItalicsRegEx);
-					Matcher obsoleteItalicsMatcher = obsoleteItalicsPattern.matcher(result);
-					if (obsoleteItalicsMatcher.find()) {
-						result = result.replaceAll(obsoleteItalicsRegEx, obsoleteItalicsReplacement);
-					}
-				}
-
 			}
 		} else {
 			logger.warn("WebShowName could not be determined: TaxonName is NULL");
@@ -643,7 +671,7 @@ public class PesiTaxonExport extends PesiExportBase {
 //		logger.error("final result: " + result);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		return result;
 	}
 
@@ -1351,9 +1379,6 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (taxa.size() == 1) {
 			TaxonBase singleTaxon = CdmBase.deproxy(taxa.iterator().next(), TaxonBase.class);
 			result = state.getDbId(singleTaxon.getSec());
-			if (result == 0) {
-				result = null;
-			}
 		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 		}
