@@ -73,10 +73,8 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		//String infraGenericMarker = "'unhandled infrageneric rank'";
 		
 		result = CdmUtils.Nz(zooName.getGenusOrUninomial());
-		if (zooName.getInfraGenericEpithet() != null){
-				result = zooName.getInfraGenericEpithet();
-		} 
-		//result += " " + infraGenericMarker + " " + (CdmUtils.Nz(zooName.getInfraGenericEpithet())).trim().replace("null", "");
+		 
+		result += " (" + (CdmUtils.Nz(zooName.getInfraGenericEpithet())).trim().replace("null", "") + ")";
 		result = addAppendedPhrase(result, zooName).trim();
 		return result;
 	}
