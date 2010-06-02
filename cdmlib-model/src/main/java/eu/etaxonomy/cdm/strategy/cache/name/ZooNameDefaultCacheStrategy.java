@@ -71,7 +71,16 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		if (basionymAuthor != null || exBasionymAuthor != null || originalPublicationYear != null ){
 			String authorAndEx = getAuthorAndExAuthor(basionymAuthor, exBasionymAuthor);
 			String originalPublicationYearString = originalPublicationYear == null ? null : String.valueOf(originalPublicationYear);
-			String authorAndExAndYear = CdmUtils.concat(", ", authorAndEx, originalPublicationYearString );
+
+			String authorAndExAndYear = "";
+			if (originalPublicationYearString == null && ! "".equals(authorAndEx)) {
+				authorAndExAndYear = authorAndEx;
+			} else if (originalPublicationYearString != null && "".equals(authorAndEx)) {
+				authorAndExAndYear = originalPublicationYearString;
+			} else {
+				authorAndExAndYear = CdmUtils.concat(", ", authorAndEx, originalPublicationYearString );
+			}
+
 			basionymPart = BasionymStart + authorAndExAndYear +BasionymEnd;
 		}
 		if (combinationAuthor != null || exCombinationAuthor != null){
