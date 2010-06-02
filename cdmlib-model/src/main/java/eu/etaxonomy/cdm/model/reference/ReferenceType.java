@@ -66,8 +66,10 @@ public enum ReferenceType {
 	@XmlEnumValue("Web Page")
 	WebPage("Web Page", ReferenceBaseDefaultCacheStrategy.class), 
 	@XmlEnumValue("Printed Unit Base")
+	@Deprecated // all references are ReferenceBases this type should not longer be used. Use isPrintedUnit() for tests against this type instead.
 	PrintedUnitBase("Printed Unit Base", ReferenceBaseDefaultCacheStrategy.class), 
 	@XmlEnumValue("Publication Base")
+	@Deprecated // all references are ReferenceBases this type should not longer be used. Use isPublication() for tests against this type instead.
 	PublicationBase("Publication Base", ReferenceBaseDefaultCacheStrategy.class);
 	
 	
