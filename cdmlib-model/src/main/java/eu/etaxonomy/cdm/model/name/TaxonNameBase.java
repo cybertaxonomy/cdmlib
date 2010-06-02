@@ -401,7 +401,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
-public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+	public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
 		if (toName == null){
 			throw new NullPointerException("Null is not allowed as name for a name relationship");
 		}
