@@ -153,6 +153,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		if (derivative != null){
 			derivative.setDerivedFrom(null);
 		}
+		derivatives.remove(derivative);
 	}
 
 	/**
