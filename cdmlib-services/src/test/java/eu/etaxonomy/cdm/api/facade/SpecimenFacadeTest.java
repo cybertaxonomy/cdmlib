@@ -440,6 +440,51 @@ public class SpecimenFacadeTest {
 	}
 	
 	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}.
+	 */
+	@Test
+	public void testGetSetPlantDescription() {
+		Assert.assertNotNull("An empty plant description data should be created when calling getPlantDescriptionAll()", specimenFacade.getPlantDescriptionAll());
+		Assert.assertEquals("An empty plant description data should be created when calling getPlantDescription()", 0, specimenFacade.getPlantDescriptionAll().size());
+		specimenFacade.setPlantDescription("bleu", Language.FRENCH());
+		Assert.assertEquals("Plant description data should exist for 1 language", 1, specimenFacade.getPlantDescriptionAll().size());
+		Assert.assertEquals("Plant description data should be 'bleu' for French", "bleu", specimenFacade.getPlantDescription(Language.FRENCH()));
+		Assert.assertNull("Plant description data should be null for the default language", specimenFacade.getPlantDescription());
+		specimenFacade.setPlantDescription("Nice here");
+		Assert.assertEquals("Plant description data should exist for 2 languages", 2, specimenFacade.getPlantDescriptionAll().size());
+		Assert.assertEquals("Plant description data should be 'bleu'", "bleu", specimenFacade.getPlantDescription(Language.FRENCH()));
+		Assert.assertEquals("Plant description data should be 'Nice here' for the default language", "Nice here", specimenFacade.getPlantDescription());
+		Assert.assertEquals("Plant description data should be 'Nice here' for english", "Nice here", specimenFacade.getPlantDescription());
+		
+		specimenFacade.setPlantDescription("Vert et rouge", Language.FRENCH());
+		Assert.assertEquals("Plant description data should exist for 2 languages", 2, specimenFacade.getPlantDescriptionAll().size());
+		Assert.assertEquals("Plant description data should be 'Vert et rouge'", "Vert et rouge", specimenFacade.getPlantDescription(Language.FRENCH()));
+		Assert.assertEquals("Plant description data should be 'Nice here' for the default language", "Nice here", specimenFacade.getPlantDescription());
+		
+		specimenFacade.setPlantDescription(null, Language.FRENCH());
+		Assert.assertEquals("Plant description data should exist for 1 languages", 1, specimenFacade.getPlantDescriptionAll().size());
+		Assert.assertEquals("Plant description data should be 'Nice here' for the default language", "Nice here", specimenFacade.getPlantDescription());
+		Assert.assertNull("Plant description data should be 'null' for French", specimenFacade.getPlantDescription(Language.FRENCH()));
+		
+		//test interference with ecology
+		specimenFacade.setEcology("Tres jolie ici", Language.FRENCH());
+		Assert.assertEquals("Ecology data should exist for 1 language", 1, specimenFacade.getEcologyAll().size());
+		Assert.assertEquals("Ecology data should be 'Tres jolie ici' for French", "Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()));
+		Assert.assertNull("Ecology data should be null for the default language", specimenFacade.getEcology());
+		
+		//repeat above test
+		Assert.assertEquals("Plant description data should exist for 1 languages", 1, specimenFacade.getPlantDescriptionAll().size());
+		Assert.assertEquals("Plant description data should be 'Nice here' for the default language", "Nice here", specimenFacade.getPlantDescription());
+		Assert.assertNull("Plant description data should be 'null' for French", specimenFacade.getPlantDescription(Language.FRENCH()));
+		
+		
+		specimenFacade.removePlantDescription(null);
+		Assert.assertEquals("There should be no plant description left", 0, specimenFacade.getPlantDescriptionAll().size());
+		Assert.assertNull("Plant description data should be 'null' for default language", specimenFacade.getPlantDescription());
+		
+	}
+	
+	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getFieldNumber()}.
 	 */
 	@Test

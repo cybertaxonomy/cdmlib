@@ -72,11 +72,12 @@ public class SpecimenFacadeCacheStrategyTest {
 	Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
 	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
 
-	String accessionNumber = "888462535";
+	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
 	TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
+	
 	PreservationMethod preservationMethod = PreservationMethod.NewInstance("my prservation", null, null);
 
 	SpecimenFacade specimenFacade;
@@ -161,9 +162,10 @@ public class SpecimenFacadeCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, sand dunes, 05.05.2005, flowers blue";
+		String correctCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, sand dunes, 05.05.2005 (B 8909756); flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
+		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
 	}
 
