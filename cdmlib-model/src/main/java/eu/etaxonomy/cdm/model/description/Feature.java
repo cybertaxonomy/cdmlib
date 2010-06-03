@@ -888,7 +888,7 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
-		if (termMap == null){
+		if (termMap == null){  //needed because there are multiple feature vocabularies
 			termMap = new HashMap<UUID, Feature>();
 		}
 		for (Feature term : termVocabulary.getTerms()){
