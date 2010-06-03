@@ -13,8 +13,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -23,6 +21,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -43,6 +42,8 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -85,6 +86,12 @@ public class SpecimenFacadeTest {
 
 	SpecimenFacade specimenFacade;
 	
+	Specimen collectionSpecimen;
+	GatheringEvent existingGatheringEvent;
+	DerivationEvent firstDerivationEvent;
+	FieldObservation firstFieldObject;
+	Media media1 = Media.NewInstance();
+	
 //****************************** SET UP *****************************************/
 	
 	/**
@@ -94,13 +101,6 @@ public class SpecimenFacadeTest {
 	public static void setUpBeforeClass() throws Exception {
 		// FIXME maybe this will cause problems in other tests
 		new DefaultTermInitializer().initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
 	}
 
 	/**
@@ -143,16 +143,27 @@ public class SpecimenFacadeTest {
 
 		specimenFacade = SpecimenFacade.NewInstance(specimen);
 
+		//existing specimen with 2 derivation events in line
+		collectionSpecimen = Specimen.NewInstance();
+		Specimen middleSpecimen = Specimen.NewInstance();
+		firstFieldObject = FieldObservation.NewInstance();
+		
+		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
+		DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance();
+		firstDerivationEvent = DerivationEvent.NewInstance();
+		
+		collectionSpecimen.setDerivedFrom(lastDerivationEvent);
+		
+		lastDerivationEvent.addOriginal(middleSpecimen);
+		middleSpecimen.setDerivedFrom(firstDerivationEvent);
+		firstDerivationEvent.addOriginal(firstFieldObject);
+		existingGatheringEvent = GatheringEvent.NewInstance();
+		firstFieldObject.setGatheringEvent(existingGatheringEvent);
+
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 
-//****************************** SET UP *****************************************/
+//****************************** TESTS *****************************************/
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#NewInstance()}.
@@ -162,9 +173,9 @@ public class SpecimenFacadeTest {
 		SpecimenFacade specimenFacade = SpecimenFacade.NewInstance();
 		Assert.assertNotNull("The specimen should have been created", specimenFacade.getSpecimen());
 		//???
-		Assert.assertNotNull("The derivation event should have been created", specimenFacade.getSpecimen().getDerivedFrom());
-		Assert.assertNotNull("The field observation should have been created", specimenFacade.getFieldObservation());
-		Assert.assertNotNull("The gathering event should have been created", specimenFacade.getGatheringEvent());
+//		Assert.assertNotNull("The derivation event should have been created", specimenFacade.getSpecimen().getDerivedFrom());
+//		Assert.assertNotNull("The field observation should have been created", specimenFacade.getFieldObservation());
+//		Assert.assertNotNull("The gathering event should have been created", specimenFacade.getGatheringEvent());
 	}
 
 	/**
@@ -220,6 +231,35 @@ public class SpecimenFacadeTest {
 		specimenFacade.setAbsoluteElevationError(4);
 		Assert.assertEquals("Absolute elevation error must be 4", Integer.valueOf(4), specimenFacade.getAbsoluteElevationError());
 	}
+	
+	@Test()
+	public void testGetSetAbsoluteElevationRange(){
+		Integer expected = absoluteElevation - 2 ;
+		Assert.assertEquals("", expected,specimenFacade.getAbsoluteElevationMinimum());
+		expected = absoluteElevation + 2 ;
+		Assert.assertEquals("", expected,specimenFacade.getAbsoluteElevationMaximum());
+		specimenFacade.setAbsoluteElevationRange(30, 36);
+		Assert.assertEquals("", Integer.valueOf(36), specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", Integer.valueOf(30), specimenFacade.getAbsoluteElevationMinimum());
+		try {
+			specimenFacade.setAbsoluteElevationRange(30, 35);
+			Assert.fail("Odd distance needs to throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue("Exception needs to be thrown", true);
+		}
+		specimenFacade.setAbsoluteElevationRange(41, null);
+		Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
+		Assert.assertNotNull("", specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("", Integer.valueOf(0), specimenFacade.getAbsoluteElevationError());
+		specimenFacade.setAbsoluteElevationRange(null, null);
+		Assert.assertNull("", specimenFacade.getAbsoluteElevation());
+		Assert.assertNull("", specimenFacade.getAbsoluteElevationError());
+		
+		
+	}
+	
 
 	/**
 	 */
@@ -663,5 +703,101 @@ public class SpecimenFacadeTest {
 		specimenFacade.setCollection(null);
 		Assert.assertNull("Collection must be null", specimenFacade.getCollection());	
 	}
+	
+	@Test
+	public void testAddGetRemoveSource(){
+		Assert.assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
+	    ReferenceBase reference = ReferenceFactory.newBook();
+		IdentifiableSource source1 = specimenFacade.addSource(reference, "54", "myName");
+		Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
+		IdentifiableSource source2 = IdentifiableSource.NewInstance("1", "myTable");
+		specimenFacade.addSource(source2);
+		Assert.assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
+		specimenFacade.removeSource(source1);
+		Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
+		ReferenceBase reference2 = ReferenceFactory.newJournal();
+		IdentifiableSource sourceNotUsed = specimenFacade.addSource(reference2, null, null);
+		specimenFacade.removeSource(sourceNotUsed);	
+		Assert.assertEquals("One source should still exist", 1, specimenFacade.getSources().size());
+		Assert.assertEquals("1", specimenFacade.getSources().iterator().next().getIdInSource())	;
+		specimenFacade.removeSource(source2);	
+		Assert.assertEquals("No sources should exist anymore", 0, specimenFacade.getSources().size());   
+	}
+	
+	@Test
+	public void testAddGetRemoveDuplicate(){
+		Assert.assertEquals("No duplicates should be available yet", 0, specimenFacade.getDuplicates().size());
+		Specimen newSpecimen1 = Specimen.NewInstance();
+		specimenFacade.addDuplicate(newSpecimen1);
+		Assert.assertEquals("There should be 1 duplicate now", 1, specimenFacade.getDuplicates().size());
+		Specimen newSpecimen2 = Specimen.NewInstance();
+		DerivationEvent newDerivationEvent = DerivationEvent.NewInstance();
+		newSpecimen2.setDerivedFrom(newDerivationEvent);
+		Assert.assertSame("The derivation event should be 'newDerivationEvent'", newDerivationEvent, newSpecimen2.getDerivedFrom());
+		specimenFacade.addDuplicate(newSpecimen2);
+		Assert.assertEquals("There should be 2 duplicates now", 2, specimenFacade.getDuplicates().size());
+		Assert.assertNotSame("The derivation event should not be 'newDerivationEvent' anymore", newDerivationEvent, newSpecimen2.getDerivedFrom());
+		Assert.assertSame("The derivation event should not be the facades derivation event", derivationEvent, newSpecimen2.getDerivedFrom());
+		specimenFacade.removeDuplicate(newSpecimen1);
+		Assert.assertEquals("There should be 1 duplicate now", 1, specimenFacade.getDuplicates().size());
+		Assert.assertSame("The only duplicate should be 'newSpecimen2' now", newSpecimen2, specimenFacade.getDuplicates().iterator().next());
+		specimenFacade.addDuplicate(specimenFacade.getSpecimen());
+		Assert.assertEquals("There should be still 1 duplicate because the facade specimen is not a duplicate", 1, specimenFacade.getDuplicates().size());
+		
+		Collection newCollection = Collection.NewInstance();
+		String catalogNumber = "1234890";
+		String accessionNumber = "345345";
+		String collectorsNumber = "lkjewe";
+		TaxonNameBase storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
+		PreservationMethod method = PreservationMethod.NewInstance();
+		Specimen duplicateSpecimen = specimenFacade.addDuplicate(newCollection, catalogNumber, accessionNumber, collectorsNumber, storedUnder, method);
+		Assert.assertEquals("There should be 2 duplicates now", 2, specimenFacade.getDuplicates().size());
+		specimenFacade.removeDuplicate(newSpecimen2);
+		Assert.assertEquals("There should be 1 duplicates now", 1, specimenFacade.getDuplicates().size());
+		Collection sameCollection = specimenFacade.getDuplicates().iterator().next().getCollection();
+		Assert.assertSame("Collections should be same", newCollection, sameCollection);
+	}
+	
+// ************************** Existing Specimen with multiple derivation events in line **************/
+	
+	@Test
+	public void testExistingSpecimen(){
+		specimenFacade = null;
+		try {
+			specimenFacade = SpecimenFacade.NewInstance(collectionSpecimen);
+		} catch (SpecimenFacadeNotSupportedException e) {
+			Assert.fail("Multiple derivation events in line should not throw a not supported exception");
+		}
+		Assert.assertSame("Gathering event should derive from the derivation line", existingGatheringEvent, specimenFacade.getGatheringEvent());
+		Assert.assertEquals("Mediasize should be 0. Only Imagegallery media are supported", 0, specimenFacade.getFieldObjectMedia().size());
+	}
+	
+	@Test
+	public void testMultipleFieldObservationsNotSupported(){
+		specimenFacade = null;
+		FieldObservation secondFieldObject = FieldObservation.NewInstance();
+		firstDerivationEvent.addOriginal(secondFieldObject);
+		try {
+			specimenFacade = SpecimenFacade.NewInstance(collectionSpecimen);
+			Assert.fail("Multiple field observations for one specimen should no be supported by the facade");
+		} catch (SpecimenFacadeNotSupportedException e) {
+			//ok
+		}
+		Assert.assertNull("Specimen facade should not be initialized", specimenFacade);
+	}
 
+	@Test
+	public void testOnlyImageGallerySupported(){
+		specimenFacade = null;
+		firstFieldObject.addMedia(media1);
+		try {
+			specimenFacade = SpecimenFacade.NewInstance(collectionSpecimen);
+			Assert.fail("Only image galleries are supported by the facade but not direct media");
+		} catch (SpecimenFacadeNotSupportedException e) {
+			//ok
+		}
+		Assert.assertNull("Specimen facade should not be initialized", specimenFacade);	
+	}
+
+	
 }

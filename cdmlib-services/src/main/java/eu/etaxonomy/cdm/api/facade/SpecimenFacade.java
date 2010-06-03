@@ -14,14 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MethodNotSupportedException;
+
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -35,12 +36,14 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -54,12 +57,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * @date 14.05.2010
  */
 public class SpecimenFacade {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenFacade.class);
 	
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at place where this should not have happened. The developer should implement not support check properly during clas initialization ";
 	
-	private GatheringEvent gatheringEvent;
+	//private GatheringEvent gatheringEvent;
 
 	private FieldObservation fieldObservation;
 	private Specimen specimen;
@@ -81,46 +83,59 @@ public class SpecimenFacade {
 	
 	private SpecimenFacade(){
 		//gatheringEvent
-		gatheringEvent = GatheringEvent.NewInstance();
-		
-		//observation
-		fieldObservation = FieldObservation.NewInstance();
-		fieldObservation.setGatheringEvent(gatheringEvent);
-		
-		//derivationEvent
-		DerivationEvent derivationEvent = DerivationEvent.NewInstance();
-		derivationEvent.addOriginal(fieldObservation);
+//		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
+//		
+//		//observation
+//		fieldObservation = FieldObservation.NewInstance();
+//		fieldObservation.setGatheringEvent(gatheringEvent);
+//		
+//		//derivationEvent
+//		DerivationEvent derivationEvent = DerivationEvent.NewInstance();
+//		derivationEvent.addOriginal(fieldObservation);
 		
 		//derivedUnit
 		specimen = Specimen.NewInstance();
-		derivationEvent.addDerivative(specimen);
+		setCacheStrategy();
+//		derivationEvent.addDerivative(specimen);
 		
 		//image galleries
 		//specimenImageGallery = SpecimenDescription.NewInstance(specimen);
 		//fieldObservationImageGallery = SpecimenDescription.NewInstance(fieldObservation);
 	}
+
+	/**
+	 * 
+	 */
+	private void setCacheStrategy() {
+		specimen.setCacheStrategy(new SpecimenFacadeCacheStrategy());
+	}
 	
 	private SpecimenFacade(Specimen specimen) throws SpecimenFacadeNotSupportedException{
 		//specimen
 		this.specimen = specimen;
+		setCacheStrategy();
 		//derivation event
-		DerivationEvent derivationEvent = getDerivationEvent();
-		//fieldObservation
-		Set<FieldObservation> fieldOriginals = getFieldObservationsOriginals(derivationEvent, null);
-		if (fieldOriginals.size() > 1){
-			throw new SpecimenFacadeNotSupportedException("Specimen must not have more than 1 derivation event");
-		}else if (fieldOriginals.size() == 0){
-			fieldObservation = FieldObservation.NewInstance();
-		}else if (fieldOriginals.size() == 1){
-			fieldObservation = fieldOriginals.iterator().next();
-		}else{
-			throw new IllegalStateException("Illegal state");
+		if (specimen.getDerivedFrom() != null){
+			DerivationEvent derivationEvent = getDerivationEvent();
+			//fieldObservation
+			Set<FieldObservation> fieldOriginals = getFieldObservationsOriginals(derivationEvent, null);
+			if (fieldOriginals.size() > 1){
+				throw new SpecimenFacadeNotSupportedException("Specimen must not have more than 1 derivation event");
+			}else if (fieldOriginals.size() == 0){
+				//fieldObservation = FieldObservation.NewInstance();
+			}else if (fieldOriginals.size() == 1){
+				fieldObservation = fieldOriginals.iterator().next();
+			}else{
+				throw new IllegalStateException("Illegal state");
+			}	
 		}
+		
 		//gatheringEvent
-		if (fieldObservation.getGatheringEvent() == null ){
-			gatheringEvent = GatheringEvent.NewInstance();
-			fieldObservation.setGatheringEvent(gatheringEvent);
-		}
+//		if (fieldObservation.getGatheringEvent() == null ){
+//			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
+//			fieldObservation.setGatheringEvent(gatheringEvent);
+//		}
+		
 		//media
 		//initalize only if necessary
 		//specimenMedia = getImageGalleryMedia(specimen, "Specimen");
@@ -135,12 +150,18 @@ public class SpecimenFacade {
 		specimenExceptionText = "Field observation";
 		imageGallery = getImageGalleryWithSupportTest(fieldObservation, specimenExceptionText, false);
 		getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
+		if (specimen.getMedia().size() > 0){
+			//TODO better changed model here to allow only one place for images
+			throw new SpecimenFacadeNotSupportedException("Specimen may not have direct media. Only (one) image gallery is allowed");
+		}
+		if (fieldObservation.getMedia().size() > 0){
+			//TODO better changed model here to allow only one place for images
+			throw new SpecimenFacadeNotSupportedException("Specimen may not have direct media. Only (one) image gallery is allowed");
+		}
 		
 		//test if descriptions are supported
 		ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), false);
 		plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), false);
-		
-		
 	}
 
 /**
@@ -165,11 +186,15 @@ public class SpecimenFacade {
 				return null;
 			}
 		}
-		Set<SpecimenDescription> descriptions = fieldObject.getSpecimenDescriptions();
-		if (createIfNotExists && descriptions.size() == 0){
-			SpecimenDescription newSpecimenDescription = SpecimenDescription.NewInstance(fieldObject);
-			newSpecimenDescription.addElement(textData);
-			return textData;
+		Set<SpecimenDescription> descriptions = fieldObject.getSpecimenDescriptions(false);
+		if (descriptions.size() == 0){
+			if (createIfNotExists){
+				SpecimenDescription newSpecimenDescription = SpecimenDescription.NewInstance(fieldObject);
+				newSpecimenDescription.addElement(textData);
+				return textData;
+			}else{
+				return null;
+			}
 		}
 		Set<DescriptionElementBase> existingTextData = new HashSet<DescriptionElementBase>();
 		for (SpecimenDescription description : descriptions){
@@ -185,6 +210,8 @@ public class SpecimenFacade {
 		}else if (existingTextData.size() == 1){
 			return CdmBase.deproxy(existingTextData.iterator().next(), TextData.class);
 		}else{
+			SpecimenDescription description = descriptions.iterator().next();
+			description.addElement(textData);
 			return textData;
 		}
 	}
@@ -210,8 +237,9 @@ public class SpecimenFacade {
 	/**
 	 * @param derivationEvent2
 	 * @return
+	 * @throws SpecimenFacadeNotSupportedException 
 	 */
-	private Set<FieldObservation> getFieldObservationsOriginals(DerivationEvent derivationEvent, Set<SpecimenOrObservationBase> recursionAvoidSet) {
+	private Set<FieldObservation> getFieldObservationsOriginals(DerivationEvent derivationEvent, Set<SpecimenOrObservationBase> recursionAvoidSet) throws SpecimenFacadeNotSupportedException {
 		if (recursionAvoidSet == null){
 			recursionAvoidSet = new HashSet<SpecimenOrObservationBase>();
 		}
@@ -220,17 +248,22 @@ public class SpecimenFacade {
 		for (SpecimenOrObservationBase original : originals){
 			if (original.isInstanceOf(FieldObservation.class)){
 				result.add(CdmBase.deproxy(original, FieldObservation.class));
-			}else{
+			}else if (original.isInstanceOf(DerivedUnitBase.class)){
 				//if specimen has already been tested exclude it from further recursion
 				if (recursionAvoidSet.contains(original)){
 					continue;
 				}
-				Set<DerivationEvent> derivationEvents = original.getDerivationEvents(); 
-				for (DerivationEvent originalDerivation : derivationEvents){
+				DerivedUnitBase derivedUnit = CdmBase.deproxy(original, DerivedUnitBase.class);
+				DerivationEvent originalDerivation = derivedUnit.getDerivedFrom();
+//				Set<DerivationEvent> derivationEvents = original.getDerivationEvents(); 
+//				for (DerivationEvent originalDerivation : derivationEvents){
 					Set<FieldObservation> fieldObservations = getFieldObservationsOriginals(originalDerivation, recursionAvoidSet);
 					result.addAll(fieldObservations);
-				}
+//				}
+			}else{
+				throw new SpecimenFacadeNotSupportedException("Unhandled specimen or observation base type: " + original.getClass().getName() );
 			}
+			
 		}
 		return result;
 	}
@@ -411,7 +444,11 @@ public class SpecimenFacade {
 		getGatheringEvent().removeCollectingArea(area);
 	}
 
-	//absolute elevation
+	//absolute elevation  
+	/** meter above/below sea level of the surface 
+	 * @see #getAbsoluteElevationError()
+	 * @see #getAbsoluteElevationRange()
+	 **/
 	public Integer getAbsoluteElevation() {
 		return getGatheringEvent().getAbsoluteElevation();
 	}
@@ -425,6 +462,81 @@ public class SpecimenFacade {
 	}
 	public void setAbsoluteElevationError(Integer absoluteElevationError) {
 		getGatheringEvent().setAbsoluteElevationError(absoluteElevationError);
+	}
+	
+	/**
+	 * @see #getAbsoluteElevation()
+	 * @see #getAbsoluteElevationError()
+	 * @see #setAbsoluteElevationRange(Integer, Integer)
+	 * @see #getAbsoluteElevationMaximum()
+	 */
+	public Integer getAbsoluteElevationMinimum(){
+		Integer minimum = getGatheringEvent().getAbsoluteElevation();
+		if (getGatheringEvent().getAbsoluteElevationError() != null){
+			minimum = minimum -  getGatheringEvent().getAbsoluteElevationError();
+		}
+		return minimum;
+	}
+	/**
+	 * @see #getAbsoluteElevation()
+	 * @see #getAbsoluteElevationError()
+	 * @see #setAbsoluteElevationRange(Integer, Integer)
+	 * @see #getAbsoluteElevationMinimum()
+	 */
+	public Integer getAbsoluteElevationMaximum(){
+		Integer maximum = getGatheringEvent().getAbsoluteElevation();
+		if (getGatheringEvent().getAbsoluteElevationError() != null){
+			maximum = maximum +  getGatheringEvent().getAbsoluteElevationError();
+		}
+		return maximum;
+	}
+
+	
+	/**
+	 * This method replaces absoluteElevation and absoulteElevationError by
+	 * internally translating minimum and maximum values into
+	 * average and error values. As all these values are integer based
+	 * it is necessary that the distance is between minimum and maximum is <b>even</b>,
+	 * otherwise we will get a rounding error resulting in a maximum that is increased
+	 * by 1.
+	 * @see #setAbsoluteElevation(Integer)
+	 * @see #setAbsoluteElevationError(Integer)
+	 * @param minimumElevation minimum of the range
+	 * @param maximumElevation maximum of the range
+	 */
+	public void setAbsoluteElevationRange(Integer minimumElevation, Integer maximumElevation){
+		if (minimumElevation == null || maximumElevation == null){
+			Integer elevation = minimumElevation;
+			Integer error = 0;
+			if (minimumElevation == null){
+				elevation = maximumElevation;
+				if (elevation == null){
+					error = null;
+				}
+			}
+			getGatheringEvent().setAbsoluteElevation(elevation);
+			getGatheringEvent().setAbsoluteElevationError(error);
+		}else{
+			if (! isEvenDistance(minimumElevation, maximumElevation) ){
+				throw new IllegalArgumentException("Distance between minimum and maximum elevation must be even but was " + Math.abs(minimumElevation - maximumElevation));
+			}
+			Integer absoluteElevationError = Math.abs(maximumElevation - minimumElevation);
+			absoluteElevationError = absoluteElevationError / 2;
+			Integer absoluteElevation = minimumElevation + absoluteElevationError;
+			getGatheringEvent().setAbsoluteElevation(absoluteElevation);
+			getGatheringEvent().setAbsoluteElevationError(absoluteElevationError);
+		}
+	}
+
+	/**
+	 * @param minimumElevation
+	 * @param maximumElevation
+	 * @return
+	 */
+	private boolean isEvenDistance(Integer minimumElevation, Integer maximumElevation) {
+		Integer diff = ( maximumElevation - minimumElevation);
+		Integer testDiff = (diff /2) *2 ;
+		return (testDiff == diff);
 	}
 
 	//collector
@@ -629,7 +741,7 @@ public class SpecimenFacade {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
 		}
-		return ecology.getMultilanguageText();
+		return plantDescription.getMultilanguageText();
 	}
 	public void setPlantDescription(String plantDescription){
 		setPlantDescription(plantDescription, null);
@@ -916,9 +1028,43 @@ public class SpecimenFacade {
 		}
 		return result;
 	}
+	
+	public String getExsiccatum() {
+		logger.warn("Exsiccatum method not yet supported. Needs model change");
+		return null;
+	}
+	
+	public String setExsiccatum() throws MethodNotSupportedException{
+		throw new MethodNotSupportedException("Exsiccatum method not yet supported. Needs model change");
+	}
+	
+	
+	// **** sources **/
+	public void addSource(IdentifiableSource source){
+		this.specimen.addSource(source);
+	}
+	/**
+	 * Creates an orignal source, adds it to the specimen and returns it.
+	 * @param reference
+	 * @param microReference
+	 * @param originalNameString
+	 * @return
+	 */
+	public IdentifiableSource addSource(ReferenceBase reference, String microReference, String originalNameString){
+		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
+		source.setOriginalNameString(originalNameString);
+		specimen.addSource(source);
+		return source;
+	}
+	
+	public Set<IdentifiableSource> getSources(){
+		return specimen.getSources();
+	}
 
-
-//**************** Collection ***************************************************	
+	public void removeSource(IdentifiableSource source){
+		this.specimen.removeSource(source);
+	}
+	
 	
 	/**
 	 * @return the collection
@@ -934,6 +1080,55 @@ public class SpecimenFacade {
 	public void setCollection(Collection collection) {
 		specimen.setCollection(collection);
 	}
+	
+	
+
+	
+
+//**************** Other Collections ***************************************************	
+	
+	/**
+	 * Creates a duplicate specimen which derives from the same derivation event
+	 * as the facade specimen and adds collection data to it (all data available in
+	 * DerivedUnitBase and Specimen. Data from SpecimenOrObservationBase and above
+	 * are not yet shared at the moment. 
+	 * @param collection
+	 * @param catalogNumber
+	 * @param accessionNumber
+	 * @param collectorsNumber
+	 * @param storedUnder
+	 * @param preservation
+	 * @return
+	 */
+	public Specimen addDuplicate(Collection collection, String catalogNumber, String accessionNumber, 
+				String collectorsNumber, TaxonNameBase storedUnder, PreservationMethod preservation){
+		Specimen duplicate = Specimen.NewInstance();
+		duplicate.setDerivedFrom(getDerivationEvent());
+		duplicate.setCollection(collection);
+		duplicate.setCatalogNumber(catalogNumber);
+		duplicate.setAccessionNumber(accessionNumber);
+		duplicate.setCollectorsNumber(collectorsNumber);
+		duplicate.setStoredUnder(storedUnder);
+		duplicate.setPreservation(preservation);
+		return duplicate;
+	}
+	
+	public void addDuplicate(Specimen duplicateSpecimen){
+		getDerivationEvent().addDerivative(duplicateSpecimen);  
+	}
+	public Set<Specimen> getDuplicates(){
+		Set<Specimen> result = new HashSet<Specimen>();
+		for (DerivedUnitBase derivedUnit: getDerivationEvent().getDerivatives()){
+			if (derivedUnit.isInstanceOf(Specimen.class) && ! derivedUnit.equals(specimen)){
+				result.add(CdmBase.deproxy(derivedUnit, Specimen.class));
+			}
+		}
+		return result;
+	}
+	public void removeDuplicate(Specimen duplicateSpecimen){
+		getDerivationEvent().removeDerivative(duplicateSpecimen);  	
+	}
+	
 	
 	
 	
