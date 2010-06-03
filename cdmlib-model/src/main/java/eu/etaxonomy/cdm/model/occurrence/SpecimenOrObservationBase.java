@@ -162,10 +162,22 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 * @return
 	 */
 	public Set<SpecimenDescription> getSpecimenDescriptions() {
+		return getSpecimenDescriptions(true);
+	}
+	
+	/**
+	 * Returns the {@link SpecimenDescription specimen descriptions} this specimen is part of.
+	 * @see #getDescriptions()
+	 * @return
+	 */
+	public Set<SpecimenDescription> getSpecimenDescriptions(boolean includeImageGallery) {
 		Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
 		for (DescriptionBase descriptionBase : getDescriptions()){
 			if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
-				specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
+				if (includeImageGallery || descriptionBase.isImageGallery() == false){
+					specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
+				}
+				
 			}
 		}
 		return specimenDescriptions;
@@ -252,8 +264,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	
 	@Override
 	public String generateTitle(){
-		logger.warn("Generate title for specimen not yet implemented");
-		return "";
+		return getCacheStrategy().getTitleCache(this);
 	}
 	
 	public Integer getIndividualCount() {
