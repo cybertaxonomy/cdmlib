@@ -73,6 +73,13 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
+
+	public static IdentifiableSource NewInstance(ReferenceBase citation, String microCitation){
+		IdentifiableSource result = NewInstance();
+		result.setCitation(citation);
+		result.setCitationMicroReference(microCitation);
+		return result;
+	}	
 	
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
