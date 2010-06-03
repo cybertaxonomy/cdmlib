@@ -31,7 +31,7 @@ public class CollectionDefaultCacheStrategy extends StrategyBase implements IIde
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CollectionDefaultCacheStrategy.class);
 
-	public static UUID uuid = UUID.fromString("42834de1-698c-4d43-a31a-1c5617a708d6");
+	private static final UUID uuid = UUID.fromString("42834de1-698c-4d43-a31a-1c5617a708d6");
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
