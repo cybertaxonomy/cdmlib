@@ -66,10 +66,6 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 				"root.children.feature.representations",
 			});
 	
-	@InitBinder
-    public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)

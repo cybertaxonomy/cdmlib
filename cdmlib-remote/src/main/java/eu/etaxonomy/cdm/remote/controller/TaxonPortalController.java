@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -89,7 +90,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
-@RequestMapping(value = {"/portal/taxon/*", "/portal/taxon/*/*", "/portal/name/*/*", "/portal/taxon/*/media/*/*", "/portal/taxon/*/subtree/media/*/*"})
+@RequestMapping(value = {"/portal/taxon/*", "/portal/taxon/{uuid}", "/portal/taxon/*/*", "/portal/name/*/*", "/portal/taxon/*/media/*/*", "/portal/taxon/*/subtree/media/*/*"})
 public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
@@ -239,12 +240,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"typeName.taggedName",
 	});
 	
-	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-//			"$",
-//			"taxon.name.$",
-//			"taxon.name.taggedName",
+	protected static final List<String> TAXONNODE_WITHTAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"childNodes.taxon",
+	});
 	
+	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
+			"taxonNodes.taxonomicTree"
 	});
 	
 	
@@ -541,6 +542,20 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		return p.getRecords();
 	}
 	
+	@RequestMapping(value = "{uuid}/taxonNodes", method = RequestMethod.GET)
+	public Set<TaxonNode>  doGetTaxonNodes(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException {
+		TaxonBase tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+		if(tb instanceof Taxon){
+			return ((Taxon)tb).getTaxonNodes();
+		} else {
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+			return null;
+		}
+	}
+	
 	/**
      * Get the list of {@link TaxonDescription}s of the 
 	 * {@link Taxon} instance identified by the <code>{taxon-uuid}</code>.
@@ -618,7 +633,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			node = iterator.next();
 			//überprüfen, ob der TaxonNode zum aktuellen Baum gehört.
 			
-			node = taxonTreeService.loadTaxonNode(node, TAXONNODE_INIT_STRATEGY);
+			node = taxonTreeService.loadTaxonNode(node, TAXONNODE_WITHTAXON_INIT_STRATEGY);
 			Set<TaxonNode> children = node.getChildNodes();
 			Taxon childTaxon;
 			for (TaxonNode child : children){

@@ -2457,6 +2457,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AnnotatableContro
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BadResumptionTokenException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BaseController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BaseListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ClassificationController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ClassificationListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionListController.java -text
@@ -2618,6 +2619,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/remote/dto/rdf/Rdf.java -text
 cdmlib-remote/src/main/java/net/sf/json/CycleSetAcess.java -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/oaipmh/mappings.xml -text
+cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/oaipmh/oai2.xsl -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-deep.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-shallow.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings.xml -text

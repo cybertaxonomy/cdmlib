@@ -77,7 +77,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		TaxonomicTree tree = dao.load(taxonomicTreeUuid);
 		TaxonNode node = tree.getNode(taxon);
 	
-		return loadTaxonNode(node, propertyPaths);
+		return loadTaxonNode(node.getUuid(), propertyPaths);
 	}
 	
 	@Deprecated // use loadTaxonNode(UUID, List<String>) instead 
