@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.validation.constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -21,6 +23,7 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 public class HomotypicSynonymsShouldBelongToGroupValidator implements
 		ConstraintValidator<HomotypicSynonymsShouldBelongToGroup, SynonymRelationship> {
 
+	private static final Logger logger = Logger.getLogger(HomotypicSynonymsShouldBelongToGroupValidator.class);
 	public void initialize(HomotypicSynonymsShouldBelongToGroup homotypicSynonymsShouldBelongToGroup) { }
 
 	public boolean isValid(SynonymRelationship synonymRelationship, ConstraintValidatorContext constraintContext) {
@@ -32,7 +35,10 @@ public class HomotypicSynonymsShouldBelongToGroupValidator implements
 			
 			if(!accepted.getName().getHomotypicalGroup().equals(synonym.getName().getHomotypicalGroup())) {
 				valid = false;
-				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup.message}").addSubNode("tyoe").addError();				
+				if(logger.isDebugEnabled()) {
+					logger.debug(accepted.getName().getHomotypicalGroup() + ", the homotypic group of " + accepted.getName() + " is not the same as " + synonym.getName().getHomotypicalGroup() + " the homotypical group of " + synonym.getName());
+				}
+				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup.message}").addSubNode("type").addError();				
 			}
 		}
 		
