@@ -1707,10 +1707,10 @@ public final class PesiTransformer {
 			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
 			else {
 				logger.error("Unknown TdwgArea Area: " + area.getTitleCache());
-				return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
+				return 1; // TODO: Actually the export has to stop here because AreaFk's are not allowed to be NULL and another value is plain wrong.
 			}
 		}
-		return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
+		return 1; // TODO: Actually the export has to stop here because AreaFk's are not allowed to be NULL and another value is plain wrong.
 
 	}
 
@@ -2129,10 +2129,10 @@ public final class PesiTransformer {
 			return NoteCategory_ecology;
 		} else if (feature.equals(Feature.PHENOLOGY())) {
 			return NoteCategory_phenology;
-		} else if (feature.equals(Feature.COMMON_NAME())) {
-			return NoteCategory_Common_names;
-		} else if (feature.equals(Feature.OCCURRENCE())) {
-			return NoteCategory_Occurrence;
+//		} else if (feature.equals(Feature.COMMON_NAME())) {
+//			return NoteCategory_Common_names;
+//		} else if (feature.equals(Feature.OCCURRENCE())) {
+//			return NoteCategory_Occurrence;
 //		} else if (feature.equals(Feature.CITATION())) {
 //			return;
 			
@@ -2183,7 +2183,7 @@ public final class PesiTransformer {
 //			NoteCategory_Taxonomic_Remarks = 287;
 
 		}else{
-			logger.debug("Unknown Feature.");
+			logger.warn("Unknown Feature.");
 			return null;
 		}
 	}
@@ -2459,10 +2459,10 @@ public final class PesiTransformer {
 	 * @param nomenclaturalCode
 	 * @return KINGDOM_ANIMALIA for NomenclaturalCode.ICZN, KINGDOM_PLANTAE for NomenclaturalCode.ICBN
 	 */
-	public static Integer nomenClaturalCode2Kingdom(String nomenclaturalCode) {
+	public static Integer nomenClaturalCode2Kingdom(NomenclaturalCode nomenclaturalCode) {
 		Integer result = null;
 		// TODO: This needs to be refined. For now we differentiate between Animalia and Plantae only.
-		if (nomenclaturalCode.equals(NomenclaturalCode.ICZN.getTitleCache())) {
+		if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)) {
 			result = KINGDOM_ANIMALIA;
 		} else if (nomenclaturalCode.equals(NomenclaturalCode.ICBN)) {
 			result = KINGDOM_PLANTAE;

@@ -137,14 +137,15 @@ public class PesiOccurrenceExport extends PesiExportBase {
 									setDistribution(distribution);
 
 									// Differentiate between descriptionElements with and without sources.
-									if (elementSources.size() == 0) {
+									if (elementSources.size() == 0 && state.getDbId(descriptionElement) != null) {
+										doCount(count++, modCount, pluralString);
 										success &= mapping.invoke(descriptionElement);
 									} else {
 										for (DescriptionElementSource elementSource : elementSources) {
 											ReferenceBase reference = elementSource.getCitation();
 	
 											// Citations can be empty (null): Is it wrong data or just a normal case?
-											if (reference != null) {
+											if (reference != null && state.getDbId(reference) != null) {
 												doCount(count++, modCount, pluralString);
 												success &= mapping.invoke(reference);
 											}

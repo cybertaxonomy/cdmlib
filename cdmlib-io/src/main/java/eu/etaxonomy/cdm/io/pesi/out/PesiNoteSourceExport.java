@@ -102,8 +102,11 @@ public class PesiNoteSourceExport extends PesiExportBase {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (DescriptionElementBase descriptionElement : list) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(descriptionElement);
+					
+					if (getNoteCategoryFk(descriptionElement) != null) {
+						doCount(count++, modCount, pluralString);
+						success &= mapping.invoke(descriptionElement);
+					}
 				}
 
 				// Commit transaction
@@ -165,6 +168,17 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	}
 
 	/**
+	 * Returns the <code>NoteCategoryFk</code> attribute.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
+	 * @return The <code>NoteCategoryFk</code> attribute.
+	 */
+	private static Integer getNoteCategoryFk(DescriptionElementBase descriptionElement) {
+		Integer result = null;
+		result = PesiTransformer.textData2NodeCategoryFk(descriptionElement.getFeature());
+		return result;
+	}
+
+	/**
 	 * Returns the <code>NoteFk</code> attribute.
 	 * @param description The {@link TaxonDescription TaxonDescription}.
 	 * @param state The {@link PesiExportState PesiExportState}.
@@ -174,7 +188,6 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getNoteFk(DescriptionElementBase descriptionElement, PesiExportState state) {
 		Integer result = state.getDbId(descriptionElement);
-
 		return result;
 	}
 	
@@ -187,13 +200,13 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getSourceFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
-		Integer result = null;
-		DescriptionBase description = descriptionElement.getInDescription();
-		if (description.isInstanceOf(TaxonDescription.class)) {
-			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-			Taxon taxon = taxonDescription.getTaxon();
-			result = state.getDbId(taxon.getSec());
-		}
+		Integer result = state.getDbId(descriptionElement);
+//		DescriptionBase description = descriptionElement.getInDescription();
+//		if (description.isInstanceOf(TaxonDescription.class)) {
+//			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+//			Taxon taxon = taxonDescription.getTaxon();
+//			result = state.getDbId(taxon.getSec());
+//		}
 		return result;
 	}
 	

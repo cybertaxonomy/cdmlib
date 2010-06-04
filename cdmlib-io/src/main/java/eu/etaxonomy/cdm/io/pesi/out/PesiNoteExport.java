@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
@@ -114,8 +115,11 @@ public class PesiNoteExport extends PesiExportBase {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (DescriptionElementBase description : list) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(description);
+					
+					if (getNoteCategoryFk(description) != null) {
+						doCount(count++, modCount, pluralString);
+						success &= mapping.invoke(description);
+					}
 				}
 
 				// Commit transaction
@@ -214,12 +218,9 @@ public class PesiNoteExport extends PesiExportBase {
 	 * @return The <code>NoteCategoryFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getNoteCategoryFk(DescriptionElementBase descriptionElement) {
 		Integer result = null;
-		if (descriptionElement.isInstanceOf(TextData.class)) {
-			result = PesiTransformer.textData2NodeCategoryFk(descriptionElement.getFeature());
-		}
+		result = PesiTransformer.textData2NodeCategoryFk(descriptionElement.getFeature());
 		return result;
 	}
 
