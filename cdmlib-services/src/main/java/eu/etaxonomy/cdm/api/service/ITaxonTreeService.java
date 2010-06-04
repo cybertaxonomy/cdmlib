@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 /**
@@ -44,7 +45,17 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @return
 	 */
 	public ITreeNode getTreeNodeByUuid(UUID uuid);
-	
+
+	/**
+	 * 
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 	/**
 	 * 
 	 * @param uuid
