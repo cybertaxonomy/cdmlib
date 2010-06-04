@@ -111,8 +111,6 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 				
 		FeatureTree featureTree = FeatureTree.NewInstance(featureList);
 		featureTree.setUuid(DefaultFeatureTreeUuid);
-		save(featureTree);
-		logger.info("Default feature tree created.");
 		return featureTree;
 	}
 }
