@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -62,12 +63,16 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	private Validator validator;
 	
 	private IBook book;
+	private IJournal journal;
+	
 	ReferenceFactory refFactory;
 	@Before
 	public void setUp() {
 		refFactory = ReferenceFactory.newInstance();
 		book = refFactory.newBook();
 		book.setTitleCache("Lorem ipsum",true);
+		journal = refFactory.newBook();
+		journal.setTitleCache("Lorem ipsum",true);
 	}
 	
 	
@@ -108,5 +113,12 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 		book.setUri("http://www.e-\taxonomy.eu");
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be a constraint violation as this book has an invalid URI",constraintViolations.isEmpty());
+	}
+	
+	@Test
+	public final void testLevel2ValidationWithInValidISSN() {
+		journal.setIssn("0305-7364");
+        Set<ConstraintViolation<IJournal>> constraintViolations  = validator.validate(journal, Level2.class);
+        assertTrue("There should not be a constraint violation as this journal has a valid ISSN number",constraintViolations.isEmpty());
 	}
 }

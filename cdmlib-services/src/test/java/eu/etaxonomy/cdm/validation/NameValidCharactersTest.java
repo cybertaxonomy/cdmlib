@@ -85,7 +85,7 @@ public class NameValidCharactersTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testForbiddenAccents() {
-		name.setSpecificEpithet("balsàmeá");
+		name.setSpecificEpithet("balsï¿½meï¿½");
 		
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
@@ -101,7 +101,7 @@ public class NameValidCharactersTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testAllowedAccents() {
-		name.setSpecificEpithet("balsämea");
+		name.setSpecificEpithet("balsÃ«mea");
 				
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
