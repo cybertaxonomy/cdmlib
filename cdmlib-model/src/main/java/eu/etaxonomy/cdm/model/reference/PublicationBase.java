@@ -92,6 +92,20 @@ public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> ext
 		this.placePublished = placePublished;
 	}
 	
+	/**
+	 * @return the standardAbbreviation
+	 */
+	public String getStandardAbbreviation() {
+		return standardAbbreviation;
+	}
+
+	/**
+	 * @param standardAbbreviation the standardAbbreviation to set
+	 */
+	public void setStandardAbbreviation(String standardAbbreviation) {
+		this.standardAbbreviation = standardAbbreviation;
+	}
+	
 	
 
 

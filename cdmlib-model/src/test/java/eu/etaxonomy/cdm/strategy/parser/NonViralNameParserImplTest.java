@@ -264,7 +264,7 @@ public class NonViralNameParserImplTest {
 		assertNull(nameNull);
 		
 		//some authors
-		String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex Müller & Schmidt)Clark ex Ciardelli"; 
+		String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex MÃ¼ller & Schmidt)Clark ex Ciardelli"; 
 		BotanicalName authorname = (BotanicalName)parser.parseFullName(fullNameString);
 		assertFalse(authorname.hasProblem());
 		assertEquals("Basionym author should have 3 authors", 3, ((Team)authorname.getBasionymAuthorTeam()).getTeamMembers().size());

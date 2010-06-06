@@ -24,4 +24,8 @@ public interface IPublicationBase extends IReferenceBase {
 	public String getPlacePublished() ;
 	
 	public void setPlacePublished(String placePublished) ;
+	
+    public String getStandardAbbreviation();
+	
+	public void setStandardAbbreviation(String standardAbbreviation);
 }

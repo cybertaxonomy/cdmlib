@@ -101,6 +101,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "datePublished",
     "publisher",
     "placePublished",
+    "standardAbbreviation",
     "institution",
     "school",
     "organization",
@@ -176,7 +177,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	@Field(index=Index.TOKENIZED)
 	@NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.issn.message}") 
+	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{3}(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.issn.message}") 
 	protected String issn;
 	
     @XmlElement(name = "SeriesPart")
@@ -203,6 +204,12 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	@NullOrNotEmpty
 	@Length(max = 255)
 	protected String placePublished;
+	
+	@XmlElement(name = "StandardAbbreviation")
+	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
+	protected String standardAbbreviation;
     
 	@XmlElement(name = "Institution")
 	@XmlIDREF
@@ -1002,6 +1009,14 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S)cacheStrategy;
 		
+	}
+
+	public String getStandardAbbreviation() {
+		return standardAbbreviation;
+	}
+
+	public void setStandardAbbreviation(String standardAbbreviation) {
+		this.standardAbbreviation = standardAbbreviation;
 	}	
 }
 
