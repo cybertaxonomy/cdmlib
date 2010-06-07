@@ -194,7 +194,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			List<TaxonNameBase> list = null;
 
 			// 1st Round: Make Taxa
-			logger.error("PHASE 1...");
+/*			logger.error("PHASE 1...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -248,7 +248,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
+			logger.error("Committed transaction.");*/
 
 			count = 0;
 			pastCount = 0;
@@ -260,25 +260,20 @@ public class PesiTaxonExport extends PesiExportBase {
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
 			Integer taxonomicTreeLimit = 1;
 			Integer taxonomicTreeStart = 0;
+			StringBuffer treeIndex = new StringBuffer();
 			while ((taxonomicTreeList = getTaxonTreeService().listTaxonomicTrees(taxonomicTreeLimit, taxonomicTreeStart, null, null)).size() > 0) {
 				logger.error("Fetched " + taxonomicTreeList.size() + " Taxonomic Tree.");
 
 				for (TaxonomicTree taxonomicTree : taxonomicTreeList) {
-					Set<TaxonNode> rootNodesList = taxonomicTree.getRootNodes();
-					logger.error("Number of Root Nodes for this Taxonomic Tree: " + rootNodesList.size());
+					logger.error("Number of Root Nodes for this Taxonomic Tree: " + taxonomicTree.getRootNodes().size());
 					
-					for (TaxonNode rootNode : rootNodesList) {
-						// Determine all child nodes for each Root Node
-						Set<TaxonNode> rootChildNodes = rootNode.getChildNodes();
-						logger.error("Number of Child Nodes for this Root Node: " + rootChildNodes.size() + ". Traversing branches...");
+					for (TaxonNode rootNode : taxonomicTree.getRootNodes()) {
+						logger.error("Number of Child Nodes for this Root Node: " + rootNode.getChildNodes().size() + ". Traversing branches...");
 						
-						for (TaxonNode rootChild : rootChildNodes) {
-							// KingdomFk
-							Rank kingdomRank = rootChild.getTaxon().getName().getRank();
-							
+						for (TaxonNode rootChild : rootNode.getChildNodes()) {
 							// Traverse all branches from this rootChild
-							String treeIndex = "#";
-							traverseBranches(rootChild, rootNode, treeIndex, kingdomRank, state);
+							treeIndex.append("#");
+							traverseTree(rootChild, rootNode, treeIndex, rootChild.getTaxon().getName().getRank(), state);
 						}
 					}
 				}
@@ -315,22 +310,19 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * Traverse the TaxonTree and store determined values for every Taxon.
 	 * @param rootChild
 	 */
-	private void traverseBranches(TaxonNode childNode, TaxonNode parentNode, String treeIndex, Rank kingdomRank, PesiExportState state) {
-		Taxon currentTaxon = childNode.getTaxon();
-		if (currentTaxon != null) {
-			Integer currentTaxonFk = state.getDbId(currentTaxon.getName());
-			
-			if (currentTaxonFk != null) {
-				Set<TaxonNode> childNodes = childNode.getChildNodes();
-				treeIndex += currentTaxonFk + "#";
-				
-				saveData(childNode, parentNode, treeIndex, state, currentTaxonFk);
-		
-				for (TaxonNode newNode : childNodes) {
-					traverseBranches(newNode, childNode, treeIndex, kingdomRank, state);
+	private void traverseTree(TaxonNode childNode, TaxonNode parentNode, StringBuffer treeIndex, Rank kingdomRank, PesiExportState state) {
+		if (childNode.getTaxon() != null) {
+			if (state.getDbId(childNode.getTaxon().getName()) != null) {
+				treeIndex.append(state.getDbId(childNode.getTaxon().getName()));
+				treeIndex.append("#");
+
+				saveData(childNode, parentNode, treeIndex, state, state.getDbId(childNode.getTaxon().getName()));
+
+				for (TaxonNode newNode : childNode.getChildNodes()) {
+					traverseTree(newNode, childNode, treeIndex, kingdomRank, state);
 				}
 			} else {
-				logger.error("TaxonName can not be found in State: " + currentTaxon.getName().getUuid() + " (" + currentTaxon.getName().getTitleCache());
+				logger.error("TaxonName can not be found in State: " + childNode.getTaxon().getName().getUuid() + " (" + childNode.getTaxon().getName().getTitleCache());
 			}
 		} else {
 			logger.error("Taxon is NULL for TaxonNode: " + childNode.getUuid());
@@ -345,34 +337,27 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @param state
 	 * @param currentTaxonFk
 	 */
-	private void saveData(TaxonNode childNode, TaxonNode parentNode, String treeIndex, PesiExportState state, Integer currentTaxonFk) {
+	private void saveData(TaxonNode childNode, TaxonNode parentNode, StringBuffer treeIndex, PesiExportState state, Integer currentTaxonFk) {
 		// We are differentiating kingdoms by the nomenclatural code for now.
 		// This needs to be handled in a better way as soon as we know how to differentiate between more kingdoms.
-		Taxon taxon = childNode.getTaxon();
-		if (taxon != null) {
-			TaxonNameBase taxonName = taxon.getName();
-			NomenclaturalCode nomenclaturalCode;
-			if (taxonName != null) {
-				nomenclaturalCode = taxon.getName().getNomenclaturalCode();
-				Integer kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
-				Taxon parentTaxon = parentNode.getTaxon();
-				if (parentTaxon != null) {
-					TaxonNameBase parentTaxonName = parentTaxon.getName();
-					
-					if (parentTaxonName != null) {
-						Integer parentTaxonFk = state.getDbId(parentTaxonName);
-						invokeParentTaxonFkAndTreeIndexAndKindomFk(taxonName, nomenclaturalCode, kingdomFk, parentTaxonFk, currentTaxonFk, treeIndex);
-					}
-				}
-				
-				// Synonyms of the current Taxon: Don't store treeIndex for Synonyms
-				Set<Synonym> synonyms = taxon.getSynonyms();
-				for (Synonym synonym : synonyms) {
-					TaxonNameBase synonymName = synonym.getName();
-					Integer currentSynonymFk = state.getDbId(synonym.getName());
-					invokeSynonyms(synonymName, nomenclaturalCode, kingdomFk, currentTaxonFk, currentSynonymFk);
-				}
+		if (childNode.getTaxon() != null && childNode.getTaxon().getName() != null) {
+			if (parentNode.getTaxon() != null && parentNode.getTaxon().getName() != null) {
+					invokeParentTaxonFkAndTreeIndexAndKindomFk(childNode.getTaxon().getName(), 
+							childNode.getTaxon().getName().getNomenclaturalCode(), 
+							PesiTransformer.nomenClaturalCode2Kingdom(childNode.getTaxon().getName().getNomenclaturalCode()), 
+							state.getDbId(parentNode.getTaxon().getName()), 
+							currentTaxonFk, 
+							treeIndex);
 			}
+		}
+		
+		// Synonyms of the current Taxon: Don't store treeIndex for Synonyms
+		for (Synonym synonym : childNode.getTaxon().getSynonyms()) {
+			invokeSynonyms(synonym.getName(), 
+					childNode.getTaxon().getName().getNomenclaturalCode(), 
+					PesiTransformer.nomenClaturalCode2Kingdom(childNode.getTaxon().getName().getNomenclaturalCode()), 
+					currentTaxonFk, 
+					state.getDbId(synonym.getName()));
 		}
 	}
 
@@ -409,10 +394,10 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @param stmt
 	 * @return
 	 */
-	protected boolean invokeParentTaxonFkAndTreeIndexAndKindomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer kingdomFk, Integer parentTaxonFk, Integer currentTaxonFk, String treeIndex) {
+	protected boolean invokeParentTaxonFkAndTreeIndexAndKindomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer kingdomFk, Integer parentTaxonFk, Integer currentTaxonFk, StringBuffer treeIndex) {
 		try {
 			parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(1, parentTaxonFk);
-			parentTaxonFk_TreeIndex_KingdomFkStmt.setString(2, treeIndex);
+			parentTaxonFk_TreeIndex_KingdomFkStmt.setString(2, treeIndex.toString());
 			parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(3, kingdomFk);
 			parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(4, getRankFk(taxonName, nomenclaturalCode));
 			parentTaxonFk_TreeIndex_KingdomFkStmt.setString(5, getRankCache(taxonName, nomenclaturalCode));
