@@ -105,8 +105,6 @@ public class PalmaeImageImport extends AbstractImageImporter {
 				
 				Item item = (Item) object;
 				
-				
-				
 				if(item.getKeyword().equals("ObjectName")){
 					logger.debug("File: " + imageFile.getName() + ". ObjectName string is: " + item.getText());
 					String[] objectNameSplit = item.getText().split(";");
@@ -149,18 +147,15 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		if(metadata instanceof JpegImageMetadata){
 			JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
 			
-			int counter = 0;
-				for (Object object : jpegMetadata.getItems()){
-					Item item = (Item) object;
-					
-					if(metaDataStrings.contains(item.getKeyword().toLowerCase())){
-						logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
-						result.put(MetaData.valueOf(item.getKeyword().toUpperCase()), item.getText());
-						Set<Entry<MetaData, String>> resultSet = result.entrySet();
-							
-					}
-						
+			for (Object object : jpegMetadata.getItems()){
+				Item item = (Item) object;
+				
+				if(metaDataStrings.contains(item.getKeyword().toLowerCase())){
+					logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
+					result.put(MetaData.valueOf(item.getKeyword().toUpperCase()), item.getText());
+					Set<Entry<MetaData, String>> resultSet = result.entrySet();
 				}
+			}
 		}
 		
 		return result;
@@ -183,7 +178,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 					logger.debug("Looking up taxa with taxon name: " + taxonName);
 					
 					//TODO:
-					ArrayList<MetaData> metaDataList = new ArrayList();
+					ArrayList<MetaData> metaDataList = new ArrayList<MetaData>();
 					metaDataList.add (MetaData.ARTIST);
 					metaDataList.add (MetaData.COPYRIGHT);
 					metaDataList.add (MetaData.COPYRIGHTNOTICE);
@@ -285,7 +280,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						feature.addMedia(media);
 						
-						feature.setType(Feature.IMAGE());
+						feature.setFeature(Feature.IMAGE());
 						ReferenceBase sourceRef = config.getSourceReference();
 						TaxonDescription description = taxon.getOrCreateImageGallery(sourceRef == null ? null :sourceRef.getTitleCache());
 						
