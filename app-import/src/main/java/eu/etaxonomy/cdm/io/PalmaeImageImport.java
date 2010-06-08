@@ -126,7 +126,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 	}
 	
 	public Map<MetaData, String> getMetaData(File imageFile, List<MetaData> metaData){
-		HashMap result = new HashMap();
+		HashMap<MetaData, String> result = new HashMap<MetaData, String>();
 		
 		IImageMetadata metadata = null;
 		List<String> metaDataStrings = new ArrayList<String>();
