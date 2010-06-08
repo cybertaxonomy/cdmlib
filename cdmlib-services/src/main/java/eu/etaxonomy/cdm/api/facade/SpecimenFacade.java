@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class SpecimenFacade {
 	private static final Logger logger = Logger.getLogger(SpecimenFacade.class);
 	
-	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at place where this should not have happened. The developer should implement not support check properly during clas initialization ";
+	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during clas initialization ";
 	
 	//private GatheringEvent gatheringEvent;
 

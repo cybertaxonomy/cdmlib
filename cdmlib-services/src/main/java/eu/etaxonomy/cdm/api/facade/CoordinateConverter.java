@@ -6,10 +6,17 @@
 * 
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
+* 
+* This file is an Java adaption from the orginal CoordinateConverter written by Dominik Mikiewicz
+* @see www.cartomatic.pl
+* @see http://dev.e-taxonomy.eu/svn/trunk/geo/coordinateConverter/CoordinateConverter.cs
+* @see http://gis.miiz.waw.pl/webapps/coordinateconverter/
 */
 package eu.etaxonomy.cdm.api.facade;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -21,6 +28,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class CoordinateConverter {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CoordinateConverter.class);
 
     //Patterns
@@ -31,6 +39,14 @@ public class CoordinateConverter {
     	String description;
     	String pattern;
     }
+    
+    
+    private Comparator<CustomHemisphereIndicator> lengthComparator = new Comparator<CustomHemisphereIndicator>(){
+		@Override
+		public int compare(CustomHemisphereIndicator ind1, CustomHemisphereIndicator ind2) {
+			return Integer.valueOf(ind1.getLength()).compareTo(ind2.getLength());
+		}
+    };
     
     //Class constructor
     public CoordinateConverter() {
@@ -117,13 +133,13 @@ public class CoordinateConverter {
         for (int i = 0; i < patterns.size(); i++){
 
         	CoordinatePattern pattern = patterns.get(i);
-        	if (Pattern.matches(pattern.pattern, str)) { 
+        	Pattern regEx = Pattern.compile(pattern.pattern);
+        	if (regEx.matcher(str).find()) { 
         		recognised = i; 
             	break; 
             }
 
         }
-
         return recognised;
     }
 
@@ -140,11 +156,11 @@ public class CoordinateConverter {
         Pattern regexPositive = Pattern.compile("(\\+|N|n|E|e)");
 
         //if a positive indicator is found no need to search further
-        if (regexPositive.matcher(str).matches()){
+        if (regexPositive.matcher(str).find()){
             return 1;
         }else{
             //if not check whether there was a negative indicator. if so negate otherwise return positive
-            if (regexNegative.matcher(str).matches()){
+            if (regexNegative.matcher(str).find()){
                 return -1;
             }else{
                 return 1;
@@ -186,7 +202,7 @@ public class CoordinateConverter {
                 Pattern tempRegex = Pattern.compile(caseInsensitive + ind.getIndicator());
 
                 //if a pattern is found
-                if (tempRegex.matcher(str).matches()){
+                if (tempRegex.matcher(str).find()){
                     //check whether it's a positive or negative indicator
                     if (ind.getPositive()){
                         /* Note:
@@ -254,7 +270,7 @@ public class CoordinateConverter {
 
     //returns a currently used decimal separator
     private String getDecimalSeparator(){
-    	//TODO not yet gransformed
+    	//TODO not yet transformed from C#
 //    	return System.Globalization.NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
         return ".";
     }
@@ -280,7 +296,6 @@ public class CoordinateConverter {
         str = str.replaceAll(regExRemoveSign, "");
         return str;
     }
-
 
     //removes custom sign indicators
     private String removeCustomPatternParts(String str){
@@ -308,8 +323,10 @@ public class CoordinateConverter {
         stringsToRemove.add(stringToRemove);
 
         //sort the list (by element's Length property)
-        logger.warn("Sort is not implemented");
-//        stringsToRemove.sort();
+        Collections.sort(stringsToRemove, lengthComparator);
+        
+        
+//        ListSelectionEv.sort(lengthComparator);
 
 
         for (int x = stringsToRemove.size() - 1; x >= 0; x--){
@@ -330,7 +347,7 @@ public class CoordinateConverter {
                 String tempRegex = CaseInsensitive + toBeRemoved.getIndicator();
 
 
-                if (toBeRemoved.getName().equals("Degree") | toBeRemoved.getName().equals("Minute")) {
+                if (toBeRemoved.getName().equals("Degree") || toBeRemoved.getName().equals("Minute")) {
                     //replace with a symbol used later for splitting
                     str =  str.replaceAll(tempRegex, ":");
                 } else {
@@ -360,8 +377,10 @@ public class CoordinateConverter {
         public boolean conversionSuccessful;
         public double convertedCoord;
         public boolean canBeLat;
-
+        
         public String conversionComments;
+        
+        public Boolean isLongitude;
 
         public int dd;
         public int mm;
@@ -375,11 +394,12 @@ public class CoordinateConverter {
     public ConversionResults tryConvert(String str){
         //some local variables
         int sign; //sign of the coordinate
-        String[] DecimalBit, DdMmSs, DdMm; //arrays for splitting
-        double Dd = 0, Mm = 0, Ss = 0, Mmm = 0, Sss = 0, Dec = 0; //parts of the coordinates
-
-        String decSeparator = String.valueOf(getDecimalSeparator()); //gets the current decimal separator
-
+        String[] decimalBit, ddmmss, ddmm; //arrays for splitting
+        double dd = 0, mm = 0, ss = 0, mmm = 0, sss = 0, dec = 0; //parts of the coordinates
+        
+        String decSeparatorRaw = String.valueOf(getDecimalSeparator()); //gets the current decimal separator
+        String decSeparatorRegEx = decSeparatorRaw.replace(".", "\\.");
+        
         ConversionResults results = new ConversionResults();
 
         //Get the matched pattern
@@ -396,19 +416,14 @@ public class CoordinateConverter {
 
 
         if (pattern.description.equals("Variation of DD.DDD")){
-            //Pattern matched
-            results.patternRecognised = true;
-
-            //Matching pattern succeeded so intialy the parsing is ok
-            results.conversionSuccessful = true;
-
-            //pattern info
-            results.patternType = pattern.description;
-            results.patternMatched = pattern.pattern;
+            
+       	  	//Sets pattern machted, successful, pattern type and pattern info
+        	initializeResult(results, pattern);
 
             //get sign
             sign = getSign(str);
-
+            results.isLongitude = getIsLongitude(str);
+            
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -417,42 +432,20 @@ public class CoordinateConverter {
             str = removeWhiteSpace(str);
 
             //Since this is already a decimal degree no spliting is needed
-            Dd =  Double.valueOf(str);
+            dd =  Double.valueOf(str);
 
-            //do some additional checking if the coords fall into the range
-            if (Dd < -180 | Dd > 180)//degree may require another param specifying whether it's lat or lon...
-            {
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
-            }
+            checkDegreeRange(dd, results);
+            doConvertWithCheck(sign, dd, mmm, ss, sss, results);
 
-            //Do the conversion if everything ok
-            if (results.conversionSuccessful)
-            {
-                results.conversionComments = "Conversion successful.";
-
-                Dec = sign * Dd;
-                results.convertedCoord = Dec;
-
-                //Check whether the coordinate exceeds +/- 90 and mark it in comments
-                if (Dec <= 90 & Dec >= -90) { results.canBeLat = true; }
-            }
         }else if (pattern.description.equals("Variation of DD(院d)MM.MMM('|m)")){
 
-        	//Pattern matched
-            results.patternRecognised = true;
-
-            //Matching pattern succeeded so intialy the parsing is ok
-            results.conversionSuccessful = true;
-
-            //pattern info
-            results.patternType = pattern.description;
-            results.patternMatched = pattern.pattern;
+        	//Sets pattern machted, successful, pattern type and pattern info
+        	initializeResult(results, pattern);
 
             //get sign
             sign = getSign(str);
-
+            results.isLongitude = getIsLongitude(str);
+            
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -462,64 +455,37 @@ public class CoordinateConverter {
 
             //do some further replacing
             //Replace degree symbol
-            str.replaceAll("(院漏D|d)", ":");
+            str = str.replaceAll("(院漏D|d)", ":");
             
             //remove minute symbol
             str = str.replaceAll("(\u02B9|'|M|m)", "");
             
             //Extract decimal part
-            DecimalBit = str.split(decSeparator);
+            decimalBit = str.split(decSeparatorRegEx);
             
             //split degrees and minutes
-            DdMm = DecimalBit[0].split(":");
+            ddmm = decimalBit[0].split(":");
 
 
             //extract values from the strings
-            Dd = Integer.valueOf(DdMm[0]); //Degrees
+            dd = Integer.valueOf(ddmm[0]); //Degrees
 
-            if (DdMm.length > 1){ //Minutes
+            if (ddmm.length > 1){ //Minutes
                 //check if the string is not empty
-                if (DdMm[1] != "") { Mm = Integer.valueOf(DdMm[1]); }
+                if (ddmm[1] != "") { mm = Integer.valueOf(ddmm[1]); }
             }
 
-            if (DecimalBit.length > 1){//DecimalSeconds
+            if (decimalBit.length > 1){//DecimalSeconds
                 //check if the string is not empty
-                if (DecimalBit[1] != "") {
-                    Mmm = Double.valueOf(DecimalBit[1]) / Math.pow(10, (DecimalBit[1].length()));
+                if (decimalBit[1] != "") {
+                    mmm = Double.valueOf(decimalBit[1]) / Math.pow(10, (decimalBit[1].length()));
                 }
             }
 
-            //do some additional checking if the coords fall into the range
-            if (Dd < -180 | Dd > 180) {//degree may require another param specifying whether it's lat or lon...
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
-            }
-            if (Mm > 59) {//minutes
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Minutes fall outside the range: MM > 59; ";
-            }
-
-
-            //Do the conversion if everything ok
-            if (results.conversionSuccessful) {
-                Dec = sign * (Dd + (Mm + Mmm) / 60);
-
-                //one more check to ensure a coord does not exceed 180
-                if (Dec > 180 | Dec < -180) {
-                    results.conversionSuccessful = false;
-                    results.convertedCoord = 99999; //this is to mark an error...
-                    results.conversionComments += "Coordinate is either > 180 or < -180; ";
-                }else {
-                    results.convertedCoord = Dec;
-                    results.conversionComments = "Conversion successful.";
-
-                    //Check whether the coordinate exceeds +/- 90 and mark it in comments
-                    if (Dec <= 90 & Dec >= -90) { results.canBeLat = true; }
-                }
-            }
-        	
+            checkDegreeRange(dd, results);
+            checkMinuteRange(mm, results);
+            doConvertWithCheck(sign, dd, mmm, ss, sss, results);
+         	
         }else if (pattern.description.equals("Variation of DD(院d)MM(\u02B9|m)SS.SSS(\u02BA|s)")){
         	
         	/* 
@@ -532,19 +498,14 @@ public class CoordinateConverter {
              * what is the second notation
             */
 
-            //Pattern matched
-            results.patternRecognised = true;
-
-            //Matching pattern succeeded so intialy the parsing is ok
-            results.conversionSuccessful = true;
-
-            //pattern info
-            results.patternType = pattern.description ;
-            results.patternMatched = pattern.pattern;
+        	//Sets pattern machted, successful, pattern type and pattern info
+        	initializeResult(results, pattern);
 
             //get sign
             sign = getSign(str);
-
+            //TODO test S
+            results.isLongitude = getIsLongitude(str);
+            
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -562,93 +523,54 @@ public class CoordinateConverter {
             str = str.replaceAll("(院漏D|d|\u02B9|'|M|m)",":");
 
             //Extract decimal part
-            DecimalBit = str.split(decSeparator);
+            decimalBit = str.split(decSeparatorRegEx);
 
             //remove : from the decimal part [1]! This is needed when a double apostrophe was used to mark seconds
-            if (DecimalBit.length > 1)
+            if (decimalBit.length > 1)
             {
-                DecimalBit[1].replace(":", "");
+                decimalBit[1].replace(":", "");
             }
 
             //split degrees and minutes
-            DdMmSs = DecimalBit[0].split(":");
+            ddmmss = decimalBit[0].split(":");
 
 
             //extract values from the strings
-            Dd = Integer.valueOf(DdMmSs[0]); //Degrees
-            if (DdMmSs.length > 1){//Minutes
+            dd = Integer.valueOf(ddmmss[0]); //Degrees
+            if (ddmmss.length > 1){//Minutes
                 //check if the string is not empty
-                if (DdMmSs[1] != "") { 
-                	Mm = Integer.valueOf(DdMmSs[1]); 
+                if (ddmmss[1] != "") { 
+                	mm = Integer.valueOf(ddmmss[1]); 
                 }
             }
-            if (DdMmSs.length > 2){//Seconds
+            if (ddmmss.length > 2){//Seconds
                 //check if the string is not empty
-                if (DdMmSs[2] != "") { 
-                	Ss = Integer.valueOf(DdMmSs[2]); 
+                if (ddmmss[2] != "") { 
+                	ss = Integer.valueOf(ddmmss[2]); 
                 }
             }
-            if (DecimalBit.length > 1) { //DecimalSeconds
+            if (decimalBit.length > 1) { //DecimalSeconds
                 //check if the string is not empty
-                if (DecimalBit[1] != "") {
-                    Sss = Double.valueOf(DecimalBit[1]) / Math.pow(10, (DecimalBit[1].length()));
+                if (decimalBit[1] != "") {
+                    sss = Double.valueOf(decimalBit[1]) / Math.pow(10, (decimalBit[1].length()));
                 }
             }
 
-            //do some additional checking if the coords fall into the range
-            if (Dd < -180 | Dd > 180) {  //degree may require another param specifying whether it's lat or lon...
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
-            }
-            if (Mm > 59) { //minutes
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Minutes fall outside the range: MM > 59; ";
-            }
-            if (Ss > 59) //seconds
-            {
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Seconds fall outside the range: MM >= 60; ";
-            }
+            checkDegreeRange(dd, results);
+            checkMinuteRange(mm, results);
+            checkSecondRange(ss, results);
 
-            //Do the conversion if everything ok
-            if (results.conversionSuccessful) {
-                results.conversionComments = "Conversion successful.";
-
-                Dec = sign * (Dd + Mm / 60 + (Ss + Sss) / 3600);
-
-                //one more check to ensure a coord does not exceed 180
-                if (Dec > 180 | Dec < -180) {
-                    results.conversionSuccessful = false;
-                    results.convertedCoord = 99999; //this is to mark an error...
-                    results.conversionComments += "Coordinate is either > 180 or < -180; ";
-                } else {
-                    results.convertedCoord = Dec;
-
-                    results.conversionComments = "Conversion successful.";
-
-                    //Check whether the coordinate exceeds +/- 90 and mark it in comments
-                    if (Dec <= 90 & Dec >= -90) { results.canBeLat = true; }
-                }
-            }
+            doConvertWithCheck(sign, dd, mm, ss, sss, results);
 
         }else if (pattern.description.equals("Variation of DD:MM:SS.SSS")){
 
-            //Pattern matched
-            results.patternRecognised = true;
-
-            //Matching pattern succeeded so intialy the parsing is ok
-            results.conversionSuccessful = true;
-
-            //pattern info
-            results.patternType = pattern.description;
-            results.patternMatched = pattern.pattern;
+        	//Sets pattern machted, successful, pattern type and pattern info
+        	initializeResult(results, pattern);
 
             //get sign
             sign = getSign(str);
-
+            results.isLongitude = getIsLongitude(str);
+            
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -657,84 +579,48 @@ public class CoordinateConverter {
             str = removeWhiteSpace(str);
 
             //Do some splitting
-            DecimalBit = str.split(decSeparator);
-            DdMmSs = DecimalBit[0].split(":");
+            decimalBit = str.split(decSeparatorRegEx);
+            ddmmss = decimalBit[0].split(":");
 
 
             //extract values from the strings
-            Dd = Integer.valueOf(DdMmSs[0]); //Degrees
-            if (DdMmSs.length > 1)//Minutes
+            dd = Integer.valueOf(ddmmss[0]); //Degrees
+            if (ddmmss.length > 1)//Minutes
             {
                 //check if the string is not empty
-                if (DdMmSs[1] != "") { Mm = Integer.valueOf(DdMmSs[1]); }
+                if (ddmmss[1] != "") { mm = Integer.valueOf(ddmmss[1]); }
             }
-            if (DdMmSs.length > 2) {//Seconds{
+            if (ddmmss.length > 2) {//Seconds{
                 //check if the string is not empty
-                if (DdMmSs[2] != "") { 
-                	Ss = Integer.valueOf(DdMmSs[2]); 
+                if (ddmmss[2] != "") { 
+                	ss = Integer.valueOf(ddmmss[2]); 
                 }
             }
-            if (DecimalBit.length > 1) { //DecimalSeconds
+            if (decimalBit.length > 1) { //DecimalSeconds
                 //check if the string is not empty
-                if (DecimalBit[1] != "") {
-                    Sss = Double.valueOf(DecimalBit[1]) / Math.pow(10, (DecimalBit[1].length()));
+                if (decimalBit[1] != "") {
+                    sss = Double.valueOf(decimalBit[1]) / Math.pow(10, (decimalBit[1].length()));
                 }
             }
 
-            //do some additional checking if the coords fall into the range
-            if (Dd < -180 | Dd > 180){//degree may require another param specifying whether it's lat or lon...
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
-            }
-            if (Mm > 59){ //minutes
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Minutes fall outside the range: MM > 59; ";
-            }
-            if (Ss > 59){ //seconds
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Seconds fall outside the range: MM >= 60; ";
-            }
+            checkDegreeRange(dd, results);
+            checkMinuteRange(mm, results);
+            checkSecondRange(ss, results);
 
-            //Do the conversion if everything ok
-            if (results.conversionSuccessful){
-                results.conversionComments = "Conversion successful.";
-
-                Dec = sign * (Dd + Mm / 60 + (Ss + Sss) / 3600);
-
-                //one more check to ensure a coord does not exceed 180
-                if (Dec > 180 | Dec < -180){
-                    results.conversionSuccessful = false;
-                    results.convertedCoord = 99999; //this is to mark an error...
-                    results.conversionComments += "Coordinate is either > 180 or < -180; ";
-                }else{
-                    results.convertedCoord = Dec;
-
-                    results.conversionComments = "Conversion successful.";
-
-                    //Check whether the coordinate exceeds +/- 90 and mark it in comments
-                    if (Dec <= 90 & Dec >= -90) { results.canBeLat = true; }
-                }
-            }
+            doConvertWithCheck(sign, dd, mm, ss, sss, results);
 
         }else if (pattern.description.equals("Custom variation of DD.DDD")){
 
-	        //Pattern matched
-	        results.patternRecognised = true;
-	
-	        //Matching pattern succeeded so intialy the parsing is ok
-	        results.conversionSuccessful = true;
-	
-	        //pattern info
-	        results.patternType = pattern.description;
-	        results.patternMatched = pattern.pattern ;
+        	//Sets pattern machted, successful, pattern type and pattern info
+        	initializeResult(results, pattern);
 	
 	
 	        //get sign
 	        sign = getCustomSign(str);
-	        
+	       
+	        //TODO still needs to be adapted to custom pattern
+	        results.isLongitude = getIsLongitude(str);
+	           
 	
 	        //Remove all the unwanted stuff
 	        //Note: This method also replaces the symbols with ":"
@@ -751,7 +637,7 @@ public class CoordinateConverter {
 	
 	        try {
 	            //Since this is already a decimal degree no spliting is needed
-	            Dd = Double.valueOf(str);
+	            dd = Double.valueOf(str);
 	        } catch (Exception e)  {
 	            results.conversionSuccessful = false;
 	            results.convertedCoord = 99999; //this is to mark an error...
@@ -766,43 +652,24 @@ public class CoordinateConverter {
 	        }
 	
 	        //Since this is already a decimal degree no spliting is needed
-	        Dd = Double.valueOf(str);
+	        dd = Double.valueOf(str);
 	
-	        //do some additional checking if the coords fall into the range
-	        if (Dd < -180 | Dd > 180){ //degree may require another param specifying whether it's lat or lon...
+	        checkDegreeRange(dd, results);
+	        doConvertWithCheck(sign, dd, mmm, ss, sss, results);
 	        
-	            results.conversionSuccessful = false;
-	            results.convertedCoord = 99999; //this is to mark an error...
-	            results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
-	        }
-	
-	        //Do the conversion if everything ok
-	        if (results.conversionSuccessful) {
-	            results.conversionComments = "Conversion successful.";
-	
-	            Dec = sign * Dd;
-	            results.convertedCoord = Dec;
-	
-	            //Check whether the coordinate exceeds +/- 90 and mark it in comments
-	            if (Dec <= 90 & Dec >= -90) { results.canBeLat = true; }
-	        }
 	
 	    }else if (pattern.description.equals("Custom variation of DD:MM.MMM")){
            //-------------Customs patterns start here-------------
 
-	    	//Pattern matched
-            results.patternRecognised = true;
-
-            //Matching pattern succeeded so intialy the parsing is ok
-            results.conversionSuccessful = true;
-
-            //pattern info
-            results.patternType = pattern.description;
-            results.patternMatched = pattern.pattern;
+	    	//Sets pattern machted, successful, pattern type and pattern info
+        	initializeResult(results, pattern);
 
             //get sign
             sign = getCustomSign(str);
-
+          
+            //TODO still needs to be adapted to custom pattern
+	        results.isLongitude = getIsLongitude(str);
+	        
 
 
             //Remove all the unwanted stuff
@@ -817,28 +684,28 @@ public class CoordinateConverter {
 
             
             //Extract decimal part
-            DecimalBit = str.split(decSeparator);
+            decimalBit = str.split(decSeparatorRegEx);
 
             //split degrees and minutes
-            DdMm = DecimalBit[0].split(":");
+            ddmm = decimalBit[0].split(":");
 
 
             try {
                 //extract values from the strings
-                Dd = Integer.valueOf(DdMm[0]); //Degrees
+                dd = Integer.valueOf(ddmm[0]); //Degrees
 
-                if (DdMm.length > 1){//Minutes
+                if (ddmm.length > 1){//Minutes
                     //check if the string is not empty
-                    if (DdMm[1] != "") { Mm = Integer.valueOf(DdMm[1]); }
+                    if (ddmm[1] != "") { mm = Integer.valueOf(ddmm[1]); }
                 }
 
-                if (DecimalBit.length > 1){//DecimalSeconds
+                if (decimalBit.length > 1){//DecimalSeconds
                     //check if the string is not empty
-                    if (DecimalBit[1] != ""){
+                    if (decimalBit[1] != ""){
                         //replace the ":" if any (may be here as a result of custom symbol replacement
-                        DecimalBit[1] = DecimalBit[1].replace(":", "");
+                        decimalBit[1] = decimalBit[1].replace(":", "");
 
-                        Mmm = Double.valueOf(DecimalBit[1]) / Math.pow(10, (DecimalBit[1].length()));
+                        mmm = Double.valueOf(decimalBit[1]) / Math.pow(10, (decimalBit[1].length()));
                     }
                 }
             } catch (Exception e){
@@ -855,56 +722,22 @@ public class CoordinateConverter {
             }
 
 
-            //do some additional checking if the coords fall into the range
-            if (Dd < -180 | Dd > 180){ //degree may require another param specifying whether it's lat or lon...
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
-            }
-            if (Mm > 59) { //minutes
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Minutes fall outside the range: MM > 59; ";
-            }
-
-
-            //Do the conversion if everything ok
-            if (results.conversionSuccessful){
-
-                Dec = sign * (Dd + (Mm + Mmm) / 60);
-
-                //one more check to ensure a coord does not exceed 180
-                if (Dec > 180 | Dec < -180) {
-                    results.conversionSuccessful = false;
-                    results.convertedCoord = 99999; //this is to mark an error...
-                    results.conversionComments += "Coordinate is either > 180 or < -180; ";
-                } else {
-                    results.convertedCoord = Dec;
-
-                    results.conversionComments = "Conversion successful.";
-
-                    //Check whether the coordinate exceeds +/- 90 and mark it in comments
-                    if (Dec <= 90 & Dec >= -90) { results.canBeLat = true; }
-                }
-            }
+            checkDegreeRange(dd, results);
+            checkMinuteRange(mm, results);
+            doConvertWithCheck(sign, dd, mmm, ss, sss, results);
 
 	    } else if (pattern.description.equals("Custom variation of DD:MM:SS.SSS")){
 
-            //Pattern matched
-            results.patternRecognised = true;
-
-            //Matching pattern succeeded so intialy the parsing is ok
-            results.conversionSuccessful = true;
-
-            //pattern info
-            results.patternType = pattern.description;
-            results.patternMatched = pattern.pattern;
+	    	//Sets pattern machted, successful, pattern type and pattern info
+        	initializeResult(results, pattern);
 
 
             //get sign
             sign = getCustomSign(str);
 
-
+            //TODO still needs to be adapted to custom pattern
+	        results.isLongitude = getIsLongitude(str);
+	        
 
             //Remove all the unwanted stuff
             //Note: This method also replaces the symbols with ":"
@@ -918,33 +751,32 @@ public class CoordinateConverter {
 
 
             //Extract decimal part
-            DecimalBit = str.split(String.valueOf(decSeparator));
+            decimalBit = str.split(decSeparatorRegEx);
 
             //split degrees and minutes
-            DdMmSs = DecimalBit[0].split(":");
+            ddmmss = decimalBit[0].split(":");
 
 
             try {
 
                 //extract values from the strings
-                Dd = Integer.valueOf(DdMmSs[0]); //Degrees
-                if (DdMmSs.length > 1) {//Minutes
+                dd = Integer.valueOf(ddmmss[0]); //Degrees
+                if (ddmmss.length > 1) {//Minutes
                     //check if the string is not empty
-                    if (DdMmSs[1] != "") { 
-                    	Mm = Integer.valueOf(DdMmSs[1]); 
+                    if (ddmmss[1] != "") { 
+                    	mm = Integer.valueOf(ddmmss[1]); 
                     }
                 }
-                if (DdMmSs.length > 2){//Seconds
+                if (ddmmss.length > 2){ //Seconds
                     //check if the string is not empty
-                    if (DdMmSs[2] != "") { 
-                    	Ss = Integer.valueOf(DdMmSs[2]); 
+                    if (ddmmss[2] != "") { 
+                    	ss = Integer.valueOf(ddmmss[2]); 
                     }
                 }
-                if (DecimalBit.length > 1)//DecimalSeconds
-                {
+                if (decimalBit.length > 1){ //DecimalSeconds
                     //check if the string is not empty
-                    if (DecimalBit[1] != "") {
-                        Sss = Double.valueOf(DecimalBit[1]) / Math.pow(10, (DecimalBit[1].length()));
+                    if (decimalBit[1] != "") {
+                        sss = Double.valueOf(decimalBit[1]) / Math.pow(10, (decimalBit[1].length()));
                     }
                 }
             } catch (Exception e) {
@@ -961,43 +793,11 @@ public class CoordinateConverter {
             }
 
 
-            //do some additional checking if the coords fall into the range
-            if (Dd < -180 | Dd > 180) { //degree may require another param specifying whether it's lat or lon...
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
-            }
-            if (Mm > 59) { //minutes
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Minutes fall outside the range: MM > 59; ";
-            }
-            if (Ss > 59) { //seconds
-                results.conversionSuccessful = false;
-                results.convertedCoord = 99999; //this is to mark an error...
-                results.conversionComments += "Seconds fall outside the range: MM >= 60; ";
-            }
+            checkDegreeRange(dd, results);
+            checkMinuteRange(mm, results);
+            checkSecondRange(ss, results);
 
-            //Do the conversion if everything ok
-            if (results.conversionSuccessful){
-                results.conversionComments = "Conversion successful.";
-
-                Dec = sign * (Dd + Mm / 60 + (Ss + Sss) / 3600);
-
-                //one more check to ensure a coord does not exceed 180
-                if (Dec > 180 | Dec < -180){
-                    results.conversionSuccessful = false;
-                    results.convertedCoord = 99999; //this is to mark an error...
-                    results.conversionComments += "Coordinate is either > 180 or < -180; ";
-                } else {
-                    results.convertedCoord = Dec;
-
-                    results.conversionComments = "Conversion successful.";
-
-                    //Check whether the coordinate exceeds +/- 90 and mark it in comments
-                    if (Dec <= 90 & Dec >= -90) { results.canBeLat = true; }
-                }
-            }
+            doConvertWithCheck(sign, dd, mm, ss, sss, results);
 
 	    }else {   //default  : pattern not recognized
             results.patternRecognised = false;
@@ -1017,6 +817,140 @@ public class CoordinateConverter {
         //return conversion results
         return results;
     }
+
+
+	/**
+	 * @param sign
+	 * @param dd
+	 * @param mm
+	 * @param ss
+	 * @param sss
+	 * @param results
+	 */
+	private void doConvertWithCheck(int sign, double dd, double mm, double ss, double sss, ConversionResults results) {
+		double dec;
+		//Do the conversion if everything ok
+		if (results.conversionSuccessful){
+		    results.conversionComments = "Conversion successful.";
+
+		    dec = sign * (dd + mm / 60 + (ss + sss) / 3600);
+
+		    //one more check to ensure a coord does not exceed 180
+		    if (dec > 180 | dec < -180){
+		        results.conversionSuccessful = false;
+		        results.convertedCoord = 99999; //this is to mark an error...
+		        results.conversionComments += "Coordinate is either > 180 or < -180; ";
+		    } else {
+		        results.convertedCoord = dec;
+
+		        results.conversionComments = "Conversion successful.";
+
+		        //Check whether the coordinate exceeds +/- 90 and mark it in comments
+		        
+		        if (dec <= 90 && dec >= -90 && (results.isLongitude == null || results.isLongitude == false) ) { 
+                	results.canBeLat = true; 
+                }else{
+                	results.isLongitude = true;
+                }
+		    }
+		}
+	}
+
+
+	/**
+	 * @param ss
+	 * @param results
+	 */
+	private void checkSecondRange(double ss, ConversionResults results) {
+		if (ss > 59) {//seconds
+		    results.conversionSuccessful = false;
+		    results.convertedCoord = 99999; //this is to mark an error...
+		    results.conversionComments += "Seconds fall outside the range: MM >= 60; ";
+		}
+	}
+
+
+	/**
+	 * @param mm
+	 * @param results
+	 */
+	private void checkMinuteRange(double mm, ConversionResults results) {
+		if (mm > 59) {//minutes
+		    results.conversionSuccessful = false;
+		    results.convertedCoord = 99999; //this is to mark an error...
+		    results.conversionComments += "Minutes fall outside the range: MM > 59; ";
+		}
+	}
+
+
+	/**
+	 * @param dd
+	 * @param results
+	 */
+	private void checkDegreeRange(double dd, ConversionResults results) {
+		//do some additional checking if the coords fall into the range
+		if (dd < -180 | dd > 180){  //degree may require another param specifying whether it's lat or lon...
+		    results.conversionSuccessful = false;
+		    results.convertedCoord = 99999; //this is to mark an error...
+		    results.conversionComments += "Degrees fall outside the range: DD < -180 | DD > 180; ";
+		}
+	}
+
+
+	/**
+	 * @param str
+	 * @return
+	 */
+	private Boolean getIsLongitude(String str) {
+	    //This regex checks for the negative hemisphere indicator
+		Pattern regexLatitudeNonAmbigous = Pattern.compile("(N|n)");
+		Pattern regexLatitudeAmbigous = Pattern.compile("(S|s)");
+
+        //This regex checks if there weren't any other hemisphere indicators
+        //it is needed for the specific case of the DDdMMmSSs S
+        //so it needs to be ensured there where no positive indicators
+        Pattern regexLongitude = Pattern.compile("(W|w|E|e)");
+
+        //if a positive indicator is found no need to search further
+        if (regexLongitude.matcher(str).find()){
+            return true;
+        }else if (regexLatitudeNonAmbigous.matcher(str).find()){
+        	return false;
+        }else if (regexLatitudeAmbigous.matcher(str).find()){
+        	Pattern regexLiteralUnits = Pattern.compile("(D|d|M|m)");
+        	
+        	//if there are no other literal units we assume that S is a
+        	//direction and not a second indicator
+            if (! regexLiteralUnits.matcher(str).find()){
+                return false;
+            }else if (regexLatitudeAmbigous.matcher(str).groupCount() > 1){
+            	return false;
+            }else{
+            	return null;
+            }
+        }else{
+        	return null;
+        }
+	}
+
+
+	/**
+	 * Sets pattern machted, successful, pattern type and pattern info
+	 * @param results
+	 * @param pattern
+	 */
+	private void initializeResult(ConversionResults results,
+			CoordinatePattern pattern) {
+		//Pattern matched
+		results.patternRecognised = true;
+
+		//Matching pattern succeeded so intialy the parsing is ok
+		results.conversionSuccessful = true;
+
+		//pattern info
+		results.patternType = pattern.description;
+		results.patternMatched = pattern.pattern;
+	}
 
 
     private ConversionResults selfTest(ConversionResults results){
@@ -1181,11 +1115,8 @@ public class CoordinateConverter {
          * This method uses the predefined method Int32.CompareTo
          * */
 
-        public int compareTo(CustomHemisphereIndicator obj){
-	        if(!(obj instanceof CustomHemisphereIndicator))
-	            throw new ClassCastException("This object is not of type CustomHemisphereIndicator");
-	
-	        CustomHemisphereIndicator ind = (CustomHemisphereIndicator)obj;
+        public int compareTo(CustomHemisphereIndicator ind){
+	        
 	        //no need to rewrite the code again, we have Integer.compareTo ready to use
 	        return Integer.valueOf(this.getLength()).compareTo(Integer.valueOf(ind.getLength()));
         }
@@ -1220,8 +1151,8 @@ public class CoordinateConverter {
         indicators.add(ind);
 
         //sort the arraylist
-        //TODO sort
-//        indicators.Sort();
+        Collections.sort(indicators, lengthComparator);
+
         
         //add it to the pattern object
         pattern.hemisphereIndicators = indicators; 
