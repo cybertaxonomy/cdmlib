@@ -89,8 +89,6 @@
   </dependencies>
   
   
-  
-  
   <build>
     <plugins>
       <!-- INSTALL -->
@@ -162,9 +160,12 @@
                     -->
                     <!-- FIXME
                     <property name="project.fullversionstring" value="${project.version}.${project.patchversion}.r${buildNumber}"/>
-                     -->
                     <property name="project.fullversionstring" value="${project.version}.0.r0000"/>
+                     -->
+                   <property name="project.fullversionstring" value="${project.version}.0.${maven.build.timestamp}"/>
                    <ant antfile="${project.basedir}/src/main/installer/linux/build-deb.xml" dir="${project.basedir}" />
+                   
+                   
                   </tasks>
                 </configuration>
                 <goals>

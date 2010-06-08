@@ -199,6 +199,13 @@ public final class Bootloader {
 	public static void main(String[] args) throws Exception {
     	
 		CommandLine cmdLine = parseCommandOptions(args);
+		
+	   	 // print the help message
+	   	 if(cmdLine.hasOption(HELP.getOpt()) || cmdLine.getOptions().length == 0){
+	   		 HelpFormatter formatter = new HelpFormatter();
+	   		 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
+	   		 System.exit(0);
+	   	 }
 
 		logger.info("Starting "+APPLICATION_NAME);
 		logger.info("Using  " + System.getProperty("user.home") + " as home directory. Can be specified by -Duser.home=<FOLDER>");
@@ -215,14 +222,6 @@ public final class Bootloader {
     		}
     	}
     	tempDir = null;
-    	
-    	 
-    	 // print the help message
-    	 if(cmdLine.hasOption(HELP.getOpt())){
-    		 HelpFormatter formatter = new HelpFormatter();
-    		 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
-    		 System.exit(0);
-    	 }
     	 
     	 // WARFILE
     	 if(cmdLine.hasOption(WEBAPP.getOpt())){

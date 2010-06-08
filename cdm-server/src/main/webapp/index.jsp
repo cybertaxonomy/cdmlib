@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page import="eu.etaxonomy.cdm.server.Bootloader"%>
 <%@page import="java.util.Set" %>
+<%@page import="java.net.URL" %>
 <%@page import="eu.etaxonomy.cdm.server.DataSourceProperties"%>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -10,22 +11,8 @@
 	<title>CDM Server</title>
 	<link type="text/css" rel="stylesheet" media="all" href="/css/style.css" />
 	<link type="text/css" rel="stylesheet" media="all" href="/css/server.css" />
-<%
-/*
-<script type="text/javascript" src="/js/jquery.js"></script>
-	<script type="text/javascript">
-	
-	$(document).ready(function(){
-		$.getJSON("../../manager/datasources/list.json",
-        function(data){
-				  $.each(data, function(i, item){
-            $("#datasources table").append("<tr><td>/" + i + "/</td><td>" + item.url + "</td><td>" + (item.problems.length == 0 ? "OK" : "ERROR") + "</td></tr>");
-          });
-        });
-		});
-	</script>
-*/
-%>	
+	<script type="text/javascript" src="/js/jquery.js"></script>
+	<script type="text/javascript" src="/js/oai-pmh-status.js"></script>
 </head>
 <body class="layout-main">
     <div id="page" class="clearfix">
@@ -65,12 +52,26 @@
 									<div class="block" id="datasources">
 										<h2 class="title block-title pngfix">CDM Server Instances</h2>
 										<table>
-											<tr><th>Path</th><th>Database Url</th><th>Status</th></tr>
+											<tr><th>Path</th><th>Database Url</th><th>Status</th><th>OAI-PMH Provider</th></tr>
                                             <%
                                            java.util.Set<DataSourceProperties> dsSet = Bootloader.loadDataSources();
                                            if(dsSet != null){
-	                                           for(DataSourceProperties props : dsSet){
-	                                        	   out.append("<tr><td>/" + props.getDataSourceName() + "/</td><td>" + props.getUrl() + "</td><td>" + "OK" + "</td></tr>");
+
+                                        	   for(DataSourceProperties props : dsSet){
+                                        		   String basePath = "/" + props.getDataSourceName();
+                                                   URL fullURL = new URL(request.getScheme(),
+                                                           request.getServerName(),
+                                                           request.getServerPort(),
+                                                           basePath);
+                                                   
+	                                        	   out.append("<tr class=\"entry\">");
+	                                        	   out.append("<td class=\"base-url\"><a href=\"" + fullURL + "\">" + basePath + "</a></td>");
+                                                   out.append("<td class=\"db-url\">" + props.getUrl() + "</td>");
+                                                   out.append("<td class=\"status\">" + "OK" + "</td>");
+                                                   
+                                                   // OAI-PMH Status will be requested using javascript
+                                                   out.append("<td class=\"oai-pmh\">requesting status ...</td>");
+                                                   out.append("</tr>");
 	                                           }
                                            }
                                            %>

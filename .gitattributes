@@ -1182,6 +1182,7 @@ cdm-server/src/main/webapp/index.html -text
 cdm-server/src/main/webapp/index.jsp -text
 cdm-server/src/main/webapp/js/jquery.js -text
 cdm-server/src/main/webapp/js/jquery.min.js -text
+cdm-server/src/main/webapp/js/oai-pmh-status.js -text
 cdm-server/src/main/webapp/robots.txt -text
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
