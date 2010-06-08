@@ -140,8 +140,8 @@ public class CichorieaeActivator {
 //	//taxa 
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
+//	static final boolean doCommonNames = false;
 //	static final boolean doFacts = false;
-//	static final boolean doCommonNames = true;
 //	static final boolean doOccurences = false;
 //	
 //	//etc.
