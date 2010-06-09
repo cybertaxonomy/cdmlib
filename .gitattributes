@@ -2677,7 +2677,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRc
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSavePathMatchingResourcePatternResolver.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/CoordinateConverter.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDerivedUnitTypeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacade.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeCacheStrategy.java -text
@@ -2782,7 +2781,6 @@ cdmlib-services/src/main/resources/wsdl/LSIDDataServiceHTTPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDDataServiceSOAPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDPortTypes.wsdl -text
 cdmlib-services/src/site/site.xml -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/CoordinateConverterTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text

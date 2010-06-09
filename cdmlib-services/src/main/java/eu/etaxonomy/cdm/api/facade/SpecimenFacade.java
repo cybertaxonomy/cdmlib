@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.facade;
 
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -624,6 +626,12 @@ public class SpecimenFacade {
 	}
 	public void setExactLocation(Point exactLocation) {
 		getGatheringEvent().setExactLocation(exactLocation);
+	}
+	public void setExactLocationByParsing(String longitudeToParse, String latitudeToParse, ReferenceSystem referenceSystem, Integer errorRadius) throws ParseException{
+		Point point = Point.NewInstance(null, null, referenceSystem, errorRadius);
+		point.setLongitudeByParsing(longitudeToParse);
+		point.setLatitudeByParsing(latitudeToParse);
+		setExactLocation(point);
 	}
 	
 	//gathering event description

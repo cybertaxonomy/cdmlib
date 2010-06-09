@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.facade;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -307,11 +308,28 @@ public class SpecimenFacadeTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getExactLocation()}.
 	 */
 	@Test
-	public void testGetExactLocation() {
+	public void testGetSetExactLocation() {
 		Assert.assertNotNull("Exact location must not be null", specimenFacade.getExactLocation());	
 		Assert.assertEquals("Exact location must be same", exactLocation, specimenFacade.getExactLocation());	
 		specimenFacade.setExactLocation(null);
 		Assert.assertNull("Exact location must be null", specimenFacade.getExactLocation());	
+	}
+	
+	@Test
+	public void testSetExactLocationByParsing(){
+		Point point1;
+		try {
+			specimenFacade.setExactLocationByParsing("112°34'20\"W", "34°30,34'N", null, null);
+			point1 = specimenFacade.getExactLocation();
+			Assert.assertNotNull("", point1.getLatitude());
+			System.out.println(point1.getLatitude().toString());
+			Assert.assertTrue("", point1.getLatitude().toString().startsWith("34.505"));
+			System.out.println(point1.getLongitude().toString());
+			Assert.assertTrue("", point1.getLongitude().toString().startsWith("-112.5722"));
+			
+		} catch (ParseException e) {
+			Assert.fail("No parsing error should occur");
+		}
 	}
 
 
