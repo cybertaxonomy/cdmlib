@@ -61,27 +61,72 @@ public class SpecimenFacade {
 	
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during clas initialization ";
 	
+	/**
+	 * Enum that defines the class the "Specimen" belongs to.
+	 * Some methods of the facade are not available for certain classes
+	 * and will throw an Exception when invoking them.
+	 */
+	public enum DerivedUnitType{
+		Specimen ("Specimen"),
+		Observation("Observation"),
+		LivingBeing("Living Being"),
+		Fossil("Fossil"),
+		DerivedUnit("Derived Unit");
+		
+		String representation;
+		private DerivedUnitType(String representation){
+			this.representation = representation;
+		}
+		
+		/**
+		 * @return the representation
+		 */
+		public String getRepresentation() {
+			return representation;
+		}
+		
+		private DerivedUnitBase getNewDerivedUnitInstance(){
+			if (this == DerivedUnitType.Specimen){
+				return eu.etaxonomy.cdm.model.occurrence.Specimen.NewInstance();
+			}else if (this == DerivedUnitType.Observation){
+				return eu.etaxonomy.cdm.model.occurrence.Observation.NewInstance();
+			}else if (this == DerivedUnitType.LivingBeing){
+				return eu.etaxonomy.cdm.model.occurrence.LivingBeing.NewInstance();
+			}else if (this == DerivedUnitType.Fossil){
+				return eu.etaxonomy.cdm.model.occurrence.Fossil.NewInstance();
+			}else if (this == DerivedUnitType.DerivedUnit){
+				return eu.etaxonomy.cdm.model.occurrence.DerivedUnit.NewInstance();
+			}else{
+				throw new IllegalStateException("Unknown derived unit type " +  this.getRepresentation());
+			}
+		}
+		
+	}
+	
+	
 	//private GatheringEvent gatheringEvent;
-
+	private DerivedUnitType type;
+	
 	private FieldObservation fieldObservation;
-	private Specimen specimen;
+	
+	private DerivedUnitBase derivedUnit;
 	private List<Media> specimenMedia;
 	private List<Media> fieldObservationMedia;
 	
 	private TextData ecology;
 	private TextData plantDescription;
 	
-	public static SpecimenFacade NewInstance(){
-		return new SpecimenFacade();
+	public static SpecimenFacade NewInstance(DerivedUnitType type){
+		return new SpecimenFacade(type);
 	}
 
 	public static SpecimenFacade NewInstance(Specimen specimen) throws SpecimenFacadeNotSupportedException{
-		return new SpecimenFacade(specimen);
+		return new SpecimenFacade(specimen, DerivedUnitType.Specimen);
 	}
 
 // ****************** CONSTRUCTOR ****************************************************
 	
-	private SpecimenFacade(){
+	private SpecimenFacade(DerivedUnitType type){
 		//gatheringEvent
 //		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 //		
@@ -94,7 +139,7 @@ public class SpecimenFacade {
 //		derivationEvent.addOriginal(fieldObservation);
 		
 		//derivedUnit
-		specimen = Specimen.NewInstance();
+		derivedUnit = type.getNewDerivedUnitInstance();
 		setCacheStrategy();
 //		derivationEvent.addDerivative(specimen);
 		
@@ -107,15 +152,17 @@ public class SpecimenFacade {
 	 * 
 	 */
 	private void setCacheStrategy() {
-		specimen.setCacheStrategy(new SpecimenFacadeCacheStrategy());
+		derivedUnit.setCacheStrategy(new SpecimenFacadeCacheStrategy());
 	}
 	
-	private SpecimenFacade(Specimen specimen) throws SpecimenFacadeNotSupportedException{
+	private SpecimenFacade(DerivedUnitBase derivedUnit, DerivedUnitType type) throws SpecimenFacadeNotSupportedException{
+		this.type = type;
+		
 		//specimen
-		this.specimen = specimen;
+		this.derivedUnit = derivedUnit;
 		setCacheStrategy();
 		//derivation event
-		if (specimen.getDerivedFrom() != null){
+		if (derivedUnit.getDerivedFrom() != null){
 			DerivationEvent derivationEvent = getDerivationEvent();
 			//fieldObservation
 			Set<FieldObservation> fieldOriginals = getFieldObservationsOriginals(derivationEvent, null);
@@ -144,13 +191,13 @@ public class SpecimenFacade {
 		//test if unsupported
 		//specimen
 		String specimenExceptionText = "Specimen";
-		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(specimen, specimenExceptionText, false);
+		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(derivedUnit, specimenExceptionText, false);
 		getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
 		//field observation
 		specimenExceptionText = "Field observation";
 		imageGallery = getImageGalleryWithSupportTest(fieldObservation, specimenExceptionText, false);
 		getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
-		if (specimen.getMedia().size() > 0){
+		if (derivedUnit.getMedia().size() > 0){
 			//TODO better changed model here to allow only one place for images
 			throw new SpecimenFacadeNotSupportedException("Specimen may not have direct media. Only (one) image gallery is allowed");
 		}
@@ -220,7 +267,7 @@ public class SpecimenFacade {
 
 	private List<Media> setSpecimenImageGalleryMedia() throws SpecimenFacadeNotSupportedException{
 		if (specimenMedia == null){
-			specimenMedia = getImageGalleryMedia(specimen, "Specimen");
+			specimenMedia = getImageGalleryMedia(derivedUnit, "Specimen");
 		}
 		return specimenMedia;
 	}
@@ -419,7 +466,7 @@ public class SpecimenFacade {
 		if (specimen == null){
 			return null;
 		}
-		if (specimen == this.specimen){
+		if (specimen == this.derivedUnit){
 			return setSpecimenImageGalleryMedia();
 		}else if (specimen == this.fieldObservation){
 			return setObservationImageGalleryMedia();
@@ -893,13 +940,14 @@ public class SpecimenFacade {
 	
 	//Definition
 	public void addSpecimenDefinition(String text, Language language) {
-		specimen.addDefinition(text, language);
+		derivedUnit.addDefinition(text, language);
 	}
 	public Map<Language, LanguageString> getSpecimenDefinitions(){
-		return specimen.getDefinition();
+		return this.derivedUnit.getDefinition();
 	}
 	public String getSpecimenDefinition(Language language) {
-		LanguageString languageString = specimen.getDefinition().get(language);
+		Map<Language,LanguageString> languageMap = derivedUnit.getDefinition();
+		LanguageString languageString = languageMap.get(language);
 		if (languageString != null){
 			return languageString.getText();
 		}else {
@@ -907,24 +955,24 @@ public class SpecimenFacade {
 		}
 	}
 	public void removeSpecimenDefinition(Language lang) {
-		specimen.removeDefinition(lang);
+		derivedUnit.removeDefinition(lang);
 	}
 
 	//Determination
 	public void addDetermination(DeterminationEvent determination) {
-		specimen.addDetermination(determination);
+		derivedUnit.addDetermination(determination);
 	}
 	public Set<DeterminationEvent> getDeterminations() {
-		return specimen.getDeterminations();
+		return derivedUnit.getDeterminations();
 	}
 	public void removeDetermination(DeterminationEvent determination) {
-		specimen.removeDetermination(determination);
+		derivedUnit.removeDetermination(determination);
 	}
 	
 	//Media
 	public boolean addSpecimenMedia(Media media)  {
 		try {
-			return addMedia(media, specimen);
+			return addMedia(media, derivedUnit);
 		} catch (SpecimenFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -934,7 +982,7 @@ public class SpecimenFacade {
 	 * Returns also <code>true</code> if the image gallery is empty. 
 	 */
 	public boolean hasSpecimenImageGallery(){
-		return (getImageGallery(specimen, false) != null);
+		return (getImageGallery(derivedUnit, false) != null);
 	}	
 	/**
 	 * Returns the media for the specimen.<BR>
@@ -945,14 +993,14 @@ public class SpecimenFacade {
 	 */
 	public List<Media> getSpecimenMedia() {
 		try {
-			return getMedia(specimen);
+			return getMedia(derivedUnit);
 		} catch (SpecimenFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
 	}
 	public boolean removeSpecimenMedia(Media media) {
 		try {
-			return removeMedia(media, specimen);
+			return removeMedia(media, derivedUnit);
 		} catch (SpecimenFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -961,55 +1009,75 @@ public class SpecimenFacade {
 	
 	//Accession Number
 	public String getAccessionNumber() {
-		return specimen.getAccessionNumber();
+		return derivedUnit.getAccessionNumber();
 	}
 	public void setAccessionNumber(String accessionNumber) {
-		specimen.setAccessionNumber(accessionNumber);
+		derivedUnit.setAccessionNumber(accessionNumber);
 	}
 
 	//Catalog Number
 	public String getCatalogNumber() {
-		return specimen.getCatalogNumber();
+		return derivedUnit.getCatalogNumber();
 	}
 	public void setCatalogNumber(String catalogNumber) {
-		specimen.setCatalogNumber(catalogNumber);
+		derivedUnit.setCatalogNumber(catalogNumber);
 	}
 
 	//Preservation Method
-	public PreservationMethod getPreservationMethod() {
-		return specimen.getPreservation();
+	
+	/**
+	 * Only supported by specimen and fossils
+	 * @see #DerivedUnitType
+	 * @return
+	 */
+	public PreservationMethod getPreservationMethod() throws MethodNotSupportedByDerivedUnitTypeException {
+		if (derivedUnit.isInstanceOf(Specimen.class)){
+			return CdmBase.deproxy(derivedUnit, Specimen.class).getPreservation();
+		}else{
+			throw new MethodNotSupportedByDerivedUnitTypeException("A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
+		}
 	}
-	public void setPreservationMethod(PreservationMethod preservation) {
-		specimen.setPreservation(preservation);
+	/**
+	 * Only supported by specimen and fossils
+	 * @see #DerivedUnitType
+	 * @return
+	 */
+	public void setPreservationMethod(PreservationMethod preservation)throws MethodNotSupportedByDerivedUnitTypeException  {
+		if (derivedUnit.isInstanceOf(Specimen.class)){
+			CdmBase.deproxy(derivedUnit, Specimen.class).setPreservation(preservation);
+		}else{
+			throw new MethodNotSupportedByDerivedUnitTypeException("A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
+			
+		}
 	}
 
 	//Stored under name
 	public TaxonNameBase getStoredUnder() {
-		return specimen.getStoredUnder();
+		return derivedUnit.getStoredUnder();
 	}
 	public void setStoredUnder(TaxonNameBase storedUnder) {
-		specimen.setStoredUnder(storedUnder);
+		derivedUnit.setStoredUnder(storedUnder);
 	}
 
 	//colletors number
 	public String getCollectorsNumber() {
-		return specimen.getCollectorsNumber();
+		return derivedUnit.getCollectorsNumber();
 	}
 	public void setCollectorsNumber(String collectorsNumber) {
-		this.specimen.setCollectorsNumber(collectorsNumber);
+		this.derivedUnit.setCollectorsNumber(collectorsNumber);
 	}
 
 	//title cache
 	public String getTitleCache() {
-		if (! specimen.isProtectedTitleCache()){
+		if (! derivedUnit.isProtectedTitleCache()){
 			//always compute title cache anew as long as there are no property change listeners on 
 			//field observation, gathering event etc 
-			specimen.setTitleCache(null, false);
+			derivedUnit.setTitleCache(null, false);
 		}
-		return this.specimen.getTitleCache();
+		return this.derivedUnit.getTitleCache();
 	}
 	public void setTitleCache(String titleCache, boolean isProtected) {
-		this.specimen.setTitleCache(titleCache, isProtected);
+		this.derivedUnit.setTitleCache(titleCache, isProtected);
 	}
 
 
@@ -1017,12 +1085,12 @@ public class SpecimenFacade {
 	 * Returns the specimen itself.
 	 * @return the specimen
 	 */
-	public Specimen getSpecimen() {
-		return this.specimen;
+	public DerivedUnitBase getSpecimen() {
+		return this.derivedUnit;
 	}
 	
 	private DerivationEvent getDerivationEvent(){
-		DerivationEvent result = specimen.getDerivedFrom();
+		DerivationEvent result = derivedUnit.getDerivedFrom();
 		if (result == null){
 			result = DerivationEvent.NewInstance();
 		}
@@ -1041,7 +1109,7 @@ public class SpecimenFacade {
 	
 	// **** sources **/
 	public void addSource(IdentifiableSource source){
-		this.specimen.addSource(source);
+		this.derivedUnit.addSource(source);
 	}
 	/**
 	 * Creates an orignal source, adds it to the specimen and returns it.
@@ -1053,16 +1121,16 @@ public class SpecimenFacade {
 	public IdentifiableSource addSource(ReferenceBase reference, String microReference, String originalNameString){
 		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
 		source.setOriginalNameString(originalNameString);
-		specimen.addSource(source);
+		derivedUnit.addSource(source);
 		return source;
 	}
 	
 	public Set<IdentifiableSource> getSources(){
-		return specimen.getSources();
+		return derivedUnit.getSources();
 	}
 
 	public void removeSource(IdentifiableSource source){
-		this.specimen.removeSource(source);
+		this.derivedUnit.removeSource(source);
 	}
 	
 	
@@ -1070,7 +1138,7 @@ public class SpecimenFacade {
 	 * @return the collection
 	 */
 	public Collection getCollection() {
-		return specimen.getCollection();
+		return derivedUnit.getCollection();
 	}
 
 
@@ -1078,7 +1146,7 @@ public class SpecimenFacade {
 	 * @param collection the collection to set
 	 */
 	public void setCollection(Collection collection) {
-		specimen.setCollection(collection);
+		derivedUnit.setCollection(collection);
 	}
 	
 	
@@ -1113,13 +1181,14 @@ public class SpecimenFacade {
 		return duplicate;
 	}
 	
-	public void addDuplicate(Specimen duplicateSpecimen){
+	public void addDuplicate(DerivedUnitBase duplicateSpecimen){
+		//TODO check derivedUnitType
 		getDerivationEvent().addDerivative(duplicateSpecimen);  
 	}
 	public Set<Specimen> getDuplicates(){
 		Set<Specimen> result = new HashSet<Specimen>();
 		for (DerivedUnitBase derivedUnit: getDerivationEvent().getDerivatives()){
-			if (derivedUnit.isInstanceOf(Specimen.class) && ! derivedUnit.equals(specimen)){
+			if (derivedUnit.isInstanceOf(Specimen.class) && ! derivedUnit.equals(this.derivedUnit)){
 				result.add(CdmBase.deproxy(derivedUnit, Specimen.class));
 			}
 		}

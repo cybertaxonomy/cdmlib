@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.api.facade.SpecimenFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -53,7 +54,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class SpecimenFacadeTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenFacadeTest.class);
-	
+
 	Specimen specimen;
 	DerivationEvent derivationEvent;
 	FieldObservation fieldObservation;
@@ -170,7 +171,7 @@ public class SpecimenFacadeTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		SpecimenFacade specimenFacade = SpecimenFacade.NewInstance();
+		SpecimenFacade specimenFacade = SpecimenFacade.NewInstance(DerivedUnitType.Specimen);
 		Assert.assertNotNull("The specimen should have been created", specimenFacade.getSpecimen());
 		//???
 //		Assert.assertNotNull("The derivation event should have been created", specimenFacade.getSpecimen().getDerivedFrom());
@@ -681,10 +682,31 @@ public class SpecimenFacadeTest {
 	 */
 	@Test
 	public void testGetPreservation() {
-		Assert.assertNotNull("Preservation method must not be null", specimenFacade.getPreservationMethod());	
-		Assert.assertEquals("Preservation method must be same", preservationMethod, specimenFacade.getPreservationMethod());	
-		specimenFacade.setPreservationMethod(null);
-		Assert.assertNull("Preservation method must be null", specimenFacade.getPreservationMethod());	
+		try {
+			Assert.assertNotNull("Preservation method must not be null", specimenFacade.getPreservationMethod());	
+			Assert.assertEquals("Preservation method must be same", preservationMethod, specimenFacade.getPreservationMethod());	
+			specimenFacade.setPreservationMethod(null);
+			Assert.assertNull("Preservation method must be null", specimenFacade.getPreservationMethod());
+		} catch (MethodNotSupportedByDerivedUnitTypeException e) {
+			Assert.fail("Method not supported should not be thrown for a specimen");
+		}
+		specimenFacade = SpecimenFacade.NewInstance(DerivedUnitType.Observation);
+		try {
+			specimenFacade.setPreservationMethod(preservationMethod);
+			Assert.fail("Method not supported should be thrown for an observation on set preservation method");
+			
+		} catch (MethodNotSupportedByDerivedUnitTypeException e) {
+			//ok
+		}
+		specimenFacade = SpecimenFacade.NewInstance(DerivedUnitType.LivingBeing);
+		try {
+			specimenFacade.getPreservationMethod();
+			Assert.fail("Method not supported should be thrown for a living being on get preservation method");
+		} catch (MethodNotSupportedByDerivedUnitTypeException e) {
+			//ok
+		}
+		
+		
 	}
 
 	/**

@@ -2670,6 +2670,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRc
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/CoordinateConverter.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDerivedUnitTypeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacade.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeCacheStrategy.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeNotSupportedException.java -text
