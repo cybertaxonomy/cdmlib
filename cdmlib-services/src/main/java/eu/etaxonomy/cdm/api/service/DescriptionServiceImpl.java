@@ -30,12 +30,14 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -180,6 +182,26 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	public NamedAreaTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> omitLevels){
+		List<NamedArea> areaList = new ArrayList<NamedArea>();
+		NamedAreaTree tree = new NamedAreaTree();
+		//getting all the areas
+		for (TaxonDescription taxonDescription : taxonDescriptions) {
+			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid());
+			Set<DescriptionElementBase> elements = taxonDescription.getElements();
+			for (DescriptionElementBase element : elements) {
+				if(element.isInstanceOf(Distribution.class)){
+					Distribution distribution = (Distribution) element;
+					areaList.add(distribution.getArea());
+				}
+			}
+		}
+		//ordering the areas
+		tree.merge(areaList, omitLevels);
+		tree.sortChildren();
+		return tree;	
 	}
 
 	public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {

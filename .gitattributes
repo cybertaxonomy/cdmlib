@@ -2722,6 +2722,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/LocationServiceImpl.j
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MarkerServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MediaServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaNodeComparator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text

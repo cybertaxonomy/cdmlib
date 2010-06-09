@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -134,6 +135,16 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return a Pager containing DescriptionElementBase instances
 	 */
 	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	
+	/**
+	 * 
+	 * @param taxonDescriptions
+	 * @param omitLevels
+	 * @return
+	 */
+	public NamedAreaTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, 
+												 Set<NamedAreaLevel> omitLevels);
+		
 	
 	/**
 	 * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
