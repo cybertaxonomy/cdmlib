@@ -1437,7 +1437,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportConfi
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitRow.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImporterBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/CdmImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/CdmImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaAuthorImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaDistribution.java -text
