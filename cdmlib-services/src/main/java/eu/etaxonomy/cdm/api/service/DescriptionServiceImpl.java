@@ -147,7 +147,6 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		return results;
 	}
-	
 	public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
 		
@@ -280,5 +279,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {
 		return (TermVocabulary)vocabularyDao.findByUuid(uuid);
+	}
+
+	public List<DescriptionElementBase> getDescriptionElementsForTaxon(
+			Taxon taxon, Set<Feature> features,
+			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths) {
+		 return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
 	}
 }
