@@ -126,8 +126,8 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 			if(baseRank != null && baseRank.isLower(parentNodeRank)){
 				break;
 			}
-			pathToRoot.add(parent);
-			parentNode = parent.getParent();
+			pathToRoot.add(parentNode);
+			parentNode = parentNode.getParent();
 		}
 		
 		// initialize and invert order of nodes in list
