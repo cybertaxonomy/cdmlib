@@ -1979,6 +1979,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserIm
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplRegExBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ParserProblem.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserHistory.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level2.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level3.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/BasionymsMustShareEpithetsAndAuthors.java -text
@@ -2089,6 +2090,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/DefaultTermInitial
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/TermLoaderTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/TdwgAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/media/MediaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
@@ -2121,6 +2123,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategyT
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/ParserProblemTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverterTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text

@@ -8,11 +8,19 @@
 */
 
 package eu.etaxonomy.cdm.model.location;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.ParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,7 +31,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
+import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionResults;
 
 /**
  * @author m.doering
@@ -60,6 +71,9 @@ public class Point implements Cloneable, Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ReferenceSystem referenceSystem;
 	
+	
+//******************** FACTORY METHODS ****************************	
+
 	/**
 	 * Factory method
 	 * @return
@@ -81,11 +95,346 @@ public class Point implements Cloneable, Serializable {
 		return result;
 	}
 	
+// ******************** CONSTRUCTOR ***************************
+	
 	/**
 	 * Constructor
 	 */
 	public Point() {
 	}
+	
+//************** Sexagesimal /decimal METHODS *******************	
+	
+	public enum Direction {
+	    WEST {
+	 
+	        @Override
+	        public String toString() {
+	            return "W";
+	        }
+	    },
+	    EAST {
+	 
+	        @Override
+	        public String toString() {
+	            return "E";
+	        }
+	    },
+	    NORTH {
+	 
+	        @Override
+	        public String toString() {
+	            return "N";
+	        }
+	    },
+	    SOUTH {
+	 
+	        @Override
+	        public String toString() {
+	            return "S";
+	        }
+	    };
+	}
+	
+	public static final class CoordinateParser {
+		 
+	    /**
+	     * Pattern zum parsen von Sexagesimalen Grad: 145°
+	     */
+	    private static final String DEGREE_REGEX = "([0-9]*)°";
+	    /**
+	     * Pattern zum parsen von Sexagesimalen Minuten: 65'
+	     */
+	    private static final String MINUTES_REGEX = "(?:([0-9]*)')?";
+	    /**
+	     * Pattern zum parsen von Sexagesimalen Sekunden: 17"
+	     */
+	    private static final String SECONDS_REGEX = "(?:([0-9]*)(?:''|\"))?";
+	    /**
+	     * Himmelsrichtung Längengrad
+	     */
+	    private static final String LONGITUDE_DIRECTION_REGEX = "([OEW])";
+	    /**
+	     * Himmelsrichtung Breitengrad
+	     */
+	    private static final String LATITUDE_DIRECTION_REGEX = "([NS])";
+	 
+	    /**
+	     * Pattern zum Parsen von Breitengraden.
+	     */
+	    private static final Pattern LATITUDE_PATTERN = Pattern
+	            .compile(DEGREE_REGEX + MINUTES_REGEX + SECONDS_REGEX
+	                    + LATITUDE_DIRECTION_REGEX);
+	 
+	    /**
+	     * Pattern zum Parsen von Längengraden.
+	     */
+	    private static final Pattern LONGITUDE_PATTERN = Pattern
+	            .compile(DEGREE_REGEX + MINUTES_REGEX + SECONDS_REGEX
+	                    + LONGITUDE_DIRECTION_REGEX);
+	 
+	    private CoordinateParser() {
+	        throw new AssertionError( );
+	    }
+	 
+	    /**
+	     * Parst einen Breitengrad der Form<br>
+	     * G°M'S""(OEW)<br>
+	     * Die Formen<br>
+	     * G°(OEW)<br>
+	     * G°M'(OEW)<br>
+	     * sind ebenfalls erlaubt.
+	     *
+	     * @param strg
+	     * @return Die geparsten Koordinaten
+	     * @throws ParseException
+	     *             Wenn eine Fehler beim Parsen aufgetreten ist.
+	     */
+	    public static Sexagesimal parseLatitude(final String strg)
+	            throws ParseException {
+	        return parseCoordinates(strg, LATITUDE_PATTERN);
+	    }
+	 
+	    /**
+	     * Parst einen Längengrad der Form<br>
+	     * G°M'S"(NS)<br>
+	     * Die Formen<br>
+	     * G°(NS)<br>
+	     * G°M'(NS)<br>
+	     * sind ebenfalls erlaubt.
+	     *
+	     * @param strg
+	     * @return Die geparsten Koordinaten
+	     * @throws ParseException
+	     *             Wenn eine Fehler beim Parsen aufgetreten ist.
+	     */
+	    public static Sexagesimal parseLongitude(final String strg)
+	            throws ParseException {
+	        return parseCoordinates(strg, LONGITUDE_PATTERN);
+	    }
+	 
+	   
+	    /**
+	     * Not used at the moment. Use CoordinateConverter instead.
+	     * @param strg
+	     * @param pattern
+	     * @return
+	     * @throws ParseException
+	     */
+	    private static Sexagesimal parseCoordinates(final String strg, final Pattern pattern) throws ParseException {
+	        if (strg == null) {
+	            throw new java.text.ParseException("Keine Koordinaten gegeben.", -1);
+	        }
+	        final Matcher matcher = pattern.matcher(strg);
+	        if (matcher.matches( )) {
+	            if (matcher.groupCount( ) == 4) {
+	                // Grad
+	                String tmp = matcher.group(1);
+	                int degree = Integer.parseInt(tmp);
+	 
+	                // Optional minutes
+	                tmp = matcher.group(2);
+	                int minutes = Sexagesimal.NONE;
+	                if (tmp != null) {
+	                    minutes = Integer.parseInt(tmp);
+	                }
+	 
+	                // Optional seconds
+	                tmp = matcher.group(3);
+	                int seconds = Sexagesimal.NONE;
+	                if (tmp != null) {
+	                    seconds = Integer.parseInt(tmp);
+	                }
+	 
+	                // directions
+	                tmp = matcher.group(4);
+	                final Direction direction;
+	                if (tmp.equals("N")) {
+	                    direction = Direction.NORTH;
+	                }
+	                else if (tmp.equals("S")) {
+	                    direction = Direction.SOUTH;
+	                }
+	                else if (tmp.equals("E") || tmp.equals("O")) {
+	                    direction = Direction.EAST;
+	                }
+	                else if (tmp.equals("W")) {
+	                    direction = Direction.WEST;
+	                }
+	                else {
+	                    direction = null;
+	                }
+	                return Sexagesimal.NewInstance(degree, minutes, seconds, direction);
+	            }
+	            else {
+	                throw new java.text.ParseException(
+	                        "Die Koordinaten-Darstellung ist fehlerhaft: " + strg,
+	                        -1);
+	            }
+	        }
+	        else {
+	            throw new java.text.ParseException(
+	                    "Die Koordinaten-Darstellung ist fehlerhaft: " + strg, -1);
+	        }
+	    }
+	 
+	}
+	
+	
+	private static final BigDecimal SIXTY = BigDecimal.valueOf(60.0);
+	private static final MathContext MC = new MathContext(34, RoundingMode.HALF_UP);
+	private static final double HALF_SECOND = 1. / 7200.;
+	
+	//see http://www.tutorials.de/forum/archiv/348596-quiz-10-zeja-java.html
+	public static class Sexagesimal{
+		public static Sexagesimal NewInstance(Integer degree, Integer minutes, Integer seconds, Direction direction){
+			Sexagesimal result = new Sexagesimal();
+			result.degree = degree; result.minutes = minutes; result.seconds = seconds;
+			return result;
+		}
+		
+		public static final int NONE = 0;
+		public Integer degree;
+		public Integer minutes;
+		public Integer seconds;
+//		public Double tertiers;
+		
+		public Direction direction;
+
+
+		public boolean isLatitude(){
+			return (direction == Direction.WEST) || (direction == Direction.EAST) ;
+		}
+		public boolean isLongitude(){
+			return ! isLatitude();
+		}
+		
+		
+		public static Sexagesimal valueOf(Double decimal, boolean isLatitude){
+			return valueOf(decimal, isLatitude, false, false);
+		}
+		
+		public static Sexagesimal valueOf(Double decimal, boolean isLatitude, boolean nullSecondsToNull, boolean nullMinutesToNull){
+			Sexagesimal sexagesimal = new Sexagesimal(); 
+			Double decimalDegree = decimal;
+		        if (isLatitude) {
+		        	if (decimalDegree < 0) {
+		            	sexagesimal.direction = Direction.SOUTH;
+		            }
+		            else {
+		            	sexagesimal.direction = Direction.NORTH;
+		            }
+		        }
+		        else {
+		        	if (decimalDegree < 0) {
+			               sexagesimal.direction = Direction.WEST;
+			            }
+			            else {
+			            	sexagesimal.direction = Direction.EAST;
+			            }
+		        }
+		 
+		        // Decimal in °'" umrechnen
+		        double d = Math.abs(decimalDegree);
+		        d += HALF_SECOND; // add a second for rounding
+		        sexagesimal.degree = (int) Math.floor(d);
+		        sexagesimal.minutes = (int) Math.floor((d - sexagesimal.degree) * 60.0);
+		        sexagesimal.seconds = (int) Math.floor((d - sexagesimal.degree - sexagesimal.minutes / 60.0) * 3600.0);
+		 
+		        if (sexagesimal.seconds == 0 && nullSecondsToNull){
+		        	sexagesimal.seconds = null;
+		        }
+		        if (sexagesimal.seconds == null && nullMinutesToNull){
+		        	sexagesimal.minutes = null;
+		        }
+		        
+		       // sexagesimal.decimalRadian = Math.toRadians(this.decimalDegree);
+		        return sexagesimal;
+		}
+
+		
+		
+		private Double toDecimal(){
+			BigDecimal value = BigDecimal.valueOf(CdmUtils.Nz(this.seconds)).divide(SIXTY, MC).add
+				(BigDecimal.valueOf(CdmUtils.Nz(this.minutes))).divide(SIXTY, MC).add
+				(BigDecimal.valueOf(CdmUtils.Nz(this.degree)));
+
+	        if (this.direction == Direction.WEST || this.direction == Direction.SOUTH) {
+	            value = value.negate( );
+	        }
+	        return value.doubleValue( );
+		}
+
+		
+		public String toString(){
+			String result;
+			result = String.valueOf(CdmUtils.Nz(degree)) + "°";
+			if (seconds != null || minutes != null){
+				result += String.valueOf(CdmUtils.Nz(minutes)) + "'";
+			}
+			if (seconds != null){
+				result += String.valueOf(CdmUtils.Nz(seconds)) + "\"";	
+			}
+			result += direction; 
+			return result;
+		}
+		
+	}
+	
+	
+	@Transient
+	public Sexagesimal getLongitudeSexagesimal (){
+		boolean isLatitude = false;
+		return Sexagesimal.valueOf(longitude, isLatitude);
+	}
+
+	@Transient
+	public Sexagesimal getLatitudeSexagesimal (){
+		boolean isLatitude = true;
+		return Sexagesimal.valueOf(longitude, isLatitude);
+	}
+	
+	@Transient
+	public void setLatitudeSexagesimal(Sexagesimal sexagesimalLatitude){
+		this.latitude = sexagesimalLatitude.toDecimal();
+	}
+	@Transient
+	public void setLongitudeSexagesimal(Sexagesimal sexagesimalLongitude){
+		this.longitude = sexagesimalLongitude.toDecimal();
+	}
+	
+	@Transient
+	public void setLatitudeByParsing(String string) throws ParseException{
+		this.setLatitude(parseLatitude(string));
+	}
+	
+	@Transient
+	public void setLongitudeByParsing(String string) throws ParseException{
+		this.setLongitude(parseLongitude(string));
+	}
+	
+	
+	public static Double parseLatitude(String string) throws ParseException{
+		CoordinateConverter converter = new CoordinateConverter();
+		ConversionResults result = converter.tryConvert(string);
+		if (! result.conversionSuccessful || result.isLongitude  ){
+			throw new ParseException("Latitude could not be parsed", 0);
+		}else{
+			return result.convertedCoord;
+		}
+	}
+	
+	public static Double parseLongitude(String string) throws ParseException{
+		CoordinateConverter converter = new CoordinateConverter();
+		ConversionResults result = converter.tryConvert(string);
+		if (! result.conversionSuccessful || ! result.isLongitude){
+			throw new ParseException("Longitude could not be parsed", 0);
+		}else{
+			return result.convertedCoord;
+		}
+	}
+
+// ******************** GETTER / SETTER ********************************	
 	
 	public ReferenceSystem getReferenceSystem(){
 		return this.referenceSystem;
@@ -134,7 +483,6 @@ public class Point implements Cloneable, Serializable {
 	public void setErrorRadius(Integer errorRadius){
 		this.errorRadius = errorRadius;
 	}
-	
 	
 //*********** CLONE **********************************/	
 	
