@@ -165,9 +165,9 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	}
 
 	private static Integer getObjectFk(TaxonNode node, DbExportStateBase<?> state, boolean isName, boolean isFrom){
-		ITreeNode treeNode = (isFrom) ? node :  node.getParent();
-		if (treeNode instanceof TaxonNode){
-			Taxon taxon = ((TaxonNode) treeNode).getTaxon();
+		TaxonNode treeNode = (isFrom) ? node :  node.getParent();
+		if (treeNode != null){
+			Taxon taxon = treeNode.getTaxon();
 			CdmBase cdmBase = (isName) ? taxon.getName(): taxon.getSec();
 			return state.getDbId(cdmBase);
 		}
