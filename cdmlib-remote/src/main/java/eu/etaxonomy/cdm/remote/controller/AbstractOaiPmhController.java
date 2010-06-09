@@ -176,14 +176,15 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
      * @throws IdDoesNotExistException 
      */
     @RequestMapping(method = RequestMethod.GET,params = "verb=ListMetadataFormats")
-    public ModelAndView listMetadataFormats(@RequestParam(value = "identifier", required = true) LSID identifier) throws IdDoesNotExistException {
+    public ModelAndView listMetadataFormats(@RequestParam(value = "identifier", required = false) LSID identifier) throws IdDoesNotExistException {
  
         ModelAndView modelAndView = new ModelAndView("oai/listMetadataFormats");
-        T object = service.find(identifier);
-        
-
-        if(object == null) {
-	        throw new IdDoesNotExistException(identifier);
+        if(identifier != null) {
+            T object = service.find(identifier);
+  
+            if(object == null) {
+	            throw new IdDoesNotExistException(identifier);
+            }
         }
 
         return modelAndView;
