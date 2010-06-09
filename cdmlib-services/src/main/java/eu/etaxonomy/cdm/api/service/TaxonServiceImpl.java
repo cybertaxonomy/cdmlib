@@ -601,9 +601,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 
 	
-
-	
-	@Override
 	public List<SynonymRelationship> listSynonymRelationships(
 			TaxonBase taxonBase, SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {

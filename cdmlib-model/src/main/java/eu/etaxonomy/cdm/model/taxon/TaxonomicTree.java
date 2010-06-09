@@ -142,9 +142,8 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation,
 			String microCitation, Synonym synonymToBeUsed) {
 		
-		rootNodes.add(childNode);
-		childNode.setParent(null);
-		childNode.setTaxonomicTree(this);
+		childNode.setParentTreeNode(this);
+		
 		childNode.setReference(citation);
 		childNode.setMicroReference(microCitation);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
@@ -357,13 +356,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * one parent. <Br>
 	 * If the parent-child relationship between these two taxa already exists nothing is changed. Only 
 	 * citation and microcitation are overwritten by the new values if these values are not null.
-	 * 
-	 * TODO this looks like very specialized functionality. Upon examination, it turned out that it is used
-	 * solely in imports and it also looks like it is very tightly coupled with the way the imports are implemented.
-	 * As an advocat for a clean API, I would very much recommend not having this in the library itself as I can 
-	 * not really see who else will be needing this.
-	 * - n.hoffmann
-	 * 
+	 *  
 	 * @param parent
 	 * @param child
 	 * @param citation

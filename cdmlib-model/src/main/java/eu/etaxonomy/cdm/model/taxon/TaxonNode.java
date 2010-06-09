@@ -215,32 +215,14 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 * @return the child node in the state of having a new parent
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
-		ITreeNode parentNode = childNode.getParentTreeNode();
 		
 		// check if this node is a descendant of the childNode 
-		if(parentNode != this && childNode.isAncestor(this)){
+		if(childNode.getParentTreeNode() != this && childNode.isAncestor(this)){
 			throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
 		}
 
-		TaxonomicTree oldTree = childNode.getTaxonomicTree();
-		
-		// remove this childNode from previous parents and trees
-		if(parentNode instanceof TaxonNode){  //child is already child
-			((TaxonNode) parentNode).removeChildNode(childNode);
-		}else if(oldTree != null){     //child is root in old tree
-			oldTree.removeChildNode(childNode);
-		}
-		
-		TaxonomicTree newTree = this.getTaxonomicTree();
-		if (oldTree == null || (oldTree != null && ! oldTree.equals(newTree))){  //oldTree is null if the node was just created anew
-			childNode.setTaxonomicTreeRecursively(newTree);
-		}else{
-			childNode.setTaxonomicTree(newTree);
-		}
-		
-		childNode.setParent(this);
-		childNodes.add(childNode);
-		this.countChildren++;
+		childNode.setParentTreeNode(this);
+			
 		childNode.setReference(reference);
 		childNode.setMicroReference(microReference);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
@@ -249,12 +231,19 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	}
 	
 	/**
-	 * @param parentTree
+	 * Sets this nodes taxonomic tree. Updates taxonomic tree of child nodes recursively
+	 * 
+	 * If the former and the actual tree are equal() this method does nothing
+	 * 
+	 * @param newTree
 	 */
-	private void setTaxonomicTreeRecursively(TaxonomicTree parentTree) {
-		this.setTaxonomicTree(parentTree);
-		for(TaxonNode childNode : this.getChildNodes()){
-			childNode.setTaxonomicTreeRecursively(parentTree);
+	@Transient
+	private void setTaxonomicTreeRecursively(TaxonomicTree newTree) {
+		if(! newTree.equals(this.getTaxonomicTree())){
+			this.setTaxonomicTree(newTree);
+			for(TaxonNode childNode : this.getChildNodes()){
+				childNode.setTaxonomicTreeRecursively(newTree);
+			}
 		}
 	}
 
@@ -362,15 +351,66 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 		return parent;
 	}
 	
+	/**
+	 * Sets the parent of this taxon node.
+	 * 
+	 * In most cases you would want to call setParentTreeNode(ITreeNode) which
+	 * handles updating of the bidirectional relationship 
+	 * 
+	 * @param parent
+	 * 
+	 * @see setParentTreeNode(ITreeNode)
+	 */
 	protected void setParent(ITreeNode parent) {
-		if(parent instanceof TaxonomicTree)
+		if(parent instanceof TaxonomicTree){
 			this.parent = null;
+			return;
+		}
 		this.parent = (TaxonNode) parent;
 	}
+	
+	/**
+	 * Sets the parent of this taxon node to the given parent. Cleans up references to 
+	 * old parents and sets the taxonomic tree to the new parents taxonomic tree 
+	 * 
+	 * @param parent
+	 */
+	@Transient
+	protected void setParentTreeNode(ITreeNode parent){		
+		// remove ourselves from the old parent
+		ITreeNode formerParent = this.getParentTreeNode();
+		if(formerParent instanceof TaxonNode){  //child was a child itself
+			((TaxonNode) formerParent).removeChildNode(this);		
+		}
+		else if((formerParent instanceof TaxonomicTree) && ! formerParent.equals(parent)){ //child was root in old tree
+			((TaxonomicTree) formerParent).removeChildNode(this);
+		}		
+		
+		// set the new parent
+		setParent(parent);
+
+		// set the taxonomic tree to the parents taxonomic tree		
+		TaxonomicTree classification = (parent instanceof TaxonomicTree) ? (TaxonomicTree) parent : ((TaxonNode) parent).getTaxonomicTree();
+		setTaxonomicTreeRecursively(classification);
+		
+		// add this node to the parent child nodes
+		parent.getChildNodes().add(this);
+		
+		// update the children count
+		if(parent instanceof TaxonNode){
+			TaxonNode parentTaxonNode = (TaxonNode) parent;
+			parentTaxonNode.setCountChildren(parentTaxonNode.getCountChildren() + 1);
+		}
+	}
+	
 	public TaxonomicTree getTaxonomicTree() {
 		return taxonomicTree;
 	}
-	//invisible part of the bidirectional relationship, for public use TaxonomicView.addRoot() or TaxonNode.addChild()
+	/**
+	 * THIS METHOD SHOULD NOT BE CALLED!
+	 * invisible part of the bidirectional relationship, for public use TaxonomicView.addRoot() or TaxonNode.addChild()
+	 * @param taxonomicTree
+	 */
 	protected void setTaxonomicTree(TaxonomicTree taxonomicTree) {
 		this.taxonomicTree = taxonomicTree;
 	}

@@ -1298,7 +1298,7 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		 	List<String> synonymsEpithet = new ArrayList<String>();
 			if (node.getTaxonomicTree().equals(tree)){
 				if (!node.isTopmostNode()){
-				TaxonNode parent = node.getParent();
+				TaxonNode parent = (TaxonNode)node.getParent();
 				parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
 				TaxonNameBase parentName = parent.getTaxon().getName();
 				parentName = (TaxonNameBase)HibernateProxyHelper.deproxy(parentName);

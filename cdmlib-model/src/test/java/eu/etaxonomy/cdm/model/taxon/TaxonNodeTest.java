@@ -43,12 +43,16 @@ public class TaxonNodeTest {
 	private static final Logger logger = Logger.getLogger(TaxonNodeTest.class);
 	private static String viewName1;
 	private static TaxonomicTree taxonomicView1;
+	private static TaxonomicTree taxonomicView2;
 	private static Taxon taxon1;
 	private static Taxon taxon2;
+	private static Taxon taxon3;
 	private static TaxonNameBase<?,?> taxonName1;
 	private static TaxonNameBase<?,?> taxonName2;
+	private static TaxonNameBase<?,?> taxonName3;
 	private static ReferenceBase ref1;
 	private static ReferenceBase ref2;
+	private static ReferenceBase ref3;
 	private static Synonym syn1;
 	/**
 	 * @throws java.lang.Exception
@@ -72,12 +76,16 @@ public class TaxonNodeTest {
 		viewName1 = "Greuther, 1993";
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		taxonomicView1 = TaxonomicTree.NewInstance(viewName1);
+		taxonomicView2 = TaxonomicTree.NewInstance("Test View 2");
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		taxonName1 = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
 		ref1 = refFactory.newJournal();
 		ref2 = refFactory.newBook();
+		ref3 = refFactory.newGeneric();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
 		taxon2 = Taxon.NewInstance(taxonName2, ref1);
+		taxon3 = Taxon.NewInstance(taxonName3, ref3);
 		//taxonNode1 = new TaxonNode(taxon1, taxonomicView1);
 		syn1 = Synonym.NewInstance(null, null);
 	}
@@ -221,6 +229,58 @@ public class TaxonNodeTest {
 		root.delete();
 		assertEquals("Number of all nodes in view should be 0", 0, taxonomicView1.getAllNodes().size());
 		
+		
+	}
+	
+	@Test
+	public void testMoveTaxonNodeToOtherTree(){
+		TaxonNode node = taxonomicView1.addChildTaxon(taxon1, null, null, null);
+		assertEquals("The node should be in the classification we added it to", taxonomicView1, node.getTaxonomicTree());
+		
+		TaxonNode movedNode = taxonomicView2.addChildNode(node, null, null, null);
+		assertEquals("The node should be in the classification we moved it to", taxonomicView2, movedNode.getTaxonomicTree());
+		assertEquals("The old tree should be empty now", 0, taxonomicView1.getChildNodes().size());
+	}
+	
+	@Test
+	public void testMoveTaxonNodeToOtherTaxonNodeInDifferentTree(){
+		TaxonNode node1 = taxonomicView1.addChildTaxon(taxon1, null, null, null);
+		TaxonNode node2 = node1.addChildTaxon(taxon3, null, null, null);
+		
+		assertEquals("The node should have exactly one child", 1, node1.getChildNodes().size());
+		assertEquals("The child is not in the correct tree", taxonomicView1, node2.getTaxonomicTree());
+		assertEquals("The Classification should contain exactly two nodes", 2, taxonomicView1.getAllNodes().size());
+		
+		TaxonNode node3 = taxonomicView2.addChildTaxon(taxon3, null, null, null);
+		
+		// move node2 to node3 in other tree
+		node3.addChildNode(node2, null, null, null);
+		
+		assertEquals("Old node should not have child nodes", 0, node1.getChildNodes().size());
+		assertEquals("Old tree should contain only one node now", 1, taxonomicView1.getAllNodes().size());
+		assertEquals("Moved node not in expected tree", taxonomicView2, node2.getTaxonomicTree());
+		assertEquals("Count of nodes in new tree:", 2, taxonomicView2.getAllNodes().size());
+		
+	}
+	
+	/**
+	 * Basically tests setTaxonomicTreeRecursively(TaxonomicTree) which is a private method
+	 */
+	@Test
+	public void testMoveTaxonNodesRecursivelyToOtherTaxonNodeInDifferentTree(){
+		TaxonNode node1 = taxonomicView1.addChildTaxon(taxon1, null, null, null);
+		TaxonNode node2 = node1.addChildTaxon(taxon2, null, null, null);		
+		TaxonNode node3 = node2.addChildTaxon(taxon3, null, null, null);
+		
+		//move the branch to a different tree		
+		taxonomicView2.addChildNode(node1, null, null, null);
+		
+		assertEquals("Old tree should be empty:", 0, taxonomicView1.getAllNodes().size());
+		assertEquals("Moved node not in expected tree:", taxonomicView2, node1.getTaxonomicTree());
+		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node2.getTaxonomicTree());
+		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node3.getTaxonomicTree());
+		
+		assertEquals("Count of nodes in new tree:", 3, taxonomicView2.getAllNodes().size());
 		
 	}
 	

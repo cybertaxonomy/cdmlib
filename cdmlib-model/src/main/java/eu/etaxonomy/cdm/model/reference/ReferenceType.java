@@ -46,7 +46,7 @@ public enum ReferenceType {
 	@XmlEnumValue("Generic")
 	Generic("Generic", GenericDefaultCacheStrategy.class),
 	@XmlEnumValue("Inproceedings")
-	InProceedings("Inproceedings", ReferenceBaseDefaultCacheStrategy.class),
+	InProceedings("In Proceedings", ReferenceBaseDefaultCacheStrategy.class),
 	@XmlEnumValue("Journal")
 	Journal("Journal", JournalDefaultCacheStrategy.class),
 	@XmlEnumValue("Map")
@@ -111,22 +111,22 @@ public enum ReferenceType {
 	}
 	
 	public boolean isVolumeReference(){
-		return (isPrintedUnit() || this == Generic || this == Article);
+		return (this == Article || isPrintedUnit());
 	}
 	
 	public boolean isPublication(){
 		return (this == CdDvd || this == Database || this == Generic
-				|| this == Journal || this == Map || this == Book
-				|| this == Proceedings || this == PrintSeries
-				|| this == Report || this == Thesis || this == WebPage);			
+				|| this == Journal || isPrintedUnit() ||  this == PrintSeries
+				|| this == Proceedings || this == Report 
+				|| this == Thesis || this == WebPage);			
 	}
 	
 	public boolean isPrintedUnit(){
-		return (this == Book || this == Proceedings);
+		return (this == Book);
 	}
 	
 	public boolean isSection(){
-		return (this == BookSection || this == InProceedings);
+		return (this == BookSection || this == InProceedings || isVolumeReference());
 	}
 	
 }

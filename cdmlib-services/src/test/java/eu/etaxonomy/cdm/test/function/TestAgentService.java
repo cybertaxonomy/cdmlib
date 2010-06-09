@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -51,7 +50,7 @@ public class TestAgentService {
 	
 	@Test
 	public void testGetTeamOrPersonBaseUuidAndNomenclaturalTitle(){
-		List<UuidAndTitleCache<TeamOrPersonBase>> result = appController.getAgentService().getTeamOrPersonBaseUuidAndNomenclaturalTitle();
+		List<UuidAndTitleCache<Team>> result = appController.getAgentService().getTeamUuidAndNomenclaturalTitle();
 		
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.size() > 0);
