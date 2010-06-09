@@ -1308,8 +1308,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			Synonym#getSynonymRelations()
 	 */
 	public SynonymRelationship addHomotypicSynonym(Synonym synonym, ReferenceBase citation, String microCitation){
-		if (this.getName() != null){
+	if (this.getName() != null){
+			if (this.getName().getHomotypicalGroup().getTypifiedNames().isEmpty()){
+				this.getName().getHomotypicalGroup().getTypifiedNames().add(this.getName());
+			
+			}
 			this.getName().getHomotypicalGroup().addTypifiedName(synonym.getName());
+			
 		}
 		SynonymRelationship synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), citation, microCitation);
 		return synRel;
