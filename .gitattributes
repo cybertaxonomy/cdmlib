@@ -79,6 +79,10 @@ app-import/src/main/java/eu/etaxonomy/cdm/io/CichorieaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeProtologueImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/ProtologueImport.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/sapindaceae/SapindaceaeImportBase.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/sapindaceae/SapindaceaeImportConfigurator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/sapindaceae/SapindaceaeImportState.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/sapindaceae/SapindaceaeTaxonImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportBase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportConfigurator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportState.java -text

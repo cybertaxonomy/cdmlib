@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
+import eu.etaxonomy.cdm.io.eflora.sapindaceae.SapindaceaeImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -36,9 +36,9 @@ public class SapindaceaeActivator {
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String tcsSource = EfloraSources.sapindaceae_local();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final String sapSource = EfloraSources.sapindaceae_local();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	static final UUID treeUuid = UUID.fromString("ca4e4bcb-a1d1-4124-a358-a3d3c41dd450");
 	
@@ -59,42 +59,41 @@ public class SapindaceaeActivator {
 
 	
 	private void doImport(){
-		System.out.println("Start import from Tcs("+ tcsSource.toString() + ") ...");
+		System.out.println("Start import from ("+ sapSource.toString() + ") ...");
 		
 		//make BerlinModel Source
-		String source = tcsSource;
+		String source = sapSource;
 		ICdmDataSource destination = cdmDestination;
 		
-		TcsXmlImportConfigurator tcsImportConfigurator = TcsXmlImportConfigurator.NewInstance(source,  destination);
+		SapindaceaeImportConfigurator sapindaceaeImportConfigurator = SapindaceaeImportConfigurator.NewInstance(source,  destination);
 		
-		tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
+		sapindaceaeImportConfigurator.setTaxonomicTreeUuid(treeUuid);
 		
-		tcsImportConfigurator.setDoMetaData(doMetaData);
-		tcsImportConfigurator.setDoReferences(doReferences);
-		tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
-		tcsImportConfigurator.setDoRelNames(doRelNames);
+//		sapindaceaeImportConfigurator.setDoMetaData(doMetaData);
+		sapindaceaeImportConfigurator.setDoReferences(doReferences);
+		sapindaceaeImportConfigurator.setDoTaxonNames(doTaxonNames);
+		sapindaceaeImportConfigurator.setDoRelNames(doRelNames);
 		
-		tcsImportConfigurator.setDoTaxa(doTaxa);
-		tcsImportConfigurator.setDoRelTaxa(doRelTaxa);
+		sapindaceaeImportConfigurator.setDoTaxa(doTaxa);
+		sapindaceaeImportConfigurator.setDoRelTaxa(doRelTaxa);
 		
-		tcsImportConfigurator.setCheck(check);
-		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
+		sapindaceaeImportConfigurator.setCheck(check);
+		sapindaceaeImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
-		CdmDefaultImport<TcsXmlImportConfigurator> tcsImport = new CdmDefaultImport<TcsXmlImportConfigurator>();
-		//new Test().invoke(tcsImportConfigurator);
-		tcsImport.invoke(tcsImportConfigurator);
+		CdmDefaultImport<SapindaceaeImportConfigurator> myImport = new CdmDefaultImport<SapindaceaeImportConfigurator>();
+		myImport.invoke(sapindaceaeImportConfigurator);
 		
 		
-		IReferenceService refService = tcsImport.getCdmAppController().getReferenceService();
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		IBook book = refFactory.newBook();
-		//book.setDatePublished(TimePeriod.NewInstance(1945));
-		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
-		refService.saveOrUpdate((ReferenceBase)book);
-		tcsImport.getCdmAppController().close();
-		logger.info("End");
-		System.out.println("End import from TCS ("+ source.toString() + ")...");
+//		IReferenceService refService = myImport.getCdmAppController().getReferenceService();
+//		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+//		IBook book = refFactory.newBook();
+//		//book.setDatePublished(TimePeriod.NewInstance(1945));
+//		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
+//		refService.saveOrUpdate((ReferenceBase)book);
+//		myImport.getCdmAppController().close();
+//		logger.info("End");
+		System.out.println("End import from ("+ sapSource.toString() + ")...");
 	}
 
 	/**
