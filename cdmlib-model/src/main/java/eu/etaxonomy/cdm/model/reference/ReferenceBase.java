@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
@@ -111,7 +112,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-
+@InReference(groups = Level2.class)
 //public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
 public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReferenceBase, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
@@ -223,9 +224,11 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-	protected ReferenceBase inReference;
+    @InReference(groups=Level2.class)
+   	protected ReferenceBase inReference;
     
 //    @XmlElement(name = "FullReference")
 //    @XmlIDREF
@@ -901,30 +904,30 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	
 	/* Casting methods */
 	
-	public IArticle castReferenceToArticle(ReferenceBase ref){
+	public IArticle castReferenceToArticle(){
 		((IArticle) this).setCacheStrategy(ArticleDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.Article;
 		
-		return (IArticle) ref;
+		return (IArticle) this;
 	}
 	
-	public IBook castReferenceToBook(ReferenceBase ref){
+	public IBook castReferenceToBook(){
 		((IBook) this).setCacheStrategy(BookDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.Book;
-		return (IBook) ref;
+		return (IBook) this;
 	}
 	
-	public IBookSection castReferenceToBookSection(ReferenceBase ref){
+	public IBookSection castReferenceToBookSection(){
 		((IBookSection) this).setCacheStrategy(BookSectionDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.BookSection;
 		
-		return (IBookSection) ref;
+		return (IBookSection) this;
 	}
 	
-	public ICdDvd castReferenceToCdDvd(ReferenceBase ref){
+	public ICdDvd castReferenceToCdDvd(){
 		((ICdDvd) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.CdDvd;
-		return (ICdDvd) ref;
+		return (ICdDvd) this;
 	}
 	
 	public IDatabase castReferenceToDatabase(){
@@ -948,7 +951,8 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public IJournal castReferenceToJournal(){
 		((IJournal) this).setCacheStrategy(JournalDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.Journal;
-		return (IJournal) this;
+		IJournal test = this;
+		return (IJournal) test;
 	}
 	
 	public IMap castReferenceToMap(ReferenceBase ref){
