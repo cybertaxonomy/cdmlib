@@ -56,8 +56,8 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	 */
 	public int compare(TaxonBase taxonBase1, TaxonBase taxonBase2) {
 		int result;
-		boolean invalOrNudForTaxon1 = false;
-		boolean invalOrNudForTaxon2 = false;
+		//boolean invalOrNudForTaxon1 = false;
+		//boolean invalOrNudForTaxon2 = false;
 		
 		boolean invalTaxon1 = false;
 		boolean invalTaxon2 = false;
