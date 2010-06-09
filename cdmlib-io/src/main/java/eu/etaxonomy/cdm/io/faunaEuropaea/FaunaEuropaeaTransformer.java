@@ -51,7 +51,7 @@ public final class FaunaEuropaeaTransformer {
 	//new AbsencePresenceTermUUIDs
 	
 	public static UUID noData;
-	public static UUID doubtfull_present;
+	//public static UUID doubtfull_present;
 	
 	// Rank
 	public static final int R_KINGDOM = 1;
@@ -80,7 +80,7 @@ public final class FaunaEuropaeaTransformer {
 	private static Map<String, String> tdwgAreas = null;
 
 	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence(int occStatusId)  throws UnknownCdmTypeException{
-		
+	
 		if (Integer.valueOf(occStatusId) == null) {
 			return PresenceTerm.PRESENT();
 		}
@@ -88,7 +88,6 @@ public final class FaunaEuropaeaTransformer {
 		case 0: return PresenceTerm.PRESENT();
 		case 2: return AbsenceTerm.ABSENT();
 		case 1: return PresenceTerm.PRESENT_DOUBTFULLY();
-
 
 		default: {
 
@@ -101,7 +100,7 @@ public final class FaunaEuropaeaTransformer {
 	}
 	public static void setUUIDs(HashMap<String,UUID> uuids){
 		noData = uuids.get("noData");
-		doubtfull_present = uuids.get("doubtfullPresent");
+		//doubtfull_present = uuids.get("doubtfullPresent");
 	
 	}
 	
@@ -294,7 +293,7 @@ public final class FaunaEuropaeaTransformer {
 			
 		} catch (Exception e) {
 			//e.printStackTrace();
-			logger.warn("Exception occurred. Area could not be mapped.");
+			logger.debug("Exception occurred. Area could not be mapped." + fauEuDistribution.getAreaName());
 			return null;
 		}	
 		
@@ -304,6 +303,7 @@ public final class FaunaEuropaeaTransformer {
 	public final static HashMap<String, UUID> abbrToUUID = new HashMap<String,UUID>();
 	 	static
 	 	{	
+	 		abbrToUUID.put("AUS", UUID.fromString("cf979ca8-8cb6-42df-b2ce-1f432ec7c26b"));
 	 		abbrToUUID.put("AFR", UUID.fromString("07ac5e75-9fc9-4aa0-938c-1324c9618b97"));
 	 		abbrToUUID.put("EPA", UUID.fromString("e83446d7-7379-4beb-be05-295f8da6f5ae"));
 	 		abbrToUUID.put("GR-AEG", UUID.fromString("6bd422aa-9911-4b80-8595-0f6d1ecd5eee"));
