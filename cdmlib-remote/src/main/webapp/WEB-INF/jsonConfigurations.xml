@@ -48,6 +48,7 @@
                             <value>FeatureTree.root</value>
                             <value>FeatureNode.children</value>
                             <value>FeatureNode.feature</value>
+                            <value>TreeNode.data</value>
                         </set>
                       </property>
                     </bean>
