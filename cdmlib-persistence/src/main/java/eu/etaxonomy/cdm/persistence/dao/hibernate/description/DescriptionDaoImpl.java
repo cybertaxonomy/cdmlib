@@ -592,4 +592,39 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 		return descriptionBase;
 	}
+
+	public List<DescriptionElementBase> getDescriptionElementForTaxon(
+			Taxon taxon, Set<Feature> features,
+			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths) {
+		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+			
+		 Criteria criteria = null;
+         if(type == null) {
+         	criteria = getSession().createCriteria(DescriptionElementBase.class);
+         } else {
+         	criteria = getSession().createCriteria(type);
+         }
+		
+         if(taxon != null) {
+		        criteria.add(Restrictions.eq("inDescription.taxon", taxon));
+		    }
+		
+		    if(features != null && !features.isEmpty()) {
+			    criteria.add(Restrictions.in("feature", features));
+		    }
+		
+		    if(pageSize != null) {
+			    criteria.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		    	    criteria.setFirstResult(pageNumber * pageSize);
+		        }
+		    }
+		    
+		    List<DescriptionElementBase> results = (List<DescriptionElementBase>)criteria.list();
+		    
+		    defaultBeanInitializer.initializeAll(results, propertyPaths);
+		
+	    	return results; 
+	}
 }
