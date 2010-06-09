@@ -33,6 +33,11 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 
 /**
+ * We decided by convention to have only ONE TextData element in an image gallery and that
+ * all media objects should be attached to that element.
+ * 
+ * Run this script to clean-up a database for which this convention was not satisfied.
+ * 
  * @author n.hoffmann
  * @created Jun 9, 2010
  * @version 1.0
