@@ -2558,10 +2558,13 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDAuthorityProperty
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/MatchModePropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/MetadataPrefixEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/NamedAreaLevelPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/NamedAreaPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/RankPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/SetSpecEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/UUIDListPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/UUIDPropertyEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/UuidList.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/CannotDisseminateFormatException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/CdmExceptionResolver.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/NoRecordsMatchException.java -text

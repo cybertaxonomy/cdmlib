@@ -167,6 +167,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.$",
 			"synonymRelations.synonym.$",
 			"synonymRelations.synonym.name.status.type",
+			"synonymRelations.synonym.name.status.type.representation",
 			"synonymRelations.synonym.name.taggedName",
 			"synonymRelations.synonym.name.nomenclaturalReference.inBook",
 			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",

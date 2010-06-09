@@ -90,9 +90,10 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 					json.element("representation_L10n", representation.getText());
 				} else if (representation.getLabel() != null && representation.getLabel().length() !=0) {
 					json.element("representation_L10n", representation.getLabel());
-				} else {
-					json.element("representation_L10n", representation.getAbbreviatedLabel());
-				}
+				} 
+
+				json.element("representation_L10n_abbreviated", representation.getAbbreviatedLabel());
+				
 			}
 			if(!replaceRepresentations){
 				json.element("representations", term.getRepresentations(), jsonConfig);

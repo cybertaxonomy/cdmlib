@@ -12,33 +12,43 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
+import eu.etaxonomy.cdm.api.service.DescriptionServiceImpl;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.NamedAreaTree;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
+
+import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * TODO write controller documentation
@@ -48,7 +58,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 
 @Controller
-@RequestMapping(value = {"/description/*","/description/{uuid}", "/descriptionelement/{uuid}", "/descriptionelement/{uuid}/annotation", "/featuretree/*"})
+@RequestMapping(value = {"/description/*","/description/{uuid}", "/description/{uuid_list}", "/descriptionelement/*", "/featuretree/*"})
 public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
@@ -66,6 +76,12 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 				"root.children.feature.representations",
 			});
 	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+		binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+		binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
@@ -84,10 +100,11 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(
-			value = {"/featuretree/*"},
-			method = RequestMethod.GET)
-	public FeatureTree doGetFeatureTree(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	@RequestMapping(value = {"/featuretree/{featuretree_uuid}"}, method = RequestMethod.GET)
+	public FeatureTree doGetFeatureTree(
+			@PathVariable("featuretree_uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response)throws IOException {
 		UUID featureTreeUuid = readValueUuid(request, null);
 		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
 		if(featureTree == null){
@@ -96,9 +113,9 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		return featureTree;
 	}
 	
-	@RequestMapping(value = "/descriptionelement/{uuid}/annotation", method = RequestMethod.GET)
+	@RequestMapping(value = "/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
-			@PathVariable("uuid") UUID uuid,
+			@PathVariable("descriptionelement_uuid") UUID uuid,
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		logger.info("getAnnotations() - " + request.getServletPath());
@@ -106,5 +123,23 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
+	
+	@RequestMapping(value = "{uuid_list}/namedAreaTree", method = RequestMethod.GET)
+	public NamedAreaTree doGetOrderedDistributions(
+			@PathVariable("uuid_list") UuidList descriptionUuidList,
+			@RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
+			//@ModelAttribute("omitLevels") HashSet<NamedAreaLevel> levels,
+			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("getOrderedDistributions(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
+		Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
+		TaxonDescription description;
+		for (UUID descriptionUuid : descriptionUuidList) {
+			description = (TaxonDescription) service.load(descriptionUuid);
+			taxonDescriptions.add(description);
+		}
+		NamedAreaTree areaTree = service.getOrderedDistributions(taxonDescriptions, levels);
+		return areaTree;
+	}
+	
 
 }
