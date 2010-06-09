@@ -151,7 +151,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (namedArea == null){
 			namedArea = (NamedArea)getTermService().find(uuid);
 			if (namedArea == null){
-				namedArea = NamedArea.NewInstance(label, text, labelAbbrev);
+				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
