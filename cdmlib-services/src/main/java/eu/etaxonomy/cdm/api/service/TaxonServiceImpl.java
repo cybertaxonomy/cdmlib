@@ -292,6 +292,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		// make synonym name the accepted taxons name
 		acceptedTaxon.setName(newAcceptedTaxonName);
+		synonym.setName(oldAcceptedTaxonName);
 		
 		// add the new synonym to the acceptedTaxon
 		if(synonymRelationshipType == null){
@@ -299,7 +300,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			synonymRelationshipType = type;
 		}
 		if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
-			acceptedTaxon.addHomotypicSynonymName(oldAcceptedTaxonName, null, null);
+			acceptedTaxon.addHomotypicSynonym(synonym, null, null);
 		}else{
 			acceptedTaxon.addSynonymName(oldAcceptedTaxonName, synonymRelationshipType);
 		}
