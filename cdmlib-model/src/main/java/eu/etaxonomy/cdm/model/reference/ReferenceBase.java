@@ -227,7 +227,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-    @InReference(groups=Level2.class)
+    //@InReference(groups=Level2.class)
    	protected ReferenceBase inReference;
     
 //    @XmlElement(name = "FullReference")
