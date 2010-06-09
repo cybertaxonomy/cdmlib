@@ -126,7 +126,7 @@ public class TaxonNodeTest {
 		//test child properties
 		assertNotNull("Child should not be null", child);
 		assertEquals("Child taxon should be taxon2", taxon2, child.getTaxon());
-		assertEquals("Parent taxon should be taxon1", taxon1, ((TaxonNode) child.getParent()).getTaxon());
+		assertEquals("Parent taxon should be taxon1", taxon1, (child.getParent()).getTaxon());
 		assertEquals("Reference should be ref2", ref2, child.getReference());
 		assertEquals("Microreference should be 'p33'", "p33", child.getMicroReference());
 		assertEquals("Synonym should be syn1", syn1, child.getSynonymToBeUsed());
