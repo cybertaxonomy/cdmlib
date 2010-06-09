@@ -62,10 +62,10 @@ public class PublicationBaseTest {
 		place1 = "place1";
 		place2 = "place2";
 		
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		publicationBase = refFactory.newBook();
 		
-		publicationBase2 = refFactory.newArticle();
+		publicationBase = ReferenceFactory.newBook();
+		
+		publicationBase2 = ReferenceFactory.newArticle();
 		
 	}
 
@@ -91,6 +91,16 @@ public class PublicationBaseTest {
 		assertEquals("Second publisher must be publisher2", publisher2, publicationBase.getPublisher());
 
 		assertEquals("Second publication place must be place2", place2, publicationBase.getPlacePublished());
+	}
+	
+	@Test
+	public void testInReferenceValidation(){
+		IJournal journal = ReferenceFactory.newJournal();
+		publicationBase2.setInJournal(journal);
+		//TODO: to validate it, the object has to be saved to the db
+		IBookSection booksection = ((ReferenceBase)publicationBase2).castReferenceToBookSection();
+		
+		
 	}
 
 	
