@@ -1969,6 +1969,7 @@ cdmlib-model/src/main/resources/terms/NameTypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/NamedArea.csv -text
 cdmlib-model/src/main/resources/terms/NamedAreaLevel.csv -text
 cdmlib-model/src/main/resources/terms/NamedAreaType.csv -text
+cdmlib-model/src/main/resources/terms/NaturalLanguageTerm.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalCode.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
 cdmlib-model/src/main/resources/terms/PresenceTerm.csv -text
