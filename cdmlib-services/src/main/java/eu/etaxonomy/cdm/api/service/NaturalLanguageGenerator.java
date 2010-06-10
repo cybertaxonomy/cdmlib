@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.Modifier;
+import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -32,17 +33,24 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Component
 public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
+	private DescriptionBuilder<QuantitativeData> quantitativeDescriptionBuilder = new DefaultQuantitativeDescriptionBuilder();
+	private DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder = new DefaultCategoricalDescriptionBuilder();
+	
 	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description) {
-		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, false);
+		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, Language.DEFAULT(), false);
 	}
 	
-	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, TaxonDescription description, boolean leaf) {
+	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, Language language) {
+		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, language, false);
+	}
+	
+	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, TaxonDescription description, Language language, boolean leaf) {
 		List<TextData> listTextData = new ArrayList<TextData>(); ;
 		if (!parent.isLeaf()){
 			Feature fref = parent.getFeature();
 			for (Iterator<FeatureNode> ifn = children.iterator() ; ifn.hasNext() ;){
 				FeatureNode fn = ifn.next();
-				listTextData.addAll(buildBranchesDescr(fn.getChildren(),fn,description, leaf));
+				listTextData.addAll(buildBranchesDescr(fn.getChildren(),fn,description, language, leaf));
 			}
 		}
 		else {
@@ -56,12 +64,13 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 						if (descriptionElement.getFeature().equals(fref)){
 							if (descriptionElement instanceof CategoricalData) {
 								CategoricalData categoricalData = (CategoricalData) descriptionElement;
-								textData = buildCategoricalDescr(categoricalData);
+								//textData = buildCategoricalDescr(categoricalData, language);
+								textData = categoricalDescriptionBuilder.build(categoricalData);
 								listTextData.add(textData);
 							}
 							if (descriptionElement instanceof QuantitativeData) {
 								QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
-								textData = buildQuantitativeDescr(quantitativeData);
+								textData = quantitativeDescriptionBuilder.build(quantitativeData);
 								listTextData.add(textData);
 							}
 						}
@@ -72,8 +81,8 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		return listTextData;
 	}
 
-	//TODO manage different languages ?
-	private TextData buildQuantitativeDescr (QuantitativeData quantitativeData) throws ParseException {
+	//Deprecated
+	private TextData buildQuantitativeDescr (QuantitativeData quantitativeData, Language language) throws ParseException {
 
 		boolean average = false;
 		float averagevalue = new Float(0);
@@ -87,6 +96,20 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		float lowerbvalue = new Float(0);
 		boolean upperb = false;
 		float upperbvalue = new Float(0);
+		
+		NaturalLanguageTerm nltFrom = NaturalLanguageTerm.FROM();
+		String from = nltFrom.getPreferredRepresentation(language).getLabel();
+		NaturalLanguageTerm nltTo = NaturalLanguageTerm.TO();
+		String to = nltTo.getPreferredRepresentation(language).getLabel();
+		NaturalLanguageTerm nltUp_To = NaturalLanguageTerm.UP_TO();
+		String up_To = nltUp_To.getPreferredRepresentation(language).getLabel();
+		NaturalLanguageTerm nltMost_Frequently = NaturalLanguageTerm.MOST_FREQUENTLY();
+		String most_Frequently = nltMost_Frequently.getPreferredRepresentation(language).getLabel();
+		NaturalLanguageTerm nltOn_Average = NaturalLanguageTerm.ON_AVERAGE();
+		String on_Average = nltOn_Average.getPreferredRepresentation(language).getLabel();
+		NaturalLanguageTerm nltMore_Or_Less = NaturalLanguageTerm.MORE_OR_LESS();
+		String more_Or_Less = nltMore_Or_Less.getPreferredRepresentation(language).getLabel();
+		String space = " ";
 		
 		StringBuilder QuantitativeDescription = new StringBuilder();
 		Feature feature = quantitativeData.getFeature();
@@ -118,45 +141,46 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 			}
 		}
 		if (max && min) {
-			QuantitativeDescription.append(" from " + minvalue + " to " + maxvalue + unit);
+			QuantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
 		}
 		else if (min) {
-			QuantitativeDescription.append(" from " + minvalue + " " + unit);
+			QuantitativeDescription.append(space + from + space + minvalue + space + unit);
 		}
 		else if (max) {
-			QuantitativeDescription.append(" up to " + maxvalue + " " + unit);
+			QuantitativeDescription.append(space + up_To + space + maxvalue + space + unit);
 		}
 		if ((max||min)&&(lowerb||upperb)) {
-			QuantitativeDescription.append(",");
+			QuantitativeDescription.append(","); // fusion avec dessous ?
 		}
 		if ((lowerb||upperb)&&(min||max)) {
-			QuantitativeDescription.append(" most frequently");
+			QuantitativeDescription.append(space + most_Frequently + space);
 		}
 		if (upperb && lowerb) {
-			QuantitativeDescription.append(" from " + lowerbvalue + " to " + upperbvalue + unit);
+			QuantitativeDescription.append(space + from + space + lowerbvalue + space + to + space + upperbvalue + space + unit);
 		}
 		else if (lowerb) {
-			QuantitativeDescription.append(" from " + lowerbvalue + " " + unit);
+			QuantitativeDescription.append(space + from + lowerbvalue + space + unit);
 		}
 		else if (upperb) {
-			QuantitativeDescription.append(" up to " + upperbvalue + " " + unit);
+			QuantitativeDescription.append(space + up_To + space + upperbvalue + space + unit);
 		}
 		if (((max||min)&&(average))||((lowerb||upperb)&&(average))) {
 			QuantitativeDescription.append(",");
 		}
 		if (average) {
-			QuantitativeDescription.append(" " + averagevalue + unit + " on average ");
+			QuantitativeDescription.append(space + averagevalue + space + unit + space + on_Average);
 			if (sd) {
-				QuantitativeDescription.append("(+/- " + sdvalue + ")");
+				QuantitativeDescription.append("("+ more_Or_Less + space + sdvalue + ")");
 			}
 		}
-		textData.putText(QuantitativeDescription.toString(), Language.ENGLISH());
+		textData.putText(QuantitativeDescription.toString(), language);
 		return textData;
 	}
 	
-	private TextData buildCategoricalDescr(CategoricalData categoricalData) throws ParseException {
+	//Deprecated
+	private TextData buildCategoricalDescr(CategoricalData categoricalData, Language language) throws ParseException {
 		Feature feature = categoricalData.getFeature();
-		TextData textData = TextData.NewInstance(feature); 
+		TextData textData = TextData.NewInstance(feature);
 		List<StateData> states = categoricalData.getStates();
 		
 		StringBuilder CategoricalDescription = new StringBuilder();
@@ -168,12 +192,19 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 			Set<Modifier> modifiers = stateData.getModifiers();
 			for (Iterator<Modifier> mod = modifiers.iterator() ; mod.hasNext() ;){
 				Modifier modifier = mod.next();
-				CategoricalDescription.append(" " + modifier.getLabel());
+				CategoricalDescription.append(" " + modifier.getPreferredRepresentation(language).getLabel());
 			}
-			CategoricalDescription.append(" " + s.getLabel());
+			CategoricalDescription.append(" " + s.getPreferredRepresentation(language).getLabel());
 		}
-		textData.putText(CategoricalDescription.toString(), Language.ENGLISH());
+		textData.putText(CategoricalDescription.toString(), language);
 		return textData ;
 	}
 	
+	public void setQuantitativeDescriptionBuilder(DescriptionBuilder<QuantitativeData> quantitativeDescriptionBuilder){
+		this.quantitativeDescriptionBuilder = quantitativeDescriptionBuilder;
+	}
+	
+	public void setCategoricalDescriptionBuilder(DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder){
+		this.categoricalDescriptionBuilder = categoricalDescriptionBuilder;
+	}
 }
