@@ -139,6 +139,38 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		return getTermByUuid(uuidCountry);
 	}
 
+	public static final boolean isTDWG_LEVEL1(String str){
+		boolean result = false;
+		if (uuidTdwgLevel1.compareTo(UUID.fromString(str)) == 0){
+			result = true;
+		}
+		return result;
+	}
+	
+	public static final boolean isTDWG_LEVEL2(String str){
+		boolean result = false;
+		if (uuidTdwgLevel2.compareTo(UUID.fromString(str)) == 0){
+			result = true;
+		}
+		return result;
+	}
+	
+	public static final boolean isTDWG_LEVEL3(String str){
+		boolean result = false;
+		if (uuidTdwgLevel3.compareTo(UUID.fromString(str)) == 0){
+			result = true;
+		}
+		return result;
+	}
+	
+	public static final boolean isTDWG_LEVEL4(String str){
+		boolean result = false;
+		if (uuidTdwgLevel4.compareTo(UUID.fromString(str)) == 0){
+			result = true;
+		}
+		return result;
+	}
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedAreaLevel> termVocabulary) {
 		termMap = new HashMap<UUID, NamedAreaLevel>();
