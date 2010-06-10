@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -176,15 +177,17 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
      * @throws IdDoesNotExistException 
      */
     @RequestMapping(method = RequestMethod.GET,params = "verb=ListMetadataFormats")
-    public ModelAndView listMetadataFormats(@RequestParam(value = "identifier", required = true) LSID identifier) throws IdDoesNotExistException {
+    public ModelAndView listMetadataFormats(@RequestParam(value = "identifier", required = false) LSID identifier) throws IdDoesNotExistException {
  
         ModelAndView modelAndView = new ModelAndView("oai/listMetadataFormats");
-        T object = service.find(identifier);
         
-
-        if(object == null) {
-	        throw new IdDoesNotExistException(identifier);
-        }
+        T object = service.find(UUID.fromString("c34eb662-6bba-4ad7-b84e-dd98f2fd9788"));
+        if(false && identifier != null) {
+        	object = service.find(identifier);
+	        if(object == null) {
+		        throw new IdDoesNotExistException(identifier);
+	        }
+    	}
 
         return modelAndView;
     }

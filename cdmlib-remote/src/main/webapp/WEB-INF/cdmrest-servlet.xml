@@ -29,6 +29,7 @@
 		</property>
 	</bean>
 
+    <!-- 
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="order" value="0" />
 		<property name="mappings">
@@ -40,6 +41,7 @@
 			</props>
 		</property>
 	</bean>
+	 -->
     
 	<!-- 
 	======= HandlerAdapters =======
@@ -82,15 +84,15 @@
 	<!--
 		The welcome-file-list in the web.xml will is ignored since the
 		cdmserver servlet is mapped to the root path [/] So the welcome file
-		list is being replaces by a SimpleUrlHandlerMapping on the root path
+		list is being replaced by a SimpleUrlHandlerMapping on the root path
 		[/] which is mapped via this ViewController to the [index] view
-	-->
 	<bean id="welcomeFileViewController"
 		class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
 		<property name="suffix">
 			<value>index</value>
 		</property>
 	</bean>
+	-->
 
 
 	<!-- 
@@ -105,25 +107,28 @@
 	<bean name="viewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
 		<property name="order" value="0" />
 		<!--
-			turn caching off FOR DEBUGING ONLY !!!! <property name="cache"
-			value="false"/>
+			turn caching off FOR DEBUGING ONLY !!!! 
+			<property name="cache" value="false"/>
 		-->
 	</bean>
-
+	
+    <!--  
+        === the viewResolverJsp is currently unused ===
 	<bean id="viewResolverJsp"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="order" value="1" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 		<property name="viewNames">
-			<!--
+			<!- -
 				view names (or name patterns) that can be handled
-			-->
+			- ->
 			<list>
 				<value>index</value>
 			</list>
 		</property>
 	</bean>
+    -->
 
 	<!-- 
 	======= Exception Handling =======

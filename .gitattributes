@@ -2639,7 +2639,6 @@ cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-shall
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/ehcache.xml -text
 cdmlib-remote/src/main/resources/log4j.properties -text
-cdmlib-remote/src/main/resources/oai-pmh.xsd -text
 cdmlib-remote/src/main/resources/spy.properties -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
@@ -2656,6 +2655,8 @@ cdmlib-remote/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/jsonConfigurations.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
+cdmlib-remote/src/main/webapp/human.xsl -text
+cdmlib-remote/src/main/webapp/oai2.xsl -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/lsid/AssemblerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/AuthorityControllerTest.java -text

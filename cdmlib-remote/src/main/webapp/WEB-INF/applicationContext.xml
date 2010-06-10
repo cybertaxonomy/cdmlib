@@ -11,7 +11,7 @@
 	<!-- include default application context and customization -->
      <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
      <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-     	<property name="omit" value="false" />
+     	<property name="omit" value="true" />
      </bean>
     <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
     
@@ -39,7 +39,7 @@
     
     <!-- OAI-PMH TODO externalize? -->
      <bean name="taxonOaiPmhController" class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
-	  <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/>
+	   <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/>
 	 </bean>
 	
 	<bean name="taxonOaiPmhCacheMapping" class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
