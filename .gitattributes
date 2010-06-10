@@ -2615,6 +2615,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRc
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSavePathMatchingResourcePatternResolver.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractCategoricalDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractStringComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotatableServiceBase.java -text
@@ -2623,6 +2625,9 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AuditEventService.jav
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CollectionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CommonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultCategoricalDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultQuantitativeDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
