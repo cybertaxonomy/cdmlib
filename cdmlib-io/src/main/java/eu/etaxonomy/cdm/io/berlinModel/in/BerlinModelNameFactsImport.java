@@ -13,11 +13,14 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_A
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_PROTOLOGUE;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -25,9 +28,11 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelNameFactsImportValidator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -49,54 +54,49 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsImport.class);
 
+	public static final String NAMESPACE = "NameFact";
+
 	/**
 	 * write info message after modCount iterations
 	 */
 	private int modCount = 50;
+	private static final String pluralString = "name facts";
+	private static final String dbTableName = "NameFact";
 
 	
 	public BerlinModelNameFactsImport(){
 		super();
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		logger.warn("Checking for NameFacts not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
+		String strQuery = 
+			" SELECT NameFact.*, Name.NameID as nameId, NameFactCategory.NameFactCategory " + 
+			" FROM NameFact INNER JOIN " +
+              	" Name ON NameFact.PTNameFk = Name.NameId  INNER JOIN "+
+              	" NameFactCategory ON NameFactCategory.NameFactCategoryID = NameFact.NameFactCategoryFK " + 
+            " WHERE (NameFactId IN ("+ ID_LIST_TOKEN+") )";
+		return strQuery;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
-	@Override
-	protected boolean doInvoke(BerlinModelImportState state){
-		boolean success = true;
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
-		
-		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		boolean success = true ;
 		BerlinModelImportConfigurator config = state.getConfig();
-		Source source = config.getSource();
+		Set<TaxonNameBase> nameToSave = new HashSet<TaxonNameBase>();
+		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
+		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+
+		ResultSet rs = partitioner.getResultSet();
 		
-		logger.info("start makeNameFacts ...");
-
+		ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
 		try {
-			//get data from database
-			String strQuery = 
-					" SELECT NameFact.*, Name.NameID as nameId, NameFactCategory.NameFactCategory " + 
-					" FROM NameFact INNER JOIN " +
-                      	" Name ON NameFact.PTNameFk = Name.NameId  INNER JOIN "+
-                      	" NameFactCategory ON NameFactCategory.NameFactCategoryID = NameFact.NameFactCategoryFK " + 
-                    " WHERE (1=1) ";
-			ResultSet rs = source.getResultSet(strQuery) ;
-
 			int i = 0;
 			//for each reference
 			while (rs.next() && (config.getMaximumNumberOfNameFacts() == 0 || i < config.getMaximumNumberOfNameFacts())){
@@ -105,13 +105,16 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				
 				int nameFactId = rs.getInt("nameFactId");
 				int nameId = rs.getInt("nameId");
-				int nameFactRefFk = rs.getInt("nameFactRefFk");
-				int categoryFk = rs.getInt("nameFactCategoryFk");
+				Object nameFactRefFkObj = rs.getObject("nameFactRefFk");
+				String nameFactRefDetail = rs.getString("nameFactRefDetail");
+				
 				String category = CdmUtils.Nz(rs.getString("NameFactCategory"));
 				String nameFact = CdmUtils.Nz(rs.getString("nameFact"));
 				
-				TaxonNameBase taxonNameBase = taxonNameMap.get(nameId);
-				//taxonNameBase = BotanicalName.NewInstance(null);
+				TaxonNameBase taxonNameBase = nameMap.get(String.valueOf(nameId));
+				String nameFactRefFk = String.valueOf(nameFactRefFkObj);
+				ReferenceBase citation = getReferenceOnlyFromMaps(biblioRefMap, 
+						nomRefMap, nameFactRefFk);
 				
 				if (taxonNameBase != null){
 					//PROTOLOGUE
@@ -124,8 +127,11 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 								TaxonNameDescription description = TaxonNameDescription.NewInstance();
 								TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
 								protolog.addMedia(media);
+								protolog.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
+										nameFactRefDetail, null, null);
 								description.addElement(protolog);
 								taxonNameBase.addDescription(description);
+								description.addDescriptionSource(citation);
 							}//end NAME_FACT_PROTOLOGUE
 						}catch(NullPointerException e){
 							logger.warn("MediaUrl and/or MediaPath not set. Could not get protologue.");
@@ -133,13 +139,13 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 						}						
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
 						if (! nameFact.equals("")){
-							
-							
 							TaxonNameDescription description = TaxonNameDescription.NewInstance();
 							TextData additionalPublication = TextData.NewInstance(Feature.ADDITIONAL_PUBLICATION());
 							//TODO language
 							Language language = Language.DEFAULT();
 							additionalPublication.putText(nameFact, language);
+							additionalPublication.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
+									nameFactRefDetail, null, null);
 							description.addElement(additionalPublication);
 							taxonNameBase.addDescription(description);
 						}
@@ -150,7 +156,6 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 					}
 					
 					//TODO
-//					NameFactRefFk            int        Checked
 //					DoubtfulFlag    bit        Checked
 //					PublishFlag      bit        Checked
 //					Created_When  datetime           Checked
@@ -158,9 +163,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 //					Created_Who    nvarchar(255)    Checked
 //					Updated_Who  nvarchar(255)    Checked
 //					Notes      nvarchar(1000)           Checked
-//					NameFactRefDetail       nvarchar(80)      Checked
 					
-					taxonNameStore.add(taxonNameBase);
+					nameToSave.add(taxonNameBase);
 				}else{
 					//TODO
 					logger.warn("TaxonName for NameFact " + nameFactId + " does not exist in store");
@@ -171,10 +175,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 			if (config.getMaximumNumberOfNameFacts() != 0 && i >= config.getMaximumNumberOfNameFacts() - 1){ 
 				logger.warn("ONLY " + config.getMaximumNumberOfNameFacts() + " NAMEFACTS imported !!!" )
 			;};
-			logger.info("Names to save: " + taxonNameStore.size());
-			getNameService().save(taxonNameStore);	
-			
-			logger.info("end makeNameFacts ..." + getSuccessString(success));
+			logger.info("Names to save: " + nameToSave.size());
+			getNameService().save(nameToSave);	
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -183,15 +185,54 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 
 	}
 
-	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
 	 */
-	protected boolean isIgnore(BerlinModelImportState state){
-		return ! state.getConfig().isDoNameFacts();
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		String nameSpace;
+		Class cdmClass;
+		Set<String> idSet;
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+		
+		try{
+			Set<String> nameIdSet = new HashSet<String>();
+			Set<String> referenceIdSet = new HashSet<String>();
+			while (rs.next()){
+				handleForeignKey(rs, nameIdSet, "PTnameFk");
+				handleForeignKey(rs, referenceIdSet, "nameFactRefFk");
 	}
 	
+			//name map
+			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
+			cdmClass = TaxonNameBase.class;
+			idSet = nameIdSet;
+			Map<String, Person> objectMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, objectMap);
+
+			//nom reference map
+			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, nomReferenceMap);
+
+			//biblio reference map
+			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, biblioReferenceMap);
+
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
 	
+	//FIXME gibt es da keine allgemeine Methode in common?
+	//FIXME gibt es da keine allgemeine Methode in common?
 	public Media getMedia(String nameFact, URL mediaUrl, File mediaPath){
 		if (mediaUrl == null){
 			logger.warn("Media Url should not be null");
@@ -297,14 +338,53 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 		
 		return media;
 	}
-	
+
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+	
 		imageMetaData.readMetaData(file.toURI(), 0);
+		
 		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
 		return image;
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelNameFactsImportValidator();
+		return validator.validate(state);
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(BerlinModelImportState state){
+		return ! state.getConfig().isDoNameFacts();
+	}
+	
+
 	
 	//for testing only
 	public static void main(String[] args) {

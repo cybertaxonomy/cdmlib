@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -218,9 +220,15 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 
 									PresenceAbsenceTermBase<?> presenceAbsenceStatus 
 									= FaunaEuropaeaTransformer.occStatus2PresenceAbsence(fauEuHelperDistribution.getOccurrenceStatusId());
+									
 									NamedArea namedArea = 
 										FaunaEuropaeaTransformer.areaId2TdwgArea(fauEuHelperDistribution);
-
+									
+									if (namedArea == null){
+										UUID areaUuid= FaunaEuropaeaTransformer.getUUIDByAreaAbbr(fauEuHelperDistribution.getAreaCode());
+										namedArea = getNamedArea(state, areaUuid, fauEuHelperDistribution.getAreaName(), null, fauEuHelperDistribution.getAreaCode(), null, null);
+									}
+									
 									Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
 									newDistribution.setType(Feature.DISTRIBUTION());
 									taxonDescription.addElement(newDistribution);

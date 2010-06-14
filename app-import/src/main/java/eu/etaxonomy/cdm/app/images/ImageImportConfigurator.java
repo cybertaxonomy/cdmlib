@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -33,6 +33,11 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 		return new ImageImportConfigurator(source, destination, mediaUrlString, importerClass);		
 	}
 	
+	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
+	
 	/**
 	 * @param source
 	 * @param destination
@@ -46,6 +51,7 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	}
 	
 	private ImageImportConfigurator(File source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
+		super(defaultTransformer);
 		FileNotFoundException e;
 		setSource(source);
 		setDestination(destination);

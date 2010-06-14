@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
 import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
@@ -32,8 +33,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState> implements IImportConfigurator {
-
 	private static final Logger logger = Logger.getLogger(TcsXmlImportConfigurator.class);
+	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
 	
 	private boolean doMetaData = true;
 	private boolean doSpecimen = true;
@@ -94,7 +98,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	 * @param destination
 	 */
 	private TcsXmlImportConfigurator() {
-		super();
+		super(defaultTransformer);
 //		setSource(url);
 //		setDestination(destination);
 	}
@@ -105,7 +109,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	 * @param destination
 	 */
 	private TcsXmlImportConfigurator(String url, ICdmDataSource destination) {
-		super();
+		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}

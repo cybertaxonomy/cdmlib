@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class DbExportStateBase<CONFIG extends DbExportConfiguratorBase> extends ExportStateBase<CONFIG> {
 	private static final Logger logger = Logger.getLogger(DbExportStateBase.class);
 	
-	Map<UUID, Integer> dbIdMap = new HashMap<UUID, Integer>();
+	protected Map<UUID, Integer> dbIdMap = new HashMap<UUID, Integer>();
 	
 	
 	public DbExportStateBase(CONFIG config) {

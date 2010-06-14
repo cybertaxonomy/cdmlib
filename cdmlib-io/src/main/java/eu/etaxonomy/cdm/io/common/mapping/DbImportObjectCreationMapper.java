@@ -10,57 +10,62 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase;
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 
 /**
  * @author a.mueller
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbImportObjectCreationMapper<CDM_BASE extends CdmBase> extends MultipleAttributeMapperBase implements IDbImportMapper<DbImportStateBase<?>, CDM_BASE> {
+public class DbImportObjectCreationMapper<ANNOTATABLE extends AnnotatableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<ANNOTATABLE, STATE> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapper.class);
 	
-	public static DbImportObjectCreationMapper<?> NewInstance(IMappingImport mappingImport){
-		return new DbImportObjectCreationMapper(mappingImport);
+//******************************** FACTORY METHOD ***************************************************/
+	
+	public static DbImportObjectCreationMapper<?,?> NewInstance(IMappingImport mappingImport, String dbIdAttribute, String namespace){
+		return new DbImportObjectCreationMapper(mappingImport, dbIdAttribute, namespace);
 	}
 	
-	private IMappingImport<CDM_BASE> mappingImport;
+//******************************* ATTRIBUTES ***************************************/
+	private IMappingImport<ANNOTATABLE, STATE> mappingImport;
 	
-//	public static <T extends CdmImportBase> DbImportObjectCreationMapper NewInstance(String dbAttributeString, CdmImportBase importBase){
-//		String methodName = "get" + dbAttributeString;
-//		return NewInstance(dbAttributeString, importBase, methodName);
-//	}
 	
-
-	
+//********************************* CONSTRUCTOR ****************************************/
 	/**
-	 * @param parameterTypes 
-	 * @param dbIdAttributString
+	 * @param mappingImport
 	 */
-	protected DbImportObjectCreationMapper(IMappingImport<CDM_BASE> mappingImport) {
-		//FIXME parametrisertes super
-		super();
+	protected DbImportObjectCreationMapper(IMappingImport<ANNOTATABLE, STATE> mappingImport, String dbIdAttribute, String objectToCreateNamespace) {
+		super(dbIdAttribute, objectToCreateNamespace);
+		this.mappingImport = mappingImport;
 	}
+
+//************************************ METHODS *******************************************/
+
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#doInvoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.VersionableEntity)
 	 */
-	public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException {
-		cdmBase = mappingImport.createObject(rs);
-		return cdmBase;
+	@Override
+	protected ANNOTATABLE doInvoke(ResultSet rs, ANNOTATABLE createdObject) throws SQLException {
+		// do nothing
+		return createdObject;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
+	 */
+	@Override
+	protected ANNOTATABLE createObject(ResultSet rs) throws SQLException {
+		ANNOTATABLE result = mappingImport.createObject(rs, importMapperHelper.getState());
+		return result;
+	}
+
+
 }

@@ -158,6 +158,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
 //					result &= cdmIo.invoke(config, stores);
+					state.setCurrentIO(cdmIo);
 					result &= cdmIo.invoke(state);
 				}else{
 					logger.error("cdmIO was null");
@@ -197,6 +198,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	
 	private String getComponentBeanName(Class<ICdmIO> ioClass){
 		Component component = ioClass.getAnnotation(Component.class);
+		if (component == null){
+			throw new IllegalArgumentException("Class " + ioClass.getName() + " is missing a @Component annotation." );
+		}
 		String ioBean = component.value();
 		if ("".equals(ioBean)){
 			ioBean = ioClass.getSimpleName();

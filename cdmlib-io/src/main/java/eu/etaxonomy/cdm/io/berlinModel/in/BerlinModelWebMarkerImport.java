@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -17,11 +18,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelWebMarkerImportValidator;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -46,37 +49,39 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 		super();
 	}
 	
+	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		logger.warn("Checking for "+pluralString+" not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
+	protected String getIdQuery() {
+		return " SELECT markerId FROM " + getTableName();
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
+	 */
+	@Override
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
+		String strQuery = 
+			" SELECT *  " +
+            " FROM webMarker INNER JOIN webTableName ON webMarker.TableNameFk = webTableName.TableNameId " +
+            " WHERE (markerId IN ("+ ID_LIST_TOKEN + ") )";
+		return strQuery;
+
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		boolean success = true ;
 	
-	protected boolean doInvoke(BerlinModelImportState state){
-		
 		MapWrapper<Taxon> taxonMap = (MapWrapper<Taxon>)state.getStore(ICdmIO.TAXON_STORE);
 		Set<TaxonBase> taxaToBeSaved = new HashSet<TaxonBase>(); 
 		
-		BerlinModelImportConfigurator config = state.getConfig();
-		Source source = config.getSource();
-		
-		logger.info("start make "+pluralString+" ...");
-		boolean success = true ;
-		
-		//get data from database
-		String strQuery = 
-				" SELECT *  " +
-                " FROM webMarker INNER JOIN webTableName ON webMarker.TableNameFk = webTableName.TableNameId ";
-		ResultSet rs = source.getResultSet(strQuery) ;
-		String namespace = dbTableName;
-		Map<String, DefinedTermBase> map = state.getDbCdmDefinedTermMap();
+		Map<String, DefinedTermBase> definedTermMap = state.getDbCdmDefinedTermMap();
+		ResultSet rs = partitioner.getResultSet();
 		
 		int i = 0;
 		//for each reference
@@ -87,19 +92,19 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 					//
 					int markerId = rs.getInt("MarkerId");
 					int markerCategoryFk = rs.getInt("MarkerCategoryFk");
-					int rIdentifier = rs.getInt("RIdentifierFk");
+					int rIdentifierFk = rs.getInt("RIdentifierFk");
 					String tableName = rs.getString("TableName");
 					Boolean activeFlag = rs.getBoolean("ActiveFlag");
 					
 					AnnotatableEntity annotatableEntity;
 					if ("PTaxon".equals(tableName)){
-						TaxonBase<?> taxon = taxonMap.get(rIdentifier);
+						TaxonBase<?> taxon = taxonMap.get(String.valueOf(rIdentifierFk));
 						if (taxon != null){
 							annotatableEntity = taxon;
 							taxaToBeSaved.add(taxon);
-							addMarker(annotatableEntity, activeFlag, markerCategoryFk, map);
+							addMarker(annotatableEntity, activeFlag, markerCategoryFk, definedTermMap);
 						}else{
-							logger.warn("TaxonBase (RIdentifier " + rIdentifier + ") could not be found for marker " + markerId);
+							logger.warn("TaxonBase (RIdentifier " + rIdentifierFk + ") could not be found for marker " + markerId);
 						}
 					}else{
 						logger.warn("Marker for table " + tableName + " not yet implemented.");
@@ -118,14 +123,46 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 			return false;
 		}
 
-			
 		logger.info("save " + i + " "+pluralString + " ...");
 		getTaxonService().save(taxaToBeSaved);
-		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
 		return success;
-		
 	}
+		
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		String nameSpace;
+		Class cdmClass;
+		Set<String> idSet;
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+		
+		try{
+			Set<String> taxonIdSet = new HashSet<String>();
+			while (rs.next()){
+				int tableNameId = rs.getInt("TableNameFk");
+				if (tableNameId != 500){
+					//TODO
+					logger.warn("A marker is not related to table PTaxon. This case is not handled yet!");
+				}else{
+					handleForeignKey(rs, taxonIdSet, "RIdentifierFk");
+	}
+			}
 	
+			//taxon map
+			nameSpace = BerlinModelTaxonImport.NAMESPACE;
+			cdmClass = TaxonBase.class;
+			idSet = taxonIdSet;
+			Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, taxonMap);
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
 	private boolean addMarker(AnnotatableEntity annotatableEntity, boolean activeFlag, int markerCategoryFk, Map<String, DefinedTermBase> map ){
 		MarkerType markerType = (MarkerType)map.get("webMarkerCategory_" + markerCategoryFk);
 		if (markerType == null){
@@ -137,11 +174,39 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelWebMarkerImportValidator();
+		return validator.validate(state);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoMarker();
 	}
+
 
 }

@@ -119,20 +119,7 @@ public class ImportHelper {
 				return true;
 			}
 			if (logger.isDebugEnabled()) { logger.debug("addValue: " + sourceValue);}
-			if (clazz == boolean.class || clazz == Boolean.class){
-				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
-					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters");
-				}
-				methodName = "set" + cdmAttrName.substring(2, 3).toUpperCase() + cdmAttrName.substring(3) ;
-			}else if(clazz == String.class) {
-				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
-					throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
-				}
-				methodName = "set" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
-			}else{
-				logger.error("Class not supported: " + clazz.toString());
-				return false;
-			}
+			methodName = getSetterMethodName(clazz, cdmAttrName);
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName, clazz);
 			cdmMethod.invoke(cdmBase, sourceValue);
 			return true;
@@ -161,6 +148,32 @@ public class ImportHelper {
 			}
 		}
 		
+	}
+
+	/**
+	 * @param clazz either boolean or other class (for boolean the naming strategy is different !)
+	 * @param cdmAttrName 
+	 * @return
+//	 * @throws IllegalArgumentException if a clazz is not yet supported
+	 */
+	public static String getSetterMethodName(Class clazz, String cdmAttrName) {
+		String methodName; 
+		if (clazz == boolean.class || clazz == Boolean.class){
+			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
+				throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters");
+			}
+			methodName = "set" + cdmAttrName.substring(2, 3).toUpperCase() + cdmAttrName.substring(3) ;
+		}else  {
+			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
+				throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
+			}
+			methodName = "set" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
+		}
+//		else{
+//			logger.error("Class not supported: " + clazz.toString());
+//			throw new IllegalArgumentException("Classes other than boolean or String are not yet supported");
+//		};
+		return methodName;
 	}
 
 	private static boolean valuesAreNull(List<Object> values){
@@ -267,21 +280,7 @@ public class ImportHelper {
 		String methodName;
 		T result;
 		try {
-			if (isBoolean){
-				if (cdmAttrName == null || cdmAttrName.length() < 3 ||  !( cdmAttrName.startsWith("is") || cdmAttrName.startsWith("use"))     ){
-					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters and start with 'is' or 'use': " + cdmAttrName);
-				}
-				methodName = cdmAttrName ;
-			}else {
-				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
-					throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
-				}
-				methodName = "get" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
-			}
-//			else{
-//				logger.error("Class not supported: " + clazz.toString());
-//				return null;
-//			}
+			methodName = getGetterMethodName(cdmAttrName, isBoolean);
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
 			result = (T)cdmMethod.invoke(cdmBase);
 			return result;
@@ -312,28 +311,25 @@ public class ImportHelper {
 		
 	}
 
-	
-	
-	
-	
-	//******* old *****************
-	
-//	private static Calendar getCalendar(String strYear){
-//		//FIXME until now only quick and dirty and wrong
-//		Calendar cal = Calendar.getInstance();
-//		cal.set(9999, Calendar.DECEMBER, 30, 0, 0, 0);
-//		if (CdmUtils.isNumeric(strYear)){
-//			try {
-//				Integer year = Integer.valueOf(strYear.trim());
-//				if (year > 1750 && year < 2030){
-//					cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
-//				}
-//			} catch (NumberFormatException e) {
-//				logger.debug("Not a Integer format in getCalendar()");
-//			}
-//		}
-//		return cal;
-//	}
-
+	/**
+	 * @param cdmAttrName
+	 * @param isBoolean
+	 * @return
+	 */
+	public static String getGetterMethodName(String cdmAttrName, boolean isBoolean) {
+		String methodName;
+		if (isBoolean){
+			if (cdmAttrName == null || cdmAttrName.length() < 3 ||  !( cdmAttrName.startsWith("is") || cdmAttrName.startsWith("use"))     ){
+				throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters and start with 'is' or 'use': " + cdmAttrName);
+			}
+			methodName = cdmAttrName ;
+		}else {
+			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
+				throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
+			}
+			methodName = "get" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
+		}
+		return methodName;
+	}
 
 }

@@ -20,7 +20,11 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -32,13 +36,21 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @created 11.05.2009
  * @version 1.0
  */
-public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> extends IoStateBase<CONFIG> {
+public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO extends CdmImportBase> extends IoStateBase<CONFIG, IO> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	
 	private Map<Object,TaxonomicTree> treeMap = new HashMap<Object,TaxonomicTree>();
 
 	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
+
+	private Map<String,UUID> taxonomicTreeKeyUuidMap = new HashMap<String,UUID>();
+	
+	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
+	private Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
+	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
+	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
+	
 
 	
 	protected ImportStateBase(CONFIG config){
@@ -112,8 +124,72 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 			this.treeUuidMap.put(ref, tree.getUuid());
 		}
 	}
-	
+
 	public int countTreeUuids(){
 		return treeUuidMap.size();
 	}
+
+	
+	
+	
+	/**
+	 * Adds a taxonomic tree uuid to the taxonomic tree uuid map,
+	 * which maps a key for the taxonomic tree to its UUID in the CDM
+	 * @param treeKeyId
+	 * @param tree
+	 */
+	public void putTaxonomicTreeUuidInt(int treeKeyId, TaxonomicTree tree) {
+		putTaxonomicTreeUuid(String.valueOf(treeKeyId), tree);
+	}
+
+	public void putTaxonomicTreeUuid(String treeKey, TaxonomicTree tree) {
+		if (tree != null &&  tree.getUuid() != null){
+			this.taxonomicTreeKeyUuidMap.put(treeKey, tree.getUuid());
+		}
+	}
+	
+	public UUID getTreeUuidByIntTreeKey(int treeKey) {
+		return taxonomicTreeKeyUuidMap.get(String.valueOf(treeKey));
+	}
+	
+	public UUID getTreeUuidByTreeKey(String treeKey) {
+		return taxonomicTreeKeyUuidMap.get(treeKey);
+	}
+	
+	
+	public ExtensionType getExtensionType(UUID uuid){
+		return extensionTypeMap.get(uuid);
+	}
+	
+	public void putExtensionType(ExtensionType extensionType){
+		extensionTypeMap.put(extensionType.getUuid(), extensionType);
+	}
+
+	public MarkerType getMarkerType(UUID uuid){
+		return markerTypeMap.get(uuid);
+	}
+	
+	public void putMarkerType(MarkerType markerType){
+		markerTypeMap.put(markerType.getUuid(), markerType);
+	}
+	
+	public NamedArea getNamedArea(UUID uuid){
+		return namedAreaMap.get(uuid);
+	}
+	
+	public void putNamedArea(NamedArea namedArea){
+		namedAreaMap.put(namedArea.getUuid(), namedArea);
+	}
+
+	
+	public Feature getFeature(UUID uuid){
+		return featureMap.get(uuid);
+	}
+	
+	public void putFeature(Feature feature){
+		featureMap.put(feature.getUuid(), feature);
+	}
+	
+
+	
 }

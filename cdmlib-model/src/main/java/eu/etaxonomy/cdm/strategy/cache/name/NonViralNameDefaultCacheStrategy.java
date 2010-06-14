@@ -27,8 +27,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
@@ -249,10 +247,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
 		while (iterator.hasNext()) {
 			NomenclaturalStatus ncStatus = (NomenclaturalStatus)iterator.next();
+			// since the NewInstance method of nomencatural status allows null as parameter
+			// we have to check for null values here
+			String suffix = "not defined";
+			if(ncStatus.getType() != null){
 			NomenclaturalStatusType statusType =  ncStatus.getType();
 			Language lang = Language.LATIN();
 			Representation repr = statusType.getRepresentation(lang);
-			ncStatusCache = ", " + repr.getAbbreviatedLabel();
+				suffix = repr.getAbbreviatedLabel();
+			}else if(ncStatus.getRuleConsidered() != null && ! ncStatus.getRuleConsidered().equals("")){
+				suffix = ncStatus.getRuleConsidered();
+		}
+			ncStatusCache = ", " + suffix;
 		}
 		String refConcat = " ";
 		if (referenceBaseCache != null && ! referenceBaseCache.trim().startsWith("in ")){

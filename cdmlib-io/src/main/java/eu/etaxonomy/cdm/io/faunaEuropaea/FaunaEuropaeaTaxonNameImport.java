@@ -295,6 +295,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 						taxonBase = taxon;
 					} else if ((status == T_STATUS_NOT_ACCEPTED) && (autId != A_AUCT)) { // synonym
 						synonym = Synonym.NewInstance(zooName, sourceReference);
+						//logger.info("Synonym created: " + synonym.getTitleCache() + " taxonName: " + zooName.getTitleCache());
 						if (logger.isDebugEnabled()) {
 							logger.debug("Synonym created (" + taxonId + ")");
 						}
@@ -380,9 +381,17 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			TaxonBase<?> taxonBase = taxonMap.get(id);
 			TaxonNameBase<?,?> taxonName = taxonBase.getName();
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
-			
+			boolean useOriginalGenus = false;
+			if (taxonBase instanceof Synonym){
+				useOriginalGenus = true;
+			}
 			String nameString = 
-				buildTaxonName(fauEuTaxon, taxonBase, taxonName, false, fauEuConfig);
+				buildTaxonName(fauEuTaxon, taxonBase, taxonName, useOriginalGenus, fauEuConfig);
+			
+			if (taxonBase instanceof Synonym){
+				logger.info("Name of Synonym: " + nameString);
+			}
+			
 			
 			if (fauEuConfig.isDoBasionyms() 
 					&& fauEuTaxon.getRankId() > R_SUBGENUS
@@ -395,7 +404,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
 				}
 				
-				if (actualGenusId != originalGenusId) { 
+				if (actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) { 
 					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
 				}
 			}
@@ -439,6 +448,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				// heterotypic synonym
 				// synonym relationship to the accepted taxon is created later
 				synonymSet.add(synonym);
+				
 				if (logger.isDebugEnabled()) {
 					logger.debug("Heterotypic synonym stored (" + fauEuTaxon.getId() + ")");
 				}

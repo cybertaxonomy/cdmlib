@@ -11,24 +11,28 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelAuthorImportValidator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 
 /**
+ * Supported attributes:
+ * - AuthorId, Abbrev, FirstName, LastName, Dates, AreaOfInterest, NomStandard, createUpdateNotes
+ * 
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
@@ -37,7 +41,9 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 public class BerlinModelAuthorImport extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorImport.class);
 
-	private static int modCount = 5000;
+	public static final String NAMESPACE = "Author";
+	
+	private static int recordsPerLog = 5000;
 	private static final String dbTableName = "Author";
 	private static final String pluralString = "Authors";
 	
@@ -45,55 +51,38 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		super();
 	}
 	
-	
-	
-	
-
-
-
-
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		logger.warn("Checking for "+pluralString+" not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
+		String strRecordQuery = 
+			" SELECT * " +
+            " FROM " + dbTableName + " " + 
+            " WHERE authorId IN ( " + ID_LIST_TOKEN + " )";
+		return strRecordQuery;
 	}
-	
-	protected boolean doInvoke(BerlinModelImportState state){
-		
-		MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
-		
-		BerlinModelImportConfigurator config = state.getConfig();
-		Source source = config.getSource();
+
+
+	/**
+	 * @param partitioner
+	 * @throws SQLException 
+	 */
+	//TODO public ??
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state)  {
 		String dbAttrName;
 		String cdmAttrName;
-
-		logger.info("start make "+pluralString+" ...");
-		boolean success = true ;
+		Map<Integer, Person> personMap = new HashMap<Integer, Person>();
 		
-		
-		
-		//get data from database
-		String strQuery = 
-				" SELECT *  " +
-                " FROM "+dbTableName+" " ;
-		ResultSet rs = source.getResultSet(strQuery) ;
-		String namespace = dbTableName;
-		
-		int i = 0;
-		//for each reference
+		boolean success = true;
+		ResultSet rs = partitioner.getResultSet();
 		try{
+			//for each author
 			while (rs.next()){
-				try{
-					if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info(""+pluralString+" handled: " + (i-1));}
 					
+			//	partitioner.doLogPerLoop(recordsPerLog, pluralString);
+				
 					//create Agent element
 					int authorId = rs.getInt("AuthorId");
 					
@@ -102,7 +91,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					dbAttrName = "Abbrev";
 					cdmAttrName = "nomenclaturalTitle";
 					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
-	
+
 					dbAttrName = "FirstName";
 					cdmAttrName = "firstname";
 					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
@@ -118,12 +107,12 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 						author.setLifespan(lifespan);
 					}
 					
-	//				//AreaOfInterest
+//				//AreaOfInterest
 					String areaOfInterest = rs.getString("AreaOfInterest");
 					if (CdmUtils.isNotEmpty(areaOfInterest)){
 						Extension datesExtension = Extension.NewInstance(author, areaOfInterest, ExtensionType.AREA_OF_INTREREST());
 					}
-	
+
 					//nomStandard
 					String nomStandard = rs.getString("NomStandard");
 					if (CdmUtils.isNotEmpty(nomStandard)){
@@ -141,32 +130,61 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					if (CdmUtils.isNotEmpty(initials)){
 						Extension initialsExtension = Extension.NewInstance(author, initials, ExtensionType.ABBREVIATION());
 					}
-	
+
 					//created, notes
-					doIdCreatedUpdatedNotes(state, author, rs, authorId, namespace);
+				doIdCreatedUpdatedNotes(state, author, rs, authorId, NAMESPACE);
+
+				personMap.put(authorId, author);
 	
-					personMap.put(authorId, author);
+			} //while rs.hasNext()
+			//logger.info("save " + i + " "+pluralString + " ...");
+			getAgentService().save((Collection)personMap.values());
+			
 				}catch(Exception ex){
 					logger.error(ex.getMessage());
 					ex.printStackTrace();
 					success = false;
 				}
-			} //while rs.hasNext()
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
+		return success;
 		}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs)  {
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+		// no related objects exist
+		return result;
+	}
 			
-		logger.info("save " + i + " "+pluralString + " ...");
-		getAgentService().save((Collection)personMap.objects());
 
-		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
-		return success;
-		
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelAuthorImportValidator();
+		return validator.validate(state);
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */

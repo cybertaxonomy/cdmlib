@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.sql.Types;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -70,7 +71,7 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.IdMapper#getTypeClass()
+	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
 	 */
 	@Override
 	public Class<?> getTypeClass() {
@@ -84,7 +85,7 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		try{	
-			if (this.parameterTypes.length > 1 && parameterTypes[1].equals(DbExportStateBase.class)){
+			if (this.parameterTypes.length > 1 && DbExportStateBase.class.isAssignableFrom(parameterTypes[1])){
 				return method.invoke(null, cdmBase, getState());
 			}else{
 				return method.invoke(null, cdmBase);
@@ -113,6 +114,8 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 			return Types.VARCHAR;
 		}else if (returnType == Boolean.class){
 			return Types.BOOLEAN;
+		}else if (returnType == DateTime.class){
+			return Types.DATE;
 		}else{
 			logger.warn("Return type not supported yet: " + returnType.getSimpleName());
 			throw new IllegalArgumentException("Return type not supported yet: " + returnType.getSimpleName());

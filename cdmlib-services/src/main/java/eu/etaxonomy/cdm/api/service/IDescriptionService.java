@@ -126,6 +126,20 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
+	 * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
+	 * 
+	 * @param description The description which these description elements belong to (can be null to count all description elements)
+	 * @param features Restrict the results to those description elements which are scoped by one of the Features passed (can be null or empty)
+	 * @param type The type of description
+	 * @param class 
+	 * @param pageSize The maximum number of description elements returned (can be null for all description elements)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a List containing DescriptionElementBase instances
+	 */
+	public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+	/**
 	 * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
 	 * 
 	 * @param taxon The taxon which the description refers to (can be null for all TaxonDescription instances)

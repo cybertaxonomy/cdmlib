@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -67,6 +68,10 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		this.dao = dao;
 	}
 		
+	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return dao.listByTermClass(clazz, limit, start, orderHints, propertyPaths);
+	}	
+	
 	/**
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getTermByUri(java.lang.String)
 	 */

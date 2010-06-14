@@ -85,11 +85,11 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		result.setCitation(citation);		
 		return result;
 	}
-	
-	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microReference){
+
+	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microCitation){
 		DescriptionElementSource result = NewInstance(id, idNamespace);
 		result.setCitation(citation);
-		result.setCitationMicroReference(microReference);
+		result.setCitationMicroReference(microCitation);
 		return result;
 	}
 	
@@ -99,6 +99,22 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		result.setOriginalNameString(originalNameString);
 		return result;
 	}
+	
+	public static DescriptionElementSource NewInstance(ReferenceBase citation, String microCitation){
+		DescriptionElementSource result = NewInstance();
+		result.setCitation(citation);
+		result.setCitationMicroReference(microCitation);
+		return result;
+	}
+
+	public static DescriptionElementSource NewInstance(ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+		DescriptionElementSource result = NewInstance(citation, microReference);
+		result.setNameUsedInSource(nameUsedInSource);
+		result.setOriginalNameString(originalNameString);
+		return result;
+	}
+
+	
 	
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF

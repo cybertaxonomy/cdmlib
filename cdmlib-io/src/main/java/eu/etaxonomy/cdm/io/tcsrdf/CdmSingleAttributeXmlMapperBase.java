@@ -13,8 +13,8 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
 
 
 /**

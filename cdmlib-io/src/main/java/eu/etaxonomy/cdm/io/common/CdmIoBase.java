@@ -56,7 +56,6 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	}
 	
 	public TransactionStatus startTransaction() {
-		
 		return startTransaction(false);
 	}
 	

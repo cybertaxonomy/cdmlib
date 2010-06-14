@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -24,24 +25,25 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IPartitionedIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImportConfigurator, BerlinModelImportState> implements ICdmIO<BerlinModelImportState> {
+public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImportConfigurator, BerlinModelImportState> implements ICdmIO<BerlinModelImportState>, IPartitionedIO<BerlinModelImportState> {
 	private static final Logger logger = Logger.getLogger(BerlinModelImportBase.class);
 	
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
@@ -50,19 +52,55 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		super();
 	}
 	
-	protected abstract boolean doInvoke(BerlinModelImportState state);
+	protected boolean doInvoke(BerlinModelImportState state){
+			//	String strTeamStore = ICdmIO.TEAM_STORE;
+			BerlinModelImportConfigurator config = state.getConfig();
+			Source source = config.getSource();
+			boolean success = true ;
+			
+			logger.info("start make " + getPluralString() + " ...");
+
+			String strIdQuery = getIdQuery();
+			String strRecordQuery = getRecordQuery(config);
+
+			int recordsPerTransaction = config.getRecordsPerTransaction();
+			try{
+				ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
+				while (partitioner.nextPartition()){
+					partitioner.doPartition(this, state);
+				}
+			} catch (SQLException e) {
+				logger.error("SQLException:" +  e);
+				return false;
+			}
+	
+			logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
+			return success;
+	}
 
 	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-//	 */
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config, 
-//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-//		BerlinModelImportState state = ((BerlinModelImportConfigurator)config).getState();
-//		state.setConfig((BerlinModelImportConfigurator)config);
-//		return doInvoke(state);
-//	}
+	/**
+	 * @return
+	 */
+	protected abstract String getRecordQuery(BerlinModelImportConfigurator config);
+
+	/**
+	 * @return
+	 */
+	protected String getIdQuery(){
+		String result = " SELECT " + getTableName() + "id FROM " + getTableName();
+		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getPluralString()
+	 */
+	public abstract String getPluralString();
+
+	/**
+	 * @return
+	 */
+	protected abstract String getTableName();
 	
 	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
@@ -70,12 +108,12 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		//id
 		success &= ImportHelper.setOriginalSource(identifiableEntity, state.getConfig().getSourceReference(), id, namespace);
 		//createdUpdateNotes
-		success &= doCreatedUpdatedNotes(state, identifiableEntity, rs, namespace);
+		success &= doCreatedUpdatedNotes(state, identifiableEntity, rs);
 		return success;
 	}
 	
 	
-	protected boolean doCreatedUpdatedNotes(BerlinModelImportState state, AnnotatableEntity annotatableEntity, ResultSet rs, String namespace)
+	protected boolean doCreatedUpdatedNotes(BerlinModelImportState state, AnnotatableEntity annotatableEntity, ResultSet rs)
 			throws SQLException{
 
 		BerlinModelImportConfigurator config = state.getConfig();
@@ -101,7 +139,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 			if (updatedWhen != null && updatedWho != null){
 				createdAnnotationString += " and updated By: " + String.valueOf(updatedWho) + " (" + String.valueOf(updatedWhen) + ")";
 			}
-			Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.ENGLISH());
+			Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.DEFAULT());
 			annotation.setCommentator(config.getCommentator());
 			annotation.setAnnotationType(AnnotationType.TECHNICAL());
 			annotatableEntity.addAnnotation(annotation);
@@ -254,25 +292,119 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 			throw e;
 		}
 	}
-	
-	protected ExtensionType getExtensionType(UUID uuid, String label, String text, String labelAbbrev){
-		ExtensionType extensionType = (ExtensionType)getTermService().find(uuid);
-		if (extensionType == null){
-			extensionType = new ExtensionType(label, text, labelAbbrev);
-			extensionType.setUuid(uuid);
-			getTermService().save(extensionType);
+
+	/**
+	 * Reads a foreign key field from the result set and adds its value to the idSet.
+	 * @param rs
+	 * @param teamIdSet
+	 * @throws SQLException
+	 */
+	protected void handleForeignKey(ResultSet rs, Set<String> idSet, String attributeName)
+			throws SQLException {
+		Object idObj = rs.getObject(attributeName);
+		if (idObj != null){
+			String id  = String.valueOf(idObj);
+			idSet.add(id);
 		}
-		return extensionType;
 	}
 	
-	protected MarkerType getMarkerType(UUID uuid, String label, String text, String labelAbbrev){
-		MarkerType markerType = (MarkerType)getTermService().find(uuid);
-		if (markerType == null){
-			markerType = MarkerType.NewInstance(label, text, labelAbbrev);
-			markerType.setUuid(uuid);
-			getTermService().save(markerType);
+	/**
+	 * Returns true if i is a multiple of recordsPerTransaction
+	 * @param i
+	 * @param recordsPerTransaction
+	 * @return
+	 */
+	protected boolean loopNeedsHandling(int i, int recordsPerLoop) {
+		startTransaction();
+		return (i % recordsPerLoop) == 0;
 		}
-		return markerType;
+	
+	protected void doLogPerLoop(int count, int recordsPerLog, String pluralString){
+		if ((count % recordsPerLog ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
+	}
+	
+
+	/**
+	 * 	Searches first in the detail maps then in the ref maps for a reference.
+	 *  Returns the reference as soon as it finds it in one of the map, according
+	 *  to the order of the map.
+	 *  If nomRefDetailFk is <code>null</code> no search on detail maps is performed.
+	 *  If one of the maps is <code>null</code> no search on the according map is
+	 *  performed. <BR>
+	 *  You may define the order of search by the order you pass the maps but
+	 *  make sure to always pass the detail maps first.
+	 * @param firstDetailMap
+	 * @param secondDetailMap
+	 * @param firstRefMap
+	 * @param secondRefMap
+	 * @param nomRefDetailFk
+	 * @param nomRefFk
+	 * @return
+	 */
+	protected ReferenceBase getReferenceFromMaps(
+			Map<String, ReferenceBase> firstDetailMap,
+			Map<String, ReferenceBase> secondDetailMap, 
+			Map<String, ReferenceBase> firstRefMap,
+			Map<String, ReferenceBase> secondRefMap,
+			String nomRefDetailFk,
+			String nomRefFk) {
+		ReferenceBase ref = null;
+		ref = getReferenceDetailFromMaps(firstDetailMap, secondDetailMap, nomRefDetailFk);
+		if (ref == null){
+			ref = getReferenceOnlyFromMaps(firstRefMap, secondRefMap, nomRefFk);
+		}
+		return ref;
+	}
+	
+	/**
+	 * As getReferenceFromMaps but search is performed only on references, not on
+	 * detail maps.
+	 * @param firstRefMap
+	 * @param secondRefMap
+	 * @param nomRefFk
+	 * @return
+	 */
+	protected ReferenceBase getReferenceOnlyFromMaps(
+			Map<String, ReferenceBase> firstRefMap,
+			Map<String, ReferenceBase> secondRefMap,
+			String nomRefFk) {
+		ReferenceBase ref = null;
+		if (firstRefMap != null){
+			ref = firstRefMap.get(nomRefFk);
+		}else{
+			logger.warn("First reference map does not exist");
+		}
+		if (ref == null){
+			if (secondRefMap != null){
+				ref = secondRefMap.get(nomRefFk);
+			}else{
+				logger.warn("Second reference map does not exist");		
+			}
+		}
+		return ref;
+	}
+
+	/**
+	 * Searches for a reference in the first detail map. If it does not exist it 
+	 * searches in the second detail map. Returns null if it does not exist in any map.
+	 * A map may be <code>null</code> to avoid search on this map.
+	 * @param secondDetailMap 
+	 * @param firstDetailMap 
+	 * @param nomRefDetailFk 
+	 * @return
+	 */
+	private ReferenceBase getReferenceDetailFromMaps(Map<String, ReferenceBase> firstDetailMap, Map<String, ReferenceBase> secondDetailMap, String nomRefDetailFk) {
+		ReferenceBase result = null;
+		if (nomRefDetailFk != null){
+			//get ref
+			if (firstDetailMap != null){
+				result = firstDetailMap.get(nomRefDetailFk);
+			}
+			if (result == null && secondDetailMap != null){
+				result = secondDetailMap.get(nomRefDetailFk);
+			}
+		}
+		return result;
 	}
 	
 }

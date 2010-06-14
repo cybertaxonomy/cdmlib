@@ -10,12 +10,16 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 
 
@@ -28,9 +32,15 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MultipleAttributeMapperBase.class);
 
+	
+//******************************* ATTRIBUTES ***************************************/
+
 	protected List<SINGLE_MAPPER> singleMappers = new ArrayList<SINGLE_MAPPER>();
 
 	
+	
+//********************************* CONSTRUCTOR ****************************************/
+
 	/**
 	 * 
 	 */
@@ -38,6 +48,9 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 		singleMappers = new ArrayList<SINGLE_MAPPER>();
 	}
 
+
+//************************************ METHODS *******************************************/
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase#getDestinationAttributeList()
 	 */
@@ -80,5 +93,26 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 		Set<String> result = new HashSet<String>();
 		result.addAll(getSourceAttributeList());
 		return result;
+	}
+	
+
+	/**
+	 * Returns the value of a result set attribute in its String representation.
+	 * Better move this to a subclass for DbImportMappers (does not exist yet)
+	 * @param rs
+	 * @param attribute
+	 * @return
+	 * @throws SQLException
+	 */
+	protected String getStringDbValue(ResultSet rs, String attribute) throws SQLException {
+		if (CdmUtils.isEmpty(attribute)){
+			return null;
+		}
+		Object oId = rs.getObject(attribute);
+		if (oId == null){
+			return null;
+		}
+		String id = String.valueOf(oId);
+		return id;
 	}
 }

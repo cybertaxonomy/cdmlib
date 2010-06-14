@@ -20,10 +20,13 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTypesImportValidator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -42,52 +45,46 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 	private static final Logger logger = Logger.getLogger(BerlinModelTypesImport.class);
 
 	private static int modCount = 10000;
+	private static final String pluralString = "types";
+	private static final String dbTableName = "TypeDesignation";
+
 	
 	public BerlinModelTypesImport(){
 		super();
 	}
-	
+
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		logger.warn("Checking for Types not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
+		String strRecordQuery = 
+			" SELECT TypeDesignation.*, TypeStatus.Status " + 
+			" FROM TypeDesignation LEFT OUTER JOIN " +
+			" TypeStatus ON TypeDesignation.TypeStatusFk = TypeStatus.TypeStatusId " + 
+			" WHERE (TypeDesignationId IN ("+ ID_LIST_TOKEN + ") )";
+		return strRecordQuery;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
-	@Override
-	protected boolean doInvoke(BerlinModelImportState state){
-		
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
-		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_DETAIL_STORE);
-		
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean result = true;
-		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
+		Set<TaxonNameBase> namesToSave = new HashSet<TaxonNameBase>();
+		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
+		
+		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
+		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 		
-		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
-		
-		logger.info("start makeTypes ...");
-		
+		ResultSet rs = partitioner.getResultSet();
+
 		try {
-			//get data from database
-			String strQuery = 
-					" SELECT TypeDesignation.*, TypeStatus.Status " + 
-					" FROM TypeDesignation LEFT OUTER JOIN " +
-                      	" TypeStatus ON TypeDesignation.TypeStatusFk = TypeStatus.TypeStatusId " + 
-                    " WHERE (1=1) ";
-			ResultSet rs = source.getResultSet(strQuery) ;
 
 			int i = 0;
 			//for each reference
@@ -98,7 +95,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				int typeDesignationId = rs.getInt("typeDesignationId");
 				int nameId = rs.getInt("nameFk");
 				int typeStatusFk = rs.getInt("typeStatusFk");
-				Object refFk = rs.getObject("refFk");
+				Object refFkObj = rs.getObject("refFk");
 				String refDetail = rs.getString("refDetail");
 				String status = rs.getString("Status");
 				String typePhrase = rs.getString("typePhrase");
@@ -112,22 +109,18 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				//RejectedFlag false
 				//PublishFlag xxx
 				
-				
-				TaxonNameBase<?,?> taxonNameBase = taxonNameMap.get(nameId);
+				TaxonNameBase<?,?> taxonNameBase = nameMap.get(String.valueOf(nameId));
 				
 				if (taxonNameBase != null){
 					try{
 						SpecimenTypeDesignationStatus typeDesignationStatus = BerlinModelTransformer.typeStatusId2TypeStatus(typeStatusFk);
 						ReferenceBase<?> citation = null;
-						if (refFk != null){
-							nomRefDetailMap.get(refFk);
-							if (citation == null){
-								citation = referenceMap.get(refFk);
+						if (refFkObj != null){
+							String relRefFk = String.valueOf(refFkObj);
+							//get nomRef
+							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, 
+									relRefFk);
 							}
-							if (citation == null){
-								citation = nomRefMap.get(refFk);
-							}
-						}
 						
 						Specimen specimen = Specimen.NewInstance();
 						specimen.setTitleCache(typePhrase);
@@ -136,7 +129,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
 												
 						typeMap.put(typeDesignationId, specimen);
-						taxonNameStore.add(taxonNameBase);
+						namesToSave.add(taxonNameBase);
 						
 						//TODO
 						//Update, Created, Notes, origId
@@ -155,20 +148,59 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			}
 			
 			result &= makeFigures(typeMap, source);
-			
-			
-			logger.info("Names to save: " + taxonNameStore.size());
-			getNameService().save(taxonNameStore);	
-			
-			logger.info("end makeTypes ..." + getSuccessString(result));
+			logger.info("Names to save: " + namesToSave.size());
+			getNameService().save(namesToSave);	
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
+	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		String nameSpace;
+		Class cdmClass;
+		Set<String> idSet;
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+		
+		try{
+			Set<String> nameIdSet = new HashSet<String>();
+			Set<String> referenceIdSet = new HashSet<String>();
+			while (rs.next()){
+				handleForeignKey(rs, nameIdSet, "NameFk");
+				handleForeignKey(rs, referenceIdSet, "RefFk");
 	}
 	
+			//name map
+			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
+			cdmClass = TaxonNameBase.class;
+			idSet = nameIdSet;
+			Map<String, Person> objectMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, objectMap);
+
+			//nom reference map
+			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, nomReferenceMap);
+
+			//biblio reference map
+			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, biblioReferenceMap);
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
 	private static boolean makeFigures(Map<Integer, Specimen> typeMap, Source source){
 		boolean success = true;
 		try {
@@ -218,6 +250,32 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		}
 			
 		return success;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelTypesImportValidator();
+		return validator.validate(state);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
 	}
 	
 	/* (non-Javadoc)

@@ -120,7 +120,7 @@ public class SalvadorActivator {
 		
 		BerlinModelImportConfigurator config = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		config.setTreeUuid(treeUuid);
+		config.setTaxonomicTreeUuid(treeUuid);
 		config.setSecUuid(secUuid);
 		config.setSourceSecId(sourceSecId);
 		config.setNomenclaturalCode(nomenclaturalCode);

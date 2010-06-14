@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 22.09.2009
  * @version 1.0
  */
-public class CdmImportState extends ImportStateBase<CdmImportConfigurator>{
+public class CdmImportState extends ImportStateBase<CdmImportConfigurator, CdmImportBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmImportState.class);
 

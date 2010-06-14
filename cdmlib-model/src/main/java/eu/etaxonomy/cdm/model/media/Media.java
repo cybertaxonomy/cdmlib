@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -134,13 +135,30 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private AgentBase artist;
 
+
 	/**
 	 * Factory method
 	 * @return
 	 */
 	public static Media NewInstance(){
-		logger.debug("NewInstance");
 		return new Media();
+	}
+	
+
+	/**
+	 * Factory method which creates a new media, adds a reprsentation including mime type and suffix information
+	 * and adds to the later a representation part for a given uri and size
+	 * Returns <code>null</code> if uri is empty
+	 * @return Media
+	 */
+	public static Media NewInstance(String uri, Integer size, String mimeType, String suffix){
+		MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size);
+		if (representation == null){
+			return null;
+		}
+		Media media = new Media();
+		media.addRepresentation(representation);
+		return media;
 	}
 	
 	/**
@@ -182,11 +200,20 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.artist = artist;
 	}
 
+	@Deprecated // will be removed in next release; use getAllTitles instead
 	public Map<Language,LanguageString> getTitle(){
+		return getAllTitles();
+	}
+	
+	public Map<Language,LanguageString> getAllTitles(){
 		if(title == null) {
 			this.title = new HashMap<Language,LanguageString>();
 		}
 		return this.title;
+	}
+	
+	public LanguageString getTitle(Language language){
+		return getAllTitles().get(language);
 	}
 	
 	public void addTitle(LanguageString title){
@@ -205,15 +232,24 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.mediaCreated = mediaCreated;
 	}
 
+	@Deprecated // will be removed in next release; use getAllDescriptions instead
 	public Map<Language,LanguageString> getDescription(){
+		return getAllDescriptions();
+	}
+	
+	public Map<Language,LanguageString> getAllDescriptions(){
 		if(this.description == null) {
 			this.description = new HashMap<Language,LanguageString>();
 		}
 		return this.description;
 	}
 	
+	public LanguageString getDescription(Language language){
+		return getAllDescriptions().get(language);
+	}
+	
 	public void addDescription(LanguageString description){
-		this.description.put(description.getLanguage(),description);
+		this.description.put(description.getLanguage(), description);
 	}
 	
 	public void addDescription(String text, Language language){
@@ -354,6 +390,35 @@ public class Media extends IdentifiableEntity implements Cloneable {
 						
 		}
 		return prefRepr;
+	}
+	
+	/*
+	 * Overriding the title cache methods here to avoid confusion with the title field
+	 */
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 */
+	@Override
+	public String getTitleCache() {
+		List<Language> languages = Arrays.asList(new Language[]{Language.DEFAULT()});
+		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(title, languages);
+		return languageString != null ? languageString.getText() : null;
+	}
+	
+	@Override
+	public String generateTitle() {
+		return getTitleCache();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(java.lang.String)
+	 */
+	@Override
+	public void setTitleCache(String titleCache) {
+		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
 	}
 	
 }

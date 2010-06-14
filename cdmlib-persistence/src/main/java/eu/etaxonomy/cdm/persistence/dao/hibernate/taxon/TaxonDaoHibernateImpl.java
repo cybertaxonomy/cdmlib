@@ -10,7 +10,9 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,18 +39,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparatorSearch;
+import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -57,10 +66,12 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 
 /**
@@ -81,6 +92,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		indexedClasses[1] = Synonym.class;
 		super.defaultField = "name.titleCache_tokenized";
 	}
+	
+	@Autowired
+	private ITaxonNameDao taxonNameDao;
 	
 	@Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
 	public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
@@ -164,12 +178,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return getRootTaxa(null, sec, cdmFetch, onlyWithChildren, withMisapplications, null);
 	}
 	
-
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 */
 	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
 		
 		return getTaxaByName(queryString, true, sec);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, java.lang.Boolean, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 */
 	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, ReferenceBase sec)");
 		
@@ -200,6 +221,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return getTaxaByName(clazz, queryString, null, matchMode, null, pageSize, pageNumber, null);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.lang.Boolean, java.lang.Integer, java.lang.Integer)
+	 */
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
 			Boolean accepted, Integer pageSize, Integer pageNumber) {
 		
@@ -210,7 +235,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
 	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths) {
@@ -219,14 +247,20 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		if (query != null){
 			List<TaxonBase> results = query.list();
-			results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
+			//results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			//TaxonComparatorSearch comp = new TaxonComparatorSearch();
+			//Collections.sort(results, comp);
 			return results;
 		}
 		return new ArrayList<TaxonBase>();
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByCommonName(java.lang.String, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
 	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths) {
@@ -293,7 +327,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			
 			if(doAreaRestriction){
 				
-				taxonSubselect = "select t from" +
+				taxonSubselect = "select t.id from" +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" +
@@ -305,7 +339,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" AND n.nameCache " + matchOperator + " :queryString";
 				
 				
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" + // the taxa
@@ -320,7 +354,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				
 			} else {
 				
-				taxonSubselect = "select t from" +
+				taxonSubselect = "select t.id from" +
 					" Taxon t" +
 					" join t.name n " +
 					" join t.taxonNodes as tn "+
@@ -328,7 +362,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" tn.taxonomicTree = :taxonomicTree" +
 					" AND n.nameCache " + matchOperator + " :queryString";
 				
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Taxon t" + // the taxa
 					" join t.taxonNodes as tn "+
 					" join t.synonymRelations sr" +
@@ -342,7 +376,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			
 			if(doAreaRestriction){
 				
-				taxonSubselect = "select t from " +
+				taxonSubselect = "select t.id from " +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" +
@@ -351,7 +385,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
 					" n.nameCache " + matchOperator + " :queryString";
 				
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" + // the taxa
@@ -364,13 +398,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				
 			} else {
 				
-				taxonSubselect = "select t from " +
+				taxonSubselect = "select t.id from " +
 					" Taxon t" +
 					" join t.name n "+
 					" where" +
 					" n.nameCache " + matchOperator + " :queryString";
 
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Taxon t" + // the taxa
 					" join t.synonymRelations sr" +
 					" join sr.relatedFrom s" + // the synonyms
@@ -435,24 +469,24 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		if(clazz.equals(Taxon.class)){
 			if  (taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa)";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
 			}else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
 		} else if(clazz.equals(Synonym.class) ){
 			if (synonyms.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:synonyms)";		
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";		
 			}else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
 		} else {
 			if(synonyms.size()>0 && taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa) OR t in (:synonyms)";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
 			}else if (synonyms.size()>0 ){
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
 				+ " where t in (:synonyms)";	
 			} else if (taxa.size()>0 ){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa) ";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
 			} else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
@@ -460,7 +494,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		if (hql == "") return null;
 		if(!doCount){
-			hql += " order by t.titleCache"; //" order by t.name.nameCache";
+			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
+			hql += " order by t.name.genusOrUninomial, t.name.rank desc, titleCache"; 
 		}
 	
 		Query query = getSession().createQuery(hql);
@@ -486,6 +521,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		
+		
 		if(pageSize != null &&  !doCount) {
 			query.setMaxResults(pageSize);
 			if(pageNumber != null) {
@@ -495,7 +531,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		return query;
 	}
-	
+
 	private Query prepareTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount){
 		
@@ -583,11 +619,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //		return count.intValue();
 //	}
 	
-
 	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
 		return super.list(pagesize, page);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllSynonyms(java.lang.Integer, java.lang.Integer)
+	 */
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
 		Criteria criteria = getSession().createCriteria(Synonym.class);
 		
@@ -599,6 +638,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return criteria.list();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllTaxa(java.lang.Integer, java.lang.Integer)
+	 */
 	public List<Taxon> getAllTaxa(Integer limit, Integer start) {
         Criteria criteria = getSession().createCriteria(Taxon.class);
 		
@@ -609,13 +652,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		return criteria.list();
 	}
-	
-	
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllRelationships(java.lang.Integer, java.lang.Integer)
+	 */
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Criteria criteria = getSession().createCriteria(RelationshipBase.class);
+		    criteria.setFirstResult(start);
+		    criteria.setMaxResults(limit);
 		    return (List<RelationshipBase>)criteria.list();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
@@ -685,6 +732,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countMatchesByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, boolean)
+	 */
 	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
 		Criteria crit = getSession().createCriteria(type);
@@ -694,7 +745,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return result;
 	}
 
-
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countMatchesByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, boolean, java.util.List)
+	 */
 	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
 		Criteria crit = getSession().createCriteria(type);
@@ -709,6 +763,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxonRelationships(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction)
+	 */
 	public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Direction direction) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -736,6 +794,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countSynonyms(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
+	 */
 	public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -760,6 +822,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countSynonyms(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
+	 */
 	public int countSynonyms(Synonym synonym, SynonymRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -785,6 +851,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
+	 */
 	public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
@@ -823,6 +893,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (Integer)criteria.uniqueResult();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
+	 */
 	public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber)");
 		Criteria criteria = null;
@@ -877,6 +951,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (List<TaxonBase>)criteria.list();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxonRelationships(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction)
+	 */
 	public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -943,6 +1021,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getSynonyms(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
 	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -992,6 +1074,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getSynonyms(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
 	public List<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1163,4 +1249,328 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		// TODO Auto-generated method stub
 		return null;
 	}
+public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree){
+		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
+		
+		inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF()));
+		inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF()));
+		inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF()));
+		
+		return inferredSynonyms;
+	}
+	
+	public List<Synonym> createInferredSynonyms(Taxon taxon, TaxonomicTree tree, SynonymRelationshipType type){
+		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
+		
+		List<ZoologicalName> zooNames = this.taxonNameDao.getAllZoologicalNames(null, 0);
+		//create HashMap
+		HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
+		UUID uuid;
+		List<String> newNames  = new ArrayList<String>();
+		
+		for (ZoologicalName zooName: zooNames){
+			uuid = zooName.getUuid();
+			zooHashMap.put(uuid, zooName);
+		}
+		
+		uuid= taxon.getName().getUuid();
+		ZoologicalName taxonName = zooHashMap.get(uuid);
+		String epithetOfTaxon = taxonName.getSpecificEpithet();
+		String genusOfTaxon = taxonName.getGenusOrUninomial();
+		Set<TaxonNode> nodes = taxon.getTaxonNodes();
+	 	List<String> taxonNames = new ArrayList<String>();
+	 	
+		for (TaxonNode node: nodes){
+			List<String> synonymsGenus = new ArrayList<String>();
+		 	List<String> synonymsEpithet = new ArrayList<String>();
+			if (node.getTaxonomicTree().equals(tree)){
+				if (!node.isTopmostNode()){
+				TaxonNode parent = (TaxonNode) node.getParent();
+				parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
+				TaxonNameBase parentName = parent.getTaxon().getName();
+				parentName = (TaxonNameBase)HibernateProxyHelper.deproxy(parentName);
+				
+				//create inferred synonyms for species, subspecies or subgenus
+				if (parentName.isGenus() || parentName.isSpecies() || parentName.getRank().equals(Rank.SUBGENUS())){
+					
+					Synonym inferredEpithet;
+					Synonym inferredGenus;
+					Synonym potentialCombination;
+					
+					List<String> propertyPaths = new ArrayList<String>();
+					propertyPaths.add("synonym");
+					propertyPaths.add("synonym.name");
+					List<OrderHint> orderHints = new ArrayList<OrderHint>();
+					orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+				
+					List<SynonymRelationship> synonymRelationshipsOfGenus = getSynonyms(parent.getTaxon(), SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);
+					List<SynonymRelationship> synonymRelationshipsOfTaxon= getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);									
+					
+					if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())){
+												
+						for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
+							TaxonNameBase synName;
+							NonViralName inferredSynName;
+							Synonym syn = synonymRelationOfGenus.getSynonym();
+							HibernateProxyHelper.deproxy(syn);
+							
+							synName = syn.getName();
+							ZoologicalName zooName = zooHashMap.get(synName.getUuid());
+							String synGenusName = zooName.getGenusOrUninomial();
+							if (!synonymsGenus.contains(synGenusName)){
+								synonymsGenus.add(synGenusName);
+							}
+							inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+							inferredSynName.setSpecificEpithet(epithetOfTaxon);
+							inferredSynName.setGenusOrUninomial(synGenusName);
+							inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+							taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
+							inferredSynonyms.add(inferredEpithet);
+							inferredSynName.generateTitle();
+							taxonNames.add(inferredSynName.getNameCache());
+						}
+						
+						if (!taxonNames.isEmpty()){
+						List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
+						ZoologicalName name;
+						if (!synNotInCDM.isEmpty()){
+							for (Synonym syn :inferredSynonyms){
+								name =zooHashMap.get(syn.getName().getUuid());
+								if (!synNotInCDM.contains(name.getNameCache())){
+									inferredSynonyms.remove(syn);
+								}
+							}
+						}
+						}
+						
+					}else if (type.equals(SynonymRelationshipType.INFERRED_GENUS_OF())){
+						
+						
+						for (SynonymRelationship synonymRelationOfTaxon:synonymRelationshipsOfTaxon){
+							TaxonNameBase synName;
+							NonViralName inferredSynName;
+							
+							Synonym syn = synonymRelationOfTaxon.getSynonym();
+							synName =syn.getName();
+							
+							HibernateProxyHelper.deproxy(syn);
+							
+							synName = syn.getName();
+							ZoologicalName zooName = zooHashMap.get(synName.getUuid());
+							String speciesEpithetName = zooName.getSpecificEpithet();
+							if (!synonymsEpithet.contains(speciesEpithetName)){
+								synonymsEpithet.add(speciesEpithetName);
+							}
+							inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+							inferredSynName.setSpecificEpithet(speciesEpithetName);
+							inferredSynName.setGenusOrUninomial(genusOfTaxon);
+							inferredGenus = Synonym.NewInstance(inferredSynName, null);
+							taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_EPITHET_OF());
+							inferredSynonyms.add(inferredGenus);
+							inferredSynName.generateTitle();
+							taxonNames.add(inferredSynName.getNameCache());
+						}
+						
+						if (!taxonNames.isEmpty()){
+							List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
+							ZoologicalName name;
+							if (!synNotInCDM.isEmpty()){
+								for (Synonym syn :inferredSynonyms){
+									name =zooHashMap.get(syn.getName().getUuid());
+									if (!synNotInCDM.contains(name.getNameCache())){
+										inferredSynonyms.remove(syn);
+									}
+								}
+							}
+						}
+						
+					}else if (type.equals(SynonymRelationshipType.POTENTIAL_COMBINATION_OF())){
+						
+						
+						for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
+							TaxonNameBase synName;
+							Synonym syn = synonymRelationOfGenus.getSynonym();
+							synName =syn.getName();
+							
+							HibernateProxyHelper.deproxy(syn);
+							
+							ZoologicalName zooName = zooHashMap.get(synName.getUuid());
+							String synGenusName = zooName.getGenusOrUninomial();
+							if (!synonymsGenus.contains(synGenusName)){
+								synonymsGenus.add(synGenusName);
+							}
+						}
+						
+						ZoologicalName inferredSynName;
+						for (SynonymRelationship synonymRelationOfTaxon:synonymRelationshipsOfTaxon){
+							
+							Synonym syn = synonymRelationOfTaxon.getSynonym();
+							HibernateProxyHelper.deproxy(syn);
+							
+							ZoologicalName zooName = zooHashMap.get(syn.getName().getUuid());
+							String epithetName = zooName.getSpecificEpithet();
+							if (!synonymsEpithet.contains(epithetName)){
+								synonymsEpithet.add(epithetName);
+							}
+						}
+						for (String epithetName:synonymsEpithet){
+							for (String genusName: synonymsGenus){
+								inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
+								inferredSynName.setSpecificEpithet(epithetName);
+								inferredSynName.setGenusOrUninomial(genusName);
+								potentialCombination = Synonym.NewInstance(inferredSynName, null);
+								inferredSynonyms.add(potentialCombination);
+								inferredSynName.generateTitle();
+								zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
+								taxonNames.add(inferredSynName.getNameCache());
+							}
+							
+							if (!taxonNames.isEmpty()){
+								List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
+								ZoologicalName name;
+								if (!synNotInCDM.isEmpty()){
+									for (Synonym syn :inferredSynonyms){
+										try{
+											name = (ZoologicalName) syn.getName();
+										}catch (ClassCastException e){
+											name =zooHashMap.get(syn.getName().getUuid());
+										}
+										if (!synNotInCDM.contains(name.getNameCache())){
+											inferredSynonyms.remove(syn);
+										}
+									}
+								}
+							}
+						}
+					}else {
+						logger.info("The synonymrelationship type is not defined.");
+						return null;
+					}
+				}
+			}
+			}
+			}
+			
+		
+		return inferredSynonyms;
+	}
+	
+	
+/*	private void xxx(List<SynonymRelationship> synonymRelationships, HashMap <UUID, ZoologicalName> zooHashMap, SynonymRelationshipType type, String addString){
+		
+		for (SynonymRelationship synonymRelation:synonymRelationships){
+			TaxonNameBase synName;
+			NonViralName inferredSynName;
+			Synonym syn = synonymRelation.getSynonym();
+			HibernateProxyHelper.deproxy(syn);
+			
+			synName = syn.getName();
+			ZoologicalName zooName = zooHashMap.get(synName.getUuid());
+			String synGenusName = zooName.getGenusOrUninomial();
+			
+			switch(type.getId()){
+			case SynonymRelationshipType.INFERRED_EPITHET_OF().getId():
+				inferredSynName.setSpecificEpithet(addString);
+				break;
+			case SynonymRelationshipType.INFERRED_GENUS_OF().getId():
+				break;
+			case SynonymRelationshipType.POTENTIAL_COMBINATION_OF().getId():
+				break;
+			default:
+			}
+			if (!synonymsGenus.contains(synGenusName)){
+				synonymsGenus.add(synGenusName);
+			}
+			inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+			inferredSynName.setSpecificEpithet(epithetOfTaxon);
+			inferredSynName.setGenusOrUninomial(synGenusName);
+			inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+			taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
+			inferredSynonyms.add(inferredEpithet);
+			inferredSynName.generateTitle();
+			taxonNames.add(inferredSynName.getNameCache());
+		}
+			
+		
+		if (!taxonNames.isEmpty()){
+		List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
+		ZoologicalName name;
+		if (!synNotInCDM.isEmpty()){
+			for (Synonym syn :inferredSynonyms){
+				name =zooHashMap.get(syn.getName().getUuid());
+				if (!synNotInCDM.contains(name.getNameCache())){
+					inferredSynonyms.remove(syn);
+				}
+			}
+		}
+		}
+	}*/
+
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
+	 */
+	public int countAllRelationships() {
+		List<RelationshipBase> relationships = this.getAllRelationships(null, 0);
+		return relationships.size();
+	}
+	
+	
+	public List<String> taxaByNameNotInDB(List<String> taxonNames){
+		List<TaxonBase> notInDB = new ArrayList<TaxonBase>();
+		//get all taxa, already in db
+		Query query = getSession().createQuery("from TaxonNameBase t where t.nameCache IN (:taxonList)");
+		query.setParameterList("taxonList", taxonNames);
+		List<ZoologicalName> taxaInDB = query.list();
+		//compare the original list with the result of the query
+		for (NonViralName taxonName: taxaInDB){
+			String nameCache =taxonName.getNameCache();
+			if (taxonNames.contains(nameCache)){
+				taxonNames.remove(nameCache);
+			}
+		}
+				
+		return taxonNames;
+	}
+
+
+	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPaths) {
+		List<String> identicalNames = new ArrayList<String>();
+		//hole alle TaxonNames, die es mindestens zweimal gibt.
+		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.nameCache = tmb2.nameCache and tmb.id != tmb2.id");
+		List<TaxonNameBase> zooNames = query.list();
+		TaxonNameComparator taxComp = new TaxonNameComparator();
+		Collections.sort(zooNames, taxComp);
+		
+		for (TaxonNameBase taxonNameBase: zooNames){
+			defaultBeanInitializer.initialize(taxonNameBase, propertyPaths);
+		}
+		
+		return zooNames;
+	}
+	
+	public String getPhylumName(TaxonNameBase name){
+		Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");
+		List results = query.list();
+		System.err.println("phylum of "+ name.getTitleCache() + " : "+(String)results.get(0));
+		return (String)results.get(0);
+	}
+
+
+	public long countTaxaByCommonName(String searchString,
+			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Set<NamedArea> namedAreas) {
+		boolean doCount = true;
+		Query query = prepareTaxaByCommonName(searchString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
+		if (query != null) {
+			return (Long)query.uniqueResult();
+		}
+		return 0;
+		
+	}
+	
+	
+
+	
+	
 }

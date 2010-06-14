@@ -181,13 +181,4 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		fullTextSession.flushToIndexes();
 	}
 	
-	public Map<String, String> getMediaMetaData(URI uri, Integer timeOut){
-		
-		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-		imageMetaData.readMetaData(uri, timeOut);
-		
-		
-		return imageMetaData.getMetaData();
-	}
-	
 }

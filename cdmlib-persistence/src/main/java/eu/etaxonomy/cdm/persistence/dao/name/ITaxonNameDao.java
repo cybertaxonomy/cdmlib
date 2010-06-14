@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -278,4 +280,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @return
 	 */
 	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+
+	public List<ZoologicalName> getAllZoologicalNames(Integer limit, Integer start);
+	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
+
 }

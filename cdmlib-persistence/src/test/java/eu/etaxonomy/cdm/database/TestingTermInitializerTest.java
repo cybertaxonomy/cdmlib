@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -56,6 +57,7 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
 	public final void testTermsAreLoaded() {
 		assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized",TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
 		assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
+		assertNotNull("SynonymRelationshipType.INFERREDEPITHET should be loaded" + SynonymRelationshipType.INFERRED_EPITHET_OF());
 	}
 	
 	@Test

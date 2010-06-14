@@ -39,6 +39,7 @@ cdmlib-io/.project
 cdmlib-io/.settings
 cdmlib-io/.umlproject
 cdmlib-io/cdmlib-io.uml
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImportValidator.java
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
 cdmlib-io/src/test/resources/log4j.properties
@@ -130,8 +131,5 @@ eclipse-updateSite/features/*.jar
 eclipse-updateSite/plugins/*.jar
 eclipse-updateSite/plugins/*.zip
 eclipse-updateSite/src
-musiclib-hibernatetest/.classpath
-musiclib-hibernatetest/.project
-musiclib-hibernatetest/.settings
 /target
 /testANTLR

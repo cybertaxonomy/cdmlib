@@ -10,19 +10,8 @@
 package eu.etaxonomy.cdm.database;
 
 /**
- * 
- * Wrapper class for the hibernate <code>hibernate.hbm2ddl.auto</code> property.<BR><BR>
- * <UL>
- * <LI>VALIDATE will validate the existing schema and throw an exception if the schema is not compatible</LI>
- * <LI>UPDATE will try to update the existing db schema to be compatible with the new schema</LI>
- * <LI>CREATE works as UPDATE but also empties the needed tables </LI>
- * <LI>CREATE-DROP works as CREATE but also drops all tables after closing the session factory (use only for 
- * testing or for creating temporary database schemas)</LI>
- * </UL>
- 
- * @see {@link http://docs.jboss.org/hibernate/stable/core/reference/en/html_single/#configuration-programmatic} 
- * 
  * @author a.mueller
+ *
  */
 public enum DbSchemaValidation {
 	VALIDATE,

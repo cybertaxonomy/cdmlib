@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +23,9 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 
 /**
  * The taxon name class for bacteria.
@@ -63,6 +65,7 @@ public class BacterialName extends NonViralName<BacterialName> {
 	
 	protected BacterialName(){
 		super();
+		this.cacheStrategy = BacterialNameDefaultCacheStrategy.NewInstance();
 	}
 	
 	/** 
@@ -83,6 +86,7 @@ public class BacterialName extends NonViralName<BacterialName> {
 	 */
 	protected BacterialName(Rank rank, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
+		this.cacheStrategy = BacterialNameDefaultCacheStrategy.NewInstance();
 	}
 
 	//********* METHODS **************************************/

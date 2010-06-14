@@ -150,7 +150,7 @@ public class CichorieaeActivator {
 				
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(taxonomicTreeUuid);
+		bmImportConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
@@ -228,7 +228,7 @@ public class CichorieaeActivator {
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
 					CichorieaeImageActivator.sourceFolder, cdmDestination, CichorieaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
-			imageConfigurator.setTreeUuid(taxonomicTreeUuid);
+			imageConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
 			imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
 		}

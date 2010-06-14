@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,7 +20,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -31,6 +34,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class AbstractBeanInitializer implements BeanInitializer{
 	
 	public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
+	
+	@Autowired
+	IMethodCache methodCache;
 	
 	/**
 	 * Initialize the the proxy, unwrap the target object and return it.
@@ -237,6 +243,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 					}else {
 						// nested bean
 						initializePropertyPath(unwrappedBean, nestedPath);
+						setProperty(bean, property, unwrappedBean);
 					}
 				}
 				
@@ -250,6 +257,23 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		}
 	}
 
+	private void setProperty(Object object, String property, Object value){
+		Method method = methodCache.getMethod(object.getClass(), "set" + StringUtils.capitalize(property), value.getClass()); 
+		if(method != null){
+			try {
+				method.invoke(object, value);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}		
+	}
 
 	/**
 	 * @param collection of which all entities are to be initialized

@@ -121,10 +121,6 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		try{
 			logger.info("start make "+pluralString+" ...");
 			boolean success = true ;
-			//Prepare InRefStatement
-			String inRefSql = "UPDATE Reference SET InRefFk = ? WHERE RefId = ?"; 
-			Connection con = state.getConfig().getDestination().getConnection();
-			PreparedStatement stmt = con.prepareStatement(inRefSql);
 
 			doDelete(state);
 			
@@ -140,7 +136,11 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 				doCount(count++, modCount, pluralString);
 				success &= mapping.invoke(ref);
 			}
+			//Prepare InRefStatement
 			logger.info("start make inRefences ...");
+			String inRefSql = "UPDATE Reference SET InRefFk = ? WHERE RefId = ?"; 
+			Connection con = state.getConfig().getDestination().getConnection();
+			PreparedStatement stmt = con.prepareStatement(inRefSql);
 			count = 0;
 			for (ReferenceBase<?> ref : list){
 				doCount(count++, modCount, "inReferences");

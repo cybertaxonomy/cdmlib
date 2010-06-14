@@ -106,7 +106,7 @@ public class ImageFile extends MediaRepresentationPart {
 		}
 	}
 	
-	public int getHeight(){
+	public Integer getHeight(){
 		return this.height;
 	}
 
@@ -114,11 +114,11 @@ public class ImageFile extends MediaRepresentationPart {
 	 * 
 	 * @param height    height
 	 */
-	public void setHeight(int height){
+	public void setHeight(Integer height){
 		this.height = height;
 	}
 
-	public int getWidth(){
+	public Integer getWidth(){
 		return this.width;
 	}
 
@@ -126,7 +126,7 @@ public class ImageFile extends MediaRepresentationPart {
 	 * 
 	 * @param width    width
 	 */
-	public void setWidth(int width){
+	public void setWidth(Integer width){
 		this.width = width;
 	}
 

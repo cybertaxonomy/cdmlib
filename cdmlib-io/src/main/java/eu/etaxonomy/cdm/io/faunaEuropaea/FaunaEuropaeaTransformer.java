@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -188,10 +190,10 @@ public final class FaunaEuropaeaTransformer {
 			//TODO: Verify mappings with comments. Those don't map to TDWG areas.
 			
 			if (areaCode.equals("AD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-AN");
-			else if (areaCode.equals("AFR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("24"); // Afro-tropical region - Northeast Tropical Africa
+			//else if (areaCode.equals("AFR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("24"); // Afro-tropical region - Northeast Tropical Africa
 			else if (areaCode.equals("AL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ALB-OO");
 			else if (areaCode.equals("AT")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("AUT-AU");
-			else if (areaCode.equals("AUS")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("50"); // Australian region - Australia
+			//else if (areaCode.equals("AUS")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("50"); // Australian region - Australia
 			else if (areaCode.equals("BA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-BH"); 
 			else if (areaCode.equals("BE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BGM-BE");
 			else if (areaCode.equals("BG")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BUL-OO");
@@ -203,7 +205,7 @@ public final class FaunaEuropaeaTransformer {
 			else if (areaCode.equals("DK-DEN")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("DEN-OO");
 			else if (areaCode.equals("DK-FOR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("FOR-OO");
 			else if (areaCode.equals("EE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-ES");
-			else if (areaCode.equals("EPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("3");   // Palaearctic - Asia-Temperate
+			//else if (areaCode.equals("EPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("3");   // Palaearctic - Asia-Temperate
 			else if (areaCode.equals("ES-BAL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-ES");
 			else if (areaCode.equals("ES-CNY")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CNY-OO");
 			else if (areaCode.equals("ES-SPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-SP");
@@ -214,9 +216,9 @@ public final class FaunaEuropaeaTransformer {
 			else if (areaCode.equals("GB-GI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-GI");
 			else if (areaCode.equals("GB-GRB")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GRB-OO");
 			else if (areaCode.equals("GB-NI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("IRE-NI");
-			else if (areaCode.equals("GR-AEG")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("EAI-OO"); // North Aegean Is. - East Aegean Is.
-			else if (areaCode.equals("GR-CYC")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GRC-OO"); // Cyclades Is. - Greece
-			else if (areaCode.equals("GR-DOD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("EAI-OO"); // Dodecanese Is. - East Aegean Is.
+			//else if (areaCode.equals("GR-AEG")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("EAI-OO"); // North Aegean Is. - East Aegean Is.
+			//else if (areaCode.equals("GR-CYC")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GRC-OO"); // Cyclades Is. - Greece
+			//else if (areaCode.equals("GR-DOD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("EAI-OO"); // Dodecanese Is. - East Aegean Is.
 			else if (areaCode.equals("GR-GRC")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GRC-OO");
 			else if (areaCode.equals("GR-KRI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("KRI-OO");
 			else if (areaCode.equals("HR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-CR");
@@ -234,14 +236,14 @@ public final class FaunaEuropaeaTransformer {
 			else if (areaCode.equals("MD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("UKR-MO");
 			else if (areaCode.equals("MK")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-MA");
 			else if (areaCode.equals("MT")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SIC-MA");
-			else if (areaCode.equals("NAF")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("20");   // North Africa - Northern Africa
-			else if (areaCode.equals("NEA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("7");	// Nearctic region - Northern America
-			else if (areaCode.equals("NEO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("8");    // Neotropical region - Southern America
+			//else if (areaCode.equals("NAF")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("20");   // North Africa - Northern Africa
+			//else if (areaCode.equals("NEA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("7");	// Nearctic region - Northern America
+			//else if (areaCode.equals("NEO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("8");    // Neotropical region - Southern America
 			else if (areaCode.equals("NL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NET-OO");
 			else if (areaCode.equals("NO-NOR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NOR-OO");
 			else if (areaCode.equals("NO-SVA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SVA-OO");
-			else if (areaCode.equals("NRE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("34");   // Near East - Western Asia
-			else if (areaCode.equals("ORR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("35");	// Oriental region - Arabian Peninsula
+			//else if (areaCode.equals("NRE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("34");   // Near East - Western Asia
+			//else if (areaCode.equals("ORR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("35");	// Oriental region - Arabian Peninsula
 			else if (areaCode.equals("PL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("POL-OO");
 			else if (areaCode.equals("PT-AZO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("AZO-OO");
 			else if (areaCode.equals("PT-MDR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("MDR-OO");
@@ -272,12 +274,30 @@ public final class FaunaEuropaeaTransformer {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.warn("Exception occurred. Area could not be mapped.");
+			//e.printStackTrace();
+			logger.warn("Area could not be mapped.");
 			return null;
 		}	
 		
 		return tdwgArea;
+	}
+	
+	public final static HashMap<String, UUID> abbrToUUID = new HashMap<String,UUID>();
+	 	static
+	 	{	
+	 		abbrToUUID.put("AFR", UUID.fromString("07ac5e75-9fc9-4aa0-938c-1324c9618b97"));
+	 		abbrToUUID.put("EPA", UUID.fromString("e83446d7-7379-4beb-be05-295f8da6f5ae"));
+	 		abbrToUUID.put("GR-AEG", UUID.fromString("6bd422aa-9911-4b80-8595-0f6d1ecd5eee"));
+	 		abbrToUUID.put("GR-CYC", UUID.fromString("8e7d7f1e-3e4d-4f7c-96ec-93ec91e528d6"));
+	 		abbrToUUID.put("GR-DOD", UUID.fromString("6d6f6842-924e-440b-9e7e-3df1922bf4a6"));
+	 		abbrToUUID.put("NAF", UUID.fromString("d2c54b1e-5f9f-455d-b308-6859cb153c7b"));
+	 		abbrToUUID.put("NEA", UUID.fromString("aa87f6b8-110b-44b5-a329-91a08f1a4cc9"));
+	 		abbrToUUID.put("NEO", UUID.fromString("0e6e0ce9-c6ab-46bc-80b9-aee4a0620e78"));
+	 		abbrToUUID.put("NRE", UUID.fromString("d51876c2-eaf6-4c7f-963e-337dd3e0d729"));
+	 		abbrToUUID.put("ORR", UUID.fromString("04cab4f8-b316-4e21-9bcc-236a45e4e83d"));
+	 	}
+	public static UUID getUUIDByAreaAbbr(String abbr){
+		return abbrToUUID.get(abbr);
 	}
 	
 }

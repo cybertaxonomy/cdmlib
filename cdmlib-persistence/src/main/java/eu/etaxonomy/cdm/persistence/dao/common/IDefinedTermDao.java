@@ -16,6 +16,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -156,4 +157,6 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	public <T extends DefinedTermBase> int countIncludes(Set<T> definedTerms);
 
 	public DefinedTermBase findByUri(String uri);
+	
+	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

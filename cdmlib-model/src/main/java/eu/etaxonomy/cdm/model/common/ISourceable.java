@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
  
 public interface ISourceable<T extends IOriginalSource> {
 
@@ -25,6 +27,18 @@ public interface ISourceable<T extends IOriginalSource> {
 	 * @param source
 	 */
 	public void addSource(T source);
+	
+	
+	/**
+	 * Adds a source that is newly created by its components. If all components are <code>null</null>
+	 * no source is added.
+	 * @param id
+	 * @param idNamespace
+	 * @param citation
+	 * @param microCitation
+	 */
+	public T addSource(String id, String idNamespace, ReferenceBase citation, String microCitation);
+		
 
 	/**
 	 * Removes a source from this object

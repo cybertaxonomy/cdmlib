@@ -10,16 +10,20 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelUserImportValidator;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 
 
@@ -32,6 +36,8 @@ import eu.etaxonomy.cdm.model.common.User;
 public class BerlinModelUserImport extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelUserImport.class);
 
+	public static final String NAMESPACE = "User";
+	
 	private static int modCount = 100;
 	private static final String dbTableName = "webAuthorisation";
 	private static final String pluralString = "Users";
@@ -45,12 +51,8 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		logger.warn("Checking for "+pluralString+" not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
+		IOValidator<BerlinModelImportState> validator = new BerlinModelUserImportValidator();
+		return validator.validate(state);
 	}
 	
 	protected boolean doInvoke(BerlinModelImportState state){
@@ -117,7 +119,6 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
-
 			
 		logger.info("save " + i + " "+pluralString + " ...");
 		getUserService().save(userMap.objects());
@@ -126,11 +127,50 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 		return success;
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoUser();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
+	 */
+	@Override
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
+		return null; // not needed at the moment
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		return true;  // not needed at the moment
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		return null; //not needed at the moment
 	}
 
 }

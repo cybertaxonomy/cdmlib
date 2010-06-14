@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -126,16 +127,21 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	 */
 	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,
 			Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		Integer numberOfResults = dao.countDescriptionElements(description, features, type);
 
+		List<DescriptionElementBase> results = listDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
+		return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, results.size(), pageSize, results);
+	}
+
+	public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,
+			Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		Integer numberOfResults = dao.countDescriptionElements(description, features, type);
+		
 		List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
-		if (numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again
 			results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
 		}
-
-		return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, numberOfResults, pageSize, results);
+		return results;
 	}
-	
 
 	public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);

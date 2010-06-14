@@ -24,6 +24,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.jaxb.JaxbExport;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -43,6 +46,10 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	private Method functionRecordsDetailed = null; 
 	private IEndnotePlaceholderClass placeholderClass;
 	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
+	
 	//	rdfNamespace
 	Namespace EndnoteNamespace;
 /*TODO: wieder zurück!!!
@@ -58,18 +65,17 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	 * @param destination
 	 */
 	private EndnoteImportConfigurator() {
-		super();
+		super(defaultTransformer);
 //		setSource(url);
 //		setDestination(destination);
 	}
 	
 	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
+	 * @param url
 	 * @param destination
 	 */
 	private EndnoteImportConfigurator(String url, ICdmDataSource destination) {
-		super();
+		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}

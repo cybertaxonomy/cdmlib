@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -26,16 +27,19 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @version 1.0
  */
 public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<FaunaEuropaeaImportState> implements IImportConfigurator {
-
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportConfigurator.class);
+
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
 	
 	private boolean doBasionyms = true;
 	private boolean doTaxonomicallyIncluded = true;
 	private boolean doMisappliedNames = true;
 	private boolean doHeterotypicSynonyms = true;
+	private boolean doHeterotypicSynonymsForBasionyms;
 	
 	/* Max number of taxa to be saved with one service call */
-	private int limitSave = 1000;
+	private int limitSave = 900;
 	private ReferenceBase<?> auctReference;
 	
 	@SuppressWarnings("unchecked")
@@ -45,7 +49,8 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 				FaunaEuropaeaTaxonNameImport.class,
 				FaunaEuropaeaRelTaxonIncludeImport.class,
 				FaunaEuropaeaRefImport.class,
-				FaunaEuropaeaDistributionImport.class
+				FaunaEuropaeaDistributionImport.class,
+				FaunaEuropaeaHeterotypicSynonymImport.class
 		};
 	};
 	
@@ -54,6 +59,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 }
 	
 	private FaunaEuropaeaImportConfigurator(Source source, ICdmDataSource destination) {
+		super(defaultTransformer);
 		setSource(source);
 		setDestination(destination);
 		setNomenclaturalCode(NomenclaturalCode.ICBN);
@@ -64,6 +70,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 }
 	
 	private FaunaEuropaeaImportConfigurator(ICdmDataSource source, ICdmDataSource destination) {
+		super(defaultTransformer);
 		setSource(source);
 		setDestination(destination);
 		setNomenclaturalCode(NomenclaturalCode.ICBN);
@@ -208,6 +215,21 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	 */
 	public void setLimitSave(int limitSave) {
 		this.limitSave = limitSave;
+	}
+
+	/**
+	 * @param doHeterotypicSynonymsForBasionyms the doHeterotypicSynonymsForBasionyms to set
+	 */
+	public void setDoHeterotypicSynonymsForBasionyms(
+			boolean doHeterotypicSynonymsForBasionyms) {
+		this.doHeterotypicSynonymsForBasionyms = doHeterotypicSynonymsForBasionyms;
+	}
+
+	/**
+	 * @return the doHeterotypicSynonymsForBasionyms
+	 */
+	public boolean isDoHeterotypicSynonymsForBasionyms() {
+		return doHeterotypicSynonymsForBasionyms;
 	}
 
 }

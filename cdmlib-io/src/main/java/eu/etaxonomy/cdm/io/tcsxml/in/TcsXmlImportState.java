@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
@@ -19,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class TcsXmlImportState extends ImportStateBase<TcsXmlImportConfigurator>{
+public class TcsXmlImportState extends ImportStateBase<TcsXmlImportConfigurator, TcsXmlImportBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsXmlImportState.class);
 

@@ -36,12 +36,7 @@ public  class ImageMetaData extends MediaMetaData {
 			this.metaData = new HashMap<String, String>();
 		}
 		
-		
-		
 		protected int width, height, bitPerPixel;
-		
-		
-		
 		
 		public int getWidth() {
 			return width;
@@ -176,11 +171,4 @@ public  class ImageMetaData extends MediaMetaData {
 		return new ImageMetaData();
 	}
 
-	
-	
-	
-
-	
-	
-	
 }

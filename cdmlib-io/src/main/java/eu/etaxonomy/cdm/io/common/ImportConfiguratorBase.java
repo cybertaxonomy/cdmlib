@@ -16,25 +16,18 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.mueller
  * @created 20.06.2008
- * @version 1.0
- */
-/**
- * @author a.mueller
- * @created 25.07.2009
- * @version 1.0
  * @param <STATE>
  */
 @Component
@@ -47,6 +40,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	//editor
 	static EDITOR editor = EDITOR.EDITOR_AS_ANNOTATION;
 	
+	
+	/**
+	 * The transformer class to be used for Input
+	 */
+	private IInputTransformer transformer;
+
+	
 	//TODO
 	private boolean deleteAll = false;
 		
@@ -57,33 +57,57 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	private NomenclaturalCode nomenclaturalCode = null;
 	
 	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
+
+	 /* The taxonomic tree name for the first taxonomic tree.
+	  * Needs only to be defined if the import does not handle the naming 
+	  * itself (e.g. by using the taxon sec. reference title cache)
+	  */
+	private String taxonomicTreeName = "Taxon tree - no name";
 	
+	private UUID  taxonomicTreeUuid = UUID.randomUUID();
 	//uuid of concept reference
-	private UUID  treeUuid = UUID.randomUUID();
 	private UUID  secUuid = UUID.randomUUID();
+	
 	private Object sourceSecId = -1;
 	
 	private Object source;
 	protected ReferenceBase sourceReference;
 	private ICdmDataSource destination;
-	private Person commentator =  Person.NewTitledInstance("automatic BerlinModel2CDM importer");
+	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 	
-	private Language factLanguage = Language.ENGLISH();
 	protected Class<ICdmIO>[] ioClassList;
 	
 	protected ICdmIO[] ioList;
 	
 	protected String[] ioBeans;
 	
-	
 /* *****************CONSTRUCTOR *****************************/
 	
-	public ImportConfiguratorBase(){
+	public ImportConfiguratorBase(IInputTransformer transformer){
 		super();
 		setDbSchemaValidation(DbSchemaValidation.UPDATE);
+		this.transformer = transformer;
+		
 	}
 	
 	abstract protected void makeIoClassList();
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTransformer()
+	 */
+	public IInputTransformer getTransformer() {
+		return this.transformer;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#setTransformer(eu.etaxonomy.cdm.io.common.mapping.IInputTransformer)
+	 */
+	public void setTransformer(IInputTransformer transformer){
+		this.transformer = transformer;
+	}
+
+
+	
 	
 	/**
 	 * @param source the source to set
@@ -268,23 +292,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 		this.commentator = commentator;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getFactLanguage()
-	 */
-	public Language getFactLanguage() {
-		return factLanguage;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setFactLanguage(eu.etaxonomy.cdm.model.common.Language)
-	 */
-	public void setFactLanguage(Language factLanguage) {
-		this.factLanguage = factLanguage;
-	}
-
-
 	/**
 	 * @return the nomenclaturalCode
 	 */
@@ -304,13 +311,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTreeUuid()
 	 */
-	public UUID getTreeUuid() {
-		return treeUuid;
+	public UUID getTaxonomicTreeUuid() {
+		return taxonomicTreeUuid;
 	}
 
 
-	public void setTreeUuid(UUID treeUuid) {
-		this.treeUuid = treeUuid;
+	public void setTaxonomicTreeUuid(UUID treeUuid) {
+		this.taxonomicTreeUuid = treeUuid;
 	}
 	
 	/* (non-Javadoc)
@@ -376,6 +383,23 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 		} else {
 			return (String)this.getDestination().getName();
 		}
+	}
+
+	/**
+	 * The taxonomic tree name for the first taxonomic tree.
+	 * Needs only to be defined if the import does not handle the naming 
+	 * itself (e.g. by using the taxon sec. reference title cache)
+	 * @param taxonomicTreeName the taxonomicTreeName to set
+	 */
+	public void setTaxonomicTreeName(String taxonomicTreeName) {
+		this.taxonomicTreeName = taxonomicTreeName;
+	}
+
+	/**
+	 * @return the taxonomicTreeName
+	 */
+	public String getTaxonomicTreeName() {
+		return taxonomicTreeName;
 	}
 
 

@@ -98,10 +98,18 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 					getPreparedStatement().setString(getIndex(), (String)value);
 				}else if (sqlType == Types.VARCHAR){
 					String strValue = (String)value;
-					if (strValue.length() > 255){
-						logger.debug("String to long (" + strValue.length() + ") for object " + cdmBase.toString() + ": " + value);
+//					if (strValue.length() > 255){
+//						logger.debug("String to long (" + strValue.length() + ") for object " + cdmBase.toString() + ": " + value);
+//					}
+					if (strValue.length() > getPrecision()){
+						logger.warn("The length of the string to save is longer than the database columns precision. String will be truncated: " + strValue);
+						if (getPrecision() >= 4) {
+							strValue = strValue.substring(0, getPrecision() - 4 )+" ...";
+						} else {
+							strValue = strValue.substring(0, getPrecision());
 					}
-					getPreparedStatement().setString(getIndex(), (String)value);
+					}
+					getPreparedStatement().setString(getIndex(), strValue);
 				}else if (sqlType == Types.BOOLEAN){
 					getPreparedStatement().setBoolean(getIndex(), (Boolean)value);
 				}else if (sqlType == Types.DATE){

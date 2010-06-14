@@ -70,7 +70,7 @@ public class IdMapper extends DbSingleAttributeExportMapperBase<DbExportStateBas
 			return cdmBase.getId();
 		}else if(type == IdType.ORIGINAL_SOURCE_ID){
 			//TODO
-			logger.warn("ORIGINAL_SOURCE_ID");
+			logger.warn("ORIGINAL_SOURCE_ID not yet implemented");
 			return cdmBase.getId();
 		}else{
 			logger.warn("Unknown idType: " + type);

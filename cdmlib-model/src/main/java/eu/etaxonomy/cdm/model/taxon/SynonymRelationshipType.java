@@ -58,12 +58,19 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	private static SynonymRelationshipType HOMOTYPIC_SYNONYM_OF;
 	private static SynonymRelationshipType HETEROTYPIC_SYNONYM_OF;
 	private static SynonymRelationshipType INFERRED_SYNONYM_OF;
+	
+	private static SynonymRelationshipType INFERRED_GENUS_OF; 
+	private static SynonymRelationshipType INFERRED_EPITHET_OF;
+	private static SynonymRelationshipType POTENTIAL_COMBINATION_OF;
 
 	private static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");
 	private static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
 	private static final UUID uuidHeterotypicSynonymOf = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
 	private static final UUID uuidInferredSynonymOf = UUID.fromString("cb5bad12-9dbc-4b38-9977-162e45089c11");
-
+	private static final UUID uuidInferredGenusOf = UUID.fromString("f55a574b-c1de-45cc-9ade-1aa2e098c3b5");
+	private static final UUID uuidInferredEpithetOf = UUID.fromString("089c1926-eb36-47e7-a2d1-fd5f3918713d");
+	private static final UUID uuidPotentialCombinationOf = UUID.fromString("7c45871f-6dc5-40e7-9f26-228318d0f63a");
+	
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -145,6 +152,28 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	public static final SynonymRelationshipType INFERRED_SYNONYM_OF(){
 		return INFERRED_SYNONYM_OF;
 	}
+	
+	/**
+	 * Returns the synonym relationship type "is inferred genus of".
+	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
+	 * level is derived from a epithet synonymy.
+	 */
+	public static final SynonymRelationshipType INFERRED_GENUS_OF(){
+		return INFERRED_GENUS_OF;
+	}
+	
+	/**
+	 * Returns the synonym relationship type "is inferred synonym of".
+	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
+	 * level is derived from a genus synonymy.
+	 */
+	public static final SynonymRelationshipType INFERRED_EPITHET_OF(){
+		return INFERRED_EPITHET_OF;
+	}
+	
+	public static SynonymRelationshipType POTENTIAL_COMBINATION_OF() {
+		return POTENTIAL_COMBINATION_OF;
+	}
 
 	@Override
 	public SynonymRelationshipType readCsvLine(Class<SynonymRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
@@ -157,6 +186,11 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 		SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidHomotypicSynonymOf);
 		SynonymRelationshipType.SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidSynonymOf);
 		SynonymRelationshipType.INFERRED_SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidInferredSynonymOf);
+		SynonymRelationshipType.INFERRED_GENUS_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidInferredGenusOf);
+		SynonymRelationshipType.INFERRED_EPITHET_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidInferredEpithetOf);
+		SynonymRelationshipType.POTENTIAL_COMBINATION_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidPotentialCombinationOf);
 	}
+
+	
 
 }

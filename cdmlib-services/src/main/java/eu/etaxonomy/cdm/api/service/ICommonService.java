@@ -50,7 +50,24 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData();
 	
 	
-	/** find cdmBase by UUID**/
+	/**
+	 * Returns a map of identifiable entities of class <code>clazz</code> which have an original source of 
+	 * with namespace <code>idNamespace</code> and with an idInSource in <code>idInSourceSet</code> <BR>
+	 * The key of the map is the idInSource. If there are multiple objects that have the same id an arbitrary one is chosen.
+	 * @param clazz
+	 * @param idInSourceSet
+	 * @param idNamespace
+	 * @return
+	 */
+	public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
+	
+	/**
+	 * Returns a list of identifiable entities according to their class, idInSource and idNamespace
+	 * @param clazz
+	 * @param idInSource
+	 * @param idNamespace
+	 * @return
+	 */
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
 	

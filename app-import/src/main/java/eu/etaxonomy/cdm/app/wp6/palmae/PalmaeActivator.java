@@ -93,7 +93,7 @@ public class PalmaeActivator {
 		
 		TcsRdfImportConfigurator tcsImportConfigurator = TcsRdfImportConfigurator.NewInstance(source,  destination);
 		
-		tcsImportConfigurator.setTreeUuid(treeUuid);
+		tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
 		tcsImportConfigurator.setSecUuid(secUuid);
 		tcsImportConfigurator.setSourceSecId(sourceSecId);
 		

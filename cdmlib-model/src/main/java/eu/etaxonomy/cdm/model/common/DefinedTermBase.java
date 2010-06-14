@@ -167,7 +167,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		try {
 			T newInstance = termClass.newInstance();
-		    return readCsvLine(newInstance, csvLine, Language.ENGLISH());
+		    return readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE());
 		} catch (Exception e) {
 			logger.error(e);
 			for(StackTraceElement ste : e.getStackTrace()) {

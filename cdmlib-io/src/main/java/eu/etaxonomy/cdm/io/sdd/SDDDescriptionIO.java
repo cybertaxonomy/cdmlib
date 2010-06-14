@@ -113,16 +113,21 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Map<String,String> locations = new HashMap<String,String>();
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
-	private Map<String,FeatureNode> nodes = new HashMap<String,FeatureNode>();
 	private Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
 	private Map<String,StateData> stateDatas = new HashMap<String,StateData>();
+	private Map<String,State> states = new HashMap<String,State>();
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 	private Map<String,TaxonNode> taxonNodes = new HashMap<String,TaxonNode>();
 	private Map<String,NamedArea> namedAreas = new HashMap<String,NamedArea>();
 	private Map<String,Specimen> specimens = new HashMap<String,Specimen>();
+	private Map<String,Modifier> modifiers = new HashMap<String,Modifier>();
+	
+	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
 
+	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
+	private Set<TermVocabulary<Modifier>> termVocabularyStates = new HashSet<TermVocabulary<Modifier>>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
 	ReferenceFactory refFactory = ReferenceFactory.newInstance();
@@ -144,7 +149,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Rights copyright = null;
 
 	private int taxonNamesCount = 0; //XIM ajout
-	
 	
 	public SDDDescriptionIO(){
 		super();
@@ -330,9 +334,8 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			}
 
 		} 
-		//XIM else if
-		if (ve instanceof IdentifiableEntity) {
-			IdentifiableEntity ie = (IdentifiableEntity) ve;
+		if (ve instanceof IdentifiableEntity<?>) {
+			IdentifiableEntity<?> ie = (IdentifiableEntity<?>) ve;
 			List<String> labDet = null;
 
 			if (ve instanceof TaxonNameBase) {
@@ -367,8 +370,8 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 		}
 		
-		if (ve instanceof IdentifiableMediaEntity){
-			IdentifiableMediaEntity ime = (IdentifiableMediaEntity) ve;
+		if (ve instanceof IdentifiableMediaEntity<?>){
+			IdentifiableMediaEntity<?> ime = (IdentifiableMediaEntity<?>) ve;
 			Element elLinks = parent.getChild("Links",sddNamespace);
 
 			if (elLinks != null) {
@@ -423,7 +426,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 								this.associateImageWithCdmBase(ref,descriptionSource);
 							}
 						} else {
-							//System.out.println(parent.getName());
 							this.associateImageWithCdmBase(ref,ve);
 						}
 					}
@@ -432,23 +434,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			}
 		}
 
-	}
-	
-	protected void importGeographicAreas(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig) {
-		Element elGeographicAreas = elDataset.getChild("GeographicAreas",sddNamespace);
-		if (elGeographicAreas != null) {
-			List<Element> listGeographicAreas = elGeographicAreas.getChildren("GeographicArea", sddNamespace);
-			int j = 0;
-			
-			for (Element elGeographicArea : listGeographicAreas){
-
-				String id = elGeographicArea.getAttributeValue("id");
-				NamedArea na = new NamedArea();
-				importRepresentation(elGeographicArea, sddNamespace, na, id, sddConfig);
-				namedAreas.put(id,na);
-			}
-			if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + j);}
-		}
 	}
 	
 
@@ -501,15 +486,24 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		importGeographicAreas(elDataset, sddNamespace, sddConfig);
 		importSpecimens(elDataset,sddNamespace, sddConfig);
 			
-		MarkerType editou = MarkerType.NewInstance("Editor", "editor", "edt") ;
-		if (authors != null) {
+		MarkerType editorMarkerType = MarkerType.NewInstance("Editor", "editor", "edt") ;
+		MarkerType geographicAreaMarkerType = MarkerType.NewInstance("", "SDDGeographicArea", "ga");
+		MarkerType descriptiveConceptMarkerType = MarkerType.NewInstance("Descriptive Concept", "DescriptiveConcept", "DC");
+		markerTypes.add(editorMarkerType);
+		markerTypes.add(geographicAreaMarkerType);
+		markerTypes.add(descriptiveConceptMarkerType);
+		
+		
+		if ((authors != null)||(editors != null)) {
 			Team team = Team.NewInstance();
+			if (authors != null) {
 			for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
 				team.addTeamMember(author.next());
 			}
+			}
 			if (editors != null) {
 				Marker marker = Marker.NewInstance();
-				marker.setMarkerType(editou);
+				marker.setMarkerType(editorMarkerType);
 				for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
 					Person edit = editor.next();
 					edit.addMarker(marker);
@@ -518,16 +512,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				}
 			sec.setAuthorTeam(team);
 			sourceReference.setAuthorTeam(team);
-		}
-		
-		if (editors != null) {
-			Person ed = Person.NewInstance();
-			for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
-				ed = editor.next();
-			}
-			// TODO updatedBy refactored to use a user account, so setting a person is no longer applicable
-			//			sec.setUpdatedBy(ed);
-			//			sourceReference.setUpdatedBy(ed);
 		}
 
 		if (copyright != null) {
@@ -544,12 +528,10 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			descriptionService.save(taxonDescription);
 		}
 
-		//descriptionService.saveFeatureNodeAll(featureNodes.values());
 		
 		for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
 			String ref = refCD.next();
 			TaxonDescription td = taxonDescriptions.get(ref);
-			//XIM BUG ONAFILE td.addDescriptionSource(sec);
 			if (citations.containsKey(ref)) {
 				IArticle publication = (IArticle) publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
@@ -563,31 +545,86 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");
+		
+		
+//		for (Iterator<TermVocabulary<Modifier>> k = termVocabularyStates.iterator() ; k.hasNext() ;){
+//			TermVocabulary<Modifier> termVocabulary = k.next();
+//			getVocabularyService().save(termVocabulary); //XIM
+//		}
+		
 
 		//sddConfig.setSourceReference(sourceReference);
 
 		//saving of all imported data into the CDM db
 		ITermService termService = getTermService();
-		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
-			StateData sd = k.next();
-			termService.save(sd.getState()); 
+		
+//		Modifier odif = new Modifier("zoub","zab","zib");
+//		Modifier odif2 = new Modifier("zouba","zaba","ziba");
+//		modifiers.put("yy", odif);
+//		State st = State.NewInstance();
+//		StateData stat = StateData.NewInstance();
+		//StateData stat2 = StateData.NewInstance();
+		//termService.save(stat2);
+//		stat2.setState(st);
+//		stat.setState(st);
+//		stateDatas.put("yy", stat);
+//		stateDatas.put("yy", stat2);
+//		stat.addModifier(odif);
+//		stat.addModifier(odif2);
+//		stat2.addModifier(odif);
+		
+		for (Iterator<Modifier> k = modifiers.values().iterator() ; k.hasNext() ;){
+			Modifier modifier = k.next();
+			termService.save(modifier);
 		}
+		
+		//termService.save(descriptiveConceptMarkerType);
+		if (descriptiveConcepts != null) {
+			for (Iterator<Feature> feat = descriptiveConcepts.iterator() ; feat.hasNext() ;) {
+				Marker marker = Marker.NewInstance();
+				marker.setMarkerType(descriptiveConceptMarkerType);
+				Feature feature = feat.next();
+				feature.addMarker(marker);
+			}
+		}
+		
+		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
+			State state = k.next();
+			termService.save(state);
+		}
+		
+		/*Marker markerd = Marker.NewInstance();
+		markerd.setMarkerType(descriptiveConceptMarker);
+		Feature fiture = Feature.NewInstance("Fitoure","Fitoure","Fitoure");
+		fiture.addMarker(markerd);
+		TermVocabulary<Modifier> termVocabularyState = new TermVocabulary<Modifier>("test","test","test","test");
+		Modifier modif = new Modifier("zoub","zab","zib");
+		termVocabularyState.addTerm(modif);
+		getVocabularyService().save(termVocabularyState);
+		fiture.addRecommendedModifierEnumeration(termVocabularyState);
+		termService.save(modif);
+		termService.save(fiture);*/
+		
 		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
 			Feature feature = k.next();
 			termService.save(feature); 
 		}
 		
+		for(Iterator<MarkerType> k = markerTypes.iterator() ; k.hasNext() ;){
+			MarkerType markerType = k.next();
+			termService.save(markerType);
+		}
 		
-		termService.save(editou);
+		//XIMtermService.save(editorMarkerType);
 		
-		MarkerType sddGeographicArea = MarkerType.NewInstance("", "SDDGeographicArea", "");
-		termService.save(sddGeographicArea);
+		//XIMtermService.save(geographicAreaMarkerType);
 		for (Iterator<NamedArea> k = namedAreas.values().iterator() ; k.hasNext() ;) {
-			Marker areamarker = Marker.NewInstance();
-			areamarker.setMarkerType(sddGeographicArea);
+			Marker marker = Marker.NewInstance();
+			marker.setMarkerType(geographicAreaMarkerType);
 			NamedArea area = k.next();
-			area.addMarker(areamarker);
-			getTermService().save(area);
+			area.addMarker(marker);
+			//getTermService().save(area);
+			termService.save(area);
 		}		
 		
 		if (units != null) {
@@ -602,7 +639,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			StatisticalMeasure sm = k.next();
 			termService.save(sm); 
 		}
-
 		for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
 			AnnotationType annotationType = at.next();
 			termService.save(annotationType); 
@@ -619,17 +655,16 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			FeatureTree tree = k.next();
 			getFeatureTreeService().save(tree);
 		}
-		
 		for (Iterator<TaxonomicTree> k = taxonomicTrees.iterator() ; k.hasNext() ;) {
 			TaxonomicTree tree = k.next();
 			getTaxonTreeService().save(tree);
 		}
-		
 		for (Iterator<Specimen> k = specimens.values().iterator() ; k.hasNext() ;) {
 			Specimen specimen = k.next();
 			getOccurrenceService().save(specimen);
 		}
-
+		logger.info("end of persistence ...");
+		
 	}
 
 	// imports the default language of the dataset
@@ -647,30 +682,34 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		}
 	}
 	
+	// imports the specimens
 	protected void importSpecimens(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig) {
 		logger.info("start Specimens ...");
+		/*	<Specimens>
+        		<Specimen id="sp1">
+           			<Representation>
+              			<Label>TJM45337</Label>
+           			</Representation>
+        		</Specimen>
+     		</Specimens>
+		 */
 		Element elSpecimens = elDataset.getChild("Specimens",sddNamespace);
 		if (elSpecimens != null){
 			List<Element> listSpecimens = elSpecimens.getChildren("Specimen", sddNamespace);
 			int j = 0;
 			for (Element elSpecimen : listSpecimens) {
 				String id = elSpecimen.getAttributeValue("id");
-				Specimen speci = null;
+				Specimen specimen = null;
 				if (!id.equals("")) {
-					speci = Specimen.NewInstance();
-					specimens.put(id,speci);
-					importRepresentation(elSpecimen, sddNamespace, speci, id, sddConfig);
+					specimen = Specimen.NewInstance();
+					specimens.put(id,specimen);
+					importRepresentation(elSpecimen, sddNamespace, specimen, id, sddConfig);
 				}
 			}
-			
+
 		}
 	}
 
-	
-
-	
-	
-	
 	// imports the revision data associated with the Dataset (authors, modifications)
 	protected void importRevisionData(Element elDataset, Namespace sddNamespace){
 		// <RevisionData>
@@ -679,14 +718,14 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		if (elRevisionData != null){
 			// <Creators>
 			Element elCreators = elRevisionData.getChild("Creators",sddNamespace);
-	
+
 			// <Agent role="aut" ref="a1"/>
 			List<Element> listAgents = elCreators.getChildren("Agent", sddNamespace);
-	
+
 			int j = 0;
 			//for each Agent
 			for (Element elAgent : listAgents){
-	
+
 				String role = elAgent.getAttributeValue("role");
 				String ref = elAgent.getAttributeValue("ref");
 				if (role.equals("aut")) {
@@ -700,12 +739,12 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					}
 				}
 				if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
-	
+
 			}
-	
+
 			// <DateModified>2006-04-08T00:00:00</DateModified>
 			String stringDateModified = (String)ImportHelper.getXmlInputValue(elRevisionData, "DateModified",sddNamespace);
-	
+
 			if (stringDateModified != null) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 				Date d = null;
@@ -715,7 +754,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					System.err.println("Exception :");
 					e.printStackTrace();
 				}
-	
+
 				DateTime updated = null;
 				if (d != null) {
 					updated = new DateTime(d);
@@ -753,7 +792,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					if (lang != null) {
 						if (!lang.equals("")) {
 							iprLanguage = getTermService().getLanguageByIso(lang.substring(0, 2));
-							//iprLanguage = datasetLanguage;
 						} else {
 							iprLanguage = datasetLanguage;
 						}
@@ -815,7 +853,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		}
 	}
 
-	// imports the representation (label, detail, lang) of a particular SDD element
+	// imports the characters (categorical, quantitative and text ; sequence characters not supported) which correspond to CDM Features
 	protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
 		// <Characters>
 		logger.info("start Characters ...");
@@ -825,20 +863,13 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		if (elCharacters != null) {
 			List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
 			int j = 0;
-			//for each CategoricalCharacter
 			for (Element elCategoricalCharacter : elCategoricalCharacters){
 				try {
 
 					String idCC = elCategoricalCharacter.getAttributeValue("id");
-
-					// <Representation>
-					//  <Label> Leaf complexity</Label>
-					// </Representation>
-
 					Feature categoricalCharacter = Feature.NewInstance();
 					categoricalCharacter.setKindOf(Feature.DESCRIPTION());
 					importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
-
 					categoricalCharacter.setSupportsCategoricalData(true);
 
 					// <States>
@@ -853,24 +884,19 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 						if ((++k % modCount) == 0){ logger.info("StateDefinitions handled: " + (k-1));}
 
-						String idSD = elStateDefinition.getAttributeValue("id");
-						// <Representation>
-						//  <Label>Simple</Label>
-						//  <MediaObject ref="ib" role="Primary"/>
-						// </Representation>
+						String idS = elStateDefinition.getAttributeValue("id");
 						State state = State.NewInstance();
-						importRepresentation(elStateDefinition, sddNamespace, state, idSD, sddConfig);
+						importRepresentation(elStateDefinition, sddNamespace, state, idS, sddConfig);
 
-						StateData stateData = StateData.NewInstance();
-						stateData.setState(state);
+						//StateData stateData = StateData.NewInstance();
+						//stateData.setState(state);
 						termVocabularyState.addTerm(state);
-						stateDatas.put(idSD,stateData);
+						states.put(idS,state);
 					}
 					categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
 					features.put(idCC, categoricalCharacter);
 
 				} catch (Exception e) {
-					//FIXME
 					logger.warn("Import of CategoricalCharacter " + j + " failed.");
 					success = false; 
 				}
@@ -981,18 +1007,17 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 		}
 
-		for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
-			featureSet.add(f.next());
-		}
+		/*for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
+			featureSet.add(f.next()); //XIM Why this line ?
+		}*/
 
 	}
 
-	// imports the descriptions of taxa (specimens TODO)
+	// imports the descriptions of taxa
 	protected void importCodedDescriptions(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
 		// <CodedDescriptions>
 		logger.info("start CodedDescriptions ...");
 		Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
-
 		// <CodedDescription id="D101">
 
 		if (elCodedDescriptions != null) {
@@ -1026,7 +1051,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 						NonViralName taxonNameBase = taxonNameBases.get(ref);
 						taxon = Taxon.NewInstance(taxonNameBase, sec);
 					}
-					else {
+					else {//XIM what is it ?
 						NonViralName tnb = NonViralName.NewInstance(null);
 						String id = new String(""+taxonNamesCount);
 						IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
@@ -1050,7 +1075,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 					// <SummaryData>
 					Element elSummaryData = elCodedDescription.getChild("SummaryData",sddNamespace);
-
 					if (elSummaryData != null) {
 
 						// <Categorical ref="c4">
@@ -1067,16 +1091,28 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							// <State ref="s3"/>
 							List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
 							int l = 0;
+							
 							//for each State
 							for (Element elState : elStates){
 								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
 								ref = elState.getAttributeValue("ref");
-								StateData stateData = stateDatas.get(ref);
+								State state = states.get(ref);
+								if (state!=null) {
+									StateData stateData = StateData.NewInstance();
+									stateData.setState(state);
+									List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
+									for (Element elModifier : elModifiers){
+										ref = elModifier.getAttributeValue("ref");
+										Modifier modifier = modifiers.get(ref);
+										if (modifier!=null) {
+											stateData.addModifier(modifier);
+										}
+									}
 								categoricalData.addState(stateData);
 							}
 							taxonDescription.addElement(categoricalData);
 						}
-
+						}
 						// <Quantitative ref="c2">
 						List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
 						k = 0;
@@ -1177,14 +1213,13 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					
 					taxonDescription.setDescriptiveSystem(featureSet);
 
-					taxonDescriptions.put(idCD, taxonDescription);//XIM PB ici
+					taxonDescriptions.put(idCD, taxonDescription);//FIXME
 
 				} catch (Exception e) {
 					//FIXME
 					logger.warn("Import of CodedDescription " + j + " failed.");
-					success = false; 
+					success = false;
 				}
-
 				if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + j);}
 
 			}
@@ -1271,31 +1306,34 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 	// imports publications related with the data set
 	protected void importPublications(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-		// <Publications>
+		/* <Publications>
+			  <Publication id="p112">
+			    <Representation>
+			      <Label>Gee, X. & Haa, Y. (2003). How to be happy in five minutes. Instant Gratifications, Palm Beach.</Label>
+			    </Representation>
+			    <Links>
+			    <Link rel="BasedOn" href="doi:10.1992/32311"/>
+			    <Link rel="Alternate" href="http://some.service.net/providing/bibliographic.data"/>
+			    </Links>
+			</Publications>
+*/
 		logger.info("start Publications ...");
 		Element elPublications = elDataset.getChild("Publications",sddNamespace);
 
 		if (elPublications != null) {
-			// <Publication id="p1">
 			List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
 			int j = 0;
-			//for each Publication
 			for (Element elPublication : listPublications){
 
 				try {
 
 					String idP = elPublication.getAttributeValue("id");
-
-					//  <Representation>
-					//   <Label>Sample Citation</Label>
-					//  </Representation>
 					ReferenceBase publication = refFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
 
 					publications.put(idP,publication);
 
 				} catch (Exception e) {
-					//FIXME
 					logger.warn("Import of Publication " + j + " failed.");
 					success = false; 
 				}
@@ -1306,7 +1344,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		}
 	}
 
-	// imports media objects such as images
+	// imports media objects such as images //FIXME check mediaobj
 	protected void importMediaObjects(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
 		// <MediaObjects>
 		logger.info("start MediaObjects ...");
@@ -1316,7 +1354,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			// <MediaObject id="m1">
 			List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
 			int j = 0;
-			//for each Publication
 			for (Element elMO : listMediaObjects){
 
 				String id = "";
@@ -1355,7 +1392,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							File f = new File(sns);
 							File parent = f.getParentFile();
 							String fi = href;
-							//XIMString fi = parent.toString() + File.separator + href; enlever le file:/ ou truc du genre
+							//String fi = parent.toString() + File.separator + href; //TODO erase file:/
 							File file = new File(fi);
 							imageMetaData.readMetaData(file.toURI(), 0);
 							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
@@ -1416,138 +1453,136 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		}
 	}
 
-	// imports the <DescriptiveConcepts> block
+	// imports the <DescriptiveConcepts> block ; DescriptiveConcepts are used as nodes in CharacterTrees and Characters as leaves
+	// but since Modifiers can be linked to DescriptiveConcepts they are stored as features with a particular Marker
 	protected void importDescriptiveConcepts(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
-		// <DescriptiveConcepts>
+		/* <DescriptiveConcepts>
+		      <DescriptiveConcept id="dc0">
+			        <Representation>
+			          <Label>Fixed set of modifiers supported in Lucid3</Label>
+			        </Representation>
+			        <Modifiers>
+			          <Modifier id="mod1">
+			            <Representation>
+			              <Label>rarely</Label>
+			            </Representation>
+			            <ModifierClass>Frequency</ModifierClass>
+			            <ProportionRange lowerestimate="0.0" upperestimate="0.25"/>
+			          </Modifier>
+		          </Modifiers>
+		        </DescriptiveConcept>
+	         </DescriptiveConcepts>
+		 */
 		logger.info("start DescriptiveConcepts ...");
 		Element elDescriptiveConcepts = elDataset.getChild("DescriptiveConcepts",sddNamespace);
-		// <DescriptiveConcept id="b">
 		if (elDescriptiveConcepts != null) {
 			List<Element> listDescriptiveConcepts = elDescriptiveConcepts.getChildren("DescriptiveConcept", sddNamespace);
 			int j = 0;
-			//for each DescriptiveConcept
-			int g = 1;
 
 			for (Element elDescriptiveConcept : listDescriptiveConcepts){
-
+				try {
 				String id = elDescriptiveConcept.getAttributeValue("id");
-				String uri = elDescriptiveConcept.getAttributeValue("uri");
-
-				FeatureNode fn = null;
-
-				if (!id.equals("")) {
-					fn = FeatureNode.NewInstance();
 					Feature feature = Feature.NewInstance();
 					feature.setKindOf(Feature.DESCRIPTION());
+					if (!id.equals("")) {
 					//	 <Representation>
 					//       <Label>Body</Label>
 					importRepresentation(elDescriptiveConcept, sddNamespace, feature, id, sddConfig);
-					//System.out.println(feature.getLabel()+id);
-					features.put("g" + g, feature);
-					g++;
-					/*Element elModifiers = elDescriptiveConcept.getChild("Modifiers", sddNamespace);
+						features.put(id, feature);
+						getTermService().save(feature);//XIM
+						descriptiveConcepts.add(feature);
+						// imports the modifiers
+						Element elModifiers = elDescriptiveConcept.getChild("Modifiers", sddNamespace);
 					if (elModifiers !=null){
 						List<Element> listModifiers = elModifiers.getChildren("Modifier", sddNamespace);
+							TermVocabulary<Modifier> termVocabularyState = new TermVocabulary<Modifier>();
 						for (Element elModifier : listModifiers) {
-								TermVocabulary<Modifier> termVocabularyState = new TermVocabulary<Modifier>("test","test","test","test");
 								Modifier modif = Modifier.NewInstance();
 								String idmod = elModifier.getAttributeValue("id");
 								importRepresentation(elModifier, sddNamespace, modif, idmod, sddConfig);
 								termVocabularyState.addTerm(modif);
-								//XIMfeature.addRecommendedModifierEnumeration(termVocabularyState);
+								//termVocabularyStates.add(termVocabularyState);
+								getVocabularyService().save(termVocabularyState);//XIM
+								modifiers.put(idmod, modif);
 						}
-					}*/
-					
-					fn.setFeature(feature);
-
-					//	TODO if an OriginalSource can be attached to a FeatureNode or a Feature		
-					//					OriginalSource source = null;
-					//					if (uri != null) {
-					//						if (!uri.equals("")) {
-					//							source = OriginalSource.NewInstance(id, "DescriptiveConcept", Generic.NewInstance(), uri);
-					//						}
-					//					} else {
-					//						source = OriginalSource.NewInstance(id, "DescriptiveConcept");
-					//					}
-					//					f.addSource(source);
-
-					featureNodes.put(id,fn);
+							feature.addRecommendedModifierEnumeration(termVocabularyState);
 				}
 
+					}
+				}
+				catch (Exception e) {
+					logger.warn("Import of DescriptiveConcept " + j + " failed.");
+				}
 				if ((++j % modCount) == 0){ logger.info("DescriptiveConcepts handled: " + j);}
 
 			}
 		}
 	}
-	
+
+	// imports the <CharacterTrees> block
 	protected void importCharacterTrees(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
 		// <CharacterTrees>
 		logger.info("start CharacterTrees ...");
 		Element elCharacterTrees = elDataset.getChild("CharacterTrees",sddNamespace);
 
-		// <CharacterTree>
-
 		if (elCharacterTrees != null) {
 			List<Element> listCharacterTrees = elCharacterTrees.getChildren("CharacterTree", sddNamespace);
 			int j = 0;
-			//for each CharacterTree
 			for (Element elCharacterTree : listCharacterTrees){
 				try {
 					Element elRepresentation = elCharacterTree.getChild("Representation",sddNamespace);
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
-					Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);
-					/*XIMList<Element> listRoles = elDesignedFor.getChildren("Role",sddNamespace);
-					boolean isgroups = false;
-
-					for (Element elRole : listRoles){
-						if (elRole.getText().equals("Filtering")) {
-							isgroups = true;
-						}
-					}*/
-
-					// only treats the case of flat groups containing characters
-					// should also be added: dependencies between characters, 
-					//XIM
+					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
 						FeatureTree feattree =  FeatureTree.NewInstance();
 						importRepresentation(elCharacterTree, sddNamespace, feattree, "", sddConfig);
 						FeatureNode root = feattree.getRoot();
-						//XIM several <Nodes> found in some files, is it correct ?
 						List<Element> listelNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
+
+					//Nodes of CharacterTrees in SDD always refer to DescriptiveConcepts
 						for (Element elNodes : listelNodes) {
 							List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 							if (listNodes != null) {
 								for (Element elNode : listNodes){
 									String idN = elNode.getAttributeValue("id");
 									FeatureNode fn = null;
-									if (!idN.equals("")) {
+								Feature dc = null;
+								if (idN!=null) {
+									// DescriptiveConcepts are used as nodes in CharacterTrees
 										Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
 										if (elDescriptiveConcept != null){
 											String refDC = elDescriptiveConcept.getAttributeValue("ref");
-											//System.out.println(refDC);
-											fn = featureNodes.get(refDC);
+										dc = features.get(refDC);
+										fn = FeatureNode.NewInstance(dc);
 										}
-										else {
+									if (fn==null){
 											fn = FeatureNode.NewInstance();
-											featureNodes.put(idN,fn);
 										}
 										Element elParent = elNode.getChild("Parent", sddNamespace);
+									// in SDD links between Nodes are referenced by the <Parent> tag
 										if (elParent!=null){
 											String refP = elParent.getAttributeValue("ref");
-											if (!refP.equals("")) {
-												FeatureNode parent = nodes.get(refP);
+										if (refP!=null) {
+											FeatureNode parent = featureNodes.get(refP);
+											if (parent==null){
+												root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
+											}
+											else {
 												parent.addChild(fn);
 											}
 										}
+									}
 										else {
-											fn = FeatureNode.NewInstance();
-											root.addChild(fn);
+										root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
 										}
 									}
-									nodes.put(idN, fn);
+								featureNodes.put(idN, fn);
 								}
-								//System.out.println("zic");
+						}
+
+						// Leaves of CharacterTrees in SDD are always CharNodes (referring to Characters)
 								List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
+						if (listCharNodes != null) {
 								for (Element elCharNode : listCharNodes){
 									Element elParent = elCharNode.getChild("Parent", sddNamespace);
 									Element elCharacter = elCharNode.getChild("Character", sddNamespace);							
@@ -1555,9 +1590,9 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 									if (elParent!=null){
 										String refP = elParent.getAttributeValue("ref");
 										if ((refP!=null)&&(!refP.equals(""))) {
-											FeatureNode parent = nodes.get(refP);
+										FeatureNode parent = featureNodes.get(refP);
 											if (parent==null){
-												parent = root; // because of Delta example
+											parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
 											}
 											parent.addChild(fn);
 										}
@@ -1566,26 +1601,18 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 									if ((refC!=null)&&(!refC.equals(""))){
 										Feature character = features.get(refC);
 										fn.setFeature(character);
-										// if method setParent() in FeatureNode becomes visible
-										// fn.setParent(parent);
+								featureNodes.put(refC, fn);
 									}
-									else {
-										refC = String.valueOf(taxonNamesCount);
-										taxonNamesCount++;
+							}		
 									}
-									nodes.put(refC, fn);
 								}
-							}
-						}
 						featureTrees.add(feattree);
 					}
 
 				catch (Exception e) {
-					//FIXME
 					logger.warn("Import of Character tree " + j + " failed.");
 					success = false; 
 				}
-
 				if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
 
 			}
@@ -1593,10 +1620,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		}
 	}
 
-	
-	
-	
-	
+	// imports the <TaxonHierarchies> block
 	protected void importTaxonHierarchies(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
 
 		logger.info("start TaxonHierarchies ...");
@@ -1609,12 +1633,13 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				try {
 					Element elRepresentation = elTaxonHierarchy.getChild("Representation",sddNamespace);
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
-
 						TaxonomicTree taxonomicTree =  TaxonomicTree.NewInstance(label);
 						importRepresentation(elTaxonHierarchy, sddNamespace, taxonomicTree, "", sddConfig);
+					
 						Set<TaxonNode> root = taxonomicTree.getRootNodes();
-						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace);
+						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
+						
 						for (Element elNode : listNodes){
 							String idN = elNode.getAttributeValue("id");
 							TaxonNameBase tnb = null;
@@ -1622,21 +1647,18 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 								Element elTaxonName = elNode.getChild("TaxonName", sddNamespace);
 								String refTN = elTaxonName.getAttributeValue("ref");
 								tnb = taxonNameBases.get(refTN);
-								Taxon taxonou = (Taxon) tnb.getTaxa().iterator().next() ;
+								Taxon taxon = (Taxon) tnb.getTaxa().iterator().next() ;
 								Element elParent = elNode.getChild("Parent", sddNamespace);
 								if (elParent!=null){
 									String refP = elParent.getAttributeValue("ref");
 									if (!refP.equals("")) {
 										TaxonNode parent = taxonNodes.get(refP);
-										//TaxonNode child = parent.addChildTaxon(Taxon.NewInstance(tnb, sec), sec, "", Synonym.NewInstance(tnb, sec));
-										TaxonNode child = parent.addChildTaxon(taxonou, sec, "", Synonym.NewInstance(tnb, sec));
+										TaxonNode child = parent.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec));
 										taxonNodes.put(idN,child);
 									}
 								}
 								else {
-									//XIM addChildtaxon (taxon, referencebase ???
-									//TaxonNode tn = taxonomicTree.addChildTaxon(Taxon.NewInstance(tnb, sec), sec, "", Synonym.NewInstance(tnb, sec));
-									TaxonNode tn = taxonomicTree.addChildTaxon(taxonou, sec, "", Synonym.NewInstance(tnb, sec));
+									TaxonNode tn = taxonomicTree.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
 									taxonNodes.put(idN,tn);
 								}
 							}
@@ -1659,97 +1681,21 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	// imports the descriptions of taxa (specimens TODO)
-	protected void importCharacterTrees2(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-		// <CharacterTrees>
-		logger.info("start CharacterTrees ...");
-		Element elCharacterTrees = elDataset.getChild("CharacterTrees",sddNamespace);
-
-		// <CharacterTree>
-
-		if (elCharacterTrees != null) {
-			List<Element> listCharacterTrees = elCharacterTrees.getChildren("CharacterTree", sddNamespace);
+	// imports the <GeographicAreas> block 
+	protected void importGeographicAreas(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig) {
+		Element elGeographicAreas = elDataset.getChild("GeographicAreas",sddNamespace);
+		if (elGeographicAreas != null) {
+			List<Element> listGeographicAreas = elGeographicAreas.getChildren("GeographicArea", sddNamespace);
 			int j = 0;
-			//for each CharacterTree
-			for (Element elCharacterTree : listCharacterTrees){
-
-				try {
-					Element elRepresentation = elCharacterTree.getChild("Representation",sddNamespace);
-					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
-					Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);
-					List<Element> listRoles = elDesignedFor.getChildren("Role",sddNamespace);
-					boolean isgroups = false;
-
-					for (Element elRole : listRoles){
-						if (elRole.getText().equals("Filtering")) {
-							isgroups = true;
-						}
-					}
-
-					// only treats the case of flat groups containing characters
-					// should also be added: dependencies between characters, 
-					//XIM
-					if ((label.contains("group")) || (isgroups) || (1==1)) {
-
-						FeatureTree groups =  FeatureTree.NewInstance();
-						importRepresentation(elCharacterTree, sddNamespace, groups, "", sddConfig);
-						FeatureNode root = groups.getRoot();
 						
-						Element elNodes = elCharacterTree.getChild("Nodes", sddNamespace);
-						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
-						for (Element elNode : listNodes){
-							String idN = elNode.getAttributeValue("id");
-							FeatureNode fn = null;
-							if (!idN.equals("")) {
-								Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
-								String refDC = elDescriptiveConcept.getAttributeValue("ref");
-								fn = featureNodes.get(refDC);
-								root.addChild(fn);
-							}
-							nodes.put(idN, fn);
-						}
+			for (Element elGeographicArea : listGeographicAreas){
 
-						List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
-						for (Element elCharNode : listCharNodes){
-							Element elParent = elCharNode.getChild("Parent", sddNamespace);
-							Element elCharacter = elCharNode.getChild("Character", sddNamespace);							
-							FeatureNode fn = FeatureNode.NewInstance();
-							if (elParent!=null){
-								String refP = elParent.getAttributeValue("ref");
-								if (!refP.equals("")) {
-									FeatureNode parent = nodes.get(refP);
-									parent.addChild(fn);
+				String id = elGeographicArea.getAttributeValue("id");
+				NamedArea na = new NamedArea();
+				importRepresentation(elGeographicArea, sddNamespace, na, id, sddConfig);
+				namedAreas.put(id,na);
 								}
+			if ((++j % modCount) == 0){ logger.info("GeographicAreas handled: " + j);}
 							}
-							String refC = elCharacter.getAttributeValue("ref");
-							if (!refC.equals("")){
-								Feature character = features.get(refC);
-								fn.setFeature(character);
-								// if method setParent() in FeatureNode becomes visible
-								// fn.setParent(parent);
 							}
-							nodes.put(refC, fn);
-						}
-						featureTrees.add(groups);
-					}
-
-				} catch (Exception e) {
-					//FIXME
-					logger.warn("Import of Character tree " + j + " failed.");
-					success = false; 
-				}
-
-				if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
-
-			}
-
-		}
-	}
 }

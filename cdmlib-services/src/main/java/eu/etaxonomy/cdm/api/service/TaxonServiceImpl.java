@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -38,17 +39,21 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -465,7 +470,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		// Names without taxa 
 		if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
-            //FIXME implement search by area
+           
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
@@ -483,34 +488,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		// Taxa from common names
-		// FIXME the matching common names also must be returned
-		// FIXME implement search by area
+		
 		if (configurator.isDoTaxaByCommonNames()) {
-			int numberCommonNameResults = 0;
-			List<CommonTaxonName> commonTaxonNames = 
-				descriptionDao.searchDescriptionByCommonName(configurator.getSearchString(), 
-						configurator.getMatchMode(), configurator.getPageSize(), configurator.getPageNumber());
-			if (logger.isDebugEnabled()) { logger.debug(commonTaxonNames.size() + " matching common name(s) found"); }
-			if (commonTaxonNames.size() > 0) {
-				for (CommonTaxonName commonTaxonName : commonTaxonNames) {
-					DescriptionBase description = commonTaxonName.getInDescription();
-					description = HibernateProxyHelper.deproxy(description, DescriptionBase.class);
-					if (description instanceof TaxonDescription) {
-						TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-						Taxon taxon = taxonDescription.getTaxon();
-						taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
-						if (!results.contains(taxon) && !taxon.isMisappliedName()) {
-							defaultBeanInitializer.initialize(taxon, configurator.getTaxonPropertyPath());
-							results.add(taxon);
-							numberCommonNameResults++;
+			taxa = null;
+			numberTaxaResults = 0;
+			numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas());
+			if(numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
+				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 						}
-					} else {
-						logger.warn("Description of " + commonTaxonName.getName() + " is not an instance of TaxonDescription");
+			if(taxa != null){
+				results.addAll(taxa);
 					}
+			numberOfResults += numberTaxaResults;
+			 
 				}
-				numberOfResults += numberCommonNameResults;
-			} 
-		}
+		
 		
 		//FIXME does not work any more after model change
 		logger.warn("Sort does currently not work on identifiable entities due to model changes (duplicated implementation of the Comparable interface).");
@@ -539,5 +531,43 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 		}
 		return medRep;
+	}
+
+	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
+		return this.dao.findById(listOfIDs);
+	}
+
+	public int countAllRelationships() {
+		return this.dao.countAllRelationships();
+	}
+
+	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree,
+			Taxon taxon) {
+		
+		return this.dao.createAllInferredSynonyms(taxon, tree);
+	}
+
+	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type) {
+		
+		return this.dao.createInferredSynonyms(taxon, tree, type);
+	}
+
+	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath) {
+		
+		return this.dao.findIdenticalTaxonNames(propertyPath);
+	}
+	
+	public String getPhylumName(TaxonNameBase name){
+		return this.dao.getPhylumName(name);
+	}
+	
+	private class TaxonAndNameComparator implements Comparator{
+
+		public int compare(Object arg0, Object arg1) {
+			IdentifiableEntity castArg0 = (IdentifiableEntity) arg0;
+			IdentifiableEntity castArg1 = (IdentifiableEntity) arg1;
+			return castArg0.compareTo(castArg1);
+		}
+		
 	}
 }

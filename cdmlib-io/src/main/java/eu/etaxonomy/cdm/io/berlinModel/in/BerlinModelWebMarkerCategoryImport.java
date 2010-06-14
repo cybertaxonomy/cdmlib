@@ -16,8 +16,11 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelWebMarkerCategoryImportValidator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 
 
@@ -38,20 +41,6 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
-	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		logger.warn("Checking for "+pluralString+" not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
-	}
-	
-	
 	private static Map<String, MarkerType> generalCategoryMap;
 	
 	private static Map<String, MarkerType> getGeneralCategoryMap(){
@@ -63,6 +52,9 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 		return generalCategoryMap;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#doInvoke(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
 	protected boolean doInvoke(BerlinModelImportState state){
 		boolean result = true;
 		
@@ -72,11 +64,7 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 		logger.info("start make "+pluralString+" ...");
 		boolean success = true ;
 
-		//get data from database
-		String strQuery = 
-				" SELECT *  " +
-                " FROM "+dbTableName+" " ;
-		ResultSet rs = source.getResultSet(strQuery) ;
+		ResultSet rs = source.getResultSet(getRecordQuery(config)) ;
 		
 		int i = 0;
 		//for each reference
@@ -96,6 +84,7 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 						getTermService().saveOrUpdate(markerType);
 					}
 					state.putDefinedTermToMap(dbTableName, markerCategoryId, markerType);
+//					state.putMarkerType(markerType);
 
 				}catch(Exception ex){
 					logger.error(ex.getMessage());
@@ -114,6 +103,59 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
 		return result;
 		
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
+	 */
+	@Override
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
+		String strQuery = 
+			" SELECT *  " +
+            " FROM "+dbTableName+" " ;
+		return strQuery;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		return false; // not needed
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		return null; // not needed
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelWebMarkerCategoryImportValidator();
+		return validator.validate(state);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
 	}
 	
 	

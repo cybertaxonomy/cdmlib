@@ -40,9 +40,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -259,6 +256,31 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		ReflectionUtils.setField(field, description, null);
 		descriptions.remove(description);
 	}
+	
+	/**
+	 * Returns the image gallery for a taxon. If there are multiple taxon descriptions
+	 * marked as image galleries an arbitrary one is chosen.
+	 * Im no image gallery exists, a new one is created if <code>createNewIfNotExists</code>
+	 * is <code>true</code>.
+	 * @param createNewIfNotExists
+	 * @return
+	 */
+	public TaxonDescription getImageGallery(boolean createNewIfNotExists) {
+		TaxonDescription result = null;
+		Set<TaxonDescription> descriptions= getDescriptions();
+		for (TaxonDescription description : descriptions){
+			if (description.isImageGallery()){
+				result = description;
+				break;
+			}
+		}
+		if (result == null && createNewIfNotExists){
+			result = TaxonDescription.NewInstance(this);
+			result.setImageGallery(true);
+		}
+		return result;
+	}
+	
 
 	
 	public Set<TaxonNode> getTaxonNodes() {

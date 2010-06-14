@@ -10,7 +10,11 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -65,10 +70,41 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		
 	}
 	
-	public Map<String,String> getImageMetaData(URI uri, Integer timeOut){
+	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut){
+		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		imageMetaData.readImageInfo(imageUri, timeOut);
+		imageMetaData.readMetaData(imageUri, timeOut);
 		
-		Map <String,String> results ;
-		results = dao.getMediaMetaData(uri, timeOut);
-		return results;
+		return imageMetaData;
+	}
+	
+	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut){
+		
+		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		imageMetaData.readMetaData(imageUri, timeOut);
+		
+		
+		return imageMetaData.getMetaData();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IMediaService#getImageSize(java.net.URI, java.lang.Integer)
+	 */
+	public Integer getImageSize(URI imageUri, Integer timeOut) {
+		try {
+			URL url = imageUri.toURL();
+			HttpURLConnection.setFollowRedirects(false);
+			
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			
+			return connection.getContentLength();
+			
+		} catch (MalformedURLException e) {
+			logger.trace("MalformedURLException when trying to get filesize for: " +imageUri);
+		} catch (IOException e) {
+			logger.trace("IOException when trying to get filesize for: " +imageUri);
+		}
+		return null;
 	}
 }

@@ -18,6 +18,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import common.Assert;
+
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -44,6 +46,7 @@ public class ImagesUtility {
 	 * @param element
 	 * @return
 	 */
+	@Deprecated
 	public static ImageFile getImage(DescriptionElementBase element) {
 		List<Media> medias = element.getMedia();
 		
@@ -62,7 +65,7 @@ public class ImagesUtility {
 		}
 		return null;
 	}
-	
+	@Deprecated
 	public static List<ImageFile> getOrderedImages(DescriptionElementBase element){
 		List<ImageFile> imageList = new ArrayList<ImageFile>();
 		MediaRepresentation representation = getImageMediaRepresentation(element);
@@ -85,6 +88,7 @@ public class ImagesUtility {
 	 * @param element
 	 * @return
 	 */
+	@Deprecated
 	private static MediaRepresentation getImageMediaRepresentation(DescriptionElementBase element) {
 		// Drill down until a representation with images is found
 		for(Media media : element.getMedia()){
@@ -110,6 +114,7 @@ public class ImagesUtility {
 	 * @param description
 	 * @return
 	 */
+	@Deprecated
 	public static Set<ImageFile> getImages(TaxonDescription description){
 		Set<ImageFile> images = new HashSet<ImageFile>();
 		
@@ -143,12 +148,13 @@ public class ImagesUtility {
 	 * @param taxon
 	 * @param imageFile
 	 */
+	@Deprecated
 	public static void addTaxonImage(Taxon taxon, DescriptionBase<?> imageGallery, ImageFile imageFile) {
 				
 		imageGallery.addElement(createImageElement(imageFile));
 		
 	}
-	
+	@Deprecated
 	public static DescriptionElementBase createImageElement(ImageFile imageFile) {
 		
 		DescriptionElementBase descriptionElement = TextData.NewInstance(Feature.IMAGE());
@@ -173,6 +179,7 @@ public class ImagesUtility {
 	 * @param element
 	 * @return 
 	 */
+	@Deprecated
 	public static ImageFile addImagePart(DescriptionElementBase element) {
 		ImageFile imageFile = ImageFile.NewInstance(null, null);
 		getImageMediaRepresentation(element).addRepresentationPart(imageFile);
@@ -183,6 +190,7 @@ public class ImagesUtility {
 	 * @param taxon
 	 * @param imageFile
 	 */
+	@Deprecated
 	public static void removeTaxonImage(Taxon taxon, DescriptionBase<?> imageGallery, ImageFile imageFile) {
 		Set<DescriptionElementBase> descriptionElementsToRemove = new HashSet<DescriptionElementBase>();
 		Set<MediaRepresentationPart> representationPartsToRemove = new HashSet<MediaRepresentationPart>();
@@ -229,6 +237,7 @@ public class ImagesUtility {
 	 * @param selectedImage
 	 * @param direction
 	 */
+	@Deprecated
 	public static void moveImage(DescriptionElementBase element, ImageFile image,
 			int direction) {
 		
@@ -249,6 +258,7 @@ public class ImagesUtility {
 	 * @param input
 	 * @param selectedImage
 	 */
+	@Deprecated
 	public static void removeImage(DescriptionElementBase element, ImageFile image) {
 		getImageMediaRepresentation(element).getParts().remove(image);
 	}
@@ -261,6 +271,7 @@ public class ImagesUtility {
 	 * @param taxon 
 	 * @return 
 	 */
+	@Deprecated
 	public static DescriptionElementBase findImageElement(ImageFile image, Taxon taxon) {
 		if (taxon == null) {
 			return null;
@@ -275,5 +286,45 @@ public class ImagesUtility {
 			}
 		}
 		return null;		
+	}
+	
+	/**
+	 * 
+	 * @param description
+	 * @param media
+	 */
+	public static void addMediaToGallery(DescriptionBase description, Media media){
+		DescriptionElementBase element = getGalleryElement(description);
+		element.addMedia(media);
+	}
+	
+	/**
+	 * 
+	 * @param description
+	 * @param media
+	 */
+	public static void removeMediaFromGallery(DescriptionBase description, Media media){
+		DescriptionElementBase element = getGalleryElement(description);
+		element.removeMedia(media);
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param description
+	 * @return
+	 */
+	private static DescriptionElementBase getGalleryElement(DescriptionBase description){
+		if(! description.isImageGallery()){
+			logger.error("Description has to have imageGallery flag set.");
+		}
+		
+		Set<DescriptionElementBase> elements = description.getElements();
+		
+		if(elements.size() != 1){
+			logger.error("Image gallery should have only one description");
+		}
+		
+		return elements.iterator().next();
 	}
 }

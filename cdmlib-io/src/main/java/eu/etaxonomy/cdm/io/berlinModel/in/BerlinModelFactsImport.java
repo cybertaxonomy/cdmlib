@@ -9,13 +9,16 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -24,10 +27,13 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelFactsImportValidator;
+import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -54,25 +60,21 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelFactsImport.class);
 
+	public static final String NAMESPACE = "Fact";
+	
 	public static final String SEQUENCE_PREFIX = "ORDER: ";
 	
 	private int modCount = 10000;
+	private static final String pluralString = "facts";
+	private static final String dbTableName = "Fact";
+
+	//FIXME don't use as class variable
+	private MapWrapper<Feature> featureMap;
 	
 	public BerlinModelFactsImport(){
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
-	@Override
-	protected boolean doCheck(BerlinModelImportState state){
-		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-		logger.warn("Checking for Facts not yet fully implemented");
-		result &= checkDesignationRefsExist(bmiConfig);
-		return result;
-	}
 
 	private TermVocabulary<Feature> getFeatureVocabulary(){
 		try {
@@ -127,9 +129,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 //					RankRestrictionFk	int	Checked
 				}
 								
-			//	featureMap.put(factCategoryId, feature);
 				result.put(factCategoryId, feature);
-	
 			}
 			Collection<Feature> col = result.getAllValues();
 			getTermService().save((Collection)col);
@@ -140,40 +140,49 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		}
 
 	}
-	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#doInvoke(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state) {
-		boolean result = true;
+		featureMap = invokeFactCategories(state.getConfig());
+		return super.doInvoke(state);
+	}
 		
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
-		
-		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-		
-		BerlinModelImportConfigurator config = state.getConfig();
-		Source source = config.getSource();
-		
-		logger.info("start makeFacts ...");
-		
-		MapWrapper<Feature> featureMap = invokeFactCategories(config);
-		
-		try {
-			//get data from database
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
+	 */
+	@Override
+	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery = 
 					" SELECT Fact.*, PTaxon.RIdentifier as taxonId, RefDetail.Details " + 
 					" FROM Fact " +
                       	" INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk " +
                       	" LEFT OUTER JOIN RefDetail ON Fact.FactRefDetailFk = RefDetail.RefDetailId AND Fact.FactRefFk = RefDetail.RefFk " +
-                      	" WHERE (1=1)" + 
+              	" WHERE (FactId IN (" + ID_LIST_TOKEN + "))" + 
                         " ORDER By Sequence";
-			ResultSet rs = source.getResultSet(strQuery) ;
+		return strQuery;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		boolean success = true ;
+		BerlinModelImportConfigurator config = state.getConfig();
+		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
+		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
+		Map<String, ReferenceBase> biblioRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, ReferenceBase> nomRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+
+		ResultSet rs = partitioner.getResultSet();
+		
 			ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
 			
+		try{
 			int i = 0;
 			//for each fact
 			while (rs.next()){
@@ -184,7 +193,6 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					Object taxonIdObj = rs.getObject("taxonId");
 					int taxonId = rs.getInt("taxonId");
 					Object factRefFkObj = rs.getObject("factRefFk");
-					int factRefFk = rs.getInt("factRefFk");
 					Object categoryFkObj = rs.getObject("factCategoryFk");
 					Integer categoryFk = rs.getInt("factCategoryFk");
 					String details = rs.getString("Details");
@@ -198,14 +206,14 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					
 					if (taxonBase == null){
 						logger.warn("Taxon for Fact " + factId + " does not exist in store");
-						result = false;
+						success = false;
 					}else{
 						Taxon taxon;
 						if ( taxonBase instanceof Taxon ) {
 							taxon = (Taxon) taxonBase;
 						}else{
 							logger.warn("TaxonBase " + (taxonIdObj==null?"(null)":taxonIdObj) + " for Fact " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
-							result = false;
+							success = false;
 							continue;
 						}
 						
@@ -232,7 +240,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							}
 							if (taxonDescription == null){
 								taxonDescription = TaxonDescription.NewInstance();
-								taxonDescription.setTitleCache(sourceRef == null ? null:sourceRef.getTitleCache());
+								taxonDescription.setTitleCache(sourceRef == null ? null : sourceRef.getTitleCache());
 								taxon.addDescription(taxonDescription);
 							}
 						}
@@ -240,7 +248,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//textData
 						TextData textData = null;
 						boolean newTextData = true;
-
+	
 						// For Cichorieae DB: If fact category is 31 (Systematics) and there is already a Systematics TextData 
 						// description element append the fact text to the existing TextData
 						if(categoryFk == 31) {
@@ -263,9 +271,9 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							}
 						}
 						
-						if(newTextData == true)	{ textData = TextData.NewInstance(); }
-
-						
+						if(newTextData == true)	{ 
+							textData = TextData.NewInstance(); 
+						}
 						
 						//for diptera database
 						if (categoryFk == 99 && notes.contains("<OriginalName>")){
@@ -283,21 +291,17 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							textData.setType(feature);
 						}
 						
-						//
-						ReferenceBase citation;
+						//reference
+						ReferenceBase citation = null;
+						String factRefFk = String.valueOf(factRefFkObj);
 						if (factRefFkObj != null){
-							citation = referenceMap.get(factRefFk);	
-							if (citation == null){
-								citation = nomRefMap.get(factRefFk);
+							citation = getReferenceOnlyFromMaps(
+									biblioRefMap, nomRefMap, factRefFk);	
 							}
-							if (citation == null && (factRefFk != 0)){
+						if (citation == null && (factRefFkObj != null)){
 								logger.warn("Citation not found in referenceMap: " + factRefFk);
-								result = false;
+							success = false;
 							}
-						}else{
-							citation = null;
-						}
-
 						if (citation != null || CdmUtils.isNotEmpty(details)){
 							DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
 							originalSource.setCitation(citation);
@@ -323,18 +327,18 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						}
 						
 						//						if (categoryFkObj == FACT_DESCRIPTION){
-//							//;
-//						}else if (categoryFkObj == FACT_OBSERVATION){
-//							//;
-//						}else if (categoryFkObj == FACT_DISTRIBUTION_EM){
-//							//
-//						}else {
-//							//TODO
-//							//logger.warn("FactCategory " + categoryFk + " not yet implemented");
-//						}
+	//						//;
+	//					}else if (categoryFkObj == FACT_OBSERVATION){
+	//						//;
+	//					}else if (categoryFkObj == FACT_DISTRIBUTION_EM){
+	//						//
+	//					}else {
+	//						//TODO
+	//						//logger.warn("FactCategory " + categoryFk + " not yet implemented");
+	//					}
 						
 						//notes
-						doCreatedUpdatedNotes(state, textData, rs, "Fact");
+						doCreatedUpdatedNotes(state, textData, rs);
 						
 						//TODO
 						//Designation References -> unclear how to map to CDM
@@ -343,26 +347,87 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//sequence -> textData is not an identifiable entity therefore extensions are not possible
 						//fact category better
 						
-						taxonStore.add(taxon);
+						taxaToSave.add(taxon);
 					}
 				} catch (Exception re){
 					logger.error("An exception occurred during the facts import");
-					result = false;
+					re.printStackTrace();
+					success = false;
 				}
 				//put
 			}
 			logger.info("Facts handled: " + (i-1));
-			logger.info("Taxa to save: " + taxonStore.size());
-			getTaxonService().save(taxonStore);	
-			
-			logger.info("end makeFacts ..." + getSuccessString(result));
-			return result;
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
+			logger.info("Taxa to save: " + taxaToSave.size());
+			getTaxonService().save(taxaToSave);	
+		}catch(SQLException e){
+			throw new RuntimeException(e);
 		}
-
+		return success;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+		String nameSpace;
+		Class cdmClass;
+		Set<String> idSet;
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+			
+		try{
+			Set<String> taxonIdSet = new HashSet<String>();
+			Set<String> referenceIdSet = new HashSet<String>();
+			Set<String> refDetailIdSet = new HashSet<String>();
+			while (rs.next()){
+				handleForeignKey(rs, taxonIdSet, "taxonId");
+				handleForeignKey(rs, referenceIdSet, "FactRefFk");
+				handleForeignKey(rs, referenceIdSet, "PTDesignationRefFk");
+				handleForeignKey(rs, refDetailIdSet, "FactRefDetailFk");
+				handleForeignKey(rs, refDetailIdSet, "PTDesignationRefDetailFk");
+		}
+			
+			//taxon map
+			nameSpace = BerlinModelTaxonImport.NAMESPACE;
+			cdmClass = TaxonBase.class;
+			idSet = taxonIdSet;
+			Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, taxonMap);
+
+
+			//nom reference map
+			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, nomReferenceMap);
+
+			//biblio reference map
+			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, biblioReferenceMap);
+			
+			//nom refDetail map
+			nameSpace = BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = refDetailIdSet;
+			Map<String, ReferenceBase> nomRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, nomRefDetailMap);
+			
+			//biblio refDetail map
+			nameSpace = BerlinModelRefDetailImport.BIBLIO_REFDETAIL_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = refDetailIdSet;
+			Map<String, ReferenceBase> biblioRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, biblioRefDetailMap);
+	
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+	}
+		return result;
+	}
+	
 	
 	/**
 	 * @param state 
@@ -390,6 +455,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		catch(URISyntaxException e){
 			e.printStackTrace();
 		}
+		
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 		media.addRepresentation(mediaRepresentation);
 		ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);
@@ -400,9 +466,9 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		return taxonDescription;
 	}
 
-	private TaxonBase getTaxon(MapWrapper<TaxonBase> taxonMap, Object taxonIdObj, Integer taxonId){
+	private TaxonBase getTaxon(Map<String, TaxonBase> taxonMap, Object taxonIdObj, Integer taxonId){
 		if (taxonIdObj != null){
-			return taxonMap.get(taxonId);
+			return taxonMap.get(String.valueOf(taxonId));
 		}else{
 			return null;
 		}
@@ -418,30 +484,31 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		
 	}
 	
-	private boolean checkDesignationRefsExist(BerlinModelImportConfigurator config){
-		try {
-			boolean result = true;
-			Source source = config.getSource();
-			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
-					" FROM Fact " +
-					" WHERE (NOT (PTDesignationRefFk IS NULL) ) OR " +
-                      " (NOT (PTDesignationRefDetailFk IS NULL) )";
-			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
-			rs.next();
-			int count = rs.getInt("n");
-			if (count > 0){
-				System.out.println("========================================================");
-				logger.warn("There are "+count+" Facts with not empty designation references. Designation references are not imported.");
-				
-				System.out.println("========================================================");
-			}
-			return result;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(BerlinModelImportState state){
+		IOValidator<BerlinModelImportState> validator = new BerlinModelFactsImportValidator();
+		return validator.validate(state);
 	}
+				
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
+	 */
+	@Override
+	protected String getTableName() {
+		return dbTableName;
+			}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
+	 */
+	@Override
+	public String getPluralString() {
+		return pluralString;
+		}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -449,5 +516,6 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoFacts();
 	}
+
 
 }

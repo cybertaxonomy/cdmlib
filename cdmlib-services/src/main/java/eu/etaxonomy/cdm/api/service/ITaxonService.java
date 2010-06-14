@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -18,7 +19,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -28,6 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -320,4 +324,26 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
+
+	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
+	/**
+	 * returns a list of inferred synonyms concerning the taxon with synonymrelationshiptype type
+	 * @param tree
+	 * @param taxon
+	 * @param type
+	 * @return
+	 */
+	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type);
+	/**
+	 * returns a list of all inferred synonyms (inferred epithet, inferred genus and potential combination) concerning the taxon
+	 * @param tree
+	 * @param taxon
+	 * @return
+	 */
+	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree, Taxon taxon);
+	
+	public int countAllRelationships();
+	
+	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+	public String getPhylumName(TaxonNameBase name);
 }

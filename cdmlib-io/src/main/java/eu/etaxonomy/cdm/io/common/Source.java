@@ -19,6 +19,8 @@ package eu.etaxonomy.cdm.io.common;
 import java.sql.*;
 import java.io.*;
 
+import javax.mail.MethodNotSupportedException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -398,6 +400,38 @@ public class Source {
     
     public String getServer(){
     	return mServer;
+    }
+    
+    /**
+     * Checks if an attribute exists in the database schema. At the moment only supported
+     * for SQL Server.
+     * TODO implement for others.
+     * @param tableName
+     * @param dbAttribute
+     * @return
+     * @throws MethodNotSupportedException
+     */
+    public boolean checkColumnExists(String tableName, String dbAttribute) throws MethodNotSupportedException{
+    	if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)|| mDbms.equalsIgnoreCase(SQL_SERVER_2008) ){
+    		String strQuery = "SELECT  Count(t.id) as n " +
+				" FROM sysobjects AS t " +
+				" INNER JOIN syscolumns AS c ON t.id = c.id " +
+				" WHERE (t.xtype = 'U') AND " + 
+				" (t.name = '" + tableName + "') AND " + 
+				" (c.name = '" + dbAttribute + "')";
+			ResultSet rs = getResultSet(strQuery) ;		
+			int n;
+			try {
+				rs.next();
+				n = rs.getInt("n");
+				return n>0;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+    	}else{
+    		throw new MethodNotSupportedException("Check column exist is not supported by the database system");
+    	}
     }
     
 

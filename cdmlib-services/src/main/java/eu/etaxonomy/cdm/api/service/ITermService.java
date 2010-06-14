@@ -107,4 +107,16 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 	 * @return a Pager of DefinedTerms
 	 */
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz,  Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * 
+	 * @param <TERM>
+	 * @param clazz
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

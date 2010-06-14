@@ -263,7 +263,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	public T findById(int id) throws DataAccessException {
 		return (T) getSession().get(type, id);
 	}
-
+	public List<T> findById(Set<Integer> idSet) throws DataAccessException {
+		Session session = getSession();
+		String hql = "from " + type.getSimpleName() + " type where type.id in ( :idSet )" ;
+		Query query = session.createQuery(hql);
+		query.setParameterList("idSet", idSet);
+		List<T> results = query.list();
+		return results;			
+	}
 	public T findByUuid(UUID uuid) throws DataAccessException{
 		Session session = getSession();
 		Criteria crit = session.createCriteria(type);

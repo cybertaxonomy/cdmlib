@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImportConfigurator>{
+public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImportConfigurator, FaunaEuropaeaImportBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportState.class);
 

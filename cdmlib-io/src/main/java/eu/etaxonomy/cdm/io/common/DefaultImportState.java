@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 23.06.2009
  * @version 1.0
  */
-public class DefaultImportState<CONFIG extends ImportConfiguratorBase> extends ImportStateBase<CONFIG> {
+public class DefaultImportState<CONFIG extends ImportConfiguratorBase> extends ImportStateBase<CONFIG, CdmImportBase> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultImportState.class);
 	/**

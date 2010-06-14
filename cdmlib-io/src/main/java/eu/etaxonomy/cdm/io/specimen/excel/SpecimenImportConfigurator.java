@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -30,6 +31,11 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenI
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = false;
 	private String taxonReference = null;
+	
+	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
 	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
@@ -50,7 +56,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenI
 	 * @param destination
 	 */
 	private SpecimenImportConfigurator(String url, ICdmDataSource destination) {
-		super();
+		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}

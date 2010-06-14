@@ -78,6 +78,27 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 	protected static Map<UUID, NamedArea> termMap = null;		
 
+//************************* FACTORY METHODS ****************************************/
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static NamedArea NewInstance(){
+		logger.debug("NewInstance");
+		return new NamedArea();
+	}
+
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static NamedArea NewInstance(String term, String label, String labelAbbrev){
+		return new NamedArea(term, label, labelAbbrev);
+	}
+	
+//**************************** VARIABLES *******************************/
+	
 	//description of time valid context of this area. e.g. year range
 	private TimePeriod validPeriod = TimePeriod.NewInstance();
 	
@@ -97,23 +118,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private NamedAreaLevel level;
-	
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static NamedArea NewInstance(){
-		logger.debug("NewInstance");
-		return new NamedArea();
-	}
 
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static NamedArea NewInstance(String term, String label, String labelAbbrev){
-		return new NamedArea(term, label, labelAbbrev);
-	}
+//*************************** CONSTRUCTOR ******************************************/
 	
 	/**
 	 * Constructor
@@ -125,6 +131,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		super(term, label, labelAbbrev);
 	}
 	
+//********************************* GETTER /SETTER *********************************************/	
+
 	@XmlElement(name = "NamedAreaType")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")

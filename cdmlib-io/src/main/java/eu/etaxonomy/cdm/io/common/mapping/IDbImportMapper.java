@@ -21,11 +21,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public interface IDbImportMapper<T extends DbImportStateBase<?>, CDM_BASE extends CdmBase> {
+public interface IDbImportMapper<STATE extends DbImportStateBase<?,?>, CDM_BASE extends CdmBase> {
 
-//	public void initialize(PreparedStatement stmt, IndexCounter index);
+	public void initialize(STATE state, Class<? extends CdmBase> destinationClass);
 
-//	public void initialize(PreparedStatement stmt, IndexCounter index, T state, String tableName);
+//	public void initialize(T state, String tableName);
 	
 	public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException;
 

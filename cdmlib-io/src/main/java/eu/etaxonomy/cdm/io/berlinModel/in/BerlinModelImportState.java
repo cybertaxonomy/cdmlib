@@ -15,25 +15,25 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public class BerlinModelImportState extends ImportStateBase<BerlinModelImportConfigurator>{
+public class BerlinModelImportState extends DbImportStateBase<BerlinModelImportConfigurator, BerlinModelImportState>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelImportState.class);
 
 	Map<String, DefinedTermBase> dbCdmDefTermMap = new HashMap<String, DefinedTermBase>();
 	
 	Map<String, User> usernameMap = new HashMap<String, User>();
+
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
 	 */
@@ -68,6 +68,7 @@ public class BerlinModelImportState extends ImportStateBase<BerlinModelImportCon
 	public void putUser(String username, User user){
 		usernameMap.put(username, user);
 	}
+
 
     
 }

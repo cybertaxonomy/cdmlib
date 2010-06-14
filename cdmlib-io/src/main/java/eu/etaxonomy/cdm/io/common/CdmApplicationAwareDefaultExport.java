@@ -157,6 +157,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 				ICdmExport cdmIo = (ICdmExport)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
 					//result &= cdmIo.invoke(config, stores);
+					state.setCurrentIO(cdmIo);
 					result &= cdmIo.invoke(state);
 //					IoState<S> state = null;
 //					result &= cdmIo.invoke(state);

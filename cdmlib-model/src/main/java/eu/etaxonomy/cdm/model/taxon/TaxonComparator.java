@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.log4j.Logger;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 11.06.2008
  * @version 1.0
  */
-public class TaxonComparator implements Comparator<TaxonBase> {
+public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	private static final Logger logger = Logger.getLogger(TaxonComparator.class);
 
 	/* (non-Javadoc)
@@ -61,6 +62,7 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 		}else{
 				result = date1.compareTo(date2);
 		}
+
 		if (result == 0){
 			DateTime date11 = taxonBase1.getCreated();
 			DateTime date12 = taxonBase2.getCreated();
@@ -76,7 +78,18 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 			result = date11.compareTo(date12);
 		}
 		
+		//for ticket #393 if the publication year is the same, the order is alphabetically
+		
+		if (result == 0){
+			TaxonNameBase taxName1 = taxonBase1.getName();
+			TaxonNameBase taxName2 = taxonBase2.getName();
+			
+			return taxName1.compareTo(taxName2);
+			
+		}
+		
 		return result;
+
 	}
 	
 	

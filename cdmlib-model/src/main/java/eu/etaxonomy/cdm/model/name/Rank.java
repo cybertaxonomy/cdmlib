@@ -742,7 +742,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		if (rankName.equalsIgnoreCase("Regnum")){ return Rank.KINGDOM();
 		}else if (rankName.equalsIgnoreCase("Subregnum")){ return Rank.SUBKINGDOM();
 		}else if (rankName.equalsIgnoreCase("Phylum")){ return Rank.PHYLUM();
-		}else if (rankName.equalsIgnoreCase("subphylum")){ return Rank.SUBPHYLUM();
+		}else if (rankName.equalsIgnoreCase("Subphylum")){ return Rank.SUBPHYLUM();
 		}else if (rankName.equalsIgnoreCase("Divisio")){ return Rank.DIVISION();
 		}else if (rankName.equalsIgnoreCase("Subdivisio")){ return Rank.SUBDIVISION();
 		}else if (rankName.equalsIgnoreCase("Classis")){ return Rank.CLASS();
@@ -794,12 +794,81 @@ public class Rank extends OrderedTermBase<Rank> {
 		}
 	}
 	
+	public static Rank getRankByEnglishName(String rankName, NomenclaturalCode nc, boolean useUnknown)
+				throws UnknownCdmTypeException{
+		if (rankName.equalsIgnoreCase("Kingdom")){ return Rank.KINGDOM();
+		}else if (rankName.equalsIgnoreCase("Subkingdom")){ return Rank.SUBKINGDOM();
+		}else if (rankName.equalsIgnoreCase("Infrakingdom")){ return Rank.INFRAKINGDOM();
+		}else if (rankName.equalsIgnoreCase("Division")){ return Rank.DIVISION();
+		}else if (rankName.equalsIgnoreCase("Phylum")){ return Rank.PHYLUM();
+		}else if (rankName.equalsIgnoreCase("Subdivision")){ return Rank.SUBDIVISION();
+		}else if (rankName.equalsIgnoreCase("Subphylum")){ return Rank.SUBPHYLUM();
+		}else if (rankName.equalsIgnoreCase("Superclass")){ return Rank.SUPERCLASS();
+		}else if (rankName.equalsIgnoreCase("Class")){ return Rank.CLASS();
+		}else if (rankName.equalsIgnoreCase("Subclass")){ return Rank.SUBCLASS();
+		}else if (rankName.equalsIgnoreCase("Infraclass")){ return Rank.INFRACLASS();
+		}else if (rankName.equalsIgnoreCase("Superorder")){ return Rank.SUPERORDER();
+		}else if (rankName.equalsIgnoreCase("Order")){ return Rank.ORDER();
+		}else if (rankName.equalsIgnoreCase("Suborder")){ return Rank.SUBORDER();
+		}else if (rankName.equalsIgnoreCase("Infraorder")){ return Rank.INFRAORDER();
+		}else if (rankName.equalsIgnoreCase("Section")){ return Rank.SECTION_ZOOLOGY();
+		//(Sub-)Sectio
+		}else if (rankName.equalsIgnoreCase("Section")){ 
+			if (nc != null && nc.equals(NomenclaturalCode.ICZN)){	return Rank.SECTION_ZOOLOGY;
+			}else if (nc != null && nc.equals(NomenclaturalCode.ICBN)){return Rank.SECTION_BOTANY;
+			}else{
+				String errorWarning = "Section is only defined for ICZN and ICBN at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
+				logger.warn(errorWarning);
+				throw new UnknownCdmTypeException (errorWarning);
+			}
+		}else if (rankName.equalsIgnoreCase("Subsection")){ 
+			if (nc != null && nc.equals(NomenclaturalCode.ICZN)){ return Rank.SECTION_ZOOLOGY;
+			}else if (nc != null && nc.equals(NomenclaturalCode.ICBN)){ return Rank.SECTION_BOTANY;
+			}else{
+				String errorWarning = "Subsection is only defined for ICZN and ICBN at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
+				logger.warn(errorWarning);
+				throw new UnknownCdmTypeException (errorWarning);
+			}
+		}else if (rankName.equalsIgnoreCase("Superfamily")){ return Rank.SUPERFAMILY();
+		}else if (rankName.equalsIgnoreCase("Family")){ return Rank.FAMILY();
+		}else if (rankName.equalsIgnoreCase("Subfamily")){ return Rank.SUBFAMILY();
+		}else if (rankName.equalsIgnoreCase("Tribe")){ return Rank.TRIBE();
+		}else if (rankName.equalsIgnoreCase("Subtribe")){ return Rank.SUBTRIBE();
+		}else if (rankName.equalsIgnoreCase("Genus")){ return Rank.GENUS();
+		}else if (rankName.equalsIgnoreCase("Subgenus")){ return Rank.SUBGENUS();
+		}else if (rankName.equalsIgnoreCase("Species")){ return Rank.SPECIES();
+		}else if (rankName.equalsIgnoreCase("Subspecies")){ return Rank.SUBSPECIES();
+		//Natio
+//		}else if (rankName.equalsIgnoreCase("Natio")){ return Rank.NATIO();
+		
+		}else if (rankName.equalsIgnoreCase("Variety")){ return Rank.VARIETY();
+		}else if (rankName.equalsIgnoreCase("Subvariety")){ return Rank.SUBVARIETY();
+		
+		}else if (rankName.equalsIgnoreCase("Forma")){ return Rank.FORM();
+		}else if (rankName.equalsIgnoreCase("Subforma")){ return Rank.SUBFORM();
+		
+		}else{ 
+			if (rankName == null){
+				rankName = "(null)";
+			}
+			if (useUnknown){
+				logger.info("Unknown rank name: " + rankName+". Rank 'UNKNOWN_RANK' created instead");
+				return Rank.UNKNOWN_RANK();
+			}else{
+				if (rankName == null){
+					rankName = "(null)";
+				}
+				throw new UnknownCdmTypeException("Unknown rank name: " + rankName);
+			}
+		}
+	}
+	
 	public static Rank getRankByName(String rankName, NomenclaturalCode nc, boolean useUnknown)
 	throws UnknownCdmTypeException {
 		
 	if (nc.equals(NomenclaturalCode.ICZN)) {
 		if (rankName.equalsIgnoreCase("Sectio")) { return Rank.SECTION_ZOOLOGY();
-		} else if (rankName.equalsIgnoreCase("Subsectio")) { return Rank.SUBSECTION_ZOOLOGY();
+			}else if (rankName.equalsIgnoreCase("Subsectio")) { return Rank.SUBSECTION_ZOOLOGY();
 		}
 	}
 	return getRankByName(rankName, useUnknown);

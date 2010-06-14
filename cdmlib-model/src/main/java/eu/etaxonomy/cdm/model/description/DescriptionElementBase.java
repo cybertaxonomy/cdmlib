@@ -46,11 +46,10 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -368,6 +367,18 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)
+	 */
+	public DescriptionElementSource addSource(String id, String idNamespace, ReferenceBase citation, String microCitation) {
+		if (id == null && idNamespace == null && citation == null && microCitation == null){
+			return null;
+		}
+		DescriptionElementSource source = DescriptionElementSource.NewInstance(id, idNamespace, citation, microCitation);
+		addSource(source);
+		return source;
+	}
+	
 	public void addSource(String id, String idNamespace, ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
 		DescriptionElementSource newSource = DescriptionElementSource.NewInstance(id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
 		addSource(newSource);
@@ -405,7 +416,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	@Deprecated
 	public void setCitationMicroReference(String citationMicroReference){
 		if (this.sources.size() < 1){
-			this.addSource(DescriptionElementSource.NewInstance(null, null, null, citationMicroReference));
+			ReferenceBase citation = null;
+			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, citationMicroReference));
 		}else if (this.sources.size() > 1){
 			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
 		}else{

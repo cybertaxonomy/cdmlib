@@ -1550,6 +1550,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see  	#getHasProblem()
 	 */
 	abstract public NomenclaturalCode getNomenclaturalCode();
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
