@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;

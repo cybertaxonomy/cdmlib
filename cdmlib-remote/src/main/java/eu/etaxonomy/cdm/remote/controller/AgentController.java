@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/agent/*","/*/agent/*/annotation"})
+@RequestMapping(value = {"/agent/*","/agent/annotation"})
 public class AgentController extends AnnotatableController<AgentBase, IAgentService>
 {
 

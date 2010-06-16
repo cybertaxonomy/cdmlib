@@ -278,4 +278,12 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @return a paged list of instances of type T matching the queryString
 	 */
     public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    
+    /**
+     * Returns a homotypical group with the given UUID or null if not homotypical group exists with that UUID
+     * 
+     * @param uuid the uuid of the homotypical group
+     * @return a homotypical group
+     */
+    public HomotypicalGroup findHomotypicalGroup(UUID uuid);
 }

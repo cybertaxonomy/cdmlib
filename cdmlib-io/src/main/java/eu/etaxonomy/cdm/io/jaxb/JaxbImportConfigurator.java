@@ -211,7 +211,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("Jaxb import");
+			sourceReference.setTitleCache("Jaxb import", true);
 		}
 		return sourceReference;
 	}

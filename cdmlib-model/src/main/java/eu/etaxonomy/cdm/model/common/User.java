@@ -9,9 +9,9 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,8 +32,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -153,7 +151,7 @@ public class User extends CdmBase implements UserDetails {
 	}
 	
 	@Transient
-	public Set<GrantedAuthority> getAuthorities() {
+	public Collection<GrantedAuthority> getAuthorities() {
 		if(authorities == null) initAuthorities();
 		return authorities;
 	}

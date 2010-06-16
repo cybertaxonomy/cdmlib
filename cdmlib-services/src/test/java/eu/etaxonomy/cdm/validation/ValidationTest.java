@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  */
 @SuppressWarnings("unused")
-@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+@Ignore //FIXME ignoring just for today 9.6.2010 a.kohlbecker !!!!!!!!!!!!!!!!!!!!!
 public class ValidationTest extends CdmIntegrationTest {
 	private static final Logger logger = Logger.getLogger(ValidationTest.class);
 	
@@ -115,7 +115,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setSpecificEpithet("balsamea");
 		name.setNameCache("Abies balsamea");
 		name.setAuthorshipCache("L.");
-		name.setTitleCache("Abies balsamea L.");
+		name.setTitleCache("Abies balsamea L.", true);
 		name.setFullTitleCache("Abies balsamea L.");
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class,Level2.class);
@@ -149,7 +149,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setSpecificEpithet("balsamea");
 		name.setNameCache("Abies balsamea");
 		name.setAuthorshipCache("L.");
-		name.setTitleCache("Abies balsamea L.");
+		name.setTitleCache("Abies balsamea L.", true);
 		name.setFullTitleCache("Abies balsamea L.");
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class,Level2.class, Level3.class);
@@ -166,7 +166,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setSpecificEpithet("alba");
 		name.setNameCache("Abies alba");
 		name.setAuthorshipCache("Mill.");
-		name.setTitleCache("Abies alba Mill.");
+		name.setTitleCache("Abies alba Mill.", true);
 		name.setFullTitleCache("Abies alba Mill.");
 		name.setNomenclaturalReference(null);
 		name.setNomenclaturalMicroReference(null);

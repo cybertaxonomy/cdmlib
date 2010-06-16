@@ -89,7 +89,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	    lsid = new LSID("urn:lsid:example.org:taxonconcepts:1");
 	    
 	    authorTeam = Person.NewInstance();
-	    authorTeam.setTitleCache("authorTeam.titleCache");
+	    authorTeam.setTitleCache("authorTeam.titleCache", true);
 	    authorTeam.setLsid(new LSID("urn:lsid:dagg.org:agents:2"));
 	    
 	    name = BotanicalName.NewInstance(null);
@@ -98,12 +98,12 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	    
 	    sec = refFactory.newBook();
 	    sec.setAuthorTeam(authorTeam);
-	    sec.setTitleCache("sec.titleCache");
+	    sec.setTitleCache("sec.titleCache", true);
 	    sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
 	    
 		taxon = Taxon.NewInstance(name, (ReferenceBase)sec);
 		taxon.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
-		taxon.setTitleCache("titleCache");
+		taxon.setTitleCache("titleCache", true);
 		taxon.setLsid(lsid);
 
 		for(int i = 0; i < 10; i++) {
@@ -127,7 +127,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		
 		Distribution distribution = Distribution.NewInstance();
 		NamedArea namedArea = NamedArea.NewInstance("Africa", "Africa", "Africa");
-		namedArea.setTitleCache("Africa");
+		namedArea.setTitleCache("Africa", true);
 		distribution.setArea(namedArea);
 		distribution.setStatus(PresenceTerm.NATIVE());
 		

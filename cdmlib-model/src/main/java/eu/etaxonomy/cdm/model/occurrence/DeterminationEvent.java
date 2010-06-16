@@ -39,7 +39,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author m.doering
@@ -74,7 +74,7 @@ public class DeterminationEvent extends EventBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-    private Taxon taxon;
+    private TaxonBase taxon;
 	
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
@@ -117,7 +117,7 @@ public class DeterminationEvent extends EventBase {
 		this.modifier = modifier;
 	}
 
-	public Taxon getTaxon(){
+	public TaxonBase getTaxon(){
 		return this.taxon;
 	}
 
@@ -125,7 +125,7 @@ public class DeterminationEvent extends EventBase {
 	 * 
 	 * @param taxon    taxon
 	 */
-	public void setTaxon(Taxon taxon){
+	public void setTaxon(TaxonBase taxon){
 		this.taxon = taxon;
 	}
 

@@ -8,8 +8,14 @@
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
     
     
-    <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource">
-    	<!--  The property beanDefinitionFile defaults to "datasources.xml" in {USER_HOME}./cdmLibrary -->
+    <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.SelectableDataSource">
+    	<!--  The property beanDefinitionFile defaults to "datasources.xml" in {USER_HOME}./cdmLibrary 
+    	
+    	WARNING !!!
+    	The beanDefinitionFile now mus be configured in 
+    	eu.etaxonomy.cdm.database.DataSourceBeanLoader
+    	
+    	-->
     	<!--  The property defaultDatasourceName defaults to "default" 
     	<property name="beanDefinitionFile" value="datasources-p6spy.xml" />
     	<property name="defaultDatasourceName" value="cichorieae" />
@@ -20,25 +26,38 @@
     <bean id="hibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
-              <!-- 
+             <!-- 
                   Configuring the C3P0ConnectionProvider
                   ========================================
-                  IMPORTANT:
+                  see http://www.mchange.com/projects/c3p0/index.html#hibernate-specific
+                  and also org.springframework.orm.hibernate3.AbstractSessionFactoryBean.setDataSource(DataSource dataSource)
+                  
+                  IMPORTANT: 
+                  Because of the constraint (1) the org.hibernate.connection.C3P0ConnectionProvider anc not be used 
+                  for the cdm library because it requires the dataSource bean in some cases. 
+                  
 				          (1)
-				          Do NOT specify the dataSource in org.springframework.orm.hibernate3.LocalSessionFactoryBean
-				          if using org.hibernate.connection.C3P0ConnectionProvider. 
-				          Specifying it causes Spring to not honor the hibernate.connection.provider_class property 
-				          specified in the Hibernate properties section. 
+				          Do NOT specify the dataSource in the sessionFactory for example in the 
+				          org.springframework.orm.hibernate3.LocalSessionFactoryBean
+				          !!!==> If *dataSource* is set, this will override corresponding settings in Hibernate properties.!!!
+ 						  If this is set, the Hibernate settings should not define a connection provider to 
+ 					      avoid meaningless double configuration.
 				          (2)
 				          Hibernate uses the hibernate.c3p0.max_size property to determine if c3p0
-                  is begin used.  Therefore the max_size property MUST be set. - maybe not need in hibernate 3.4 +
-				      --><!--
-            	<prop key="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</prop>
-            	<prop key="hibernate.connection.driver_class">eu.etaxonomy.cdm.database.UpdatableRoutingDataSource</prop>
-						  <prop key="hibernate.c3p0.max_size">100</prop>
-						  <prop key="hibernate.c3p0.idle_test_period">14400</prop>
-						  <prop key="hibernate.c3p0.timeout">25200</prop>
-              -->
+                          is begin used.  Therefore the max_size property MUST be set. - maybe not need in hibernate 3.4 +
+                          (3) If you are using Hibernate's C3P0ConnectionProvider you must set the following properties 
+                          in your hibernate configuration, using hibernate-specific configuration keys. 
+                          All other properties must be defined as usual in a c3p0.properties file. 
+                          This is confusing, and will hopefully be simplified some time in the future, but for now... 
+                          
+                          	hibernate.c3p0.acquire_increment
+							hibernate.c3p0.idle_test_period
+							hibernate.c3p0.timeout
+							hibernate.c3p0.max_size
+							hibernate.c3p0.max_statements
+							hibernate.c3p0.min_size
+							hibernate.c3p0.validate 
+				      -->
               <prop key="hibernate.hbm2ddl.auto">update</prop>
               <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
               <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>

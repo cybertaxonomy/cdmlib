@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
 import org.hibernate.Hibernate;
+import org.hibernate.SessionException;
+import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
 
 import net.sf.dozer.util.mapping.CustomFieldMapperIF;
 import net.sf.dozer.util.mapping.classmap.ClassMap;
@@ -19,9 +21,16 @@ public class HibernateProxyFieldMapper implements CustomFieldMapperIF {
 
 	public boolean mapField(Object source, Object destination, Object sourceFieldValue, ClassMap classMap, FieldMap fieldMapping) {
 
-		if(Hibernate.isInitialized(sourceFieldValue)) {
+		if(sourceFieldValue instanceof CollectionProxy) {
+			try {
+				((CollectionProxy)sourceFieldValue).hashCode();
+			} catch(SessionException se) { // currently no way to tell if is initialized
+				return true;
+			}
 		    return false;
-		} else {
+		} else if(Hibernate.isInitialized(sourceFieldValue)) {
+		    return false;
+		}else {
 			return true;
 		}
 		

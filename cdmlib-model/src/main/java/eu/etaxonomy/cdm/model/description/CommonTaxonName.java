@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -29,8 +30,8 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.Language;
-
-import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * This class represents common or vernacular names for {@link Taxon taxa}.
@@ -48,13 +49,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CommonTaxonName", propOrder = {
     "name",
-    "language"
+    "language",
+    "area"
 })
 @XmlRootElement(name = "CommonTaxonName")
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class CommonTaxonName extends DescriptionElementBase {
+public class CommonTaxonName extends DescriptionElementBase implements Cloneable {
 	private static final long serialVersionUID = 2643808051976643339L;
 	private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 	
@@ -68,6 +70,12 @@ public class CommonTaxonName extends DescriptionElementBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded(depth = 2)
 	private Language language;
+	
+	@XmlElement(name = "Area")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private NamedArea area;
 
 	/**
 	 * Class constructor: creates a new empty common name instance.
@@ -136,4 +144,39 @@ public class CommonTaxonName extends DescriptionElementBase {
 		this.name = name;
 	}
 
+	/**
+	 * The area where the name is used
+	 * @return
+	 */
+	public NamedArea getArea() {
+		return area;
+	}
+
+	/**
+	 * @see #getArea()
+	 * @param area
+	 */
+	public void setArea(NamedArea area) {
+		this.area = area;
+	}
+
+
+//*********************************** CLONE *****************************************/
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		//no changes to name, language, area
+		return super.clone();
+	}	
+
+//*********************************** toString *****************************************/
+
+	@Override
+	public String toString(){
+		if (StringUtils.isNotBlank(name)){
+			return name;
+		}else{
+			return super.toString();
+		}
+	}
 }

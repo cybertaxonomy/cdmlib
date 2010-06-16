@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
@@ -64,8 +65,9 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
-	@XmlElement(name = "Symmetric")
+	@XmlElement(name = "Symmetrical")
 	@Field(index=Index.UN_TOKENIZED)
+	@Column(name="symmetrical") //to be compatible with PostGreSQL 
 	private boolean symmetric;
 	
 	@XmlElement(name = "Transitive")

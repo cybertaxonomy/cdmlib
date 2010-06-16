@@ -98,9 +98,9 @@ public class DefaultMatchStrategyTest {
 	public void setUp() throws Exception {
 		refFactory = ReferenceFactory.newInstance();
 		team1 = Team.NewInstance();
-		team1.setTitleCache("Team1");
+		team1.setTitleCache("Team1",true);
 		team2 = Team.NewInstance();
-		team2.setTitleCache("Team2");
+		team2.setTitleCache("Team2",true);
 		printSeries1 = refFactory.newPrintSeries("Series1");
 		printSeries1.setTitle("print series");
 		printSeries2 = refFactory.newPrintSeries("Series2");
@@ -202,15 +202,15 @@ public class DefaultMatchStrategyTest {
 		
 		IBook bookClone = (IBook) ((ReferenceBase) book1).clone();
 		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
-		book1.setTitleCache("cache1");
+		book1.setTitleCache("cache1",true);
 		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
 		
-		bookClone.setTitleCache("cache1");
+		bookClone.setTitleCache("cache1",true);
 		Assert.assertTrue("Cached book with same cache should match", matchStrategy.invoke(book1, bookClone));
 			
-		bookClone.setTitleCache("cache2");
+		bookClone.setTitleCache("cache2",true);
 		Assert.assertFalse("Cached book with differings caches should not match", matchStrategy.invoke(book1, bookClone));
-		bookClone.setTitleCache("cache1"); //restore
+		bookClone.setTitleCache("cache1",true); //restore
 		
 		bookClone.setEdition(null);
 		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
@@ -417,8 +417,11 @@ public class DefaultMatchStrategyTest {
 		
 		
 		Person person1 = Person.NewTitledInstance("person1");
+		person1.setProtectedTitleCache(true);
 		Person person2 = Person.NewTitledInstance("person2");
+		person2.setProtectedTitleCache(true);
 		Person person3 = Person.NewTitledInstance("person3");
+		person3.setProtectedTitleCache(true);
 
 		team1.addTeamMember(person1);
 		team2.addTeamMember(person1);
@@ -432,7 +435,7 @@ public class DefaultMatchStrategyTest {
 		person3.setPrefix("pre3");
 		team2.addTeamMember(person3);
 		Assert.assertFalse("Teams with differing team members should not match", matchStrategy.invoke(team1, team2));
-		person3.setTitleCache(person2.getTitleCache());
+		person3.setTitleCache(person2.getTitleCache(),true);
 		person2.setPrefix("pre3");
 		Assert.assertTrue("Teams with matching members in right order should match", matchStrategy.invoke(team1, team2));
 		team2.removeTeamMember(person1);

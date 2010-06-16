@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>2.3</version>
+	<version>2.4</version>
 
 	<name>CDM Library</name>
 	<description>The CDM Library implementation for EDIT's internet platform for cybertaxonomy</description>
@@ -20,12 +20,12 @@
 		<module>cdmlib-services</module>
 		<module>cdmlib-ext</module>
 		<module>cdmlib-remote</module>
-		<!--module>cdm-server</module-->
+		<module>cdm-server</module>
 		<module>cdmlib-io</module>
 	</modules>
   
   <properties>
-    <spring.version>3.0.0.RC1</spring.version>
+    <spring.version>3.0.0.RELEASE</spring.version>
   </properties>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
@@ -113,23 +113,6 @@
 		
 		<developer>
 			<!-- your SVN account id please! -->
-			<id>p.ciardelli</id>
-			<name>
-				Pepe Ciardelli
-			</name>
-			<email>p.ciardelli [at] bgbm.org</email>
-			<organization>
-				Botanical Garden Botanical Museum Berlin
-			</organization>
-			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
-			<timezone>+1</timezone>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<url></url>
-		</developer>
-		<developer>
-			<!-- your SVN account id please! -->
 			<id>k.luther</id>
 			<name>
 				Katja Luther
@@ -137,23 +120,6 @@
 			<email>k.luther [at] bgbm.org</email>
 			<organization>
 				Botanical Garden Botanical Museum Berlin
-			</organization>
-			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
-			<timezone>+1</timezone>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<url></url>
-		</developer>
-		<developer>
-			<!-- your SVN account id please! -->
-			<id>a.babadshanjan</id>
-			<name>
-				Anahit Babadshanjan
-			</name>
-			<email>A.Babadshanjan [at] bgbm.org</email>
-			<organization>
-				Botanic Garden Botanical Museum Berlin
 			</organization>
 			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
 			<timezone>+1</timezone>
@@ -196,6 +162,24 @@
 			</roles>
 			<url></url>
 		</developer>
+				<developer>
+			<!-- your SVN account id please! -->
+			<id>em.lee</id>
+			<name>
+				Eun-Mok Lee
+			</name>
+			<email>e.-m.lee [at] bgbm.org</email>
+			<organization>
+				Botanical Garden Botanical Museum Berlin
+			</organization>
+			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+			<timezone>+1</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<url></url>
+		</developer>
+
 	</developers>
 	<contributors>
 		<contributor>
@@ -267,8 +251,8 @@
 	    	<plugin>
 		        <artifactId>maven-compiler-plugin</artifactId>
 		        <configuration>
-		          <source>1.5</source>
-		          <target>1.5</target>
+		          <source>1.6</source>
+		          <target>1.6</target>
 		        </configuration>
 		      </plugin>
 		      <plugin>
@@ -304,7 +288,7 @@
         <version>1.0-beta-3</version>
         <executions>
           <execution>
-            <phase>deploy</phase>
+            <!--<phase>deploy</phase>-->
             <goals>
               <goal>create</goal>
             </goals>
@@ -457,7 +441,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<links>
-						<link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+						<link>http://java.sun.com/j2se/1.6.0/docs/api/</link>
 						<link>http://static.springframework.org/spring/docs/2.5.x/api/</link>
 						<link>http://www.hibernate.org/hib_docs/v3/api/</link>						
 						<!-- more libraries? -->
@@ -844,11 +828,11 @@
 					 <groupId>org.springframework</groupId>
 					 <artifactId>spring-context</artifactId>
 				 </exclusion>
- <exclusion>
+         <exclusion>
 					 <groupId>org.springframework</groupId>
 					 <artifactId>spring-core</artifactId>
 				 </exclusion>
- <exclusion>
+         <exclusion>
 					 <groupId>org.springframework</groupId>
 					 <artifactId>spring-jdbc</artifactId>
 				 </exclusion>
@@ -1037,6 +1021,16 @@
                 <dependency>
                   <groupId>org.springframework</groupId>
                   <artifactId>org.springframework.agent</artifactId>
+                  <version>${spring.version}</version>
+                </dependency>
+                <dependency>
+                  <groupId>org.springframework</groupId>
+                  <artifactId>org.springframework.context.support</artifactId>
+                  <version>${spring.version}</version>
+                </dependency>
+                <dependency>
+                  <groupId>org.springframework</groupId>
+                  <artifactId>org.springframework.oxm</artifactId>
                   <version>${spring.version}</version>
                 </dependency>
                 <dependency>

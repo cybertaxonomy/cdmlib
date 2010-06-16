@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -81,14 +82,16 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @param imageUri
 	 * @param timeOut
 	 * @return
+	 * @throws IOException 
 	 */
-	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut);
+	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException;
 	
 	/**
 	 * 
 	 * @param imageUri
 	 * @param timeOut
 	 * @return
+	 * @throws IOException 
 	 */
-	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut);
+	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException;
 }

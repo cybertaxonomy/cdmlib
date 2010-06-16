@@ -34,8 +34,9 @@ public class PalmaeProtologueImportActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	
-	static final String protologueSource = "\\\\media\\EditWP6\\palmae\\protologe";
+	static final String protologueSource = "\\\\Media\\EditWP6\\palmae\\protologe";
 	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
+
 	
 	
 	//static File source  = TcsSources.taxonX_localDir();

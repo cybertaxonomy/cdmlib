@@ -76,7 +76,7 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 	 */
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true ;
-		
+	
 		MapWrapper<Taxon> taxonMap = (MapWrapper<Taxon>)state.getStore(ICdmIO.TAXON_STORE);
 		Set<TaxonBase> taxaToBeSaved = new HashSet<TaxonBase>(); 
 		
@@ -127,7 +127,7 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 		getTaxonService().save(taxaToBeSaved);
 		return success;
 	}
-	
+		
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
@@ -147,9 +147,9 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 					logger.warn("A marker is not related to table PTaxon. This case is not handled yet!");
 				}else{
 					handleForeignKey(rs, taxonIdSet, "RIdentifierFk");
-				}
+	}
 			}
-			
+	
 			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
 			cdmClass = TaxonBase.class;
@@ -163,6 +163,7 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 		return result;
 	}
 
+	
 	private boolean addMarker(AnnotatableEntity annotatableEntity, boolean activeFlag, int markerCategoryFk, Map<String, DefinedTermBase> map ){
 		MarkerType markerType = (MarkerType)map.get("webMarkerCategory_" + markerCategoryFk);
 		if (markerType == null){

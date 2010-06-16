@@ -942,7 +942,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			for (int l=0;l<this.referenceList.size();l++){
 				
 				ReferenceBase reference = refFatory.newGeneric();
-				reference.setTitleCache(this.referenceList.get(l));
+				reference.setTitleCache(this.referenceList.get(l), true);
 				determinationEvent.addReference(reference);
 			}
 			derivedThing.addDetermination(determinationEvent);
@@ -982,7 +982,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 		//TODO: parsing of ViralNames?
 		if(problem){
 			taxonName = NonViralName.NewInstance(null);
-			taxonName.setTitleCache(scientificName);
+			taxonName.setTitleCache(scientificName, true);
 		}
 		return taxonName;
 
@@ -1000,11 +1000,11 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			Team team = null;
 			if(getFromMap(atomisedMap,"AuthorTeamParenthesis") != null){
 				team = Team.NewInstance();
-				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"));
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"), true);
 			}else{
 				if (getFromMap(atomisedMap,"AuthorTeamAndYear") != null){
 					team = Team.NewInstance();
-					team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamAndYear"));
+					team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamAndYear"), true);
 				}
 			}
 			if(team != null)
@@ -1017,7 +1017,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			}
 			if(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear") != null){
 				team = Team.NewInstance();
-				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"));
+				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"), true);
 				taxonName.setCombinationAuthorTeam(team);
 			}
 			if (taxonName.hasProblem())
@@ -1035,13 +1035,13 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			Team team = null;
 			if(getFromMap(atomisedMap,"AuthorTeamParenthesis") != null){
 				team = Team.NewInstance();
-				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"));
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"), true);
 				if(team != null)
 					taxonName.setBasionymAuthorTeam(team);
 			}
 			if (getFromMap(atomisedMap,"AuthorTeam") != null){
 				team = Team.NewInstance();
-				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeam"));
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeam"), true);
 				if(team != null)
 					taxonName.setCombinationAuthorTeam(team);
 			}
@@ -1053,7 +1053,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			}
 			if(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear") != null){
 				team = Team.NewInstance();
-				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"));
+				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"), true);
 				taxonName.setCombinationAuthorTeam(team);
 			}
 			if (taxonName.hasProblem())
@@ -1069,12 +1069,12 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			taxonName.setInfraSpecificEpithet(getFromMap(atomisedMap,"SubspeciesEpithet"));
 			if(getFromMap(atomisedMap,"AuthorTeamAndYear") != null){
 				Team team = Team.NewInstance();
-				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamAndYear"));
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamAndYear"), true);
 				taxonName.setCombinationAuthorTeam(team);
 			}
 			if(getFromMap(atomisedMap,"ParentheticalAuthorTeamAndYear") != null){
 				Team team = Team.NewInstance();
-				team.setTitleCache(getFromMap(atomisedMap,"ParentheticalAuthorTeamAndYear"));
+				team.setTitleCache(getFromMap(atomisedMap,"ParentheticalAuthorTeamAndYear"), true);
 				taxonName.setBasionymAuthorTeam(team);
 			}
 			if (taxonName.hasProblem())

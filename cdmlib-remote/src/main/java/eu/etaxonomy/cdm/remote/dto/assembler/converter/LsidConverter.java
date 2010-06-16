@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 public class LsidConverter implements CustomConverter {
 
 	public Object convert(Object destination, Object source, Class destClass, Class sourceClass) {
-		if (source == null) {
+		if (source == null || ((LSID)source).toString() == null || ((LSID)source).toString().equals("")) {
 			return null;
 		}
 		if (source instanceof LSID) {		      

@@ -117,7 +117,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	protected static final ReferenceBase unknownSec(){
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		ReferenceBase result = refFactory.newGeneric();
-		result.setTitleCache("UNKNOWN");
+		result.setTitleCache("UNKNOWN", true);
 		return result;
 	}
 	

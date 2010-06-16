@@ -110,7 +110,7 @@ public class TestDatabase {
 			botanicalName.setGenusOrUninomial("GenusName");
 		
 			IJournal journal = refFactory.newJournal();
-			journal.setTitleCache("Afro+Doc");
+			journal.setTitleCache("Afro+Doc", true);
 			
 			//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
 //			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
@@ -160,7 +160,7 @@ public class TestDatabase {
 			botanicalName.setGenusOrUninomial("GenusName");
 		
 			IJournal journal = refFactory.newJournal();
-			journal.setTitleCache("Afro+Doc");
+			journal.setTitleCache("Afro+Doc", true);
 			
 			Taxon taxon = Taxon.NewInstance(botanicalName,(ReferenceBase)journal);
 			appCtr.getTaxonService().save(taxon);

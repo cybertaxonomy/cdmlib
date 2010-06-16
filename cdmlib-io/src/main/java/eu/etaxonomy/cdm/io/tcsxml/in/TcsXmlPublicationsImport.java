@@ -113,7 +113,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 			String simple = elSimple.getTextNormalize();
 			
 			ReferenceBase reference = refFactory.newGeneric();
-			reference.setTitleCache(simple);
+			reference.setTitleCache(simple, true);
 
 			childName = "PublicationDetailed";
 			obligatory = false;

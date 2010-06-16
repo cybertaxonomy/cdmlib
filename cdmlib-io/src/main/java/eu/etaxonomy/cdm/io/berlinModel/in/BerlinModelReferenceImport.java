@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -336,7 +335,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			nameSpace = BerlinModelAuthorTeamImport.NAMESPACE;
 			cdmClass = Team.class;
 			idSet = teamIdSet;
-			Map<String, Person> teamMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Team> teamMap = (Map<String, Team>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, teamMap);
 
 			
@@ -492,7 +491,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		boolean isPreliminary = rs.getBoolean("PreliminaryFlag");
 		String refAuthorString = rs.getString("refAuthorString");
 		Integer nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
-		TeamOrPersonBase<?> nomAuthor = teamMap.get(nomAuthorTeamFk);
+		String strNomAuthorTeamFk = String.valueOf(nomAuthorTeamFk);
+		TeamOrPersonBase<?> nomAuthor = teamMap.get(strNomAuthorTeamFk);
 		ReferenceBase nomReference = null;
 		
 		boolean hasNomRef = false;
@@ -506,7 +506,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			referenceBase.setAuthorTeam(author);
 			//referenceBase.setNomenclaturallyRelevant(true);
 			if (isPreliminary){
-				referenceBase.setTitleCache(nomRefCache);
+				referenceBase.setTitleCache(nomRefCache, true);
 			}
 			if (! nomRefToSave.containsKey(refId)){
 				if (referenceBase == null){
@@ -536,7 +536,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			referenceBase.setAuthorTeam(author);
 			referenceBase.setNomenclaturallyRelevant(false);
 			if (isPreliminary){
-				referenceBase.setTitleCache(refCache);
+				referenceBase.setTitleCache(refCache, true);
 			}
 			if (! biblioRefToSave.containsKey(refId)){
 				biblioRefToSave.put(refId, referenceBase);
@@ -771,8 +771,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				series = nomTitle;
 			}
 			printSeries = ReferenceFactory.newPrintSeries(series);
-			//TODO only one for ref and nomRef
-			logger.warn("Implementation of printSeries is preliminary");
+			logger.info("Implementation of printSeries is preliminary");
 		}
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		//Series (as Reference)
@@ -793,8 +792,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					book.setInSeries((IPrintSeries)inSeries);
 					//TODO
 				}else{
-					logger.warn("inSeries is not of type PrintSeries but of type " + inSeries.getClass().getSimpleName() +
-							" Inreference relation could not be set");
+					logger.warn("inSeries is not of type PrintSeries but of type " + inSeries.getType().getMessage() +
+							". In-reference relation could not be set for refId " + refId + " and inRefFk " + inRefFk);
 				}
 			}else{
 				logger.error("PrintSeries (refId = " + inRefFkInt + ") for book (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");
@@ -940,7 +939,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					TeamOrPersonBase<?> team = Team.NewInstance();
 					//TODO which one to use??
 					team.setNomenclaturalTitle(authorString);
-					team.setTitleCache(authorString);
+					team.setTitleCache(authorString, true);
 					result = team;
 				}
 			}
@@ -949,7 +948,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				TeamOrPersonBase<?> team = Team.NewInstance();
 				//TODO which one to use??
 				team.setNomenclaturalTitle(authorString);
-				team.setTitleCache(authorString);
+				team.setTitleCache(authorString, true);
 				result = team;
 			}else{
 				result = nomAuthor;

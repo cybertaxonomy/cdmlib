@@ -50,7 +50,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	private static final String pluralString = "OccurrenceSources";
 	private static final String parentPluralString = "Taxa";
 	private static Taxon taxon = null;
-	private static ArrayList processedList = new ArrayList();
 
 	public PesiOccurrenceSourceExport() {
 		super();
@@ -142,9 +141,9 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 											// Lookup sourceFk by using getSourceFk()
 											Integer sourceFk = getSourceFk(reference, state);
 											
-											if (sourceFk != null && ! allreadyProcessed(sourceFk)) {
+											if (sourceFk != null && ! state.alreadyProcessedSource(sourceFk)) {
 												// Add to processed sourceFk's since sourceFk's can be scanned more than once.
-												addToProcessed(sourceFk);
+												state.addToProcessedSources(sourceFk);
 												
 												// Query the database for all entries in table 'Occurrence' with the sourceFk just determined.
 												Set<Integer> occurrenceIds = getOccurrenceIds(sourceFk, state);
@@ -161,6 +160,8 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 						}
 					}
 				}
+				
+				state.clearAlreadyProcessedSources();
 				
 				// Commit transaction
 				commitTransaction(txStatus);
@@ -180,6 +181,9 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 			logger.error("Committed transaction.");
 	
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
+			
+			// Delete database table helper
+			state.deleteStateTables();
 			
 			return success;
 		} catch (SQLException e) {
@@ -212,27 +216,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 		}
 	}
 
-	/**
-	 * Returns whether the given sourceFk was processed before or not.
-	 * @param sourceFk
-	 * @return
-	 */
-	private static boolean allreadyProcessed(Integer sourceFk) {
-		if (processedList.contains(sourceFk)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * Add given sourceFk to the list of processed sourceFk's.
-	 * @param sourceFk
-	 */
-	private static void addToProcessed(Integer sourceFk) {
-		processedList.add(sourceFk);
-	}
-	
 	/**
 	 * Returns a Set of OccurrenceId's associated to a given SourceFk.
 	 * @param state

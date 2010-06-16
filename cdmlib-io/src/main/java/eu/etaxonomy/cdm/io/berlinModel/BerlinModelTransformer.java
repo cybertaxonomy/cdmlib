@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -45,6 +49,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
  
+	
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
 	public static int REF_PART_OF_OTHER_TITLE = 2;
@@ -146,8 +151,28 @@ public final class BerlinModelTransformer {
 	public static int FACT_DISTRIBUTION_EM = 10;
 	public static int FACT_DISTRIBUTION_WORLD = 11;
 	
+	public static UUID uuidRelNameCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
 	
-	public static NomenclaturalStatus nomStatusFkToNomStatus(int nomStatusFk)  throws UnknownCdmTypeException{
+	static NomenclaturalStatusType nomStatusCombIned;
+	public static NomenclaturalStatusType nomStatusTypeAbbrev2NewNomStatusType(String nomStatus){
+		NomenclaturalStatusType result = null;
+		if (nomStatus == null){
+			return null;
+		}else if (nomStatus.equalsIgnoreCase("comb. ined.")){
+			if (nomStatusCombIned == null){
+				nomStatusCombIned = new NomenclaturalStatusType();
+				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
+				nomStatusCombIned.addRepresentation(representation);
+				nomStatusCombIned.setUuid(uuidRelNameCombIned);
+				nomStatusCombIned.setVocabulary(NomenclaturalStatusType.ALTERNATIVE().getVocabulary());
+			}
+			result = nomStatusCombIned;
+		}
+		return result;
+	}
+
+	
+	public static NomenclaturalStatus nomStatusFkToNomStatus(int nomStatusFk, String nomStatusLabel)  throws UnknownCdmTypeException{
 		if (nomStatusFk == NAME_ST_NOM_INVAL){
 			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID());
 		}else if (nomStatusFk == NAME_ST_NOM_ILLEG){
@@ -187,6 +212,11 @@ public final class BerlinModelTransformer {
 		}else if (nomStatusFk == NAME_ST_COMB_INVAL){
 			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.COMBINATION_INVALID());
 		}else {
+			NomenclaturalStatusType statusType = nomStatusTypeAbbrev2NewNomStatusType(nomStatusLabel);
+			NomenclaturalStatus result = NomenclaturalStatus.NewInstance(statusType);
+			if (result != null){
+				return result;
+			}
 			throw new UnknownCdmTypeException("Unknown NomenclaturalStatus (id=" + Integer.valueOf(nomStatusFk).toString() + ")");
 		}
 	}
@@ -265,9 +295,9 @@ public final class BerlinModelTransformer {
 	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence (int occStatusId)  throws UnknownCdmTypeException{
 		switch (occStatusId){
 			case 0: return null;
-			case 110: return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+			case 110: return AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR();
 			case 120: return PresenceTerm.CULTIVATED();
-			case 210: return PresenceTerm.INTRODUCED_REPORTED_IN_ERROR();
+			case 210: return AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR();
 			case 220: return PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
 			case 230: return PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
 			case 240: return PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
@@ -275,7 +305,7 @@ public final class BerlinModelTransformer {
 			case 260: return PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
 			case 270: return PresenceTerm.INTRODUCED_ADVENTITIOUS();
 			case 280: return PresenceTerm.INTRODUCED_NATURALIZED();
-			case 310: return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
+			case 310: return AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
 			case 320: return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
 			case 330: return PresenceTerm.NATIVE_FORMERLY_NATIVE();
 			case 340: return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
@@ -309,6 +339,29 @@ public final class BerlinModelTransformer {
 	}
 	
 	
+	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
+	static Rank collSpeciesRank;
+	/**
+	 * @param i
+	 * @return
+	 */
+	private static Rank rankId2NewRank(Integer rankId) {
+		Rank result = null;
+		if (rankId == null){
+			return null;
+		}else if (rankId == 57){
+			if (collSpeciesRank == null){
+				collSpeciesRank = new Rank();
+				Representation representation = Representation.NewInstance("Collective species", "Coll. species", "coll.", Language.ENGLISH());
+				collSpeciesRank.addRepresentation(representation);
+				collSpeciesRank.setUuid(uuidRankCollSpecies);
+				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
+				voc.addTermBelow(collSpeciesRank, Rank.SPECIESGROUP());
+			}
+			result = collSpeciesRank;
+		}
+		return result;
+	}
 	
 	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown) throws UnknownCdmTypeException{
 		Rank result;
@@ -353,6 +406,7 @@ public final class BerlinModelTransformer {
 						case 58: return Rank.SPECIESAGGREGATE();
 						case 59: return Rank.SPECIESGROUP();
 						case 60: return Rank.SPECIES();
+						case 61: return Rank.GREX();
 						case 65: return Rank.SUBSPECIES();
 						case 68: return Rank.CONVAR();
 						case 70: return Rank.VARIETY();
@@ -370,8 +424,12 @@ public final class BerlinModelTransformer {
 						case 830: return Rank.SUPERFAMILY();
 						
 						default: {
+							Rank rank = rankId2NewRank(57);
+							if (rank != null){
+								return rank;
+							}
 							if (useUnknown){
-								logger.error("Rank unknown. Created UNKNOWN_RANK");
+								logger.error("Rank unknown: " + rankId + ". Created UNKNOWN_RANK");
 								return Rank.UNKNOWN_RANK();
 							}
 							throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());
@@ -386,7 +444,6 @@ public final class BerlinModelTransformer {
 			return Rank.UNKNOWN_RANK();
 		}		
 	}
-	
 	
 	public static Integer rank2RankId (Rank rank){
 		if (rank == null){

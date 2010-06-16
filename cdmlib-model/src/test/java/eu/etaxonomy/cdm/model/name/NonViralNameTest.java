@@ -250,7 +250,7 @@ public class NonViralNameTest extends EntityTestBase {
 		String strTeam2 = "Team2";
 		String strTeam3 = "Team3";
 		IGeneric ref1 = refFactory.newGeneric();
-		ref1.setTitleCache("RefTitle");
+		ref1.setTitleCache("RefTitle",true);
 		
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();

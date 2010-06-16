@@ -27,8 +27,10 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -74,7 +76,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		boolean result = true;
 		Set<TaxonNameBase> namesToSave = new HashSet<TaxonNameBase>();
 		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
-	
+		
 		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
 		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
 		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
@@ -99,6 +101,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				String refDetail = rs.getString("refDetail");
 				String status = rs.getString("Status");
 				String typePhrase = rs.getString("typePhrase");
+				String notes = rs.getString("notes");
 				
 				//TODO 
 				boolean isNotDesignated = false;
@@ -118,22 +121,22 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 						if (refFkObj != null){
 							String relRefFk = String.valueOf(refFkObj);
 							//get nomRef
-							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, 
-									relRefFk);
-						}
+							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, relRefFk);
+							}
 						
 						Specimen specimen = Specimen.NewInstance();
-						specimen.setTitleCache(typePhrase);
+						specimen.addDefinition(typePhrase, Language.DEFAULT());
+						if (typePhrase.length()> 255){
+							typePhrase = typePhrase.substring(0, 255);
+						}
+						specimen.setTitleCache(typePhrase, true);
 						boolean addToAllNames = true;
 						String originalNameString = null;
-						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
-												
+						SpecimenTypeDesignation type = taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
+						this.doNotes(type, notes);
+						
 						typeMap.put(typeDesignationId, specimen);
 						namesToSave.add(taxonNameBase);
-						
-						//TODO
-						//Update, Created, Notes, origId
-						//doIdCreatedUpdatedNotes(bmiConfig, media, rs, nameFactId);
 
 					}catch (UnknownCdmTypeException e) {
 						logger.warn("TypeStatus '" + status + "' not yet implemented");
@@ -172,8 +175,8 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			while (rs.next()){
 				handleForeignKey(rs, nameIdSet, "NameFk");
 				handleForeignKey(rs, referenceIdSet, "RefFk");
-			}
-			
+	}
+	
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
@@ -201,6 +204,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		return result;
 	}
 
+	
 	private static boolean makeFigures(Map<Integer, Specimen> typeMap, Source source){
 		boolean success = true;
 		try {

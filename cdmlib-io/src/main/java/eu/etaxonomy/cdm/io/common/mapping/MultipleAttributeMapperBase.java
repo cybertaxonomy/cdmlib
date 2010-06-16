@@ -96,7 +96,7 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	}
 	
 
-	/**
+/**
 	 * Returns the value of a result set attribute in its String representation.
 	 * Better move this to a subclass for DbImportMappers (does not exist yet)
 	 * @param rs

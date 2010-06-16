@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -296,14 +297,13 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 	
 	private boolean makeTaxonomicallyIncluded(TcsXmlImportState state, Taxon toTaxon, Taxon fromTaxon, ReferenceBase citation, String microCitation){
-		boolean success = true;
 		ReferenceBase sec = toTaxon.getSec();
 		TaxonomicTree tree = state.getTree(sec);
 		if (tree == null){
 			tree = makeTree(state, sec);
 		}
-		success = tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
-		return success;
+		TaxonNode childNode = tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
+		return (childNode != null);
 	}
 	
 	
@@ -325,14 +325,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					String title = elToTaxonConcept.getTextNormalize();
 					//TODO synonym?
 					TaxonNameBase<?,?> taxonName = NonViralName.NewInstance(null);
-					taxonName.setTitleCache(title);
+					taxonName.setTitleCache(title, true);
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
 						result = Synonym.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());
 					}else{
 						result = Taxon.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());	
 					}
-					result.setTitleCache(title);
+					result.setTitleCache(title, true);
 				}
 			}else{
 				logger.warn("External link types for synonym not yet implemented");

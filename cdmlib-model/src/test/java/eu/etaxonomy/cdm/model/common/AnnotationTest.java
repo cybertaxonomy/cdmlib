@@ -61,7 +61,7 @@ public class AnnotationTest extends EntityTestBase {
 	@Before
 	public void setUp() throws Exception {
 		commentator = Person.NewInstance();
-		commentator.setTitleCache("automatic importer");
+		commentator.setTitleCache("automatic importer", true);
 		annotation1 = Annotation.NewInstance("anno1", Language.DEFAULT());
 		annotation1.setCommentator(commentator);
 		annotatedObject = BotanicalName.NewInstance(Rank.SPECIES());

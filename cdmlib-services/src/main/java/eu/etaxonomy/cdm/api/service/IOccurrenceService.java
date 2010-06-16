@@ -15,6 +15,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -32,6 +33,25 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name);
 	
 	/**
+	 * Returns a paged list of occurrences that have been determined to belong to the taxon concept
+	 * determinedAs, optionally restricted to objects belonging to a class that that extends 
+	 * SpecimenOrObservationBase
+	 * 
+	 * @param type  The type of entities to return (can be null to count all entities of type <T>)
+	 * @param determinedAs the taxon concept that the occurrences have been determined to belong to
+	 	 * @param pageSize The maximum number of objects returned (can be null for all matching objects)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based, 
+	 *                   can be null, equivalent of starting at the beginning of the recordset)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return
+	 */
+	public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
      * Returns a List of Media that are associated with a given occurence
      * 
 	 * @param occurence the occurence associated with these media
@@ -45,12 +65,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	/**
      * Returns a List of determinations that have been made for a given occurence
      * 
-	 * @param occurence the occurence associated with these determinations
+	 * @param occurence the occurence associated with these determinations (can be null for all occurrences)
+	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
 	 * @param pageSize The maximum number of determinations returned (can be null for all related determinations)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a Pager of determination instances
      */
-	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
      * Returns a list of derivation events that have involved creating new DerivedUnits from this occurence

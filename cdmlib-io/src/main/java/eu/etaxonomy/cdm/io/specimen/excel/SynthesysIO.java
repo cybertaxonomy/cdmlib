@@ -249,9 +249,11 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 			if (fullScientificNameString.indexOf("_code_") != -1)	
 				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
 
-			if (config.getDoAutomaticParsing())	
+			if (config.getDoAutomaticParsing()){	
 				taxonName = this.parseScientificName(scientificName);	
-			else taxonName.setTitleCache(scientificName);
+			} else {
+				taxonName.setTitleCache(scientificName, true);
+			}
 
 			if (config.getDoReUseTaxon()){
 				try{
@@ -289,7 +291,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 
 		if(this.nomenclatureCode == null){
 			taxonName = NonViralName.NewInstance(null);
-			taxonName.setTitleCache(scientificName);
+			taxonName.setTitleCache(scientificName, true);
 			return taxonName;
 		}
 
@@ -320,7 +322,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 		//TODO: parsing of ViralNames?
 		if(problem){
 			taxonName = NonViralName.NewInstance(null);
-			taxonName.setTitleCache(scientificName);
+			taxonName.setTitleCache(scientificName, true);
 		}
 		return taxonName;
 

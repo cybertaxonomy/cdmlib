@@ -68,7 +68,7 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	public void setUp() {
 		refFactory = ReferenceFactory.newInstance();
 		book = refFactory.newBook();
-		book.setTitleCache("Lorem ipsum");
+		book.setTitleCache("Lorem ipsum", true);
 	}
 	
 	
@@ -85,14 +85,14 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	
 	@Test
 	public final void testLevel2ValidationWithValidISBN() {
-		book.setIsbn("ISBN 1-919795-99-5");
+		book.setIsbn("1-919795-99-5");
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 	
 	@Test
 	public final void testLevel2ValidationWithInValidISBN() {
-		book.setIsbn("ISBN 1-9197954-99-5");
+		book.setIsbn("1-9197954-99-5");
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be a constraint violation as this book has an invalid ISBN number",constraintViolations.isEmpty());
 	}

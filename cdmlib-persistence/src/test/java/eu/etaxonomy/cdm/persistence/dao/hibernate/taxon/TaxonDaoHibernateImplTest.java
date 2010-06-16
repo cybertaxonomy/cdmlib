@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -780,6 +781,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	
 	@Test
 	@DataSet
+	public void testNativeSQLOrder() { 
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end",SortOrder.ASCENDING));
+		
+		List<TaxonBase> results = taxonDao.list(null, null, orderHints);
+		System.out.println("native SQL order");
+		for(TaxonBase result : results) {
+			System.out.println(result.getTitleCache());
+		}
+	}
+	
+	@Test
+	@DataSet
 	public void testGroupByDateTaxa() { 
 		List<Grouping> groups = new ArrayList<Grouping>();
 		groups.add(new GroupByCount("count",null));
@@ -842,13 +856,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	assertNotNull("getTaxaByCommonName should return a list", textData);
     	assertFalse("the list should not be empty", textData.isEmpty());
     	assertEquals("There should be one Taxon with common name", 1,textData.size());
-    	System.err.println("Number of common names: " +textData.size());
+//    	System.err.println("Number of common names: " +textData.size());
     	
     }
     
     @Test
     @DataSet("TaxonNodeDaoHibernateImplTest.xml")
-    @Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+    @Ignore
     public void testCreateInferredSynonymy(){
     	TaxonomicTree tree = this.taxonomicTreeDao.findById(1);
     	Taxon taxon = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));

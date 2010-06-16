@@ -81,7 +81,7 @@ public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<D
 		//logger.warn("getSource Reference not yet implemented");
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		ReferenceBase result = refFactory.newDatabase();
-		result.setTitleCache("XXX");
+		result.setTitleCache("XXX", true);
 		return result;
 	}
 

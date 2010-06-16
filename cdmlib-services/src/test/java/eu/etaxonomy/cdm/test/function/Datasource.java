@@ -224,10 +224,10 @@ public class Datasource {
 				BotanicalName name = BotanicalName.NewInstance(null);
 				String nameCache = "testName";
 				name.setNameCache(nameCache);
-				name.setTitleCache(nameCache);
+				name.setTitleCache(nameCache, true);
 				ReferenceFactory refFactory = ReferenceFactory.newInstance();
 				ReferenceBase ref = refFactory.newGeneric();
-				ref.setTitleCache("mySec");
+				ref.setTitleCache("mySec", true);
 				Taxon taxon = Taxon.NewInstance(name, ref);
 				TaxonDescription description = TaxonDescription.NewInstance();
 				taxon.addDescription(description);

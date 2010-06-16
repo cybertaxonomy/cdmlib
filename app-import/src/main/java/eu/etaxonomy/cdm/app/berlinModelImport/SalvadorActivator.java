@@ -82,6 +82,7 @@ public class SalvadorActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = false; //Occurrences do not exist in El_Salvador DB
+	static final boolean doCommonNames = false; //CommonNames do not exist in Salvador DB
 	
 	//etc.
 	static final boolean doMarker = true;
@@ -138,6 +139,7 @@ public class SalvadorActivator {
 		config.setDoRelTaxa(doRelTaxa);
 		config.setDoFacts(doFacts);
 		config.setDoOccurrence(doOccurences);
+		config.setDoCommonNames(doCommonNames);
 		
 		config.setDoMarker(doMarker);
 		config.setDoUser(doUser);

@@ -197,7 +197,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String)
 	 */
 	public void setTitleCache(String titleCache){
-		setTitleCache(titleCache, PROTECTED);
+		this.titleCache = titleCache;
 	}
 	
 	/* (non-Javadoc)
@@ -548,17 +548,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
 
 		
-		//Rights
+		//Credits
 		result.credits = new ArrayList<Credit>();
         for(Credit credit : getCredits()) {
         	result.addCredit(credit);
         }
 
-        
-		//result.setLsid(lsid);
-		//result.setTitleCache(titleCache); 
-		//result.setProtectedTitleCache(protectedTitleCache);  //must be after setTitleCache
-		
 		//no changes to: lsid, titleCache, protectedTitleCache
 		
 		//empty titleCache

@@ -47,7 +47,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 			Source source = bmiConfig.getSource();
 			String strSQL = 
 				" SELECT RelPTaxon.RelPTaxonId, RelPTaxon.RelQualifierFk, FromName.FullNameCache AS FromName, RelPTaxon.PTNameFk1 AS FromNameID, "  +
-		    			" Status.Status AS FromStatus, ToName.FullNameCache AS ToName, RelPTaxon.PTNameFk2 AS ToNameId, ToStatus.Status AS ToStatus " + 
+		    			" Status.Status AS FromStatus, ToName.FullNameCache AS ToName, RelPTaxon.PTNameFk2 AS ToNameId, ToStatus.Status AS ToStatus, FromTaxon.DoubtfulFlag AS doubtfulFrom, ToTaxon.DoubtfulFlag AS doubtfulTo" + 
     			" FROM PTaxon AS FromTaxon " + 
     				" INNER JOIN RelPTaxon ON FromTaxon.PTNameFk = RelPTaxon.PTNameFk1 AND FromTaxon.PTRefFk = RelPTaxon.PTRefFk1 " + 
     				" INNER JOIN PTaxon AS ToTaxon ON RelPTaxon.PTNameFk2 = ToTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = ToTaxon.PTRefFk " + 
@@ -76,10 +76,13 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 				String toName = rs.getString("ToName");
 				int toNameId = rs.getInt("ToNameId");
 				String toStatus = rs.getString("ToStatus");
+				String doubtfulFrom = String.valueOf(rs.getObject("doubtfulFrom"));
+				String doubtfulTo = String.valueOf(rs.getObject("doubtfulTo"));
+				
 				
 				System.out.println("RelPTaxonId:" + relPTaxonId + 
-						"\n  FromName: " + fromName + "\n  FromNameID: " + fromNameID + "\n  FromStatus: " + fromStatus +
-						"\n  ToName: " + toName + "\n  ToNameId: " + toNameId + "\n  ToStatus: " + toStatus);
+						"\n  FromName: " + fromName + "\n  FromNameID: " + fromNameID + "\n  FromStatus: " + fromStatus + "\n  FromDoubtful: " + doubtfulFrom + 
+						"\n  ToName: " + toName + "\n  ToNameId: " + toNameId + "\n  ToStatus: " + toStatus + "\n  ToDoubtful: " + doubtfulTo );
 				result = firstRow = false;
 			}
 			if (i > 0){

@@ -125,7 +125,7 @@ public class UnitsGatheringEvent {
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();
-				collector.setTitleCache(collName);
+				collector.setTitleCache(collName, true);
 			}
 			this.gatheringEvent.setCollector(collector);
 		}
@@ -145,7 +145,7 @@ public class UnitsGatheringEvent {
 			for (int i=0;i<collectorNames.size();i++){
 				collName = collectorNames.get(i);
 				collector = Person.NewInstance();
-				collector.setTitleCache(collName);
+				collector.setTitleCache(collName, true);
 				team.addTeamMember(collector);
 				this.gatheringEvent.setCollector(team);
 			}
@@ -153,7 +153,7 @@ public class UnitsGatheringEvent {
 		else if (collectorNames.size() == 1) {
 			collName = collectorNames.get(0);
 			collector = Person.NewInstance();
-			collector.setTitleCache(collName);
+			collector.setTitleCache(collName, true);
 			this.gatheringEvent.setCollector(collector);
 		}
 

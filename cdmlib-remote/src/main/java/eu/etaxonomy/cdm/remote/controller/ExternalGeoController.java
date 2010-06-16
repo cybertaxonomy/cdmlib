@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  * 
  */
 @Controller
-@RequestMapping(value = { "/*/geo/map/distribution/*" })
+@RequestMapping(value = { "/geo/map/distribution/*" })
 public class ExternalGeoController extends BaseController<TaxonBase, ITaxonService> {
 	
 	public static final Logger logger = Logger.getLogger(ExternalGeoController.class);
@@ -62,7 +62,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 	
 	public ExternalGeoController() {
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/geo/(?:[^/]+)/(?:[^/]+)/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/geo/(?:[^/]+)/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
 
 	/*
@@ -91,7 +91,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 	 * @return URI parameter Strings for the EDIT Map Service
 	 * @throws IOException TODO write controller method documentation
 	 */
-	@RequestMapping(value = { "/*/geo/map/distribution/*" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/geo/map/distribution/*" }, method = RequestMethod.GET)
 	public ModelAndView doGetDistributionMapUriParams(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		

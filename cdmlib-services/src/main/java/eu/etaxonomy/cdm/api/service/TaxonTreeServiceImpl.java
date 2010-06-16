@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import javax.swing.tree.TreeNode;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -74,11 +77,16 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		TaxonomicTree tree = dao.load(taxonomicTreeUuid);
 		TaxonNode node = tree.getNode(taxon);
 	
-		return loadTaxonNode(node, propertyPaths);
+		return loadTaxonNode(node.getUuid(), propertyPaths);
 	}
 	
+	@Deprecated // use loadTaxonNode(UUID, List<String>) instead 
 	public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths){
 		return taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
+	}
+	
+	public TaxonNode loadTaxonNode(UUID taxonNodeUuid, List<String> propertyPaths){
+		return taxonNodeDao.load(taxonNodeUuid, propertyPaths);
 	}
 	
 	/*
@@ -110,16 +118,16 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
 		pathToRoot.add(thisNode);
 		
-		ITreeNode parentNode = thisNode.getParent();
-		while(parentNode instanceof TaxonNode){
-			TaxonNode parent = (TaxonNode) parentNode;
+		TaxonNode parentNode = thisNode.getParent();
+		while(parentNode != null){
+			TaxonNode parent = parentNode;
 			Rank parentNodeRank = parent.getTaxon().getName().getRank();
 			// stop if the next parent is higher than the baseRank
 			if(baseRank != null && baseRank.isLower(parentNodeRank)){
 				break;
 			}
-			pathToRoot.add(parent);
-			parentNode = parent.getParent();
+			pathToRoot.add(parentNode);
+			parentNode = parentNode.getParent();
 		}
 		
 		// initialize and invert order of nodes in list
@@ -150,9 +158,10 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
 			List<String> propertyPaths) {
+		taxonNode = taxonNodeDao.load(taxonNode.getUuid());
 		List<TaxonNode> childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
-		Collections.sort(childNodes, taxonNodeComparator);
 		defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
+		Collections.sort(childNodes, taxonNodeComparator);
 		return childNodes;
 	}
 	
@@ -299,7 +308,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 								taxonMedia.add(media);
 								
 								//find the best matching representation
-								mediaRepresentations.add(media.findBestMatchingRepresentation(size, height, widthOrDuration, mimeTypes));
+								mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,size, height, widthOrDuration, mimeTypes));
 								
 							}
 						}

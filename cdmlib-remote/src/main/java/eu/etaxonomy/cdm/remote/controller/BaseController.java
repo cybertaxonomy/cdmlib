@@ -19,11 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 //$Id$
 /**
@@ -52,15 +55,15 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		this.initializationStrategy = initializationStrategy;
 	}
 
-	/**@InitBinder
+	@InitBinder
     public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
-		//TODO do we need this one?: binder.registerCustomEditor(Class.class, new ClassPropertyEditor());
 	}
-	*/
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.GET)
 	public T doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		logger.info("doGet() " + request.getServletPath());
 		T obj = (T) getCdmBase(request, response, initializationStrategy, CdmBase.class);
 		return obj;
 	}

@@ -1,3 +1,4 @@
+// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
@@ -60,11 +62,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Configurable
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> implements Cloneable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7833674897174732255L;
-
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
 	@XmlElement(name = "Code")
@@ -120,7 +118,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	 */
 	protected Collection() {
 		super();
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Collection>();
+		this.cacheStrategy = new CollectionDefaultCacheStrategy();
 	}
 
 	public Institution getInstitute(){

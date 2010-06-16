@@ -44,6 +44,7 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.LivingBeing", targetEntity = LivingBeing.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Observation", targetEntity = Observation.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Specimen", targetEntity = Specimen.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.ReferenceBase", targetEntity = ReferenceBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Journal", targetEntity = ReferenceBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Article", targetEntity = ReferenceBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Book", targetEntity = ReferenceBase.class),
@@ -57,6 +58,7 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.WebPage", targetEntity = ReferenceBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.TaxonomicTree", targetEntity = TaxonomicTree.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class)
@@ -108,4 +110,5 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.WebPage;*/
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 	

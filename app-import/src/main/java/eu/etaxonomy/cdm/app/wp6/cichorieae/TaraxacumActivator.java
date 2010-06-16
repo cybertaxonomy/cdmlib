@@ -18,7 +18,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
-import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -27,9 +26,6 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -57,7 +53,7 @@ public class TaraxacumActivator {
 	static final UUID treeUuid = UUID.fromString("019c4b4d-736b-4d2e-883c-e3244167080a");
 //	static final UUID treeUuid = UUID.fromString("00db28a7-50e1-4abc-86ec-b2a8ce870de9");
 //	static final UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
-	static final int sourceSecId = 7700000;
+	static final int sourceSecId = 7800000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
 	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
@@ -67,7 +63,7 @@ public class TaraxacumActivator {
 	//Mac
 	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
+	//static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
 	
@@ -100,6 +96,7 @@ public class TaraxacumActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = true;
+	static final boolean doCommonNames = true;
 
 	
 // **************** SELECTED *********************
@@ -124,7 +121,8 @@ public class TaraxacumActivator {
 	/**
 	 * @param args
 	 */
-	public void doImport(ICdmDataSource destination, DbSchemaValidation hbm2dll) {
+	public boolean doImport(ICdmDataSource destination, DbSchemaValidation hbm2dll) {
+		boolean success = true;
 		logger.info("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
 		
 		//make BerlinModel Source
@@ -151,9 +149,13 @@ public class TaraxacumActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		bmImportConfigurator.setDoCommonNames(doCommonNames);
+		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
+		
 		// mediaResourceLocations
+		File mediaPath = CichorieaeActivator.protologuePath;
 		if ( mediaPath.exists() && mediaPath.isDirectory()){
 			bmImportConfigurator.setMediaUrl(mediaUrlString);
 			bmImportConfigurator.setMediaPath(mediaPath);
@@ -169,7 +171,7 @@ public class TaraxacumActivator {
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		success &= bmImport.invoke(bmImportConfigurator);
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImport.getCdmAppController();
@@ -187,12 +189,14 @@ public class TaraxacumActivator {
 		}
 		
 		logger.info("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		return success;
 	}
 	
 	
-	public void mergeIntoCichorieae(CdmApplicationController app){
-		
-		String taraxTaraxacumUuidStr = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
+	public boolean mergeIntoCichorieae(CdmApplicationController app){
+		boolean success = true;
+	//	String taraxTaraxacumUuidStr = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
+		String taraxTaraxacumUuidStr = "b86f1156-091c-494d-a9c9-c84d71058f98";
 		UUID taraxTaraxacumUUID = UUID.fromString(taraxTaraxacumUuidStr);
 
 		String cichTaraxacumUuidStr = "c946ac62-b6c6-493b-8ed9-278fa38b931a";
@@ -209,6 +213,7 @@ public class TaraxacumActivator {
 			
 			if (taxonNodesInCich == null || taxonNodesInCich.isEmpty()) {
 				logger.error("No taxon nodes found for Taraxacum in cichorieae database");
+				success = false;
 			} else {
 				logger.info(taxonNodesInCich.size()+ " taxon node(s) found for Taraxacum in Cich DB");
 				taxonNodeInCich = taxonNodesInCich.iterator().next();
@@ -223,6 +228,7 @@ public class TaraxacumActivator {
 			TaxonomicTree treeInTaraxacum = null;
 			if (taxonNodesInTarax == null || taxonNodesInTarax.isEmpty()) {
 				logger.warn("No taxon nodes found for Taraxacum in taraxacum database");
+				success = false;
 			}else{
 				taxonNodeInTarax = taxonNodesInTarax.iterator().next();
 				treeInTaraxacum = taxonNodeInTarax.getTaxonomicTree();
@@ -239,10 +245,17 @@ public class TaraxacumActivator {
 			
 			app.getTaxonService().save(parentInCich);
 			app.getTaxonService().delete(taraxacumInCichTaxon);
-			app.getTaxonTreeService().delete(treeInTaraxacum);
+			try {
+//				app.getTaxonTreeService().delete(treeInTaraxacum); //throws exception
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
 		}else{
 			logger.warn("Taraxacum in cichorieae not found");
+			success = false;
 		}
+		return success;
 	}
 	
 	public static void main(String[] args) {

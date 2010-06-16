@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -30,6 +29,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
+import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -166,7 +167,16 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	 */
 	protected Media() {
 		super();
+		setMediaCacheStrategy();
 	}
+
+	private void setMediaCacheStrategy() {
+		if (getClass() == Media.class){
+			this.cacheStrategy = MediaDefaultCacheStrategy.NewInstance();
+		}
+		
+	}
+
 
 	public Set<MediaRepresentation> getRepresentations(){
 		if(representations == null) {
@@ -200,20 +210,20 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.artist = artist;
 	}
 
-	@Deprecated // will be removed in next release; use getAllTitles instead
-	public Map<Language,LanguageString> getTitle(){
-		return getAllTitles();
+	public LanguageString getTitle(){
+		return getTitle(Language.DEFAULT());
 	}
 	
+	public LanguageString getTitle(Language language){
+		return title.get(language);
+	}
+	
+	@Transient
 	public Map<Language,LanguageString> getAllTitles(){
 		if(title == null) {
 			this.title = new HashMap<Language,LanguageString>();
 		}
 		return this.title;
-	}
-	
-	public LanguageString getTitle(Language language){
-		return getAllTitles().get(language);
 	}
 	
 	public void addTitle(LanguageString title){
@@ -291,105 +301,26 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	public int compareTo(Object o) {
 		return 0;
 	}
-	/**
-	 * @param mimeTypeRegexes
-	 * @param size
-	 * @param widthOrDuration
-	 * @param height
-	 * @return
-	 * 
-	 * 
-	 */
-	public MediaRepresentation findBestMatchingRepresentation(Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
-		// find best matching representations of each media
-		Set<MediaRepresentation> reps = this.getRepresentations();
-				
-		List<Media> returnMedia = new ArrayList<Media>(reps.size());
-		SortedMap<Integer, MediaRepresentation> prefRepresentations 
-				= orderMediaRepresentations(mimeTypes, size, widthOrDuration, height);
-			try {
-				// take first one and remove all other representations
-				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
-				
-				return prefOne;
-				
-			} catch (NoSuchElementException nse) {
-				/* IGNORE */
-			}
+	
+	
+	@Transient 
+	public String getTitleCacheByLanguage(Language lang){
+		if (cacheStrategy != null){
+			return ((MediaDefaultCacheStrategy)cacheStrategy).getTitleCacheByLanguage(this, lang);
+		}else{
 			return null;
 		}
+			
+	}
 	
 	
-	/**
-	 * @param mimeTypeRegexes
-	 * @param size
-	 * @param widthOrDuration
-	 * @param height
-	 * @return
-	 * 
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(java.lang.String)
 	 */
-	private SortedMap<Integer, MediaRepresentation> orderMediaRepresentations(String[] mimeTypeRegexes,
-			Integer size, Integer widthOrDuration, Integer height) {
-		SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<Integer, MediaRepresentation>();
-		SortedMap<String, MediaRepresentation> sortedForSizeDistance = new TreeMap<String, MediaRepresentation>();		
-		String keyString = "";
-		for (String mimeTypeRegex : mimeTypeRegexes) {
-			// getRepresentationByMimeType
-			Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
-			int representationCnt = 0;
-			for (MediaRepresentation representation : getRepresentations()) {
-				
-				Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
-				if (mather.matches()) {
-					int dwa = 0;
-					
-					//first the size is used for comparison
-					for (MediaRepresentationPart part : representation.getParts()) {
-						if (part.getSize()!= null){
-							int sizeOfPart = part.getSize();
-							int distance = sizeOfPart - size;
-							if (distance < 0) {
-								distance*= -1;
-							}
-							dwa += distance;
-						}
-						//if height and width/duration is defined, add this information, too
-						if (height != 0 && widthOrDuration != 0){
-							int dw = 0;
-							
-							if (part instanceof ImageFile) {
-								ImageFile image = (ImageFile) part;
-								dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
-							}
-							else if (part instanceof MovieFile){
-								MovieFile movie = (MovieFile) part;
-								dw = movie.getDuration() - widthOrDuration;
-										
-							}else if (part instanceof AudioFile){
-								AudioFile audio = (AudioFile) part;
-								dw = audio.getDuration() - widthOrDuration;
-								
-							}
-							if (dw < 0) {
-								dw *= -1;
-							}
-							dwa += dw;
-							
-						}
-					}
-					dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
-					
-					//keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
-					
-					prefRepr.put((dwa + representationCnt++), representation);
-					System.out.println(prefRepr.get(prefRepr.firstKey()) + " --- " + prefRepr.firstKey());
-				}
-					
-			}				
-						
-		}
-		return prefRepr;
+	@Override
+	public void setTitleCache(String titleCache) {
+		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
 	}
 	
 	/*
@@ -410,15 +341,6 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@Override
 	public String generateTitle() {
 		return getTitleCache();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(java.lang.String)
-	 */
-	@Override
-	public void setTitleCache(String titleCache) {
-		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
 	}
 	
 }

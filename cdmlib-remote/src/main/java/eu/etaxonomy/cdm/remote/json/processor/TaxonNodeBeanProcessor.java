@@ -1,56 +1,50 @@
 // $Id$
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
- * http://www.e-taxonomy.eu
- * 
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * See LICENSE.TXT at the top of this package for the full license terms.
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 
 package eu.etaxonomy.cdm.remote.json.processor;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
-import org.hibernate.Hibernate;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.remote.dto.TaggedText;
-
-import net.sf.json.CycleSetAcess;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import net.sf.json.processors.JsonBeanProcessor;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * WARNING! The idea i started implementing here will not work at all!!
- * @author a.kohlbecker
- *
+ * @author n.hoffmann
+ * @created Apr 9, 2010
+ * @version 1.0
  */
-public class TaxonNodeBeanProcessor extends CycleSetAcess implements JsonBeanProcessor {
-	
-	
+public class TaxonNodeBeanProcessor extends AbstractCdmBeanProcessor {
+	private static final Logger logger = Logger
+			.getLogger(TaxonNodeBeanProcessor.class);
+
 	/* (non-Javadoc)
-	 * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
+	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
 	 */
-	public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
-	
-		TaxonNode node = (TaxonNode)bean;
-		JSONObject json = new JSONObject();
-		json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
-		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(node.getTaxon().getName());
-		json.element("taggedTitle", taggedTitle, jsonConfig);
-		json.element("uuid", node.getTaxon().getUuid(), jsonConfig);
-		json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
-		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
-		json.element("rankLabel", node.getTaxon().getName().getRank().getLabel(), jsonConfig);
-		
-		return json;
+	@Override
+	public List getIgnorePropNames() {
+		return Arrays.asList(new String[]{
+				"parent", //TODO put in json-config ignore list ?
+		});
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
+	 */
+	@Override
+	public JSONObject processBeanSecondStep(CdmBase bean, JSONObject json,
+			JsonConfig jsonConfig) {
+		return json;
+	}
 }

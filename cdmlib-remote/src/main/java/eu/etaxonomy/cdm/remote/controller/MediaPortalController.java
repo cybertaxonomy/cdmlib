@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 
 @Controller
-@RequestMapping(value = {"/*/portal/media/*","/*/portal/media/*/annotation"})
+@RequestMapping(value = {"/portal/media/*","/portal/media/*/annotation"})
 public class MediaPortalController extends AnnotatableController<Media, IMediaService>
 {
 
@@ -48,7 +48,7 @@ public class MediaPortalController extends AnnotatableController<Media, IMediaSe
 	public MediaPortalController(){
 		super();
 		setInitializationStrategy(MEDIA_INIT_STRATEGY);
-		setUuidParameterPattern("^/(?:[^/]+)/portal/media/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/portal/media/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)

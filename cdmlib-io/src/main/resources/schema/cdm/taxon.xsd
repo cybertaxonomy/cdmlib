@@ -37,7 +37,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xs:extension base="taxon:TaxonBase">
         <xs:sequence>
           <xs:element name="TaxonomicParentCache" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="taxonNodes" minOccurs="0">
+          <xs:element name="taxonNodes" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="taxonNode" type="taxon:TaxonNode" minOccurs="0" maxOccurs="unbounded"/>
@@ -45,28 +45,28 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
             </xs:complexType>
           </xs:element>
           <xs:element name="TaxonomicChildrenCount" type="xs:int"/>
-          <xs:element name="SynonymRelations" minOccurs="0">
+          <xs:element name="SynonymRelations" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="taxon:SynonymRelationship" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="RelationsFromThisTaxon" minOccurs="0">
+          <xs:element name="RelationsFromThisTaxon" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="FromThisTaxonRelationship" type="taxon:TaxonRelationship" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="RelationsToThisTaxon" minOccurs="0">
+          <xs:element name="RelationsToThisTaxon" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="ToThisTaxonRelationship" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="Descriptions" minOccurs="0">
+          <xs:element name="Descriptions" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Description" type="description:TaxonDescription" minOccurs="0" maxOccurs="unbounded"/>
@@ -139,7 +139,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:complexContent>
       <xs:extension base="taxon:TaxonBase">
         <xs:sequence>
-          <xs:element name="SynonymRelations" minOccurs="0">
+          <xs:element name="SynonymRelations" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="taxon:SynonymRelationship" minOccurs="0" maxOccurs="unbounded"/>

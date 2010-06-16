@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -104,6 +105,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IFeatureTreeService featureTreeService;
 	@Autowired
 	private IVocabularyService vocabularyService;
+	@Autowired
+	private ITaxonNodeService taxonNodeService;
 	
 	/**
 	 * 
@@ -152,6 +155,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 */
 	public ITaxonTreeService getTaxonTreeService() {
 		return this.taxonTreeService;
+	}
+	
+	public ITaxonNodeService getTaxonNodeService(){
+		return this.taxonNodeService;
 	}
 	
 	/* (non-Javadoc)

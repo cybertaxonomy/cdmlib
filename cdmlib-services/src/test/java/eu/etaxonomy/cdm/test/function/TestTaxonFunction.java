@@ -62,7 +62,7 @@ public class TestTaxonFunction {
 		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		ReferenceBase sec = refFactory.newBook();
-		sec.setTitleCache("ConceptRef");
+		sec.setTitleCache("ConceptRef", true);
 		
 		//root
 		String rootName = "Hieracium L.";
@@ -93,7 +93,7 @@ public class TestTaxonFunction {
 		
 		//other taxon
 		BotanicalName otherName = BotanicalName.NewInstance(Rank.GENUS());
-		otherName.setTitleCache("otherName");
+		otherName.setTitleCache("otherName", true);
 		Taxon otherTaxon = Taxon.NewInstance(otherName, sec);
 		
 		cdmApp.getTaxonService().save(otherTaxon);

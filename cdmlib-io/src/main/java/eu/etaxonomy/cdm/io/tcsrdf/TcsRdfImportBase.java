@@ -28,10 +28,10 @@ import org.jdom.Text;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

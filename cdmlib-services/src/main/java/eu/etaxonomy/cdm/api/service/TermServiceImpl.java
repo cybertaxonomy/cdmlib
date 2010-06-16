@@ -179,6 +179,8 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	public void generateTitleCache() {
 		// TODO Auto-generated method stub
-		
+		logger.warn("generateTitleCache not yet implemented");
 	}	
+	
+	
 }

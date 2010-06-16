@@ -183,7 +183,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("XXX");
+			sourceReference.setTitleCache("XXX", true);
 		}
 		return sourceReference;
 	}

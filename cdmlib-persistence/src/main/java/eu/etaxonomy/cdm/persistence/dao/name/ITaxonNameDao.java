@@ -282,6 +282,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	public List<ZoologicalName> getAllZoologicalNames(Integer limit, Integer start);
+	
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
 
 }

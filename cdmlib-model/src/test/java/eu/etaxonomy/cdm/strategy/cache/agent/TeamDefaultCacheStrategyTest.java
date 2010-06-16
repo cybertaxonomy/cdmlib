@@ -149,5 +149,13 @@ public class TeamDefaultCacheStrategyTest {
 		
 	}
 	
+	@Test
+	public final void testListenersOnMembers(){
+		Assert.assertNotNull("team1 title cache must not to be null", team1.getTitleCache());
+		Assert.assertEquals("team1 title cache should be created by elements", "Dr1. P1FN P1LN Suff1", team1.getTitleCache());
+		person1.setSuffix(null);
+		Assert.assertEquals("team1 title cache should be Dr1. P1FN P1LN", "Dr1. P1FN P1LN", team1.getTitleCache());
+	}
+	
 	
 }

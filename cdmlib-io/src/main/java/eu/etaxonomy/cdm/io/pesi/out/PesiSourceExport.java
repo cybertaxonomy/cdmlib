@@ -23,11 +23,8 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -85,6 +82,13 @@ public class PesiSourceExport extends PesiExportBase {
 			// PESI: Clear the database table Source.
 			doDelete(state);
 
+			// Create the database table that hosts state information
+			state.createStateTables();
+
+			// CDM: Get the number of all available references.
+//			int maxCount = getReferenceService().count(null);
+//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
+
 			// Get specific mappings: (CDM) Reference -> (PESI) Source
 			PesiExportMapping mapping = getMapping();
 
@@ -92,6 +96,7 @@ public class PesiSourceExport extends PesiExportBase {
 			mapping.initialize(state);
 
 			// PESI: Create the Sources
+			// TODO: Store CDM2PESI identifier pairs for later use in other export classes - PesiExportState
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
@@ -172,22 +177,9 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getIMIS_Id(ReferenceBase<?> reference) {
-		Integer result = null;
-		if (reference != null) {
-			Set<Extension> extensions = reference.getExtensions();
-			for (Extension extension : extensions) {
-				try {
-					if (extension.getType().getUuid().equals(ErmsTransformer.IMIS_UUID)) {
-						// IMIS_ID found
-						result = Integer.parseInt(extension.getValue().trim());
-					}
-				} catch (NumberFormatException e) {
-					logger.warn("String could not be parsed to int: " + extension.getValue() + " / Reference: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
-					result = null;
-				}
-			}
-		}
-		return result;
+		// TODO
+		// Where is the IMIS_Id from an ERMS import stored in CDM?
+		return null;
 	}
 	
 	/**
@@ -220,7 +212,11 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getName(ReferenceBase<?> reference) {
-		return reference.getTitle();
+		if (reference != null) {
+			return reference.getTitle();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -231,13 +227,19 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getAuthorString(ReferenceBase<?> reference) {
-		TeamOrPersonBase team = reference.getAuthorTeam();
-		if (team != null) {
-//			return team.getTitleCache();
-			return team.getNomenclaturalTitle();
-		} else {
-			return null;
+		String result = null;
+
+		if (reference != null) {
+			TeamOrPersonBase team = reference.getAuthorTeam();
+			if (team != null) {
+	//			result = team.getTitleCache();
+				result = team.getNomenclaturalTitle();
+			} else {
+				result = null;
+			}
 		}
+		
+		return result;
 	}
 
 	/**
@@ -248,7 +250,11 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getNomRefCache(ReferenceBase<?> reference) {
-		return reference.getTitleCache();
+		if (reference != null) {
+			return reference.getTitleCache();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -260,16 +266,7 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNotes(ReferenceBase<?> reference) {
 		// TODO
-		String result = null;
-		if (reference != null) {
-			Set<Annotation> annotations = reference.getAnnotations();
-			if (annotations.size() == 1) {
-				result = annotations.iterator().next().getText();
-			} else {
-				logger.warn("Reference has more than one Annotation: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
-			}
-		}
-		return result;
+		return null;
 	}
 
 	/**
@@ -281,12 +278,24 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
-		Set<IdentifiableSource> sources = reference.getSources();
-		if (sources.size() == 1) {
-			result = sources.iterator().next().getIdInSource();
-		} else {
-			logger.warn("Reference has more than one source: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+
+		if (reference != null) {
+			Set<IdentifiableSource> sources = reference.getSources();
+			if (sources.size() == 1) {
+				result = sources.iterator().next().getIdInSource();
+			} else if (sources.size() > 1) {
+				logger.warn("Reference has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+				int count = 1;
+				for (IdentifiableSource source : sources) {
+					result += source.getIdInSource();
+					if (count < sources.size()) {
+						result += "; ";
+					}
+					count++;
+				}
+			}
 		}
+
 		return result;
 	}
 
@@ -298,15 +307,35 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getOriginalDB(ReferenceBase<?> reference) {
-		String result = null;
+		String result = "";
+
 		if (reference != null) {
-			for (IdentifiableSource source : reference.getSources()) {
-				ReferenceBase citation = source.getCitation();
-				if (source != null && citation != null) {
-					result = citation.getTitleCache();  //or just title
+			Set<IdentifiableSource> sources = reference.getSources();
+			if (sources.size() == 1) {
+				ReferenceBase citation = sources.iterator().next().getCitation();
+				if (citation != null) {
+					result = PesiTransformer.databaseString2Abbreviation(citation.getTitleCache()); //or just title
+				} else {
+					logger.warn("OriginalDB can not be determined because the citation of this source is NULL: " + sources.iterator().next().getUuid());
 				}
+			} else if (sources.size() > 1) {
+				logger.warn("Taxon has multiple IdentifiableSources: " + reference.getUuid() + " (" + reference.getTitleCache() + ")");
+				int count = 1;
+				for (IdentifiableSource source : sources) {
+					ReferenceBase citation = source.getCitation();
+					if (citation != null) {
+						result += PesiTransformer.databaseString2Abbreviation(citation.getTitleCache());
+						if (count < sources.size()) {
+							result += "; ";
+						}
+						count++;
+					}
+				}
+			} else {
+				result = null;
 			}
 		}
+
 		return result;
 	}
 

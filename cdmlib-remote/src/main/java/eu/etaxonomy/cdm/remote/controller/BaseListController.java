@@ -66,7 +66,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 		if(pageNumber == null){ pageNumber = DEFAULT_PAGE_NUMBER;}
 		if(pageSize == null){ pageSize = DEFAULT_PAGESIZE;}
 		
-		return (Pager<T>) service.list(type, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
+		return service.page(type, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
 	}
 	/**
 	 * @param start
@@ -88,7 +88,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 		//if(start == null){ start = 0;}
 		if(limit == null){ limit = DEFAULT_PAGESIZE;}
 		//TODO implement initialization
-		return service.list(type, limit, start, null,null);
+		return service.list(type, limit, start, null, DEFAULT_INIT_STRATEGY);
 	}
 
   /* TODO 

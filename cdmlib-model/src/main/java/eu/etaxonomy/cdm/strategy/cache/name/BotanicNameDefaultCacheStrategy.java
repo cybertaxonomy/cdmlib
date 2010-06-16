@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 
 /**
@@ -31,6 +34,30 @@ public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends No
 	
 	public static BotanicNameDefaultCacheStrategy NewInstance(){
 		return new BotanicNameDefaultCacheStrategy();
+	}
+	
+	/**
+	 * Returns the AuthorCache part for a combination of an author and an ex author. This applies on combination authors
+	 * as well as on basionym/orginal combination authors.
+	 * @param author the author
+	 * @param exAuthor the ex-author
+	 * @return
+	 */
+	protected String getAuthorAndExAuthor(INomenclaturalAuthor author, INomenclaturalAuthor exAuthor){
+		String result = "";
+		String authorString = "";
+		String exAuthorString = "";
+		if (author != null){
+			authorString = CdmUtils.Nz(author.getNomenclaturalTitle());
+		}
+		if (exAuthor != null){
+			authorString += ExAuthorSeperator;
+			exAuthorString = CdmUtils.Nz(exAuthor.getNomenclaturalTitle());
+		}
+		
+		result = authorString + exAuthorString;
+		return result;
+ 
 	}
 	
 }

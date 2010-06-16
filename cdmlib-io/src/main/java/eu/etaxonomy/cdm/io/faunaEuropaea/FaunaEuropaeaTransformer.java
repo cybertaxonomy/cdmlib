@@ -48,6 +48,11 @@ public final class FaunaEuropaeaTransformer {
 	// Parenthesis
 	public static final int P_PARENTHESIS = 1;
 	
+	//new AbsencePresenceTermUUIDs
+	
+	public static UUID noData;
+	//public static UUID doubtfull_present;
+	
 	// Rank
 	public static final int R_KINGDOM = 1;
 	public static final int R_SUBKINGDOM = 2;
@@ -75,23 +80,36 @@ public final class FaunaEuropaeaTransformer {
 	private static Map<String, String> tdwgAreas = null;
 
 	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence(int occStatusId)  throws UnknownCdmTypeException{
-		switch (occStatusId){
-			case 0: return AbsenceTerm.ABSENT();
-			case 2: return PresenceTerm.INTRODUCED();
-			case 1: return PresenceTerm.NATIVE();
-			default: {
-				throw new UnknownCdmTypeException("Unknown presence status (id=" + Integer.valueOf(occStatusId).toString() + ")");
-			}
+	
+		if (Integer.valueOf(occStatusId) == null) {
+			return PresenceTerm.PRESENT();
 		}
-	}
+		switch (occStatusId){
+		case 0: return PresenceTerm.PRESENT();
+		case 2: return AbsenceTerm.ABSENT();
+		case 1: return PresenceTerm.PRESENT_DOUBTFULLY();
 
+		default: {
+
+			return null;
+		
+
+		}
+		
+	}
+	}
+	public static void setUUIDs(HashMap<String,UUID> uuids){
+		noData = uuids.get("noData");
+		//doubtfull_present = uuids.get("doubtfullPresent");
+	
+	}
 	
 	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence_ (int occStatusId)  throws UnknownCdmTypeException{
 		switch (occStatusId){
 			case 0: return null;
-			case 110: return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+			//case 110: return AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR();
 			case 120: return PresenceTerm.CULTIVATED();
-			case 210: return PresenceTerm.INTRODUCED_REPORTED_IN_ERROR();
+		//	case 210: return AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR();
 			case 220: return PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
 			case 230: return PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
 			case 240: return PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
@@ -99,7 +117,7 @@ public final class FaunaEuropaeaTransformer {
 			case 260: return PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
 			case 270: return PresenceTerm.INTRODUCED_ADVENTITIOUS();
 			case 280: return PresenceTerm.INTRODUCED_NATURALIZED();
-			case 310: return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
+			//case 310: return AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
 			case 320: return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
 			case 330: return PresenceTerm.NATIVE_FORMERLY_NATIVE();
 			case 340: return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
@@ -275,7 +293,7 @@ public final class FaunaEuropaeaTransformer {
 			
 		} catch (Exception e) {
 			//e.printStackTrace();
-			logger.warn("Area could not be mapped.");
+			logger.debug("Exception occurred. Area could not be mapped." + fauEuDistribution.getAreaName());
 			return null;
 		}	
 		
@@ -285,6 +303,7 @@ public final class FaunaEuropaeaTransformer {
 	public final static HashMap<String, UUID> abbrToUUID = new HashMap<String,UUID>();
 	 	static
 	 	{	
+	 		abbrToUUID.put("AUS", UUID.fromString("cf979ca8-8cb6-42df-b2ce-1f432ec7c26b"));
 	 		abbrToUUID.put("AFR", UUID.fromString("07ac5e75-9fc9-4aa0-938c-1324c9618b97"));
 	 		abbrToUUID.put("EPA", UUID.fromString("e83446d7-7379-4beb-be05-295f8da6f5ae"));
 	 		abbrToUUID.put("GR-AEG", UUID.fromString("6bd422aa-9911-4b80-8595-0f6d1ecd5eee"));

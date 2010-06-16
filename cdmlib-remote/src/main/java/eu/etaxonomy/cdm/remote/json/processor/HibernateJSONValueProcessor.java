@@ -22,7 +22,7 @@ import org.hibernate.Hibernate;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 
 /**
- * In used in conjunction with the HibernateJSONValueProcessorMatcher to unwrap
+ * Used in conjunction with the HibernateJSONValueProcessorMatcher to unwrap
  * beans from hibernate proxies. Using this Value processor is essential for
  * properly detecting @Transient annotations which are not inherited by subclasses
  * like the proxies

@@ -73,28 +73,28 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		Source source = config.getSource();
 		
-		String facultativCols = "";
-		String strFacTable = "RefDetail";
-		String strFacColumn = "IdInSource";
-		String strColAlias = null;
-		if (checkSqlServerColumnExists(source, strFacTable, strFacColumn)){
-			facultativCols +=  ", " + strFacTable + "." + strFacColumn ;
-			if (! CdmUtils.Nz(strColAlias).equals("") ){
-				facultativCols += " AS " + strColAlias;
+			String facultativCols = "";
+			String strFacTable = "RefDetail";
+			String strFacColumn = "IdInSource";
+			String strColAlias = null;
+			if (checkSqlServerColumnExists(source, strFacTable, strFacColumn)){
+				facultativCols +=  ", " + strFacTable + "." + strFacColumn ;
+				if (! CdmUtils.Nz(strColAlias).equals("") ){
+					facultativCols += " AS " + strColAlias;
+				}
 			}
-		}
 
 		String strRecordQuery = 
-				"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
-                  		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
-                  		" RefDetail.SecondarySources, Rank.RankAbbrev, Rank.Rank " +
-                  		facultativCols +
-                " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND  " +
-                	" Name.NomRefFk = RefDetail.RefFk " +
-                	" LEFT OUTER JOIN Rank ON Name.RankFk = Rank.rankID " + 
+					"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
+                      		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
+                      		" RefDetail.SecondarySources, Rank.RankAbbrev, Rank.Rank " +
+                      		facultativCols +
+                    " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND  " +
+                    	" Name.NomRefFk = RefDetail.RefFk " +
+                    	" LEFT OUTER JOIN Rank ON Name.RankFk = Rank.rankID " + 
                 " WHERE name.nameId IN ("+ID_LIST_TOKEN+") ";
-				//strQuery += " AND RefDetail.PreliminaryFlag = 1 ";
-				//strQuery += " AND Name.Created_When > '03.03.2004' ";
+					//strQuery += " AND RefDetail.PreliminaryFlag = 1 ";
+					//strQuery += " AND Name.Created_When > '03.03.2004' ";
 		return strRecordQuery;
 	}
 
@@ -109,9 +109,9 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		BerlinModelImportConfigurator config = state.getConfig();
 		Set<TaxonNameBase> namesToSave = new HashSet<TaxonNameBase>();
 		Map<String, Team> teamMap = (Map<String, Team>) partitioner.getObjectMap(BerlinModelAuthorTeamImport.NAMESPACE);
-		
+			
 		ResultSet rs = partitioner.getResultSet();
-		
+			
 		try {
 			int i = 0;
 			//for each reference
@@ -131,6 +131,9 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				try {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
+					if (rank.getId() == 0){
+						getTermService().save(rank);
+					}
 					
 					TaxonNameBase taxonNameBase;
 					if (config.getNomenclaturalCode() != null){
@@ -208,8 +211,6 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 							success = false;
 						}
 					}//nonviralName
-	
-	
 					
 	
 					
@@ -264,7 +265,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		String nameSpace;
 		Class cdmClass;
 		Set<String> idSet;
-		
+			
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
 		try{
@@ -439,7 +440,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				//TODO
 				if (!bmiConfig.isIgnoreNull() && ! (teamId.equals(0) && bmiConfig.isIgnore0AuthorTeam()) ){ 
 					logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
-						" was not found in authorTeam store. Relation was not set!!");}
+				" was not found in authorTeam store. Relation was not set!!");}
 				return null;
 			}else{
 				return author;

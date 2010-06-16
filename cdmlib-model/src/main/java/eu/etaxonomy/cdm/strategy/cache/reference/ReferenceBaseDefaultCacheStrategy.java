@@ -70,7 +70,7 @@ public class ReferenceBaseDefaultCacheStrategy<T extends ReferenceBase> extends 
 		result = addYear(result, strictReferenceBase);
 		TeamOrPersonBase team = strictReferenceBase.getAuthorTeam();
 		String author = CdmUtils.Nz(team == null ? "" : team.getTitleCache());
-		if (! author.equals("")){
+		if (CdmUtils.isNotEmpty(author)){
 			result = author + afterAuthor + result;
 		}
 		return result;

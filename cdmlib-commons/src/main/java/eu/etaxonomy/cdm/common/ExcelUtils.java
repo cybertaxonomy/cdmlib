@@ -52,6 +52,8 @@ public class ExcelUtils {
     		// This trick ensures that we get the data properly even if it doesn't start from first few rows
     		for(int i = 0; i < 10 || i < rows; i++) {
     			row = sheet.getRow(i);
+    			
+    			
     			if(row != null) {
     				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
     				if(tmp > cols) cols = tmp;
@@ -72,7 +74,14 @@ public class ExcelUtils {
     		for(int r = 1; r < rows; r++) {
     			row = sheet.getRow(r);
     			headers = new HashMap<String, String>();
-    			if(row != null) {
+    			boolean notEmpty = false;
+    			for (int j = 0; j<row.getRowNum(); j++){
+    				if (row.getCell(j) != null){
+    					notEmpty = true;
+    					break;
+    				}
+    			}
+    			if(row != null && notEmpty) {
     				for(int c = 0; c < cols; c++) {
     					cell = row.getCell((short)c);
     					if(cell != null) {

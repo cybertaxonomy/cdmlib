@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -300,5 +301,148 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		for (NamedArea term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
+	}
+	
+	
+/*	public boolean equals(NamedArea area){
+		boolean result = false;
+		if (this.getLabel().toString().compareTo(area.getLabel().toString()) == 0){
+			result = true;
+		}
+		return result;
+	}*/
+	
+	public int compareTo(NamedArea area){
+		return getLabel().compareTo(area.getLabel());
+	}
+	
+	public NamedAreaNode getHiearchieList(List<NamedArea> areaList){
+		NamedAreaNode result = new NamedAreaNode();
+		for (NamedArea area : areaList){
+			List<NamedArea> areaHierarchie  = area.getAllLevelList();
+			mergeIntoResult(result, areaHierarchie);
+		}
+		return result;
+	}
+	
+	
+	public class LevelNode {
+		NamedAreaLevel level;
+		List<NamedAreaNode> areaList = new ArrayList<NamedAreaNode>();
+
+		public NamedAreaNode add(NamedArea area) {
+			NamedAreaNode node = new NamedAreaNode();
+			node.area = area;
+			areaList.add(node);
+			return node;
+
+		}
+
+		public NamedAreaNode getNamedAreaNode(NamedArea area) {
+			for (NamedAreaNode node : areaList) {
+				if (node.area.equals(area)) {
+					return node;
+				}
+			}
+			return null;
+		}
+
+		public String toString() {
+			return level.getTitleCache();
+		}
+
+	}
+
+	public class NamedAreaNode {
+		NamedArea area;
+		List<LevelNode> levelList = new ArrayList<LevelNode>();
+		
+		public LevelNode getLevelNode(NamedAreaLevel level) {
+			for (LevelNode node : levelList) {
+				if (node.level.equals(level)) {
+					return node;
+				}
+			}
+			return null;
+		}
+
+		public List<NamedAreaNode> getList(NamedAreaLevel level) {
+			LevelNode node = getLevelNode(level);
+			if (node == null) {
+				return new ArrayList<NamedAreaNode>();
+			} else {
+				return node.areaList;
+			}
+		};
+
+		public boolean contains(NamedAreaLevel level) {
+			if (getList(level).size() > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public LevelNode add(NamedAreaLevel level) {
+			LevelNode node = new LevelNode();
+			node.level = level;
+			levelList.add(node);
+			return node;
+		}
+
+		public String toString() {
+			if (area == null) {
+				return "";
+			}
+			return area.getTitleCache();
+		}
+	}
+
+	private void mergeIntoResult(NamedAreaNode root,
+			List<NamedArea> areaHierarchie) {
+		if (areaHierarchie.isEmpty()) {
+			return;
+		}
+		NamedArea highestArea = areaHierarchie.get(0);
+		NamedAreaLevel level = highestArea.getLevel();
+		NamedAreaNode namedAreaNode;
+		if (!root.contains(level)) {
+			LevelNode node = root.add(level);
+			namedAreaNode = node.add(highestArea);
+		} else {
+			LevelNode levelNode = root.getLevelNode(level);
+			namedAreaNode = levelNode.getNamedAreaNode(highestArea);
+			if (namedAreaNode == null) {
+				namedAreaNode = levelNode.add(highestArea);
+			}
+		}
+		List<NamedArea> newList = areaHierarchie.subList(1, areaHierarchie
+				.size());
+		mergeIntoResult(namedAreaNode, newList);
+
+	}
+
+	@Transient
+	public List<NamedArea> getAllLevelList() {
+		List<NamedArea> result = new ArrayList<NamedArea>();
+		NamedArea copyArea = this;
+		result.add(copyArea);		
+		while (copyArea.getPartOf() != null) {
+			copyArea = copyArea.getPartOf();
+			result.add(0, copyArea);
+		}
+		return result;
+	}
+	
+	public String toString(){
+		String result, label, level = "";
+		
+		if (this.level != null){
+			level = this.level.getLabel();
+		}
+		label = this.getLabel();
+		result = "[" + level + ", " + label + "]";
+		
+		return result;
 	}
 }

@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.common.mediaMetaData;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ public abstract class MediaMetaData {
 	HashMap<String, String> metaData;
 	
 	
-	public abstract void readMetaData(URI mediaUri, Integer timeOut);
+	public abstract void readMetaData(URI mediaUri, Integer timeOut) throws IOException;
  
 	public Map<String, String> getMetaData() {
 		

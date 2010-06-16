@@ -40,13 +40,13 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
  */
 
 @Controller
-@RequestMapping(value = {"/*/media/*","/*/media/*/annotation", "/*/media/*/metadata"})
+@RequestMapping(value = {"/media/*","/media/*/annotation", "/media/*/metadata"})
 public class MediaController extends AnnotatableController<Media, IMediaService>
 {
 
 	public MediaController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/media/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/media/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)
@@ -63,7 +63,7 @@ public class MediaController extends AnnotatableController<Media, IMediaService>
 			"representations.parts"
 	});
 	
-	@RequestMapping(value = {"/*/media/*/metadata"})
+	@RequestMapping(value = {"/media/*/metadata"})
 	public ModelAndView doGetMediaMetaData(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Map<String, String> result;
 		Media media = getCdmBase(request, response, MEDIA_INIT_STRATEGY, Media.class);

@@ -73,7 +73,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 	public String getTitleCache(Team team) {
 		// TODO is still dummy
 		String result = "";
-		List<Person> teamMembers = team.getTeamMembers();
+		List<Person> teamMembers = team.getTeamMembers();//Hibernate.initialize(teamMembers);
 		for (Person teamMember : teamMembers){
 			result += teamMember.getTitleCache() + " & ";
 		}

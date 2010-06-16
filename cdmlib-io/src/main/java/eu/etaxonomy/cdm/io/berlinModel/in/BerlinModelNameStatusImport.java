@@ -111,15 +111,17 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 				int nameId = rs.getInt("nameFk");
 				
 				boolean doubtful = rs.getBoolean("DoubtfulFlag");
-//				ReferenceBase citation = rs.getString("");
-//				String microcitation = null;
+				String nomStatusLabel = rs.getString("NomStatus");
 				
 				TaxonNameBase taxonName = nameMap.get(String.valueOf(nameId));
 				//TODO doubtful
 				
 				if (taxonName != null ){
 					try{
-						NomenclaturalStatus nomStatus = BerlinModelTransformer.nomStatusFkToNomStatus(nomStatusFk);
+						NomenclaturalStatus nomStatus = BerlinModelTransformer.nomStatusFkToNomStatus(nomStatusFk, nomStatusLabel);
+						if (nomStatus.getType().getId() == 0){
+							getTermService().save(nomStatus.getType());
+						}
 						
 						//reference
 						makeReference(config, nomStatus, nameId, rs, partitioner);
@@ -136,7 +138,6 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 						taxonName.addStatus(nomStatus);
 						namesToSave.add(taxonName);
 					}catch (UnknownCdmTypeException e) {
-						//TODO
 						logger.warn("NomStatusType " + nomStatusFk + " not yet implemented");
 						success = false;
 					}
@@ -167,7 +168,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 		Class cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
-		
+	
 		try{
 			Set<String> nameIdSet = new HashSet<String>();
 			Set<String> referenceIdSet = new HashSet<String>();

@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
@@ -25,8 +28,6 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -166,7 +167,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	@Test
 	public void testCacheListener() {
 		ReferenceBase ref = refFactory.newGeneric();
-		ref.setTitleCache("GenericRef");
+		ref.setTitleCache("GenericRef",true);
 		this.subSpeciesName.setNomenclaturalReference(ref);
 		Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
 		subSpeciesName.setCombinationAuthorTeam(author);
@@ -206,7 +207,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
 		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache());
 
-		subSpeciesName.setTitleCache("Pinus beta C.");
+		subSpeciesName.setTitleCache("Pinus beta C.", true);
 		Assert.assertEquals("Expected full title cache has error", "Pinus beta C., GenericRef", subSpeciesName.getFullTitleCache());
 		subSpeciesName.setProtectedTitleCache(false);
 		
@@ -395,6 +396,22 @@ public class NonViralNameDefaultCacheStrategyTest {
 		String groupNameTitle = strategy.getTitleCache(nonViralName);
 		assertEquals("Species group name should be 'Genus species group'.", "Genus species group", groupNameTitle);
 		
+	}
+	
+	@Test 
+	public void getTaggedName(){
+//		BotanicalName botName = BotanicalName.NewInstance(Rank.SUBSPECIES());
+//		botName.setGenusOrUninomial("Genus");
+//		botName.setSpecificEpithet("species");
+//		botName.setInfraSpecificEpithet("subspecies");
+		List taggedName = strategy.getTaggedName(subSpeciesName);
+		Assert.assertEquals("First tag should be 'Abies'", "Abies", taggedName.get(0));
+		Assert.assertEquals("Second tag should be 'alba'", "alba", taggedName.get(1));
+		Assert.assertEquals("Third tag should be subspecies rank", Rank.SUBSPECIES(), taggedName.get(2));
+		Assert.assertEquals("Third tag should be subspecies rank, and rank abbreviatioin should be subsp.", "subsp.", ((Rank)taggedName.get(2)).getAbbreviation() );
+		Assert.assertEquals("Fourth tag should be 'beta'", "beta", taggedName.get(3));
+		//to be continued
+
 	}
 
 }

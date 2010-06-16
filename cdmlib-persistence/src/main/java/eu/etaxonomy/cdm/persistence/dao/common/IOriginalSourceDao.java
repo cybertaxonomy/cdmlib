@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 
 
 public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
-	
+
 
 	/**
 	 * Returns a map of identifiable entities of class <code>clazz</code> which have an original source of 
@@ -32,6 +34,7 @@ public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
 	 */
 	public Map<String, ISourceable> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
 	
+
 	/**
 	 * Returns a list of identifiable entities according to their class, idInSource and idNamespace
 	 * @param clazz

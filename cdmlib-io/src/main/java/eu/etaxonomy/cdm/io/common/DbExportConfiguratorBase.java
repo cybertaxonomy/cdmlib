@@ -91,7 +91,7 @@ public abstract class DbExportConfiguratorBase extends ExportConfiguratorBase<So
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference =  refFactory.newDatabase();
 			if (getSource() != null){
-				sourceReference.setTitleCache(getSource().getDatabase());
+				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
 		}
 		return sourceReference;

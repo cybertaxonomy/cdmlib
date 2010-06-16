@@ -125,7 +125,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 				ReferenceBase ref = (ReferenceBase)state.getRelatedObject(ErmsReferenceImport.REFERENCE_NAMESPACE, strSourceId);
 				
 				try {
-					IdentifiableEntity objectToSave = null;
+				IdentifiableEntity objectToSave = null;
 				//invoke methods for each sourceUse type
 				if (sourceUseId == SOURCE_USE_ORIGINAL_DESCRIPTION){
 					objectToSave = makeOriginalDescription(partitioner, state, ref, strTaxonId, strPageNr);
@@ -150,7 +150,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 				} catch (Exception e) {
 					e.printStackTrace();
 					success = false;
-				}
+			}
 			}
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

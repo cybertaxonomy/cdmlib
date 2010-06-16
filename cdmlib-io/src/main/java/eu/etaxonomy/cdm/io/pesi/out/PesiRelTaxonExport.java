@@ -20,9 +20,10 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -129,6 +130,45 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 			
+
+			count = 0;
+			taxonCount = 0;
+			pastCount = 0;
+			// Start transaction
+			List<TaxonBase> taxonBaseList = null;
+			txStatus = startTransaction(true);
+			String nameRelationString = "NameRelationships";
+			logger.error("Started new transaction. Fetching some " + nameRelationString + " (max: " + limit + ") ...");
+			while ((taxonBaseList = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+
+				logger.error("Fetched " + taxonBaseList.size() + " " + nameRelationString + ". Exporting...");
+				for (TaxonBase taxonBase : taxonBaseList) {
+					doCount(count++, modCount, nameRelationString);
+					
+					Set<NameRelationship> nameRelations = taxonBase.getName().getNameRelations();
+					for (NameRelationship nameRelationship : nameRelations) {
+						success &= mapping.invoke(nameRelationship);
+					}
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + nameRelationString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + nameRelationString + " (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + nameRelationString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+			
+
 			return success;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -218,16 +258,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNotes(RelationshipBase<?, ?, ?> relationship) {
 		// TODO
-		String result = null;
-		if (relationship != null) {
-			Set<Annotation> annotations = relationship.getAnnotations();
-			if (annotations.size() == 1) {
-				result = annotations.iterator().next().getText();
-			} else {
-				logger.warn("Relationship has more than one Annotation: " + relationship.getUuid());
-			}
-		}
-		return result;
+		return null;
 	}
 
 	/**
@@ -245,11 +276,25 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		} else if (relationship.isInstanceOf(SynonymRelationship.class)) {
 			SynonymRelationship sr = (SynonymRelationship)relationship;
 			taxon = (isFrom) ? sr.getSynonym() : sr.getAcceptedTaxon();
+		} else if (relationship.isInstanceOf(NameRelationship.class)) {
+			NameRelationship nr = (NameRelationship)relationship;
+			TaxonNameBase taxonName = (isFrom) ? nr.getFromName() : nr.getToName();
+			return state.getDbId(taxonName);
+
+//			Set taxa = taxonName.getTaxa();
+//			if (taxa.size() == 0) {
+//				logger.warn("This TaxonName has no Taxon: " + taxonName.getTitleCache());
+//				return state.getDbId(taxonName);
+//			} else if (taxa.size() == 1) {
+//				taxon = (TaxonBase<?>) taxa.iterator().next();
+//			} else if (taxa.size() > 1) {
+//				logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getTitleCache());
+//			}
 		}
 		if (taxon != null) {
-			return state.getDbId(taxon);
+			return state.getDbId(taxon.getName());
 		}
-		logger.warn("No taxon found for relationship: " + relationship.getUuid());
+		logger.warn("No taxon found in state for relationship: " + relationship.toString());
 		return null;
 	}
 

@@ -67,7 +67,7 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
     <xs:complexContent>
       <xs:extension base="occurrence:SpecimenOrObservationBase">
         <xs:sequence>
-          <xs:element ref="occurrence:Collection" minOccurs="0"/>
+          <xs:element name="Collection" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="CatalogNumber" type="xs:string" minOccurs="0"/>
           <xs:element name="StoredUnder" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="DerivedFrom" type="xs:IDREF" minOccurs="0"/>
@@ -219,7 +219,7 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
         <xs:sequence>
           <xs:element name="FieldNumber" type="xs:string" minOccurs="0"/>
           <xs:element name="FieldNotes" type="xs:string" minOccurs="0"/>
-          <xs:element ref="occurrence:GatheringEvent" minOccurs="0"/>
+          <xs:element name="GatheringEvent" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

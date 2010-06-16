@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -21,11 +20,9 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -76,7 +73,8 @@ public class PesiNoteSourceExport extends PesiExportBase {
 //			int pageSize = state.getConfig().getLimitSave();
 			int pageSize = 1000;
 
-			// Set the first pageNumber
+			// Calculate the pageNumber
+			int maxCount = 0;
 			int pageNumber = 1;
 
 			// Stores whether this invoke was successful or not.
@@ -104,8 +102,11 @@ public class PesiNoteSourceExport extends PesiExportBase {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (DescriptionElementBase descriptionElement : list) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(descriptionElement);
+					
+					if (getNoteCategoryFk(descriptionElement) != null) {
+						doCount(count++, modCount, pluralString);
+						success &= mapping.invoke(descriptionElement);
+					}
 				}
 
 				// Commit transaction
@@ -167,6 +168,17 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	}
 
 	/**
+	 * Returns the <code>NoteCategoryFk</code> attribute.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
+	 * @return The <code>NoteCategoryFk</code> attribute.
+	 */
+	private static Integer getNoteCategoryFk(DescriptionElementBase descriptionElement) {
+		Integer result = null;
+		result = PesiTransformer.textData2NodeCategoryFk(descriptionElement.getFeature());
+		return result;
+	}
+
+	/**
 	 * Returns the <code>NoteFk</code> attribute.
 	 * @param description The {@link TaxonDescription TaxonDescription}.
 	 * @param state The {@link PesiExportState PesiExportState}.
@@ -188,36 +200,13 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getSourceFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
-		Integer result = 1001; // TODO: A valid SourceFk has to be set, otherwise the export will stop.
-		if (descriptionElement != null) {
-			DescriptionBase description = descriptionElement.getInDescription();
-			if (description != null) {
-				if (description.isInstanceOf(TaxonDescription.class)) {
-					TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-					if (taxonDescription != null) {
-						Taxon taxon = taxonDescription.getTaxon();
-						if (taxon != null) {
-							ReferenceBase reference = taxon.getSec();
-							if (reference != null) {
-								result = state.getDbId(reference);
-							} else {
-								logger.warn("Reference of the following taxon is NULL: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
-							}
-						} else {
-							logger.warn("TaxonDescription belongs to no Taxon: " + taxonDescription.getUuid() + " (" + taxonDescription.getTitleCache() + ")");
-						}
-					} else {
-						logger.warn("TaxonDescription of the following descriptionElement is NULL: " + descriptionElement.getUuid());
-					}
-				} else {
-					logger.warn("DescriptionElement is not a TaxonDescription: " + description.getClass());
-				}
-			} else {
-				logger.warn("InDescriptionElement of the following DescriptionElement is NULL: " + descriptionElement.getUuid());
-			}
-		} else {
-			logger.warn("Given DescriptionElement is NULL. Therefore SourceFk will be set to NULL and an INSERT will be denied.");
-		}
+		Integer result = state.getDbId(descriptionElement);
+//		DescriptionBase description = descriptionElement.getInDescription();
+//		if (description.isInstanceOf(TaxonDescription.class)) {
+//			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+//			Taxon taxon = taxonDescription.getTaxon();
+//			result = state.getDbId(taxon.getSec());
+//		}
 		return result;
 	}
 	
@@ -230,28 +219,11 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getSourceNameCache(DescriptionElementBase descriptionElement) {
 		String result = null;
-		if (descriptionElement != null) {
-			DescriptionBase description = descriptionElement.getInDescription();
-			if (description != null && description.isInstanceOf(TaxonDescription.class)) {
-				TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-				if (taxonDescription != null) {
-					Taxon taxon = taxonDescription.getTaxon();
-					if (taxon != null) {
-						ReferenceBase reference = taxon.getSec();
-						if (reference != null) {
-							result = reference.getTitleCache();
-						} else {
-							logger.warn("Reference of the follwing taxon is NULL: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
-						}
-					} else {
-						logger.warn("TaxonDescription belongs to no Taxon: " + taxonDescription.getUuid() + " (" + taxonDescription.getTitleCache() + ")");
-					}
-				} else {
-					logger.warn("TaxonDescription of the following descriptionElement is NULL: " + descriptionElement.getUuid());
-				}
-			}
-		} else {
-			logger.warn("Given DescriptionElement is NULL. Therefore SourceNameCache will be set to NULL.");
+		DescriptionBase description = descriptionElement.getInDescription();
+		if (description.isInstanceOf(TaxonDescription.class)) {
+			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+			Taxon taxon = taxonDescription.getTaxon();
+			result = taxon.getSec().getTitleCache();
 		}
 		return result;
 	}
@@ -264,16 +236,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceDetail(DescriptionElementBase descriptionElement) {
-		String result = null;
-		if (descriptionElement != null) {
-			Set<DescriptionElementSource> sources = descriptionElement.getSources();
-			if (sources.size() == 1) {
-				result = sources.iterator().next().getCitationMicroReference();
-			}
-		} else {
-			logger.warn("Given DescriptionElement is NULL.");
-		}
-		return result;
+		return descriptionElement.getCitationMicroReference(); // TODO: What else could be used?
 	}
 
 	/**

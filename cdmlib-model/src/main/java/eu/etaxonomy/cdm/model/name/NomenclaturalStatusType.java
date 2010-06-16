@@ -66,54 +66,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 
-//	private static NomenclaturalStatusType OPUS_UTIQUE_OPPR;
-//
-//	private static NomenclaturalStatusType SUBNUDUM;
-//
-//	private static NomenclaturalStatusType VALID;
-//
-//	private static NomenclaturalStatusType PROVISIONAL;
-//
-//	private static NomenclaturalStatusType COMBINATION_INVALID;
-//
-//	private static NomenclaturalStatusType NUDUM;
-//
-//	private static NomenclaturalStatusType INVALID;
-//
-//	private static NomenclaturalStatusType SANCTIONED;
-//
-//	private static NomenclaturalStatusType CONSERVED;
-//
-//	private static NomenclaturalStatusType REJECTED_PROP;
-//
-//	private static NomenclaturalStatusType ORTHOGRAPHY_CONSERVED;
-//
-//	private static NomenclaturalStatusType UTIQUE_REJECTED_PROP;
-//
-//	private static NomenclaturalStatusType NOVUM;
-//
-//	private static NomenclaturalStatusType ALTERNATIVE;
-//
-//	private static NomenclaturalStatusType LEGITIMATE;
-//
-//	private static NomenclaturalStatusType ORTHOGRAPHY_CONSERVED_PROP;
-//
-//	private static NomenclaturalStatusType CONSERVED_PROP;
-//
-//	private static NomenclaturalStatusType UTIQUE_REJECTED;
-//
-//	private static NomenclaturalStatusType REJECTED;
-//
-//	private static NomenclaturalStatusType SUPERFLUOUS;
-//
-//	private static NomenclaturalStatusType ILLEGITIMATE;
-//
-//	private static NomenclaturalStatusType CONFUSUM;
-//
-//	private static NomenclaturalStatusType DOUBTFUL;
-//
-//	private static NomenclaturalStatusType AMBIGUOUS;
-
 	private static final UUID uuidAmbiguous = UUID.fromString("90f5012b-705b-4488-b4c6-002d2bc5198e");
 	private static final UUID uuidDoubtful = UUID.fromString("0ffeb39e-872e-4c0f-85ba-a4150d9f9e7d");
 	private static final UUID uuidConfusum = UUID.fromString("24955174-aa5c-4e71-a2fd-3efc79e885db");
@@ -139,6 +91,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
 
+	
+	private static Map<String, UUID> abbrevMap = null;
+	private static Map<String, UUID> labelMap = null;
+
 	protected static Map<UUID, NomenclaturalStatusType> termMap = null;		
 	
 	protected static NomenclaturalStatusType getTermByUuid(UUID uuid){
@@ -152,7 +108,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	
 	
-	// ************* CONSTRUCTORS *************/	
+// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty nomenclatural status type instance.
 	 * 
@@ -707,39 +663,67 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * 					
 	 */
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation) throws UnknownCdmTypeException{
-		if (statusAbbreviation == null){ throw new NullPointerException("statusAbbreviation is 'null' in getNomenclaturalStatusTypeByAbbreviation");
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. ambig.")) { return NomenclaturalStatusType.AMBIGUOUS();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. dub.")) { return NomenclaturalStatusType.DOUBTFUL();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. confus.")) { return NomenclaturalStatusType.CONFUSUM();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. illeg.")){return NomenclaturalStatusType.ILLEGITIMATE();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. superfl.")){ return NomenclaturalStatusType.SUPERFLUOUS();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej.")) { return NomenclaturalStatusType.REJECTED();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej.")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons. prop.")) { return NomenclaturalStatusType.CONSERVED_PROP();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons. prop.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. legit.")) { return NomenclaturalStatusType.LEGITIMATE();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. altern.")) { return NomenclaturalStatusType.ALTERNATIVE();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. nov.")) { return NomenclaturalStatusType.NOVUM();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej. prop.")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej. prop.")) { return NomenclaturalStatusType.REJECTED_PROP();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons.")) { return NomenclaturalStatusType.CONSERVED();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. sanct.")) { return NomenclaturalStatusType.SANCTIONED();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. inval.")) { return NomenclaturalStatusType.INVALID();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. nud.")){ return NomenclaturalStatusType.NUDUM();
-		}else if (statusAbbreviation.equalsIgnoreCase("comb. inval.")){ return NomenclaturalStatusType.COMBINATION_INVALID();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. valid")) { return NomenclaturalStatusType.VALID();
-		}else if (statusAbbreviation.equalsIgnoreCase("opus. utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.SUBNUDUM();
-		//TODO make generic, use labels for map
-		}else {
+		if (statusAbbreviation == null){ 
+			throw new NullPointerException("statusAbbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
+		}
+		NomenclaturalStatusType result = null;
+		if (statusAbbreviation == null){ 
+			throw new NullPointerException("Abbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
+		}
+		if (abbrevMap == null){
+			return null;
+		}
+		//non unique abbrev
+		if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")){
+			return NomenclaturalStatusType.ALTERNATIVE();
+		}
+		UUID uuid = abbrevMap.get(statusAbbreviation);
+		if (uuid != null ){
+			result = getTermByUuid(uuid);
+		}
+		if (result != null){
+			return result;
+		}else { 
 			if (statusAbbreviation == null){
 				statusAbbreviation = "(null)";
 			}
-			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusAbbreviation);
-		}
+			throw new UnknownCdmTypeException("Unknown nom. status abbreviation: " + statusAbbreviation);
+		}	
+		
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. ambig.")) { return NomenclaturalStatusType.AMBIGUOUS();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. dub.")) { return NomenclaturalStatusType.DOUBTFUL();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. confus.")) { return NomenclaturalStatusType.CONFUSUM();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. illeg.")){return NomenclaturalStatusType.ILLEGITIMATE();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. superfl.")){ return NomenclaturalStatusType.SUPERFLUOUS();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej.")) { return NomenclaturalStatusType.REJECTED();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej.")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons. prop.")) { return NomenclaturalStatusType.CONSERVED_PROP();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons. prop.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. legit.")) { return NomenclaturalStatusType.LEGITIMATE();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. altern.")) { return NomenclaturalStatusType.ALTERNATIVE();
+
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
+
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. nov.")) { return NomenclaturalStatusType.NOVUM();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej. prop.")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej. prop.")) { return NomenclaturalStatusType.REJECTED_PROP();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons.")) { return NomenclaturalStatusType.CONSERVED();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. sanct.")) { return NomenclaturalStatusType.SANCTIONED();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. inval.")) { return NomenclaturalStatusType.INVALID();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. nud.")){ return NomenclaturalStatusType.NUDUM();
+//		}else if (statusAbbreviation.equalsIgnoreCase("comb. inval.")){ return NomenclaturalStatusType.COMBINATION_INVALID();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. valid")) { return NomenclaturalStatusType.VALID();
+//		}else if (statusAbbreviation.equalsIgnoreCase("opus. utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
+//		}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.SUBNUDUM();
+//		//TODO make generic, use labels for map
+//		}else {
+//			if (statusAbbreviation == null){
+//				statusAbbreviation = "(null)";
+//			}
+//			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusAbbreviation);
+//		}
 	}
 
 	/**
@@ -750,37 +734,61 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * 					
 	 */
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByLabel(String statusLabel) throws UnknownCdmTypeException{
-		if (statusLabel == null){ throw new NullPointerException("statusLabel is 'null' in getNomenclaturalStatusTypeByLabel");
-		}else if (statusLabel.equalsIgnoreCase("Ambiguous")) { return NomenclaturalStatusType.AMBIGUOUS();
-		}else if (statusLabel.equalsIgnoreCase("Doubtful")) { return NomenclaturalStatusType.DOUBTFUL();
-		}else if (statusLabel.equalsIgnoreCase("Confusum")) { return NomenclaturalStatusType.CONFUSUM();
-		}else if (statusLabel.equalsIgnoreCase("Illegitimate")){return NomenclaturalStatusType.ILLEGITIMATE();
-		}else if (statusLabel.equalsIgnoreCase("Superfluous")){ return NomenclaturalStatusType.SUPERFLUOUS();
-		}else if (statusLabel.equalsIgnoreCase("Rejected")) { return NomenclaturalStatusType.REJECTED();
-		}else if (statusLabel.equalsIgnoreCase("Utique Rejected")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
-		}else if (statusLabel.equalsIgnoreCase("Conserved Prop")) { return NomenclaturalStatusType.CONSERVED_PROP();
-		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved Prop")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
-		}else if (statusLabel.equalsIgnoreCase("Legitimate")) { return NomenclaturalStatusType.LEGITIMATE();
-		}else if (statusLabel.equalsIgnoreCase("Alternative")) { return NomenclaturalStatusType.ALTERNATIVE();
-		}else if (statusLabel.equalsIgnoreCase("Novum")) { return NomenclaturalStatusType.NOVUM();
-		}else if (statusLabel.equalsIgnoreCase("Utique Rejected Prop")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
-		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
-		}else if (statusLabel.equalsIgnoreCase("Rejected Prop")) { return NomenclaturalStatusType.REJECTED_PROP();
-		}else if (statusLabel.equalsIgnoreCase("Conserved")) { return NomenclaturalStatusType.CONSERVED();
-		}else if (statusLabel.equalsIgnoreCase("Sanctioned")) { return NomenclaturalStatusType.SANCTIONED();
-		}else if (statusLabel.equalsIgnoreCase("Invalid")) { return NomenclaturalStatusType.INVALID();
-		}else if (statusLabel.equalsIgnoreCase("Nudum")){ return NomenclaturalStatusType.NUDUM();
-		}else if (statusLabel.equalsIgnoreCase("Combination Invalid")){ return NomenclaturalStatusType.COMBINATION_INVALID();
-		}else if (statusLabel.equalsIgnoreCase("Provisional")) { return NomenclaturalStatusType.PROVISIONAL();
-		}else if (statusLabel.equalsIgnoreCase("Valid")) { return NomenclaturalStatusType.VALID();
-		}else if (statusLabel.equalsIgnoreCase("Opus Utique Oppr")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
-		}else if (statusLabel.equalsIgnoreCase("Subnudum")) { return NomenclaturalStatusType.SUBNUDUM();
-		}else {
+		if (statusLabel == null){ 
+			throw new NullPointerException("Status label is NULL in getNomenclaturalStatusTypeBylabel");
+		}
+		NomenclaturalStatusType result = null;
+		if (statusLabel == null){ 
+			throw new NullPointerException("Status label is NULL in getNomenclaturalStatusTypeByLabel");
+		}
+		if (labelMap == null){
+			return null;
+		}
+		statusLabel = statusLabel.toLowerCase();
+		UUID uuid = labelMap.get(statusLabel);
+		if (uuid != null ){
+			result = getTermByUuid(uuid);
+		}
+		if (result != null){
+			return result;
+		}else { 
 			if (statusLabel == null){
 				statusLabel = "(null)";
 			}
-			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusLabel);
+			throw new UnknownCdmTypeException("Unknown nom. status label: " + statusLabel);
 		}
+		
+//		if (statusLabel == null){ throw new NullPointerException("statusLabel is 'null' in getNomenclaturalStatusTypeByLabel");
+//		}else if (statusLabel.equalsIgnoreCase("Ambiguous")) { return NomenclaturalStatusType.AMBIGUOUS();
+//		}else if (statusLabel.equalsIgnoreCase("Doubtful")) { return NomenclaturalStatusType.DOUBTFUL();
+//		}else if (statusLabel.equalsIgnoreCase("Confusum")) { return NomenclaturalStatusType.CONFUSUM();
+//		}else if (statusLabel.equalsIgnoreCase("Illegitimate")){return NomenclaturalStatusType.ILLEGITIMATE();
+//		}else if (statusLabel.equalsIgnoreCase("Superfluous")){ return NomenclaturalStatusType.SUPERFLUOUS();
+//		}else if (statusLabel.equalsIgnoreCase("Rejected")) { return NomenclaturalStatusType.REJECTED();
+//		}else if (statusLabel.equalsIgnoreCase("Utique Rejected")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
+//		}else if (statusLabel.equalsIgnoreCase("Conserved Prop")) { return NomenclaturalStatusType.CONSERVED_PROP();
+//		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved Prop")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
+//		}else if (statusLabel.equalsIgnoreCase("Legitimate")) { return NomenclaturalStatusType.LEGITIMATE();
+//		}else if (statusLabel.equalsIgnoreCase("Alternative")) { return NomenclaturalStatusType.ALTERNATIVE();
+//		}else if (statusLabel.equalsIgnoreCase("Novum")) { return NomenclaturalStatusType.NOVUM();
+//		}else if (statusLabel.equalsIgnoreCase("Utique Rejected Prop")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
+//		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
+//		}else if (statusLabel.equalsIgnoreCase("Rejected Prop")) { return NomenclaturalStatusType.REJECTED_PROP();
+//		}else if (statusLabel.equalsIgnoreCase("Conserved")) { return NomenclaturalStatusType.CONSERVED();
+//		}else if (statusLabel.equalsIgnoreCase("Sanctioned")) { return NomenclaturalStatusType.SANCTIONED();
+//		}else if (statusLabel.equalsIgnoreCase("Invalid")) { return NomenclaturalStatusType.INVALID();
+//		}else if (statusLabel.equalsIgnoreCase("Nudum")){ return NomenclaturalStatusType.NUDUM();
+//		}else if (statusLabel.equalsIgnoreCase("Combination Invalid")){ return NomenclaturalStatusType.COMBINATION_INVALID();
+//		}else if (statusLabel.equalsIgnoreCase("Provisional")) { return NomenclaturalStatusType.PROVISIONAL();
+//		}else if (statusLabel.equalsIgnoreCase("Valid")) { return NomenclaturalStatusType.VALID();
+//		}else if (statusLabel.equalsIgnoreCase("Opus Utique Oppr")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
+//		}else if (statusLabel.equalsIgnoreCase("Subnudum")) { return NomenclaturalStatusType.SUBNUDUM();
+//		}else {
+//			if (statusLabel == null){
+//				statusLabel = "(null)";
+//			}
+//			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusLabel);
+//		}
 	}
 
 	/* (non-Javadoc)
@@ -817,34 +825,40 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		termMap = new HashMap<UUID, NomenclaturalStatusType>();
 		for (NomenclaturalStatusType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
+			addStatusType(term);
 		}
 		
-//		NomenclaturalStatusType.ALTERNATIVE = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidAlternative);
-//		NomenclaturalStatusType.AMBIGUOUS = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidAmbiguous);
-//		NomenclaturalStatusType.COMBINATION_INVALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidCombinationInvalid);
-//		NomenclaturalStatusType.CONFUSUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConfusum);
-//		NomenclaturalStatusType.CONSERVED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConserved);
-//		NomenclaturalStatusType.CONSERVED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConservedProp);
-//		NomenclaturalStatusType.DOUBTFUL = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidDoubtful);
-//		NomenclaturalStatusType.ILLEGITIMATE = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidIllegitimate);
-//		NomenclaturalStatusType.INVALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidInvalid);
-//		NomenclaturalStatusType.LEGITIMATE = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidLegitimate);
-//		NomenclaturalStatusType.NOVUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidNovum);
-//		NomenclaturalStatusType.NUDUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidNudum);
-//		NomenclaturalStatusType.OPUS_UTIQUE_OPPR = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidOpusUtiqueOppr);
-//		NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidOrthographyConserved);
-//		NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidOrthographyConservedProp);
-//		NomenclaturalStatusType.PROVISIONAL = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidProvisional);
-//		NomenclaturalStatusType.REJECTED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidRejected);
-//		NomenclaturalStatusType.REJECTED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidRejectedProp);
-//		NomenclaturalStatusType.SANCTIONED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidSanctioned);
-//		NomenclaturalStatusType.SUBNUDUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidSubnudum);
-//		NomenclaturalStatusType.SUPERFLUOUS = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidSuperfluous);
-//		NomenclaturalStatusType.UTIQUE_REJECTED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidUtiqueRejected);
-//		NomenclaturalStatusType.UTIQUE_REJECTED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidUtiqueRejectedProp);
-//		NomenclaturalStatusType.VALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidValid);
-		
 	}
+	
+	/**
+	 * Adds the status type to the (abbreviated) label maps
+	 * @param term
+	 */
+	private void addStatusType(NomenclaturalStatusType statusType) {
+		if (statusType == null){
+			logger.warn("statusType is NULL");
+			return;
+		}
+		Language lang = Language.LATIN();   
+		Representation representation = statusType.getRepresentation(lang);
+		String abbrevLabel = representation.getAbbreviatedLabel();
+		String label = representation.getLabel();
+		if (abbrevLabel == null){
+			logger.warn("label is NULL");
+			return;
+		}
+		//initialize maps
+		if (abbrevMap == null){
+			abbrevMap = new HashMap<String, UUID>();
+		}
+		if (labelMap == null){
+			labelMap = new HashMap<String, UUID>();
+		}
+		//add to map
+		abbrevMap.put(abbrevLabel, statusType.getUuid());
+		labelMap.put(label.toLowerCase(), statusType.getUuid());	
+	}
+
 
 
 

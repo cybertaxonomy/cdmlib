@@ -83,12 +83,18 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 		return featureTree;
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * Returns the featureTree specified by the given <code>uuid</code>.
+	 * The specified featureTree either can be one of those stored in the CDM database or can be the 
+	 * DefaultFeatureTree (contains all Features in use). 
+	 * The uuid of the DefaultFeatureTree is defined in {@link IFeatureTreeService#DefaultFeatureTreeUuid}.
+	 * The DefaultFeatureTree is also returned if no feature tree at all is stored in the cdm database.
+	 *  
 	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#load(java.util.UUID, java.util.List)
 	 */
 	@Override
 	public FeatureTree load(UUID uuid, List<String> propertyPaths) {
-		if (dao.count() == 0){
+		if (uuid.equals(DefaultFeatureTreeUuid) || dao.count() == 0){
 			return createDefaultFeatureTree();
 		}
 		return super.load(uuid, propertyPaths);
@@ -105,8 +111,6 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 				
 		FeatureTree featureTree = FeatureTree.NewInstance(featureList);
 		featureTree.setUuid(DefaultFeatureTreeUuid);
-		save(featureTree);
-		logger.info("Default feature tree created.");
 		return featureTree;
 	}
 }

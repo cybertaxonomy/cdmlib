@@ -30,7 +30,7 @@ public interface IAuditEventService {
      * or backwards (AuditEventSort.BACKWARDS)
      * @return a Pager containing AuditEvent instances
      */  
-	public Pager<AuditEvent> list(Integer limit, Integer start,AuditEventSort sort);
+	public Pager<AuditEvent> list(Integer limit, Integer start, AuditEventSort sort);
 	
 	/**
 	 * Find the AuditEvent with an identifier equal to the parameter

@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
+//import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
@@ -102,6 +103,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "school",
     "organization",
     "inReference"
+//    ,"fullReference",
+//    "abbreviatedReference"
 })
 @XmlRootElement(name = "ReferenceBase")
 @Entity
@@ -109,9 +112,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-
+//@InReference(groups = Level2.class)
 //public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
-public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, Cloneable {
+public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReferenceBase, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
 	
@@ -166,14 +169,14 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @Field(index=Index.TOKENIZED)
     @NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "ISBN\\x20(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
+	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
 	protected String isbn;
     
 	@XmlElement(name = "ISSN")
 	@Field(index=Index.TOKENIZED)
 	@NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "ISSN\\x20(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
+	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.issn.message}") 
 	protected String issn;
 	
     @XmlElement(name = "SeriesPart")
@@ -221,9 +224,28 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-	protected ReferenceBase inReference;
+    //@InReference(groups=Level2.class)
+   	protected ReferenceBase inReference;
+    
+//    @XmlElement(name = "FullReference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+////    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    protected ReferenceBase fullReference;
+//    
+//    @XmlElement(name = "AbbreviatedReference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+////    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    protected ReferenceBase abbreviatedReference;
+    
     
 //********************************************************/    
     
@@ -283,7 +305,11 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @XmlAttribute
     @Match(MatchMode.IGNORE)
     private int problemEnds = -1;
-	
+    
+    @Transient
+    @XmlAttribute
+    @Match(MatchMode.IGNORE)
+	private boolean cacheStrategyRectified = false; 
     
     protected ReferenceBase(){
 		super();
@@ -517,6 +543,9 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setReferenceAbstract(String referenceAbstract) {
 		this.referenceAbstract = referenceAbstract;
 	}
+	
+	
+	
 
 	/**
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This 
@@ -524,7 +553,11 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	 * published in <i>this</i> reference following the rules of a
 	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalCode nomenclature code} and is therefore used for
 	 * nomenclatural citations. This flag will be set as soon as <i>this</i>
-	 * reference is used as a nomenclatural reference for any taxon name.
+	 * reference is used as a nomenclatural reference for any taxon name.<BR>
+	 * FIXME what happens if the only taxon name referencing this reference is not 
+	 * any longer using this reference as a nomenclatural reference. How does the 
+	 * reference get informed about the fact that it is not nomenclaturally relevant 
+	 * anymore? 
 	 */
 	public boolean isNomenclaturallyRelevant(){
 		return this.nomenclaturallyRelevant;
@@ -536,6 +569,53 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setNomenclaturallyRelevant(boolean nomenclaturallyRelevant){
 		this.nomenclaturallyRelevant = nomenclaturallyRelevant;
 	}
+	
+
+//	/**
+//	 * Returns the full reference that belongs to this abbreviated reference. If this 
+//	 * reference is not abbreviated the full reference should be <code>null</code>.<BR>
+//	 * A full reference should be added to a reference
+//	 * which represents the abbreviated form of a reference. The full reference can be used
+//	 * by publication tools to link to the unabbreviated and therefore more complete version
+//	 * of the reference.
+//	 * 
+//	 * @see #getAbbreviatedReference()
+//	 * @return the full reference
+//	 */
+//	public ReferenceBase getFullReference() {
+//		return fullReference;
+//	}
+//
+//	/**
+//	 * @see #getFullReference()
+//	 * @param fullReference
+//	 */
+//	public void setFullReference(ReferenceBase fullReference) {
+//		this.fullReference = fullReference;
+//	}
+//
+//	/**
+//	 * Returns the abbreviated reference that belongs to this full reference. If this 
+//	 * reference is not a full reference the abbeviated referece must be <code>null</code>.<BR>
+//	 * An abbreviated reference should be added to a reference which represents the long (full)
+//	 * form of a reference.
+//	 * In future this may become a set or handled differently as there are multiple 
+//	 * 
+//	 * @see #getFullReference()
+//	 * @return the full reference
+//	 */
+//	public ReferenceBase getAbbreviatedReference() {
+//		return abbreviatedReference;
+//	}
+//
+//	/**
+//	 * @see #getAbbreviatedReference()
+//	 * @param abbreviatedReference
+//	 * 
+//	 */
+//	public void setAbbreviatedReference(ReferenceBase abbreviatedReference) {
+//		this.abbreviatedReference = abbreviatedReference;
+//	}
 	
 //****************************************************  /	
 	
@@ -623,6 +703,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //		this.pages = pages;
 //	}
 
+
 	/**
 	 * Returns a formatted string containing the entire reference citation,
 	 * including authors, corresponding to <i>this</i> reference.
@@ -632,12 +713,21 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	// TODO implement
 	@Transient
 	public String getCitation(){
+		rectifyCacheStrategy();
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
 		}else{
 			return cacheStrategy.getTitleCache(this);
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 */
+	public String generateTitle() {
+		rectifyCacheStrategy();
+		return super.generateTitle();
 	}
 	
 	/**
@@ -814,30 +904,30 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	
 	/* Casting methods */
 	
-	public IArticle castReferenceToArticle(ReferenceBase ref){
+	public IArticle castReferenceToArticle(){
 		((IArticle) this).setCacheStrategy(ArticleDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.Article;
 		
-		return (IArticle) ref;
+		return (IArticle) this;
 	}
 	
-	public IBook castReferenceToBook(ReferenceBase ref){
+	public IBook castReferenceToBook(){
 		((IBook) this).setCacheStrategy(BookDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.Book;
-		return (IBook) ref;
+		return (IBook) this;
 	}
 	
-	public IBookSection castReferenceToBookSection(ReferenceBase ref){
+	public IBookSection castReferenceToBookSection(){
 		((IBookSection) this).setCacheStrategy(BookSectionDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.BookSection;
 		
-		return (IBookSection) ref;
+		return (IBookSection) this;
 	}
 	
-	public ICdDvd castReferenceToCdDvd(ReferenceBase ref){
+	public ICdDvd castReferenceToCdDvd(){
 		((ICdDvd) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.CdDvd;
-		return (ICdDvd) ref;
+		return (ICdDvd) this;
 	}
 	
 	public IDatabase castReferenceToDatabase(){
@@ -861,7 +951,8 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public IJournal castReferenceToJournal(){
 		((IJournal) this).setCacheStrategy(JournalDefaultCacheStrategy.NewInstance());
 		this.type = ReferenceType.Journal;
-		return (IJournal) this;
+		IJournal test = this;
+		return (IJournal) test;
 	}
 	
 	public IMap castReferenceToMap(ReferenceBase ref){
@@ -915,16 +1006,32 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 
 	
 	public String getNomenclaturalCitation(String microReference) {
+		rectifyCacheStrategy();
+		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
 		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 			return null;
 		}else{
 			if (cacheStrategy instanceof INomenclaturalReferenceCacheStrategy){
 				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
 			}else {
-				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
 				return null;
 			}
+		}
+	}
+
+	/**
+	 * The type property of this class is mapped on the field level to the data base column, so
+	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor} 
+	 * to set the property. This PropertyAccessor directly sets the field instead of using the according setter so 
+	 * the CacheStrategy is not correctly set after the initialization of the bean. Thus we need to 
+	 * validate the CacheStrategy before it is to be used.
+	 */
+	private void rectifyCacheStrategy() {
+		if(!cacheStrategyRectified ){
+			setType(getType());
+			cacheStrategyRectified = true;
 		}
 	}
 

@@ -300,8 +300,11 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@Override
 	public int hashCode() {
 		   int hashCode = 7;
-		   hashCode = 29 * hashCode + this.getUuid().hashCode();
-		   return hashCode;
+		   if(this.getUuid() != null) {
+		       return 29 * hashCode + this.getUuid().hashCode();
+		   } else {
+			   return 29 * hashCode;
+	}
 	}
 
 	/**

@@ -156,7 +156,7 @@ public class SimpleSpecimen {
 	 * @param titleCache the titleCache to set
 	 */
 	public void setTitleCache(String titleCache) {
-		this.specimen.setTitleCache(titleCache);
+		this.specimen.setTitleCache(titleCache, true);
 	}
 	
 	

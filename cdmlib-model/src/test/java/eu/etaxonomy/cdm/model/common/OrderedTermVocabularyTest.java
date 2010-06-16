@@ -177,7 +177,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	public final void testAddTermAbove() {
 		try {
 			oVoc1.addTermAbove(otbFree, otb2);
-		} catch (WrongTermTypeException e) {
+		} catch (Exception e) {
 			fail();
 		}
 		assertEquals(2, oVoc1.getLowerTerms(otbFree).size());
@@ -189,7 +189,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	public final void testAddTermBelow() {
 		try {
 			oVoc1.addTermBelow(otbFree, otb2);
-		} catch (WrongTermTypeException e) {
+		} catch (Exception e) {
 			fail();
 		}
 		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());

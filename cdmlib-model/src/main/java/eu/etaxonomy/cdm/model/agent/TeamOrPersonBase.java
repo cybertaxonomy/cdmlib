@@ -22,7 +22,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import eu.etaxonomy.cdm.common.CdmUtils;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
@@ -83,7 +83,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
 	@Override
-//	@Transient
+	@Transient //TODO a.kohlbecker remove??
 	public String getTitleCache() {
 		isGeneratingTitleCache = true;
 		String result = super.getTitleCache();

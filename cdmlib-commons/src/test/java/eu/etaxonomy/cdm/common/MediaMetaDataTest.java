@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.common;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -66,10 +67,11 @@ public class MediaMetaDataTest {
 	public void tearDown() throws Exception {
 	}
 	
-	/********************* TESTS ********************/
+	/********************* TESTS 
+	 * @throws IOException ********************/
 	
 	@Test
-	public void readImageInfoFromFile() {
+	public void readImageInfoFromFile() throws IOException {
 		File imageFile = new File("./src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
 		MetaDataFactory metaFactory = MetaDataFactory.getInstance();
 		ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.JPEG, 0);
@@ -83,7 +85,7 @@ public class MediaMetaDataTest {
 	}
 	
 	@Test
-	public void readImageInfoFromUrl() {
+	public void readImageInfoFromUrl() throws IOException {
 		try {
 			
 			//TODO make ready for windows

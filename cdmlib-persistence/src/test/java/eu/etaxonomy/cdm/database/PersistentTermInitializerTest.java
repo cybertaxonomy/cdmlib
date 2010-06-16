@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -48,7 +49,7 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 	@DataSet("TermsDataSet.xml")
 	public void testFirstPass() {
 		Map<UUID, DefinedTermBase> persistedTerms = new HashMap<UUID, DefinedTermBase>();
-		persistentTermInitializer.firstPass(Rank.class, persistedTerms);
+		persistentTermInitializer.firstPass(VocabularyEnum.Rank, persistedTerms);
 	}
 
 	/**

@@ -21,6 +21,7 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -108,12 +109,40 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		List<UuidAndTitleCache<ReferenceBase>> list = new ArrayList<UuidAndTitleCache<ReferenceBase>>();
 		Session session = getSession();
 		
-		Query query = session.createQuery("select uuid, title from " + type.getSimpleName());
+		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
 		
 		List<Object[]> result = query.list();
 		
 		for(Object[] object : result){
 			list.add(new UuidAndTitleCache<ReferenceBase>(type, (UUID) object[0], (String) object[1]));
+		}
+		
+		return list;
+	}
+	
+	@Override
+	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitleCache() {
+		List<UuidAndTitleCache<ReferenceBase>> list = new ArrayList<UuidAndTitleCache<ReferenceBase>>();
+		Session session = getSession();
+		
+		Query query = session.createQuery("select r.uuid, r.titleCache, ab.titleCache from " + type.getSimpleName() + " as r join r.authorTeam as ab ");//"select uuid, titleCache from " + type.getSimpleName());
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			UuidAndTitleCache<ReferenceBase> uuidAndTitleCache;
+			String referenceTitle = (String) object[1];
+			
+			if(referenceTitle != null){							
+				String teamTitle = (String) object[2];
+				if(teamTitle != null){
+					referenceTitle = referenceTitle.replace(teamTitle + ", ", "");
+					referenceTitle += " - " + teamTitle;
+				}
+				list.add(new UuidAndTitleCache<ReferenceBase>(ReferenceBase.class, (UUID) object[0], referenceTitle));
+			}else{
+				logger.error("title cache of reference is null. UUID: " + object[0]);
+			}
 		}
 		
 		return list;

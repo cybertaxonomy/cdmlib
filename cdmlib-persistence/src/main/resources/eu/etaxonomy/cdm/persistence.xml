@@ -25,11 +25,12 @@
 	    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
 	    <property  name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
 	    <!--
-	        Do NOT specify the dataSource in org.springframework.orm.hibernate3.LocalSessionFactoryBean
-	        if using org.hibernate.connection.C3P0ConnectionProvider. 
-	        Specifying it causes Spring to not honor the hibernate.connection.provider_class property 
-	        specified in the Hibernate properties section. 
-	    -->
+            If dataSource is set, this will override corresponding settings in Hibernate properties.
+            If this is set, the Hibernate settings should not define a connection provider to 
+            avoid meaningless double configuration.
+            
+            see also org.springframework.orm.hibernate3.AbstractSessionFactoryBean.setDataSource(DataSource dataSource)
+         --> 
 	    <property name="dataSource" ref="dataSource"/>
 	    <property name="hibernateProperties" ref="hibernateProperties"/>
 	</bean>

@@ -25,26 +25,23 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelOccurrenceImportValidator;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 /**
@@ -56,7 +53,11 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelOccurrenceImport.class);
 
-	private static int modCount = 10000;
+	public static final String NAMESPACE = "Occurrence";
+	
+	
+	
+	private static int modCount = 5000;
 	private static final String pluralString = "occurrences";
 	private static final String dbTableName = "emOccurrence";  //??
 
@@ -78,17 +79,18 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
-		String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
-            " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
-            	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
-            	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
-            " FROM emOccurrence INNER JOIN " +  
-            	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
-            	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
-            	" emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " +  
-            	" emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " +  
+			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
+            " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurrence.Native, emOccurrence.Introduced, " +
+            		" emOccurrence.Cultivated, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
+                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
+                	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
+                " FROM emOccurrence INNER JOIN " +  
+                	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
+                	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
+                	" emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " +  
+                	" emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " +  
             " WHERE (emOccurrence.OccurrenceId IN (" + ID_LIST_TOKEN + ")  )" +  
-            " ORDER BY PTaxon.RIdentifier";
+                " ORDER BY PTaxon.RIdentifier";
 		return strQuery;
 	}
 
@@ -98,21 +100,21 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true;
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
-		MapWrapper<Distribution> distributionMap = new MapWrapper<Distribution>(null);
-
-		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
 		
-		BerlinModelImportConfigurator config = state.getConfig();
+		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
+			
 		ResultSet rs = partitioner.getResultSet();
 
 		try {
 			//map to store the mapping of duplicate berlin model occurrences to their real distributions
-			Map<Integer, Distribution> duplicateMap = new HashMap<Integer, Distribution>();
+			//duplicated may occurr due to area mappings from BM areas to TDWG areas
+			Map<Integer, String> duplicateMap = new HashMap<Integer, String>();
 			int oldTaxonId = -1;
 			TaxonDescription oldDescription = null;
 			int i = 0;
 			int countDescriptions = 0;
 			int countDistributions = 0;
+			int countDuplicates = 0;
 			//for each reference
             while (rs.next()){
                 
@@ -126,8 +128,12 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 try {
                     //status
                      PresenceAbsenceTermBase<?> status = null;
+                     String alternativeStatusString = null;
                      if (emStatusId != null){
                     	status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
+                     }else{
+                    	 String[] stringArray = new String[]{rs.getString("Native"), rs.getString("Introduced"), rs.getString("Cultivated")};
+                    	 alternativeStatusString = CdmUtils.concat(",", stringArray);
                      }
                      
                      //Create area list
@@ -144,23 +150,35 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                      ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
+                     if (tdwgAreas.size() == 0){
+                    	 logger.warn("No areas defined for occurrence " + occurrenceId);
+                     }
                      for (NamedArea tdwgArea : tdwgAreas){
                            Distribution distribution = Distribution.NewInstance(tdwgArea, status);
+                           if (status == null){
+                        	   AnnotationType annotationType = AnnotationType.EDITORIAL();
+                        	   Annotation annotation = Annotation.NewInstance(alternativeStatusString, annotationType, null);
+                        	   distribution.addAnnotation(annotation);
+                        	   distribution.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+                           }
 //                         distribution.setCitation(sourceRef);
                            if (taxonDescription != null) { 
-                               if (checkIsNoDuplicate(taxonDescription, distribution, duplicateMap , occurrenceId)){
-                                   distributionMap.put(occurrenceId, distribution);
+                        	   Distribution duplicate = checkIsNoDuplicate(taxonDescription, distribution, duplicateMap , occurrenceId);
+                               if (duplicate == null){
 	                        	   taxonDescription.addElement(distribution); 
-	                               countDistributions++; 
+	                               distribution.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getConfig().getSourceReference(), null);
+	                        	   countDistributions++; 
 	                               if (taxonDescription != oldDescription){ 
 	                            	   taxaToSave.add(taxonDescription.getTaxon()); 
 	                                   oldDescription = taxonDescription; 
 	                                   countDescriptions++; 
 	                               	} 
-                               }else{
-                            	   logger.debug("Distribution is duplicate");	                           }
+                               }else{                          	  
+                            	   countDuplicates++;
+                            	   duplicate.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getConfig().getSourceReference(), null);
+                            	   logger.info("Distribution is duplicate");	                           }
 	                       	} else { 
-	                       		logger.warn("Distribution " + tdwgArea.toString() + " ignored");
+	                       		logger.warn("Distribution " + tdwgArea.getLabel() + " ignored. OccurrenceId = " + occurrenceId);
 	                       		success = false;
 	                       	}
                      }
@@ -172,12 +190,13 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 }
                 
             }
-            //TODO fix: makeOccurrenceSource(distributionMap, state, duplicateMap);
-			
+           
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
-			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
+			logger.info("Duplicate occurrences: "  + (countDuplicates));
+
 			logger.info("Taxa to save: " + taxaToSave.size());
 			getTaxonService().save(taxaToSave);	
+			
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -196,10 +215,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		
 		try{
 			Set<String> taxonIdSet = new HashSet<String>();
-			Set<String> referenceIdSet = new HashSet<String>();
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "taxonId");
-//				handleForeignKey(rs, referenceIdSet, "PTDesignationRefFk"); falsch, kommt eigentlich aus source Tabellen
 			}
 			
 			//taxon map
@@ -208,157 +225,23 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			idSet = taxonIdSet;
 			Map<String, TaxonBase> objectMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, objectMap);
-//
-//			//nom reference map
-//			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
-//			cdmClass = ReferenceBase.class;
-//			idSet = referenceIdSet;
-//			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-//			result.put(nameSpace, nomReferenceMap);
-//
-//			//biblio reference map
-//			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-//			cdmClass = ReferenceBase.class;
-//			idSet = referenceIdSet;
-//			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-//			result.put(nameSpace, biblioReferenceMap);
-
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 		return result;
 	}
-			
-	/**
-	 * @param distributionMap
-	 * @param state
-	 * @throws SQLException 
-	 */
-	private void makeOccurrenceSource(MapWrapper<Distribution> distributionMap, BerlinModelImportState state, Map<Integer, Distribution> duplicateMap) 
-				throws SQLException {
-		//FIXME multiple sources for one distribution, needs model change first
-		Map<String, ReferenceBase<?>> sourceIdMap = makeSourceIdMap(state); 
-		Source source = state.getConfig().getSource();
-		String strQuery = " SELECT OccurrenceSourceId, OccurrenceFk, SourceNumber, OldName, OldNameFk, PreferredReferenceFlag " + 
-						" FROM emOccurrenceSource " +
-						" ORDER BY SourceNumber DESC ";
-		
-		
-		ResultSet rs = source.getResultSet(strQuery) ;
-		while (rs.next()){
-			int occurrenceSourceId = rs.getInt("OccurrenceSourceId"); //TODO make originalSourceId
-			Integer occurrenceFk = (Integer)rs.getObject("OccurrenceFk");
-			String sourceNumber = rs.getString("SourceNumber");
-			String oldName = rs.getString("OldName");
-			int oldNameFk = rs.getInt("OldNameFk");
-			Distribution distribution = distributionMap.get(occurrenceFk);
-			if (distribution == null){
-				distribution = duplicateMap.get(occurrenceFk);
-			}
-			if (distribution != null){
-				ReferenceBase<?> ref = sourceIdMap.get(sourceNumber);
-				if (ref != null){
-					DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
-					originalSource.setCitation(ref);
-					TaxonNameBase<?,?> taxonName = getName(state, oldName, oldNameFk);
-					if (taxonName != null){
-						originalSource.setNameUsedInSource(taxonName);
-					}else if(CdmUtils.isNotEmpty(oldName)){
-						originalSource.setOriginalNameString(oldName);
-					}
-					distribution.addSource(originalSource);
-				}else{
-					logger.warn("reference for sourceId "+sourceNumber+" could not be found." );
-				}
-			}else{
-				logger.warn("distribution ("+occurrenceFk+") could not be found." );
-			}
-			
-		}
-	}
 
-	
-	private NonViralNameParserImpl nameParser = NonViralNameParserImpl.NewInstance();
-	/**
-	 * @param state
-	 * @param oldName
-	 * @param oldNameFk
-	 * @return
-	 */
-	private TaxonNameBase<?, ?> getName(BerlinModelImportState state, String oldName, int oldNameFk) {
-		TaxonNameBase<?,?> taxonName = null;
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		taxonName = taxonNameMap.get(oldNameFk);
-		if (taxonName == null && oldName != null){
-			List<NonViralName> names = getNameService().getNamesByNameCache(oldName);
-			if (names.size() == 1){
-				return names.get(0);
-			}else {
-				if (names.size()> 2){
-					logger.info("Name has non unique NameCache: " + oldName + ".");
-				}
-				return null;
-				//taxonName = nameParser.parseSimpleName(oldName);
-			}
-		}
-		return taxonName;
-	}
+
 
 	/**
-	 * @param state
-	 * @return
-     * @throws SQLException 
-	 */
-	private Map<String, ReferenceBase<?>> makeSourceIdMap(BerlinModelImportState state) throws SQLException {
-		MapWrapper<ReferenceBase<?>> referenceMap = (MapWrapper<ReferenceBase<?>>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase<?>> nomRefMap = (MapWrapper<ReferenceBase<?>>)state.getStore(ICdmIO.NOMREF_STORE);
-		
-		Map<String, ReferenceBase<?>> result = new HashMap<String, ReferenceBase<?>>();
-		Source source = state.getConfig().getSource();
-		String strQuery = " SELECT RefId, IdInSource " +  
-						  " FROM Reference " + 
-						  " WHERE     (IdInSource IS NOT NULL) AND (IdInSource NOT LIKE '') ";
-		ResultSet rs = source.getResultSet(strQuery) ;
-		while (rs.next()){
-			int refId = rs.getInt("RefId");
-			String idInSource = rs.getString("IdInSource");
-			if (idInSource != null){
-				String[] singleSources = idInSource.split("\\|");
-				for (String singleSource : singleSources){
-					singleSource = singleSource.trim();
-					ReferenceBase<?> ref = getReference(refId, referenceMap, nomRefMap);
-					if (ref == null){
-						logger.warn("Reference ("+refId+")not found in refStore.");
-					}
-					result.put(singleSource, ref);
-				}
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * @param refId
-	 * @param referenceMap
-	 * @param nomRefMap
-	 */
-	private ReferenceBase<?> getReference(int refId, MapWrapper<ReferenceBase<?>> referenceMap, MapWrapper<ReferenceBase<?>> nomRefMap) {
-		ReferenceBase<?> ref = referenceMap.get(refId);
-		if (ref == null){
-			ref = nomRefMap.get(refId);
-		}
-		return ref;
-	}
-
-	/**
-     * Tests if a distribution with the same tdwgArea and the same status already exists in the description. If so 
-     * the duplicate will be registered in the duplicateMap.
+     * Tests if a distribution with the same tdwgArea and the same status already exists in the description. 
+     * If so the old distribution is returned 
      * @param description
      * @param tdwgArea
      * @return false, if dupplicate exists. True otherwise.
      */
-    private boolean checkIsNoDuplicate(TaxonDescription description, Distribution distribution, Map<Integer, Distribution> duplicateMap, Integer bmDistributionId){
+    private Distribution checkIsNoDuplicate(TaxonDescription description, Distribution distribution, Map<Integer, String> duplicateMap, Integer bmDistributionId){
     	for (DescriptionElementBase descElBase : description.getElements()){
     		if (descElBase.isInstanceOf(Distribution.class)){
     			Distribution oldDistr = HibernateProxyHelper.deproxy(descElBase, Distribution.class);
@@ -366,13 +249,13 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
     			if (oldArea != null && oldArea.equals(distribution.getArea())){
     				PresenceAbsenceTermBase<?> oldStatus = oldDistr.getStatus();
     				if (oldStatus != null && oldStatus.equals(distribution.getStatus())){
-    					duplicateMap.put(bmDistributionId, oldDistr);
-    					return false;
+    					duplicateMap.put(bmDistributionId, oldDistr.getSources().iterator().next().getIdInSource());
+    					return oldDistr;
     				}
     			}
     		}
     	}
-    	return true;
+    	return null;
     }
 	
 	/**
@@ -404,7 +287,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 				result = descriptionSet.iterator().next(); 
 			}else{
 				result = TaxonDescription.NewInstance();
-				result.setTitleCache(sourceSec.getTitleCache());
+				result.setTitleCache(sourceSec.getTitleCache(), true);
 				taxon.addDescription(result);
 			}
 		}else{

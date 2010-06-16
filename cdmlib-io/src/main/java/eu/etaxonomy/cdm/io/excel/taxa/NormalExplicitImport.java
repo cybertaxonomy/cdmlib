@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.babadshanjan
@@ -151,21 +152,24 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
             // Create the taxon name object depending on the setting of the nomenclatural code 
 			// in the configurator (botanical code, zoological code, etc.) 
 			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-			TaxonNameBase taxonNameBase;
+			NonViralName taxonNameBase;
 			if (nc == NomenclaturalCode.ICVCN){
 				logger.warn("ICVCN not yet supported");
 				return false;
 			}else{
-				taxonNameBase = nc.getNewTaxonNameInstance(rank);
-				NonViralName nonViralName = (NonViralName)taxonNameBase;
+				taxonNameBase =(NonViralName) nc.getNewTaxonNameInstance(rank);
+				//NonViralName nonViralName = (NonViralName)taxonNameBase;
 				//TODO parse name
-				nonViralName.setNameCache(taxonNameStr);
+				NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+				taxonNameBase = parser.parseFullName(taxonNameStr, nc, rank);
+				
+				taxonNameBase.setNameCache(taxonNameStr);
 				
 				// Create the author
 				if (CdmUtils.isNotEmpty(authorStr)) {
 					//TODO parse authors
 					//if (state.getAuthor(authorStr)!= null) {
-						nonViralName.setAuthorshipCache(authorStr);
+					taxonNameBase.setAuthorshipCache(authorStr);
 //					} else {
 //						state.putAuthor(authorStr, null);
 //						Person author = Person.NewTitledInstance(authorStr);
@@ -203,7 +207,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		Integer childId = state.getTaxonLight().getId();
 		
 		Taxon parentTaxon = (Taxon)state.getTaxonBase(parentId);
-		
+		Taxon taxon = (Taxon)state.getTaxonBase(childId);
 		if (CdmUtils.isNotEmpty(taxonNameStr)) {
 			if (nameStatus != null && nameStatus.equalsIgnoreCase("invalid")){
 				//add synonym relationship
@@ -213,7 +217,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				// Add the parent relationship
 				if (state.getTaxonLight().getParentId() != 0) {
 					if (parentTaxon != null) {
-						Taxon taxon = (Taxon)state.getTaxonBase(childId);
+						//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 						
 						ReferenceBase citation = state.getConfig().getSourceReference();
 						String microCitation = null;
@@ -228,8 +232,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 					//do nothing (parent == 0) no parent exists
 				}
 			}
-		} else 	{ 
-			// add common name to parent taxon
+		} 
+		if (CdmUtils.isNotEmpty(commonNameStr))
+		{			// add common name to taxon
 			
 			Language language = getTermService().getLanguageByIso(state.getTaxonLight().getLanguage());
 			if (language == null && CdmUtils.isNotEmpty(state.getTaxonLight().getLanguage())  ){
@@ -239,9 +244,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonNameStr, language);
 			try {
-				TaxonDescription taxonDescription = getDescription(parentTaxon);
+				TaxonDescription taxonDescription = getDescription(taxon);
 				taxonDescription.addElement(commonTaxonName);
-				logger.info("Common name " + commonNameStr + " added to " + parentTaxon.getTitleCache());
+				logger.info("Common name " + commonNameStr + " added to " + taxon.getTitleCache());
 			} catch (ClassCastException ex) {
 				logger.error(taxonNameStr + " is not a taxon instance.");
 			}
@@ -274,7 +279,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		if (tree == null){
 			tree = makeTree(state, sec);
 		}
-		success = tree.addParentChild(parentTaxon, childTaxon, citation, microCitation);
+		success &=  (null !=  tree.addParentChild(parentTaxon, childTaxon, citation, microCitation));
 		return success;
 	}
 	

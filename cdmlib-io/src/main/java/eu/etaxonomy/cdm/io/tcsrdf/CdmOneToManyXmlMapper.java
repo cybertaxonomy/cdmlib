@@ -16,7 +16,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
-import eu.etaxonomy.cdm.io.common.IXmlMapper;
+import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 

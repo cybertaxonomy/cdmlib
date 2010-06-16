@@ -55,9 +55,9 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 @Embeddable
 public class TimePeriod implements Cloneable, Serializable {
 	private static final Logger logger = Logger.getLogger(TimePeriod.class);
-	private static final DateTimeFieldType monthType = DateTimeFieldType.monthOfYear();
-	private static final DateTimeFieldType yearType = DateTimeFieldType.year();
-	private static final DateTimeFieldType dayType = DateTimeFieldType.dayOfMonth();
+	public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
+	public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
+	public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
 	
 	@XmlElement(name = "Start")
 	@XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -122,10 +122,10 @@ public class TimePeriod implements Cloneable, Serializable {
 		Partial startDate = null;
 		Partial endDate = null;
 		if (startYear != null){
-			startDate = new Partial().with(yearType, startYear);
+			startDate = new Partial().with(YEAR_TYPE, startYear);
 		}
 		if (endYear != null){
-			endDate = new Partial().with(yearType, endYear);
+			endDate = new Partial().with(YEAR_TYPE, endYear);
 		}
 		return new TimePeriod(startDate, endDate);
 	}
@@ -286,35 +286,35 @@ public class TimePeriod implements Cloneable, Serializable {
 	
 	@Transient
 	public Integer getStartYear(){
-		return getPartialValue(start, yearType);
+		return getPartialValue(start, YEAR_TYPE);
 	}
 	
 	@Transient
 	public Integer getStartMonth(){
-		return getPartialValue(start, monthType);
+		return getPartialValue(start, MONTH_TYPE);
 	}
 
 	@Transient
 	public Integer getStartDay(){
-		return getPartialValue(start, dayType);
+		return getPartialValue(start, DAY_TYPE);
 	}
 
 	@Transient
 	public Integer getEndYear(){
-		return getPartialValue(end, yearType);
+		return getPartialValue(end, YEAR_TYPE);
 	}
 
 	@Transient
 	public Integer getEndMonth(){
-		return getPartialValue(end, monthType);
+		return getPartialValue(end, MONTH_TYPE);
 	}
 
 	@Transient
 	public Integer getEndDay(){
-		return getPartialValue(end, dayType);
+		return getPartialValue(end, DAY_TYPE);
 	}
 	
-	private Integer getPartialValue(Partial partial, DateTimeFieldType type){
+	public static Integer getPartialValue(Partial partial, DateTimeFieldType type){
 		if (partial == null || ! partial.isSupported(type)){
 			return null;
 		}else{
@@ -324,50 +324,51 @@ public class TimePeriod implements Cloneable, Serializable {
 	}
 	
 	public TimePeriod setStartYear(Integer year){
-		return setStartField(year, yearType);
+		return setStartField(year, YEAR_TYPE);
 	}
 	
 	public TimePeriod setStartMonth(Integer month) throws IndexOutOfBoundsException{
-		return setStartField(month, monthType);
+		return setStartField(month, MONTH_TYPE);
 	}
 
 	public TimePeriod setStartDay(Integer day) throws IndexOutOfBoundsException{
-		return setStartField(day, dayType);
+		return setStartField(day, DAY_TYPE);
 	}
 	
 	public TimePeriod setEndYear(Integer year){
-		return setEndField(year, yearType);
+		return setEndField(year, YEAR_TYPE);
 	}
 
 	public TimePeriod setEndMonth(Integer month) throws IndexOutOfBoundsException{
-		return setEndField(month, monthType);
+		return setEndField(month, MONTH_TYPE);
 	}
 
 	public TimePeriod setEndDay(Integer day) throws IndexOutOfBoundsException{
-		return setEndField(day, dayType);
+		return setEndField(day, DAY_TYPE);
+	}
+	
+	public static Partial setPartialField(Partial partial, Integer value, DateTimeFieldType type) 
+			throws IndexOutOfBoundsException{
+		if (partial == null){
+			partial = new Partial();
+		}
+		if (value == null){
+			return partial.without(type);
+		}else{
+			checkFieldValues(value, type, partial);
+			return partial.with(type, value);
+		}
 	}
 	
 	private TimePeriod setStartField(Integer value, DateTimeFieldType type) 
 			throws IndexOutOfBoundsException{
-		initStart();
-		if (value == null){
-			start = start.without(type);
-		}else{
-			checkFieldValues(value, type, start);
-			start = this.start.with(type, value);
-		}
+		start = setPartialField(start, value, type);
 		return this;
 	}
 
 	private TimePeriod setEndField(Integer value, DateTimeFieldType type)
 			throws IndexOutOfBoundsException{
-		initEnd();
-		if (value == null){
-			end = end.without(type);
-		}else{
-			checkFieldValues(value, type, end);
-			end = this.end.with(type, value);
-		}
+		end = setPartialField(end, value, type);
 		return this;
 	}
 	
@@ -378,17 +379,17 @@ public class TimePeriod implements Cloneable, Serializable {
 	 * @param type
 	 * @throws IndexOutOfBoundsException
 	 */
-	private void checkFieldValues(Integer value, DateTimeFieldType type, Partial partial)
+	private static void checkFieldValues(Integer value, DateTimeFieldType type, Partial partial)
 			throws IndexOutOfBoundsException{
 		int max = 9999999;
-		if (type.equals(monthType)){
+		if (type.equals(MONTH_TYPE)){
 			max = 12;
 		}
-		if (type.equals(dayType)){
+		if (type.equals(DAY_TYPE)){
 			max = 31;
 			Integer month = null;
-			if (partial.isSupported(monthType)){
-				month = partial.get(monthType);
+			if (partial.isSupported(MONTH_TYPE)){
+				month = partial.get(MONTH_TYPE);
 			}
 			if (month != null){
 				if (month == 2){
@@ -426,25 +427,30 @@ public class TimePeriod implements Cloneable, Serializable {
 	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-\\s*\\d{2,4})?");
 	
 	
-	public static TimePeriod parseString(String strPeriod) {
+	public static TimePeriod parseString(TimePeriod timePeriod, String periodString){
 		//TODO move to parser class
 		//TODO until now only quick and dirty (and partly wrong)
-		TimePeriod result = null;
-		if (strPeriod == null){
+		TimePeriod result = timePeriod;
+		
+		if(timePeriod == null){
+			return timePeriod;
+		}
+		
+		if (periodString == null){
 			return result;
 		}
-		strPeriod = strPeriod.trim();
-		result = TimePeriod.NewInstance();
-		result.setFreeText(strPeriod);
+		periodString = periodString.trim();
+		
+		result.setFreeText(periodString);
 		
 		//case "1806"[1807];
-		if (uncorrectYearPatter.matcher(strPeriod).matches()){
-			String realYear = strPeriod.split("\\[")[1];
+		if (uncorrectYearPatter.matcher(periodString).matches()){
+			String realYear = periodString.split("\\[")[1];
 			realYear = realYear.replace("]", "");
 			result.setStartYear(Integer.valueOf(realYear));
 		//case fl. 1806 or c. 1806 or fl. 1806?
-		}else if(prefixedYearPattern.matcher(strPeriod).matches()){
-			Matcher yearMatcher = firstYearPattern.matcher(strPeriod);
+		}else if(prefixedYearPattern.matcher(periodString).matches()){
+			Matcher yearMatcher = firstYearPattern.matcher(periodString);
 			yearMatcher.find();
 			String startYear = yearMatcher.group();
 			result.setStartYear(Integer.valueOf(startYear));
@@ -452,13 +458,13 @@ public class TimePeriod implements Cloneable, Serializable {
 				String endYear = yearMatcher.group();
 				result.setEndYear(Integer.valueOf(endYear));
 			}
-		}else if (standardPattern.matcher(strPeriod).matches()){
-			String[] years = strPeriod.split("-");
+		}else if (standardPattern.matcher(periodString).matches()){
+			String[] years = periodString.split("-");
 			Partial dtStart = null;
 			Partial dtEnd = null;
 			
 			if (years.length > 2 || years.length <= 0){
-				logger.warn("More than 1 '-' in period String: " + strPeriod);
+				logger.warn("More than 1 '-' in period String: " + periodString);
 			}else {
 				try {
 					//start
@@ -474,7 +480,9 @@ public class TimePeriod implements Cloneable, Serializable {
 						}
 						dtEnd = parseSingleDate(years[1]);
 					}
-					result = TimePeriod.NewInstance(dtStart, dtEnd);
+					
+					result.setStart(dtStart);
+					result.setEnd(dtEnd);
 				} catch (IllegalArgumentException e) {
 					//logger.warn(e.getMessage());
 					//use freetext instead
@@ -482,6 +490,11 @@ public class TimePeriod implements Cloneable, Serializable {
 			}
 		}
 		return result;
+	}
+	
+	public static TimePeriod parseString(String strPeriod) {
+		TimePeriod timePeriod = TimePeriod.NewInstance();
+		return parseString(timePeriod, strPeriod);
 	}
 	
 	
@@ -496,9 +509,9 @@ public class TimePeriod implements Cloneable, Serializable {
 					logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
 				}else if (year < 1700 && year > 2100){
 					logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-					partial = partial.with(yearType, year);
+					partial = partial.with(YEAR_TYPE, year);
 				}else{
-					partial = partial.with(yearType, year);
+					partial = partial.with(YEAR_TYPE, year);
 				}
 			} catch (NumberFormatException e) {
 				logger.debug("Not a Integer format in getCalendar()");
@@ -520,9 +533,9 @@ public class TimePeriod implements Cloneable, Serializable {
 		public String print(ReadablePartial partial){
 			//TODO
 			String result = "";
-			String year = (partial.isSupported(yearType))? String.valueOf(partial.get(yearType)):null;
-			String month = (partial.isSupported(monthType))? String.valueOf(partial.get(monthType)):null;;
-			String day = (partial.isSupported(dayType))? String.valueOf(partial.get(dayType)):null;;
+			String year = (partial.isSupported(YEAR_TYPE))? String.valueOf(partial.get(YEAR_TYPE)):null;
+			String month = (partial.isSupported(MONTH_TYPE))? String.valueOf(partial.get(MONTH_TYPE)):null;;
+			String day = (partial.isSupported(DAY_TYPE))? String.valueOf(partial.get(DAY_TYPE)):null;;
 			
 			if (month !=null){
 				if (year == null){

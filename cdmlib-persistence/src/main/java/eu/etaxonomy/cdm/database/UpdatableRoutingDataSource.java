@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.database;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -17,8 +16,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
@@ -44,14 +41,10 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  * 
  * @author a.kohlbecker
  */
+@Deprecated
 public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	
-	
-	private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
-	private static final String DATASOURCE_BEANDEF_PATH = System.getProperty("user.home")+File.separator+".cdmLibrary"+File.separator;
-	
-	private static String userdefinedBeanDefinitionFile = null;
-	
+
 	private String defaultDatasourceName = "default";
 
 	@Override
@@ -70,9 +63,7 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	}
 	
 	
-	public void setBeanDefinitionFile(String filename){
-		userdefinedBeanDefinitionFile = filename;
-	}
+
 	
 	public Map<String, DataSourceInfo> updateDataSources() {
 		
@@ -90,26 +81,11 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 		
 		return dataSourceInfos;
 	}
-
-	/**
-	 * @return
-	 */
-	protected Map<String, SimpleDriverDataSource> loadDataSources() {
-
-		Map<String, SimpleDriverDataSource> dataSources = new HashMap<String, SimpleDriverDataSource>();
-
-		String path = DATASOURCE_BEANDEF_PATH + (userdefinedBeanDefinitionFile == null ? DATASOURCE_BEANDEF_FILE : userdefinedBeanDefinitionFile);
-		logger.info("    loading bean definition file: " + path);
-		FileSystemResource file = new FileSystemResource(path);
-		XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
-		
-		for(String beanName : beanFactory.getBeanDefinitionNames()){
-			SimpleDriverDataSource datasource = (SimpleDriverDataSource)beanFactory.getBean(beanName, SimpleDriverDataSource.class);
-			dataSources.put(beanName, datasource);
-		}
-		return dataSources;
-	}
 	
+	protected Map<String, SimpleDriverDataSource> loadDataSources(){
+		return DataSourceBeanLoader.loadDataSources(SimpleDriverDataSource.class);
+	}
+
 	/**
 	 * @param dataSources
 	 * @return

@@ -47,7 +47,7 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final UUID uuidXmlFragment = UUID.fromString("ea109c1c-e69b-4e6d-9079-1941b9ee2991");
 	private static final UUID uuidRdfFragment = UUID.fromString("f3684e25-dcad-4c1e-a5d8-16cddf1c4f5b");
 	private static final UUID uuidDoi = UUID.fromString("f079aacc-ab08-4cc4-90a0-6d3958fb0dbf");
-	private static final UUID uuid2ndNomRef = UUID.fromString("46a98bfa-f11a-47fe-a6c5-50c7e8289b3d");
+//	private static final UUID uuid2ndNomRef = UUID.fromString("46a98bfa-f11a-47fe-a6c5-50c7e8289b3d");
 	private static final UUID uuid3rdHybridParent = UUID.fromString("5e552b24-5a2d-498d-a4f4-ccd8e5bc2bae");
 	private static final UUID uuidAreaOfInterest = UUID.fromString("cefa478e-604f-4db4-8afc-25e06c28ec69");
 	private static final UUID uuidNomStandard = UUID.fromString("4a6cbbe9-8d79-4d15-b316-2ff1adeff526");
@@ -125,9 +125,9 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	}
 
 
-	public static final ExtensionType SECOND_NOM_REF(){
-		return getTermByUuid(uuid2ndNomRef);
-	}
+//	public static final ExtensionType SECOND_NOM_REF(){
+//		return getTermByUuid(uuid2ndNomRef);
+//	}
 
 
 	public static final ExtensionType THIRD_HYBRID_PARENT(){

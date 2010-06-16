@@ -10,19 +10,14 @@
 
 package eu.etaxonomy.cdm.remote.json.processor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import net.sf.json.processors.JsonBeanProcessor;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**

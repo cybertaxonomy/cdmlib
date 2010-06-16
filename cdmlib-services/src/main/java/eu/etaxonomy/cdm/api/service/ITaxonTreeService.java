@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 /**
@@ -44,7 +45,17 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @return
 	 */
 	public ITreeNode getTreeNodeByUuid(UUID uuid);
-	
+
+	/**
+	 * 
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 	/**
 	 * 
 	 * @param uuid
@@ -68,6 +79,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @param taxonNode
 	 * @param propertyPaths
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
 	
@@ -140,6 +152,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @param taxonomicTree
 	 * @param propertyPaths
 	 * @return
+	 * @deprecated move to TaxonNodeService
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
 	
@@ -180,6 +193,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * 
 	 * @param taxonNode
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public UUID removeTaxonNode(TaxonNode taxonNode);
 	
@@ -187,6 +201,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * 
 	 * @param taxonNode
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public UUID saveTaxonNode(TaxonNode taxonNode);
 	
@@ -194,6 +209,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * 
 	 * @param taxonNodeCollection
 	 * @return
+	 * @deprecated use TaxonNodeService instead
 	 */
 	public Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
 	

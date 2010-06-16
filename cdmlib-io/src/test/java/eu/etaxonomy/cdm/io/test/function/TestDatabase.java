@@ -186,12 +186,12 @@ public class TestDatabase {
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		sec = refFactory.newBook();
 		sec.setAuthorTeam(linne);
-		sec.setTitleCache("Plant Speciation");
+		sec.setTitleCache("Plant Speciation", true);
 		references.add(sec);
 		
 		citRef = refFactory.newDatabase();
 		citRef.setAuthorTeam(linne);
-		citRef.setTitleCache("BioCASE");
+		citRef.setTitleCache("BioCASE", true);
 		references.add(citRef);
 
 		// taxa

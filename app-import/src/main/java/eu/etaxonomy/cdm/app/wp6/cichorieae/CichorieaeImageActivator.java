@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.app.wp6.cichorieae;
 
-import java.io.File;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -30,8 +29,7 @@ public class CichorieaeImageActivator  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CichorieaeImageActivator.class);
 	
-	public static final File sourceFolder  = new File("\\\\media\\editwp6\\photos");
-//	private static final File sourceFile = new File("src/main/resources/images/images_cich.xls");
+	//	private static final File sourceFile = new File("src/main/resources/images/images_cich.xls");
 	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 //	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_cichorieae();
 	
@@ -40,10 +38,11 @@ public class CichorieaeImageActivator  {
 	static final UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
 	
 	public static void main (String[] cowabunga){
+		
 		ICdmDataSource destination = CdmDestinations.chooseDestination(cowabunga) != null ? CdmDestinations.chooseDestination(cowabunga) : cdmDestination;
 		
 		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-				sourceFolder, destination, CichorieaeImageImport.class);
+				CichorieaeActivator.imageFolder, destination, CichorieaeImageImport.class);
 		imageConfigurator.setSecUuid(secUuid);
 		imageConfigurator.setTaxonomicTreeUuid(treeUuid);
 		

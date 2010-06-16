@@ -127,8 +127,8 @@ public class MediaTest {
 			Assert.assertEquals("Only meda representation must have same MimeType as mediaRepresentation1", mediaRepresentation1.getMimeType(), mediaClone.getRepresentations().iterator().next().getMimeType());
 			Assert.assertTrue("Rights must contain rights1", mediaClone.getRights().contains(rights1));
 		
-			Assert.assertTrue("Clone must have a default language title", mediaClone.getTitle().containsKey(Language.DEFAULT()));
-			Assert.assertSame("Title must be the same", languageString2, mediaClone.getTitle().get(Language.DEFAULT()) );
+			Assert.assertTrue("Clone must have a default language title", mediaClone.getAllTitles().containsKey(Language.DEFAULT()));
+			Assert.assertSame("Title must be the same", languageString2, mediaClone.getAllTitles().get(Language.DEFAULT()) );
 			
 		} catch (CloneNotSupportedException e) {
 			Assert.fail("Media must be cloneable");
@@ -182,7 +182,7 @@ public class MediaTest {
 	 */
 	@Test
 	public void testAddTitle() {
-		Assert.assertSame("Title must be the same", languageString2, media1.getTitle().get(Language.DEFAULT()) );
+		Assert.assertSame("Title must be the same", languageString2, media1.getAllTitles().get(Language.DEFAULT()) );
 	}
 
 	/**
@@ -190,12 +190,12 @@ public class MediaTest {
 	 */
 	@Test
 	public void testRemoveTitle() {
-		Assert.assertSame("Title must be the same", languageString2, media1.getTitle().get(Language.DEFAULT()) );
+		Assert.assertSame("Title must be the same", languageString2, media1.getAllTitles().get(Language.DEFAULT()) );
 		media1.removeTitle(Language.GERMAN());
-		Assert.assertEquals("Number of titles must be 1", 1, media1.getTitle().size());
+		Assert.assertEquals("Number of titles must be 1", 1, media1.getAllTitles().size());
 		media1.removeTitle(Language.DEFAULT());
-		Assert.assertEquals("Number of titles must be 0", 0, media1.getTitle().size());
-		Assert.assertFalse("Title must not contain languageString2", languageString2.equals(media1.getTitle().get(Language.DEFAULT())));
+		Assert.assertEquals("Number of titles must be 0", 0, media1.getAllTitles().size());
+		Assert.assertFalse("Title must not contain languageString2", languageString2.equals(media1.getAllTitles().get(Language.DEFAULT())));
 	}
 
 	/**
@@ -264,8 +264,8 @@ public class MediaTest {
 	@Test
 	public void testfindBestMatchingRepresentation() {
 		String[] mimetypes = {".*"};
-		Assert.assertEquals(mediaRepresentation1, media1.findBestMatchingRepresentation(100, 100, 100, mimetypes));
-		Assert.assertEquals(mediaRepresentation2, media1.findBestMatchingRepresentation(1000, 100, 100, mimetypes));
+		Assert.assertEquals(mediaRepresentation1, MediaUtils.findBestMatchingRepresentation(media1, 100, 100, 100, mimetypes));
+		Assert.assertEquals(mediaRepresentation2, MediaUtils.findBestMatchingRepresentation(media1,1000, 100, 100, mimetypes));
 	
 	}
 }

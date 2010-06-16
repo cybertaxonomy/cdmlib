@@ -305,7 +305,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return true;
 	}
 	
-	
 //	protected int getPrecision(){
 //		return this.precision;
 //	}

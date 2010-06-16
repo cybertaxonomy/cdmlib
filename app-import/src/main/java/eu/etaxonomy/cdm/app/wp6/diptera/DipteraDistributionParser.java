@@ -7,6 +7,14 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.app.wp6.diptera;
 
 import java.util.ArrayList;
@@ -46,9 +54,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class DipteraDistributionParser {
 	private static final Logger logger = Logger.getLogger(DipteraDistributionParser.class);
 	
-	private static ICdmDataSource cdmDestination = CdmDestinations.cdm_local_dipera();
-	
-	
+	private static ICdmDataSource cdmDestination = CdmDestinations.cdm_tunnel_dipera_b();
+
 	final static String epiSplitter = "(\\s+|\\[|\\]|\\(|\\))"; //( ' '+| '(' | ')'| '[' | ']' )
 	static Pattern pattern = null;
 	
@@ -255,11 +262,9 @@ public class DipteraDistributionParser {
 		}
 		word = word.replace("Vera Cruz", "Veracruz");
 		word = word.replace("Turkmenia", "Turkmenistan");
-		word = word.replace("Québeck", "Québec");
-		word = word.replace("Quebeck", "Québec");
-		word = word.replace("Quebec", "Québec");
-		//word = word.replace("Quebec", "Qu+®bec");
-		//word = word.replace("Quebec", "Qu├®bec");
+		word = word.replace("Qu\u00E9beck", "Qu\u00E9bec");
+		word = word.replace("Quebeck", "Qu\u00E9bec");
+		word = word.replace("Quebec", "Qu\u00E9bec");
 		
 		if (!word.contains("Gambia, The")){
 			word = word.replace("Gambia", "Gambia, The");
@@ -269,7 +274,7 @@ public class DipteraDistributionParser {
 		word = word.replace("Central Africa", "Central African Republic");
 		word = word.replace("Canal Zone", "");
 		//word = word.replace("Panama", "PanamÃ¡");
-		word = word.replace("Panama", "Panamá");
+		word = word.replace("Panama", "Panam\u00E1");
 		if (! word.contains("New South Wales")){
 			word = word.replace("Wales", "Great Britain");
 		}
@@ -282,11 +287,11 @@ public class DipteraDistributionParser {
 		
 		word = word.replace("oceanian islands", "Pacific");
 		word = word.replace("Ussuri region", "Primorye");
-		word = word.replace("Galapagos Is.", "Galápagos");
-		word = word.replace("Tarapacá", "Tarapaca");
-		word = word.replace("Reunion", "Réunion");
+		word = word.replace("Galapagos Is.", "Gal\u00E1pagos");
+		word = word.replace("Tarapac\u00E1", "Tarapaca");
+		word = word.replace("Reunion", "R\u00E9union");
 		if (! word.contains("Is.")){
-			word = word.replace("Galapagos", "Galápagos");
+			word = word.replace("Galapagos", "Gal\u00E1pagos");
 		}
 		
 		//word = word.replace("Galapagos Is.", "GalÃ¡pagos");
@@ -343,9 +348,9 @@ public class DipteraDistributionParser {
 		word = word.replace("British Colombia", "British Columbia");
 		word = word.replace("Bermudas", "Bermuda");
 		word = word.replace("Tunesia", "Tunisia");
-		word = word.replace("Santos São Paulo", "São Paulo");
+		word = word.replace("Santos S\u00E3o Paulo", "S\u00E3o Paulo");
 		word = word.replace("Transvaal", "Northern Provinces");
-		word = word.replace("Tucumán", "Tucuman");
+		word = word.replace("Tucum\u00E1n", "Tucuman");
 //		if (!word.contains("Netherlands")){
 //			
 //		}

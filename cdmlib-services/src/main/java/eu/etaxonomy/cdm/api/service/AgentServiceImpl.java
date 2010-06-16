@@ -108,7 +108,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getTeamOrPersonBaseUuidAndNomenclaturalTitle()
 	 */
-	public List<UuidAndTitleCache<TeamOrPersonBase>> getTeamOrPersonBaseUuidAndNomenclaturalTitle() {
-		return dao.getTeamOrPersonBaseUuidAndNomenclaturalTitle();
+	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle() {
+		return dao.getTeamUuidAndNomenclaturalTitle();
 	}	
 }

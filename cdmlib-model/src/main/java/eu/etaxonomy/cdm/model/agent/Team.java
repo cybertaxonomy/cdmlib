@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -101,6 +102,34 @@ public class Team extends TeamOrPersonBase<Team> {
 	public Team() {
 		super();
 		this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
+		addListenersToMembers();
+	}
+
+	/**
+	 * Adds a property change listener to all team members.
+	 */
+	private void addListenersToMembers() {
+		List<Person> members = getTeamMembers();
+		for (Person member : members){
+			addListenerForTeamMember(member);
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private void addListenerForTeamMember(Person member) {
+		PropertyChangeListener listener = new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent e) {
+				if (! isProtectedTitleCache()){
+					titleCache = titleCache;
+				}
+				if (! isProtectedNomenclaturalTitleCache()){
+					nomenclaturalTitle = nomenclaturalTitle;
+				}
+			}
+		};
+		member.addPropertyChangeListener(listener);
 	}
 
 	/** 
@@ -116,6 +145,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	
 	protected void setTeamMembers(List<Person> teamMembers) {
 		this.teamMembers = teamMembers;
+		addListenersToMembers();
 	}
 	
 	/** 
@@ -126,29 +156,38 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see 		   Person
 	 */
 	public void addTeamMember(Person person){
-		getTeamMembers().add(person);
+		if (person != null){
+			getTeamMembers().add(person);
+			firePropertyChange("teamMember", null, person);
+			addListenerForTeamMember(person);
+		}
 	}
 	
 	/** 
 	 * Adds a new {@link Person person} to <i>this</i> team
 	 * at the given index place of the members' list. If the person is already
 	 * a member of the list he will be moved to the given index place. 
-	 * The index must be a positive integer. If the index is bigger than
+	 * The index must be an integer (>=0). If the index is larger than
 	 * the present number of members the person will be added at the end of the list.
 	 *
 	 * @param  person  the person who should be added to the other team members
-	 * @param  index   the position at which the new person should be placed within the members' list
+	 * @param  index   the position at which the person should be placed within the members' list (starting with 0)
 	 * @see     	   #getTeamMembers()
 	 * @see 		   Person
 	 */
 	public void addTeamMember(Person person, int index){
-		// TODO is still not fully implemented (range for index!)
-		logger.warn("not yet fully implemented (range for index!)");
-		int oldIndex = getTeamMembers().indexOf(person);
-		if (oldIndex != -1 ){
-			getTeamMembers().remove(person);
+		if (person != null){
+			int oldIndex = getTeamMembers().indexOf(person);
+			if (oldIndex != -1 ){
+				getTeamMembers().remove(person);
+			}
+			if (index >= getTeamMembers().size()){
+				index = getTeamMembers().size();
+			}
+			getTeamMembers().add(index, person);
+			addListenerForTeamMember(person);
+			firePropertyChange("teamMember", null, person);
 		}
-		getTeamMembers().add(index, person);
 	}
 	
 	/** 
@@ -158,24 +197,13 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see            #getTeamMembers()
 	 */
 	public void removeTeamMember(Person person){
-		getTeamMembers().remove(person);
+		boolean wasMember = getTeamMembers().remove(person);
+		if (wasMember){
+			firePropertyChange("teamMember", person, null);
+		}
+		
 	}
 
-	/**
-	 * Generates an identification string for <i>this</i> team according to the strategy
-	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}. This string is built
-	 * with the full names of all persons belonging to its (ordered) members' list.
-	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
-	 * 
-	 * @return  a string which identifies <i>this</i> team
-	 */
-//	@Override
-//	public String generateTitle() {
-//		return cacheStrategy.getTitleCache(this);
-//	}
-	
 	
 	/**
 	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.
@@ -226,6 +254,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see  #getNomenclaturalTitle()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
+		firePropertyChange("nomenclaturalTitle", this.nomenclaturalTitle, nomenclaturalTitle);
 		this.nomenclaturalTitle = nomenclaturalTitle;
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
@@ -234,12 +263,12 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache()
 	 */
 	@Override
-	@Transient
+	//@Transient //TODO a.kohlbecker remove??
 	public String getTitleCache() {
 		isGeneratingTitleCache = true;
 		String result = "";
 		if (isProtectedTitleCache()){
-			result =  this.titleCache;			
+			result = this.titleCache;			
 		}else{
 			result = generateTitle();
 			result = replaceEmptyTitleByNomTitle(result);

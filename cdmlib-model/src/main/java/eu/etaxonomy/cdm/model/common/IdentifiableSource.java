@@ -73,6 +73,13 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
+
+	public static IdentifiableSource NewInstance(ReferenceBase citation, String microCitation){
+		IdentifiableSource result = NewInstance();
+		result.setCitation(citation);
+		result.setCitationMicroReference(microCitation);
+		return result;
+	}	
 	
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
@@ -99,6 +106,8 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	public void setSourcedObj(IdentifiableEntity sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}
+
+//*********************************** CLONE *********************************************************/
 	
 	/**
 	 * Clones this original source and sets the clones sourced object to 'sourceObj'
@@ -108,7 +117,7 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		IdentifiableSource result = (IdentifiableSource)clone();
 		result.setSourcedObj(sourcedObj);
 		return result;
-}
+	}
 
 	
 }

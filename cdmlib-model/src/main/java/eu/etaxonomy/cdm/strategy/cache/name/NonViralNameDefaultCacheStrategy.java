@@ -217,6 +217,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 	
 	
+
+	
+	
 	@Override
 	public String getFullTitleCache(T nonViralName) {
 		//null
@@ -254,7 +257,13 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				NomenclaturalStatusType statusType =  ncStatus.getType();
 				Language lang = Language.LATIN();
 				Representation repr = statusType.getRepresentation(lang);
-				suffix = repr.getAbbreviatedLabel();
+				if (repr != null){
+					suffix = repr.getAbbreviatedLabel();
+				}else{
+					String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+					logger.warn(message);
+					throw new IllegalStateException(message);
+				}
 			}else if(ncStatus.getRuleConsidered() != null && ! ncStatus.getRuleConsidered().equals("")){
 				suffix = ncStatus.getRuleConsidered();
 			}
@@ -375,7 +384,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	@Override
 	public List<Object> getTaggedName(T nonViralName) {
 		List<Object> tags = new ArrayList<Object>();
-		tags.add(nonViralName.getGenusOrUninomial());
+		if (nonViralName.getGenusOrUninomial() == null){
+			tags.add(nonViralName.getNameCache());
+		}else{
+			tags.add(nonViralName.getGenusOrUninomial());
+		}
 		if (nonViralName.isSpecies() || nonViralName.isInfraSpecific()){
 			tags.add(nonViralName.getSpecificEpithet());			
 		}
@@ -389,14 +402,19 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (nonViralName.isInfraGeneric()){
 			//TODO choose right strategy or generic approach?
 			// --- strategy 1 --- 
-			tags.add(nonViralName.getRank());			
-			tags.add(nonViralName.getInfraGenericEpithet());			
+					
+			if (nonViralName.getRank().isSpeciesAggregate()){
+				tags.add(getSpeciesAggregateEpithet(nonViralName));
+			}else{
+				tags.add(nonViralName.getRank());	
+				tags.add(nonViralName.getInfraGenericEpithet());	
+			}
 			// --- strategy 2 --- 
 //			tags.add('('+nvn.getInfraGenericEpithet()+')');	
 		}
 		Team authorTeam = Team.NewInstance();
 		authorTeam.setProtectedTitleCache(true);
-		authorTeam.setTitleCache(nonViralName.getAuthorshipCache());
+		authorTeam.setTitleCache(nonViralName.getAuthorshipCache(), true);
 		tags.add(authorTeam);
 		
 		// Name is an autonym. Rank and infraspecific eitheton follow the author
@@ -405,7 +423,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			tags.add(nonViralName.getInfraSpecificEpithet());			
 		}
 		
-		if(! "".equals(nonViralName.getAppendedPhrase())){
+		if(! "".equals(nonViralName.getAppendedPhrase())&& (nonViralName.getAppendedPhrase() != null)){
 			tags.add(nonViralName.getAppendedPhrase());
 		}
 		
@@ -413,7 +431,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 	
 
-	/************** PRIVATES ****************/
+//***************************** PRIVATES ***************************************/
 		
 		protected String getRanklessNameCache(NonViralName nonViralName){
 			String result = "";
@@ -440,7 +458,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			if (rank.isSpeciesAggregate()){
 				return getSpeciesAggregateCache(nonViralName);
 			}
-			String infraGenericMarker = "xxx.";
+			String infraGenericMarker = "'unhandled infrageneric rank'";
 			if (rank != null){
 				try {
 					infraGenericMarker = rank.getInfraGenericMarker();
@@ -458,7 +476,24 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		protected String getSpeciesAggregateCache(NonViralName nonViralName){
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
-			result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+			
+			result += " "+getSpeciesAggregateEpithet(nonViralName);
+			/*result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+			String marker;
+			try {
+				marker = nonViralName.getRank().getInfraGenericMarker();
+			} catch (UnknownCdmTypeException e) {
+				marker = "'unknown aggregat type'";
+			}
+			result += " " + marker;*/
+			result = addAppendedPhrase(result, nonViralName).trim();
+			return result;
+		}
+		
+		private String getSpeciesAggregateEpithet(NonViralName nonViralName) {
+			String result;
+			
+			result = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
 			String marker;
 			try {
 				marker = nonViralName.getRank().getInfraGenericMarker();
@@ -466,7 +501,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				marker = "'unknown aggregat type'";
 			}
 			result += " " + marker;
-			result = addAppendedPhrase(result, nonViralName).trim();
+			
 			return result;
 		}
 		

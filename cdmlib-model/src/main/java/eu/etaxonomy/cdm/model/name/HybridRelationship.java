@@ -208,7 +208,7 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 		this.relatedTo = relatedTo;
 	}
 
-	protected void setType(HybridRelationshipType type) {
+	public void setType(HybridRelationshipType type) {
 		this.type = type;
 	}
 }

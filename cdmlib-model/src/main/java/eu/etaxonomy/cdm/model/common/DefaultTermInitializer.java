@@ -32,9 +32,9 @@ public class DefaultTermInitializer implements ITermInitializer {
 		
 //		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
 		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
-			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
-			TermVocabulary<?> voc  = termLoader.loadTerms(clazz, terms);
-			setDefinedTerms(clazz,voc);
+//			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
+			TermVocabulary<?> voc  = termLoader.loadTerms(vocabularyEnum, terms);
+			setDefinedTerms(vocabularyEnum.getClazz(),voc);
 		}		
 	}
 	

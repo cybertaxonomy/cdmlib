@@ -30,7 +30,7 @@ public interface ITreeNode extends ICdmBase {
 	 * @param citation
 	 * @param microCitation
 	 * @param synonymToBeUsed
-	 * @return
+	 * @return the child node 
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
 	
@@ -41,7 +41,7 @@ public interface ITreeNode extends ICdmBase {
 	 * @param citation
 	 * @param microCitation
 	 * @param synonymToBeUsed
-	 * @return
+	 * @return the child node
 	 */
 	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
 	

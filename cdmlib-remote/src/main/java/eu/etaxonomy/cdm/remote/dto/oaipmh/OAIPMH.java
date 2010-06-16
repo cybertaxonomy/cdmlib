@@ -72,7 +72,7 @@ public class OAIPMH {
     protected DateTime  responseDate = new DateTime();
     @XmlElement(required = true)
     protected Request request = new Request();
-    protected List<OAIPMHerror> error;
+    protected List<Error> error;
     @XmlElement(name = "Identify")
     protected Identify identify;
     @XmlElement(name = "ListMetadataFormats")
@@ -152,13 +152,13 @@ public class OAIPMH {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link OAIPMHerror }
+     * {@link Error }
      * 
      * 
      */
-    public List<OAIPMHerror> getError() {
+    public List<Error> getError() {
         if (error == null) {
-            error = new ArrayList<OAIPMHerror>();
+            error = new ArrayList<Error>();
         }
         return this.error;
     }

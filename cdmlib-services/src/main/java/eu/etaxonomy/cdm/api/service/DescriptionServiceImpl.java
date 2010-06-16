@@ -11,26 +11,33 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -50,7 +57,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @version 1.0
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao> implements IDescriptionService {
  	
 	private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
@@ -142,6 +149,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		return results;
 	}
+	public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+		Integer numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
+		
+		List<Annotation> results = new ArrayList<Annotation>();
+		if(numberOfResults > 0) { // no point checking again
+			results = descriptionElementDao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	
 
 	public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);
@@ -163,6 +182,26 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	public NamedAreaTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> omitLevels){
+		List<NamedArea> areaList = new ArrayList<NamedArea>();
+		NamedAreaTree tree = new NamedAreaTree();
+		//getting all the areas
+		for (TaxonDescription taxonDescription : taxonDescriptions) {
+			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid());
+			Set<DescriptionElementBase> elements = taxonDescription.getElements();
+			for (DescriptionElementBase element : elements) {
+				if(element.isInstanceOf(Distribution.class)){
+					Distribution distribution = (Distribution) element;
+					areaList.add(distribution.getArea());
+				}
+			}
+		}
+		//ordering the areas
+		tree.merge(areaList, omitLevels);
+		tree.sortChildren();
+		return tree;	
 	}
 
 	public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -238,8 +277,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * descriptionElementService.save
      */
+	@Transactional(readOnly = false)
 	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
 		return descriptionElementDao.save(descriptionElement);
+	}
+	
+    /**
+     * FIXME Candidate for harmonization
+     * descriptionElementService.save
+     */
+	@Transactional(readOnly = false)
+	public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
+		return descriptionElementDao.saveAll(descriptionElements);
 	}
 
     /**
@@ -252,5 +301,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {
 		return (TermVocabulary)vocabularyDao.findByUuid(uuid);
+	}
+
+	public List<DescriptionElementBase> getDescriptionElementsForTaxon(
+			Taxon taxon, Set<Feature> features,
+			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths) {
+		 return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
 	}
 }

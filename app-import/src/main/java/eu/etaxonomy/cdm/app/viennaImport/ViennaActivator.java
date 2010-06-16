@@ -99,7 +99,7 @@ public class ViennaActivator {
 				}
 				ReferenceFactory refFactory = ReferenceFactory.newInstance();
 				ReferenceBase sec = refFactory.newDatabase();
-				sec.setTitleCache("Vienna Asteraceae Images");
+				sec.setTitleCache("Vienna Asteraceae Images", true);
 				
 				TaxonNameBase taxonName = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(strTaxonName);
 				if (withCdm){

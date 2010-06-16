@@ -17,7 +17,6 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -47,7 +46,7 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		botName.setSpecificEpithet("species");
 		
 		ReferenceBase sec = refFactory.newGeneric();
-		sec.setTitleCache("My sec");
+		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
 		Assert.assertEquals("Wrong title cache for description", "Taxon description for Genus species", taxonDescription.getTitleCache());

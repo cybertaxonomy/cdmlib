@@ -35,6 +35,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
@@ -65,10 +67,16 @@ public abstract class TermBase extends IdentifiableEntity {
 	
 	public TermBase(){
 		super();
+		initCacheStrategy();
+		
+	}
+	private void initCacheStrategy() {
+		this.cacheStrategy = new TermDefaultCacheStrategy<TermBase>();
 	}
 	public TermBase(String term, String label, String labelAbbrev) {
 		super();
 		this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
+		initCacheStrategy();
 	}
 
 	public Set<Representation> getRepresentations() {

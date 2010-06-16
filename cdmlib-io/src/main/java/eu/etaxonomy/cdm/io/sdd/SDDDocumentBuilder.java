@@ -263,21 +263,21 @@ public class SDDDocumentBuilder {
 			buildNaturalLanguageDescription(baselement);
 		}
 		else {
-			baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-			baselement.setAttribute("xmlns", "http://rs.tdwg.org/UBIF/2006/");
-			baselement.setAttribute("xsi:schemaLocation", "http://rs.tdwg.org/UBIF/2006 http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd");
+		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		baselement.setAttribute("xmlns", "http://rs.tdwg.org/UBIF/2006/");
+		baselement.setAttribute("xsi:schemaLocation", "http://rs.tdwg.org/UBIF/2006 http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd");
 
-			buildTechnicalMetadata(baselement);
+		buildTechnicalMetadata(baselement);
 
-			List<ReferenceBase> references = cdmSource.getReferences();
-			Iterator<ReferenceBase> iterator = references.iterator();
-			IDatabase d = refFactory.newDatabase();
-			while (iterator.hasNext()) {
-				ReferenceBase reference = (ReferenceBase) iterator.next();
-				if (reference.getType().equals(ReferenceType.Database)) {
-					buildDataset(baselement, reference);
-				}
+		List<ReferenceBase> references = cdmSource.getReferences();
+		Iterator<ReferenceBase> iterator = references.iterator();
+		IDatabase d = refFactory.newDatabase();
+		while (iterator.hasNext()) {
+			ReferenceBase reference = (ReferenceBase) iterator.next();
+			if (reference.getType().equals(ReferenceType.Database)) {
+				buildDataset(baselement, reference);
 			}
+		}
 		}
 		document.appendChild(baselement);
 	}
@@ -288,24 +288,24 @@ public class SDDDocumentBuilder {
 		Set<TaxonDescription> descriptions = null;
 		TaxonDescription description = null;
 		FeatureTree featureTree = null;
-		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
-			Taxon taxon = (Taxon) tb.next();
-			if (taxon.generateTitle().contains("Podosperm")) {
+			for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
+				Taxon taxon = (Taxon) tb.next();
+				if (taxon.generateTitle().contains("Podosperm")) {
 				descriptions = taxon.getDescriptions();
 				description = descriptions.iterator().next();
 				System.out.println("P. canum");
-			}
-		}
-		for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
-			VersionableEntity featu = cdmSource.getFeatureData().get(i);
-			if (featu instanceof FeatureTree){
-				FeatureTree ft = (FeatureTree) featu;
-				if (ft.getLabel().contains("natural language")) {
+				}
+						}
+			for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
+				VersionableEntity featu = cdmSource.getFeatureData().get(i);
+				if (featu instanceof FeatureTree){
+					FeatureTree ft = (FeatureTree) featu;
+					if (ft.getLabel().contains("natural language")) {
 					featureTree = ft;
 					System.out.println("natural language");
+					}
 				}
 			}
-		}
 		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
 		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, description);
 		for (Iterator<TextData> td = listTextData.iterator() ; td.hasNext();) {
@@ -313,7 +313,7 @@ public class SDDDocumentBuilder {
 			System.out.println(textD.getText(Language.ENGLISH()));
 		}
 
-	}
+			}
 	
 	//	#############
 	//	# BUILD DOM	#
@@ -377,7 +377,7 @@ public class SDDDocumentBuilder {
 	 */
 	public void buildRepresentation(ElementImpl element, IDatabase reference) throws ParseException {
 
-		//	create <Representation> element
+		//			create <Representation> element
 		ElementImpl representation = new ElementImpl(document, REPRESENTATION);
 		element.appendChild(representation);
 		buildLabel(representation, reference.getTitleCache());
@@ -709,7 +709,7 @@ public class SDDDocumentBuilder {
 						charactersCount = buildReference(character, characters, ID, elQuantitativeCharacter, "c", charactersCount);
 						buildRepresentation(elQuantitativeCharacter, character);
 						elCharacters.appendChild(elQuantitativeCharacter);
-					}
+				}
 
 					if (character.isSupportsCategoricalData()) {
 						ElementImpl elCategoricalCharacter = new ElementImpl(document, CATEGORICAL_CHARACTER);
@@ -728,7 +728,7 @@ public class SDDDocumentBuilder {
 									statesCount = buildReference(state, states, ID, elStateDefinition, "s", statesCount);
 									buildRepresentation(elStateDefinition, state);
 									elStates.appendChild(elStateDefinition);
-								}
+			}
 								elCategoricalCharacter.appendChild(elStates);
 								elCharacters.appendChild(elCategoricalCharacter);
 							}
@@ -764,14 +764,14 @@ public class SDDDocumentBuilder {
 					buildScope(elCodedDescription, taxonDescription);
 					buildSummaryData(elCodedDescription, taxonDescription);
 					elCodedDescriptions.appendChild(elCodedDescription);
-				}
-			}
+								}
+							}
 
 			dataset.appendChild(elCodedDescriptions);
 		}
 
 	}
-	
+							
 	/**
 	 * Builds Scope associated with a CodedDescription
 	 */
@@ -793,8 +793,8 @@ public class SDDDocumentBuilder {
 					ElementImpl taxonName = new ElementImpl(document, TAXON_NAME);
 					taxonName.setAttribute(REF, ref);
 					scope.appendChild(taxonName);
+					}
 				}
-			}
 		}
 
 		Set<ReferenceBase> descriptionSources = taxonDescription.getDescriptionSources();
@@ -813,7 +813,7 @@ public class SDDDocumentBuilder {
 						String type = annotationType.getLabel();
 						if (type.equals("location")) {
 							citation.setAttribute("location", annotation.getText());
-						}
+	}
 					}
 				}
 
@@ -1087,9 +1087,9 @@ public class SDDDocumentBuilder {
 							}
 						}
 					}
-					agentsCount = buildReference(personagent, agents, ID, elAgent, "a", agentsCount);
-					buildRepresentation(elAgent, personagent);
-					elAgents.appendChild(elAgent);
+				agentsCount = buildReference(personagent, agents, ID, elAgent, "a", agentsCount);
+				buildRepresentation(elAgent, personagent);
+				elAgents.appendChild(elAgent);
 				}
 			}
 
@@ -1116,8 +1116,8 @@ public class SDDDocumentBuilder {
 					for (Iterator<FeatureNode> fn = roots.iterator(); fn.hasNext();) {
 						FeatureNode featureNode = fn.next();
 						buildBranches(featureNode,elNodes,true);				
-					}
 				}
+			}
 			}
 			dataset.appendChild(elChartrees);
 		}
@@ -1205,7 +1205,7 @@ public class SDDDocumentBuilder {
 			elCharNode.appendChild(elCharacter);
 			elCharNode.appendChild(elParent);
 			element.appendChild(elCharNode);
-		}
+			}
 	}
 
 	public void buildMediaObjects(ElementImpl dataset) throws ParseException {
@@ -1219,19 +1219,19 @@ public class SDDDocumentBuilder {
 				mediasCount = buildReference(mediobj, medias, ID, elMediaObject, "t", mediasCount);
 				buildRepresentation(elMediaObject, mediobj);
 				Set<MediaRepresentation> smr = mediobj.getRepresentations();
-				for (Iterator<MediaRepresentation> mr = smr.iterator() ; mr.hasNext();){
-					MediaRepresentation mediarep = mr.next();
-					ElementImpl elType = new ElementImpl(document, "Type");
-					elType.appendChild(document.createTextNode(mediarep.getMimeType()));
-					elMediaObject.appendChild(elType);
-					List<MediaRepresentationPart> lmrp = mediarep.getParts();
-					for (Iterator<MediaRepresentationPart> mrp = lmrp.iterator();mrp.hasNext();){
-						MediaRepresentationPart mediareppart = mrp.next();
-						ElementImpl elSource = new ElementImpl(document, "Source");
-						elSource.setAttribute("href",mediareppart.getUri());
-						elMediaObject.appendChild(elSource);
+					for (Iterator<MediaRepresentation> mr = smr.iterator() ; mr.hasNext();){
+						MediaRepresentation mediarep = mr.next();
+						ElementImpl elType = new ElementImpl(document, "Type");
+						elType.appendChild(document.createTextNode(mediarep.getMimeType()));
+						elMediaObject.appendChild(elType);
+						List<MediaRepresentationPart> lmrp = mediarep.getParts();
+						for (Iterator<MediaRepresentationPart> mrp = lmrp.iterator();mrp.hasNext();){
+								MediaRepresentationPart mediareppart = mrp.next();
+								ElementImpl elSource = new ElementImpl(document, "Source");
+								elSource.setAttribute("href",mediareppart.getUri());
+								elMediaObject.appendChild(elSource);
+							}
 					}
-				}
 				elMediaObjects.appendChild(elMediaObject);
 			}
 			dataset.appendChild(elMediaObjects);
@@ -1246,22 +1246,22 @@ public class SDDDocumentBuilder {
 			for (int i = 0; i < cdmSource.getReferences().size(); i++) {
 				ElementImpl elPublication = new ElementImpl(document, "Publication");
 				ReferenceBase publication = cdmSource.getReferences().get(i);
-				Set<Annotation> annotations = publication.getAnnotations();
-				for (Iterator<Annotation> a = annotations.iterator() ; a.hasNext() ;){
-					Annotation annotation = a.next();
-					AnnotationType annotationType = annotation.getAnnotationType();
+					Set<Annotation> annotations = publication.getAnnotations();
+					for (Iterator<Annotation> a = annotations.iterator() ; a.hasNext() ;){
+						Annotation annotation = a.next();
+						AnnotationType annotationType = annotation.getAnnotationType();
 					if (annotationType.equals(AnnotationType.EDITORIAL())) {
-						editorial = true;
+							editorial = true;
+						}
+						else {
+							editorial = false;
+						}
 					}
-					else {
-						editorial = false;
-					}
-				}
-				if (!editorial){
-					articlesCount = buildReference(publication, articles, ID, elPublication, "p", articlesCount);
+					if (!editorial){
+				articlesCount = buildReference(publication, articles, ID, elPublication, "p", articlesCount);
 					buildRepresentation(elPublication, (IDatabase) publication);
-					elPublications.appendChild(elPublication);
-				}
+				elPublications.appendChild(elPublication);
+					}
 			}
 			dataset.appendChild(elPublications);
 		}
@@ -1332,15 +1332,15 @@ public class SDDDocumentBuilder {
 							namedAreasCount = buildReference(na, namedAreas, ID, elGeographicArea, "a", namedAreasCount);
 							buildRepresentation(elGeographicArea,na);
 							elGeographicAreas.appendChild(elGeographicArea);
-						}
-					}
-
 				}
 			}
-			dataset.appendChild(elGeographicAreas);
+
 		}
 	}
-	
+			dataset.appendChild(elGeographicAreas);
+				}
+			}
+				
 	public void buildSpecimens(ElementImpl dataset) throws ParseException {
 
 		if (cdmSource.getOccurrences() != null) {
@@ -1353,12 +1353,12 @@ public class SDDDocumentBuilder {
 					specimenCount = buildReference(sob, specimens, ID, elSpecimen, "s", specimenCount);
 					buildRepresentation(elSpecimen, sob);
 					elSpecimens.appendChild(elSpecimen);
-				}
 			}
-			dataset.appendChild(elSpecimens);
 		}
-
+			dataset.appendChild(elSpecimens);
 	}
+
+			}
 
 	
 }

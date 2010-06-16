@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/description", "/*/featuretree"})
+@RequestMapping(value = {"/description", "/featuretree"})
 public class DescriptionListController extends BaseListController<DescriptionBase, IDescriptionService> {
 	
 	@Autowired
@@ -55,7 +55,7 @@ public class DescriptionListController extends BaseListController<DescriptionBas
 		this.service = service;
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value="/*/featuretree")
+	@RequestMapping(method = RequestMethod.GET, value="/featuretree")
 	public List<FeatureTree> doGetFeatureTrees(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		List<FeatureTree> obj = featureTreeService.list(null,null,null,null,FEATURETREE_INIT_STRATEGY);

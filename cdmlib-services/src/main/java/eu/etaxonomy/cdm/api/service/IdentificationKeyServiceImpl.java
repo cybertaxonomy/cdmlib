@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -13,7 +14,7 @@ import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
 	
 	IIdentificationKeyDao dao;

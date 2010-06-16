@@ -17,10 +17,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -29,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -76,6 +80,13 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return
 	 */
 	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement);
+	
+	/**
+	 * Persists a collection of <code>DescriptionElementBase</code>
+	 * @param descriptionElements
+	 * @return
+	 */
+	public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements);
 	
 	/**
 	 * Delete an existing description element
@@ -126,6 +137,16 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
+	 * 
+	 * @param taxonDescriptions
+	 * @param omitLevels
+	 * @return
+	 */
+	public NamedAreaTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, 
+												 Set<NamedAreaLevel> omitLevels);
+		
+	
+	/**
 	 * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
 	 * 
 	 * @param description The description which these description elements belong to (can be null to count all description elements)
@@ -139,6 +160,19 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 */
 	public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+	/**
+	 * Return a Pager containing Annotation entities belonging to the DescriptionElementBase instance supplied, optionally filtered by MarkerType
+     * @param annotatedObj The object that "owns" the annotations returned
+	 * @param status Only return annotations which are marked with a Marker of this type (can be null to return all annotations)
+	 * @param pageSize The maximum number of terms returned (can be null for all annotations)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of Annotation entities
+	 */
+	public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+		
+	
 	/**
 	 * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
 	 * 
@@ -204,4 +238,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return a Pager containing media instances
      */
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    
+    public List<DescriptionElementBase> getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
 }

@@ -60,15 +60,23 @@ public class CichorieaeActivator {
 	static final int sourceSecId = 7800000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
+	static final Object[] featureKeyList = new Integer[]{1, 43, 31, 4, 12, 98, 41}; 	
 	
-	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
+	/* --------- MEDIA recources ------------ */
+	static final boolean stopOnMediaErrors = true;
+	static final String protologueUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 	//Mac
-	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
+	//static final File protologuePath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
+	public static final File imageFolder  = new File("//media/editwp6/photos");
+	static final File protologuePath = new File("//media/editwp6/protolog");
+//	public static final File imageFolder  = new File("/media/photos");
+//	static final File protologuePath = new File("/media/protolog");
+	/* -------------------------------------- */
+	
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
+	static final int recordsPerTransaction = 2000;
 	
 	//should the other imports run as well?
 	static final boolean includeTaraxacum = true; 
@@ -109,6 +117,7 @@ public class CichorieaeActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = true;
+	static final boolean doCommonNames = true;
 
 	//etc.
 	static final boolean doMarker = true;
@@ -116,7 +125,7 @@ public class CichorieaeActivator {
 	
 // **************** SELECTED *********************
 //
-//	static final boolean doUser = true;
+//	static final boolean doUser = false;
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
@@ -131,6 +140,7 @@ public class CichorieaeActivator {
 //	//taxa 
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
+//	static final boolean doCommonNames = false;
 //	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
 //	
@@ -138,15 +148,9 @@ public class CichorieaeActivator {
 //	static final boolean doMarker = false;
 	
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
-		
-		//make BerlinModel Source
+	private boolean doInvoke(ICdmDataSource destination){
+		boolean success = true;
 		Source source = berlinModelSource;
-		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
 				
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
@@ -169,19 +173,34 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		bmImportConfigurator.setDoCommonNames(doCommonNames);
 		
 		bmImportConfigurator.setDoMarker(doMarker);
 		bmImportConfigurator.setDoUser(doUser);
 		bmImportConfigurator.setEditor(editor);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
+		bmImportConfigurator.setRecordsPerTransaction(recordsPerTransaction);
 		
 
-		// mediaResourceLocations
-		if ( mediaPath.exists() && mediaPath.isDirectory()){
-			bmImportConfigurator.setMediaUrl(mediaUrlString);
-			bmImportConfigurator.setMediaPath(mediaPath);
+		// protologueResourceLocations
+		if ( protologuePath.exists() && protologuePath.isDirectory()){
+			bmImportConfigurator.setMediaUrl(protologueUrlString);
+			bmImportConfigurator.setMediaPath(protologuePath);
 		}else{
-			logger.warn("Could not configure mediaResourceLocations");
+			if(stopOnMediaErrors){
+				logger.error("Could not configure protologue ResourceLocations -> will quit.");
+				System.exit(-1);
+			}
+			logger.error("Could not configure protologue ResourceLocations");
+		}
+		
+		// also check the image source folder
+		if ( !imageFolder.exists() || !imageFolder.isDirectory()){
+			if(stopOnMediaErrors){
+				logger.error("Could not configure imageFolder  -> will quit.");
+				System.exit(-1);
+			}
+			logger.error("Could not configure imageFolder");
 		}
 		
 		// maximum number of name facts to import
@@ -193,9 +212,9 @@ public class CichorieaeActivator {
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		success &= bmImport.invoke(bmImportConfigurator);
 		
-		if (doFacts && bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
+		if (doFacts && (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK) )   ){
 			CdmApplicationController app = bmImport.getCdmAppController();
 			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
 			logger.info(obj);
@@ -212,12 +231,18 @@ public class CichorieaeActivator {
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 
 
-		if (includeTaraxacum) {
-			System.out.println("Start Taraxacum import from BerlinModel ...");
-			TaraxacumActivator taraxacumActivator = new TaraxacumActivator();
-			taraxacumActivator.doImport(destination, DbSchemaValidation.UPDATE);
-			logger.warn("Taraxacum import still needs to be tested");
-			System.out.println("End Taraxacum import from BerlinModel ...");
+		try {
+			if (includeTaraxacum) {
+				System.out.println("Start Taraxacum import from BerlinModel ...");
+				TaraxacumActivator taraxacumActivator = new TaraxacumActivator();
+				success &= taraxacumActivator.doImport(destination, DbSchemaValidation.UPDATE);
+				logger.warn("Taraxacum import still needs to be tested");
+				System.out.println("End Taraxacum import from BerlinModel ...");
+			}
+		} catch (Exception e) {
+			success = false;
+			logger.error("Exception occurred during Taraxacum import.");
+			e.printStackTrace();	
 		}
 
 
@@ -226,12 +251,27 @@ public class CichorieaeActivator {
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					CichorieaeImageActivator.sourceFolder, cdmDestination, CichorieaeImageImport.class);
+					CichorieaeActivator.imageFolder, destination, CichorieaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			imageConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
-			imageImporter.invoke(imageConfigurator);
+			success &= imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
 		}
+		logger.warn("!!!! NOTE: RefDetail notes and RelPTaxon notes are not imported automatically. Please check for these notes and import them manually.");
+		
+		return success;
+		
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
+		
+		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + destination.getDatabase() + " ...");
+		CichorieaeActivator me = new CichorieaeActivator();
+		me.doInvoke(destination);
 		
 	}
 

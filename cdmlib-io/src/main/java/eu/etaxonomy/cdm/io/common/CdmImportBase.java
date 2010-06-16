@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -96,9 +97,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (extensionType == null){
 				extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 				extensionType.setUuid(uuid);
+				extensionType.setVocabulary(ExtensionType.DOI().getVocabulary());
 				getTermService().save(extensionType);
-				state.putExtensionType(extensionType);
 			}
+			state.putExtensionType(extensionType);
 		}
 		return extensionType;
 	}
@@ -110,11 +112,27 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (markerType == null){
 				markerType = MarkerType.NewInstance(label, text, labelAbbrev);
 				markerType.setUuid(uuid);
+				markerType.setVocabulary(MarkerType.COMPLETE().getVocabulary());
 				getTermService().save(markerType);
-				state.putMarkerType(markerType);
 			}
+			state.putMarkerType(markerType);
 		}
 		return markerType;
+	}
+	
+	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		AnnotationType annotationType = state.getAnnotationType(uuid);
+		if (annotationType == null){
+			annotationType = (AnnotationType)getTermService().find(uuid);
+			if (annotationType == null){
+				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
+				annotationType.setUuid(uuid);
+				annotationType.setVocabulary(AnnotationType.EDITORIAL().getVocabulary());
+				getTermService().save(annotationType);
+			}
+			state.putAnnotationType(annotationType);
+		}
+		return annotationType;
 	}
 	
 	/**
@@ -133,13 +151,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (namedArea == null){
 			namedArea = (NamedArea)getTermService().find(uuid);
 			if (namedArea == null){
-				namedArea = NamedArea.NewInstance(label, text, labelAbbrev);
+				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
 				getTermService().save(namedArea);
-				state.putNamedArea(namedArea);
 			}
+			state.putNamedArea(namedArea);
 		}
 		return namedArea;
 	}

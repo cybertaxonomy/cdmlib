@@ -51,11 +51,12 @@ public class DipteraActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
+
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final UUID treeUuid = UUID.fromString("1e3093f6-c761-4e96-8065-2c1334ddd0c1");
 	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; // TODO remove  13 occurence
+	static final Object[] featureKeyList = new Integer[]{1, 4, 5, 10, 11, 12, 99};
 	
 	static boolean useTaxonomicTree = true;
 	//editor - import
@@ -72,6 +73,14 @@ public class DipteraActivator {
 
 //	//ignore null
 	static final boolean ignoreNull = true;
+
+
+	
+	//update citations ?
+	static final boolean updateCitations = true;
+	
+	//include collections and add to specimen
+	static final boolean updateCollections = true;
 	
 	//authors
 	static final boolean doAuthors = true;
@@ -89,6 +98,7 @@ public class DipteraActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = false; //There are no occurrence data in diptera
+	static final boolean doCommonNames = false; //no common names in diptera
 	
 	//etc.
 	static final boolean doMarker = true;
@@ -104,30 +114,31 @@ public class DipteraActivator {
 //	static final boolean doTaxonNames = true;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
-//	static final boolean doTypes = false;
+//	static final boolean doTypes = true;
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa
-//	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = true;
+//	static final boolean doTaxa = false;
+//	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
 //	
 //	//etc.
 //	static final boolean doMarker = false;
-//	static final boolean doUser = false;	
+//	static final boolean doUser = true;	
 
 	
 	/**
+	 * @param destination 
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		
+	public boolean doImport(ICdmDataSource destination) {
+		boolean success = true;
 		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
-		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
+
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
@@ -149,6 +160,7 @@ public class DipteraActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		bmImportConfigurator.setDoCommonNames(doCommonNames);
 		
 		bmImportConfigurator.setDoMarker(doMarker);
 		bmImportConfigurator.setDoUser(doUser);
@@ -159,7 +171,7 @@ public class DipteraActivator {
 			bmImportConfigurator.setNameTypeDesignationStatusMethod(nameTypeDesignationStatusMethod);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
+			return false;
 		}
 		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
@@ -168,7 +180,7 @@ public class DipteraActivator {
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		success &= bmImport.invoke(bmImportConfigurator);
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImport.getCdmAppController();
@@ -190,7 +202,31 @@ public class DipteraActivator {
 			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		return success;
 	}
+	
+	public static void main(String[] args) {
+		boolean success = true;
+		logger.debug("start");
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;	
+		DipteraActivator me = new DipteraActivator();
+		success &= me.doImport(destination);
+		
+		DipteraPostImportUpdater updater = new DipteraPostImportUpdater();
+		if (updateCitations){
+			success &= updater.updateCitations(destination);
+		}
+		
+		if (updateCollections){
+			success &= updater.updateCollections(destination);
+		}
+
+	
+	}
+	
+	
+	
+	
 
 	private static NameTypeDesignationStatus nameTypeDesignationStatueMethod(String note){
 		if (CdmUtils.isEmpty(note)){

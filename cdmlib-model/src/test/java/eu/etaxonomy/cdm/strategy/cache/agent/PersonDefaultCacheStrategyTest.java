@@ -122,6 +122,8 @@ public class PersonDefaultCacheStrategyTest {
 		Assert.assertTrue("Person3 title cache must not be empty", CdmUtils.isNotEmpty(person3.getTitleCache()));
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title cache should start with Person#0", "Person#0", person3.getTitleCache().substring(0, 8));
+		person3.setFirstname("Klaus");
+		Assert.assertEquals("Person3 title cache should be Klaus", "Klaus", person3.getTitleCache());
 	}
 	
 	

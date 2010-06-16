@@ -89,7 +89,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 
 				try {
 					author = Team.NewInstance();
-					author.setTitleCache(authorName);
+					author.setTitleCache(authorName, true);
 
 					ImportHelper.setOriginalSource(author, fauEuConfig.getSourceReference(), authorId, namespace);
 

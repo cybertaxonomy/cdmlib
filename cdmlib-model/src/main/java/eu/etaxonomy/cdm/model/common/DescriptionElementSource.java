@@ -171,6 +171,19 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		this.nameUsedInSource = nameUsedInSource;
 	}
 
+
+//*********************************** CLONE *********************************************************/
+	
+	
+	/**
+	 * Clones this original source and sets the clones sourced object to 'sourceObj'
+	 * @see java.lang.Object#clone()
+	 */
+	public DescriptionElementSource clone(DescriptionElementBase sourcedObj) throws CloneNotSupportedException{
+		DescriptionElementSource result = (DescriptionElementSource)clone();
+		result.setSourcedObj(sourcedObj);
+		return result;
+	}
 	
 	
 	

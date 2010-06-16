@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -84,7 +83,11 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 	            if(logger.isDebugEnabled()){
 	            	logger.debug("processing " + key + " of " + bean.getClass());
 	            }
-	            if(Collection.class.isAssignableFrom(type) || Object.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)){
+	            if(CdmBase.class.isAssignableFrom(type)){
+	            	json.element(key, value, jsonConfig);
+	            } else if(Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)){
+	            	json.element(key, value, jsonConfig);
+	            }  else if(Object.class.isAssignableFrom(type)){
 	            	json.element(key, value, jsonConfig);
 	            } else {
 	            	json.element(key, value);

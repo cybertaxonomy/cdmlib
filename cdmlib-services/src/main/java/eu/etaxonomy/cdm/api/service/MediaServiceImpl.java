@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly=true, propagation = Propagation.SUPPORTS)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
 
 	@Autowired
@@ -70,7 +71,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		
 	}
 	
-	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut){
+	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException{
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		imageMetaData.readImageInfo(imageUri, timeOut);
 		imageMetaData.readMetaData(imageUri, timeOut);
@@ -78,7 +79,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return imageMetaData;
 	}
 	
-	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut){
+	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException{
 		
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		imageMetaData.readMetaData(imageUri, timeOut);

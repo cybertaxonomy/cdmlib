@@ -24,6 +24,7 @@
                   <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
               </entry>
               <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='/human.xsl'?&gt;"/>
+              <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='/oai2.xsl'?&gt;"/>
            </map>
         </property>
     </bean>

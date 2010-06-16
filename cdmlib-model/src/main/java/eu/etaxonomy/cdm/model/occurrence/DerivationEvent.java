@@ -35,6 +35,11 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
+/**
+ * @author a.mueller
+ * @date 17.05.2010
+ *
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DerivationEvent", propOrder = {
     "originals",
@@ -86,35 +91,75 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		super();
 	}
 	
+
+	/**
+	 * The specimen or observations that are the input for this derviation event.
+	 * @return
+	 */
 	public Set<SpecimenOrObservationBase> getOriginals() {
 		return originals;
 	}
 
+	
+	/**
+	 * Adds a new input specimen or observation for this derviation event.
+	 * @see #getOriginals()
+	 * @return
+	 */
 	public void addOriginal(SpecimenOrObservationBase original) {
 		if (! this.originals.contains(original)){
 			this.originals.add(original);
 			original.addDerivationEvent(this);
 		}
 	}
+	/**
+	 * Removes an input specimen or observation for this derviation event.
+	 * @see #getOriginals()
+	 * @return
+	 */
 	public void removeOriginal(SpecimenOrObservationBase original) {
 		this.originals.remove(original);
 	}
 	
+	
+	/**
+	 * The specimen or observations that are the output for this derviation event.
+	 * @return
+	 */
 	public Set<DerivedUnitBase> getDerivatives() {
 		return derivatives;
 	}
 	
+	
+	/**
+	 * Adds a new output specimen or observation for this derviation event.
+	 * @see #getDerivatives()
+	 * @return
+	 */
 	public void addDerivative(DerivedUnitBase derivative) {
 		if (derivative != null){
-			derivative.setDerivedFrom(this);
+			boolean notExisting = derivatives.add(derivative);
+			if (notExisting){
+				derivative.setDerivedFrom(this);
+			}
 		}
 	}
+	/**
+	 * Removes an output specimen or observation for this derviation event.
+	 * @see #getDerivatives()
+	 * @return
+	 */
 	public void removeDerivative(DerivedUnitBase derivative) {
 		if (derivative != null){
 			derivative.setDerivedFrom(null);
 		}
+		derivatives.remove(derivative);
 	}
 
+	/**
+	 * Returns the derivation event type
+	 * @return
+	 */
 	public DerivationEventType getType() {
 		return type;
 	}

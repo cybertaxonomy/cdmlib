@@ -89,7 +89,7 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 				media.addRepresentation(representation);
 								
 				TaxonNameDescription description = TaxonNameDescription.NewInstance();
-				TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
+				TextData protolog = TextData.NewInstance(Feature.PROTOLOGUE());
 				protolog.addMedia(media);
 				description.addElement(protolog);
 				taxonNameBase.addDescription(description);

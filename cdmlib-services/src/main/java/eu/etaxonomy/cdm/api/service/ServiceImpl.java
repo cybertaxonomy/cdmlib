@@ -12,13 +12,14 @@ package eu.etaxonomy.cdm.api.service;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 public class ServiceImpl extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> implements IService<CdmBase> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ServiceImpl.class);

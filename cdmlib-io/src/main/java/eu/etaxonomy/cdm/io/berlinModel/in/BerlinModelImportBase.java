@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -67,13 +68,18 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 			try{
 				ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
 				while (partitioner.nextPartition()){
-					partitioner.doPartition(this, state);
+					try {
+						partitioner.doPartition(this, state);
+					} catch (Exception e) {
+						e.printStackTrace();
+						success = false;
+					}
 				}
 			} catch (SQLException e) {
 				logger.error("SQLException:" +  e);
 				return false;
 			}
-			
+	
 			logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
 			return success;
 	}
@@ -102,6 +108,15 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	 */
 	protected abstract String getTableName();
 	
+	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, DescriptionElementBase descriptionElement, ResultSet rs, String id, String namespace) throws SQLException{
+		boolean success = true;
+		//id
+		success &= ImportHelper.setOriginalSource(descriptionElement, state.getConfig().getSourceReference(), id, namespace);
+		//createdUpdateNotes
+		success &= doCreatedUpdatedNotes(state, descriptionElement, rs);
+		return success;
+	}
+	
 	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
 		boolean success = true;
@@ -119,6 +134,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		BerlinModelImportConfigurator config = state.getConfig();
 		Object createdWhen = rs.getObject("Created_When");
 		String createdWho = rs.getString("Created_Who");
+		createdWho = handleHieraciumPilosella(createdWho);
 		Object updatedWhen = null;
 		String updatedWho = null;
 		try {
@@ -158,20 +174,46 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		
 		
 		//notes
-		if (CdmUtils.isNotEmpty(notes)){
+		doNotes(annotatableEntity, notes);
+		return success;
+	}
+
+	/**
+	 * Adds a note to the annotatable entity.
+	 * Nothing happens if annotatableEntity is <code>null</code> or notes is empty or <code>null</code>.
+	 * @param annotatableEntity
+	 * @param notes
+	 */
+	protected void doNotes(AnnotatableEntity annotatableEntity, String notes) {
+		if (CdmUtils.isNotEmpty(notes) && annotatableEntity != null ){
 			String notesString = String.valueOf(notes);
 			if (notesString.length() > 65530 ){
 				notesString = notesString.substring(0, 65530) + "...";
 				logger.warn("Notes string is longer than 65530 and was truncated: " + annotatableEntity);
 			}
-			Annotation notesAnnotation = Annotation.NewInstance(notesString, null);
+			Annotation notesAnnotation = Annotation.NewInstance(notesString, Language.DEFAULT());
 			//notesAnnotation.setAnnotationType(AnnotationType.EDITORIAL());
 			//notes.setCommentator(bmiConfig.getCommentator());
 			annotatableEntity.addAnnotation(notesAnnotation);
 		}
-		return success;
 	}
 	
+	/**
+	 * Special usecase for EDITWP6 import where in the createdWho field the original ID is stored
+	 * @param createdWho
+	 * @return
+	 */
+	private String handleHieraciumPilosella(String createdWho) {
+		String result = createdWho;
+		if (result == null){
+			return null;
+		}else if (result.startsWith("Hieracium_Pilosella import from EM")){
+			return "Hieracium_Pilosella import from EM";
+		}else{
+			return result;
+		}
+	}
+
 	private User getUser(String userString, BerlinModelImportState state){
 		if (CdmUtils.isEmpty(userString)){
 			return null;
@@ -317,7 +359,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	protected boolean loopNeedsHandling(int i, int recordsPerLoop) {
 		startTransaction();
 		return (i % recordsPerLoop) == 0;
-	}
+		}
 	
 	protected void doLogPerLoop(int count, int recordsPerLog, String pluralString){
 		if ((count % recordsPerLog ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
@@ -406,5 +448,6 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		}
 		return result;
 	}
+
 	
 }

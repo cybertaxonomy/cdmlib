@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
@@ -23,7 +24,11 @@ import net.sf.json.processors.JsonValueProcessorMatcher;
 import net.sf.json.util.CycleDetectionStrategy;
 import net.sf.json.util.PropertyFilter;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
+
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor;
 
 /**
  * 
@@ -31,6 +36,8 @@ import org.springframework.beans.factory.FactoryBean;
  * @author a.kohlbecker
  */
 public class JsonConfigFactoryBean implements FactoryBean {
+	
+	public static final Logger logger = Logger.getLogger(JsonConfigFactoryBean.class);
 
 	private JsonConfig jsonConfig = null;
 	
@@ -43,7 +50,7 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	private boolean ignoreJPATransient = true;
 	
 	private Map<Class,JsonBeanProcessor> jsonBeanProcessors = new HashMap<Class,JsonBeanProcessor>();
-	private List<PropertyFilter> jsonPropertyFilters = new ArrayList<PropertyFilter>();
+	private PropertyFilter jsonPropertyFilter = null;
 	private Map<Class,JsonValueProcessor> jsonValueProcessors = new HashMap<Class,JsonValueProcessor>();
 	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
 	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
@@ -58,17 +65,39 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	 * Default is true, to avoid LayzyLoadingExceptions.
 	 * <p>
 	 * 
-	 * @deprecated Transient getters which are just an alias for another getter
-	 *             are directly returning the the HibernateProxy. However if the
-	 *             return is a collection assembled by an algorithm it is not
-	 *             easily possible finding out if the list elements are
-	 *             initialized. Thus it is <b>NOT RECOMMENDED</b> using this
-	 *             property.
+	 * @deprecated Setting this property to false will cause
+	 *             LazyLoadingExceptions and will thus completely break the JSON
+	 *             serialization!! <br>
+	 *             In the cdm model all getters returning cdm entity or product
+	 *             of cdm entities which are not directly returning a
+	 *             HibernateProxy are annotated as @Transient. In order to
+	 *             serialize these properties you have to do two things:
+	 *             <ol>
+	 *             <li>Explicitly serialize the property by overriding
+	 *             {@link AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, JsonConfig)}
+	 *             in the according {AbstractCdmBeanProcessor} implementation.
+	 *             If there is no matching {AbstractCdmBeanProcessor}
+	 *             implementation you would have to create one. for example:
+	 *             <pre>
+	 	@Override
+		public JSONObject processBeanSecondStep(TaxonNameBase bean, JSONObject json, JsonConfig jsonConfig) {
+		  json.element("taggedName", getTaggedName(bean), jsonConfig);
+		  return json;
+		}
+	 *             </pre>
+	 *             </li> <li>Provide the service method which is used to
+	 *             retrieve the object graph in question with an appropriate
+	 *             initialization strategy.</li>
+	 *             </ol>
+	 * <strong>please see also http://dev.e-taxonomy.eu/trac/wiki/CdmEntityInitalization</strong>
 	 * 
 	 * @param ignoreJPATransient
 	 */
 	@Deprecated
 	public void setIgnoreJPATransient(boolean ignoreJPATransient) {
+		if(!ignoreJPATransient){
+			logger.error("ignoreJPATransient must not be set to false. Doing so will cause LazyLoadingExceptions and will thus completely break the JSON serialization.");
+		}
 		this.ignoreJPATransient = ignoreJPATransient;
 	}
 
@@ -76,8 +105,8 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		this.jsonBeanProcessors = jsonBeanProcessors;
 	}
 
-	public void setJsonPropertyFilters(List<PropertyFilter> jsonPropertyFilters) {
-		this.jsonPropertyFilters = jsonPropertyFilters;
+	public void setJsonPropertyFilter(PropertyFilter jsonPropertyFilter) {
+		this.jsonPropertyFilter = jsonPropertyFilter;
 	}
 
 	public void setJsonBeanProcessorMatcher(JsonBeanProcessorMatcher jsonBeanProcessorMatcher) {
@@ -115,13 +144,13 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		
 		jsonConfig.setIgnoreDefaultExcludes(ignoreDefaultExcludes);
 		
+		jsonConfig.setJsonPropertyFilter(jsonPropertyFilter);
+
 		for(Class clazz : jsonBeanProcessors.keySet()) {
 			jsonConfig.registerJsonBeanProcessor(clazz, jsonBeanProcessors.get(clazz));
 		}
 		
-		for(PropertyFilter propertyFilter : jsonPropertyFilters) {
-		    jsonConfig.setJsonPropertyFilter(propertyFilter);
-		}
+		
 
 		
 		for(Class clazz : jsonValueProcessors.keySet()) {

@@ -142,9 +142,8 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation,
 			String microCitation, Synonym synonymToBeUsed) {
 		
-		rootNodes.add(childNode);
-		childNode.setParent(null);
-		childNode.setTaxonomicTree(this);
+		childNode.setParentTreeNode(this);
+		
 		childNode.setReference(citation);
 		childNode.setMicroReference(microCitation);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
@@ -318,7 +317,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
 			if (taxonNode.getTaxonomicTree().equals(this)){
 				if (this.getChildNodes().contains(taxonNode)){
-					if (taxonNode.getParent() instanceof TaxonNode){
+					if (taxonNode.getParentTreeNode() instanceof TaxonNode){
 						logger.warn("A topmost node should have a TaxonomicTree as parent but actually has a TaxonNode parent");
 					}
 					return taxonNode;
@@ -349,7 +348,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return true;
 	}
 	
-	
 	/**
 	 * Relates two taxa as parent-child nodes within a taxonomic tree. <BR>
 	 * If the taxa are not yet part of the tree they are added to it.<Br>
@@ -358,26 +356,20 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * one parent. <Br>
 	 * If the parent-child relationship between these two taxa already exists nothing is changed. Only 
 	 * citation and microcitation are overwritten by the new values if these values are not null.
-	 * 
-	 * TODO this looks like very specialized functionality. Upon examination, it turned out that it is used
-	 * solely in imports and it also looks like it is very tightly coupled with the way the imports are implemented.
-	 * As an advocat for a clean API, I would very much recommend not having this in the library itself as I can 
-	 * not really see who else will be needing this.
-	 * - n.hoffmann
-	 * 
+	 *  
 	 * @param parent
 	 * @param child
 	 * @param citation
 	 * @param microCitation
-	 * @return
+	 * @return the childNode
 	 * @throws IllegalStateException If the child is a child of another parent already
 	 */
-	public boolean addParentChild (Taxon parent, Taxon child, ReferenceBase citation, String microCitation)
+	public TaxonNode addParentChild (Taxon parent, Taxon child, ReferenceBase citation, String microCitation)
 			throws IllegalStateException{
 		try {
 			if (parent == null || child == null){
 				logger.warn("Child or parent taxon is null.");
-				return false;
+				return null;
 			}
 			TaxonNode parentNode = this.getNode(parent);
 			TaxonNode childNode = this.getNode(child);
@@ -386,12 +378,12 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			//no multiple parents are allowed in the tree
 			if (childNode != null && ! childNode.isTopmostNode()){
 				//...different to the parent taxon  throw exception
-				if ((childNode.getParent() instanceof TaxonNode) && !((TaxonNode)childNode.getParent()).getTaxon().equals(parent) ){
+				if ((childNode.getParentTreeNode() instanceof TaxonNode) && !((TaxonNode)childNode.getParent()).getTaxon().equals(parent) ){
 					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + ((TaxonNode) childNode.getParent()).getTaxon().toString()) ;
 				//... same as the parent taxon do nothing but overwriting citation and microCitation
 				}else{
 					handleCitationOverwrite(childNode, citation, microCitation);
-					return true;
+					return childNode;
 				}
 			}
 			
@@ -402,7 +394,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			
 			//add child if not exists
 			if (childNode == null){
-				parentNode.addChildTaxon(child, citation, microCitation, null);
+				childNode = parentNode.addChildTaxon(child, citation, microCitation, null);
 			}else{
 				//child is still topmost node
 				//TODO test if child is topmostNode otherwise throw IllegalStateException
@@ -411,12 +403,12 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 				}
 				this.makeTopmostNodeChildOfOtherNode(childNode, parentNode, citation, microCitation);
 			}
+			return childNode;
 		} catch (IllegalStateException e) {
 			throw e;
 		} catch (RuntimeException e){
 			throw e;
 		}
-		return true;
 	}
 	
 	

@@ -1,105 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
-    <context:component-scan base-package="eu/etaxonomy/cdm/remote"/>
-    
-    <!-- 
-	======= ViewResolver =======
+	<context:component-scan base-package="eu/etaxonomy/cdm/remote" />
+
+
+	<!-- 
+	  ======= HandlerMappings =======
+	  -->
+	<!--
+		first we try to find the controller using the simpleurlmapping, then
+		the classname this follows the principal of "convention over
+		configuration"
 	-->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="order" value="1" />
+		<property name="interceptors">
+			<list>
+				<ref bean="contentNegociationHandlerInterceptor" />
+				<ref bean="localeContextHandlerInterceptor" />
+			</list>
+		</property>
+	</bean>
+
     <!-- 
-    	PatternViewResolver
-    	is Subclass of org.springframework.web.servlet.view.XmlViewResolver which 
-    	accepts a configuration file. The default configuration file is /WEB-INF/views.xml 
-     -->
-    <bean  name="viewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
-    	<property name="order" value="1"/>
- 		<!-- turn caching off FOR DEBUGING ONLY !!!!   
- 		<property name="cache" value="false"/> 
- 		 -->
-    </bean>
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="order" value="0" />
+		<property name="mappings">
+			<props>
+				<prop key="/index.do">urlFilenameViewController
+				</prop>
+				<prop key="/">welcomeFileViewController
+				</prop>
+			</props>
+		</property>
+	</bean>
+	 -->
     
-    <bean id="viewResolverJsp"  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    	<property name="order" value="100"/>
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/jsp/"/>
-        <property name="suffix" value=".jsp"/>
-    </bean>
-    
-    <!-- 
-	======= HandlerMappings =======
-	-->
-    <!--  
-    	first we try to find the controller using the simpleurlmapping, then the classname
-        this follows the principal of "convention over configuration" 
-    -->   
-    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-        <property name="order" value="1" />
-        <property name="interceptors">
-            <list>
-                <ref bean="datasourceContextHandlerInterceptor" />
-                <ref bean="contentNegociationHandlerInterceptor" />
-                <ref bean="localeContextHandlerInterceptor" />
-            </list>
-        </property>         
-    </bean>
-    
-    <!-- INDEX.JSP
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-	    <property name="mappings">
-	        <value>
-	            /*.jsp=urlFilenameViewController
-	            /=urlFilenameViewController
-	        </value>
-	    </property>
-    </bean>
-    -->
-    
-    <!-- 
+	<!-- 
 	======= HandlerAdapters =======
 	-->
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 	</bean>
-	
-	<!-- needed when using SimpleUrlHandlerMapping -->
-	<!-- INDEX.JSP
-    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
-	-->
+
+	<!-- needed when using SimpleUrlHandlerMapping 	-->
+	<bean
+		class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+    
+    
 	<!-- 
 	======= HandlerInterceptors =======
 	-->
-	<bean id="datasourceContextHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor"/>
-    <bean id="localeContextHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor"/>
-    <bean id="contentNegociationHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.ContentNegociationHandlerInterceptor">
-        <property name="mapping">
-            <map>
-                <entry key="text/json" value="json"/>
-                <entry key="application/json" value="json"/>
-                <entry key="application/xml" value="xml"/>
-            </map>
-        </property>
-        <property name="defaultExtension" value="xml"/>
-    </bean>
-    
-   <!-- 
-	======= ViewControllers =======
+	<!-- 
+	<bean id="datasourceContextHandlerInterceptor"
+		class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor" /> -->
+	<bean id="localeContextHandlerInterceptor"
+		class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor" />
+	<bean id="contentNegociationHandlerInterceptor"
+		class="eu.etaxonomy.cdm.remote.controller.interceptor.ContentNegociationHandlerInterceptor">
+		<property name="mapping">
+			<map>
+				<entry key="text/json" value="json" />
+				<entry key="application/json" value="json" />
+				<entry key="application/xml" value="xml" />
+			</map>
+		</property>
+		<property name="defaultExtension" value="xml" />
+	</bean>
+
+	<!-- 
+	 ======= ViewControllers =======
+	 -->
+	<bean id="urlFilenameViewController"
+		class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+	</bean>
+	<!--
+		The welcome-file-list in the web.xml will is ignored since the
+		cdmserver servlet is mapped to the root path [/] So the welcome file
+		list is being replaced by a SimpleUrlHandlerMapping on the root path
+		[/] which is mapped via this ViewController to the [index] view
+	<bean id="welcomeFileViewController"
+		class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+		<property name="suffix">
+			<value>index</value>
+		</property>
+	</bean>
 	-->
-    <bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
-    </bean>
+
+
+	<!-- 
+    ======= ViewResolver =======
+    -->
+	<!--
+		PatternViewResolver is Subclass of
+		org.springframework.web.servlet.view.XmlViewResolver which accepts a
+		configuration file. The default configuration file is
+		/WEB-INF/views.xml
+	-->
+	<bean name="viewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
+		<property name="order" value="0" />
+		<!--
+			turn caching off FOR DEBUGING ONLY !!!! 
+			<property name="cache" value="false"/>
+		-->
+	</bean>
 	
+    <!--  
+        === the viewResolverJsp is currently unused ===
+	<bean id="viewResolverJsp"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="order" value="1" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+		<property name="viewNames">
+			<!- -
+				view names (or name patterns) that can be handled
+			- ->
+			<list>
+				<value>index</value>
+			</list>
+		</property>
+	</bean>
+    -->
+
 	<!-- 
 	======= Exception Handling =======
 	-->
 	<bean id="exceptionResolver" class="eu.etaxonomy.cdm.remote.exception.CdmExceptionResolver">
-    </bean>
-    
-    <!--  
+	</bean>
+
+	<!--  
     ======= Security ======= 
     -->
 <!--    <bean id="basicProcessingFilter" class="org.springframework.security.ui.basicauth.BasicProcessingFilter">-->

@@ -125,13 +125,15 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							Media media = getMedia(nameFact, config.getMediaUrl(), config.getMediaPath());
 							if (media.getRepresentations().size() > 0){
 								TaxonNameDescription description = TaxonNameDescription.NewInstance();
-								TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
+								TextData protolog = TextData.NewInstance(Feature.PROTOLOGUE());
 								protolog.addMedia(media);
-								protolog.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
-										nameFactRefDetail, null, null);
+								protolog.addSource(String.valueOf(nameFactId), NAMESPACE, null, null, null, null);
 								description.addElement(protolog);
 								taxonNameBase.addDescription(description);
-								description.addDescriptionSource(citation);
+								if (citation != null){
+									description.addDescriptionSource(citation);
+									protolog.addSource(null, null, citation, nameFactRefDetail, null, null);
+								}
 							}//end NAME_FACT_PROTOLOGUE
 						}catch(NullPointerException e){
 							logger.warn("MediaUrl and/or MediaPath not set. Could not get protologue.");
@@ -200,8 +202,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 			while (rs.next()){
 				handleForeignKey(rs, nameIdSet, "PTnameFk");
 				handleForeignKey(rs, referenceIdSet, "nameFactRefFk");
-			}
-			
+	}
+	
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
@@ -231,7 +233,6 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	}
 
 	
-	//FIXME gibt es da keine allgemeine Methode in common?
 	//FIXME gibt es da keine allgemeine Methode in common?
 	public Media getMedia(String nameFact, URL mediaUrl, File mediaPath){
 		if (mediaUrl == null){
@@ -263,7 +264,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 		if (file.exists()){
 			representationTif.addRepresentationPart(makeImage(urlStringTif, size, file));
 		}
-		media.addRepresentation(representationTif);
+		if(representationTif.getParts().size() > 0){
+			media.addRepresentation(representationTif);
+		}
 		// end tif
 		// jpg
 		boolean fileExists = true;
@@ -279,7 +282,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				fileExists = false;
 			}
 		}
-		media.addRepresentation(representationJpg);
+		if(representationJpg.getParts().size() > 0){
+			media.addRepresentation(representationJpg);
+		}
 		// end jpg
 		//png
 		String urlStringPng = mediaUrlString + "png/" + nameFact + "." + suffixPng;
@@ -302,7 +307,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				}
 			}
 		} 
-		media.addRepresentation(representationPng);
+		if(representationPng.getParts().size() > 0){
+			media.addRepresentation(representationPng);
+		}
 		//end png
         //pdf 
         String urlStringPdf = mediaUrlString + "pdf/" + nameFact + "." + suffixPdf; 
@@ -325,7 +332,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
                         } 
                 } 
         }  
-        media.addRepresentation(representationPdf); 
+        if(representationPdf.getParts().size() > 0){
+        	media.addRepresentation(representationPdf);
+        }
         //end pdf 
 		
 		if(logger.isDebugEnabled()){
@@ -342,9 +351,11 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-	
-		imageMetaData.readMetaData(file.toURI(), 0);
-		
+		try {
+			imageMetaData.readMetaData(file.toURI(), 0);
+		} catch (IOException e) {
+			logger.error("IOError reading image metadata." , e);
+		}
 		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
 		return image;
 	}

@@ -67,7 +67,7 @@ public class PersonDefaultCacheStrategy extends StrategyBase implements
 			if (CdmUtils.isNotEmpty(result)){
 				return result;
 			}
-			addFirstNamePrefixSuffix("", person);
+			result = addFirstNamePrefixSuffix("", person);
 			if (CdmUtils.isNotEmpty(result)){
 				return result;
 			}
@@ -80,8 +80,8 @@ public class PersonDefaultCacheStrategy extends StrategyBase implements
 	 */
 	private String addFirstNamePrefixSuffix(String oldString, Person person) {
 		String result = oldString;
-		result = CdmUtils.concat(" ", person.getFirstname(),result); 
-		result = CdmUtils.concat(" ", person.getPrefix(),result); 
+		result = CdmUtils.concat(" ", person.getFirstname(), result); 
+		result = CdmUtils.concat(" ", person.getPrefix(), result); 
 		result = CdmUtils.concat(" ", result, person.getSuffix()); 
 		return result;
 	}

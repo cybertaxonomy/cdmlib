@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 
 
@@ -50,6 +51,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	public static final String OS_NAMESPACE_TAXON = "Taxon";
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRelTaxonIncludeImport.class);
 	
+	private ReferenceBase<?> sourceRef;
 	private static String ALL_SYNONYM_FROM_CLAUSE = " FROM Taxon INNER JOIN Taxon AS Parent " +
 	" ON Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
 	" WHERE (Taxon.TAX_VALID = 0) " +
@@ -94,9 +96,9 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		boolean success = true;
 
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+	//	MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 //		taxonStore.makeEmpty();
-		taxonStore = null;
+	//	taxonStore = null;
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		authorStore.makeEmpty();
 
@@ -104,28 +106,28 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 
 		TransactionStatus txStatus = startTransaction();
 		
-		TaxonBase taxon = getTaxonService().find(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
-		ReferenceBase<?> sourceRef = taxon.getSec();
+		TaxonBase taxon = getTaxonService().find(UUID.fromString("5932B630-5299-4A65-A4BF-BC38C6C108E2"));
+		sourceRef = taxon.getSec();
 
 		TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
 		commitTransaction(txStatus);
 		
-		ProfilerController.memorySnapshot();
+		//ProfilerController.memorySnapshot();
 		if (state.getConfig().isDoTaxonomicallyIncluded()) {
 			success = processParentsChildren(state);
 		}
-		ProfilerController.memorySnapshot();
+		//ProfilerController.memorySnapshot();
 		if (state.getConfig().isDoMisappliedNames()) {
 			success = processMisappliedNames(state);
 		}
-		ProfilerController.memorySnapshot();
+		//ProfilerController.memorySnapshot();
 		if (state.getConfig().isDoHeterotypicSynonyms()) {
 			if(logger.isInfoEnabled()) { 
 				logger.info("Start making heterotypic synonym relationships..."); 
 			}
 			success = processHeterotypicSynonyms(state, ALL_SYNONYM_FROM_CLAUSE);
 		}
-		ProfilerController.memorySnapshot();
+		//ProfilerController.memorySnapshot();
 
 		logger.info("End making taxa...");
 
@@ -223,8 +225,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		}
 		return success;		
 	}
-
 	
+
 	/** Retrieve misapplied name / accepted taxon uuid map from CDM DB */
 	private boolean processMisappliedNames(FaunaEuropaeaImportState state) {
 
@@ -319,6 +321,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	}
 
 
+
 	/** Retrieve synonyms from FauEuDB DB */
 	private boolean processHeterotypicSynonyms(FaunaEuropaeaImportState state, String fromClause) {
 
@@ -362,6 +365,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		}
 		return success;		
 	}
+	
+	
 
 	
 	private boolean storeSynonymRelationships(ResultSet rs, int count, FaunaEuropaeaImportState state) 
@@ -416,13 +421,16 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	}
 	
 	
+	
+	
+
 	/* Creates parent-child relationships.
 	 * Parent-child pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB. 
 	 */
 	private boolean createParentChildRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> childParentMap) {
-
-		TaxonBase taxon = getTaxonService().find(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
-		ReferenceBase<?> sourceRef = taxon.getSec();
+		//gets the taxon "Hydroscaphidae"(family)
+		TaxonBase taxon = getTaxonService().find(UUID.fromString("5932B630-5299-4A65-A4BF-BC38C6C108E2"));
+		sourceRef = taxon.getSec();
 		boolean success = true;
 		int limit = state.getConfig().getLimitSave();
 		
@@ -539,8 +547,10 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	 */
 	private boolean createMisappliedNameRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> fromToMap) {
 
-		TaxonBase taxon = getTaxonService().find(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
-		ReferenceBase<?> sourceRef = taxon.getSec();
+		//gets the taxon "Hydroscaphidae" (family)
+		
+		TaxonBase taxon = getTaxonService().find(UUID.fromString("5932B630-5299-4A65-A4BF-BC38C6C108E2"));
+		sourceRef = taxon.getSec();
 		boolean success = true;
 		int limit = state.getConfig().getLimitSave();
 		

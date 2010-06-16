@@ -54,13 +54,10 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	public static final String NAMESPACE = "Taxon";
 
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
-	public static final UUID APPENDED_TITLE_PHRASE = UUID.fromString("b121f3b6-89bb-48e1-a010-7d3148d2caba");
-	public static final UUID USE_NAME_CACHE = UUID.fromString("1b959a0d-230b-4b03-b7b6-2bd46056a22d");
 
 	private int modCount = 10000;
 	private static final String pluralString = "Taxa";
 	private String dbTableName = "PTaxon";
-
 	
 	/**
 	 * How should the publish flag in table PTaxon be interpreted

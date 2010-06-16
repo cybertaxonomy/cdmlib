@@ -176,7 +176,7 @@ public class TestDatabase {
 		// - persons, institutions 
 
 		Person linne = new Person("Carl", "Linne", "L.");
-		linne.setTitleCache("Linne & Karl");
+		linne.setTitleCache("Linne & Karl", true);
 		GregorianCalendar birth = new GregorianCalendar(1707, 4, 23);
 		GregorianCalendar death = new GregorianCalendar(1778, 0, 10);
 		TimePeriod period = TimePeriod.NewInstance(birth, death);
@@ -249,12 +249,12 @@ public class TestDatabase {
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		sec = refFactory.newBook();
 		sec.setAuthorTeam(linne);
-		sec.setTitleCache("Plant Specification & Taxonomy");
+		sec.setTitleCache("Plant Specification & Taxonomy", true);
 		references.add(sec);
 		
 		citRef = refFactory.newDatabase();
 		citRef.setAuthorTeam(linne);
-		citRef.setTitleCache("BioCASE");
+		citRef.setTitleCache("BioCASE", true);
 		references.add(citRef);
 
 		// taxa

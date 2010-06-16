@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -21,7 +23,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -44,23 +48,9 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	private static final UUID uuidAccessioning = UUID.fromString("3c7c0929-0528-493e-9e5f-15e0d9585fa1");
 	private static final UUID uuidSexualReproduction = UUID.fromString("aa79baac-165d-47ad-9e80-52a03776d8ae");
 
-	private static DerivationEventType SEXUAL_REPRODUCTION;
-
-	private static DerivationEventType ACCESSIONING;
-
-	private static DerivationEventType DUPLICATE_SEGREGATEION;
-
-	private static DerivationEventType VEGETATIVE_PROPAGATION;
-
-	private static DerivationEventType DNA_EXTRACTION;
-
-	private static DerivationEventType TISSUE_SAMPLING;
-
-	private static DerivationEventType GATHERING_IN_SITU;
-
-	private static DerivationEventType DUPLICATE;
-
+	protected static Map<UUID, DerivationEventType> termMap = null;		
 	
+
 	
 	/**
 	 * Factory method
@@ -84,7 +74,7 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	 */
 	public DerivationEventType() {
 	}
-
+	
 	
 	/**
 	 * Constructor
@@ -93,41 +83,47 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 		super(term, label, labelAbbrev);
 	}
 
+
+//************************** METHODS ********************************
+	
+	protected static DerivationEventType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;  //better return null then initialize the termMap in an unwanted way 
+		}
+		return (DerivationEventType)termMap.get(uuid);
+	}
+	
 	public static final DerivationEventType DUPLICATE(){
-		return DUPLICATE;
+		return getTermByUuid(uuidDuplicate);
 	}
 	public static final DerivationEventType GATHERING_IN_SITU(){
-		return GATHERING_IN_SITU; 
+		return getTermByUuid(uuidGatheringInSitu);
 	}
 	public static final DerivationEventType TISSUE_SAMPLING(){
-		return TISSUE_SAMPLING;
+		return getTermByUuid(uuidTissueSampling);
 	}
 	public static final DerivationEventType DNA_EXTRACTION(){
-		return DNA_EXTRACTION;
+		return getTermByUuid(uuidDnaExtraction);
 	}
 	public static final DerivationEventType VEGETATIVE_PROPAGATION(){
-		return VEGETATIVE_PROPAGATION;
+		return getTermByUuid(uuidVegetativPropagation);
 	}
 	public static final DerivationEventType DUPLICATE_SEGREGATEION(){
-		return DUPLICATE_SEGREGATEION;
+		return getTermByUuid(uuidDuplicateSegregation);
 	}
 	public static final DerivationEventType ACCESSIONING(){
-		return ACCESSIONING;
+		return getTermByUuid(uuidAccessioning);
 	}
 	public static final DerivationEventType SEXUAL_REPRODUCTION(){
-		return SEXUAL_REPRODUCTION;
+		return getTermByUuid(uuidSexualReproduction);
 	}
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<DerivationEventType> termVocabulary) {
-		DerivationEventType.ACCESSIONING = termVocabulary.findTermByUuid(DerivationEventType.uuidAccessioning);
-		DerivationEventType.DNA_EXTRACTION = termVocabulary.findTermByUuid(DerivationEventType.uuidDnaExtraction);
-		DerivationEventType.DUPLICATE = termVocabulary.findTermByUuid(DerivationEventType.uuidDuplicate);
-		DerivationEventType.DUPLICATE_SEGREGATEION = termVocabulary.findTermByUuid(DerivationEventType.uuidDuplicateSegregation);
-		DerivationEventType.GATHERING_IN_SITU = termVocabulary.findTermByUuid(DerivationEventType.uuidGatheringInSitu);
-		DerivationEventType.SEXUAL_REPRODUCTION = termVocabulary.findTermByUuid(DerivationEventType.uuidSexualReproduction);
-		DerivationEventType.TISSUE_SAMPLING = termVocabulary.findTermByUuid(DerivationEventType.uuidTissueSampling);
-		DerivationEventType.VEGETATIVE_PROPAGATION = termVocabulary.findTermByUuid(DerivationEventType.uuidVegetativPropagation);
+		termMap = new HashMap<UUID, DerivationEventType>();
+		for (DerivationEventType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (DerivationEventType)term);
+		}	
 	}
 	
 }

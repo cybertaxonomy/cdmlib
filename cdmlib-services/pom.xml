@@ -7,13 +7,14 @@
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-		<version>2.3</version>
+		<version>2.4</version>
 	</parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-services</artifactId>
   <name>CDM Services</name>
   <description>EDIT CDM library services. The local API and basis for webservices too.</description>
+  <packaging>bundle</packaging>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</connection>
     <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</developerConnection>
@@ -21,6 +22,18 @@
   </scm>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>eu.etaxonomy.cdm.api.service</Export-Package>
+            <Bundle-SymbolicName>eu.etaxonomy.cdm.services</Bundle-SymbolicName>
+            <Bundle-Activator>eu.etaxonomy.cdm.services.impl.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -31,6 +44,11 @@
    </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>1.0.0</version>
+    </dependency>    
   	 <dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-persistence</artifactId>

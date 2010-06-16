@@ -47,7 +47,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = "2.1.2.2.200909301715";
+	private static final String dbSchemaVersion = "2.4.1.2.201004231015";
 	
 
 	/**
@@ -72,7 +72,7 @@ public class CdmMetaData extends CdmBase{
 	 * (e.g. when new terms were added)
 	 * The last number represents the date of change.
 	 */
-	private static final String termsVersion = "2.1.2.3.201003091500";
+	private static final String termsVersion = "2.4.2.2.201006011715";
 	
 	
 	public enum MetaDataPropertyName{

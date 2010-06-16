@@ -13,7 +13,9 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -28,6 +33,8 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * TODO write controller documentation
@@ -37,14 +44,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  */
 @Controller
-@RequestMapping(value = {"/*/taxon/*","/*/taxon/*/*", "/*/taxon/*/annotation"})
+@RequestMapping(value = {"/taxon/*", "/taxon/{uuid}"})
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonController.class);
 	
+	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
+			"taxonNodes"
+	});
+	
 	public TaxonController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/taxon/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/taxon/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
 	}
 	
@@ -71,10 +82,13 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	 *         {@link #DEFAULT_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/*/taxon/*/accepted", method = RequestMethod.GET)
-	public Set<TaxonBase> getAccepted(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping(value = "{uuid}/accepted", method = RequestMethod.GET)
+	public Set<TaxonBase> doGetAccepted(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException {
 		logger.info("getAccepted() " + request.getServletPath());
-		TaxonBase tb = doGet(request, response);
+		TaxonBase tb = service.load(uuid);
 		HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
 		if(tb instanceof Taxon){
 			//the taxon already is accepted
@@ -87,7 +101,20 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 		}
 		return resultset;
 	}
+	
+	@RequestMapping(value = "{uuid}/taxonNodes", method = RequestMethod.GET)
+	public Set<TaxonNode>  doGetTaxonNodes(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException {
+		TaxonBase tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+		if(tb instanceof Taxon){
+			return ((Taxon)tb).getTaxonNodes();
+		} else {
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+			return null;
+		}
+	}
 		
 
-	
 }

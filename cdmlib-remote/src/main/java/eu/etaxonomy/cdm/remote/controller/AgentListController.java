@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/agent/"})
+@RequestMapping(value = {"/agent/"})
 public class AgentListController extends BaseListController<AgentBase, IAgentService> {
 
 	/* (non-Javadoc)

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The upmost (abstract) class for agents such as persons, teams or institutions.
- * An agent is a conscious entity which can take decisions, act and create
+ * An agent is a conscious entity which can make decisions, act and create
  * according to its own knowledge and goals and which may be approached.
  * Agents can be authors for nomenclatural or bibliographical references as well
  * as creators of pictures or field collectors or administrators of collections.

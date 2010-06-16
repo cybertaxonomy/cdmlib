@@ -136,7 +136,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	public static Person NewTitledInstance(String titleCache){
 		Person result = new Person();
-		result.setTitleCache(titleCache);
+		result.setTitleCache(titleCache, true);
 		return result;
 	}
 	

@@ -91,6 +91,11 @@ public class Representation extends LanguageStringBase {
 		this.abbreviatedLabel = abbreviatedLabel;
 	}
 	
+	/**
+	 * Returns the description of this representation
+	 * see {@link #getText()}
+	 * @return
+	 */
 	@Transient
 	public String getDescription(){
 		return getText();
@@ -104,6 +109,10 @@ public class Representation extends LanguageStringBase {
 	/* 
 	 * Overrides super.getText() only to document that here the Text attribute
 	 * should be used for a larger description of the label.
+	 */
+	/**
+	 * Returns the description of this representation.
+	 * @see #getDescription()
 	 */
 	@Transient
 	@Override

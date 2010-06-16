@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.database.DataSourceReloader;
 import eu.etaxonomy.cdm.remote.service.Utils;
 
 
-@Controller
+//@Controller
 @RequestMapping(value = {"/manager/*/*"})
 public class ManagementController
 {

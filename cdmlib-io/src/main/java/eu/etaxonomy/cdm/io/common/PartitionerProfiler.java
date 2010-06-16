@@ -104,16 +104,16 @@ public class PartitionerProfiler {
 
 	public void print(){
 		if (logger.isDebugEnabled()){
-		System.out.println("Durations: " +
-				"Start Transaction: " + durTxStartSingle.getMillis() + "/" + durTxStartAll.getMillis() +   
-				"; partitionRS1: " + durPartitionRs1Single.getMillis() + "/" + durPartitionRs1All.getMillis() +
-				"; getRelatedObjects: " + durRelObjectsSingle.getMillis() + "/" + durRelObjectsAll.getMillis() +
-				"; partitionRS2 " + durPartitionRs2Single.getMillis() + "/" + durPartitionRs2All.getMillis() +
-				"; doPartition " + durPartitionSingle.getMillis() + "/" + durPartitionAll.getMillis() +
-				"; doSave " + durSaveSingle.getMillis() + "/" + durSaveAll.getMillis() +
-				"; commit " + durTxCommitSingle.getMillis() + "/" + durTxCommitAll.getMillis() 
-		);
-	}
+			System.out.println("Durations: " +
+					"Start Transaction: " + durTxStartSingle.getMillis() + "/" + durTxStartAll.getMillis() +   
+					"; partitionRS1: " + durPartitionRs1Single.getMillis() + "/" + durPartitionRs1All.getMillis() +
+					"; getRelatedObjects: " + durRelObjectsSingle.getMillis() + "/" + durRelObjectsAll.getMillis() +
+					"; partitionRS2 " + durPartitionRs2Single.getMillis() + "/" + durPartitionRs2All.getMillis() +
+					"; doPartition " + durPartitionSingle.getMillis() + "/" + durPartitionAll.getMillis() +
+					"; doSave " + durSaveSingle.getMillis() + "/" + durSaveAll.getMillis() +
+					"; commit " + durTxCommitSingle.getMillis() + "/" + durTxCommitAll.getMillis() 
+			);
+		}
 	}
 	
 }

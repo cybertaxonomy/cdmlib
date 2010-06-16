@@ -36,7 +36,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenI
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 		
-
+		
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		System.out.println("makeIOClassList");
@@ -102,7 +102,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenI
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("ABCD specimen import");
+			sourceReference.setTitleCache("ABCD specimen import", true);
 		}
 		return sourceReference;
 	}

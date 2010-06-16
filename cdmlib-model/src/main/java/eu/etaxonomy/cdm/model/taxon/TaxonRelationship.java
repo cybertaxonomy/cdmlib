@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent;
+import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 
 /**
  * The class representing a relationship between two {@link Taxon ("accepted/correct") taxa}. 
@@ -56,6 +57,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent;
 @Entity
 @Audited
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
+@ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
@@ -187,7 +189,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 		this.relatedTo = relatedTo;
 	}
 
-	protected void setType(TaxonRelationshipType type) {
+	public void setType(TaxonRelationshipType type) {
 		this.type = type;
 	}
 }

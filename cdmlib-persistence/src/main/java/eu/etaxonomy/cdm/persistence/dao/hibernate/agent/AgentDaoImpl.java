@@ -125,16 +125,16 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao#getTeamOrPersonBaseUuidAndNomenclaturalTitle()
 	 */
-	public List<UuidAndTitleCache<TeamOrPersonBase>> getTeamOrPersonBaseUuidAndNomenclaturalTitle() {
-		List<UuidAndTitleCache<TeamOrPersonBase>> list = new ArrayList<UuidAndTitleCache<TeamOrPersonBase>>();
+	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle() {
+		List<UuidAndTitleCache<Team>> list = new ArrayList<UuidAndTitleCache<Team>>();
 		Session session = getSession();
 		
-		Query query = session.createQuery("select uuid, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Person' or dtype = 'Team'");
+		Query query = session.createQuery("select uuid, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Team'");
 		
 		List<Object[]> result = query.list();
 		
 		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<TeamOrPersonBase>(TeamOrPersonBase.class, (UUID) object[0], (String) object[1]));
+			list.add(new UuidAndTitleCache<Team>(Team.class, (UUID) object[0], (String) object[1]));
 		}
 		
 		return list;

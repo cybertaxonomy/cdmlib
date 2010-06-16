@@ -120,7 +120,7 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 			Media media = getMedia(state, file);
 			if (media.getRepresentations().size() > 0){
 				TaxonNameDescription description = TaxonNameDescription.NewInstance();
-				TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
+				TextData protolog = TextData.NewInstance(Feature.PROTOLOGUE());
 				protolog.addMedia(media);
 				description.addElement(protolog);
 				taxonName.addDescription(description);

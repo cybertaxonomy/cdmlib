@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/media/"})
+@RequestMapping(value = {"/media/"})
 public class MediaListController extends BaseListController<Media, IMediaService> {
 
 	/* (non-Javadoc)
@@ -33,5 +33,5 @@ public class MediaListController extends BaseListController<Media, IMediaService
 	@Autowired
 	public void setService(IMediaService service) {
 		this.service = service; 
-	}	
+	}
 }

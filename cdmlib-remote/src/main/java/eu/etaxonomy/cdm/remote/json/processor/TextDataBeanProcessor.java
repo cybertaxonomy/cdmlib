@@ -21,6 +21,7 @@ import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -63,8 +64,8 @@ public class TextDataBeanProcessor extends AbstractCdmBeanProcessor<TextData> {
 		TextData textdata = (TextData)bean;
 		LanguageString languageString;
 		List<Language> languages = LocaleContext.getLanguages();
-
-		languageString = textdata.getPreferredLanguageString(languages);
+		//textdata.getSources().iterator().next()
+		languageString = MultilanguageTextHelper.getPreferredLanguageString(textdata.getMultilanguageText(), languages);
 		if(languageString != null){
 			json.element("multilanguageText_L10n", languageString, jsonConfig);
 		}

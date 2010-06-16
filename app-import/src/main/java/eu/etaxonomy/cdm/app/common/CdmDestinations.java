@@ -43,6 +43,14 @@ public class CdmDestinations {
 	/**
 	 * Intended to be used for imports
 	 */
+	public static ICdmDataSource import_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "localhost";
+		String cdmDB = "import_a";
+		String cdmUserName = "root";
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
 	public static ICdmDataSource cdm_import(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
@@ -75,13 +83,6 @@ public class CdmDestinations {
 		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 
-	public static ICdmDataSource cdm_test_andreas_diptera(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_test_andreas_diptera"; 
-		String cdmUserName = "edit";
-		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
-	}
 	
 	public static ICdmDataSource cdm_test_andreas_palmae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
@@ -271,6 +272,77 @@ public class CdmDestinations {
 		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
+	public static ICdmDataSource cdm_local_cichorieae_d(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_cichorieae_d";
+		String cdmUserName = "root";
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	/* ========= For connections through ssh tunnels ============== */
+	
+
+	public static ICdmDataSource cdm_tunnel_palmae_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_palmae_a";
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, 13306, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_tunnel_cichorieae_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_cichorieae_a";
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, 13306, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_tunnel_dipera_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_diptera_a";
+		String cdmUserName = "root";
+		return makeDestination(dbType, cdmServer, cdmDB, 13306, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_tunnel_palmae_b(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_palmae_b";
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, 13306, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_tunnel_cichorieae_b(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_cichorieae_b";
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, 13306, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_tunnel_dipera_b(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_diptera_b";
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, 13306, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_tunnel_dichorieae_d(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_cichorieae_d";
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, 13306, cdmUserName, null);
+	}
+	
+	
+
+	
+
 	public static ICdmDataSource NULL(){
 		return null;
 	}

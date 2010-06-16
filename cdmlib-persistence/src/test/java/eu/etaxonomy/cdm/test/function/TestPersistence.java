@@ -53,7 +53,7 @@ public class TestPersistence {
 		logger.info("Create reference objects...");
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		ReferenceBase sec = refFactory.newJournal();
-		sec.setTitleCache("TestJournal");
+		sec.setTitleCache("TestJournal", true);
 		
 		logger.info("Create taxon objects...");
 		Taxon childTaxon = Taxon.NewInstance(tn, sec);
@@ -70,7 +70,7 @@ public class TestPersistence {
 		
 		logger.info("Create new Author agent...");
 		Person team= Person.NewInstance();
-		team.setTitleCache("AuthorAgent1");
+		team.setTitleCache("AuthorAgent1", true);
 		tn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");

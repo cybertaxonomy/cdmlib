@@ -87,12 +87,11 @@ public class JsonView extends BaseView implements View{
 		// create JSON Object
 		boolean isCollectionType = false;
 		JSON jsonObj;
-		if (entity != null && Collection.class.isAssignableFrom(entity.getClass())){
+		if (entity == null){
+		  jsonObj = JSONObject.fromObject("{}");
+		} else if(Collection.class.isAssignableFrom(entity.getClass())){
 			isCollectionType = true;
 			jsonObj = JSONArray.fromObject(entity, jsonConfig);
-//		}else if(dto instanceof Class){
-//			StringBuffer jsonStr = new StringBuffer().append("{\"name\":\"").append(((Class)dto).getName()).append("\", \"simpleName\": \"").append(((Class)dto).getSimpleName()).append("\"}");
-//			jsonObj = JSONObject.fromObject(jsonStr);
 		}else if(entity instanceof String){
 			jsonObj = JSONObject.fromObject("{\"String\":\""+entity+"\"}");
 		} else if(entity instanceof Integer){

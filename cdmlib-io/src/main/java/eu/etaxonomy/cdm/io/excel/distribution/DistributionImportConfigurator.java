@@ -85,7 +85,7 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("Distribution data import");
+			sourceReference.setTitleCache("Distribution data import", true);
 		}
 		return sourceReference;
 	}
