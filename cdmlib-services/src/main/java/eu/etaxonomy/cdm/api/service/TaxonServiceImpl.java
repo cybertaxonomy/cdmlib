@@ -527,7 +527,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			 
 		}
 		
-		return new DefaultPagerImpl<IdentifiableEntity>
+	   return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
 	

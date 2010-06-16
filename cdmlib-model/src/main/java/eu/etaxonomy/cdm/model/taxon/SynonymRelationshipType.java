@@ -177,6 +177,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	public static SynonymRelationshipType POTENTIAL_COMBINATION_OF() {
 		return getTermByUuid(uuidPotentialCombinationOf);
 	}
+	
 
 	@Override
 	public SynonymRelationshipType readCsvLine(Class<SynonymRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {

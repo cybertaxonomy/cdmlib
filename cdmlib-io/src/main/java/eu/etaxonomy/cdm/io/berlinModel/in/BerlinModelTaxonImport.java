@@ -58,7 +58,6 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	private int modCount = 10000;
 	private static final String pluralString = "Taxa";
 	private String dbTableName = "PTaxon";
-
 	
 	/**
 	 * How should the publish flag in table PTaxon be interpreted

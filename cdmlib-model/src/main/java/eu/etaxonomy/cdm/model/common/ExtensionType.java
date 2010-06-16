@@ -24,6 +24,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.description.Feature;
+
 /**
  * Extension types similar to dynamically defined attributes. These are not data
  * types, but rather content types like "DOI", "2nd nomenclatural reference", "3rd

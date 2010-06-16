@@ -36,6 +36,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenI
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 		
+		
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		System.out.println("makeIOClassList");

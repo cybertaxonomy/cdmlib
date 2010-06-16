@@ -25,6 +25,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 
 /**
  * The taxon name class for bacteria.
@@ -59,11 +60,6 @@ public class BacterialName extends NonViralName<BacterialName> {
 	@XmlElement(name = "NameApprobation")
 	@Field(index=Index.TOKENIZED)
 	private String nameApprobation;
-
-	// ************* CONSTRUCTORS *************/
-	
-	
-
 
 	// ************* CONSTRUCTORS *************/
 	

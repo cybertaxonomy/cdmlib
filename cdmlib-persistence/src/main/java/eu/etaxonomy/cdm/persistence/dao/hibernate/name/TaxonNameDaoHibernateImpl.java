@@ -599,8 +599,6 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return zooNames;
 	}
 	
-	
-	
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid){
 		List<ZoologicalName> zooNames = getAllZoologicalNames(null, 0);
 		for (ZoologicalName name: zooNames){

@@ -14,6 +14,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmImportSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/ImportUtils.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/common/TestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/EfloraSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/SapindaceaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
@@ -1761,6 +1762,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MediaKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Modifier.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MultiAccessKey.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NaturalLanguageTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
@@ -2031,6 +2033,7 @@ cdmlib-model/src/main/resources/terms/NameTypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/NamedArea.csv -text
 cdmlib-model/src/main/resources/terms/NamedAreaLevel.csv -text
 cdmlib-model/src/main/resources/terms/NamedAreaType.csv -text
+cdmlib-model/src/main/resources/terms/NaturalLanguageTerm.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalCode.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
 cdmlib-model/src/main/resources/terms/PresenceTerm.csv -text
@@ -2688,6 +2691,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDe
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacade.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeCacheStrategy.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeNotSupportedException.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractCategoricalDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractStringComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotatableServiceBase.java -text
@@ -2696,6 +2701,9 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AuditEventService.jav
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CollectionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CommonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultCategoricalDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultQuantitativeDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
@@ -2713,6 +2721,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ILocationService.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IMarkerService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IMediaService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INaturalLanguageGenerator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
@@ -2733,6 +2742,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MediaServiceImpl.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaNodeComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaTree.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenerator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
@@ -2961,6 +2971,8 @@ eclipse-plugin/org.springframework.jdbc-3.0.0.RELEASE.jar -text
 eclipse-plugin/org.springframework.jdbc-3.0.0.RELEASEsrc.zip -text
 eclipse-plugin/org.springframework.orm-3.0.0.RELEASE.jar -text
 eclipse-plugin/org.springframework.orm-3.0.0.RELEASEsrc.zip -text
+eclipse-plugin/org.springframework.oxm-3.0.0.RC1.jar -text
+eclipse-plugin/org.springframework.oxm-3.0.0.RC1src.zip -text
 eclipse-plugin/org.springframework.oxm-3.0.0.RELEASE.jar -text
 eclipse-plugin/org.springframework.oxm-3.0.0.RELEASEsrc.zip -text
 eclipse-plugin/org.springframework.test-3.0.0.RELEASE.jar -text
@@ -2976,10 +2988,18 @@ eclipse-plugin/slf4j-api-1.5.2.jar -text
 eclipse-plugin/slf4j-api-1.5.2src.zip -text
 eclipse-plugin/slf4j-log4j12-1.5.2.jar -text
 eclipse-plugin/slf4j-log4j12-1.5.2src.zip -text
+eclipse-plugin/spring-beans-2.5.6-sources.jar -text
+eclipse-plugin/spring-beans-2.5.6.jar -text
+eclipse-plugin/spring-beans-3.0.0.RELEASE.jar -text
+eclipse-plugin/spring-beans-3.0.0.RELEASEsrc.zip -text
+eclipse-plugin/spring-expression-3.0.0.RELEASE.jar -text
+eclipse-plugin/spring-expression-3.0.0.RELEASEsrc.zip -text
 eclipse-plugin/spring-modules-lucene-0.8a.jar -text
 eclipse-plugin/spring-modules-lucene-0.8asrc.zip -text
 eclipse-plugin/spring-security-core-3.0.0.RELEASE.jar -text
 eclipse-plugin/spring-security-core-3.0.0.RELEASEsrc.zip -text
+eclipse-plugin/spring-tx-3.0.0.RELEASE.jar -text
+eclipse-plugin/spring-tx-3.0.0.RELEASEsrc.zip -text
 eclipse-plugin/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 eclipse-plugin/wsdl4j-1.6.1.jar -text
 eclipse-plugin/wsdl4j-1.6.1src.zip -text

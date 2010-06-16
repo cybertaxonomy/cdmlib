@@ -23,6 +23,7 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -99,9 +100,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@XmlElement(name = "TitleCache", required = true)
 	@XmlJavaTypeAdapter(FormattedTextAdapter.class)
 	@Column(length=255, name="titleCache")
-	@Fields({@Field(name = "titleCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
-	     	 @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	})
+
 	@FieldBridge(impl=StripHtmlBridge.class)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
 	@NotEmpty(groups = Level2.class) // implictly NotNull
@@ -118,7 +117,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<Rights> rights;
+	@NotNull
+	private Set<Rights> rights = new HashSet<Rights>();
     
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
@@ -127,21 +127,24 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
     //TODO
 	@Merge(MergeMode.ADD_CLONE)
-	private List<Credit> credits;
+	@NotNull
+	private List<Credit> credits = new ArrayList<Credit>();
 	
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<Extension> extensions;
+	@NotNull
+	private Set<Extension> extensions = new HashSet<Extension>();
 	
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
     @OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<IdentifiableSource> sources;
+	@NotNull
+	private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
     
     @XmlTransient
 	@Transient

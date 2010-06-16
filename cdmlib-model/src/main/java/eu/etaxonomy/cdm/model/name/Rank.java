@@ -782,6 +782,7 @@ public class Rank extends OrderedTermBase<Rank> {
 			}
 		}
 	}
+
 	
 	public static Rank getRankByName(String rankName, NomenclaturalCode nc, boolean useUnknown)
 		throws UnknownCdmTypeException {
