@@ -25,6 +25,7 @@ public class SapindaceaeImportState extends ImportStateBase<SapindaceaeImportCon
 
 	public SapindaceaeImportState(SapindaceaeImportConfigurator config) {
 		super(config);
+		setTransformer(new SapindaceaTransformer());
 	}
 	
 //	/* (non-Javadoc)

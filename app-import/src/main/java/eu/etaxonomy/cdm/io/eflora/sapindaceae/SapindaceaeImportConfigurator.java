@@ -10,24 +10,18 @@
 package eu.etaxonomy.cdm.io.eflora.sapindaceae;
 
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
-import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
-import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -39,32 +33,7 @@ public class SapindaceaeImportConfigurator extends ImportConfiguratorBase<Sapind
 	private static IInputTransformer defaultTransformer = null;
 
 	
-//	@Autowired
-//	TcsXmlMetaDataImport tcsXmlMetaDataImport;
-//	@Autowired
-//	TcsXmlSpecimensImport tcsXmlSpecimensIO;
-//	@Autowired
-//	TcsXmlPublicationsImport tcsXmlPublicationsIO;
-//	@Autowired
-//	TcsXmlTaxonNameImport tcsXmlTaxonNameIO;
-//	@Autowired
-//	TcsXmlTaxonNameRelationsImport tcsXmlTaxonNameRelationsIO;
-//	@Autowired
-//	TcsXmlTaxonImport tcsXmlTaxonIO;
-//	@Autowired
-//	TcsXmlTaxonRelationsImport tcsXmlTaxonRelationsIO;
-	
 	protected void makeIoClassList(){
-//		ioBeans = new String[]{
-//				"tcsXmlMetaDataImport"
-//				, "tcsXmlSpecimensIO"
-//				, "tcsXmlPublicationsIO"
-//				, "tcsXmlTaxonNameIO"
-//				, "tcsXmlTaxonNameRelationsIO"
-//				, "tcsXmlTaxonIO"
-//				, "tcsXmlTaxonRelationsIO"	
-//		};
-		
 		ioClassList = new Class[]{
 			SapindaceaeTaxonImport.class
 		};
