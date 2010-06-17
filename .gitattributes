@@ -1602,7 +1602,6 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/test/function/TestDatabase.java -tex
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.java -text
 cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
@@ -1629,6 +1628,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TermTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text

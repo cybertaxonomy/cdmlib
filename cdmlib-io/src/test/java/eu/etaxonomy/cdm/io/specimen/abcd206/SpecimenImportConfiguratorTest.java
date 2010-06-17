@@ -45,7 +45,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfiguratorTest-input.xml";
+		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		configurator = Abcd206ImportConfigurator.NewInstance(url.toString(), null);
