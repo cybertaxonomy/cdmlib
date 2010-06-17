@@ -1529,6 +1529,9 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/SpecimenIoBase.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/SynthesysIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/UnitsGatheringArea.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/UnitsGatheringEvent.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenExcelImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenExcelImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
