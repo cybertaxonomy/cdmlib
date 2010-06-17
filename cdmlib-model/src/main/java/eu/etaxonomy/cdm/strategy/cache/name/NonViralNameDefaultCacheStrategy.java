@@ -168,33 +168,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		String result = "";
 		//Autonym
 		if (isAutonym(nonViralName)){
-			String speciesPart = getSpeciesNameCache(nonViralName);
-			//TODO should this include basionym authors and ex authors
-			INomenclaturalAuthor author = nonViralName.getCombinationAuthorTeam();
-			String authorPart = "";
-			if (author != null){
-				authorPart = CdmUtils.Nz(author.getNomenclaturalTitle());
-			}
-			INomenclaturalAuthor basAuthor = nonViralName.getBasionymAuthorTeam();
-			String basAuthorPart = "";
-			if (basAuthor != null){
-				basAuthorPart = CdmUtils.Nz(basAuthor.getNomenclaturalTitle());
-			}
-			if (! "".equals(basAuthorPart)){
-				authorPart = "("+ basAuthorPart +")" + authorPart;
-			}
-			String infraSpeciesPart = (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()));
-
-			String infraSpeciesSeparator = "";
-			if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
-				//TODO handle exception
-				logger.warn("Rank for autonym does not exist or is not lower than species !!");
-			}else{
-				infraSpeciesSeparator = nonViralName.getRank().getAbbreviation();
-			}
-			
-			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesSeparator, infraSpeciesPart});
-			result = result.trim().replace("null", "");
+			result = handleAutonym(nonViralName);
 		}else{ //not Autonym
 			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
 			if (nameIncludesAuthorship(nonViralName)){
@@ -204,6 +178,44 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				result = nameCache;
 			}
 		}
+		return result;
+	}
+
+
+	/**
+	 * @param nonViralName
+	 * @param speciesPart
+	 * @return
+	 */
+	private String handleAutonym(T nonViralName) {
+		String result;
+		String speciesPart = getSpeciesNameCache(nonViralName);
+		//TODO should this include basionym authors and ex authors
+		INomenclaturalAuthor author = nonViralName.getCombinationAuthorTeam();
+		String authorPart = "";
+		if (author != null){
+			authorPart = CdmUtils.Nz(author.getNomenclaturalTitle());
+		}
+		INomenclaturalAuthor basAuthor = nonViralName.getBasionymAuthorTeam();
+		String basAuthorPart = "";
+		if (basAuthor != null){
+			basAuthorPart = CdmUtils.Nz(basAuthor.getNomenclaturalTitle());
+		}
+		if (! "".equals(basAuthorPart)){
+			authorPart = "("+ basAuthorPart +")" + authorPart;
+		}
+		String infraSpeciesPart = (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()));
+
+		String infraSpeciesSeparator = "";
+		if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
+			//TODO handle exception
+			logger.warn("Rank for autonym does not exist or is not lower than species !!");
+		}else{
+			infraSpeciesSeparator = nonViralName.getRank().getAbbreviation();
+		}
+		
+		result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesSeparator, infraSpeciesPart});
+		result = result.trim().replace("null", "");
 		return result;
 	}
 	
@@ -435,7 +447,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		
 		protected String getRanklessNameCache(NonViralName nonViralName){
 			String result = "";
-			result = (result + (nonViralName.getGenusOrUninomial())).trim().replace("null", "");
+			result = (result + (CdmUtils.Nz(nonViralName.getGenusOrUninomial()))).trim().replace("null", "");
 			result += " " + (CdmUtils.Nz(nonViralName.getSpecificEpithet())).trim();
 			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim();
 			result = result.trim().replace("null", "");
@@ -447,7 +459,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	
 		protected String getGenusOrUninomialNameCache(NonViralName nonViralName){
 			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
 			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
 		}
@@ -466,7 +478,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 					infraGenericMarker = "'unhandled infrageneric rank'";
 				}
 			}
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
 			result += " " + infraGenericMarker + " " + (CdmUtils.Nz(nonViralName.getInfraGenericEpithet())).trim().replace("null", "");
 			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
@@ -475,9 +487,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 //		aggr.|agg.|group
 		protected String getSpeciesAggregateCache(NonViralName nonViralName){
 			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
 			
-			result += " "+getSpeciesAggregateEpithet(nonViralName);
+			result += " " + getSpeciesAggregateEpithet(nonViralName);
 			/*result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
 			String marker;
 			try {
@@ -507,7 +519,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		
 		protected String getSpeciesNameCache(NonViralName nonViralName){
 			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
 			result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
 			result = addAppendedPhrase(result, nonViralName).trim();
 			result = result.replace("\\s\\", " ");
@@ -521,7 +533,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		
 		protected String getInfraSpeciesNameCache(NonViralName nonViralName, boolean includeMarker){
 			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
 			result += " " + (CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim()).replace("null", "");
 			if (includeMarker){ 
 				result += " " + (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
