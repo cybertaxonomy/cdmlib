@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportConfigurator;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 
@@ -39,7 +39,7 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 		System.out.println("Start import from  ABCD Specimen data("+ source.toString() + ") ...");
 		
 		ICdmDataSource destination = cdmDestination;
-		SpecimenImportConfigurator specimenImportConfigurator = SpecimenImportConfigurator.NewInstance(source,  destination);
+		Abcd206ImportConfigurator specimenImportConfigurator = Abcd206ImportConfigurator.NewInstance(source,  destination);
 		
 		specimenImportConfigurator.setSourceSecId("specimen");
 		specimenImportConfigurator.setCheck(check);
@@ -51,7 +51,7 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 		specimenImportConfigurator.setTaxonReference(null);
 		
 		// invoke import
-		CdmDefaultImport<SpecimenImportConfigurator> specimenImport = new CdmDefaultImport<SpecimenImportConfigurator>();
+		CdmDefaultImport<Abcd206ImportConfigurator> specimenImport = new CdmDefaultImport<Abcd206ImportConfigurator>();
 		//new Test().invoke(tcsImportConfigurator);
 		specimenImport.invoke(specimenImportConfigurator);
 		System.out.println("End import from SpecimenData ("+ source.toString() + ")...");
