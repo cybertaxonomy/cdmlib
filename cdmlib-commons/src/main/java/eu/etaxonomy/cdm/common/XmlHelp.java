@@ -102,6 +102,31 @@ public class XmlHelp {
 		}
 		return resultList;
 	}
+	
+	/**
+	 * Returns a list of children with the given element name and with a given attribute name and 
+	 * a given value for this attribute.<BR>
+	 * The value comparison is case insensitive.
+	 * @param parent
+	 * @param elementName
+	 * @param attributeName
+	 * @param value
+	 * @return
+	 */
+	static public List<Element> getAttributedChildListWithValue(Element parent, String elementName, String attributeName, String value){
+		List<Element> resultList = new ArrayList<Element>();
+		Namespace ns = parent.getNamespace();
+		List<Element> elList = getChildren(parent, elementName, ns);
+		for (Element el : elList){
+			Attribute attr =  el.getAttribute(attributeName);
+			if (attr != null){
+				if (attr.getValue().equalsIgnoreCase(value)){
+					resultList.add(el);
+				}
+			}
+		}
+		return resultList;
+	}
 
 	@SuppressWarnings("unchecked")
 	private static List<Element> getChildren(Element parent, String elementName,Namespace ns) {
