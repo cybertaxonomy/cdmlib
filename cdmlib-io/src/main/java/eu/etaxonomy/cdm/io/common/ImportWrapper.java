@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
-import eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportConfigurator;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 
 /**
@@ -52,7 +52,7 @@ public class ImportWrapper {
 	public static ImportWrapper Abcd206WrapperInstance(){
 		String label = "ABCD 2.06";
 		Class<? extends ICdmImporter> clazz = CdmApplicationAwareDefaultImport.class;
-		IImportConfigurator config = SpecimenImportConfigurator.NewInstance(null, null);
+		IImportConfigurator config = Abcd206ImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);
 		wrapper.setImportClass(clazz);

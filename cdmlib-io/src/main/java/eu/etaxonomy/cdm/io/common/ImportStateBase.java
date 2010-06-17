@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -46,6 +47,9 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
 
 	private Map<String,UUID> taxonomicTreeKeyUuidMap = new HashMap<String,UUID>();
+	
+	private IInputTransformer inputTransformer;
+
 	
 	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
 	private Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
@@ -199,6 +203,16 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public void putFeature(Feature feature){
 		featureMap.put(feature.getUuid(), feature);
+	}
+	
+	//TODO make this abstract or find another way to force that the
+	//transformer exists
+	public IInputTransformer getTransformer(){
+		return inputTransformer;
+	}
+	
+	public void setTransformer(IInputTransformer transformer){
+		this.inputTransformer = transformer;
 	}
 	
 

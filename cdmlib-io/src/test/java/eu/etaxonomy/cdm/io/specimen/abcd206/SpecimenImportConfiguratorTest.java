@@ -24,7 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportConfigurator;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -48,7 +48,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		String inputFile = "/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = SpecimenImportConfigurator.NewInstance(url.toString(), null);
+		configurator = Abcd206ImportConfigurator.NewInstance(url.toString(), null);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	

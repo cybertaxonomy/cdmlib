@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -162,7 +163,32 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return namedArea;
 	}
 	
-	
+	/**
+	 * Returns a feature for a given uuid by first ...
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected Feature getFeature(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		if (uuid == null){
+			return null;
+		}
+		Feature feature = state.getFeature(uuid);
+		if (feature == null){
+			feature = (Feature)getTermService().find(uuid);
+			if (feature == null){
+				feature = Feature.NewInstance(text, label, labelAbbrev);
+				feature.setUuid(uuid);
+				getTermService().save(feature);
+			}
+			state.putFeature(feature);
+		}
+		return feature;
+	}
+
 	
 	/**
 	 * Adds an orginal source to a sourceable objects (implemented for Identifiable entity and description element.
