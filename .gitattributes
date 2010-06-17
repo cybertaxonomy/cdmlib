@@ -1519,6 +1519,10 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/SpecimenImportState
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/SpecimenIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/UnitsGatheringArea.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/UnitsGatheringEvent.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206DataHolder.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206Import.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/SpecimenImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/SpecimenImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/SpecimenIoBase.java -text
