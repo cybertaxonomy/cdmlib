@@ -25,6 +25,10 @@ app-import/src/main/resources/arecaceae_old2.rdf
 app-import/src/main/resources/arecaceae_short.rdf
 app-import/src/main/resources/tmp
 app-import/target
+cdm-server/.classpath
+cdm-server/.project
+cdm-server/.settings
+cdm-server/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
