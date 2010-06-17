@@ -4,13 +4,10 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
-import eu.etaxonomy.cdm.app.jaxb.JaxbImportActivator;
 import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
-import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 import eu.etaxonomy.cdm.io.reference.endnote.in.EndnoteImportConfigurator;
 
 public class EndNoteImportActivator {
