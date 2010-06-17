@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -207,7 +209,6 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						taxonService.saveOrUpdate(taxon);
 						
-						TextData feature = TextData.NewInstance();
 						//MetaDataFactory metaDataFactory = MetaDataFactory.getInstance();
 						//ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(file.toURI(), MimeType.IMAGE);
 						try{
@@ -278,13 +279,26 @@ public class PalmaeImageImport extends AbstractImageImporter {
 							media.addRights(copyright);
 						}
 						
-						feature.addMedia(media);
-						
-						feature.setFeature(Feature.IMAGE());
 						ReferenceBase sourceRef = config.getSourceReference();
 						TaxonDescription description = taxon.getOrCreateImageGallery(sourceRef == null ? null :sourceRef.getTitleCache());
 						
-						description.addElement(feature);
+						
+						TextData textData = null;
+						for (DescriptionElementBase element : description.getElements()){
+							if (element.isInstanceOf(TextData.class)){
+								textData = CdmBase.deproxy(element, TextData.class);
+							}
+						}
+						if (textData == null){
+							textData = TextData.NewInstance();
+						}
+						
+						
+						textData.addMedia(media);
+						
+						textData.setFeature(Feature.IMAGE());
+						
+						description.addElement(textData);
 						
 						taxonService.saveOrUpdate(taxon);
 						}catch(Exception e) {
