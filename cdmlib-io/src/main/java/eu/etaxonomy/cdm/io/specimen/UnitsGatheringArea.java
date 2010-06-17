@@ -7,10 +7,12 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.specimen.abcd206;
+package eu.etaxonomy.cdm.io.specimen;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -35,8 +37,8 @@ public class UnitsGatheringArea {
 	 * @param country
 	 * @param app
 	 */
-	public UnitsGatheringArea(String isoCountry, String country, ICdmApplicationConfiguration appConfig){
-		this.setCountry(isoCountry, country, appConfig);
+	public UnitsGatheringArea(String isoCountry, String country, ICdmApplicationConfiguration config){
+		this.setCountry(isoCountry, country, config);
 	}
 	
 	/*
@@ -66,8 +68,8 @@ public class UnitsGatheringArea {
 	 * @param namedAreas
 	 */
 	public void setAreaNames(ArrayList<String> namedAreas){
-		for (int i=0; i< namedAreas.size(); i++){
-			this.area.setLabel(namedAreas.get(i));
+		for (String strNamedArea : namedAreas){
+			this.area.setLabel(strNamedArea);
 			this.areas.add(this.area);
 			this.area = NamedArea.NewInstance();
 		}
@@ -82,20 +84,23 @@ public class UnitsGatheringArea {
 	 * @param fullName: the country's full name
 	 * @param app: the CDM application controller
 	 */
-	public void setCountry(String iso, String fullName, ICdmApplicationConfiguration appConfig){
-		WaterbodyOrCountry country=null;
-		List<WaterbodyOrCountry>countries = new ArrayList<WaterbodyOrCountry>();
-		if (iso != null && iso !="")
-			country = appConfig.getOccurrenceService().getCountryByIso(iso);
-		if (country != null)
+	public void setCountry(String iso, String fullName, ICdmApplicationConfiguration config){
+		WaterbodyOrCountry country = null;
+		List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
+		if (StringUtils.isBlank(iso)){
+			//TODO move to termservice
+			country = config.getOccurrenceService().getCountryByIso(iso);
+		}
+		if (country != null){
 			this.area.addWaterbodyOrCountry(country);
-
-		else{
-			if (fullName != "")
-			countries = appConfig.getOccurrenceService().getWaterbodyOrCountryByName(fullName);
-			if (countries.size() >0)
+		}else{
+			if (fullName != ""){
+				//TODO move to termservice
+				countries = config.getOccurrenceService().getWaterbodyOrCountryByName(fullName);
+			}
+			if (countries.size() >0){
 				this.area.addWaterbodyOrCountry(countries.get(0));
-			else{
+			}else{
 				this.area.setLabel(fullName);
 				this.area.setLevel(NamedAreaLevel.COUNTRY()); 
 			}

@@ -7,12 +7,14 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.specimen.abcd206;
+package eu.etaxonomy.cdm.io.specimen;
 
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 
 /**
@@ -20,10 +22,10 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
  * @created 20.10.2008
  * @version 1.0
  */
-public abstract class SpecimenIoBase  extends CdmIoBase<SpecimenImportState> {
+public abstract class SpecimenIoBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>  extends CdmImportBase<CONFIG, STATE> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenIoBase.class);
 
-	protected abstract boolean doInvoke(SpecimenImportState state);
+	protected abstract boolean doInvoke(STATE state);
 
 }

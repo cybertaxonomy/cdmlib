@@ -7,7 +7,8 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.specimen.excel;
+package eu.etaxonomy.cdm.io.specimen;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
  * @author p.kelbert
- * @created 29.10.2008
+ * @created 20.10.2008
  * @version 1.0
  */
 public class UnitsGatheringEvent {
@@ -63,12 +64,13 @@ public class UnitsGatheringEvent {
 	public void setLocality(ICdmApplicationConfiguration config, String locality, String languageIso){
 		LanguageString loc;
 		if (languageIso == null || config.getTermService().getLanguageByIso(languageIso) == null){
-			if (languageIso != null && config.getTermService().getLanguageByIso(languageIso) == null )
+			if (languageIso != null && config.getTermService().getLanguageByIso(languageIso) == null ){
 				logger.info("unknown iso used for the locality: "+languageIso);
+			}
 			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
+		}else{
+			loc = LanguageString.NewInstance(locality, config.getTermService().getLanguageByIso(languageIso));
 		}
-		else
-			loc = LanguageString.NewInstance(locality,config.getTermService().getLanguageByIso(languageIso));
 		this.gatheringEvent.setLocality(loc);
 	}
 
@@ -121,7 +123,7 @@ public class UnitsGatheringEvent {
 			collName = collectors.next();
 			/*check if the collector does already exist*/
 			try{
-				List<AgentBase> col = config.getAgentService().findByTitle(null,collName,null,null,null,null, null,null).getRecords();
+				List<AgentBase> col = config.getAgentService().findByTitle(null,collName,null,null,null,null,null, null).getRecords();
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();
@@ -142,15 +144,13 @@ public class UnitsGatheringEvent {
 
 		if (collectorNames.size()>1){
 			Team team = new Team();
-			for (int i=0;i<collectorNames.size();i++){
-				collName = collectorNames.get(i);
+			for (String strCollectorName : collectorNames){
 				collector = Person.NewInstance();
-				collector.setTitleCache(collName, true);
+				collector.setTitleCache(strCollectorName, true);
 				team.addTeamMember(collector);
 				this.gatheringEvent.setCollector(team);
 			}
-		}
-		else if (collectorNames.size() == 1) {
+		}else if (collectorNames.size() == 1) {
 			collName = collectorNames.get(0);
 			collector = Person.NewInstance();
 			collector.setTitleCache(collName, true);
