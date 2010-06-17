@@ -132,19 +132,6 @@ public abstract class VersionableEntity extends CdmBase {
 		return true;
 	}
 
-	
-	/** Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#hashCode()}
-	 *  See {@link http://www.hibernate.org/109.html}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html} 
-	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html}
-	 * for more information about equals and hashcode. 
-	 */
-	 @Override
-	public int hashCode() {
-		   int hashCode = 7;
-		   hashCode = 29 * hashCode + this.getUuid().hashCode();
-		   //hashCode = 29 * hashCode + this.getCreated().hashCode();
-		   return hashCode;
-	}
 	 
 //********************** CLONE *****************************************/
 	
