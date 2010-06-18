@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.io.pesi.out;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -23,8 +25,11 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
@@ -43,6 +48,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "RelTaxon";
 	private static final String pluralString = "Relationships";
+	private static PreparedStatement synonymsStmt;
 
 	public PesiRelTaxonExport() {
 		super();
@@ -73,6 +79,10 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		try {
 			logger.error("*** Started Making " + pluralString + " ...");
 	
+			Connection connection = state.getConfig().getDestination().getConnection();
+			String synonymsSql = "UPDATE Taxon SET ParentTaxonFk = ?, KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
+			synonymsStmt = connection.prepareStatement(synonymsSql);
+
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
 
@@ -276,6 +286,20 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		} else if (relationship.isInstanceOf(SynonymRelationship.class)) {
 			SynonymRelationship sr = (SynonymRelationship)relationship;
 			taxon = (isFrom) ? sr.getSynonym() : sr.getAcceptedTaxon();
+
+			// Store ParentTaxonFk, KingdomFk and Rank information in Taxon table
+			Synonym synonym = sr.getSynonym();
+			TaxonNameBase synonymTaxonName = synonym.getName();
+			Taxon acceptedTaxon = sr.getAcceptedTaxon();
+			TaxonNameBase acceptedTaxonName = acceptedTaxon.getName();
+			
+			NomenclaturalCode nomenclaturalCode = synonymTaxonName.getNomenclaturalCode();
+			Integer kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
+			Integer taxonNameFk = state.getDbId(acceptedTaxonName);
+			Integer synonymFk = state.getDbId(synonymTaxonName);
+
+			invokeSynonyms(synonymTaxonName, nomenclaturalCode, kingdomFk, taxonNameFk, synonymFk);
+
 		} else if (relationship.isInstanceOf(NameRelationship.class)) {
 			NameRelationship nr = (NameRelationship)relationship;
 			TaxonNameBase taxonName = (isFrom) ? nr.getFromName() : nr.getToName();
@@ -296,6 +320,66 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		}
 		logger.warn("No taxon found in state for relationship: " + relationship.toString());
 		return null;
+	}
+
+	/**
+	 * Store synonym values.
+	 * @param taxonName
+	 * @param nomenclaturalCode
+	 * @param kingdomFk
+	 * @param synonymParentTaxonFk
+	 * @param currentTaxonFk
+	 */
+	private static boolean invokeSynonyms(TaxonNameBase taxonName,
+			NomenclaturalCode nomenclaturalCode, Integer kingdomFk,
+			Integer synonymParentTaxonFk, Integer currentSynonymFk) {
+		try {
+			synonymsStmt.setInt(1, synonymParentTaxonFk);
+			synonymsStmt.setInt(2, kingdomFk);
+			synonymsStmt.setInt(3, getRankFk(taxonName, nomenclaturalCode));
+			synonymsStmt.setString(4, getRankCache(taxonName, nomenclaturalCode));
+			synonymsStmt.setInt(5, currentSynonymFk);
+			synonymsStmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException during invoke for taxonName - " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + "): " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the <code>RankFk</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>RankFk</code> attribute.
+	 * @see MethodMapper
+	 */
+	private static Integer getRankFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode) {
+		Integer result = null;
+		if (nomenclaturalCode != null) {
+			if (taxonName != null && taxonName.getRank() == null) {
+				logger.warn("Rank is null: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			}
+			result = PesiTransformer.rank2RankId(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+			if (result == null) {
+				logger.warn("Rank " + taxonName.getRank().getLabel() + " could not be determined for PESI-Kingdom-Id " + PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the <code>RankCache</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>RankCache</code> attribute.
+	 * @see MethodMapper
+	 */
+	private static String getRankCache(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode) {
+		String result = null;
+		if (nomenclaturalCode != null) {
+			result = PesiTransformer.rank2RankCache(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+		}
+		return result;
 	}
 
 	/**
