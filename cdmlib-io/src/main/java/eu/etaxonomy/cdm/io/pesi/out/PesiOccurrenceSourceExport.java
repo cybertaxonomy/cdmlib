@@ -182,9 +182,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 			
-			// Delete database table helper
-			state.deleteStateTables();
-			
 			return success;
 		} catch (SQLException e) {
 			e.printStackTrace();

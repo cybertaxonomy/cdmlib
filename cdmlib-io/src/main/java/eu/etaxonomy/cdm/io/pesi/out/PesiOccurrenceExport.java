@@ -169,10 +169,10 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
+				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
 			}
 			if (list.size() == 0) {
-				logger.error("No " + pluralString + " left to fetch.");
+				logger.error("No " + parentPluralString + " left to fetch.");
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
@@ -411,10 +411,16 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	private static Integer getSourceFk(AnnotatableEntity entity, PesiExportState state) {
-		Integer result = null;		
-		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
-			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = state.getDbId(reference);
+		Integer result = null;
+		if (state != null && entity != null && entity.isInstanceOf(Distribution.class)) {
+			Distribution distribution = CdmBase.deproxy(entity, Distribution.class);
+			Set<DescriptionElementSource> sources = distribution.getSources();
+			if (sources.size() == 1) {
+				DescriptionElementSource source = sources.iterator().next();
+				result = state.getDbId(source.getCitation());
+			} else if (sources.size() > 1) {
+				logger.warn("Found Distribution with " + sources.size() + " sources.");
+			}
 		}
 		return result;
 	}
@@ -427,9 +433,19 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 */
 	private static String getSourceCache(AnnotatableEntity entity) {
 		String result = null;
-		if (entity != null && entity.isInstanceOf(ReferenceBase.class)) {
-			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
-			result = reference.getTitle();
+		ReferenceBase reference;
+		if (entity != null && entity.isInstanceOf(Distribution.class)) {
+			Distribution distribution = CdmBase.deproxy(entity, Distribution.class);
+			Set<DescriptionElementSource> sources = distribution.getSources();
+			if (sources.size() == 1) {
+				DescriptionElementSource source = sources.iterator().next();
+				reference = source.getCitation();
+				if (reference != null) {
+					result = reference.getTitle();
+				}
+			} else if (sources.size() > 1) {
+				logger.warn("Found Distribution with " + sources.size() + " sources.");
+			}
 		}
 		return result;
 	}
