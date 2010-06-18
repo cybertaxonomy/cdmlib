@@ -45,6 +45,7 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	
 	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
 	private static final UUID uuidEditorial = UUID.fromString("e780d5fd-abfc-4025-938a-46deb751d808");
+	private static final UUID uuidTreeIndex = UUID.fromString("28f4e205-1d02-4d3a-8288-775ea8413009");
 
 	public static AnnotationType NewInstance(String term, String label, String labelAbbrev){
 		return new AnnotationType(term, label, labelAbbrev);
@@ -84,6 +85,10 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 
 	public static final AnnotationType EDITORIAL(){
 		return getTermByUuid(uuidEditorial);
+	}
+	
+	public static final AnnotationType TREEINDEX(){
+		return getTermByUuid(uuidTreeIndex);
 	}
 
 	protected void setDefaultTerms(TermVocabulary<AnnotationType> termVocabulary) {
