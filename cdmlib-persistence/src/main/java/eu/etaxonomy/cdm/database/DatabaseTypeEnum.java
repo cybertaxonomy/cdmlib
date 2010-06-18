@@ -43,6 +43,27 @@ public enum DatabaseTypeEnum {
 	;
 
 	/**
+	 * 
+	 */
+	private static final String P6SPY_DRIVER_CLASS_NAME = "com.p6spy.engine.spy.P6SpyDriver";
+	private boolean useP6Spy = false;
+	
+	
+	/**
+	 * @return the useP6Spy
+	 */
+	public boolean isUseP6Spy() {
+		return useP6Spy;
+	}
+
+	/**
+	 * @param useP6Spy the useP6Spy to set
+	 */
+	public void setUseP6Spy(boolean useP6Spy) {
+		this.useP6Spy = useP6Spy;
+	}
+
+	/**
 	 * Constructor
 	 * @param i
 	 */
@@ -92,7 +113,12 @@ public enum DatabaseTypeEnum {
 	 * @return
 	 */
 	public String getDriverClassName(){
-		return dbType.getClassString();
+		if(useP6Spy){
+			return P6SPY_DRIVER_CLASS_NAME;
+			
+		} else {
+			return dbType.getClassString();			
+		}
 	}
     
 	/**
