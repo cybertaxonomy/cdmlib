@@ -235,6 +235,19 @@ public class TimePeriod implements Cloneable, Serializable {
 		}
 	}
 	
+	/**
+	 * True, if there is no start date and no end date and no freetext representation exists.
+	 * @return
+	 */
+	@Transient
+	public boolean isEmpty(){
+		if (CdmUtils.isEmpty(this.getFreeText()) && start == null  && end == null ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	
 	public Partial getStart() {
 		return start;
@@ -562,7 +575,7 @@ public class TimePeriod implements Cloneable, Serializable {
 	public String toString(){
 		String result = null;
 		DateTimeFormatter formatter = new TimePeriodPartialFormatter();
-		if (! CdmUtils.isEmpty(this.getFreeText())){
+		if ( CdmUtils.isNotEmpty(this.getFreeText())){
 			result = this.getFreeText();
 		}else{
 			String strStart = start != null? start.toString(formatter): null;

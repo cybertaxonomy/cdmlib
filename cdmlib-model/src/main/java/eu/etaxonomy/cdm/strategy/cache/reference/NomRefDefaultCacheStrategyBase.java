@@ -47,7 +47,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
 	 */
 	public String getTitleCache(T nomenclaturalReference) {
-		//TODO neede?
+		//TODO needed?
 		if (nomenclaturalReference.isProtectedTitleCache()){
 			return nomenclaturalReference.getTitleCache();
 		}

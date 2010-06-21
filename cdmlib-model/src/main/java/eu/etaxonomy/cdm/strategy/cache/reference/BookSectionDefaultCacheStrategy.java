@@ -8,23 +8,22 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-import java.lang.reflect.Field;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-//import eu.etaxonomy.cdm.model.reference.Book;
-//import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
 	
-	private String afterBookAuthor = " - ";
+	public static final String UNDEFINED_BOOK = "- undefined book -";
+	private String afterSectionAuthor = " - ";
 	private String afterNomRefBookAuthor = ", ";
 	private String inBook = "in ";
 	private String blank = " ";
@@ -88,19 +87,32 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 	 */
 	@Override
 	public String getTitleCache(T bookSection) {
-		if (bookSection.getInReference() == null){
-			return null;
+		boolean hasBook = (bookSection.getInBook() != null);
+		String result;
+		if (hasBook){
+			result = bookSection.getInReference().getTitleCache();
+		}else{
+			result = "- undefined book -";
 		}
-		String result = bookSection.getInReference().getTitleCache();
-		TeamOrPersonBase<?> team = bookSection.getAuthorTeam();
-		String bookAuthor = CdmUtils.Nz(team == null? "" : team.getTitleCache());
-		result = bookAuthor + afterBookAuthor + result;
+		TeamOrPersonBase<?> sectionTeam = bookSection.getAuthorTeam();
+		String sectionAuthor = CdmUtils.Nz(sectionTeam == null ? "" : sectionTeam.getTitleCache());
 		result = inBook +  result;
 		String title = CdmUtils.Nz(bookSection.getTitle());
 		if (title.length() > 0){
 			result = title + blank + result;
 		}
-		
+		result = sectionAuthor + afterSectionAuthor + result;
+		if (bookSection.getDatePublished() != null && ! bookSection.getDatePublished().isEmpty()){
+			String bookSectionDate = bookSection.getDatePublished().toString();
+			if (hasBook && bookSection.getInBook().getDatePublished() != null){
+				TimePeriod bookDate = bookSection.getInBook().getDatePublished();
+				String bookDateString = bookDate.toString();
+				int pos = StringUtils.lastIndexOf(result, bookDateString);
+				result = result.substring(0, pos) + bookSectionDate + result.substring(pos + bookDateString.length());
+			}else{
+				result = result + beforeYear + bookSectionDate;
+			}
+		}
 		return result;
 	}
 	

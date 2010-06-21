@@ -13,11 +13,13 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
 	
+	public static final String UNDEFINED_JOURNAL = "- undefined journal -";
 	private String prefixSeries = "ser.";
 	private String prefixVolume = "vol.";
 	private String prefixReferenceJounal = "in";
@@ -51,32 +53,40 @@ public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRe
 		super();
 	}
 
+	
+	
+	@Override
+	public String getTitleCache(T nomenclaturalReference) {
+		if (nomenclaturalReference.isProtectedTitleCache()){
+			return nomenclaturalReference.getTitleCache();
+		}
+		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
+		result = addYear(result, nomenclaturalReference);
+		TeamOrPersonBase<?> team = nomenclaturalReference.getAuthorTeam();
+		result = CdmUtils.concat(" ", nomenclaturalReference.getTitle(), result);
+		if (team != null &&  CdmUtils.isNotEmpty(team.getTitleCache())){
+			result = team.getTitleCache() + afterAuthor + result;
+		}
+		return result;
+	}
+
+
 	@Override
 	protected String getNomRefTitleWithoutYearAndAuthor(T article){
 		if (article == null){
 			return null;
 		}
-		if (article.getInReference() == null){
-			return null;
+		boolean hasJournal = (article.getInReference() != null);
+		
+		String titelAbbrev;
+		if (hasJournal){
+			titelAbbrev = CdmUtils.Nz(article.getInReference().getTitle()).trim();
+		}else{
+			titelAbbrev = UNDEFINED_JOURNAL;
 		}
 		
-		String titelAbbrev = CdmUtils.Nz(article.getInReference().getTitle()).trim();
 		String series = CdmUtils.Nz(article.getSeries()).trim();
 		String volume = CdmUtils.Nz(article.getVolume()).trim();
-		
-		boolean lastCharIsDouble;
-		Integer len;
-		String lastChar;
-		String character =".";
-		len = titelAbbrev.length();
-		if (len > 0){lastChar = titelAbbrev.substring(len-1, len);}
-		//lastCharIsDouble = f_core_CompareStrings(RIGHT(@TitelAbbrev,1),character);
-		lastCharIsDouble = titelAbbrev.equals(character);
-
-//		if(lastCharIsDouble  && edition.length() == 0 && series.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
-//			titelAbbrev =  titelAbbrev.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
-//		}
-
 		
 		boolean needsComma = false;
 		
@@ -86,7 +96,7 @@ public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRe
 		nomRefCache = prefixReferenceJounal + blank; 
 		
 		//titelAbbrev
-		if (!"".equals(titelAbbrev)){
+		if (CdmUtils.isNotEmpty(titelAbbrev)){
 			nomRefCache = nomRefCache + titelAbbrev + blank; 
 		}
 		
@@ -94,7 +104,7 @@ public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRe
 		String seriesPart = "";
 		if (!"".equals(series)){
 			seriesPart = series;
-			if (isNumeric(series)){
+			if (CdmUtils.isNumeric(series)){
 				seriesPart = prefixSeries + blank + seriesPart;
 			}
 			if (needsComma){
@@ -124,16 +134,4 @@ public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRe
 		return nomRefCache.trim();
 	}
 	
-	private boolean isNumeric(String string){
-		if (string == null){
-			return false;
-		}
-		try {
-			Double.valueOf(string);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		
-	}
 }

@@ -96,6 +96,17 @@ public class Team extends TeamOrPersonBase<Team> {
 	}
 	
 	/** 
+	 * Creates a new team instance with a bibliographic and nomenclatural title
+	 * but without any {@link Person members}. The caches are set to protected.
+	 */
+	static public Team NewTitledInstance(String title, String nomTitle){
+		Team result = new Team();
+		result.setTitleCache(title, true);
+		result.setNomenclaturalTitle(nomTitle, true);
+		return result;
+	}
+	
+	/** 
 	 * Class constructor (including the cache strategy defined in
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
 	 */
