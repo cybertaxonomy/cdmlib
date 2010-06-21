@@ -108,14 +108,14 @@ public class ConversationHolder{
 		
 		try{
 			
-			logger.info("Starting new Synchronization in TransactionSynchronizationManager.");
+			logger.info("Starting new Synchronization in TransactionSynchronizationManager");
 			TransactionSynchronizationManager.initSynchronization();
 			
 			if(TransactionSynchronizationManager.hasResource(getSessionFactory())){
 				TransactionSynchronizationManager.unbindResource(getSessionFactory());
 			}
 			
-			logger.info("Binding Session to TransactionSynchronizationManager.");
+			logger.info("Binding Session to TransactionSynchronizationManager: Session: " + getSessionHolder());
 			TransactionSynchronizationManager.bindResource(getSessionFactory(), getSessionHolder());
 			
 		}catch(Exception e){
@@ -161,7 +161,7 @@ public class ConversationHolder{
 		}else{				
 			transactionStatus = transactionManager.getTransaction(definition);
 			
-			logger.info("Transaction started: [" + transactionStatus + "]");
+			logger.info("Transaction started: " + transactionStatus);
 		}
 		return transactionStatus;
 	}

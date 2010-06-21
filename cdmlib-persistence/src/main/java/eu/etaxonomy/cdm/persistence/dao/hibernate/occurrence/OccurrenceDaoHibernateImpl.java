@@ -6,8 +6,10 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -22,6 +24,7 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -34,7 +37,6 @@ import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -265,5 +267,37 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		List<SpecimenOrObservationBase> results = (List<SpecimenOrObservationBase>)criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results; 
+	}
+
+	@Override
+	public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache() {
+		List<UuidAndTitleCache<DerivedUnitBase>> list = new ArrayList<UuidAndTitleCache<DerivedUnitBase>>();
+		Session session = getSession();
+		
+		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName() + " where NOT dtype = " + FieldObservation.class.getSimpleName());
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			list.add(new UuidAndTitleCache<DerivedUnitBase>(DerivedUnitBase.class, (UUID) object[0], (String) object[1]));
+		}
+		
+		return list;
+	}
+
+	@Override
+	public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache() {
+		List<UuidAndTitleCache<FieldObservation>> list = new ArrayList<UuidAndTitleCache<FieldObservation>>();
+		Session session = getSession();
+		
+		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName() + " where dtype = " + FieldObservation.class.getSimpleName());
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			list.add(new UuidAndTitleCache<FieldObservation>(FieldObservation.class, (UUID) object[0], (String) object[1]));
+		}
+		
+		return list;
 	}
 }
