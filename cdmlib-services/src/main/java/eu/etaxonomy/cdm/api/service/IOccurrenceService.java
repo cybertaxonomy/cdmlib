@@ -13,12 +13,16 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -99,4 +103,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String query, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths);
+	
+	public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache();
+	public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache();
 }
