@@ -51,10 +51,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree, ITaxonomicTreeDao>
-		implements ITaxonTreeService {
-	private static final Logger logger = Logger
-			.getLogger(TaxonTreeServiceImpl.class);
+public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree, ITaxonomicTreeDao> implements ITaxonTreeService {
+	private static final Logger logger = Logger.getLogger(TaxonTreeServiceImpl.class);
 
 	@Autowired
 	private ITaxonNodeDao taxonNodeDao;
