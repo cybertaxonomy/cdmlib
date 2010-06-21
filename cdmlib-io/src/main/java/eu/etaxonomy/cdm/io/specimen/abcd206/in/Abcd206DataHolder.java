@@ -23,6 +23,7 @@ public class Abcd206DataHolder {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Abcd206DataHolder.class);
 	
+	
 	protected String atomisedStr;
 	protected String nomenclatureCode;
 	protected String institutionCode;
