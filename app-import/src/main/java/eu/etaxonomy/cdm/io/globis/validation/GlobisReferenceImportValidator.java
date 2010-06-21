@@ -10,16 +10,9 @@
 
 package eu.etaxonomy.cdm.io.globis.validation;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
-
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator;
-import eu.etaxonomy.cdm.io.erms.ErmsImportState;
 import eu.etaxonomy.cdm.io.globis.GlobisImportConfigurator;
 import eu.etaxonomy.cdm.io.globis.GlobisImportState;
 
