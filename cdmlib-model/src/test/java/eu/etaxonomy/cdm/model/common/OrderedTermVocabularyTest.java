@@ -61,8 +61,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		@Override
 		protected void setDefaultTerms(
 				TermVocabulary<DerivedOrderedTermBase> termVocabulary) {
-			// TODO Auto-generated method stub
-			
 		}
 	}
 
@@ -143,14 +141,23 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	@Ignore
 	public final void testGetEqualTerms() {
 		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
-		otbFree.orderIndex = otb2.orderIndex;
-		otbFree.setVocabulary(oVoc1);
+//		otbFree.orderIndex = otb2.orderIndex;
+//		oVoc1.addTerm(otbFree);
 		assertEquals(3, oVoc1.size());
 		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
 		assertEquals(1, oVoc1.getEqualTerms(otb2).size());
 		assertEquals(1, oVoc1.getEqualTerms(otb3).size());
-		//fail();  //setVocabulary muss in OrderedTermBase noch sicherer werden, ausserdem sollte OrderedTermVocabulary noch mehr von der Listen 
-		//Mentalit�t verlieren (es hat jetzt Set semantik)
+		try {
+			oVoc1.addTermEqualLevel(otbFree, otb2);
+			assertEquals(4, oVoc1.size());
+			assertEquals(2, oVoc1.getEqualTerms(otb2).size());
+		} catch (WrongTermTypeException e) {
+			fail();
+		}
+		//as long as orderedTermVocabulary.terms is a set
+		//this won't work because terms.add() will not result
+		//in adding the term
+		
 	}
 
 	@Test

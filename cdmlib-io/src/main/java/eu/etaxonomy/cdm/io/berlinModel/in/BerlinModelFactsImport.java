@@ -118,7 +118,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 				} catch (UnknownCdmTypeException e) {
 					logger.warn("New Feature (FactCategoryId: " + factCategoryId + ")");
 					feature = Feature.NewInstance(factCategory, factCategory, null);
-					feature.setVocabulary(featureVocabulary);
+					featureVocabulary.addTerm(feature);
 					feature.setSupportsTextData(true);
 					//TODO
 //					MaxFactNumber	int	Checked

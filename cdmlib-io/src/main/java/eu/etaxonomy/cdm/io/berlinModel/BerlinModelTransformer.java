@@ -164,7 +164,7 @@ public final class BerlinModelTransformer {
 				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
 				nomStatusCombIned.addRepresentation(representation);
 				nomStatusCombIned.setUuid(uuidRelNameCombIned);
-				nomStatusCombIned.setVocabulary(NomenclaturalStatusType.ALTERNATIVE().getVocabulary());
+				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusCombIned);
 			}
 			result = nomStatusCombIned;
 		}

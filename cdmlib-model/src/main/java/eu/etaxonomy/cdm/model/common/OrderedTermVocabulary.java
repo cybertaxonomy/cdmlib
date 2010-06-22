@@ -154,6 +154,10 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
+	/**
+	 * Adds a term to the the end / lowest
+	 * @see eu.etaxonomy.cdm.model.common.TermVocabulary#addTerm(eu.etaxonomy.cdm.model.common.DefinedTermBase)
+	 */
 	public void addTerm(T term) {
 		SortedSet<T> sortedTerms = getSortedSetOfTerms();
 		int lowestOrderIndex;

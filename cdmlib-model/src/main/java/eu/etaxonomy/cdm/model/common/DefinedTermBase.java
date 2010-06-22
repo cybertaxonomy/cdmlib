@@ -307,16 +307,18 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		this.media.remove(media);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getVocabulary()
+	/**
+	 * @return
 	 */
 	public TermVocabulary<T> getVocabulary() {
 		return this.vocabulary;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
+
+	//for bedirectional use only
+	/**
+	 * @param newVocabulary
 	 */
-	public void setVocabulary(TermVocabulary<T> newVocabulary) {
+	protected void setVocabulary(TermVocabulary<T> newVocabulary) {
 		this.vocabulary = newVocabulary;		
 	}	
 }
