@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
@@ -143,16 +142,32 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao#getTeamUuidAndTitleCache()
 	 */
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndNomenclaturalTitle() {
+	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache() {
 		List<UuidAndTitleCache<Person>> list = new ArrayList<UuidAndTitleCache<Person>>();
 		Session session = getSession();
 		
-		Query query = session.createQuery("select uuid, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Person'");
+		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName() + " where dtype = 'Person'");
 		
 		List<Object[]> result = query.list();
 		
 		for(Object[] object : result){
 			list.add(new UuidAndTitleCache<Person>(Person.class, (UUID) object[0], (String) object[1]));
+		}
+		
+		return list;
+	}
+
+	@Override
+	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache() {
+		List<UuidAndTitleCache<Team>> list = new ArrayList<UuidAndTitleCache<Team>>();
+		Session session = getSession();
+		
+		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName() + " where dtype = 'Team'");
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			list.add(new UuidAndTitleCache<Team>(Team.class, (UUID) object[0], (String) object[1]));
 		}
 		
 		return list;

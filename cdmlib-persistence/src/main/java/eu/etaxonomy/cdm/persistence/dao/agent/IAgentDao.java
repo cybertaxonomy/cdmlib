@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
@@ -84,7 +83,7 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 * 
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndNomenclaturalTitle();
+	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache();
 	
 	/**
 	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
@@ -93,4 +92,12 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
+	
+	/**
+	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
+	 * with their respective titleCache
+	 * 
+	 * @return a list of <code>UuidAndTitleCache</code> instances
+	 */
+	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
 }

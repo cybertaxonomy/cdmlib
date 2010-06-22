@@ -82,7 +82,15 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * 
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndNomenclaturalTitle();
+	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache();
+	
+	/**
+	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
+	 * with their respective titleCache
+	 * 
+	 * @return a list of <code>UuidAndTitleCache</code> instances
+	 */
+	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
 	
 	/**
 	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts

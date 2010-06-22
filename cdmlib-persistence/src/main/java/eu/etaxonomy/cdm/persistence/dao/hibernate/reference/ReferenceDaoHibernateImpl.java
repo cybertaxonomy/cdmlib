@@ -21,7 +21,6 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -48,6 +47,7 @@ import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -136,10 +136,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 			
 			if(referenceTitle != null){							
 				String teamTitle = (String) object[2];
-				if(teamTitle != null){
-					referenceTitle = referenceTitle.replace(teamTitle + ", ", "");
-					referenceTitle += " - " + teamTitle;
-				}
+				referenceTitle = ReferenceBaseDefaultCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
+				
 				list.add(new UuidAndTitleCache<ReferenceBase>(ReferenceBase.class, (UUID) object[0], referenceTitle));
 			}else{
 				logger.error("title cache of reference is null. UUID: " + object[0]);

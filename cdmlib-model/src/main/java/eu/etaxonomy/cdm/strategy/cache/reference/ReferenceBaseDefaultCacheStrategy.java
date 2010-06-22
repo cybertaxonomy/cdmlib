@@ -115,4 +115,19 @@ public class ReferenceBaseDefaultCacheStrategy<T extends ReferenceBase> extends 
 	protected UUID getUuid() {
 		return UUID.fromString("919dbf70-33e7-11de-b418-0800200c9a66");
 	}
+	
+	
+	/**
+	 * 
+	 * @param referenceTitleCache
+	 * @param authorTitleCache
+	 * @return
+	 */
+	public static String putAuthorToEndOfString(String referenceTitleCache, String authorTitleCache) {
+		if(authorTitleCache != null){
+			referenceTitleCache = referenceTitleCache.replace(authorTitleCache + ", ", "");
+			referenceTitleCache += " - " + authorTitleCache;
+		}
+		return referenceTitleCache;
+	}
 }
