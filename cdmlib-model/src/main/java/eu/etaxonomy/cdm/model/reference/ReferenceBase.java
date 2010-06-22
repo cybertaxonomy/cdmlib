@@ -1106,6 +1106,8 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S)cacheStrategy;
 		
-	}	
+	}
+
+
 }
 

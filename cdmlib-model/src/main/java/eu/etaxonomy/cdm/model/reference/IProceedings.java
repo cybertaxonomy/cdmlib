@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-public interface IProceedings extends IPublicationBase{
+public interface IProceedings extends IPrintedUnitBase{
 
 	public String getOrganization();
 	

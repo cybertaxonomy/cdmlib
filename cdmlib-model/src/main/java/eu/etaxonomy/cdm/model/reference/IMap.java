@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-public interface IMap extends IReferenceBase {
+public interface IMap extends IPublicationBase {
 	
 
 }
