@@ -60,8 +60,8 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	protected int orderIndex;
 	
 	/**
-	 * Higher ordered terms have a lower oderIndex, 
-	 * lower ordered terms have a higher order Index:
+	 * Higher ordered terms have a lower order index, 
+	 * lower ordered terms have a higher order index:
 	 * <p>
 	 * <b>a.oderIndex &lt; b.oderIndex : a &gt; b</b>
 	 * @return the order index of a term
