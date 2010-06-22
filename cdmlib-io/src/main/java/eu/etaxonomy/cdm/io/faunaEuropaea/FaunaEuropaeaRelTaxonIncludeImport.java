@@ -96,9 +96,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		boolean success = true;
 
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-	//	MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-//		taxonStore.makeEmpty();
-	//	taxonStore = null;
+
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		authorStore.makeEmpty();
 

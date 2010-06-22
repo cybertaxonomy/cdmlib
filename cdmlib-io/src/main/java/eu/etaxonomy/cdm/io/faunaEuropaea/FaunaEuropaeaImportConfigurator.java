@@ -99,8 +99,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			sourceReference = refFactory.newDatabase();
+			sourceReference = ReferenceFactory.newDatabase();
 			
 			sourceReference.setTitleCache("Fauna Europaea database", true);
 		}
@@ -114,8 +113,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	public ReferenceBase<?> getAuctReference() {
 		//TODO
 		if (auctReference == null){
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			auctReference = refFactory.newDatabase();
+			auctReference = ReferenceFactory.newGeneric();
 			
 			auctReference.setTitleCache("auct.", true);
 		}
