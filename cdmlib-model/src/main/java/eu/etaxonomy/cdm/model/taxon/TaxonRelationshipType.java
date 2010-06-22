@@ -136,6 +136,21 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 		return (TaxonRelationshipType)termMap.get(uuid);
 	}
 	
+	
+	/**
+	 * Returns true, if this relationship type is not a <i>misapplied name for<i>
+	 * and also no <i>taxonomically included in</i> relationship.<BR>
+	 * It assumes that all other relationships are concept relationships.
+	 * @return
+	 */
+	public boolean isConceptRelationship(){
+		if (this.equals(MISAPPLIED_NAME_FOR())){
+			return false;
+		}else if (this.equals(TAXONOMICALLY_INCLUDED_IN())){
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Returns the taxon relationship type "is taxonomically included in". This

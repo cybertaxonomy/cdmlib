@@ -880,14 +880,25 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		return count;
 	}
 	
+	
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> taxon is a misaplication
 	 * (misapplied name) for at least one other taxon. 
 	 */
 	// TODO cache as for #hasTaxonomicChildren
 	@Transient
-	public boolean isMisappliedName(){
+	public boolean isMisapplication(){
 		return computeMisapliedNameRelations() > 0;
+	}
+	
+	
+	/**
+	 * See {@link #isMisapplication()}.
+	 * @deprecated use {@link #isMisapplication()} instead 
+	 */
+	@Deprecated
+	public boolean isMisappliedName(){
+		return isMisapplication();
 	}
 	
 	/**
@@ -899,6 +910,31 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		int count = 0;
 		for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
 			if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/**
+	 * Returns the boolean value indicating whether <i>this</i> taxon is a related
+	 * concept for at least one other taxon. 
+	 */
+	@Transient
+	public boolean isRelatedConcept(){
+		return computeConceptRelations() > 0;
+	}
+	
+	/**
+	 * Counts the number of concept relationships where this taxon represents the
+	 * related concept for another taxon.
+	 * @return
+	 */
+	private int computeConceptRelations(){
+		int count = 0;
+		for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
+			TaxonRelationshipType type = rel.getType();
+			if (type.isConceptRelationship()){
 				count++;
 			}
 		}
