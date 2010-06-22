@@ -2121,6 +2121,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/agent/PersonDefaultCa
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/agent/TeamDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/common/TermDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/description/TaxonDescriptionDefaultCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/media/MediaDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text

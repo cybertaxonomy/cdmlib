@@ -229,6 +229,9 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	public void addTitle(LanguageString title){
 		this.title.put(title.getLanguage(), title);
 	}
+	public void addTitle(String title, Language language){
+		this.title.put(language, LanguageString.NewInstance(title, language));
+	}
 	
 	public void removeTitle(Language language){
 		this.title.remove(language);
@@ -323,24 +326,26 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
 	}
 	
-	/*
-	 * Overriding the title cache methods here to avoid confusion with the title field
-	 */
-	
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
 	@Override
-	public String getTitleCache() {
-		List<Language> languages = Arrays.asList(new Language[]{Language.DEFAULT()});
-		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(title, languages);
-		return languageString != null ? languageString.getText() : null;
+	public String getTitleCache(){
+		if (protectedTitleCache){
+			return this.titleCache;			
+		}
+		// is title dirty, i.e. equal NULL?
+		if (titleCache == null){
+			this.titleCache = generateTitle();
+			this.titleCache = getTruncatedCache(this.titleCache) ;
+		}else{
+			//do the same as listeners on dependend objects like representations parts
+			//are not yet installed
+			this.titleCache = generateTitle();
+			this.titleCache = getTruncatedCache(this.titleCache) ;
+		}
+		return titleCache;
 	}
 	
-	@Override
-	public String generateTitle() {
-		return getTitleCache();
-	}
 	
 }

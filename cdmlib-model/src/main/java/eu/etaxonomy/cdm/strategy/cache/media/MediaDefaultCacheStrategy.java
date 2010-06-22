@@ -13,22 +13,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.Transient;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
-public class MediaDefaultCacheStrategy extends StrategyBase implements
-		IIdentifiableEntityCacheStrategy<Media> {
+public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Media> {
+	protected static final  Logger logger = Logger.getLogger(MediaDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("0517ae48-597d-4d6b-9f18-8752d689720d");
+
+
+	public static MediaDefaultCacheStrategy NewInstance() {
+		return new MediaDefaultCacheStrategy();
+	}
 	
 	@Override
 	protected UUID getUuid() {
@@ -38,24 +44,33 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements
 	
 	public String getTitleCache(Media media) {
 		media = (Media) HibernateProxyHelper.deproxy(media, Media.class);
-		
-		List<Language> languages = Arrays.asList(new Language[]{Language.DEFAULT()});
-		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(media.getAllTitles(), languages);
-		return languageString != null ? languageString.getText() : null;
-	
+		return getTitleCacheByLanguage(media, Language.DEFAULT());
 	}
 	
 	public String getTitleCacheByLanguage(Media media, Language lang) {
+		String result;
 		List<Language> languages = Arrays.asList(new Language[]{lang});
 		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(media.getAllTitles(), languages);
-		return languageString != null ? languageString.getText() : null;
-	
+		result = (languageString != null ? languageString.getText() : "");
+		
+		//get first image uri
+		if (StringUtils.isBlank(result)){
+			for (MediaRepresentation mediaRepresentation : media.getRepresentations()){
+				for (MediaRepresentationPart part : mediaRepresentation.getParts()){
+					result = part.getUri();
+					break;
+				}
+				if (StringUtils.isBlank(result)){
+					break;
+				}
+			}
+			if (StringUtils.isBlank(result)){
+				result = "- empty media - <" + media.getUuid() + ">";
+			}
+		}
+		return result;
 	}
 
-
-	public static MediaDefaultCacheStrategy NewInstance() {
-		return new MediaDefaultCacheStrategy();
-	}
 
 	
 }
