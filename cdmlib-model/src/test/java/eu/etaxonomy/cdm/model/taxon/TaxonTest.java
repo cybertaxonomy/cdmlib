@@ -61,12 +61,11 @@ public class TaxonTest extends EntityTestBase {
 	
 	@Before
 	public void setUp() throws Exception {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		Person linne =new Person("Carl", "Linné", "L.");
-		sec= refFactory.newBook();
+		sec= ReferenceFactory.newBook();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu", true);
-		misSec = refFactory.newBook();
+		misSec = ReferenceFactory.newBook();
 		misSec.setTitleCache("Stupid book", true);
 		
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
@@ -142,10 +141,10 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testIsMisappliedName() {
-		assertFalse(child2.isMisappliedName());
-		assertFalse(rootT.isMisappliedName());
-		assertTrue(misTaxon1.isMisappliedName());
-		assertTrue(misTaxon2.isMisappliedName());
+		assertFalse(child2.isMisapplication());
+		assertFalse(rootT.isMisapplication());
+		assertTrue(misTaxon1.isMisapplication());
+		assertTrue(misTaxon2.isMisapplication());
 	}
 	
 	@Test
