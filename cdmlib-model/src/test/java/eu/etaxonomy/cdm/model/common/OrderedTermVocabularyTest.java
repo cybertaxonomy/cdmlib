@@ -198,7 +198,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	}
 
 	@Test
-	
 	public final void testAddTermEqualLevel() {
 		try {
 			System.out.println(otb2.orderIndex);
