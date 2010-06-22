@@ -210,6 +210,8 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.artist = artist;
 	}
 
+//************************ title / title cache *********************************
+	
 	public LanguageString getTitle(){
 		return getTitle(Language.DEFAULT());
 	}
@@ -236,6 +238,51 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	public void removeTitle(Language language){
 		this.title.remove(language);
 	}
+	
+
+	@Transient 
+	public String getTitleCacheByLanguage(Language lang){
+		if (cacheStrategy != null){
+			return ((MediaDefaultCacheStrategy)cacheStrategy).getTitleCacheByLanguage(this, lang);
+		}else{
+			return null;
+		}
+			
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(java.lang.String)
+	 */
+	@Override
+	public void setTitleCache(String titleCache) {
+		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
+	 */
+	@Override
+	public String getTitleCache(){
+		if (protectedTitleCache){
+			return this.titleCache;			
+		}
+		// is title dirty, i.e. equal NULL?
+		if (titleCache == null){
+			this.titleCache = generateTitle();
+			this.titleCache = getTruncatedCache(this.titleCache) ;
+		}else{
+			//do the same as listeners on dependend objects like representations parts
+			//are not yet installed
+			this.titleCache = generateTitle();
+			this.titleCache = getTruncatedCache(this.titleCache) ;
+		}
+		return titleCache;
+	}
+	
+	
+	
 
 	public DateTime getMediaCreated(){
 		return this.mediaCreated;
@@ -245,6 +292,8 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		this.mediaCreated = mediaCreated;
 	}
 
+	//************* Descriptions
+	
 	@Deprecated // will be removed in next release; use getAllDescriptions instead
 	public Map<Language,LanguageString> getDescription(){
 		return getAllDescriptions();
@@ -305,47 +354,6 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		return 0;
 	}
 	
-	
-	@Transient 
-	public String getTitleCacheByLanguage(Language lang){
-		if (cacheStrategy != null){
-			return ((MediaDefaultCacheStrategy)cacheStrategy).getTitleCacheByLanguage(this, lang);
-		}else{
-			return null;
-		}
-			
-	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(java.lang.String)
-	 */
-	@Override
-	public void setTitleCache(String titleCache) {
-		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
-	 */
-	@Override
-	public String getTitleCache(){
-		if (protectedTitleCache){
-			return this.titleCache;			
-		}
-		// is title dirty, i.e. equal NULL?
-		if (titleCache == null){
-			this.titleCache = generateTitle();
-			this.titleCache = getTruncatedCache(this.titleCache) ;
-		}else{
-			//do the same as listeners on dependend objects like representations parts
-			//are not yet installed
-			this.titleCache = generateTitle();
-			this.titleCache = getTruncatedCache(this.titleCache) ;
-		}
-		return titleCache;
-	}
 	
 	
 }
