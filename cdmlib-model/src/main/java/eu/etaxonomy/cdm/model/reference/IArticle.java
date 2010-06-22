@@ -19,34 +19,17 @@ public interface IArticle extends IVolumeReference, IReferenceBase,  INomenclatu
 
 	
 	/**
-	 * Same as {@link #getJournal()}.
-	 * @deprecated use {@link #getJournal()} instead
-	 * @return
-	 */
-	@Deprecated
-	public IJournal getInJournal();
-	
-	/**
-	 * Same as {@link #setJournal(IJournal)}
-	 * @deprecated use {@link #setJournal(IJournal)} instead
-	 * @param journal
-	 */
-	@Deprecated()
-	public void setInJournal(IJournal journal);
-
-	
-	/**
 	 * Returns the articles journal.
 	 * @return
 	 */
-	public IJournal getJournal();
+	public IJournal getInJournal();
 	
 	
 	/**
 	 * Sets the articles journal 
 	 * @param journal
 	 */
-	public void setJournal(IJournal journal);
+	public void setInJournal(IJournal journal);
 
 	
 	void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy);
