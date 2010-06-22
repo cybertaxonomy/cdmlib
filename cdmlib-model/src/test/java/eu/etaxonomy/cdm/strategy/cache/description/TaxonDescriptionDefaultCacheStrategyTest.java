@@ -39,23 +39,22 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 	
 	@Test
 	public void testGetTitleCache(){
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		
 		BotanicalName botName = BotanicalName.NewInstance(Rank.SPECIES());
 		botName.setGenusOrUninomial("Genus");
 		botName.setSpecificEpithet("species");
 		
-		ReferenceBase sec = refFactory.newGeneric();
+		ReferenceBase sec = ReferenceFactory.newGeneric();
 		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
 		Assert.assertEquals("Wrong title cache for description", "Taxon description for Genus species", taxonDescription.getTitleCache());
 		taxonDescription.setImageGallery(true);
-		Assert.assertEquals("Wrong title cache for description", "Image galery for Genus species", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Image gallery for Genus species", taxonDescription.getTitleCache());
 		taxonDescription = TaxonDescription.NewInstance();
 		Assert.assertEquals("Wrong title cache for description", "Taxon description", taxonDescription.getTitleCache());
 		taxonDescription.setImageGallery(true);
-		Assert.assertEquals("Wrong title cache for description", "Image galery", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Image gallery", taxonDescription.getTitleCache());
 
 	}
 	

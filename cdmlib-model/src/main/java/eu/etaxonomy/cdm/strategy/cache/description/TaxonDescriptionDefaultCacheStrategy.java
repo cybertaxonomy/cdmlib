@@ -45,7 +45,7 @@ public class TaxonDescriptionDefaultCacheStrategy extends StrategyBase implement
 	
 	private String getFirstPart(TaxonDescription taxonDescription){
 		if (taxonDescription.isImageGallery()){
-			return "Image galery for " ;
+			return "Image gallery for " ;
 		}else {
 			return "Taxon description for ";
 		}
