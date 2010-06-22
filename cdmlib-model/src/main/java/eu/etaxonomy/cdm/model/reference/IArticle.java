@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 
-public interface IArticle extends IVolumeReference, IReferenceBase,  INomenclaturalReference{
+public interface IArticle extends IVolumeReference, IReferenceBase, ISectionBase, INomenclaturalReference{
 	
 	public void setSeries(String series);
 	

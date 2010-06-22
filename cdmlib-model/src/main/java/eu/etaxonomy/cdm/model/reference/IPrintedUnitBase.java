@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-public interface IPrintedUnitBase extends IPublicationBase, IVolumeReference {
+public interface IPrintedUnitBase extends IPublicationBase, ISectionBase, IVolumeReference {
 
 	/**
 	 * Returns the print series of this printed unit
