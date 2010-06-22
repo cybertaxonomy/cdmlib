@@ -11,15 +11,43 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 
-public interface IArticle extends IVolumeReference, INomenclaturalReference{
+public interface IArticle extends IVolumeReference, IReferenceBase,  INomenclaturalReference{
 	
 	public void setSeries(String series);
 	
 	public String getSeries();
 
+	
+	/**
+	 * Same as {@link #getJournal()}.
+	 * @deprecated use {@link #getJournal()} instead
+	 * @return
+	 */
+	@Deprecated
 	public IJournal getInJournal();
 	
+	/**
+	 * Same as {@link #setJournal(IJournal)}
+	 * @deprecated use {@link #setJournal(IJournal)} instead
+	 * @param journal
+	 */
+	@Deprecated()
 	public void setInJournal(IJournal journal);
+
+	
+	/**
+	 * Returns the articles journal.
+	 * @return
+	 */
+	public IJournal getJournal();
+	
+	
+	/**
+	 * Sets the articles journal 
+	 * @param journal
+	 */
+	public void setJournal(IJournal journal);
+
 	
 	void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy);
 }

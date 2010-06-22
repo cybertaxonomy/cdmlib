@@ -12,10 +12,36 @@ package eu.etaxonomy.cdm.model.reference;
 
 public interface IPrintedUnitBase extends IPublicationBase, IVolumeReference {
 
+	/**
+	 * Same as {@link #getSeries()}
+	 * @deprecated use {@link #getSeries()} instead
+	 * @return
+	 */
+	@Deprecated
 	public IPrintSeries getInSeries();
 	
-	public void setInSeries(IPrintSeries inSeries);
+	/**
+	 * Same as {@link #setInSeries(IPrintSeries)}
+	 * @deprecated use {@link #setInSeries(IPrintSeries)} instead
+	 * @param series
+	 */
+	@Deprecated
+	public void setInSeries(IPrintSeries series);
 
+	
+	/**
+	 * Returns the print series of this printed unit
+	 * @return
+	 */
+	public IPrintSeries getSeries();
+	
+	/**
+	 * Sets the pritn series of this printed unit
+	 * @param series
+	 */
+	public void setSeries(IPrintSeries series);
+
+	
 	public String getEditor();
 	
 	public void setEditor(String editor);
