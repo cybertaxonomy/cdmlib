@@ -637,8 +637,6 @@ public class PesiTaxonExport extends PesiExportBase {
 								String specificEpithet = nonViralName.getSpecificEpithet();
 								String infraSpecificEpithet = nonViralName.getInfraSpecificEpithet();
 								
-								boolean rankExists = false;
-
 								StringBuffer replaceFullName = new StringBuffer(fullName);
 								List<NamePosition> genusOrUninomialPosition = getPosition(genusOrUninomial, fullName);
 								List<NamePosition> infraGenericEpithetPosition = getPosition(infraGenericEpithet, fullName);
@@ -648,6 +646,8 @@ public class PesiTaxonExport extends PesiExportBase {
 									replaceFullName.insert(0, italicBeginTag);
 									
 									if (nameExists(specificEpithetPosition)) {
+										boolean insertSpecificEpithetEndTag = true;
+
 										if ((specificEpithet.equals(infraSpecificEpithet) && countPattern(infraSpecificEpithet, fullName) == 2) |
 												(! specificEpithet.equals(infraSpecificEpithet) && countPattern(infraSpecificEpithet, fullName) == 1)) {
 											// infraSpecificEpithet exists
@@ -677,14 +677,23 @@ public class PesiTaxonExport extends PesiExportBase {
 														replaceFullName.insert(infraSpecificEpithetEndLocation + italicBeginTag.length(), italicEndTag);
 													}
 												}
+											} else if (rankPosition != null && ! nameExists(rankPosition)) {
+												// Rank information does not exist
+												insertSpecificEpithetEndTag = false;
+												
+												// Insert italicEndTag
+												replaceFullName.insert(infraSpecificEpithetEndLocation + italicBeginTag.length(), italicEndTag);
 											}
 										}
-										
-										int specificEpithetLocation = replaceFullName.indexOf(specificEpithet) + specificEpithet.length();
-										if (specificEpithetPosition.contains(NamePosition.end)) {
-											replaceFullName.append(italicEndTag);
-										} else {
-											replaceFullName.insert(specificEpithetLocation, italicEndTag);
+
+										// Insert an italicEndTag for the specificEpithet
+										if (insertSpecificEpithetEndTag) {
+											int specificEpithetLocation = replaceFullName.indexOf(specificEpithet) + specificEpithet.length();
+											if (specificEpithetPosition.contains(NamePosition.end)) {
+												replaceFullName.append(italicEndTag);
+											} else {
+												replaceFullName.insert(specificEpithetLocation, italicEndTag);
+											}
 										}
 									} else if (nameExists(infraGenericEpithetPosition)) {
 										int infraGenericEpithetLocation = replaceFullName.indexOf(infraGenericEpithet) + 
