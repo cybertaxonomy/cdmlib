@@ -165,7 +165,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}*/
 			// (b) using cache fields
 			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
-				if (withMisapplications == true || ! taxon.isMisappliedName()){
+				if (withMisapplications == true || ! taxon.isMisapplication()){
 					defaultBeanInitializer.initialize(taxon, propertyPaths);
 					results.add(taxon);
 				}
