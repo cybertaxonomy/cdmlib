@@ -2689,6 +2689,10 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRc
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSavePathMatchingResourcePatternResolver.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacade.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategy.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeNotSupportedException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDerivedUnitTypeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacade.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeCacheStrategy.java -text

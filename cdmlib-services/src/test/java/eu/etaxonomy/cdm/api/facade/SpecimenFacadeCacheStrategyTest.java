@@ -80,7 +80,7 @@ public class SpecimenFacadeCacheStrategyTest {
 	
 	PreservationMethod preservationMethod = PreservationMethod.NewInstance("my prservation", null, null);
 
-	SpecimenFacade specimenFacade;
+	DerivedUnitFacade specimenFacade;
 	
 	Specimen collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
@@ -137,7 +137,7 @@ public class SpecimenFacadeCacheStrategyTest {
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 
-		specimenFacade = SpecimenFacade.NewInstance(specimen);
+		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
 		//existing specimen with 2 derivation events in line
 		collectionSpecimen = Specimen.NewInstance();
@@ -158,7 +158,7 @@ public class SpecimenFacadeCacheStrategyTest {
 
 	}
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
 	 */
 	@Test
 	public void testGetTitleCache() {

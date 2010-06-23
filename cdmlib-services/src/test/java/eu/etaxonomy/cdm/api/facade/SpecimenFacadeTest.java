@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.facade.SpecimenFacade.DerivedUnitType;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -86,7 +86,7 @@ public class SpecimenFacadeTest {
 	Collection collection = Collection.NewInstance();
 	PreservationMethod preservationMethod = PreservationMethod.NewInstance("my prservation", null, null);
 
-	SpecimenFacade specimenFacade;
+	DerivedUnitFacade specimenFacade;
 	
 	Specimen collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
@@ -143,7 +143,7 @@ public class SpecimenFacadeTest {
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 
-		specimenFacade = SpecimenFacade.NewInstance(specimen);
+		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
 		//existing specimen with 2 derivation events in line
 		collectionSpecimen = Specimen.NewInstance();
@@ -168,12 +168,12 @@ public class SpecimenFacadeTest {
 //****************************** TESTS *****************************************/
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#NewInstance()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#NewInstance()}.
 	 */
 	@Test
 	public void testNewInstance() {
-		SpecimenFacade specimenFacade = SpecimenFacade.NewInstance(DerivedUnitType.Specimen);
-		Assert.assertNotNull("The specimen should have been created", specimenFacade.getSpecimen());
+		DerivedUnitFacade specimenFacade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		Assert.assertNotNull("The specimen should have been created", specimenFacade.getDerivedUnit());
 		//???
 //		Assert.assertNotNull("The derivation event should have been created", specimenFacade.getSpecimen().getDerivedFrom());
 //		Assert.assertNotNull("The field observation should have been created", specimenFacade.getFieldObservation());
@@ -181,19 +181,19 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#NewInstance(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#NewInstance(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
 	 */
 	@Test
 	public void testNewInstanceSpecimen() {
-		Assert.assertSame("Specimen should be same", specimen, specimenFacade.getSpecimen());
-		Assert.assertSame("Derivation event should be same", derivationEvent, specimenFacade.getSpecimen().getDerivedFrom());
+		Assert.assertSame("Specimen should be same", specimen, specimenFacade.getDerivedUnit());
+		Assert.assertSame("Derivation event should be same", derivationEvent, specimenFacade.getDerivedUnit().getDerivedFrom());
 		Assert.assertSame("Field observation should be same", fieldObservation, specimenFacade.getFieldObservation());
 		Assert.assertSame("Gathering event should be same", gatheringEvent, specimenFacade.getGatheringEvent());
 	
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}.
 	 */
 	@Test
 	public void testAddGetRemoveCollectingArea()  {
@@ -214,7 +214,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getAbsoluteElevation()}. 
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAbsoluteElevation()}. 
 	 */
 	@Test
 	public void testGetSetAbsoluteElevation() {
@@ -225,7 +225,7 @@ public class SpecimenFacadeTest {
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getAbsoluteElevationError()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAbsoluteElevationError()}.
 	 */
 	@Test
 	public void testGetSetAbsoluteElevationError() {
@@ -274,7 +274,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getCollectingMethod()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectingMethod()}.
 	 */
 	@Test
 	public void testGetSetCollectingMethod() {
@@ -285,7 +285,7 @@ public class SpecimenFacadeTest {
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getDistanceToGround()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getDistanceToGround()}.
 	 */
 	@Test
 	public void testGetSetDistanceToGround() {
@@ -295,7 +295,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getDistanceToWaterSurface()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getDistanceToWaterSurface()}.
 	 */
 	@Test
 	public void testGetDistanceToWaterSurface() {
@@ -305,7 +305,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getExactLocation()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getExactLocation()}.
 	 */
 	@Test
 	public void testGetSetExactLocation() {
@@ -334,7 +334,7 @@ public class SpecimenFacadeTest {
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getGatheringEventDescription()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getGatheringEventDescription()}.
 	 */
 	@Test
 	public void testGetSetGatheringEventDescription() {
@@ -344,7 +344,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getTimeperiod()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getTimeperiod()}.
 	 */
 	@Test
 	public void testGetTimeperiod() {
@@ -361,7 +361,7 @@ public class SpecimenFacadeTest {
 		// assert should be set to assertNull
 		Assert.assertTrue("field object should not be null (depends on specimen facade initialization !!)", specimenFacade.hasFieldObject());
 
-		Field fieldObservationField = SpecimenFacade.class.getDeclaredField("fieldObservation");
+		Field fieldObservationField = DerivedUnitFacade.class.getDeclaredField("fieldObservation");
 		fieldObservationField.setAccessible(true);
 		fieldObservationField.set(specimenFacade, null);
 		Assert.assertFalse("The field observation should be null now", specimenFacade.hasFieldObject());
@@ -371,7 +371,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addFieldObjectDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
 	 */
 	@Test
 	public void testAddGetRemoveFieldObjectDefinition() {
@@ -390,7 +390,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}.
 	 */
 	@Test
 	public void testAddGetHasRemoveFieldObjectMedia() {
@@ -426,7 +426,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}.
 	 */
 	@Test
 	public void testGetSetEcology() {
@@ -459,7 +459,7 @@ public class SpecimenFacadeTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}.
 	 */
 	@Test
 	public void testGetSetPlantDescription() {
@@ -504,7 +504,7 @@ public class SpecimenFacadeTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getFieldNumber()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getFieldNumber()}.
 	 */
 	@Test
 	public void testGetSetFieldNumber() {
@@ -514,7 +514,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getFieldNotes()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getFieldNotes()}.
 	 */
 	@Test
 	public void testGetSetFieldNotes()  {
@@ -524,7 +524,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#setGatheringEvent(eu.etaxonomy.cdm.model.occurrence.GatheringEvent)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#setGatheringEvent(eu.etaxonomy.cdm.model.occurrence.GatheringEvent)}.
 	 */
 	@Test
 	public void testSetGatheringEvent() {
@@ -537,7 +537,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getGatheringEvent()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getGatheringEvent()}.
 	 */
 	@Test
 	public void testGetGatheringEvent() {
@@ -546,7 +546,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getIndividualCount()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getIndividualCount()}.
 	 */
 	@Test
 	public void testGetSetIndividualCount(){
@@ -558,7 +558,7 @@ public class SpecimenFacadeTest {
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getLifeStage()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getLifeStage()}.
 	 */
 	@Test
 	public void testGetSetLifeStage(){
@@ -569,7 +569,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getSex()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getSex()}.
 	 */
 	@Test
 	public void testGetSetSex() {
@@ -580,7 +580,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getLocality()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getLocality()}.
 	 */
 	@Test
 	public void testGetSetLocality() {
@@ -594,26 +594,26 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addSpecimenDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDerivedUnitDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
 	 */
 	@Test
 	public void testAddGetRemoveSpecimenDefinition() {
-		Assert.assertEquals("There should be no definition yet", 0, specimenFacade.getSpecimenDefinitions().size());
-		specimenFacade.addSpecimenDefinition("Tres interesant", Language.FRENCH());
-		Assert.assertEquals("There should be exactly one definition", 1, specimenFacade.getSpecimenDefinitions().size());
-		Assert.assertEquals("The French definition should be 'Tres interesant'", "Tres interesant", specimenFacade.getSpecimenDefinitions().get(Language.FRENCH()).getText());
-		Assert.assertEquals("The French definition should be 'Tres interesant'", "Tres interesant", specimenFacade.getSpecimenDefinition(Language.FRENCH()));
-		specimenFacade.addSpecimenDefinition("Sehr interessant", Language.GERMAN());
-		Assert.assertEquals("There should be exactly 2 definition", 2, specimenFacade.getSpecimenDefinitions().size());
-		specimenFacade.removeSpecimenDefinition(Language.FRENCH());
-		Assert.assertEquals("There should remain exactly 1 definition", 1, specimenFacade.getSpecimenDefinitions().size());
-		Assert.assertEquals("The remaining German definition should be 'Sehr interessant'", "Sehr interessant", specimenFacade.getSpecimenDefinition(Language.GERMAN()));
-		specimenFacade.removeSpecimenDefinition(Language.GERMAN());
-		Assert.assertEquals("There should remain no definition", 0, specimenFacade.getSpecimenDefinitions().size());
+		Assert.assertEquals("There should be no definition yet", 0, specimenFacade.getDerivedUnitDefinitions().size());
+		specimenFacade.addDerivedUnitDefinition("Tres interesant", Language.FRENCH());
+		Assert.assertEquals("There should be exactly one definition", 1, specimenFacade.getDerivedUnitDefinitions().size());
+		Assert.assertEquals("The French definition should be 'Tres interesant'", "Tres interesant", specimenFacade.getDerivedUnitDefinitions().get(Language.FRENCH()).getText());
+		Assert.assertEquals("The French definition should be 'Tres interesant'", "Tres interesant", specimenFacade.getDerivedUnitDefinition(Language.FRENCH()));
+		specimenFacade.addDerivedUnitDefinition("Sehr interessant", Language.GERMAN());
+		Assert.assertEquals("There should be exactly 2 definition", 2, specimenFacade.getDerivedUnitDefinitions().size());
+		specimenFacade.removeDerivedUnitDefinition(Language.FRENCH());
+		Assert.assertEquals("There should remain exactly 1 definition", 1, specimenFacade.getDerivedUnitDefinitions().size());
+		Assert.assertEquals("The remaining German definition should be 'Sehr interessant'", "Sehr interessant", specimenFacade.getDerivedUnitDefinition(Language.GERMAN()));
+		specimenFacade.removeDerivedUnitDefinition(Language.GERMAN());
+		Assert.assertEquals("There should remain no definition", 0, specimenFacade.getDerivedUnitDefinitions().size());
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}.
 	 */
 	@Test
 	public void testAddGetRemoveDetermination() {
@@ -636,47 +636,47 @@ public class SpecimenFacadeTest {
 		Assert.assertEquals("There should remain exactly 1 determination", 1, specimenFacade.getDeterminations().size());
 
 		specimenFacade.removeDetermination(determinationEvent2);
-		Assert.assertEquals("There should remain no definition", 0, specimenFacade.getSpecimenDefinitions().size());
+		Assert.assertEquals("There should remain no definition", 0, specimenFacade.getDerivedUnitDefinitions().size());
 
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#addSpecimenMedia(eu.etaxonomy.cdm.model.media.Media)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDerivedUnitMedia(eu.etaxonomy.cdm.model.media.Media)}.
 	 */
 	@Test
 	public void testAddGetHasRemoveSpecimenMedia() {
 		Assert.assertFalse("There should be no image gallery yet", specimenFacade.hasSpecimenImageGallery());
 		Assert.assertFalse("There should be also no field object image gallery yet", specimenFacade.hasFieldObjectImageGallery());
 		
-		List<Media> media = specimenFacade.getSpecimenMedia();
+		List<Media> media = specimenFacade.getDerivedUnitMedia();
 		Assert.assertTrue("There should be an empty image gallery now", specimenFacade.hasSpecimenImageGallery());
 		Assert.assertEquals("There should be no media yet in the gallery", 0, media.size());
 		
 		Media media1 = Media.NewInstance();
-		specimenFacade.addSpecimenMedia(media1);
-		Assert.assertEquals("There should be exactly one specimen media", 1, specimenFacade.getSpecimenMedia().size());
-		Assert.assertEquals("The only media should be media 1", media1, specimenFacade.getSpecimenMedia().get(0));
+		specimenFacade.addDerivedUnitMedia(media1);
+		Assert.assertEquals("There should be exactly one specimen media", 1, specimenFacade.getDerivedUnitMedia().size());
+		Assert.assertEquals("The only media should be media 1", media1, specimenFacade.getDerivedUnitMedia().get(0));
 		Assert.assertFalse("There should be still no field object image gallery", specimenFacade.hasFieldObjectImageGallery());
 		
 		Media media2 = Media.NewInstance();
-		specimenFacade.addSpecimenMedia(media2);
-		Assert.assertEquals("There should be exactly 2 specimen media", 2, specimenFacade.getSpecimenMedia().size());
-		Assert.assertEquals("The first media should be media1", media1, specimenFacade.getSpecimenMedia().get(0));
-		Assert.assertEquals("The second media should be media2", media2, specimenFacade.getSpecimenMedia().get(1));
+		specimenFacade.addDerivedUnitMedia(media2);
+		Assert.assertEquals("There should be exactly 2 specimen media", 2, specimenFacade.getDerivedUnitMedia().size());
+		Assert.assertEquals("The first media should be media1", media1, specimenFacade.getDerivedUnitMedia().get(0));
+		Assert.assertEquals("The second media should be media2", media2, specimenFacade.getDerivedUnitMedia().get(1));
 		
-		specimenFacade.removeSpecimenMedia(media1);
-		Assert.assertEquals("There should be exactly one specimen media", 1, specimenFacade.getSpecimenMedia().size());
-		Assert.assertEquals("The only media should be media2", media2, specimenFacade.getSpecimenMedia().get(0));
+		specimenFacade.removeDerivedUnitMedia(media1);
+		Assert.assertEquals("There should be exactly one specimen media", 1, specimenFacade.getDerivedUnitMedia().size());
+		Assert.assertEquals("The only media should be media2", media2, specimenFacade.getDerivedUnitMedia().get(0));
 
-		specimenFacade.removeSpecimenMedia(media1);
-		Assert.assertEquals("There should still be exactly one specimen media", 1, specimenFacade.getSpecimenMedia().size());
+		specimenFacade.removeDerivedUnitMedia(media1);
+		Assert.assertEquals("There should still be exactly one specimen media", 1, specimenFacade.getDerivedUnitMedia().size());
 		
-		specimenFacade.removeSpecimenMedia(media2);
+		specimenFacade.removeDerivedUnitMedia(media2);
 		Assert.assertEquals("There should remain no media in the gallery", 0, media.size());
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getAccessionNumber()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAccessionNumber()}.
 	 */
 	@Test
 	public void testGetSetAccessionNumber() {
@@ -686,7 +686,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getCatalogNumber()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCatalogNumber()}.
 	 */
 	@Test
 	public void testGetCatalogNumber() {
@@ -696,7 +696,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getPreservation()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getPreservation()}.
 	 */
 	@Test
 	public void testGetPreservation() {
@@ -708,7 +708,7 @@ public class SpecimenFacadeTest {
 		} catch (MethodNotSupportedByDerivedUnitTypeException e) {
 			Assert.fail("Method not supported should not be thrown for a specimen");
 		}
-		specimenFacade = SpecimenFacade.NewInstance(DerivedUnitType.Observation);
+		specimenFacade = DerivedUnitFacade.NewInstance(DerivedUnitType.Observation);
 		try {
 			specimenFacade.setPreservationMethod(preservationMethod);
 			Assert.fail("Method not supported should be thrown for an observation on set preservation method");
@@ -716,7 +716,7 @@ public class SpecimenFacadeTest {
 		} catch (MethodNotSupportedByDerivedUnitTypeException e) {
 			//ok
 		}
-		specimenFacade = SpecimenFacade.NewInstance(DerivedUnitType.LivingBeing);
+		specimenFacade = DerivedUnitFacade.NewInstance(DerivedUnitType.LivingBeing);
 		try {
 			specimenFacade.getPreservationMethod();
 			Assert.fail("Method not supported should be thrown for a living being on get preservation method");
@@ -728,7 +728,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getStoredUnder()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getStoredUnder()}.
 	 */
 	@Test
 	public void testGetStoredUnder() {
@@ -739,7 +739,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getCollectorsNumber()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectorsNumber()}.
 	 */
 	@Test
 	public void testGetSetCollectorsNumber() {
@@ -749,7 +749,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getTitleCache()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getTitleCache()}.
 	 */
 	@Test
 	public void testGetTitleCache() {
@@ -759,7 +759,7 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#setTitleCache(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#setTitleCache(java.lang.String)}.
 	 */
 	@Test
 	public void testSetTitleCache() {
@@ -771,15 +771,15 @@ public class SpecimenFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getSpecimen()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getDerivedUnit()}.
 	 */
 	@Test
 	public void testGetSpecimen() {
-		Assert.assertEquals("Specimen must be same", specimen, specimenFacade.getSpecimen());	
+		Assert.assertEquals("Specimen must be same", specimen, specimenFacade.getDerivedUnit());	
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.SpecimenFacade#getCollection()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollection()}.
 	 */
 	@Test
 	public void testGetSetCollection() {
@@ -826,7 +826,7 @@ public class SpecimenFacadeTest {
 		specimenFacade.removeDuplicate(newSpecimen1);
 		Assert.assertEquals("There should be 1 duplicate now", 1, specimenFacade.getDuplicates().size());
 		Assert.assertSame("The only duplicate should be 'newSpecimen2' now", newSpecimen2, specimenFacade.getDuplicates().iterator().next());
-		specimenFacade.addDuplicate(specimenFacade.getSpecimen());
+		specimenFacade.addDuplicate(specimenFacade.getDerivedUnit());
 		Assert.assertEquals("There should be still 1 duplicate because the facade specimen is not a duplicate", 1, specimenFacade.getDuplicates().size());
 		
 		Collection newCollection = Collection.NewInstance();
@@ -849,8 +849,8 @@ public class SpecimenFacadeTest {
 	public void testExistingSpecimen(){
 		specimenFacade = null;
 		try {
-			specimenFacade = SpecimenFacade.NewInstance(collectionSpecimen);
-		} catch (SpecimenFacadeNotSupportedException e) {
+			specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
+		} catch (DerivedUnitFacadeNotSupportedException e) {
 			Assert.fail("Multiple derivation events in line should not throw a not supported exception");
 		}
 		Assert.assertSame("Gathering event should derive from the derivation line", existingGatheringEvent, specimenFacade.getGatheringEvent());
@@ -863,9 +863,9 @@ public class SpecimenFacadeTest {
 		FieldObservation secondFieldObject = FieldObservation.NewInstance();
 		firstDerivationEvent.addOriginal(secondFieldObject);
 		try {
-			specimenFacade = SpecimenFacade.NewInstance(collectionSpecimen);
+			specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
 			Assert.fail("Multiple field observations for one specimen should no be supported by the facade");
-		} catch (SpecimenFacadeNotSupportedException e) {
+		} catch (DerivedUnitFacadeNotSupportedException e) {
 			//ok
 		}
 		Assert.assertNull("Specimen facade should not be initialized", specimenFacade);
@@ -876,9 +876,9 @@ public class SpecimenFacadeTest {
 		specimenFacade = null;
 		firstFieldObject.addMedia(media1);
 		try {
-			specimenFacade = SpecimenFacade.NewInstance(collectionSpecimen);
+			specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
 			Assert.fail("Only image galleries are supported by the facade but not direct media");
-		} catch (SpecimenFacadeNotSupportedException e) {
+		} catch (DerivedUnitFacadeNotSupportedException e) {
 			//ok
 		}
 		Assert.assertNull("Specimen facade should not be initialized", specimenFacade);	
