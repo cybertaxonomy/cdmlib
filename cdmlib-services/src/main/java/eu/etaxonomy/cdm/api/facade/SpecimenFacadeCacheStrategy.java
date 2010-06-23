@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -25,7 +26,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @date 03.06.2010
  *
  */
-public class SpecimenFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Specimen> {
+public class SpecimenFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnitBase> {
 	private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenFacadeCacheStrategy.class);
@@ -47,7 +48,7 @@ public class SpecimenFacadeCacheStrategy extends StrategyBase implements IIdenti
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
 	 */
 	@Override
-	public String getTitleCache(Specimen specimen) {
+	public String getTitleCache(DerivedUnitBase specimen) {
 		String ALTITUDE_PREFIX = "alt. ";
 		String ALTITUDE_POSTFIX = " m";
 		
