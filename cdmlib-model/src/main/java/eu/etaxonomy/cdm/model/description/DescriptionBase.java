@@ -19,10 +19,10 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -311,5 +311,16 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 */
 	public void setImageGallery(boolean imageGallery) {
 		this.imageGallery = imageGallery;
+	}
+	
+	@Transient
+	public boolean hasStructuredData(){
+		for (DescriptionElementBase element : this.getElements()){
+			if (element.isInstanceOf(QuantitativeData.class) ||
+					element.isInstanceOf(CategoricalData.class)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
