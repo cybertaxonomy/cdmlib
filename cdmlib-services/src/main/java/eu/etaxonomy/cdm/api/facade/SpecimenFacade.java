@@ -107,7 +107,7 @@ public class SpecimenFacade {
 	
 	
 	//private GatheringEvent gatheringEvent;
-	private DerivedUnitType type;
+	private DerivedUnitType type;  //needed?
 	
 	private FieldObservation fieldObservation;
 	
@@ -122,8 +122,8 @@ public class SpecimenFacade {
 		return new SpecimenFacade(type);
 	}
 
-	public static SpecimenFacade NewInstance(Specimen specimen) throws SpecimenFacadeNotSupportedException{
-		return new SpecimenFacade(specimen, DerivedUnitType.Specimen);
+	public static SpecimenFacade NewInstance(DerivedUnitBase derivedUnit) throws SpecimenFacadeNotSupportedException{
+		return new SpecimenFacade(derivedUnit, DerivedUnitType.Specimen);
 	}
 
 // ****************** CONSTRUCTOR ****************************************************
@@ -158,7 +158,7 @@ public class SpecimenFacade {
 	}
 	
 	private SpecimenFacade(DerivedUnitBase derivedUnit, DerivedUnitType type) throws SpecimenFacadeNotSupportedException{
-		this.type = type;
+		//this.type = type;
 		
 		//specimen
 		this.derivedUnit = derivedUnit;
