@@ -218,26 +218,30 @@ public class DerivedUnitFacade {
 		
 		//direct media of derived unit
 		if (derivedUnit.getMedia().size() > 0){
+			//TODO better changed model here to allow only one place for images
 			if (this.config.isMoveDerivedUnitMediaToGallery()){
 				Set<Media> mediaSet = derivedUnit.getMedia();
 				for (Media media : mediaSet){
 					this.addDerivedUnitMedia(media);
 				}
+				mediaSet.removeAll(getDerivedUnitMedia());
+			}else{
+				throw new DerivedUnitFacadeNotSupportedException("Specimen may not have direct media. Only (one) image gallery is allowed");
 			}
-			//TODO better changed model here to allow only one place for images
-			throw new DerivedUnitFacadeNotSupportedException("Specimen may not have direct media. Only (one) image gallery is allowed");
 		}
 		
 		//direct media of field observation
 		if (fieldObservation.getMedia().size() > 0){
+			//TODO better changed model here to allow only one place for images
 			if (this.config.isMoveFieldObjectMediaToGallery()){
 				Set<Media> mediaSet = fieldObservation.getMedia();
 				for (Media media : mediaSet){
 					this.addFieldObjectMedia(media);
 				}
+				mediaSet.removeAll(getFieldObjectMedia());
+			}else{
+				throw new DerivedUnitFacadeNotSupportedException("Field object may not have direct media. Only (one) image gallery is allowed");
 			}
-			//TODO better changed model here to allow only one place for images
-			throw new DerivedUnitFacadeNotSupportedException("Field object may not have direct media. Only (one) image gallery is allowed");
 		}
 		
 		//test if descriptions are supported
