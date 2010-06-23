@@ -30,19 +30,13 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase implements 
 
 	private int maxRows = 0;
 
-//	private boolean doAgents = true;
 	private boolean doAgentData = true;
 	private boolean doLanguageData = true;
 	private boolean doFeatureData = true;
 	private boolean doDescriptions = true;
 	private boolean doMedia = true;
-//	private boolean doOccurrences = true;
-//	private boolean doReferences = true;
 	private boolean doReferencedEntities = true;
-//	private boolean doRelationships = true;
 	private boolean doSynonyms = true;
-//	private boolean doTaxonNames = true;
-//	private boolean doTaxa = true;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
