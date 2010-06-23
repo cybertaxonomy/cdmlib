@@ -210,7 +210,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	private static Integer getSourceFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
+	private static Integer getSourceFk(DescriptionElementBase descriptionElement, PesiExportState state) {
 		Integer result = state.getDbId(descriptionElement);
 //		DescriptionBase description = descriptionElement.getInDescription();
 //		if (description.isInstanceOf(TaxonDescription.class)) {
