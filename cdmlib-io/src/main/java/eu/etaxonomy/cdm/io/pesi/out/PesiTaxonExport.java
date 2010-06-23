@@ -338,7 +338,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (annotationType == null) {
 			annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
 			annotationType.setUuid(uuid);
-			annotationType.setVocabulary(AnnotationType.EDITORIAL().getVocabulary());
+//			annotationType.setVocabulary(AnnotationType.EDITORIAL().getVocabulary());
 			getTermService().save(annotationType);
 		}
 		return annotationType;
