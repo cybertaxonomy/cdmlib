@@ -348,6 +348,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public void generateTitleCache() {
 		generateTitleCache(true);
 	}
+	
 	//TODO
 	public void generateTitleCache(boolean forceProtected) {
 		logger.warn("generateTitleCache not yet fully implemented!");
