@@ -48,7 +48,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
 	 */
 	@Override
-	public String getTitleCache(DerivedUnitBase specimen) {
+	public String getTitleCache(DerivedUnitBase derivedUnit) {
 		String ALTITUDE_PREFIX = "alt. ";
 		String ALTITUDE_POSTFIX = " m";
 		
@@ -56,7 +56,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		
 		DerivedUnitFacade facade;
 		try {
-			facade = DerivedUnitFacade.NewInstance(specimen);
+			facade = DerivedUnitFacade.NewInstance(derivedUnit);
 			//country
 			//TODO
 			

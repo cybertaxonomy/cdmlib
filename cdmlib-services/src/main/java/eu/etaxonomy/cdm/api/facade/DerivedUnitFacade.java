@@ -167,17 +167,19 @@ public class DerivedUnitFacade {
 	}
 	
 	private DerivedUnitFacade(DerivedUnitBase derivedUnit, DerivedUnitFacadeConfigurator config, DerivedUnitType type) throws DerivedUnitFacadeNotSupportedException{
-		//this.type = type;
+		//this.type = type;  ??
+		
 		if (config == null){
 			config = DerivedUnitFacadeConfigurator.NewInstance();
 		}
 		this.config = config;
 		
-		//specimen
+		//derived unit
 		this.derivedUnit = derivedUnit;
 		setCacheStrategy();
+		
 		//derivation event
-		if (derivedUnit.getDerivedFrom() != null){
+		if (this.derivedUnit.getDerivedFrom() != null){
 			DerivationEvent derivationEvent = getDerivationEvent();
 			//fieldObservation
 			Set<FieldObservation> fieldOriginals = getFieldObservationsOriginals(derivationEvent, null);
@@ -205,16 +207,16 @@ public class DerivedUnitFacade {
 
 		//test if unsupported
 		//specimen
-		String specimenExceptionText = "Specimen";
-		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(derivedUnit, specimenExceptionText, false);
-		getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
+		String objectTypeExceptionText = "Specimen";
+		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(derivedUnit, objectTypeExceptionText, false);
+		getImageTextDataWithSupportTest(imageGallery, objectTypeExceptionText);
 		
 		//field observation
-		specimenExceptionText = "Field observation";
-		imageGallery = getImageGalleryWithSupportTest(fieldObservation, specimenExceptionText, false);
-		getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
+		objectTypeExceptionText = "Field observation";
+		imageGallery = getImageGalleryWithSupportTest(fieldObservation, objectTypeExceptionText, false);
+		getImageTextDataWithSupportTest(imageGallery, objectTypeExceptionText);
 		
-		//direct media
+		//direct media of derived unit
 		if (derivedUnit.getMedia().size() > 0){
 			if (this.config.isMoveDerivedUnitMediaToGallery()){
 				Set<Media> mediaSet = derivedUnit.getMedia();
@@ -226,6 +228,7 @@ public class DerivedUnitFacade {
 			throw new DerivedUnitFacadeNotSupportedException("Specimen may not have direct media. Only (one) image gallery is allowed");
 		}
 		
+		//direct media of field observation
 		if (fieldObservation.getMedia().size() > 0){
 			if (this.config.isMoveFieldObjectMediaToGallery()){
 				Set<Media> mediaSet = fieldObservation.getMedia();
@@ -234,7 +237,7 @@ public class DerivedUnitFacade {
 				}
 			}
 			//TODO better changed model here to allow only one place for images
-			throw new DerivedUnitFacadeNotSupportedException("Specimen may not have direct media. Only (one) image gallery is allowed");
+			throw new DerivedUnitFacadeNotSupportedException("Field object may not have direct media. Only (one) image gallery is allowed");
 		}
 		
 		//test if descriptions are supported
@@ -368,7 +371,8 @@ public class DerivedUnitFacade {
 	/**
 	 * Returns the image gallery of the according specimen. Throws an exception if the attached
 	 * image gallerie(s) are not supported by this facade.
-	 * If no image gallery exists a new one is created if <code>createNewIfNotExists</code> is true.
+	 * If no image gallery exists a new one is created if <code>createNewIfNotExists</code> is true and
+	 * if specimen is not <code>null</code>.
 	 * @param specimen
 	 * @param specimenText
 	 * @param createNewIfNotExists
@@ -376,6 +380,9 @@ public class DerivedUnitFacade {
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
 	private SpecimenDescription getImageGalleryWithSupportTest(SpecimenOrObservationBase<?> specimen, String specimenText, boolean createNewIfNotExists) throws DerivedUnitFacadeNotSupportedException{
+		if (specimen == null){
+			return null;
+		}
 		SpecimenDescription imageGallery;
 		if (hasMultipleImageGalleries(specimen)){
 			throw new DerivedUnitFacadeNotSupportedException( specimenText + " must not have more than 1 image gallery");
@@ -418,12 +425,12 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Checks, if a specimen belongs to more than one description that is an image gallery
-	 * @param specimen
+	 * @param derivedUnit
 	 * @return
 	 */
-	private boolean hasMultipleImageGalleries(SpecimenOrObservationBase<?> specimen){
+	private boolean hasMultipleImageGalleries(SpecimenOrObservationBase<?> derivedUnit){
 		int count = 0;
-		Set<SpecimenDescription> descriptions= specimen.getSpecimenDescriptions();
+		Set<SpecimenDescription> descriptions= derivedUnit.getSpecimenDescriptions();
 		for (SpecimenDescription description : descriptions){
 			if (description.isImageGallery()){
 				count++;
