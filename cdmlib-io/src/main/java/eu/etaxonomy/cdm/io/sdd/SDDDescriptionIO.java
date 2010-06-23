@@ -130,8 +130,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Set<TermVocabulary<Modifier>> termVocabularyStates = new HashSet<TermVocabulary<Modifier>>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
-	ReferenceFactory refFactory = ReferenceFactory.newInstance();
-	private ReferenceBase sec = refFactory.newDatabase();
+	private ReferenceBase sec = ReferenceFactory.newDatabase();
 	private ReferenceBase sourceReference = null;
 
 	private Language datasetLanguage = null;
@@ -421,7 +420,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							if (td.getDescriptionSources().toArray().length > 0) {
 								this.associateImageWithCdmBase(ref,(ReferenceBase) td.getDescriptionSources().toArray()[0]);
 							} else {
-								ReferenceBase descriptionSource = refFactory.newGeneric();
+								ReferenceBase descriptionSource = ReferenceFactory.newGeneric();
 								td.addDescriptionSource(descriptionSource);
 								this.associateImageWithCdmBase(ref,descriptionSource);
 							}
@@ -834,7 +833,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					IdentifiableSource source = null;
 					if (uri != null) {
 						if (!uri.equals("")) {
-							source = IdentifiableSource.NewInstance(id, "TaxonName", refFactory.newGeneric(), uri);
+							source = IdentifiableSource.NewInstance(id, "TaxonName", ReferenceFactory.newGeneric(), uri);
 						}
 					} else {
 						source = IdentifiableSource.NewInstance(id, "TaxonName");
@@ -1328,7 +1327,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				try {
 
 					String idP = elPublication.getAttributeValue("id");
-					ReferenceBase publication = refFactory.newArticle();
+					ReferenceBase publication = ReferenceFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
 
 					publications.put(idP,publication);
