@@ -2694,9 +2694,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCache
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeNotSupportedException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDerivedUnitTypeException.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacade.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeCacheStrategy.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeNotSupportedException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractStringComparator.java -text
