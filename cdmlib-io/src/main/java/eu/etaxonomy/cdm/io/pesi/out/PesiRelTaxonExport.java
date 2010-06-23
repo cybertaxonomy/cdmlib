@@ -116,8 +116,10 @@ public class PesiRelTaxonExport extends PesiExportBase {
 
 					// Focus on TaxonRelationships and SynonymRelationships.
 					if (relation.isInstanceOf(TaxonRelationship.class) || relation.isInstanceOf(SynonymRelationship.class)) {
-						doCount(count++, modCount, pluralString);
-						success &= mapping.invoke(relation);
+						if (neededValuesNotNull(relation, state)) {
+							doCount(count++, modCount, pluralString);
+							success &= mapping.invoke(relation);
+						}
 					}
 				}
 				
@@ -145,19 +147,25 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			taxonCount = 0;
 			pastCount = 0;
 			// Start transaction
-			List<TaxonBase> taxonBaseList = null;
+			List<TaxonNameBase> taxonNameList = null;
 			txStatus = startTransaction(true);
 			String nameRelationString = "NameRelationships";
 			logger.error("Started new transaction. Fetching some " + nameRelationString + " (max: " + limit + ") ...");
-			while ((taxonBaseList = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+			while ((taxonNameList = getNameService().list(null, limit, count, null, null)).size() > 0) {
 
-				logger.error("Fetched " + taxonBaseList.size() + " " + nameRelationString + ". Exporting...");
-				for (TaxonBase taxonBase : taxonBaseList) {
+				logger.error("Fetched " + taxonNameList.size() + " " + nameRelationString + ". Exporting...");
+				for (TaxonNameBase taxonName : taxonNameList) {
 					doCount(count++, modCount, nameRelationString);
 					
-					Set<NameRelationship> nameRelations = taxonBase.getName().getNameRelations();
-					for (NameRelationship nameRelationship : nameRelations) {
-						success &= mapping.invoke(nameRelationship);
+					if (taxonName != null) {
+						Set<NameRelationship> nameRelations = taxonName.getNameRelations();
+						for (NameRelationship nameRelationship : nameRelations) {
+							if (neededValuesNotNull(nameRelationship, state)) {
+								success &= mapping.invoke(nameRelationship);
+							}
+						}
+					} else {
+						logger.error("TaxonName is NULL. NameRelationship could not be determined.");
 					}
 				}
 
@@ -187,6 +195,23 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		}
 	}
 
+	/**
+	 * Checks whether needed values for an entity are NULL.
+	 * @return
+	 */
+	private boolean neededValuesNotNull(RelationshipBase<?, ?, ?> relationship, PesiExportState state) {
+		boolean result = true;
+		if (getTaxonFk1(relationship, state) == null) {
+			logger.error("TaxonFk1 is NULL, but is not allowed to be. Therefore no record was written to export database for this relationship: " + relationship.getUuid());
+			result = false;
+		}
+		if (getTaxonFk2(relationship, state) == null) {
+			logger.error("TaxonFk2 is NULL, but is not allowed to be. Therefore no record was written to export database for this relationship: " + relationship.getUuid());
+			result = false;
+		}
+		return result;
+	}
+	
 	/**
 	 * Deletes all entries of database tables related to <code>RelTaxon</code>.
 	 * @param state The {@link PesiExportState PesiExportState}.
@@ -220,8 +245,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 * @return The <code>TaxonFk1</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static Integer getTaxonFk1(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state) {
+	private static Integer getTaxonFk1(RelationshipBase<?, ?, ?> relationship, PesiExportState state) {
 		return getObjectFk(relationship, state, true);
 	}
 	
@@ -232,8 +256,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 * @return The <code>TaxonFk2</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static Integer getTaxonFk2(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state) {
+	private static Integer getTaxonFk2(RelationshipBase<?, ?, ?> relationship, PesiExportState state) {
 		return getObjectFk(relationship, state, false);
 	}
 	
@@ -304,16 +327,6 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			NameRelationship nr = (NameRelationship)relationship;
 			TaxonNameBase taxonName = (isFrom) ? nr.getFromName() : nr.getToName();
 			return state.getDbId(taxonName);
-
-//			Set taxa = taxonName.getTaxa();
-//			if (taxa.size() == 0) {
-//				logger.warn("This TaxonName has no Taxon: " + taxonName.getTitleCache());
-//				return state.getDbId(taxonName);
-//			} else if (taxa.size() == 1) {
-//				taxon = (TaxonBase<?>) taxa.iterator().next();
-//			} else if (taxa.size() > 1) {
-//				logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getTitleCache());
-//			}
 		}
 		if (taxon != null) {
 			return state.getDbId(taxon.getName());
@@ -323,7 +336,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * Store synonym values.
+	 * Stores synonym values.
 	 * @param taxonName
 	 * @param nomenclaturalCode
 	 * @param kingdomFk
@@ -390,8 +403,8 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
 //		mapping.addMapper(IdMapper.NewInstance("RelTaxonId")); // Automagically generated on database level as primary key
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk1", this.getClass(), "getTaxonFk1", standardMethodParameter, DbExportStateBase.class));
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk2", this.getClass(), "getTaxonFk2", standardMethodParameter, DbExportStateBase.class));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk1", this.getClass(), "getTaxonFk1", standardMethodParameter, PesiExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk2", this.getClass(), "getTaxonFk2", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("RelTaxonQualifierFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RelQualifierCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Notes", this));

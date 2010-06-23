@@ -1205,7 +1205,7 @@ public final class PesiTransformer {
 	 * @throws UnknownCdmTypeException 
 	 */
 	public static String presenceAbsenceTerm2OccurrenceStatusCache(PresenceAbsenceTermBase<?> term) {
-		String result = STR_STATUS_PRESENT; // TODO: What should be returned if a PresenceTerm/AbsenceTerm could not be translated to a datawarehouse occurrence status id?
+		String result = null;
 		if (term.isInstanceOf(PresenceTerm.class)) {
 			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
 			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
@@ -1232,7 +1232,6 @@ public final class PesiTransformer {
 			} else {
 				logger.error("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
 			}
-//			result = STR_STATUS_ABSENT; // or just like this?
 		}
 		return result;
 	}
@@ -1244,7 +1243,7 @@ public final class PesiTransformer {
 	 * @throws UnknownCdmTypeException 
 	 */
 	public static Integer presenceAbsenceTerm2OccurrenceStatusId(PresenceAbsenceTermBase<?> term) {
-		Integer result = STATUS_PRESENT; // TODO: What should be returned if a PresenceTerm/AbsenceTerm could not be translated to a datawarehouse occurrence status id?
+		Integer result = null;
 		if (term.isInstanceOf(PresenceTerm.class)) {
 			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
 			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
@@ -1271,7 +1270,6 @@ public final class PesiTransformer {
 			} else {
 				logger.error("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
 			}
-//			result = STATUS_ABSENT; // or just like this?
 		}
 		return result;
 	}
@@ -1707,10 +1705,9 @@ public final class PesiTransformer {
 			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
 			else {
 				logger.error("Unknown TdwgArea Area: " + area.getTitleCache());
-				return 1; // TODO: Actually the export has to stop here because AreaFk's are not allowed to be NULL and another value is plain wrong.
 			}
 		}
-		return 1; // TODO: Actually the export has to stop here because AreaFk's are not allowed to be NULL and another value is plain wrong.
+		return null;
 
 	}
 
@@ -2724,8 +2721,8 @@ public final class PesiTransformer {
 			return null;
 		} else if (reference.getType().equals(ReferenceType.Article)) {
 			return REF_ARTICLE_IN_PERIODICAL;
-		} else if (reference instanceof ISectionBase) {
-			return REF_PART_OF_OTHER;
+//		} else if (reference instanceof ISectionBase) {
+//			return REF_PART_OF_OTHER;
 		} else if (reference.getType().equals(ReferenceType.Book)) {
 			return REF_BOOK;
 		} else if (reference.getType().equals(ReferenceType.Database)) {

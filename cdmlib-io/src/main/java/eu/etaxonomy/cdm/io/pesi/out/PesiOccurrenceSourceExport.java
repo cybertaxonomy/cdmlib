@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -136,12 +135,13 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 
 										// Citations can be empty (null): Is it wrong data or just a normal case?
 										if (reference != null) {
-											doCount(count++, modCount, pluralString);
 
-											// Lookup sourceFk by using getSourceFk()
+											// Lookup sourceFk
 											Integer sourceFk = getSourceFk(reference, state);
 											
 											if (sourceFk != null && ! state.alreadyProcessedSource(sourceFk)) {
+												doCount(count++, modCount, pluralString);
+												
 												// Add to processed sourceFk's since sourceFk's can be scanned more than once.
 												state.addToProcessedSources(sourceFk);
 												
@@ -287,7 +287,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getSourceFk(AnnotatableEntity entity, PesiExportState state) {
 		Integer result = null;
 		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
@@ -303,7 +302,6 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	 * @return The <code>SourceNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getSourceNameCache(AnnotatableEntity entity) {
 		String result = null;
 		if (entity != null && entity.isInstanceOf(ReferenceBase.class)) {

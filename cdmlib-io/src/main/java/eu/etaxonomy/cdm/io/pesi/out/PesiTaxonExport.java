@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -64,12 +66,27 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static final String dbTableName = "Taxon";
 	private static final String pluralString = "Taxa";
 	private PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt;
-	private PreparedStatement synonymsStmt;
 	private NomenclaturalCode nomenclaturalCode;
 	private Integer kingdomFk;
 	private HashMap<Rank, Rank> rankMap = new HashMap<Rank, Rank>();
 	private List<Rank> rankList = new ArrayList<Rank>();
+	private static final UUID uuidTreeIndex = UUID.fromString("28f4e205-1d02-4d3a-8288-775ea8413009");
+	private AnnotationType treeIndexAnnotationType;
 	
+	/**
+	 * @return the treeIndexAnnotationType
+	 */
+	protected AnnotationType getTreeIndexAnnotationType() {
+		return treeIndexAnnotationType;
+	}
+
+	/**
+	 * @param treeIndexAnnotationType the treeIndexAnnotationType to set
+	 */
+	protected void setTreeIndexAnnotationType(AnnotationType treeIndexAnnotationType) {
+		this.treeIndexAnnotationType = treeIndexAnnotationType;
+	}
+
 	enum NamePosition {
 		beginning,
 		end,
@@ -113,10 +130,6 @@ public class PesiTaxonExport extends PesiExportBase {
 					"KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
 			parentTaxonFk_TreeIndex_KingdomFkStmt = connection.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
 
-//			String synonymsSql = "UPDATE Taxon SET ParentTaxonFk = ?, KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
-			String synonymsSql = "UPDATE Taxon SET KingdomFk = ? WHERE TaxonId = ?"; 
-			synonymsStmt = connection.prepareStatement(synonymsSql);
-			
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
 
@@ -158,12 +171,13 @@ public class PesiTaxonExport extends PesiExportBase {
 					String genusOrUninomial = getGenusOrUninomial(taxonName);
 					String specificEpithet = getSpecificEpithet(taxonName);
 					String infraSpecificEpithet = getInfraSpecificEpithet(taxonName);
+					String infraGenericEpithet = getInfraGenericEpithet(taxonName);
 					Integer rank = getRankFk(taxonName, nomenclaturalCode);
-					
+
 					if (rank == null) {
 						logger.error("Rank was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 					} else {
-						if (infraSpecificEpithet == null && rank.intValue() == 190) {
+						if (infraGenericEpithet == null && rank.intValue() == 190) {
 							logger.error("InfraSpecificEpithet was not determined although it should exist for rank 190: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 						}
 						if (specificEpithet != null && rank.intValue() < 220) {
@@ -224,6 +238,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 			logger.error("Fetched " + taxonomicTreeList.size() + " Taxonomic Tree.");
 
+			setTreeIndexAnnotationType(getAnnotationType(uuidTreeIndex, "TreeIndex", "", "TI"));
+			
 			for (TaxonomicTree taxonomicTree : taxonomicTreeList) {
 				for (Rank rank : rankList) {
 					
@@ -236,8 +252,8 @@ public class PesiTaxonExport extends PesiExportBase {
 					commitTransaction(txStatus);
 					logger.error("Committed transaction.");
 
-					int elementCount = 0;
-					int halfCount = rankSpecificRootNodes.size() / 2;
+//					int elementCount = 0;
+//					int halfCount = rankSpecificRootNodes.size() / 2;
 
 					for (TaxonNode rootNode : rankSpecificRootNodes) {
 						txStatus = startTransaction(false);
@@ -248,9 +264,9 @@ public class PesiTaxonExport extends PesiExportBase {
 							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till leafs are reached ...");
 						}
 
-						rootNode = getTaxonNodeService().load(rootNode.getUuid());
+						TaxonNode newNode = getTaxonNodeService().load(rootNode.getUuid());
 
-						TaxonNode parentNode = rootNode.getParent();
+						TaxonNode parentNode = newNode.getParent();
 						if (rank.equals(Rank.KINGDOM())) {
 							treeIndex = new StringBuffer();
 							treeIndex.append("#");
@@ -261,9 +277,9 @@ public class PesiTaxonExport extends PesiExportBase {
 								Set<Annotation> annotations = parentNode.getAnnotations();
 								for (Annotation annotation : annotations) {
 									AnnotationType annotationType = annotation.getAnnotationType();
-									if (annotationType != null && annotationType.equals(AnnotationType.TREEINDEX())) {
+									if (annotationType != null && annotationType.equals(getTreeIndexAnnotationType())) {
 										// It is assumed that there is only one annotation using AnnotationType TREEINDEX. If there are more only one is noticed.
-										treeIndex = new StringBuffer(annotation.getText());
+										treeIndex = new StringBuffer(CdmUtils.Nz(annotation.getText()));
 										annotationFound = true;
 										logger.error("treeIndex: " + treeIndex);
 										break;
@@ -271,31 +287,30 @@ public class PesiTaxonExport extends PesiExportBase {
 								}
 								if (!annotationFound) {
 									// This should not happen because it means that the treeIndex was not set correctly as an annotation to parentNode
-//									logger.error("TreeIndex could not be read from annotation of this TaxonNode: " + parentNode.getUuid());
+									logger.error("TreeIndex could not be read from annotation of this TaxonNode: " + parentNode.getUuid());
 									treeIndex = new StringBuffer();
 									treeIndex.append("#");
 								}
 							} else {
 								// TreeIndex could not be determined, but it's unclear how to proceed to generate a correct treeIndex if the parentNode is NULL
-								logger.error("ParentNode for RootNode is NULL. TreeIndex could not be determined: " + rootNode.getUuid());
+								logger.error("ParentNode for RootNode is NULL. TreeIndex could not be determined: " + newNode.getUuid());
 								treeIndex = new StringBuffer(); // This just prevents growing of the treeIndex in a wrong manner
 								treeIndex.append("#");
 							}
 						}
 						
-						nomenclaturalCode = rootNode.getTaxon().getName().getNomenclaturalCode();
+						nomenclaturalCode = newNode.getTaxon().getName().getNomenclaturalCode();
 						kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
-						traverseTree(rootNode, parentNode, treeIndex, rankMap.get(rank), state);
+						traverseTree(newNode, parentNode, treeIndex, rankMap.get(rank), state);
 						
 						commitTransaction(txStatus);
 						logger.error("Committed transaction.");
 
-						elementCount++;
-						if (elementCount == halfCount) {
-							logger.error("50% of " + rank.getLabel() + " RootNodes processed...");
-						}
+//						elementCount++;
+//						if (elementCount == halfCount) {
+//							logger.error("50% of " + rank.getLabel() + " RootNodes processed...");
+//						}
 					}
-
 				}
 			}
 
@@ -310,7 +325,27 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * Traverse the TaxonTree recursively and store determined values for every Taxon.
+	 * Returns the AnnotationType for a given UUID.
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected AnnotationType getAnnotationType(UUID uuid, String label, String text, String labelAbbrev){
+		AnnotationType annotationType = (AnnotationType)getTermService().find(uuid);
+		if (annotationType == null) {
+			annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
+			annotationType.setUuid(uuid);
+			annotationType.setVocabulary(AnnotationType.EDITORIAL().getVocabulary());
+			getTermService().save(annotationType);
+		}
+		return annotationType;
+	}
+
+	/**
+	 * Traverses the TaxonTree recursively and stores determined values for every Taxon.
 	 * @param childNode
 	 * @param parentNode
 	 * @param treeIndex
@@ -334,19 +369,8 @@ public class PesiTaxonExport extends PesiExportBase {
 						saveData(childNode, parentNode, localTreeIndex, state, taxonNameId);
 
 						// Store treeIndex as annotation for further use
-						Set<Annotation> annotations = childNode.getAnnotations();
-						boolean found = false;
-						for (Annotation annotation : annotations) {
-							AnnotationType annotationType = annotation.getAnnotationType();
-							if (annotationType != null && annotationType.equals(AnnotationType.TREEINDEX())) {
-								annotation.setText(localTreeIndex.toString());
-								found = true;
-								break;
-							}
-						}
-						if (!found) {
-							childNode.addAnnotation(Annotation.NewInstance(localTreeIndex.toString(), AnnotationType.TREEINDEX(), Language.DEFAULT()));
-						}
+						Annotation annotation = Annotation.NewInstance(localTreeIndex.toString(), getTreeIndexAnnotationType(), Language.DEFAULT());
+						childNode.addAnnotation(annotation);
 
 						for (TaxonNode newNode : childNode.getChildNodes()) {
 							traverseTree(newNode, childNode, localTreeIndex, fetchLevel, state);
@@ -369,7 +393,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * Store values in database for every recursive round.
+	 * Stores values in database for every recursive round.
 	 * @param childNode
 	 * @param parentNode
 	 * @param treeIndex
@@ -401,7 +425,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * 
+	 * Inserts values into the Taxon database table.
 	 * @param taxonNameBase
 	 * @param state
 	 * @param stmt
@@ -500,7 +524,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return Whether it's genus or uninomial.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getGenusOrUninomial(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
@@ -516,7 +539,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>InfraGenericEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getInfraGenericEpithet(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
@@ -532,7 +554,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>SpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getSpecificEpithet(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
@@ -548,7 +569,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>InfraSpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getInfraSpecificEpithet(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {

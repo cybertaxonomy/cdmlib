@@ -210,7 +210,7 @@ public class PesiSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getName(ReferenceBase<?> reference) {
 		if (reference != null) {
-			return reference.getTitle();
+			return reference.getTitleCache(); // was getTitle()
 		} else {
 			return null;
 		}

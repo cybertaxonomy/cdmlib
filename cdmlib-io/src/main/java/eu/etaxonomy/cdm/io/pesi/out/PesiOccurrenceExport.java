@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +117,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 				logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
 				for (TaxonBase taxonBase : list) {
 					if (taxonBase.isInstanceOf(Taxon.class)) {
-
+						
 						// Set the current Taxon
 						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 
@@ -138,16 +137,20 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 									// Differentiate between descriptionElements with and without sources.
 									if (elementSources.size() == 0 && state.getDbId(descriptionElement) != null) {
-										doCount(count++, modCount, pluralString);
-										success &= mapping.invoke(descriptionElement);
+										if (neededValuesNotNull(descriptionElement, state)) {
+											doCount(count++, modCount, pluralString);
+											success &= mapping.invoke(descriptionElement);
+										}
 									} else {
 										for (DescriptionElementSource elementSource : elementSources) {
 											ReferenceBase reference = elementSource.getCitation();
 	
 											// Citations can be empty (null): Is it wrong data or just a normal case?
 											if (reference != null && state.getDbId(reference) != null) {
-												doCount(count++, modCount, pluralString);
-												success &= mapping.invoke(reference);
+												if (neededValuesNotNull(reference, state)) {
+													doCount(count++, modCount, pluralString);
+													success &= mapping.invoke(reference);
+												}
 											}
 										}
 										
@@ -189,37 +192,25 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the identifier of the last occurrence committed to the database.
-	 * @param state
+	 * Checks whether needed values for an entity are NULL.
 	 * @return
 	 */
-	private static Integer getLastOccurrenceId(PesiExportState state) {
-		// Retrieve the identifier of the last stored record
-		// Retrieve database identifier of the last created occurrence record.
-		String lastRecordSql = "Select @@Identity From OccurrenceSource";
-		Connection con = state.getConfig().getDestination().getConnection();
-		PreparedStatement stmt = null;
-		
-		Integer occurrenceId = 0;
-		try {
-			stmt = con.prepareStatement(lastRecordSql);
-	//		stmt.setString(1, dbTableName);
-			ResultSet resultSet = stmt.executeQuery();
-			while (resultSet.next()) {
-				// Count of this resultset should be 1
-				occurrenceId = resultSet.getInt(1);
-			}
-			if (occurrenceId == 0) {
-				throw new RuntimeException();
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException during getOccurrenceId invoke.");
-			e.printStackTrace();
+	private boolean neededValuesNotNull(AnnotatableEntity entity, PesiExportState state) {
+		boolean result = true;
+		if (getTaxonFk(entity, state) == null) {
+			logger.error("TaxonFk is NULL, but is not allowed to be. Therefore no record was written to export database for this entity: " + entity.getUuid());
+			result = false;
 		}
-
-		return occurrenceId;
+		if (getAreaFk(entity) == null) {
+			logger.error("AreaFk is NULL, but is not allowed to be. Therefore no record was written to export database for this entity: " + entity.getUuid());
+			result = false;
+		}
+		if (getOccurrenceStatusFk(entity) == null) {
+			logger.error("OccurrenceStatusFk is NULL, but is not allowed to be. Therefore no record was written to export database for this entity: " + entity.getUuid());
+			result = false;
+		}
+		return result;
 	}
-
 
 	/**
 	 * Creates the entries for the database table 'OccurrenceSource'.
@@ -285,7 +276,6 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getTaxonFk(AnnotatableEntity entity, PesiExportState state) {
 		// AnnotatableEntity parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
@@ -315,7 +305,6 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @return The <code>AreaFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getAreaFk(AnnotatableEntity entity) {
 		Integer result = null;
 		if (getNamedArea() != null) {
@@ -378,7 +367,6 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @throws UnknownCdmTypeException 
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getOccurrenceStatusFk(AnnotatableEntity entity) {
 		Integer result = null;
 		if (getDistribution() != null) {

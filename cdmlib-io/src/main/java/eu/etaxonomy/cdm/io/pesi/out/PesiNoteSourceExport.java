@@ -73,8 +73,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 //			int pageSize = state.getConfig().getLimitSave();
 			int pageSize = 1000;
 
-			// Calculate the pageNumber
-			int maxCount = 0;
+			// pageNumber
 			int pageNumber = 1;
 
 			// Stores whether this invoke was successful or not.
@@ -103,7 +102,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (DescriptionElementBase descriptionElement : list) {
 					
-					if (getNoteCategoryFk(descriptionElement) != null) {
+					if (getNoteCategoryFk(descriptionElement) != null && neededValuesNotNull(descriptionElement, state)) {
 						doCount(count++, modCount, pluralString);
 						success &= mapping.invoke(descriptionElement);
 					}
@@ -137,6 +136,19 @@ public class PesiNoteSourceExport extends PesiExportBase {
 			logger.error(e.getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * Checks whether needed values for an entity are NULL.
+	 * @return
+	 */
+	private boolean neededValuesNotNull(DescriptionElementBase descriptionElement, PesiExportState state) {
+		boolean result = true;
+		if (getSourceFk(descriptionElement, state) == null) {
+			logger.error("SourceFk is NULL, but is not allowed to be. Therefore no record was written to export database for this descriptionElement: " + descriptionElement.getUuid());
+			result = false;
+		}
+		return result;
 	}
 
 	/**
@@ -198,7 +210,6 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getSourceFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
 		Integer result = state.getDbId(descriptionElement);
 //		DescriptionBase description = descriptionElement.getInDescription();
@@ -236,7 +247,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceDetail(DescriptionElementBase descriptionElement) {
-		return descriptionElement.getCitationMicroReference(); // TODO: What else could be used?
+		return descriptionElement.getCitationMicroReference(); // TODO: What should be used instead?
 	}
 
 	/**
@@ -247,7 +258,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 
 		mapping.addMapper(MethodMapper.NewInstance("NoteFk", this.getClass(), "getNoteFk", standardMethodParameter, PesiExportState.class));
-		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, DbExportStateBase.class));
+		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceDetail", this));
 

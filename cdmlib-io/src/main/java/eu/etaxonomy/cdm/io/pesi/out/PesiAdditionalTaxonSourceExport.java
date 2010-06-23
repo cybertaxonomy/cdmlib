@@ -125,8 +125,10 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 
 					ReferenceBase<?> nomenclaturalReference = (ReferenceBase)taxonBase.getName().getNomenclaturalReference();
 					if (nomenclaturalReference != null && state.getDbId(nomenclaturalReference) != null) {
-						doCount(count++, modCount, pluralString);
-						success &= mapping.invoke(nomenclaturalReference);
+						if (neededValuesNotNull(nomenclaturalReference, state)) {
+							doCount(count++, modCount, pluralString);
+							success &= mapping.invoke(nomenclaturalReference);
+						}
 					}
 				}
 				sourceUse_NomenclaturalReference = false;
@@ -161,8 +163,10 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 									
 									// Citations can be empty (null): Is it wrong data or just a normal case?
 									if (reference != null && state.getDbId(reference) != null) {
-										doCount(count++, modCount, pluralString);
-										success &= mapping.invoke(reference);
+										if (neededValuesNotNull(reference, state)) {
+											doCount(count++, modCount, pluralString);
+											success &= mapping.invoke(reference);
+										}
 									}
 								}
 							}
@@ -186,8 +190,10 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 
 							// Citations can be empty (null): Is it wrong data or just a normal case?
 							if (reference != null && state.getDbId(reference) != null) {
-								doCount(count++, modCount, pluralString);
-								success &= mapping.invoke(reference);
+								if (neededValuesNotNull(reference, state)) {
+									doCount(count++, modCount, pluralString);
+									success &= mapping.invoke(reference);
+								}
 							}
 						}
 					}
@@ -221,6 +227,23 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 		}
 	}
 
+	/**
+	 * Checks whether needed values for an entity are NULL.
+	 * @return
+	 */
+	private boolean neededValuesNotNull(ReferenceBase<?> reference, PesiExportState state) {
+		boolean result = true;
+		if (getSourceFk(reference, state) == null) {
+			logger.error("SourceFk is NULL, but is not allowed to be. Therefore no record was written to export database for this reference: " + reference.getUuid());
+			result = false;
+		}
+		if (getSourceUseFk(reference) == null) {
+			logger.error("SourceUseFk is NULL, but is not allowed to be. Therefore no record was written to export database for this reference: " + reference.getUuid());
+			result = false;
+		}
+		return result;
+	}
+	
 	/**
 	 * Deletes all entries of database tables related to <code>AdditionalTaxonSource</code>.
 	 * @param state The {@link PesiExportState PesiExportState}.
@@ -272,7 +295,6 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getSourceFk(ReferenceBase<?> reference, PesiExportState state) {
 		Integer result = null;
 		if (state != null && reference != null) {
@@ -302,7 +324,6 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 * @return The <code>SourceUseFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getSourceUseFk(ReferenceBase<?> reference) {
 		// TODO
 		Integer result = null;
