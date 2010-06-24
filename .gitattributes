@@ -2710,6 +2710,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultCategoricalDes
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeComparator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAnnotatableService.java -text

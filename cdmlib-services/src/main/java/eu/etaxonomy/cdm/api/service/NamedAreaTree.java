@@ -10,6 +10,11 @@ import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
+/**
+ * @author f.revilla
+ * @version 1.0
+ * @created 10.06.2010
+ */
 public class NamedAreaTree extends Tree<NamedArea>{
 	
 	public NamedAreaTree() {
@@ -36,22 +41,20 @@ public class NamedAreaTree extends Tree<NamedArea>{
 			List<NamedArea> levelList = this.getAreaLevelPathList(area, omitLevels);
 			mergeAux(levelList, this.getRootElement());
 		}
-
-		//mergeAux(areaHierarchieList, this.getRootElement());
 	}
 	
 	public void sortChildren(){
 		sortChildrenAux(this.getRootElement());
 	}	
 	
-	private void sortChildrenAux(TreeNode<NamedArea> TreeNode){
+	private void sortChildrenAux(TreeNode<NamedArea> treeNode){
 		NamedAreaNodeComparator comp = new NamedAreaNodeComparator();
-		if (TreeNode.children == null){
+		if (treeNode.children == null){
 			//nothing => stop condition
 			return;
 		}else{
-			Collections.sort(TreeNode.children, comp);
-			for (TreeNode<NamedArea> child : TreeNode.children) {
+			Collections.sort(treeNode.children, comp);
+			for (TreeNode<NamedArea> child : treeNode.children) {
 				sortChildrenAux(child);
 			}
 		}

@@ -241,4 +241,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     
     public List<DescriptionElementBase> getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+	public DistributionTree getOrderedDistributionsB(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels);
+
 }

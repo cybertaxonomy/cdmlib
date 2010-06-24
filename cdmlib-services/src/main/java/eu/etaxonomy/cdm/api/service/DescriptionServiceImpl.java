@@ -203,6 +203,30 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		tree.sortChildren();
 		return tree;	
 	}
+	
+	public DistributionTree getOrderedDistributionsB(
+			Set<TaxonDescription> taxonDescriptions,
+			Set<NamedAreaLevel> omitLevels){
+		
+		DistributionTree tree = new DistributionTree();
+		List<Distribution> distList = new ArrayList<Distribution>();
+		
+		for (TaxonDescription taxonDescription : taxonDescriptions) {
+			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid());
+			Set<DescriptionElementBase> elements = taxonDescription.getElements();
+			for (DescriptionElementBase element : elements) {
+				if(element.isInstanceOf(Distribution.class)){
+					Distribution distribution = (Distribution) element;
+					distList.add(distribution);
+				}
+			}
+		}
+		
+		//ordering the areas
+		tree.merge(distList, omitLevels);
+		tree.sortChildren();
+		return tree;
+	}
 
 	public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonNameDescriptions(name);
