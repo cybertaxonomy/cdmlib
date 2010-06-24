@@ -31,6 +31,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.SpecimenIoBase;
@@ -55,6 +57,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -85,6 +88,198 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 		logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
 		return true;
 	}
+	
+	
+	@Override
+	public boolean doInvoke(Abcd206ImportState state){
+		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
+		boolean result = true;
+		Abcd206ImportConfigurator config = state.getConfig();
+		//AbcdIO test = new AbcdIO();
+		String sourceName = config.getSource();
+		NodeList unitsList = getUnitsNodeList(sourceName);
+		if (unitsList != null){
+			logger.info("nb units to insert: "+unitsList.getLength());
+			
+			Abcd206DataHolder dataHolder = new Abcd206DataHolder();
+			
+			for (int i=0 ; i<unitsList.getLength() ; i++){
+				this.setUnitPropertiesXML((Element)unitsList.item(i), dataHolder);
+				result &= this.handleSingleUnit(config, dataHolder);
+				
+				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
+				compareABCDtoCDM(sourceName, dataHolder.knownABCDelements, dataHolder);
+				
+				//reset the ABCD elements added in CDM
+				//knownABCDelements = new ArrayList<String>();
+				dataHolder.allABCDelements = new HashMap<String,String>();
+			}
+		}
+
+		return result;
+
+	}
+	
+	/*
+	 * Store the unit with its Gathering informations in the CDM
+	 */
+	private boolean handleSingleUnit(Abcd206ImportConfigurator config, Abcd206DataHolder dataHolder){
+		boolean result = true;
+
+		TransactionStatus tx = startTransaction();
+		try {
+//			ReferenceBase sec = Database.NewInstance();
+//			sec.setTitleCache("XML DATA");
+			ReferenceBase sec = config.getTaxonReference();
+
+			//create facade
+			DerivedUnitFacade derivedUnitFacade = getFacade(dataHolder);
+			
+			
+			//handle identifications
+			handleIdentifications(config, derivedUnitFacade, sec, dataHolder);
+
+			//handle collection data
+			setCollectionData(config, dataHolder, derivedUnitFacade);
+
+			/**
+			 * GATHERING EVENT
+			 */
+
+			//gathering event
+			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(
+					getTermService(), dataHolder.locality, dataHolder.languageIso, dataHolder.longitude, 
+					dataHolder.latitude, dataHolder.gatheringAgentList);
+			
+			//country
+			UnitsGatheringArea unitsGatheringArea = 
+				new UnitsGatheringArea(dataHolder.isocountry, dataHolder.country, getOccurrenceService());
+			NamedArea areaCountry = unitsGatheringArea.getArea();
+			
+			//other areas
+			unitsGatheringArea = new UnitsGatheringArea(dataHolder.namedAreaList);
+			ArrayList<NamedArea> nas = unitsGatheringArea.getAreas();
+			for (NamedArea namedArea : nas){
+				unitsGatheringEvent.addArea(namedArea);
+			}
+			
+			//copy gathering event to facade
+			GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
+			derivedUnitFacade.setLocality(gatheringEvent.getLocality());
+			derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
+			derivedUnitFacade.setCollector(gatheringEvent.getCollector());
+			derivedUnitFacade.addCollectingArea(areaCountry);
+			//FIXME setCountry
+			derivedUnitFacade.addCollectingArea(areaCountry);
+			derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
+			
+			//TODO exsiccatum
+			
+			
+			//add fieldNumber
+			derivedUnitFacade.setFieldNumber(dataHolder.fieldNumber);
+			
+			//join gatheringEvent to fieldObservation
+
+//			//add Multimedia URLs
+			if(dataHolder.multimediaObjects.size() > 0){
+				MediaRepresentation representation;
+				Media media;
+				ImageMetaData imd ;
+				URL url ;
+				ImageFile imf;
+				for (String multimediaObject : dataHolder.multimediaObjects){
+					if( multimediaObject != null){
+						imd = ImageMetaData.newInstance();
+						url = new URL(multimediaObject);
+						imd.readMetaData(url.toURI(), 0);
+						//TODO ??
+						if (imd != null){
+							representation = MediaRepresentation.NewInstance();
+							imf = ImageFile.NewInstance(multimediaObject, null, imd);
+							representation.addRepresentationPart(imf);
+							media = Media.NewInstance();
+							media.addRepresentation(representation);
+							
+							derivedUnitFacade.addFieldObjectMedia(media);
+						}
+					}
+				}
+			}
+			
+			/**
+			 * SAVE AND STORE DATA
+			 */			
+			getTermService().save(areaCountry);//TODO save area sooner
+			for (NamedArea area : nas){
+				getTermService().save(area);//save it sooner (foreach area)
+			}
+			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//TODO needs to be saved ?? save it sooner
+			
+			getOccurrenceService().save(derivedUnitFacade.getDerivedUnit());
+			logger.info("saved ABCD specimen ...");
+
+
+		} catch (Exception e) {
+			logger.warn("Error when reading record!!");
+			e.printStackTrace();
+			result = false;
+		}
+		commitTransaction(tx);
+
+		return result;
+	}
+
+
+	private void setCollectionData(Abcd206ImportConfigurator config,
+			Abcd206DataHolder dataHolder, DerivedUnitFacade derivedUnitFacade) {
+		//set catalogue number (unitID)
+		derivedUnitFacade.setCatalogNumber(dataHolder.unitID);
+		derivedUnitFacade.setAccessionNumber(dataHolder.accessionNumber);
+		derivedUnitFacade.setCollectorsNumber(dataHolder.collectorsNumber);
+
+
+		/**
+		 * INSTITUTION & COLLECTION
+		 */
+		//manage institution
+		Institution institution = this.getInstitution(dataHolder.institutionCode, config, dataHolder);
+		//manage collection
+		Collection collection = this.getCollection(dataHolder.collectionCode, institution, config, dataHolder); 
+		//link specimen & collection
+		derivedUnitFacade.setCollection(collection);
+	}
+
+
+	private DerivedUnitFacade getFacade(Abcd206DataHolder dataHolder) {
+		/**
+		 * SPECIMEN OR OBSERVATION OR LIVING
+		 */
+//			DerivedUnitBase derivedThing = null;
+		DerivedUnitType type = null;
+		
+		//create specimen
+		if (dataHolder.recordBasis != null){
+			if (dataHolder.recordBasis.toLowerCase().startsWith("s")) {//specimen
+				type = DerivedUnitType.Specimen;
+			}else if (dataHolder.recordBasis.toLowerCase().startsWith("o")) {//observation
+				type = DerivedUnitType.Observation;	
+			}else if (dataHolder.recordBasis.toLowerCase().startsWith("l")) {//living -> fossil, herbarium sheet....???
+				type = DerivedUnitType.LivingBeing;
+			}
+			if (type == null){
+				logger.info("The basis of record does not seem to be known: " + dataHolder.recordBasis);
+				type = DerivedUnitType.DerivedUnit;
+			}
+			//TODO fossils?
+		}else{
+			logger.info("The basis of record is null");
+			type = DerivedUnitType.DerivedUnit;
+		}
+		DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
+		return derivedUnitFacade;
+	}
+
 
 	/*
 	 * Return the list of root nodes for an ABCD 2.06 XML file
@@ -860,7 +1055,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void setTaxonNameBase(Abcd206ImportConfigurator config, DerivedUnitBase derivedThing, ReferenceBase sec, Abcd206DataHolder dataHolder){
+	private void handleIdentifications(Abcd206ImportConfigurator config, DerivedUnitFacade facade, ReferenceBase sec, Abcd206DataHolder dataHolder){
 		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -925,7 +1120,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 				reference.setTitleCache(strReference, true);
 				determinationEvent.addReference(reference);
 			}
-			derivedThing.addDetermination(determinationEvent);
+			facade.addDetermination(determinationEvent);
 		}
 
 	}
@@ -1122,137 +1317,6 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 
 		return value;
 	}
-	/*
-	 * Store the unit with its Gathering informations in the CDM
-	 */
-	public boolean transformToCdm(Abcd206ImportConfigurator config, Abcd206DataHolder dataHolder){
-		boolean result = true;
-
-		TransactionStatus tx = startTransaction();
-		try {
-//			ReferenceBase sec = Database.NewInstance();
-//			sec.setTitleCache("XML DATA");
-			ReferenceBase sec = config.getTaxonReference();
-
-			/**
-			 * SPECIMEN OR OBSERVATION OR LIVING
-			 */
-			DerivedUnitBase derivedThing = null;
-			//create specimen
-			boolean rbFound = false;
-			if (dataHolder.recordBasis != null){
-				if (dataHolder.recordBasis.toLowerCase().startsWith("s")) {//specimen
-					derivedThing = Specimen.NewInstance();
-					rbFound = true;
-				}
-				else if (dataHolder.recordBasis.toLowerCase().startsWith("o")) {//observation
-					derivedThing = Observation.NewInstance();	
-					rbFound = true;
-				}
-				else if (dataHolder.recordBasis.toLowerCase().startsWith("l")) {//living -> fossil, herbarium sheet....???
-					derivedThing = LivingBeing.NewInstance();
-					rbFound = true;
-				}
-				if (! rbFound){
-					logger.info("The basis of record does not seem to be known: " + dataHolder.recordBasis);
-					derivedThing = DerivedUnit.NewInstance();
-				}
-			}
-			else{
-				logger.info("The basis of record is null");
-				derivedThing = DerivedUnit.NewInstance();
-			}
-//			if(derivedThing == null)derivedThing=Observation.NewInstance();
-
-			this.setTaxonNameBase(config, derivedThing, sec, dataHolder);
-
-
-			//set catalogue number (unitID)
-			derivedThing.setCatalogNumber(dataHolder.unitID);
-			derivedThing.setAccessionNumber(dataHolder.accessionNumber);
-			derivedThing.setCollectorsNumber(dataHolder.collectorsNumber);
-
-
-			/**
-			 * INSTITUTION & COLLECTION
-			 */
-			//manage institution
-			Institution institution = this.getInstitution(dataHolder.institutionCode, config, dataHolder);
-			//manage collection
-			Collection collection = this.getCollection(dataHolder.collectionCode, institution, config, dataHolder); 
-			//link specimen & collection
-			derivedThing.setCollection(collection);
-
-			/**
-			 * GATHERING EVENT
-			 */
-
-			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(this, dataHolder.locality, dataHolder.languageIso, dataHolder.longitude, 
-					dataHolder.latitude, dataHolder.gatheringAgentList);
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(dataHolder.isocountry, dataHolder.country, this);
-			NamedArea areaCountry = unitsGatheringArea.getArea();
-			unitsGatheringEvent.addArea(areaCountry);
-			unitsGatheringArea = new UnitsGatheringArea(dataHolder.namedAreaList);
-			ArrayList<NamedArea> nas = unitsGatheringArea.getAreas();
-			for (NamedArea namedArea : nas){
-				unitsGatheringEvent.addArea(namedArea);
-			}
-
-			//create field/observation
-			FieldObservation fieldObservation = FieldObservation.NewInstance();
-			//add fieldNumber
-			fieldObservation.setFieldNumber(dataHolder.fieldNumber);
-			//join gatheringEvent to fieldObservation
-			fieldObservation.setGatheringEvent(unitsGatheringEvent.getGatheringEvent());
-//			//add Multimedia URLs
-			if(dataHolder.multimediaObjects.size() > 0){
-				MediaRepresentation representation;
-				Media media;
-				ImageMetaData imd ;
-				URL url ;
-				ImageFile imf;
-				for (String multimediaObject : dataHolder.multimediaObjects){
-					if( multimediaObject != null){
-						imd = ImageMetaData.newInstance();
-						url = new URL(multimediaObject);
-						imd.readMetaData(url.toURI(), 0);
-						if (imd != null){
-							representation = MediaRepresentation.NewInstance();
-							imf = ImageFile.NewInstance(multimediaObject, null, imd);
-							representation.addRepresentationPart(imf);
-							media = Media.NewInstance();
-							media.addRepresentation(representation);
-							fieldObservation.addMedia(media);
-						}
-					}
-				}
-			}
-//			//link fieldObservation and specimen
-			DerivationEvent derivationEvent = DerivationEvent.NewInstance();
-			derivationEvent.addOriginal(fieldObservation);
-			derivedThing.addDerivationEvent(derivationEvent);
-
-			/**
-			 * SAVE AND STORE DATA
-			 */			
-			getTermService().save(areaCountry);//TODO save area sooner
-			for (int i=0; i<nas.size();i++){
-				getTermService().save(nas.get(i));//save it sooner (foreach area)
-			}
-			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//TODO needs to be saved ?? save it sooner
-			getOccurrenceService().save(derivedThing);
-			logger.info("saved ABCD specimen ...");
-
-
-		} catch (Exception e) {
-			logger.warn("Error when reading record!!");
-			e.printStackTrace();
-			result = false;
-		}
-		commitTransaction(tx);
-
-		return result;
-	}
 
 	private void compareABCDtoCDM(String urlFileName, ArrayList<String> knownElts, Abcd206DataHolder dataHolder){
 
@@ -1266,13 +1330,10 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 			Element root = document.getDocumentElement();
 			traverse(root, dataHolder);
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Set<String> elts = dataHolder.allABCDelements.keySet();
@@ -1288,6 +1349,11 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 	
 	
 
+	/**
+	 * Traverses the tree for compareABCDtoCDM
+	 * @param node
+	 * @param dataHolder
+	 */
 	private void traverse(Node node, Abcd206DataHolder dataHolder){
 		// Extract node info:
 		String test = node.getTextContent();
@@ -1312,36 +1378,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 		}
 	}
 
-	
-	@Override
-	public boolean doInvoke(Abcd206ImportState state){
-		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
-		boolean result = true;
-		Abcd206ImportConfigurator config = state.getConfig();
-		//AbcdIO test = new AbcdIO();
-		String sourceName = config.getSource();
-		NodeList unitsList = getUnitsNodeList(sourceName);
-		if (unitsList != null){
-			logger.info("nb units to insert: "+unitsList.getLength());
-			
-			Abcd206DataHolder dataHolder = new Abcd206DataHolder();
-			
-			for (int i=0 ; i<unitsList.getLength() ; i++){
-				this.setUnitPropertiesXML((Element)unitsList.item(i), dataHolder);
-				result &= this.transformToCdm(config, dataHolder);
-				
-				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
-				compareABCDtoCDM(sourceName, dataHolder.knownABCDelements, dataHolder);
-				
-				//reset the ABCD elements added in CDM
-				//knownABCDelements = new ArrayList<String>();
-				dataHolder.allABCDelements = new HashMap<String,String>();
-			}
-		}
 
-		return result;
-
-	}
 
 	@Override
 	protected boolean isIgnore(Abcd206ImportState state) {

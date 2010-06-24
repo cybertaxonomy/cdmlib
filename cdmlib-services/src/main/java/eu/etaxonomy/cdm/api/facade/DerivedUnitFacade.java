@@ -526,6 +526,11 @@ public class DerivedUnitFacade {
 	public void addCollectingArea(NamedArea area) {
 		getGatheringEvent().addCollectingArea(area);
 	}
+	public void addCollectingAreas(java.util.Collection<NamedArea> areas) {
+		for (NamedArea area : areas){
+			getGatheringEvent().addCollectingArea(area);
+		}
+	}
 	public Set<NamedArea> getCollectingAreas() {
 		return getGatheringEvent().getCollectingAreas();
 	}

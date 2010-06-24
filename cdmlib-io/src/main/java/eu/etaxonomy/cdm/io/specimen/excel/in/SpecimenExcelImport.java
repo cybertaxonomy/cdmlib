@@ -407,9 +407,9 @@ public class SpecimenExcelImport  extends SpecimenIoBase<SpecimenExcelImportConf
 			 * GATHERING EVENT
 			 */
 
-			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(this, this.locality, this.languageIso, this.longitude, 
+			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(getTermService(), this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, this);
+			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, getOccurrenceService());
 			NamedArea areaCountry = unitsGatheringArea.getArea();
 			unitsGatheringEvent.addArea(areaCountry);
 			//Only for ABCD XML data

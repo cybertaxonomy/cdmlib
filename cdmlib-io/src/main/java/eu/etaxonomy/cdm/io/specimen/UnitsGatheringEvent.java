@@ -17,6 +17,7 @@ import java.util.ListIterator;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -46,8 +47,8 @@ public class UnitsGatheringEvent {
 	 * @param latitude
 	 * @param collectorNames
 	 */
-	public UnitsGatheringEvent(ICdmApplicationConfiguration config, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
-		this.setLocality(config, locality, languageIso);
+	public UnitsGatheringEvent(ITermService termService, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
+		this.setLocality(termService, locality, languageIso);
 		this.setCoordinates(longitude, latitude);
 		this.setCollector(collectorNames);
 	}
@@ -61,15 +62,16 @@ public class UnitsGatheringEvent {
 	 * @param locality
 	 * @param langageIso
 	 */
-	public void setLocality(ICdmApplicationConfiguration config, String locality, String languageIso){
+	public void setLocality(ITermService termService, String locality, String languageIso){
 		LanguageString loc;
-		if (languageIso == null || config.getTermService().getLanguageByIso(languageIso) == null){
-			if (languageIso != null && config.getTermService().getLanguageByIso(languageIso) == null ){
+		if (languageIso == null || termService.getLanguageByIso(languageIso) == null){
+			if (languageIso != null && termService.getLanguageByIso(languageIso) == null ){
 				logger.info("unknown iso used for the locality: "+languageIso);
 			}
-			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
+			//FIXME should be UNKNOWN
+			loc = LanguageString.NewInstance(locality, Language.DEFAULT());
 		}else{
-			loc = LanguageString.NewInstance(locality, config.getTermService().getLanguageByIso(languageIso));
+			loc = LanguageString.NewInstance(locality, termService.getLanguageByIso(languageIso));
 		}
 		this.gatheringEvent.setLocality(loc);
 	}

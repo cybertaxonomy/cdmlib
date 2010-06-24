@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -37,8 +38,8 @@ public class UnitsGatheringArea {
 	 * @param country
 	 * @param app
 	 */
-	public UnitsGatheringArea(String isoCountry, String country, ICdmApplicationConfiguration config){
-		this.setCountry(isoCountry, country, config);
+	public UnitsGatheringArea(String isoCountry, String country, IOccurrenceService occurrenceService){
+		this.setCountry(isoCountry, country, occurrenceService);
 	}
 	
 	/*
@@ -84,19 +85,19 @@ public class UnitsGatheringArea {
 	 * @param fullName: the country's full name
 	 * @param app: the CDM application controller
 	 */
-	public void setCountry(String iso, String fullName, ICdmApplicationConfiguration config){
+	public void setCountry(String iso, String fullName, IOccurrenceService occurrenceService){
 		WaterbodyOrCountry country = null;
 		List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
 		if (StringUtils.isBlank(iso)){
 			//TODO move to termservice
-			country = config.getOccurrenceService().getCountryByIso(iso);
+			country = occurrenceService.getCountryByIso(iso);
 		}
 		if (country != null){
 			this.area.addWaterbodyOrCountry(country);
 		}else{
 			if (fullName != ""){
 				//TODO move to termservice
-				countries = config.getOccurrenceService().getWaterbodyOrCountryByName(fullName);
+				countries = occurrenceService.getWaterbodyOrCountryByName(fullName);
 			}
 			if (countries.size() >0){
 				this.area.addWaterbodyOrCountry(countries.get(0));
