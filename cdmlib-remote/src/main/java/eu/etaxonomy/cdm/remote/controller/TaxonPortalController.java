@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -66,6 +68,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * The TaxonPortalController class is a Spring MVC Controller.
@@ -200,6 +203,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"$",
 			"type.inverseRepresentations",
 			"fromName.taggedName",
+			"toName.$",
 	});
 	
 	
@@ -487,12 +491,35 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxon/*/nameRelationships"},
+			value = {"/portal/taxon/*/toNameRelationships"},
 			method = RequestMethod.GET)
-	public List<NameRelationship> doGetNameRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<NameRelationship> doGetToNameRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameRelations()" + request.getServletPath());
 		TaxonBase tb = getCdmBase(request, response, SIMPLE_TAXON_INIT_STRATEGY, Taxon.class);
 		List<NameRelationship> list = nameService.listToNameRelationships(tb.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		return list;
+	}
+	
+	/**
+     * Get the list of {@link NameRelationship}s of the Name associated with the 
+	 * {@link TaxonBase} instance identified by the <code>{taxon-uuid}</code>.
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;nameRelationships</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return a List of {@link NameRelationship} entities which are initialized
+	 *         using the following initialization strategy:
+	 *         {@link #NAMERELATIONSHIP_INIT_STRATEGY}
+	 * @throws IOException
+	 */
+	@RequestMapping(
+			value = {"/portal/taxon/*/fromNameRelationships"},
+			method = RequestMethod.GET)
+	public List<NameRelationship> doGetFromNameRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+		logger.info("doGetNameRelations()" + request.getServletPath());
+		TaxonBase tb = getCdmBase(request, response, SIMPLE_TAXON_INIT_STRATEGY, Taxon.class);
+		List<NameRelationship> list = nameService.listFromNameRelationships(tb.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;
 	}
 	

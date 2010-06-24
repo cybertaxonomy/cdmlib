@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.DescriptionServiceImpl;
+import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.NamedAreaTree;
@@ -42,7 +43,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 
@@ -58,13 +58,13 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  */
 
 @Controller
-@RequestMapping(value = {"/description/*","/description/{uuid}", "/description/{uuid_list}", "/descriptionelement/*", "/featuretree/*"})
-public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
+@RequestMapping(value = {"/portal/description/*","/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionelement/*", "/portal/featuretree/*"})
+public class DescriptionPortalController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
 	private IFeatureTreeService featureTreeService;
 	
-	public DescriptionController(){
+	public DescriptionPortalController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
@@ -75,6 +75,29 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 				"root.feature.representations",
 				"root.children.feature.representations",
 			});
+	private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
+			// taxon descriptions
+			//"$",
+			//"elements.$",
+			"elements.sources.citation",
+			"elements.sources.citation.$",
+			"elements.area",
+			"elements.area.$",
+			//"elements.area.level",
+			});
+	protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+			"$",
+			"elements.$",
+			"elements.sources.citation.",
+//			"elements.sources.citation.authorTeam.$",		
+//			"elements.sources.citation.authorTeam.titleCache",
+//			"elements.sources.citation.authorTeam.nomenclaturalTitleCache",
+			"elements.sources.nameUsedInSource.titleCache",
+			"elements.sources.nameUsedInSource.originalNameString",
+//			"elements.area",
+			"elements.area.level",
+			"elements.modifyingText",
+	});
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -100,13 +123,14 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = {"/featuretree/{featuretree_uuid}"}, method = RequestMethod.GET)
+	
+	@RequestMapping(value = {"/portal/featuretree/{featuretree_uuid}"}, method = RequestMethod.GET)
 	public FeatureTree doGetFeatureTree(
-			@PathVariable("featuretree_uuid") UUID uuid,
+			@PathVariable("featuretree_uuid") UUID featureUuid,
 			HttpServletRequest request, 
 			HttpServletResponse response)throws IOException {
-		UUID featureTreeUuid = readValueUuid(request, null);
-		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
+		//UUID featureTreeUuid = readValueUuid(request, null);
+		FeatureTree featureTree = featureTreeService.load(featureUuid, FEATURETREE_INIT_STRATEGY);
 		if(featureTree == null){
 			HttpStatusMessage.UUID_NOT_FOUND.send(response);
 		}
@@ -123,8 +147,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
-
-	/*
+	
 	@RequestMapping(value = "{uuid_list}/namedAreaTree", method = RequestMethod.GET)
 	public NamedAreaTree doGetOrderedDistributions(
 			@PathVariable("uuid_list") UuidList descriptionUuidList,
@@ -141,6 +164,22 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		NamedAreaTree areaTree = service.getOrderedDistributions(taxonDescriptions, levels);
 		return areaTree;
 	}
-	*/
+	
+	@RequestMapping(value = "{uuid_list}/DistributionTree", method = RequestMethod.GET)
+	public DistributionTree doGetOrderedDistributionsB(
+			@PathVariable("uuid_list") UuidList descriptionUuidList,
+			@RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
+			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
+		Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
+		TaxonDescription description;
+		for (UUID descriptionUuid : descriptionUuidList) {
+			description = (TaxonDescription) service.load(descriptionUuid, TAXONDESCRIPTION_INIT_STRATEGY);
+			taxonDescriptions.add(description);
+		}
+		DistributionTree distTree = service.getOrderedDistributionsB(taxonDescriptions, levels);
+		return distTree;
+	}
+	
 
 }

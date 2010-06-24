@@ -41,6 +41,7 @@ public class NameRelationshipBeanProcessor extends AbstractCdmBeanProcessor<Name
 	public JSONObject processBeanSecondStep(NameRelationship bean, JSONObject json,	JsonConfig jsonConfig) {
 		
 		json.element("fromName", bean.getFromName(), jsonConfig);
+		json.element("toName", bean.getFromName(), jsonConfig);
 		
 		return json;
 	}
