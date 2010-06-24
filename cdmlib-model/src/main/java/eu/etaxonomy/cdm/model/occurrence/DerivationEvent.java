@@ -58,6 +58,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@XmlElement(name = "Original")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
 	@IndexedEmbedded(depth = 3)
 	protected Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
@@ -66,7 +67,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@XmlElement(name = "Derivative")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="derivationEvent")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivationEvent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<DerivedUnitBase> derivatives = new HashSet<DerivedUnitBase>();
 	
