@@ -674,10 +674,10 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			String iso = nameLang.substring(0, 2);
 			datasetLanguage = getTermService().getLanguageByIso(iso);
 		} else {
-			datasetLanguage = Language.ENGLISH();
+			datasetLanguage = Language.DEFAULT();
 		}
 		if (datasetLanguage == null) {
-			datasetLanguage = Language.ENGLISH();
+			datasetLanguage = Language.DEFAULT();
 		}
 	}
 	
