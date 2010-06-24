@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class DerivedUnitFacade {
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacade.class);
 	
-	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during clas initialization ";
+	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
 	
 	
 	/**
@@ -231,7 +231,7 @@ public class DerivedUnitFacade {
 		}
 		
 		//direct media of field observation
-		if (fieldObservation.getMedia().size() > 0){
+		if (fieldObservation != null && fieldObservation.getMedia() != null && fieldObservation.getMedia().size() > 0){
 			//TODO better changed model here to allow only one place for images
 			if (this.config.isMoveFieldObjectMediaToGallery()){
 				Set<Media> mediaSet = fieldObservation.getMedia();
@@ -696,11 +696,17 @@ public class DerivedUnitFacade {
 	}
 	public String getLocalityText(){
 		LanguageString locality = getGatheringEvent().getLocality();
-		return locality.getText();
+		if(locality != null){
+			return locality.getText();
+		}
+		return null;
 	}
 	public Language getLocalityLanguage(){
 		LanguageString locality = getGatheringEvent().getLocality();
-		return locality.getLanguage();
+		if(locality != null){
+			return locality.getLanguage();
+		}
+		return null;
 	}
 	
 	/**
