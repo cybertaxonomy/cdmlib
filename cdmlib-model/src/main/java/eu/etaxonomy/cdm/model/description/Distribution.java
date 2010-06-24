@@ -150,5 +150,22 @@ public class Distribution extends DescriptionElementBase {
 	public void setStatus(PresenceAbsenceTermBase<?> status){
 		this.status = status;
 	}
+	
+	public boolean equalsForTree(Distribution dist){
+		boolean result = false;
+		if (this.getArea().getLabel().compareTo(dist.getArea().getLabel()) == 0 &&
+				this.getArea().getLevel().getLabel().compareTo(dist.getArea().getLevel().getLabel()) == 0){
+			result = true;
+		}
+		return result;
+	}
+	
+	public String toString(){
+		String result = "null";
+		if (this.area != null){			
+			result = area.getLabel().toString();
+		}
+		return result;
+	}
 
 }
