@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.remote.json.processor;
+package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.Arrays;
 import java.util.List;

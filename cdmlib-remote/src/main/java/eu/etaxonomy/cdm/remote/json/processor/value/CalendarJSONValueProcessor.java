@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.remote.json.processor;
+package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,6 +18,7 @@ import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
 import org.apache.log4j.Logger;
+
 
 
 /**

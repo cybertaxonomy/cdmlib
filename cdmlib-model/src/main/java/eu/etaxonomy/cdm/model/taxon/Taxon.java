@@ -897,6 +897,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @deprecated use {@link #isMisapplication()} instead 
 	 */
 	@Deprecated
+	@Transient
 	public boolean isMisappliedName(){
 		return isMisapplication();
 	}

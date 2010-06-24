@@ -200,13 +200,13 @@ public final class Bootloader {
     	
 		CommandLine cmdLine = parseCommandOptions(args);
 		
-	   	 // print the help message
+		 // print the help message
 		
-	   	 if(cmdLine.hasOption(HELP.getOpt())){
-	   		 HelpFormatter formatter = new HelpFormatter();
-	   		 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
-	   		 System.exit(0);
-	   	 }
+		 if(cmdLine.hasOption(HELP.getOpt())){
+			 HelpFormatter formatter = new HelpFormatter();
+			 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
+			 System.exit(0);
+		 }
 	   	 
 
 		logger.info("Starting "+APPLICATION_NAME);

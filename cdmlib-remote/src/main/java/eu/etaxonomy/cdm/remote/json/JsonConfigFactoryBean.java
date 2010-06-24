@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor;
+import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
 
 /**
  * 

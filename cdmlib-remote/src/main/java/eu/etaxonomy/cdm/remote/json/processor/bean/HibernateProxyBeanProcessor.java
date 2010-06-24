@@ -2,7 +2,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.remote.json.processor;
+package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import org.apache.log4j.Logger;
 

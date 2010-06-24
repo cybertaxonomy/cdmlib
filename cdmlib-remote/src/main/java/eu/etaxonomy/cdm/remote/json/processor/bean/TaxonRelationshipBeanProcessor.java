@@ -7,24 +7,20 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.remote.json.processor;
+package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
-import org.hibernate.Hibernate;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * @author a.kohlbecker
  * @date 09.06.2009
  *
  */
-public class NameRelationshipBeanProcessor extends AbstractCdmBeanProcessor<NameRelationship> {
+public class TaxonRelationshipBeanProcessor extends AbstractCdmBeanProcessor<TaxonRelationship> {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
@@ -38,9 +34,9 @@ public class NameRelationshipBeanProcessor extends AbstractCdmBeanProcessor<Name
 	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
 	 */
 	@Override
-	public JSONObject processBeanSecondStep(NameRelationship bean, JSONObject json,	JsonConfig jsonConfig) {
+	public JSONObject processBeanSecondStep(TaxonRelationship bean, JSONObject json, JsonConfig jsonConfig) {
 		
-		json.element("fromName", bean.getFromName(), jsonConfig);
+		json.element("fromTaxon", bean.getFromTaxon(), jsonConfig);
 		
 		return json;
 	}
