@@ -36,6 +36,18 @@ public class FaunaEuropaeaSources {
 		return  ImportUtils.makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
+	public static Source faunaEu_1_3(){
+		//	Fauna Europaea
+		
+		String dbms = Source.SQL_SERVER_2008;
+           
+		String strServer = "BGBM42";               // "192.168.1.36";
+            
+		String strDB = "FaunaEu_1_3";
+		int port = 1433;
+		String userName = "WebUser";
+		return  ImportUtils.makeSource(dbms, strServer, strDB, port, userName, null);
+	}
 	
 	
 	public static Source PESI_ERMS(){
