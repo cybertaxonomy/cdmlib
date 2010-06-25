@@ -38,9 +38,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 	private static final List<String> IGNORE_LIST = Arrays.asList(new String[] { 
 			"representations",
 			"inversRepresentations",
-			"terms",
-			"infraGenericMarker", //FIXME leads to IllegalStateException if not excluded
-			"partOf" // exclude partOf to avoid  lazy loading exceptions,
+			"terms"
 			});
 
 	private boolean replaceRepresentations = false;

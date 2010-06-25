@@ -40,6 +40,50 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 	
 	public static final Logger logger = Logger.getLogger(AbstractCdmBeanProcessor.class);
 	
+	private Set<String> excludes = new HashSet<String>();
+	
+	public Set<String> getExcludes() {
+		return excludes;
+	}
+
+	/**
+	 * This method allows supplying a List of property names to be ignored
+	 * during the serialization to JSON. The <code>excludes</code> will be
+	 * merged with the property names configured by subclasses which override
+	 * {@link {@link #getIgnorePropNames()}.
+	 * 
+	 * @param excludes
+	 */
+	public void setExcludes(Set<String> excludes) {
+		this.excludes = excludes;
+	}
+	
+	/**
+	 * Implementations of this abstract class may override this method in order
+	 * to supply a List of property names to be ignored in
+	 * {@link #processBean(Object, JsonConfig)}. This feature generally is used
+	 * when {@link #processBeanSecondStep(CdmBase, JSONObject, JsonConfig)} is
+	 * implemented. such that this method is responsible of serializing this
+	 * property.
+	 * 
+	 * @return a List of property names.
+	 */
+	public abstract List<String> getIgnorePropNames();
+	
+	/**
+	 * merges and returns {@link {@link #getIgnorePropNames()} with
+	 * {@link #excludes}
+	 * 
+	 * @return
+	 */
+	protected Set<String> getMergedExcludes(){
+		Set<String> mergedExcludes = new HashSet<String>(excludes);
+		if(getIgnorePropNames() != null){
+			mergedExcludes.addAll(getIgnorePropNames());			
+		}
+		return mergedExcludes;
+	}
+
 	/* (non-Javadoc)
 	 * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
 	 */
@@ -57,7 +101,7 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 		PropertyFilter jsonPropertyFilter = jsonConfig.getJsonPropertyFilter();
 		for(PropertyDescriptor prop: props){
 			String key = prop.getName();
-			if(getIgnorePropNames() != null && getIgnorePropNames().contains(key) || exclusions.contains(key)){
+			if(getMergedExcludes().contains(key) || exclusions.contains(key)){
 				if(logger.isDebugEnabled()){
 					logger.debug("skipping excluded property " + key);
 				}
@@ -119,18 +163,6 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 	 * @return
 	 */
 	public abstract JSONObject processBeanSecondStep(T bean, JSONObject json, JsonConfig jsonConfig) ;
-	
-	/**
-	 * Implementations of this abstract class may override this method in order
-	 * to supply a List of property names to be ignored in
-	 * {@link #processBean(Object, JsonConfig)}. This feature generally is used
-	 * when {@link #processBeanSecondStep(CdmBase, JSONObject, JsonConfig)} is
-	 * implemented. such that this method is responsible of serializing this
-	 * property.
-	 * 
-	 * @return a List of property names.
-	 */
-	public abstract List<String> getIgnorePropNames();
 	
 
 }

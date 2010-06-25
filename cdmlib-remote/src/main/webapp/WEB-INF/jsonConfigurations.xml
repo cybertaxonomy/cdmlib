@@ -25,7 +25,14 @@
 					<bean class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
 				</entry>
 				<entry key="eu.etaxonomy.cdm.model.common.TermBase">
-					<bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor" />
+					<bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
+					   <property name="excludes">
+                            <set value-type="java.lang.String">
+                                <value>partOf</value><!-- FIXME exclude partOf to avoid  lazy loading exceptions  -->
+                                <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
+                            </set>
+                        </property>
+					</bean>
 				</entry>
 				<entry key="eu.etaxonomy.cdm.model.description.TextData">
 					<bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TextDataBeanProcessor" />
@@ -206,6 +213,20 @@
 					<bean
 						class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
 						<property name="replaceRepresentations" value="true" />
+						<property name="excludes">
+                            <set value-type="java.lang.String">
+                                <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
+                                <value>partOf</value><!-- DefinedTermBase -->
+				                <value>kindOf</value><!-- DefinedTermBase -->
+				                <value>includes</value><!-- DefinedTermBase -->
+				                <value>generalizationOf</value><!-- DefinedTermBase -->
+				                <value>vocabulary</value><!-- DefinedTermBase -->
+				                <!--
+				                    FIXME must exclude partOf, kindOf, includes, generalizationOf .. to
+				                    avoid class cast or lazy loading exceptions in TDWG Areas
+				                -->
+                            </set>
+                        </property>
 					</bean>
 				</entry>
 				<entry key="eu.etaxonomy.cdm.model.description.TextData">
@@ -268,16 +289,8 @@
 				<value>annotations</value>
 				<value>cacheStrategy</value>
 				<value>markers</value>
-				<!--
-					FIXME must exclude partOf, kindOf, includes, generalizationOf .. to
-					avoid class cast or lazy loading exceptions in TDWG Areas
-				-->
-				<value>partOf</value><!-- DefinedTermBase? -->
-				<value>kindOf</value><!-- DefinedTermBase? -->
-				<value>includes</value>
-				<value>generalizationOf</value><!-- DefinedTermBase -->
+				
 				<value>inDescription</value>
-				<value>vocabulary</value><!-- DefinedTermBase -->
 			</list>
 		</property>
 	</bean> 
