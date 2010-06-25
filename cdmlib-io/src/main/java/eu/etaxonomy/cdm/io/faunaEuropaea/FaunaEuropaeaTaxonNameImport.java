@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -441,12 +442,16 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			
 			zooName.setOriginalPublicationYear(zooName.getPublicationYear());
 			basionym.setPublicationYear(zooName.getPublicationYear());
+
+			String originalGenusIdString = "" + fauEuTaxon.getOriginalGenusId();
+			IdentifiableSource basionymSource = IdentifiableSource.NewInstance(originalGenusIdString, "originalGenusId");
+			basionym.addSource(basionymSource);
 			
 			zooName.addBasionym(basionym, fauEuConfig.getSourceReference(), null, null);
 			zooName.setBasionymAuthorTeam(zooName.getCombinationAuthorTeam());
 			zooName.setCombinationAuthorTeam(null);
 			zooName.setPublicationYear(null);
-			zooName.generateTitle();
+			zooName.setTitleCache(null); // This should (re)generate the titleCache automagically
 			if (logger.isDebugEnabled()) {
 				logger.debug("Basionym created (" + fauEuTaxon.getId() + ")");
 			}
@@ -780,7 +785,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 		int rank = fauEuTaxon.getRankId();
 		
-		String originalGenusString; 
+		String originalGenusString = null;
 		//rank is subgenus and the taxon is accepted -> the genusepithet is the parentName
 		if (rank == R_SUBGENUS && fauEuTaxon.isValid()){
 			originalGenusString = fauEuTaxon.getParentName();
@@ -791,7 +796,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		}else{
 			originalGenusString = fauEuTaxon.getParentName();
 		}
-		if (useOriginalGenus && originalGenusString != null) {
+		if (originalGenusString != null) {
 			originalGenus = new StringBuilder(originalGenusString);
 		}
 		
@@ -841,7 +846,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		ZoologicalName zooName = (ZoologicalName)taxonName;
 		
 		if (!genusOrUninomial.equals("")) {
-			zooName.setGenusOrUninomial(genusOrUninomial);
+			zooName.setGenusOrUninomial(emptyToNull(genusOrUninomial));
 			if (logger.isDebugEnabled()) { 
 				logger.debug("genusOrUninomial: " + genusOrUninomial); 
 			}
@@ -849,19 +854,19 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		
 		//if ((!infraGenericEpithet.equals("") && fauEuTaxon.isParenthesis()) || (!infraGenericEpithet.equals("") && fauEuTaxon.)) {
 		if (fauEuTaxon.getParentRankId() == R_SUBGENUS || (fauEuTaxon.getRankId() == R_SUBGENUS)){
-			zooName.setInfraGenericEpithet(infraGenericEpithet);
+			zooName.setInfraGenericEpithet(emptyToNull(infraGenericEpithet));
 			if (logger.isDebugEnabled()) { 
 				logger.debug("infraGenericEpithet: " + infraGenericEpithet); 
 			}
 		}
 		if ((fauEuTaxon.getRankId() == R_SPECIES || fauEuTaxon.getRankId() == R_SUBSPECIES)) {
-			zooName.setSpecificEpithet(specificEpithet);
+			zooName.setSpecificEpithet(emptyToNull(specificEpithet));
 			if (logger.isDebugEnabled()) { 
 				logger.debug("specificEpithet: " + specificEpithet); 
 			}
 		}
 		if (fauEuTaxon.getRankId() == R_SUBSPECIES) {
-			zooName.setInfraSpecificEpithet(infraSpecificEpithet);
+			zooName.setInfraSpecificEpithet(emptyToNull(infraSpecificEpithet));
 			if (logger.isDebugEnabled()) { 
 				logger.debug("infraSpecificEpithet: " + infraSpecificEpithet); 
 			}
@@ -887,6 +892,19 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			logger.debug("Name stored: " + result); 
 		}
 		return result;
+	}
+
+	/**
+	 * Ensures that empty strings are translated to null.
+	 * @param genusOrUninomial
+	 * @return
+	 */
+	private String emptyToNull(String text) {
+		if (CdmUtils.isEmpty(text)) {
+			return null;
+		} else {
+			return text;
+		}
 	}
 
 }
