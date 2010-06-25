@@ -70,6 +70,7 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
 	@JoinTable(name = "IndividualAssociation_LanguageString")
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	

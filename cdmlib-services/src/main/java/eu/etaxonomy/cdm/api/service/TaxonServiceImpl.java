@@ -11,7 +11,6 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,17 +39,14 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -248,14 +244,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		//Move descriptions to new taxon
-		for(TaxonDescription oldDescription : oldTaxon.getDescriptions()){
-			
-			TaxonDescription newDescription = TaxonDescription.NewInstance(newAcceptedTaxon);
-			newDescription.setTitleCache("Description copied from " + oldTaxon + ". Old title: " + oldDescription.getTitleCache(), true);
-			
-			for(DescriptionElementBase element : oldDescription.getElements()){
-				newDescription.addElement(element);
-			}
+		for(TaxonDescription description : oldTaxon.getDescriptions()){
+			description.setTitleCache("Description copied from former accepted taxon: " + oldTaxon.getTitleCache() + "(Old title: " + description.getTitleCache()  + ")");
+			newAcceptedTaxon.addDescription(description);
 		}
 				
 		oldTaxonNode.delete();

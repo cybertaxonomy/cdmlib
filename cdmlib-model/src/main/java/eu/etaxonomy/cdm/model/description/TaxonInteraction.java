@@ -73,8 +73,8 @@ public class TaxonInteraction extends DescriptionElementBase {
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TaxonInteraction_LanguageString")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+    private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	@XmlElement(name = "Taxon2")
 	@XmlIDREF
