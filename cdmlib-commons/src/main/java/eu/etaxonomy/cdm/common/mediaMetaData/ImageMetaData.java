@@ -131,7 +131,6 @@ public  class ImageMetaData extends MediaMetaData {
 	public void readMetaData(URI mediaUri, Integer timeOut) throws IOException {
 		readImageInfo(mediaUri, timeOut);
 		try {
-			File image = null;
 			InputStream inputStream;
 			URL imageUrl = mediaUri.toURL();    
 			    
