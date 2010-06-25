@@ -345,7 +345,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"query=\"" + ObjectUtils.toString(query) + "\", treeUuid=" + ObjectUtils.toString(treeUuid) + 
 			", area=" + ObjectUtils.toString(areas) +
 			", pageSize=" + ObjectUtils.toString(pageSize) +  ", page=" + ObjectUtils.toString(page) + 
-			", doTaxa=" + ObjectUtils.toString(doTaxa) + ", doSynonyms=" + ObjectUtils.toString(doSynonyms) +")" );
+			", doTaxa=" + ObjectUtils.toString(doTaxa) + ", doSynonyms=" + ObjectUtils.toString(doSynonyms) 
+			+", doTaxaByCommonNames=" + ObjectUtils.toString(doTaxaByCommonNames) +")" );
 		
 		if(page == null){ page = BaseListController.DEFAULT_PAGE_NUMBER;}
 		if(pageSize == null){ pageSize = BaseListController.DEFAULT_PAGESIZE;}

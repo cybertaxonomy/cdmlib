@@ -272,10 +272,12 @@
 					FIXME must exclude partOf, kindOf, includes, generalizationOf .. to
 					avoid class cast or lazy loading exceptions in TDWG Areas
 				-->
-				<value>partOf</value>
-				<value>kindOf</value>
+				<value>partOf</value><!-- DefinedTermBase? -->
+				<value>kindOf</value><!-- DefinedTermBase? -->
 				<value>includes</value>
-				<value>generalizationOf</value>
+				<value>generalizationOf</value><!-- DefinedTermBase -->
+				<value>inDescription</value>
+				<value>vocabulary</value><!-- DefinedTermBase -->
 			</list>
 		</property>
 	</bean> 

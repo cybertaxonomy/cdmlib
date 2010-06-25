@@ -135,12 +135,12 @@ public class DistributionTree extends Tree<Distribution>{
 	
 	private List<NamedArea> getAreaLevelPathList(NamedArea area, Set<NamedAreaLevel> omitLevels){
 		List<NamedArea> result = new ArrayList<NamedArea>();
-		if (!omitLevels.contains(area.getLevel())){
+		if (omitLevels == null || !omitLevels.contains(area.getLevel())){
 			result.add(area);		
 		}
 		while (area.getPartOf() != null) {
 			area = area.getPartOf();
-			if (!omitLevels.contains(area.getLevel())){
+			if (omitLevels == null || !omitLevels.contains(area.getLevel())){
 				result.add(0, area);
 			}
 		}
