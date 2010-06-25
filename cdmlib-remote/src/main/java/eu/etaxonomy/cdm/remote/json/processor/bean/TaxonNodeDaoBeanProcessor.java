@@ -41,7 +41,11 @@ public class TaxonNodeDaoBeanProcessor extends CycleSetAcess implements JsonBean
 		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
 		json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
 		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
-		json.element("rankLabel", node.getTaxon().getName().getRank().getLabel(), jsonConfig);
+		String ranklabel = null;
+		if(node.getTaxon().getName().getRank() != null){
+			ranklabel = node.getTaxon().getName().getRank().getLabel();
+		}
+		json.element("rankLabel", ranklabel, jsonConfig);
 		//json.element("treeUuid", node.getTaxonomicTree().getUuid(), jsonConfig);
 		
 		return json;
