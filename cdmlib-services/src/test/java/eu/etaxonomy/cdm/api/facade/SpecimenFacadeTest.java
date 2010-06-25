@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.facade;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -172,7 +173,6 @@ public class SpecimenFacadeTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		DerivedUnitFacade specimenFacade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
 		Assert.assertNotNull("The specimen should have been created", specimenFacade.getDerivedUnit());
 		//???
 //		Assert.assertNotNull("The derivation event should have been created", specimenFacade.getSpecimen().getDerivedFrom());
@@ -192,6 +192,22 @@ public class SpecimenFacadeTest {
 	
 	}
 
+	@Test
+	public void testGatheringEventIsConnectedToDerivedUnit(){
+		Specimen specimen = Specimen.NewInstance();
+		DerivedUnitFacade specimenFacade;
+		try {
+			specimenFacade = DerivedUnitFacade.NewInstance(specimen);
+			specimenFacade.setDistanceToGround(2);
+			FieldObservation specimenFieldObservation = (FieldObservation)specimen.getDerivedFrom().getOriginals().iterator().next();
+			Assert.assertSame("Facade gathering event and specimen gathering event should be the same",specimenFacade.getGatheringEvent(), specimenFieldObservation.getGatheringEvent());
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			Assert.fail("An error should not occur in NewInstance()");
+		}
+	}
+	
+	
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}.
 	 */
@@ -204,7 +220,7 @@ public class SpecimenFacadeTest {
 		Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade.getCollectingAreas().size());
 		Assert.assertSame("Areas should be same", newCollectingArea, specimenFacade.getFieldObservation().getGatheringEvent().getCollectingAreas().iterator().next());
 		specimenFacade.addCollectingArea(tdwgArea);
-		Assert.assertEquals("Exactly 2 area must exist", 2, specimenFacade.getCollectingAreas().size());
+		Assert.assertEquals("Exactly 2 areas must exist", 2, specimenFacade.getCollectingAreas().size());
 		specimenFacade.removeCollectingArea(newCollectingArea);
 		Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade.getCollectingAreas().size());
 		NamedArea remainingArea = specimenFacade.getCollectingAreas().iterator().next();
@@ -213,6 +229,30 @@ public class SpecimenFacadeTest {
 		Assert.assertEquals("No area should remain", 0, specimenFacade.getCollectingAreas().size());
 	}
 
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}.
+	 */
+	@Test
+	public void testAddCollectingAreas()  {
+		NamedArea firstArea = NamedArea.NewInstance("A nice area", "nice", "n");
+		Assert.assertEquals("No area must exist", 0, specimenFacade.getCollectingAreas().size());
+		specimenFacade.addCollectingArea(firstArea);
+		Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade.getCollectingAreas().size());
+		
+		String tdwgLabel = "GER";
+		NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgLabel);
+		NamedArea secondArea = NamedArea.NewInstance("A nice area", "nice", "n");
+		
+		java.util.Collection<NamedArea> areaCollection = new HashSet<NamedArea>();
+		areaCollection.add(secondArea);
+		areaCollection.add(tdwgArea);
+		specimenFacade.addCollectingAreas(areaCollection);
+		Assert.assertEquals("Exactly 3 areas must exist", 3, specimenFacade.getCollectingAreas().size());
+		
+	}
+
+	
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAbsoluteElevation()}. 
 	 */
