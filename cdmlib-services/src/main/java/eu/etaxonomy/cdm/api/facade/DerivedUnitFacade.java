@@ -139,32 +139,9 @@ public class DerivedUnitFacade {
 	private DerivedUnitFacade(DerivedUnitType type){
 		this.config = DerivedUnitFacadeConfigurator.NewInstance();
 		
-		//gatheringEvent
-//		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-//		
-//		//observation
-//		fieldObservation = FieldObservation.NewInstance();
-//		fieldObservation.setGatheringEvent(gatheringEvent);
-//		
-//		//derivationEvent
-//		DerivationEvent derivationEvent = DerivationEvent.NewInstance();
-//		derivationEvent.addOriginal(fieldObservation);
-		
 		//derivedUnit
 		derivedUnit = type.getNewDerivedUnitInstance();
 		setCacheStrategy();
-//		derivationEvent.addDerivative(specimen);
-		
-		//image galleries
-		//specimenImageGallery = SpecimenDescription.NewInstance(specimen);
-		//fieldObservationImageGallery = SpecimenDescription.NewInstance(fieldObservation);
-	}
-
-	/**
-	 * 
-	 */
-	private void setCacheStrategy() {
-		derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
 	}
 	
 	private DerivedUnitFacade(DerivedUnitBase derivedUnit, DerivedUnitFacadeConfigurator config, DerivedUnitType type) throws DerivedUnitFacadeNotSupportedException{
@@ -194,17 +171,6 @@ public class DerivedUnitFacade {
 				throw new IllegalStateException("Illegal state");
 			}	
 		}
-		
-		//gatheringEvent
-//		if (fieldObservation.getGatheringEvent() == null ){
-//			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-//			fieldObservation.setGatheringEvent(gatheringEvent);
-//		}
-		
-		//media
-		//initalize only if necessary
-		//specimenMedia = getImageGalleryMedia(specimen, "Specimen");
-		//fieldObservationMedia = getImageGalleryMedia(fieldObservation, "Field observation");
 
 		//test if unsupported
 		//specimen
@@ -248,6 +214,14 @@ public class DerivedUnitFacade {
 		//test if descriptions are supported
 		ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), false);
 		plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), false);
+	}
+	
+
+	/**
+	 * 
+	 */
+	private void setCacheStrategy() {
+		derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
 	}
 
 /**
