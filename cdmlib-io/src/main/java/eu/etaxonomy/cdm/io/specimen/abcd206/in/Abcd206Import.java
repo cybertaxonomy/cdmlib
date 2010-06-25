@@ -52,15 +52,8 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -192,11 +185,16 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 					if( multimediaObject != null){
 						imd = ImageMetaData.newInstance();
 						url = new URL(multimediaObject);
-						imd.readMetaData(url.toURI(), 0);
-						//TODO ??
+						try {
+							imd.readMetaData(url.toURI(), 0);
+						} catch (Exception e) {
+							String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
+							logger.warn(message);
+						}
+						//TODO do we really want to check the url?
 						if (imd != null){
-							representation = MediaRepresentation.NewInstance();
 							imf = ImageFile.NewInstance(multimediaObject, null, imd);
+							representation = MediaRepresentation.NewInstance();
 							representation.addRepresentationPart(imf);
 							media = Media.NewInstance();
 							media.addRepresentation(representation);
