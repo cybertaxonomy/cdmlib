@@ -1152,6 +1152,7 @@ public class DerivedUnitFacade {
 		DerivationEvent result = derivedUnit.getDerivedFrom();
 		if (result == null){
 			result = DerivationEvent.NewInstance();
+			derivedUnit.setDerivedFrom(result);
 		}
 		return result;
 	}
