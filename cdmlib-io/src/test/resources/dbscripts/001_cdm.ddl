@@ -1267,6 +1267,7 @@
     create table DescriptionElementBase_Media (
         DescriptionElementBase_id integer not null,
         media_id integer not null,
+        sortIndex integer not null,
         primary key (DescriptionElementBase_id, media_id)
     );
 
@@ -1274,6 +1275,7 @@
         REV integer not null,
         DescriptionElementBase_id integer not null,
         media_id integer not null,
+        sortIndex integer not null,
         revtype tinyint,
         primary key (REV, DescriptionElementBase_id, media_id)
     );

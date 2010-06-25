@@ -22,9 +22,11 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -32,7 +34,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 29.01.2009
  * @version 1.0
  */
-@Ignore
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
@@ -41,6 +42,10 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	@SpringBeanByType
 	INameService nameService;
 
+	@SpringBeanByType
+	IOccurrenceService occurrenceService;
+
+	
 	private IImportConfigurator configurator;
 	
 	@Before
@@ -54,8 +59,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	
 	@Test
 	public void testInit() {
-		assertNotNull("cdmTcsXmlImport should not be null", defaultImport);
+		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
+		assertNotNull("occurence service should not be null", occurrenceService);
 	}
 	
 	@Test
@@ -63,6 +69,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 10", 10, nameService.count(null));
+		//assertEquals("Number of specimen should be 10", 10, occurrenceService.count(DerivedUnitBase.class));
+		
 	}
 
 }
