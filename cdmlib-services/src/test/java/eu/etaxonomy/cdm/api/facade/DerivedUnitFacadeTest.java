@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -95,6 +96,9 @@ public class DerivedUnitFacadeTest {
 	FieldObservation firstFieldObject;
 	Media media1 = Media.NewInstance();
 	
+	DerivedUnitFacade emptyFacade;
+	
+	
 //****************************** SET UP *****************************************/
 	
 	/**
@@ -102,7 +106,6 @@ public class DerivedUnitFacadeTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		// FIXME maybe this will cause problems in other tests
 		new DefaultTermInitializer().initialize();
 	}
 
@@ -162,6 +165,9 @@ public class DerivedUnitFacadeTest {
 		firstDerivationEvent.addOriginal(firstFieldObject);
 		existingGatheringEvent = GatheringEvent.NewInstance();
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
+		
+		//empty facade
+		emptyFacade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
 
 	}
 
@@ -354,6 +360,13 @@ public class DerivedUnitFacadeTest {
 		Assert.assertEquals("Distance to surface must be same", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
 		specimenFacade.setDistanceToWaterSurface(6);
 		Assert.assertEquals("Distance to surface must be 6", Integer.valueOf(6), specimenFacade.getDistanceToWaterSurface());
+		//empty facade tests
+		Assert.assertNull("Empty facace must not have any gathering values" ,emptyFacade.getDistanceToWaterSurface());
+		emptyFacade.setDistanceToWaterSurface(13);
+		Assert.assertNotNull("Field observation must exist if distance to water exists", emptyFacade.getFieldObservation(false));
+		Assert.assertNotNull("Gathering event must exist if distance to water exists", emptyFacade.getGatheringEvent(false));
+		FieldObservation specimenFieldObservation = (FieldObservation)emptyFacade.getDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
+		Assert.assertSame("Gathering event of facade and of specimen must be the same", specimenFieldObservation.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
 	}
 
 	/**
@@ -563,6 +576,13 @@ public class DerivedUnitFacadeTest {
 		Assert.assertEquals("Field number must be same", fieldNumber, specimenFacade.getFieldNumber());
 		specimenFacade.setFieldNumber("564AB");
 		Assert.assertEquals("New field number must be '564AB'", "564AB", specimenFacade.getFieldNumber());
+		//empty facade tests
+		Assert.assertNull("Empty facace must not have any field value" ,emptyFacade.getFieldNumber());
+		emptyFacade.setFieldNumber("1256A");
+		Assert.assertNotNull("Field observation must exist if field number exists", emptyFacade.getFieldObservation(false));
+		FieldObservation specimenFieldObservation = (FieldObservation)emptyFacade.getDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
+		Assert.assertSame("Field observation of facade and of specimen must be the same", specimenFieldObservation, emptyFacade.getFieldObservation(false));
+		Assert.assertEquals("1256A", emptyFacade.getFieldNumber());
 	}
 
 	/**
