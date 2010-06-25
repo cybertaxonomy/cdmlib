@@ -674,6 +674,17 @@ public class DerivedUnitFacade {
 	public Point getExactLocation() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getExactLocation() : null );
 	}
+	
+	/**
+	 * Returns a sexagesimal representation of the exact location (e.g. 12°59'N, 35°23E).
+	 * If the exact location is <code>null</code> the empty string is returned.
+	 * @param includeEmptySeconds
+	 * @param includeReferenceSystem
+	 * @return
+	 */
+	public String getExactLocationText(boolean includeEmptySeconds, boolean includeReferenceSystem){
+		return (this.getExactLocation() == null ? "" : this.getExactLocation().toSexagesimalString(includeEmptySeconds, includeReferenceSystem));
+	}
 	public void setExactLocation(Point exactLocation) {
 		getGatheringEvent(true).setExactLocation(exactLocation);
 	}

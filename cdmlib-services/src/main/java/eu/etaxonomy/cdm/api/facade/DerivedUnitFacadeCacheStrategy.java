@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -34,7 +33,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 	
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
 	 */
@@ -42,7 +40,9 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	protected UUID getUuid() {
 		return uuid;
 	}
-	
+
+	private boolean includeEmptySeconds = false;
+	private boolean includeReferenceSystem = true;
 	
 
 	/* (non-Javadoc)
@@ -64,13 +64,22 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			// FIXME hasGatheringEvent needed;
 			//locality
 			result = CdmUtils.concat(", ", result, facade.getLocalityText());
+			
 			//elevation
 			if (facade.getAbsoluteElevation() != null){
 				result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
 				result += facade.getAbsoluteElevation() + ALTITUDE_POSTFIX;
 			}
+			
+			//exact locality
+			if (facade.getExactLocation() != null){
+				String exactLocation = facade.getExactLocation().toSexagesimalString(this.includeEmptySeconds, this.includeReferenceSystem);
+				result = CdmUtils.concat(", ", result, exactLocation);
+			}
+			
 			//ecology
 			result = CdmUtils.concat(", ", result, facade.getEcology());
+			
 			//gathering period
 			//TODO period.toString ??
 			TimePeriod gatheringPeriod = facade.getGatheringPeriod();
@@ -117,6 +126,30 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			}
 		}
 		return code;
+	}
+	
+// ************************** GETTER / SETTER ******************************************************
+	
+	public boolean isIncludeSeconds() {
+		return includeEmptySeconds;
+	}
+
+
+
+	public void setIncludeSeconds(boolean includeSeconds) {
+		this.includeEmptySeconds = includeSeconds;
+	}
+
+
+
+	public void setIncludeReferenceSystem(boolean includeReferenceSystem) {
+		this.includeReferenceSystem = includeReferenceSystem;
+	}
+
+
+
+	public boolean isIncludeReferenceSystem() {
+		return includeReferenceSystem;
 	}
 
 	
