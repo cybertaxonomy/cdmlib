@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import static org.junit.Assert.*;
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
@@ -43,9 +42,9 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
  * @date 03.06.2010
  *
  */
-public class SpecimenFacadeCacheStrategyTest {
+public class DerivedUnitFacadeCacheStrategyTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenFacadeCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
 	
 	Specimen specimen;
 	DerivationEvent derivationEvent;

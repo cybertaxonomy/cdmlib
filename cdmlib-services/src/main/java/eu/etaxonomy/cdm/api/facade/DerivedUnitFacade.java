@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.facade;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -180,7 +181,7 @@ public class DerivedUnitFacade {
 		
 		//derivation event
 		if (this.derivedUnit.getDerivedFrom() != null){
-			DerivationEvent derivationEvent = getDerivationEvent();
+			DerivationEvent derivationEvent = getDerivationEvent(true);
 			//fieldObservation
 			Set<FieldObservation> fieldOriginals = getFieldObservationsOriginals(derivationEvent, null);
 			if (fieldOriginals.size() > 1){
@@ -263,13 +264,9 @@ public class DerivedUnitFacade {
 		}
 		
 		//field object
-		FieldObservation fieldObject = this.fieldObservation;
+		FieldObservation fieldObject = getFieldObservation(createIfNotExists) ;
 		if (fieldObject == null){
-			if (createIfNotExists){
-				fieldObject = getFieldObservation();
-			}else{
-				return null;
-			}
+			return null;
 		}
 		Set<SpecimenDescription> descriptions = fieldObject.getSpecimenDescriptions(false);
 		if (descriptions.size() == 0){
@@ -493,7 +490,7 @@ public class DerivedUnitFacade {
 	 */
 	private boolean removeMedia(Media media, SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
 		List<Media> mediaList = getMedia(specimen);
-		return mediaList.remove(media);
+		return mediaList == null ? null : mediaList.remove(media);
 	}
 
 	/**
@@ -524,18 +521,20 @@ public class DerivedUnitFacade {
 	
 	//Collecting area
 	public void addCollectingArea(NamedArea area) {
-		getGatheringEvent().addCollectingArea(area);
+		getGatheringEvent(true).addCollectingArea(area);
 	}
 	public void addCollectingAreas(java.util.Collection<NamedArea> areas) {
 		for (NamedArea area : areas){
-			getGatheringEvent().addCollectingArea(area);
+			getGatheringEvent(true).addCollectingArea(area);
 		}
 	}
 	public Set<NamedArea> getCollectingAreas() {
-		return getGatheringEvent().getCollectingAreas();
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getCollectingAreas() : null);
 	}
 	public void removeCollectingArea(NamedArea area) {
-		getGatheringEvent().removeCollectingArea(area);
+		if (hasGatheringEvent()){
+			getGatheringEvent(true).removeCollectingArea(area);
+		}
 	}
 
 	//absolute elevation  
@@ -544,18 +543,18 @@ public class DerivedUnitFacade {
 	 * @see #getAbsoluteElevationRange()
 	 **/
 	public Integer getAbsoluteElevation() {
-		return getGatheringEvent().getAbsoluteElevation();
+		return (hasGatheringEvent() ? getGatheringEvent(true).getAbsoluteElevation() : null);
 	}
 	public void setAbsoluteElevation(Integer absoluteElevation) {
-		getGatheringEvent().setAbsoluteElevation(absoluteElevation);
+		getGatheringEvent(true).setAbsoluteElevation(absoluteElevation);
 	}
 
 	//absolute elevation error
 	public Integer getAbsoluteElevationError() {
-		return getGatheringEvent().getAbsoluteElevationError();
+		return (hasGatheringEvent() ? getGatheringEvent(true).getAbsoluteElevationError() : null);
 	}
 	public void setAbsoluteElevationError(Integer absoluteElevationError) {
-		getGatheringEvent().setAbsoluteElevationError(absoluteElevationError);
+		getGatheringEvent(true).setAbsoluteElevationError(absoluteElevationError);
 	}
 	
 	/**
@@ -565,9 +564,12 @@ public class DerivedUnitFacade {
 	 * @see #getAbsoluteElevationMaximum()
 	 */
 	public Integer getAbsoluteElevationMinimum(){
-		Integer minimum = getGatheringEvent().getAbsoluteElevation();
-		if (getGatheringEvent().getAbsoluteElevationError() != null){
-			minimum = minimum -  getGatheringEvent().getAbsoluteElevationError();
+		if ( ! hasGatheringEvent() ){
+			return null;
+		}
+		Integer minimum = getGatheringEvent(true).getAbsoluteElevation();
+		if (getGatheringEvent(true).getAbsoluteElevationError() != null){
+			minimum = minimum -  getGatheringEvent(true).getAbsoluteElevationError();
 		}
 		return minimum;
 	}
@@ -578,9 +580,12 @@ public class DerivedUnitFacade {
 	 * @see #getAbsoluteElevationMinimum()
 	 */
 	public Integer getAbsoluteElevationMaximum(){
-		Integer maximum = getGatheringEvent().getAbsoluteElevation();
-		if (getGatheringEvent().getAbsoluteElevationError() != null){
-			maximum = maximum +  getGatheringEvent().getAbsoluteElevationError();
+		if ( ! hasGatheringEvent() ){
+			return null;
+		}
+		Integer maximum = getGatheringEvent(true).getAbsoluteElevation();
+		if (getGatheringEvent(true).getAbsoluteElevationError() != null){
+			maximum = maximum +  getGatheringEvent(true).getAbsoluteElevationError();
 		}
 		return maximum;
 	}
@@ -608,8 +613,8 @@ public class DerivedUnitFacade {
 					error = null;
 				}
 			}
-			getGatheringEvent().setAbsoluteElevation(elevation);
-			getGatheringEvent().setAbsoluteElevationError(error);
+			getGatheringEvent(true).setAbsoluteElevation(elevation);
+			getGatheringEvent(true).setAbsoluteElevationError(error);
 		}else{
 			if (! isEvenDistance(minimumElevation, maximumElevation) ){
 				throw new IllegalArgumentException("Distance between minimum and maximum elevation must be even but was " + Math.abs(minimumElevation - maximumElevation));
@@ -617,8 +622,8 @@ public class DerivedUnitFacade {
 			Integer absoluteElevationError = Math.abs(maximumElevation - minimumElevation);
 			absoluteElevationError = absoluteElevationError / 2;
 			Integer absoluteElevation = minimumElevation + absoluteElevationError;
-			getGatheringEvent().setAbsoluteElevation(absoluteElevation);
-			getGatheringEvent().setAbsoluteElevationError(absoluteElevationError);
+			getGatheringEvent(true).setAbsoluteElevation(absoluteElevation);
+			getGatheringEvent(true).setAbsoluteElevationError(absoluteElevationError);
 		}
 	}
 
@@ -635,42 +640,42 @@ public class DerivedUnitFacade {
 
 	//collector
 	public AgentBase getCollector() {
-		return getGatheringEvent().getCollector();
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getCollector() : null);
 	}
 	public void setCollector(AgentBase collector){
-		getGatheringEvent().setCollector(collector);
+		getGatheringEvent(true).setCollector(collector);
 	}
 
 	//collecting method
 	public String getCollectingMethod() {
-		return getGatheringEvent().getCollectingMethod();
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getCollectingMethod() : null);
 	}
 	public void setCollectingMethod(String collectingMethod) {
-		getGatheringEvent().setCollectingMethod(collectingMethod);
+		getGatheringEvent(true).setCollectingMethod(collectingMethod);
 	}
 
 	//distance to ground
 	public Integer getDistanceToGround() {
-		return getGatheringEvent().getDistanceToGround();
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToGround() : null);
 	}
 	public void setDistanceToGround(Integer distanceToGround) {
-		getGatheringEvent().setDistanceToGround(distanceToGround);
+		getGatheringEvent(true).setDistanceToGround(distanceToGround);
 	}
 
 	//distance to water surface
 	public Integer getDistanceToWaterSurface() {
-		return getGatheringEvent().getDistanceToWaterSurface();
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToWaterSurface() : null);
 	}
 	public void setDistanceToWaterSurface(Integer distanceToWaterSurface) {
-		getGatheringEvent().setDistanceToWaterSurface(distanceToWaterSurface);
+		getGatheringEvent(true).setDistanceToWaterSurface(distanceToWaterSurface);
 	}
 
 	//exact location
 	public Point getExactLocation() {
-		return getGatheringEvent().getExactLocation();
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getExactLocation() : null );
 	}
 	public void setExactLocation(Point exactLocation) {
-		getGatheringEvent().setExactLocation(exactLocation);
+		getGatheringEvent(true).setExactLocation(exactLocation);
 	}
 	public void setExactLocationByParsing(String longitudeToParse, String latitudeToParse, ReferenceSystem referenceSystem, Integer errorRadius) throws ParseException{
 		Point point = Point.NewInstance(null, null, referenceSystem, errorRadius);
@@ -681,33 +686,33 @@ public class DerivedUnitFacade {
 	
 	//gathering event description
 	public String getGatheringEventDescription() {
-		return getGatheringEvent().getDescription();
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getDescription() : null);
 	}
 	public void setGatheringEventDescription(String description) {
-		getGatheringEvent().setDescription(description);
+		getGatheringEvent(true).setDescription(description);
 	}
 
 	//gatering period
 	public TimePeriod getGatheringPeriod() {
-		return getGatheringEvent().getTimeperiod();
+		return (hasGatheringEvent() ? getGatheringEvent(true).getTimeperiod() : null);
 	}
 	public void setGatheringPeriod(TimePeriod timeperiod) {
-		getGatheringEvent().setTimeperiod(timeperiod);
+		getGatheringEvent(true).setTimeperiod(timeperiod);
 	}
 
 	//locality
 	public LanguageString getLocality(){
-		return getGatheringEvent().getLocality();
+		return (hasGatheringEvent() ? getGatheringEvent(true).getLocality() : null);
 	}
 	public String getLocalityText(){
-		LanguageString locality = getGatheringEvent().getLocality();
+		LanguageString locality = getLocality();
 		if(locality != null){
 			return locality.getText();
 		}
 		return null;
 	}
 	public Language getLocalityLanguage(){
-		LanguageString locality = getGatheringEvent().getLocality();
+		LanguageString locality = getLocality();
 		if(locality != null){
 			return locality.getLanguage();
 		}
@@ -727,7 +732,7 @@ public class DerivedUnitFacade {
 		setLocality(langString);
 	}
 	public void setLocality(LanguageString locality){
-		getGatheringEvent().setLocality(locality);
+		getGatheringEvent(true).setLocality(locality);
 	}
 	
 	/**
@@ -747,14 +752,24 @@ public class DerivedUnitFacade {
 	 * @param gatheringEvent
 	 */
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
-		getFieldObservation().setGatheringEvent(gatheringEvent);
+		getFieldObservation(true).setGatheringEvent(gatheringEvent);
+	}
+	public boolean hasGatheringEvent(){
+		return (getGatheringEvent(false) != null);
 	}
 	public GatheringEvent getGatheringEvent() {
-		if (getFieldObservation().getGatheringEvent() == null){
-			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-			getFieldObservation().setGatheringEvent(gatheringEvent);
+		return getGatheringEvent(false);
+	}
+	
+	public GatheringEvent getGatheringEvent(boolean createIfNotExists) {
+		if (! hasFieldObservation() && ! createIfNotExists){
+			return null;
 		}
-		return getFieldObservation().getGatheringEvent();
+		if (createIfNotExists && getFieldObservation(true).getGatheringEvent() == null ){
+			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
+			getFieldObservation(true).setGatheringEvent(gatheringEvent);
+		}
+		return getFieldObservation(true).getGatheringEvent();
 	}
 	
 // ****************** Field Object ************************************/
@@ -877,13 +892,18 @@ public class DerivedUnitFacade {
 	
 	//field object definition
 	public void addFieldObjectDefinition(String text, Language language) {
-		getFieldObservation().addDefinition(text, language);
+		getFieldObservation(true).addDefinition(text, language);
 	}
 	public Map<Language, LanguageString> getFieldObjectDefinition() {
-		return getFieldObservation().getDefinition();
+		if (! hasFieldObservation()){
+			return new HashMap<Language, LanguageString>();
+		}else{
+			return getFieldObservation(true).getDefinition();
+		}
 	}
 	public String getFieldObjectDefinition(Language language) {
-		LanguageString languageString = getFieldObservation().getDefinition().get(language);
+		Map<Language, LanguageString> map = getFieldObjectDefinition();
+		LanguageString languageString = (map == null? null : map.get(language));
 		if (languageString != null){
 			return languageString.getText();
 		}else {
@@ -891,14 +911,16 @@ public class DerivedUnitFacade {
 		}
 	}
 	public void removeFieldObjectDefinition(Language lang) {
-		getFieldObservation().removeDefinition(lang);
+		if (hasFieldObservation()){
+			getFieldObservation(true).removeDefinition(lang);
+		}
 	}
 	
 
 	//media
 	public boolean addFieldObjectMedia(Media media)  {
 		try {
-			return addMedia(media, getFieldObservation());
+			return addMedia(media, getFieldObservation(true));
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -924,14 +946,14 @@ public class DerivedUnitFacade {
 	 */
 	public List<Media> getFieldObjectMedia() {
 		try {
-			return getMedia(getFieldObservation());
+			return getMedia(getFieldObservation(false));
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
 	}
 	public boolean removeFieldObjectMedia(Media media) {
 		try {
-			return removeMedia(media, getFieldObservation());
+			return removeMedia(media, getFieldObservation(false));
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -939,61 +961,82 @@ public class DerivedUnitFacade {
 
 	//field number
 	public String getFieldNumber() {
-		return getFieldObservation().getFieldNumber();
+		if (! hasFieldObservation()){
+			return null;
+		}else{
+			return getFieldObservation(true).getFieldNumber();
+		}
 	}
 	public void setFieldNumber(String fieldNumber) {
-		getFieldObservation().setFieldNumber(fieldNumber);
+		getFieldObservation(true).setFieldNumber(fieldNumber);
 	}
 
 	
 	//field notes
 	public String getFieldNotes() {
-		return getFieldObservation().getFieldNotes();
+		if (! hasFieldObservation()){
+			return null;
+		}else{
+			return getFieldObservation(true).getFieldNotes();
+		}
 	}
 	public void setFieldNotes(String fieldNotes) {
-		getFieldObservation().setFieldNotes(fieldNotes);
+		getFieldObservation(true).setFieldNotes(fieldNotes);
 	}
 
 
 	//individual counts
 	public Integer getIndividualCount() {
-		return getFieldObservation().getIndividualCount();
+		return (hasFieldObservation()? getFieldObservation(true).getIndividualCount() : null );
 	}
 	public void setIndividualCount(Integer individualCount) {
-		getFieldObservation().setIndividualCount(individualCount);
+		getFieldObservation(true).setIndividualCount(individualCount);
 	}
 
 	//life stage
 	public Stage getLifeStage() {
-		return getFieldObservation().getLifeStage();
+		return (hasFieldObservation()? getFieldObservation(true).getLifeStage() : null );
 	}
 	public void setLifeStage(Stage lifeStage) {
-		getFieldObservation().setLifeStage(lifeStage);
+		getFieldObservation(true).setLifeStage(lifeStage);
 	}
 
 	//sex
 	public Sex getSex() {
-		return getFieldObservation().getSex();
+		return (hasFieldObservation()? getFieldObservation(true).getSex() : null );
 	}
 	public void setSex(Sex sex) {
-		getFieldObservation().setSex(sex);
+		getFieldObservation(true).setSex(sex);
 	}
 	
 	
 	//field observation
+	public boolean hasFieldObservation(){
+		return (getFieldObservation(false) != null);
+	}
+	
 	/**
 	 * Returns the field observation as an object.
 	 * @return
 	 */
 	public FieldObservation getFieldObservation(){
-		if (fieldObservation == null){
+		return getFieldObservation(false);
+	}
+
+	/**
+	 * Returns the field observation as an object.
+	 * @return
+	 */
+	public FieldObservation getFieldObservation(boolean createIfNotExists){
+		if (fieldObservation == null && createIfNotExists){
 			fieldObservation = FieldObservation.NewInstance();
-			DerivationEvent derivationEvent = getDerivationEvent();
+			DerivationEvent derivationEvent = getDerivationEvent(true);
 			derivationEvent.addOriginal(fieldObservation);
 		}
 		return this.fieldObservation;
 	}
 
+	
 
 //****************** Specimen **************************************************	
 	
@@ -1148,7 +1191,13 @@ public class DerivedUnitFacade {
 		return this.derivedUnit;
 	}
 	
+	private boolean hasDerivationEvent(){
+		return getDerivationEvent() == null ? false : true;
+	}
 	private DerivationEvent getDerivationEvent(){
+		return getDerivationEvent(false);
+	}
+	private DerivationEvent getDerivationEvent(boolean createIfNotExists){
 		DerivationEvent result = derivedUnit.getDerivedFrom();
 		if (result == null){
 			result = DerivationEvent.NewInstance();
@@ -1231,7 +1280,7 @@ public class DerivedUnitFacade {
 	public Specimen addDuplicate(Collection collection, String catalogNumber, String accessionNumber, 
 				String collectorsNumber, TaxonNameBase storedUnder, PreservationMethod preservation){
 		Specimen duplicate = Specimen.NewInstance();
-		duplicate.setDerivedFrom(getDerivationEvent());
+		duplicate.setDerivedFrom(getDerivationEvent(true));
 		duplicate.setCollection(collection);
 		duplicate.setCatalogNumber(catalogNumber);
 		duplicate.setAccessionNumber(accessionNumber);
@@ -1243,19 +1292,23 @@ public class DerivedUnitFacade {
 	
 	public void addDuplicate(DerivedUnitBase duplicateSpecimen){
 		//TODO check derivedUnitType
-		getDerivationEvent().addDerivative(duplicateSpecimen);  
+		getDerivationEvent(true).addDerivative(duplicateSpecimen);  
 	}
 	public Set<Specimen> getDuplicates(){
 		Set<Specimen> result = new HashSet<Specimen>();
-		for (DerivedUnitBase derivedUnit: getDerivationEvent().getDerivatives()){
-			if (derivedUnit.isInstanceOf(Specimen.class) && ! derivedUnit.equals(this.derivedUnit)){
-				result.add(CdmBase.deproxy(derivedUnit, Specimen.class));
+		if (hasDerivationEvent()){
+			for (DerivedUnitBase derivedUnit: getDerivationEvent(true).getDerivatives()){
+				if (derivedUnit.isInstanceOf(Specimen.class) && ! derivedUnit.equals(this.derivedUnit)){
+					result.add(CdmBase.deproxy(derivedUnit, Specimen.class));
+				}
 			}
 		}
 		return result;
 	}
 	public void removeDuplicate(Specimen duplicateSpecimen){
-		getDerivationEvent().removeDerivative(duplicateSpecimen);  	
+		if (hasDerivationEvent()){
+			getDerivationEvent(true).removeDerivative(duplicateSpecimen);
+		}
 	}
 	
 	

@@ -53,9 +53,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @date 17.05.2010
  *
  */
-public class SpecimenFacadeTest {
+public class DerivedUnitFacadeTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenFacadeTest.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
 	Specimen specimen;
 	DerivationEvent derivationEvent;
@@ -201,6 +201,18 @@ public class SpecimenFacadeTest {
 			specimenFacade.setDistanceToGround(2);
 			FieldObservation specimenFieldObservation = (FieldObservation)specimen.getDerivedFrom().getOriginals().iterator().next();
 			Assert.assertSame("Facade gathering event and specimen gathering event should be the same",specimenFacade.getGatheringEvent(), specimenFieldObservation.getGatheringEvent());
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			Assert.fail("An error should not occur in NewInstance()");
+		}
+	}
+	
+	@Test
+	public void testNoGatheringEventAndFieldObservation(){
+		Specimen specimen = Specimen.NewInstance();
+		DerivedUnitFacade specimenFacade;
+		try {
+			specimenFacade = DerivedUnitFacade.NewInstance(specimen);
+			Assert.assertNull("No field observation should exists", specimenFacade.getFieldObservation());
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			Assert.fail("An error should not occur in NewInstance()");
 		}

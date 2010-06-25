@@ -2805,8 +2805,8 @@ cdmlib-services/src/main/resources/wsdl/LSIDDataServiceHTTPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDDataServiceSOAPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDPortTypes.wsdl -text
 cdmlib-services/src/site/site.xml -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeCacheStrategyTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/SpecimenFacadeTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategyTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.java -text
