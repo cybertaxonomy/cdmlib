@@ -168,6 +168,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 * @see #getDescriptions()
 	 * @return
 	 */
+	@Transient
 	public Set<SpecimenDescription> getSpecimenDescriptions(boolean includeImageGallery) {
 		Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
 		for (DescriptionBase descriptionBase : getDescriptions()){
@@ -176,6 +177,23 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 					specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
 				}
 				
+			}
+		}
+		return specimenDescriptions;
+	}
+	/**
+	 * Returns the {@link SpecimenDescription specimen descriptions} this specimen is part of.
+	 * @see #getDescriptions()
+	 * @return
+	 */
+	@Transient
+	public Set<SpecimenDescription> getSpecimenDescriptionImageGallery() {
+		Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
+		for (DescriptionBase descriptionBase : getDescriptions()){
+			if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
+				if (descriptionBase.isImageGallery() == true){
+					specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
+				}
 			}
 		}
 		return specimenDescriptions;

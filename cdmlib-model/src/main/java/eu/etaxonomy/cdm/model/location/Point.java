@@ -366,14 +366,16 @@ public class Point implements Cloneable, Serializable {
 		}
 
 		
-		public String toString(){
+		public String toString(boolean includeEmptySeconds){
 			String result;
 			result = String.valueOf(CdmUtils.Nz(degree)) + "°";
 			if (seconds != null || minutes != null){
 				result += String.valueOf(CdmUtils.Nz(minutes)) + "'";
 			}
-			if (seconds != null){
-				result += String.valueOf(CdmUtils.Nz(seconds)) + "\"";	
+			if (seconds != null ){
+				if (seconds != 0 || includeEmptySeconds){
+					result += String.valueOf(CdmUtils.Nz(seconds)) + "\"";
+				}
 			}
 			result += direction; 
 			return result;
@@ -385,7 +387,7 @@ public class Point implements Cloneable, Serializable {
 	@Transient
 	public Sexagesimal getLongitudeSexagesimal (){
 		boolean isLatitude = false;
-		return Sexagesimal.valueOf(longitude, isLatitude);
+		return Sexagesimal.valueOf(latitude, isLatitude);
 	}
 
 	@Transient
@@ -483,6 +485,25 @@ public class Point implements Cloneable, Serializable {
 	public void setErrorRadius(Integer errorRadius){
 		this.errorRadius = errorRadius;
 	}
+	
+// **************** toString *************************/
+	
+	
+	/**
+	 * Returns a string representation in sexagesimal coordinates.
+	 * @return
+	 */
+	public String toSexagesimalString(boolean includeEmptySeconds, boolean includeReferenceSystem){
+		String result = "";
+		result += getLatitudeSexagesimal() == null ? "" : getLatitudeSexagesimal().toString(includeEmptySeconds);
+		result = CdmUtils.concat(", ", result, getLongitudeSexagesimal() == null ? "" : getLongitudeSexagesimal().toString(includeEmptySeconds));
+		if (includeReferenceSystem && getReferenceSystem() != null){
+			String refSys = CdmUtils.isEmpty(getReferenceSystem().getLabel()) ? "" : "(" + getReferenceSystem().getLabel() + ")";
+			result = CdmUtils.concat(" ", result, refSys);
+		}
+		return result;
+	}
+	
 	
 //*********** CLONE **********************************/	
 	
