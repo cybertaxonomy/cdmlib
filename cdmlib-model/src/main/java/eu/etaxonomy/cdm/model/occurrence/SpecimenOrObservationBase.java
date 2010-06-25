@@ -299,9 +299,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		return null;
 	}
 
-	@Transient
-	public abstract GatheringEvent getGatheringEvent();
-	
 	
 //******************** CLONE **********************************************/
 	

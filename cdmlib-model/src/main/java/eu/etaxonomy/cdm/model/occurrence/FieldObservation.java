@@ -99,7 +99,6 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldObservation>();
 	}
 
-    @Override
 	public GatheringEvent getGatheringEvent() {
     	return gatheringEvent;
 	}

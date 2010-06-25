@@ -152,14 +152,6 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		return this.getDerivedFrom().getOriginals();
 	}
 
-	@Override
-	@Transient
-	public GatheringEvent getGatheringEvent() {
-		// FIXME: implement efficient way of getting original gathering event
-		// keep link to original gathering event for performance mainly.
-		return null;
-	}
-
 	public Collection getCollection(){
 		return this.collection;
 	}
