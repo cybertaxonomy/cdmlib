@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -72,7 +73,8 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			result = CdmUtils.concat(", ", result, facade.getEcology());
 			//gathering period
 			//TODO period.toString ??
-			result = CdmUtils.concat(", ", result, facade.getGatheringPeriod().toString());
+			TimePeriod gatheringPeriod = facade.getGatheringPeriod();
+			result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
 			
 			//Herbarium & accession number
 			String code = getCode(facade);
