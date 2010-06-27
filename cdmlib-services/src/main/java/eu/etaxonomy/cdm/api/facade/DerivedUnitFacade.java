@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.facade;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -116,8 +117,11 @@ public class DerivedUnitFacade {
 	private FieldObservation fieldObservation;
 	
 	private DerivedUnitBase derivedUnit;
-	private List<Media> specimenMedia;
-	private List<Media> fieldObservationMedia;
+
+	//media - the text data holding the media
+	private TextData derivedUnitMediaTextData;
+	private TextData fieldObjectMediaTextData;
+	
 	
 	private TextData ecology;
 	private TextData plantDescription;
@@ -173,17 +177,21 @@ public class DerivedUnitFacade {
 		}
 
 		//test if unsupported
+		
+		//media
 		//specimen
-		String objectTypeExceptionText = "Specimen";
-		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(derivedUnit, objectTypeExceptionText, false);
-		getImageTextDataWithSupportTest(imageGallery, objectTypeExceptionText);
+//		String objectTypeExceptionText = "Specimen";
+//		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(derivedUnit, objectTypeExceptionText, false);
+//		getImageTextDataWithSupportTest(imageGallery, objectTypeExceptionText);
+		this.derivedUnitMediaTextData = inititialzeTextDataWithSupportTest(Feature.IMAGE(), this.derivedUnit, false, true);
 		
 		//field observation
-		objectTypeExceptionText = "Field observation";
-		imageGallery = getImageGalleryWithSupportTest(fieldObservation, objectTypeExceptionText, false);
-		getImageTextDataWithSupportTest(imageGallery, objectTypeExceptionText);
+//		objectTypeExceptionText = "Field observation";
+//		imageGallery = getImageGalleryWithSupportTest(fieldObservation, objectTypeExceptionText, false);
+//		getImageTextDataWithSupportTest(imageGallery, objectTypeExceptionText);
+		fieldObjectMediaTextData = initializeFieldObjectTextDataWithSupportTest(Feature.IMAGE(), false, true);
 		
-		//direct media of derived unit
+		//handle derivedUnit.getMedia()
 		if (derivedUnit.getMedia().size() > 0){
 			//TODO better changed model here to allow only one place for images
 			if (this.config.isMoveDerivedUnitMediaToGallery()){
@@ -197,7 +205,7 @@ public class DerivedUnitFacade {
 			}
 		}
 		
-		//direct media of field observation
+		//handle fieldObservation.getMedia()
 		if (fieldObservation != null && fieldObservation.getMedia() != null && fieldObservation.getMedia().size() > 0){
 			//TODO better changed model here to allow only one place for images
 			if (this.config.isMoveFieldObjectMediaToGallery()){
@@ -212,8 +220,8 @@ public class DerivedUnitFacade {
 		}
 		
 		//test if descriptions are supported
-		ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), false);
-		plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), false);
+		ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), false, false);
+		plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), false, false);
 	}
 	
 
@@ -224,12 +232,35 @@ public class DerivedUnitFacade {
 		derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
 	}
 
-/**
-	 * @param b
- * @throws DerivedUnitFacadeNotSupportedException 
+
+	/**
+	 * @param feature
+	 * @param createIfNotExists
+	 * @param isImageGallery
+	 * @return
+	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private TextData initializeFieldObjectTextDataWithSupportTest(Feature feature, boolean createIfNotExists) throws DerivedUnitFacadeNotSupportedException {
-		if (feature == null){
+	private TextData initializeFieldObjectTextDataWithSupportTest(Feature feature, boolean createIfNotExists, boolean isImageGallery) throws DerivedUnitFacadeNotSupportedException {
+		//field object
+		FieldObservation fieldObject = getFieldObservation(createIfNotExists) ;
+		if (fieldObject == null){
+			return null;
+		}
+		return inititialzeTextDataWithSupportTest(feature, fieldObject, createIfNotExists, isImageGallery);
+	}
+
+
+	/**
+	 * @param feature
+	 * @param specimen
+	 * @param createIfNotExists
+	 * @param isImageGallery
+	 * @return
+	 * @throws DerivedUnitFacadeNotSupportedException
+	 */
+	private TextData inititialzeTextDataWithSupportTest(Feature feature, SpecimenOrObservationBase specimen, boolean createIfNotExists, 
+				boolean isImageGallery) throws DerivedUnitFacadeNotSupportedException {
+		if (feature == null ){
 			return null;
 		}
 		TextData textData = null;
@@ -237,15 +268,15 @@ public class DerivedUnitFacade {
 			textData = TextData.NewInstance(feature);
 		}
 		
-		//field object
-		FieldObservation fieldObject = getFieldObservation(createIfNotExists) ;
-		if (fieldObject == null){
-			return null;
+		Set<SpecimenDescription> descriptions;
+		if (isImageGallery){
+			descriptions = specimen.getSpecimenDescriptionImageGallery();
+		}else{
+			descriptions = specimen.getSpecimenDescriptions(false);
 		}
-		Set<SpecimenDescription> descriptions = fieldObject.getSpecimenDescriptions(false);
 		if (descriptions.size() == 0){
 			if (createIfNotExists){
-				SpecimenDescription newSpecimenDescription = SpecimenDescription.NewInstance(fieldObject);
+				SpecimenDescription newSpecimenDescription = SpecimenDescription.NewInstance(specimen);
 				newSpecimenDescription.addElement(textData);
 				return textData;
 			}else{
@@ -255,7 +286,7 @@ public class DerivedUnitFacade {
 		Set<DescriptionElementBase> existingTextData = new HashSet<DescriptionElementBase>();
 		for (SpecimenDescription description : descriptions){
 			for (DescriptionElementBase element: description.getElements()){
-				if (element.isInstanceOf(TextData.class) && feature.equals(element.getFeature()) ){
+				if (element.isInstanceOf(TextData.class) && ( feature.equals(element.getFeature() )|| isImageGallery ) ){
 					existingTextData.add(element);
 				}
 			}
@@ -274,18 +305,18 @@ public class DerivedUnitFacade {
 
 //************************** METHODS *****************************************	
 
-	private List<Media> setDerivedUnitImageGalleryMedia() throws DerivedUnitFacadeNotSupportedException{
-		if (specimenMedia == null){
-			specimenMedia = getImageGalleryMedia(derivedUnit, "Specimen");
+	private TextData getDerivedUnitImageGalleryTextData(boolean createIfNotExists) throws DerivedUnitFacadeNotSupportedException{
+		if (this.derivedUnitMediaTextData == null && createIfNotExists){
+			this.derivedUnitMediaTextData = getImageGalleryTextData(derivedUnit, "Specimen");
 		}
-		return specimenMedia;
+		return this.derivedUnitMediaTextData;
 	}
-
-	private List<Media> setObservationImageGalleryMedia() throws DerivedUnitFacadeNotSupportedException{
-		if (fieldObservationMedia == null){
-			fieldObservationMedia = getImageGalleryMedia(fieldObservation, "Field observation");
+	
+	private TextData getObservationImageGalleryTextData(boolean createIfNotExists) throws DerivedUnitFacadeNotSupportedException{
+		if (this.fieldObjectMediaTextData == null && createIfNotExists){
+			this.fieldObjectMediaTextData = getImageGalleryTextData(fieldObservation, "Field observation");
 		}
-		return fieldObservationMedia;
+		return this.fieldObjectMediaTextData;
 	}
 
 	
@@ -326,6 +357,22 @@ public class DerivedUnitFacade {
 	
 	//*********** MEDIA METHODS ******************************
 	
+//	/**
+//	 * Returns the media list for a specimen. Throws an exception if the existing specimen descriptions
+//	 * are not supported by this facade.
+//	 * @param specimen the specimen the media belongs to
+//	 * @param specimenExceptionText text describing the specimen for exception messages
+//	 * @return
+//	 * @throws DerivedUnitFacadeNotSupportedException
+//	 */
+//	private List<Media> getImageGalleryMedia(SpecimenOrObservationBase specimen, String specimenExceptionText) throws DerivedUnitFacadeNotSupportedException{
+//		List<Media> result;
+//		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(specimen, specimenExceptionText, true);
+//		TextData textData = getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
+//		result = textData.getMedia();
+//		return result;
+//	}
+	
 	/**
 	 * Returns the media list for a specimen. Throws an exception if the existing specimen descriptions
 	 * are not supported by this facade.
@@ -334,11 +381,10 @@ public class DerivedUnitFacade {
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private List<Media> getImageGalleryMedia(SpecimenOrObservationBase specimen, String specimenExceptionText) throws DerivedUnitFacadeNotSupportedException{
-		List<Media> result;
+	private TextData getImageGalleryTextData(SpecimenOrObservationBase specimen, String specimenExceptionText) throws DerivedUnitFacadeNotSupportedException{
+		TextData result;
 		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(specimen, specimenExceptionText, true);
-		TextData textData = getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
-		result = textData.getMedia();
+		result = getImageTextDataWithSupportTest(imageGallery, specimenExceptionText);
 		return result;
 	}
 	
@@ -419,11 +465,12 @@ public class DerivedUnitFacade {
 	 * Returns the image gallery for a specimen. If there are multiple specimen descriptions
 	 * marked as image galleries an arbitrary one is chosen.
 	 * If no image gallery exists, a new one is created if <code>createNewIfNotExists</code>
-	 * is <code>true</code>.
+	 * is <code>true</code>.<Br>
+	 * If specimen is <code>null</code> a null pointer exception is thrown.
 	 * @param createNewIfNotExists
 	 * @return
 	 */
-	private SpecimenDescription getImageGallery(SpecimenOrObservationBase<?> specimen, boolean createNewIfNotExists) {
+	private SpecimenDescription getImageGallery(SpecimenOrObservationBase<?> specimen, boolean createIfNotExists) {
 		SpecimenDescription result = null;
 		Set<SpecimenDescription> descriptions= specimen.getSpecimenDescriptions();
 		for (SpecimenDescription description : descriptions){
@@ -432,7 +479,7 @@ public class DerivedUnitFacade {
 				break;
 			}
 		}
-		if (result == null && createNewIfNotExists){
+		if (result == null && createIfNotExists){
 			result = SpecimenDescription.NewInstance(specimen);
 			result.setImageGallery(true);
 		}
@@ -448,7 +495,7 @@ public class DerivedUnitFacade {
 	 */
 	private boolean addMedia(Media media, SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
 		if (media != null){
-			List<Media> mediaList = getMedia(specimen);
+			List<Media> mediaList = getMedia(specimen, true);
 			return mediaList.add(media);
 		}else{
 			return false;
@@ -463,10 +510,15 @@ public class DerivedUnitFacade {
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
 	private boolean removeMedia(Media media, SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
-		List<Media> mediaList = getMedia(specimen);
+		List<Media> mediaList = getMedia(specimen, true);
 		return mediaList == null ? null : mediaList.remove(media);
 	}
 
+	private List<Media> getMedia(SpecimenOrObservationBase<?> specimen, boolean createIfNotExists) throws DerivedUnitFacadeNotSupportedException {
+		TextData textData = getMediaTextData(specimen, createIfNotExists);
+		return textData == null ? null : textData.getMedia();
+	}
+	
 	/**
 	 * Returns the one media list of a specimen which is part of the only image gallery that 
 	 * this specimen is part of.<BR>
@@ -475,16 +527,37 @@ public class DerivedUnitFacade {
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private List<Media> getMedia(SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
+//	private List<Media> getMedia(SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
+//		if (specimen == null){
+//			return null;
+//		}
+//		if (specimen == this.derivedUnit){
+//			return getDerivedUnitImageGalleryMedia();
+//		}else if (specimen == this.fieldObservation){
+//			return getObservationImageGalleryTextData();
+//		}else{
+//			return getImageGalleryMedia(specimen, "Undefined specimen ");
+//		}
+//	}
+	
+	/**
+	 * Returns the one media list of a specimen which is part of the only image gallery that 
+	 * this specimen is part of.<BR>
+	 * If these conditions are not hold an exception is thrwon.
+	 * @param specimen
+	 * @return
+	 * @throws DerivedUnitFacadeNotSupportedException
+	 */
+	private TextData getMediaTextData(SpecimenOrObservationBase<?> specimen, boolean createIfNotExists) throws DerivedUnitFacadeNotSupportedException {
 		if (specimen == null){
 			return null;
 		}
 		if (specimen == this.derivedUnit){
-			return setDerivedUnitImageGalleryMedia();
+			return getDerivedUnitImageGalleryTextData(createIfNotExists);
 		}else if (specimen == this.fieldObservation){
-			return setObservationImageGalleryMedia();
+			return getObservationImageGalleryTextData(createIfNotExists);
 		}else{
-			return getImageGalleryMedia(specimen, "Undefined specimen ");
+			return getImageGalleryTextData(specimen, "Undefined specimen ");
 		}
 	}
 	
@@ -782,7 +855,7 @@ public class DerivedUnitFacade {
 	public Map<Language, LanguageString> getEcologyAll(){
 		if (ecology == null){
 			try {
-				ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), true);
+				ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), true, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
@@ -799,7 +872,7 @@ public class DerivedUnitFacade {
 		}
 		if (ecology == null){
 			try {
-				ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), true);
+				ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), true, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
@@ -842,7 +915,7 @@ public class DerivedUnitFacade {
 	public Map<Language, LanguageString> getPlantDescriptionAll(){
 		if (plantDescription == null){
 			try {
-				plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), true);
+				plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), true, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
@@ -858,7 +931,7 @@ public class DerivedUnitFacade {
 		}
 		if (plantDescription == null){
 			try {
-				plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), true);
+				plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), true, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
@@ -922,16 +995,32 @@ public class DerivedUnitFacade {
 			return (getImageGallery(fieldObservation, false) != null);
 		}
 	}
+	
+	/**
+	 * @param createIfNotExists
+	 * @return
+	 */
+	public SpecimenDescription getFieldObjectImageGallery(boolean createIfNotExists){
+		TextData textData;
+		try {
+			textData = initializeFieldObjectTextDataWithSupportTest(Feature.IMAGE(), createIfNotExists, true);
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			throw new IllegalStateException(notSupportMessage, e);
+		}
+		if (textData != null){
+			return CdmBase.deproxy(textData.getInDescription(), SpecimenDescription.class);
+		}else{
+			return null;
+		}
+	}
 	/**
 	 * Returns the media for the field object.<BR>
-	 * Please handle with care as <B>this method will create an empty image gallery</B>
-	 * if it does not yet exist. Use {@link #hasFieldObjectImageGallery()} first
-	 * to test if an image gallery exists at all to avoid creating an empty gallery.
 	 * @return
 	 */
 	public List<Media> getFieldObjectMedia() {
 		try {
-			return getMedia(getFieldObservation(false));
+			List<Media> result = getMedia(getFieldObservation(false), false);
+			return result == null ? new ArrayList<Media>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -1068,19 +1157,32 @@ public class DerivedUnitFacade {
 	 * Returns true, if an image gallery exists for the specimen.<BR>
 	 * Returns also <code>true</code> if the image gallery is empty. 
 	 */
-	public boolean hasSpecimenImageGallery(){
+	public boolean hasDerivedUnitImageGallery(){
 		return (getImageGallery(derivedUnit, false) != null);
-	}	
+	}
+	
+	public SpecimenDescription getDerivedUnitImageGallery(boolean createIfNotExists){
+		TextData textData;
+		try {
+			textData = inititialzeTextDataWithSupportTest(Feature.IMAGE(), derivedUnit, createIfNotExists, true);
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			throw new IllegalStateException(notSupportMessage, e);
+		}
+		if (textData != null){
+			return CdmBase.deproxy(textData.getInDescription(), SpecimenDescription.class);
+		}else{
+			return null;
+		}
+	}
+	
 	/**
 	 * Returns the media for the specimen.<BR>
-	 * Please handle with care as <B>this method will create an empty image gallery</B>
-	 * if it does not yet exist. Use {@link #hasFieldObjectImageGallery()} first
-	 * to test if an image gallery exists at all to avoid creating an empty gallery.
 	 * @return
 	 */
 	public List<Media> getDerivedUnitMedia() {
 		try {
-			return getMedia(derivedUnit);
+			List<Media> result = getMedia(derivedUnit, false);
+			return result == null ? new ArrayList<Media>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}

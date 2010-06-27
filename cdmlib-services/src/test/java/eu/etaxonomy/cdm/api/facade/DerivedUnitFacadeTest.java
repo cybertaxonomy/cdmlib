@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -460,17 +459,17 @@ public class DerivedUnitFacadeTest {
 	@Test
 	public void testAddGetHasRemoveFieldObjectMedia() {
 		Assert.assertFalse("There should be no image gallery yet", specimenFacade.hasFieldObjectImageGallery());
-		Assert.assertFalse("There should be no specimen image gallery either", specimenFacade.hasSpecimenImageGallery());
+		Assert.assertFalse("There should be no specimen image gallery either", specimenFacade.hasDerivedUnitImageGallery());
 		
 		List<Media> media = specimenFacade.getFieldObjectMedia();
-		Assert.assertTrue("There should be an empty image gallery now", specimenFacade.hasFieldObjectImageGallery());
+		Assert.assertFalse("There should still not be an image gallery now", specimenFacade.hasFieldObjectImageGallery());
 		Assert.assertEquals("There should be no media yet in the gallery", 0, media.size());
 		
 		Media media1 = Media.NewInstance();
 		specimenFacade.addFieldObjectMedia(media1);
 		Assert.assertEquals("There should be exactly one specimen media", 1, specimenFacade.getFieldObjectMedia().size());
 		Assert.assertEquals("The only media should be media 1", media1, specimenFacade.getFieldObjectMedia().get(0));
-		Assert.assertFalse("There should still no specimen image gallery exist", specimenFacade.hasSpecimenImageGallery());
+		Assert.assertFalse("There should still no specimen image gallery exist", specimenFacade.hasDerivedUnitImageGallery());
 		
 		Media media2 = Media.NewInstance();
 		specimenFacade.addFieldObjectMedia(media2);
@@ -717,11 +716,11 @@ public class DerivedUnitFacadeTest {
 	 */
 	@Test
 	public void testAddGetHasRemoveSpecimenMedia() {
-		Assert.assertFalse("There should be no image gallery yet", specimenFacade.hasSpecimenImageGallery());
+		Assert.assertFalse("There should be no image gallery yet", specimenFacade.hasDerivedUnitImageGallery());
 		Assert.assertFalse("There should be also no field object image gallery yet", specimenFacade.hasFieldObjectImageGallery());
 		
 		List<Media> media = specimenFacade.getDerivedUnitMedia();
-		Assert.assertTrue("There should be an empty image gallery now", specimenFacade.hasSpecimenImageGallery());
+		Assert.assertFalse("There should still not be an empty image gallery now", specimenFacade.hasDerivedUnitImageGallery());
 		Assert.assertEquals("There should be no media yet in the gallery", 0, media.size());
 		
 		Media media1 = Media.NewInstance();
