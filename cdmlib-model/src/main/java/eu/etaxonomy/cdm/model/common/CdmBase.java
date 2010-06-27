@@ -304,7 +304,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		       return 29 * hashCode + this.getUuid().hashCode();
 		   } else {
 			   return 29 * hashCode;
-	}
+		   }
 	}
 
 	/**
