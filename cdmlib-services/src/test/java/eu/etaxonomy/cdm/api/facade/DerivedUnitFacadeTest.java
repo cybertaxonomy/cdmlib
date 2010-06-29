@@ -954,6 +954,12 @@ public class DerivedUnitFacadeTest {
 		}
 		Assert.assertNull("Specimen facade should not be initialized", specimenFacade);	
 	}
+	
+	@Test
+	public void testEventPropagation(){
+		specimenFacade.setDistanceToGround(24);
+		
+	}
 
 	
 }

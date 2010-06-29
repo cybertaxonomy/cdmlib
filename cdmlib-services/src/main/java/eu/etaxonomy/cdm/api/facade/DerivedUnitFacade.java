@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.api.facade;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +21,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MethodNotSupportedException;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -65,7 +71,10 @@ public class DerivedUnitFacade {
 	
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
 	
-	
+	@Transient
+	@XmlTransient
+	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
 	/**
 	 * Enum that defines the class the "Specimen" belongs to.
 	 * Some methods of the facade are not available for certain classes
@@ -1104,6 +1113,7 @@ public class DerivedUnitFacade {
 	public FieldObservation getFieldObservation(boolean createIfNotExists){
 		if (fieldObservation == null && createIfNotExists){
 			fieldObservation = FieldObservation.NewInstance();
+			fieldObservation.addPropertyChangeListener(getNewEventPropagationListener());
 			DerivationEvent derivationEvent = getDerivationEvent(true);
 			derivationEvent.addOriginal(fieldObservation);
 		}
@@ -1112,6 +1122,8 @@ public class DerivedUnitFacade {
 
 	
 
+
+	
 //****************** Specimen **************************************************	
 	
 	//Definition
@@ -1346,7 +1358,26 @@ public class DerivedUnitFacade {
 	}
 	
 	
-
+// ******************************* Events *********************************************
+	
+	/**
+	 * @return
+	 */
+	private PropertyChangeListener getNewEventPropagationListener() {
+		PropertyChangeListener listener = new PropertyChangeListener(){
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				derivedUnit.firePropertyChange(event);
+			}
+			
+		};
+		return listener;
+	}
+//	
+//	private void firePropertyChange(PropertyChangeEvent evt) {
+//		propertyChangeSupport.firePropertyChange(evt);
+//	}
+		
 	
 
 //**************** Other Collections ***************************************************	
