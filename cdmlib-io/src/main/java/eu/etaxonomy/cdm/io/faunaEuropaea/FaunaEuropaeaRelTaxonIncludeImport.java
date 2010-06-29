@@ -103,7 +103,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 
 		TransactionStatus txStatus = startTransaction();
 		
-		TaxonBase taxon = getTaxonService().find(UUID.fromString("5932B630-5299-4A65-A4BF-BC38C6C108E2"));
+		// the uuid of an accepted taxon is needed here. any accepted taxon will do.
+		TaxonBase taxon = getTaxonService().find(UUID.fromString("EC765B43-E909-4D32-8822-34DA186424E8"));
 		sourceRef = taxon.getSec();
 
 		TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
