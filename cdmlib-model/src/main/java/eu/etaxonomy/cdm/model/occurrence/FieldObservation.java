@@ -133,7 +133,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	
 	private PropertyChangeListener getNewGatheringEventPropChangeListener() {
 		PropertyChangeListener listener = new PropertyChangeListener(){
-			@Override
+			
 			public void propertyChange(PropertyChangeEvent event) {
 				firePropertyChange(event);
 			}

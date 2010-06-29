@@ -38,7 +38,7 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 	
 	@Override
 	protected UUID getUuid() {
-		return uuid;
+		return uuid; 
 	}
 	
 	
