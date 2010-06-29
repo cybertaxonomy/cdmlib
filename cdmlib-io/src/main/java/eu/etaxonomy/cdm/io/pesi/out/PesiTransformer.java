@@ -2721,8 +2721,6 @@ public final class PesiTransformer {
 			return null;
 		} else if (reference.getType().equals(ReferenceType.Article)) {
 			return REF_ARTICLE_IN_PERIODICAL;
-//		} else if (reference instanceof ISectionBase) {
-//			return REF_PART_OF_OTHER;
 		} else if (reference.getType().equals(ReferenceType.Book)) {
 			return REF_BOOK;
 		} else if (reference.getType().equals(ReferenceType.Database)) {
@@ -2764,8 +2762,6 @@ public final class PesiTransformer {
 			return null;
 		} else if (reference.getType().equals(ReferenceType.Article)) {
 			return REF_STR_ARTICLE_IN_PERIODICAL;
-		} else if (reference instanceof ISectionBase) {
-			return REF_STR_PART_OF_OTHER;
 		} else if (reference.getType().equals(ReferenceType.Book)) {
 			return REF_STR_BOOK;
 		} else if (reference.getType().equals(ReferenceType.Database)) {
@@ -2907,9 +2903,7 @@ public final class PesiTransformer {
 			return null;
 		}
 		RelationshipTermBase<?> type = relation.getType();
-		if (type.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
-			return STR_IS_TAXONOMICALLY_INCLUDED_IN;
-		} else if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
+		if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
 			return STR_IS_MISAPPLIED_NAME_FOR;
 		} else if (type.equals(SynonymRelationshipType.SYNONYM_OF())) {
 			return STR_IS_SYNONYM_OF;
@@ -2977,9 +2971,7 @@ public final class PesiTransformer {
 			return null;
 		}
 		RelationshipTermBase<?> type = relation.getType();
-		if (type.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
-			return IS_TAXONOMICALLY_INCLUDED_IN;
-		} else if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
+		if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
 			return IS_MISAPPLIED_NAME_FOR;
 		} else if (type.equals(SynonymRelationshipType.SYNONYM_OF())) {
 			return IS_SYNONYM_OF;

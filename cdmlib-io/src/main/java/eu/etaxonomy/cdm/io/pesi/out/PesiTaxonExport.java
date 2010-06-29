@@ -224,7 +224,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			rankList.add(Rank.GENUS());
 
 			// Specify where to stop traversing (value) when starting at a specific Rank (key)
-			rankMap.put(Rank.GENUS(), null); // Since NULL does not match an existing Rank, traverse all the way down to the leafs
+			rankMap.put(Rank.GENUS(), null); // Since NULL does not match an existing Rank, traverse all the way down to the leaves
 			rankMap.put(Rank.KINGDOM(), Rank.GENUS()); // excludes rank genus
 			
 			StringBuffer treeIndex = new StringBuffer();
@@ -261,7 +261,7 @@ public class PesiTaxonExport extends PesiExportBase {
 						if (endRank != null) {
 							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till Rank " + endRank.getLabel() + " ...");
 						} else {
-							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till leafs are reached ...");
+							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till leaves are reached ...");
 						}
 
 						TaxonNode newNode = getTaxonNodeService().load(rootNode.getUuid());
@@ -278,7 +278,6 @@ public class PesiTaxonExport extends PesiExportBase {
 								for (Annotation annotation : annotations) {
 									AnnotationType annotationType = annotation.getAnnotationType();
 									if (annotationType != null && annotationType.equals(getTreeIndexAnnotationType())) {
-										// It is assumed that there is only one annotation using AnnotationType TREEINDEX. If there are more only one is noticed.
 										treeIndex = new StringBuffer(CdmUtils.Nz(annotation.getText()));
 										annotationFound = true;
 										logger.error("treeIndex: " + treeIndex);
@@ -702,7 +701,7 @@ public class PesiTaxonExport extends PesiExportBase {
 												insertSpecificEpithetEndTag = false;
 												
 												// Insert italicEndTag
-												replaceFullName.insert(infraSpecificEpithetEndLocation + italicBeginTag.length(), italicEndTag);
+												replaceFullName.insert(infraSpecificEpithetEndLocation, italicEndTag);
 											}
 										}
 
@@ -791,7 +790,12 @@ public class PesiTaxonExport extends PesiExportBase {
 		return result;
 	}
 
-	
+	/**
+	 * 
+	 * @param name
+	 * @param targetString
+	 * @return
+	 */
 	private static List<NamePosition> getPosition(String name, String targetString) {
 		List<NamePosition> result = new ArrayList<NamePosition>();
 		boolean touched = false;
@@ -1066,30 +1070,30 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getTypeNameFk(TaxonNameBase taxonNameBase, PesiExportState state) {
 		Integer result = null;
-//		if (taxonNameBase != null) {
-//			Set<NameTypeDesignation> nameTypeDesignations = taxonNameBase.getNameTypeDesignations();
-//			if (nameTypeDesignations.size() == 1) {
-//				NameTypeDesignation nameTypeDesignation = nameTypeDesignations.iterator().next();
-//				if (nameTypeDesignation != null) {
-//					TaxonNameBase typeName = nameTypeDesignation.getTypeName();
-//					if (typeName != null) {
-//						Set<TaxonBase> taxa = typeName.getTaxa();
-//						if (taxa.size() == 1) {
-//							TaxonBase singleTaxon = taxa.iterator().next();
-//							result = state.getDbId(singleTaxon.getName());
-//						} else if (taxa.size() > 1) {
-//							logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-//						}
-//					}
-//				}
-//			} else if (nameTypeDesignations.size() > 1) {
-//				logger.warn("This TaxonName has " + nameTypeDesignations.size() + " NameTypeDesignations: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-//			}
-//		}
-//		if (result != null) {
-//			logger.error("Taxon Id: " + result);
-//			logger.error("TaxonName: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() +")");
-//		}
+		if (taxonNameBase != null) {
+			Set<NameTypeDesignation> nameTypeDesignations = taxonNameBase.getNameTypeDesignations();
+			if (nameTypeDesignations.size() == 1) {
+				NameTypeDesignation nameTypeDesignation = nameTypeDesignations.iterator().next();
+				if (nameTypeDesignation != null) {
+					TaxonNameBase typeName = nameTypeDesignation.getTypeName();
+					if (typeName != null) {
+						Set<TaxonBase> taxa = typeName.getTaxa();
+						if (taxa.size() == 1) {
+							TaxonBase singleTaxon = taxa.iterator().next();
+							result = state.getDbId(singleTaxon.getName());
+						} else if (taxa.size() > 1) {
+							logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
+						}
+					}
+				}
+			} else if (nameTypeDesignations.size() > 1) {
+				logger.warn("This TaxonName has " + nameTypeDesignations.size() + " NameTypeDesignations: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
+			}
+		}
+		if (result != null) {
+			logger.error("Taxon Id: " + result);
+			logger.error("TaxonName: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() +")");
+		}
 		return result;
 	}
 	
@@ -1246,53 +1250,35 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getIdInSource(TaxonNameBase taxonName) {
-		return null;
-//		String result = "Nominal Taxon from TAX_ID: ";
-//		boolean set = false;
-//		
-//		try {
-//			if (taxon != null) {
-//				TaxonNameBase taxonName = taxon.getName();
-//				Set taxa = taxonName.getTaxa();
-//				if (taxa.size() == 1) {
-//					IdentifiableEntity singleTaxon = (IdentifiableEntity) taxa.iterator().next();
-//					if (singleTaxon != null) {
-//						Set<IdentifiableSource> sources = singleTaxon.getSources();
-//						if (sources.size() == 1) {
-//							IdentifiableSource source = sources.iterator().next();
-//							if (source != null) {
-//								result += source.getIdInSource();
-//								set = true;
-//							}
-//						} else if (sources.size() > 1) {
-//							logger.warn("Taxon has multiple IdentifiableSources: " + singleTaxon.getUuid() + " (" + singleTaxon.getTitleCache() + ")");
-//							int count = 1;
-//							for (IdentifiableSource source : sources) {
-//								result += source.getIdInSource();
-//								if (count < sources.size()) {
-//									result += "; ";
-//								}
-//								count++;
-//								set = true;
-//							}
-//						} else {
-//							result = null;
-//						}
+		String result = null;
+		boolean set = false;
+		
+		try {
+			
+		Set taxa = taxonName.getTaxa();
+		if (taxa.size() == 1) {
+			IdentifiableEntity singleTaxon = (IdentifiableEntity) taxa.iterator().next();
+			if (singleTaxon != null) {
+				Set<IdentifiableSource> sources = singleTaxon.getSources();
+				for (IdentifiableSource source : sources) {
+					String sourceIdNameSpace = source.getIdNamespace();
+					if (sourceIdNameSpace.equals("originalGenusId")) {
+						result = "Nominal Taxon from TAX_ID: " + source.getIdInSource();
+					}
+//					else if (sourceIdNameSpace.equals("taxonId")) {
+//						result = "TAX_ID: " + source.getIdInSource();
 //					}
-//				} else if (taxa.size() > 1) {
-//					logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
-//				}
-//			}
-//		
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		if (set) {
-//			return result;
-//		} else {
-//			return null;
-//		}
+				}
+			}
+		} else if (taxa.size() > 1) {
+			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	/**

@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.pesi.out;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -26,12 +28,15 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.mueller
@@ -49,7 +54,13 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	private static final String dbTableName = "RelTaxon";
 	private static final String pluralString = "Relationships";
 	private static PreparedStatement synonymsStmt;
-
+	private PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt;
+	private HashMap<Rank, Rank> rankMap = new HashMap<Rank, Rank>();
+	private List<Rank> rankList = new ArrayList<Rank>();
+	private PesiExportMapping mapping;
+	private int count = 0;
+	private boolean success = true;
+	
 	public PesiRelTaxonExport() {
 		super();
 	}
@@ -80,8 +91,15 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			logger.error("*** Started Making " + pluralString + " ...");
 	
 			Connection connection = state.getConfig().getDestination().getConnection();
-			String synonymsSql = "UPDATE Taxon SET ParentTaxonFk = ?, KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
+			String synonymsSql = "UPDATE Taxon SET KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
 			synonymsStmt = connection.prepareStatement(synonymsSql);
+			
+			String parentTaxonFk_TreeIndex_KingdomFkSql = "INSERT INTO RelTaxon (TaxonFk1, TaxonFk2, RelTaxonQualifierFk, RelQualifierCache)" +
+					"VALUES (?, ?, ?, ?)";
+			parentTaxonFk_TreeIndex_KingdomFkStmt = connection.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
+
+			// Get the limit for objects to save within a single transaction.
+			int pageSize = 1000;
 
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
@@ -93,104 +111,241 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			doDelete(state);
 	
 			// Get specific mappings: (CDM) Relationship -> (PESI) RelTaxon
-			PesiExportMapping mapping = getMapping();
+			mapping = getMapping();
 
 			// Initialize the db mapper
 			mapping.initialize(state);
 
-			// PESI: Create the RelTaxa
-			int count = 0;
-			int taxonCount = 0;
-			int pastCount = 0;
 			TransactionStatus txStatus = null;
-			List<RelationshipBase> list = null;
+			List<TaxonomicTree> taxonomicTreeList = null;
+			
+			// Specify starting ranks for tree traversing
+			rankList.add(Rank.KINGDOM());
+			rankList.add(Rank.GENUS());
 
-			// Start transaction
+			// Specify where to stop traversing (value) when starting at a specific Rank (key)
+			rankMap.put(Rank.GENUS(), null); // Since NULL does not match an existing Rank, traverse all the way down to the leaves
+			rankMap.put(Rank.KINGDOM(), Rank.GENUS()); // excludes rank genus
+			
+			StringBuffer treeIndex = new StringBuffer();
+			
+			// Retrieve list of Taxonomic Trees
 			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getTaxonService().getAllRelationships(limit, taxonCount)).size() > 0) {
-
-				taxonCount += list.size();
-				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (RelationshipBase<?, ?, ?> relation : list) {
-
-					// Focus on TaxonRelationships and SynonymRelationships.
-					if (relation.isInstanceOf(TaxonRelationship.class) || relation.isInstanceOf(SynonymRelationship.class)) {
-						if (neededValuesNotNull(relation, state)) {
-							doCount(count++, modCount, pluralString);
-							success &= mapping.invoke(relation);
-						}
-					}
-				}
-				
-				// Commit transaction
-				commitTransaction(txStatus);
-				logger.error("Committed transaction.");
-				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
-				pastCount = count;
-
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			}
-			if (list.size() == 0) {
-				logger.error("No " + pluralString + " left to fetch.");
-			}
-			// Commit transaction
+			logger.error("Started transaction. Fetching all Taxonomic Trees...");
+			taxonomicTreeList = getTaxonTreeService().listTaxonomicTrees(null, 0, null, null);
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
-	
-			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
-			
 
-			count = 0;
-			taxonCount = 0;
-			pastCount = 0;
-			// Start transaction
-			List<TaxonNameBase> taxonNameList = null;
-			txStatus = startTransaction(true);
-			String nameRelationString = "NameRelationships";
-			logger.error("Started new transaction. Fetching some " + nameRelationString + " (max: " + limit + ") ...");
-			while ((taxonNameList = getNameService().list(null, limit, count, null, null)).size() > 0) {
+			logger.error("Fetched " + taxonomicTreeList.size() + " Taxonomic Tree.");
 
-				logger.error("Fetched " + taxonNameList.size() + " " + nameRelationString + ". Exporting...");
-				for (TaxonNameBase taxonName : taxonNameList) {
-					doCount(count++, modCount, nameRelationString);
+			for (TaxonomicTree taxonomicTree : taxonomicTreeList) {
+				for (Rank rank : rankList) {
 					
-					if (taxonName != null) {
-						Set<NameRelationship> nameRelations = taxonName.getNameRelations();
-						for (NameRelationship nameRelationship : nameRelations) {
-							if (neededValuesNotNull(nameRelationship, state)) {
-								success &= mapping.invoke(nameRelationship);
-							}
+					txStatus = startTransaction(true);
+					logger.error("Started transaction to fetch all rootNodes specific to Rank " + rank.getLabel() + " ...");
+
+					List<TaxonNode> rankSpecificRootNodes = getTaxonTreeService().loadRankSpecificRootNodes(taxonomicTree, rank, null);
+					logger.error("Fetched " + rankSpecificRootNodes.size() + " RootNodes for Rank " + rank.getLabel());
+
+					commitTransaction(txStatus);
+					logger.error("Committed transaction.");
+
+					for (TaxonNode rootNode : rankSpecificRootNodes) {
+						txStatus = startTransaction(false);
+						Rank endRank = rankMap.get(rank);
+						if (endRank != null) {
+							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till Rank " + endRank.getLabel() + " ...");
+						} else {
+							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till leaves are reached ...");
 						}
-					} else {
-						logger.error("TaxonName is NULL. NameRelationship could not be determined.");
+
+						TaxonNode newNode = getTaxonNodeService().load(rootNode.getUuid());
+
+						TaxonNode parentNode = newNode.getParent();
+
+						traverseTree(newNode, parentNode, rankMap.get(rank), state);
+
+						commitTransaction(txStatus);
+						logger.error("Committed transaction.");
+
 					}
 				}
-
-				// Commit transaction
-				commitTransaction(txStatus);
-				logger.error("Committed transaction.");
-				logger.error("Exported " + (count - pastCount) + " " + nameRelationString + ". Total: " + count);
-				pastCount = count;
-
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + nameRelationString + " (max: " + limit + ") ...");
 			}
-			if (list.size() == 0) {
-				logger.error("No " + nameRelationString + " left to fetch.");
-			}
-			// Commit transaction
-			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
-			
+
+			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
+
 
 			return success;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Traverses the TaxonTree recursively and stores determined values for every Taxon.
+	 * @param childNode
+	 * @param parentNode
+	 * @param treeIndex
+	 * @param fetchLevel
+	 * @param state
+	 */
+	private void traverseTree(TaxonNode childNode, TaxonNode parentNode, Rank fetchLevel, PesiExportState state) {
+		// Traverse all branches from this childNode until specified fetchLevel is reached.
+		if (childNode.getTaxon() != null) {
+			TaxonNameBase taxonName = childNode.getTaxon().getName();
+			if (taxonName != null) {
+				Rank childTaxonNameRank = taxonName.getRank();
+				if (childTaxonNameRank != null) {
+					if (! childTaxonNameRank.equals(fetchLevel)) {
+
+						saveData(childNode, parentNode, state);
+
+						for (TaxonNode newNode : childNode.getChildNodes()) {
+							traverseTree(newNode, childNode, fetchLevel, state);
+						}
+						
+					} else {
+//						logger.error("Target Rank " + fetchLevel.getLabel() + " reached");
+						return;
+					}
+				} else {
+					logger.error("Rank is NULL. FetchLevel can not be checked: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
+			} else {
+				logger.error("TaxonName is NULL for this node: " + childNode.getUuid());
+			}
+
+		} else {
+			logger.error("Taxon is NULL for TaxonNode: " + childNode.getUuid());
+		}
+	}
+
+	/**
+	 * Stores values in database for every recursive round.
+	 * @param childNode
+	 * @param parentNode
+	 * @param treeIndex
+	 * @param state
+	 * @param currentTaxonFk
+	 */
+	private void saveData(TaxonNode childNode, TaxonNode parentNode, PesiExportState state) {
+		Taxon childNodeTaxon = childNode.getTaxon();
+		if (childNodeTaxon != null) {
+			TaxonNameBase childNodeTaxonName = childNodeTaxon.getName();
+
+			if (childNodeTaxonName != null) {
+
+				// TaxonRelationships
+				Set<Taxon> taxa = childNodeTaxonName.getTaxa(); // accepted taxa
+				if (taxa.size() == 1) {
+					Taxon taxon = CdmBase.deproxy(taxa.iterator().next(), Taxon.class);
+					Set<TaxonRelationship> taxonRelations = taxon.getRelationsFromThisTaxon();
+					for (TaxonRelationship taxonRelationship : taxonRelations) {
+						try {
+							if (neededValuesNotNull(taxonRelationship, state)) {
+								doCount(count++, modCount, pluralString);
+								success &= mapping.invoke(taxonRelationship);
+							}
+						} catch (SQLException e) {
+							logger.error("TaxonRelationship could not be created for this TaxonRelation (" + taxonRelationship.getUuid() + "): " + e.getMessage());
+						}
+					}
+				} else if (taxa.size() > 1) {
+					logger.error("TaxonRelationship could not be created. This TaxonNode has " + taxa.size() + " Taxa: " + childNodeTaxon.getUuid() + " (" + childNodeTaxon.getTitleCache() + ")");
+				}
+				
+				// TaxonNameRelationships
+				Set<NameRelationship> nameRelations = childNodeTaxonName.getRelationsFromThisName();
+				for (NameRelationship nameRelation : nameRelations) {
+					try {
+						if (neededValuesNotNull(nameRelation, state)) {
+							doCount(count++, modCount, pluralString);
+							success &= mapping.invoke(nameRelation);
+						}
+					} catch (SQLException e) {
+						logger.error("NameRelationship could not be created: " + e.getMessage());
+					}
+				}
+
+			}
+			
+			// SynonymRelationships
+			Set<Synonym> synonyms = childNodeTaxon.getSynonyms(); // synonyms of accepted taxon
+			for (Synonym synonym : synonyms) {
+				TaxonNameBase synonymTaxonName = synonym.getName();
+				
+				// Store synonym data in Taxon table
+				invokeSynonyms(state, synonymTaxonName);
+
+				Set<SynonymRelationship> synonymRelations = synonym.getSynonymRelations();
+				for (SynonymRelationship synonymRelationship : synonymRelations) {
+					try {
+						if (neededValuesNotNull(synonymRelationship, state)) {
+							doCount(count++, modCount, pluralString);
+							success &= mapping.invoke(synonymRelationship);
+							
+						}
+					} catch (SQLException e) {
+						logger.error("SynonymRelationship could not be created for this SynonymRelation (" + synonymRelationship.getUuid() + "): " + e.getMessage());
+					}
+				}
+
+				// SynonymNameRelationship
+				Set<NameRelationship> nameRelations = synonymTaxonName.getRelationsFromThisName();
+				for (NameRelationship nameRelation : nameRelations) {
+					try {
+						if (neededValuesNotNull(nameRelation, state)) {
+							doCount(count++, modCount, pluralString);
+							success &= mapping.invoke(nameRelation);
+						}
+					} catch (SQLException e) {
+						logger.error("NameRelationship could not be created for this NameRelation (" + nameRelation.getUuid() + "): " + e.getMessage());
+					}
+				}
+
+			}
+			
+		}
+		
+	}
+
+	/**
+	 * Determines synonym related data.
+	 * @param state
+	 * @param sr
+	 */
+	private static void invokeSynonyms(PesiExportState state, TaxonNameBase synonymTaxonName) {
+		// Store KingdomFk and Rank information in Taxon table
+		NomenclaturalCode nomenclaturalCode = synonymTaxonName.getNomenclaturalCode();
+		Integer kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
+		Integer synonymFk = state.getDbId(synonymTaxonName);
+
+		saveSynonymData(synonymTaxonName, nomenclaturalCode, kingdomFk, synonymFk);
+	}
+
+	/**
+	 * Stores synonym data.
+	 * @param taxonName
+	 * @param nomenclaturalCode
+	 * @param kingdomFk
+	 * @param synonymParentTaxonFk
+	 * @param currentTaxonFk
+	 */
+	private static boolean saveSynonymData(TaxonNameBase taxonName,
+			NomenclaturalCode nomenclaturalCode, Integer kingdomFk,
+			Integer currentSynonymFk) {
+		try {
+			synonymsStmt.setInt(1, kingdomFk);
+			synonymsStmt.setInt(2, getRankFk(taxonName, nomenclaturalCode));
+			synonymsStmt.setString(3, getRankCache(taxonName, nomenclaturalCode));
+			synonymsStmt.setInt(4, currentSynonymFk);
+			synonymsStmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException during invoke for taxonName - " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + "): " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -301,7 +456,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 * @param isFrom A boolean value indicating whether the database key of the parent or child in this relationship is searched. <code>true</code> means the child is searched. <code>false</code> means the parent is searched.
 	 * @return The database key of an object in the given relationship.
 	 */
-	private static Integer getObjectFk(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state, boolean isFrom) {
+	private static Integer getObjectFk(RelationshipBase<?, ?, ?> relationship, PesiExportState state, boolean isFrom) {
 		TaxonBase<?> taxon = null;
 		if (relationship.isInstanceOf(TaxonRelationship.class)) {
 			TaxonRelationship tr = (TaxonRelationship)relationship;
@@ -309,20 +464,6 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		} else if (relationship.isInstanceOf(SynonymRelationship.class)) {
 			SynonymRelationship sr = (SynonymRelationship)relationship;
 			taxon = (isFrom) ? sr.getSynonym() : sr.getAcceptedTaxon();
-
-			// Store ParentTaxonFk, KingdomFk and Rank information in Taxon table
-			Synonym synonym = sr.getSynonym();
-			TaxonNameBase synonymTaxonName = synonym.getName();
-			Taxon acceptedTaxon = sr.getAcceptedTaxon();
-			TaxonNameBase acceptedTaxonName = acceptedTaxon.getName();
-			
-			NomenclaturalCode nomenclaturalCode = synonymTaxonName.getNomenclaturalCode();
-			Integer kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
-			Integer taxonNameFk = state.getDbId(acceptedTaxonName);
-			Integer synonymFk = state.getDbId(synonymTaxonName);
-
-			invokeSynonyms(synonymTaxonName, nomenclaturalCode, kingdomFk, taxonNameFk, synonymFk);
-
 		} else if (relationship.isInstanceOf(NameRelationship.class)) {
 			NameRelationship nr = (NameRelationship)relationship;
 			TaxonNameBase taxonName = (isFrom) ? nr.getFromName() : nr.getToName();
@@ -333,32 +474,6 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		}
 		logger.warn("No taxon found in state for relationship: " + relationship.toString());
 		return null;
-	}
-
-	/**
-	 * Stores synonym values.
-	 * @param taxonName
-	 * @param nomenclaturalCode
-	 * @param kingdomFk
-	 * @param synonymParentTaxonFk
-	 * @param currentTaxonFk
-	 */
-	private static boolean invokeSynonyms(TaxonNameBase taxonName,
-			NomenclaturalCode nomenclaturalCode, Integer kingdomFk,
-			Integer synonymParentTaxonFk, Integer currentSynonymFk) {
-		try {
-			synonymsStmt.setInt(1, synonymParentTaxonFk);
-			synonymsStmt.setInt(2, kingdomFk);
-			synonymsStmt.setInt(3, getRankFk(taxonName, nomenclaturalCode));
-			synonymsStmt.setString(4, getRankCache(taxonName, nomenclaturalCode));
-			synonymsStmt.setInt(5, currentSynonymFk);
-			synonymsStmt.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			logger.error("SQLException during invoke for taxonName - " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + "): " + e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	/**

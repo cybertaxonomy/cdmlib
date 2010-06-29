@@ -124,7 +124,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 					currentTaxon = taxonBase;
 
 					ReferenceBase<?> nomenclaturalReference = (ReferenceBase)taxonBase.getName().getNomenclaturalReference();
-					if (nomenclaturalReference != null && state.getDbId(nomenclaturalReference) != null) {
+					if (nomenclaturalReference != null) {
 						if (neededValuesNotNull(nomenclaturalReference, state)) {
 							doCount(count++, modCount, pluralString);
 							success &= mapping.invoke(nomenclaturalReference);
@@ -162,7 +162,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 									ReferenceBase reference = elementSource.getCitation();
 									
 									// Citations can be empty (null): Is it wrong data or just a normal case?
-									if (reference != null && state.getDbId(reference) != null) {
+									if (reference != null) {
 										if (neededValuesNotNull(reference, state)) {
 											doCount(count++, modCount, pluralString);
 											success &= mapping.invoke(reference);

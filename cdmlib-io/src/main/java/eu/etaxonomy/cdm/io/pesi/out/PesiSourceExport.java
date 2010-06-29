@@ -73,8 +73,10 @@ public class PesiSourceExport extends PesiExportBase {
 		try{
 			logger.error("*** Started Making " + pluralString + " ...");
 
+			PesiExportConfigurator pesiExportConfigurator = state.getConfig();
+			
 			// Get the limit for objects to save within a single transaction.
-			int limit = state.getConfig().getLimitSave();
+			int limit = pesiExportConfigurator.getLimitSave();
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true ;
@@ -82,23 +84,25 @@ public class PesiSourceExport extends PesiExportBase {
 			// PESI: Clear the database table Source.
 			doDelete(state);
 
-			// CDM: Get the number of all available references.
-//			int maxCount = getReferenceService().count(null);
-//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
-
 			// Get specific mappings: (CDM) Reference -> (PESI) Source
 			PesiExportMapping mapping = getMapping();
 
 			// Initialize the db mapper
 			mapping.initialize(state);
 
-			// PESI: Create the Sources
-			// TODO: Store CDM2PESI identifier pairs for later use in other export classes - PesiExportState
+			// Create the Sources
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<ReferenceBase> list = null;
 
+			// Create the Source AUCT: Specific to Fauna Europaea data
+//			txStatus = startTransaction(true);
+//			ReferenceBase<?> auctReference = pesiExportConfigurator.getAuctReference();
+//			success &= mapping.invoke(auctReference);
+//			commitTransaction(txStatus);
+//			logger.error("Created Reference for Misapplied Names (auct.)");
+			
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -247,11 +251,12 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getNomRefCache(ReferenceBase<?> reference) {
-		if (reference != null) {
-			return reference.getTitleCache();
-		} else {
-			return null;
-		}
+		return null;
+//		if (reference != null) {
+//			return reference.getTitleCache();
+//		} else {
+//			return null;
+//		}
 	}
 
 	/**
