@@ -9,15 +9,13 @@
 package eu.etaxonomy.cdm.io.faunaEuropaea;
 
 import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -113,7 +111,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	public ReferenceBase<?> getAuctReference() {
 		//TODO
 		if (auctReference == null){
-			auctReference = ReferenceFactory.newGeneric();
+			auctReference = ReferenceFactory.newPersonalCommunication();
 			
 			auctReference.setTitleCache("auct.", true);
 		}
