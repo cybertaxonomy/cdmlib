@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -105,6 +107,9 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
 		this.gatheringEvent = gatheringEvent;
+		if (gatheringEvent != null){
+			gatheringEvent.addPropertyChangeListener(getNewGatheringEventPropChangeListener());
+		}
 	}	
 	
 
@@ -122,6 +127,19 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	
 	public void setFieldNotes(String fieldNotes) {
 		this.fieldNotes = fieldNotes;
+	}
+	
+	// *********** Listener *****************************/
+	
+	private PropertyChangeListener getNewGatheringEventPropChangeListener() {
+		PropertyChangeListener listener = new PropertyChangeListener(){
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				firePropertyChange(event);
+			}
+			
+		};
+		return listener;
 	}
 	
 	//*********** CLONE **********************************/	
