@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -1251,33 +1252,62 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getIdInSource(TaxonNameBase taxonName) {
 		String result = null;
-		boolean set = false;
+		String defaultResult = null;
 		
 		try {
 			
-		Set taxa = taxonName.getTaxa();
+		Set<Taxon> taxa = taxonName.getTaxa();
+		Set<Synonym> synonyms = taxonName.getSynonyms();
+		IdentifiableEntity singleEntity = null;
 		if (taxa.size() == 1) {
-			IdentifiableEntity singleTaxon = (IdentifiableEntity) taxa.iterator().next();
-			if (singleTaxon != null) {
-				Set<IdentifiableSource> sources = singleTaxon.getSources();
+			singleEntity = (IdentifiableEntity) taxa.iterator().next();
+		} else if (taxa.size() > 1) {
+			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+		}
+		if (synonyms.size() == 1) {
+			singleEntity = (IdentifiableEntity) synonyms.iterator().next();
+		} else if (taxa.size() > 1) {
+			logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+		}
+		
+		if (singleEntity != null) {
+			Set<IdentifiableSource> sources = singleEntity.getSources();
+			if (sources.size() == 1) {
+				IdentifiableSource source = sources.iterator().next();
+				if (source != null) {
+					String sourceIdNameSpace = source.getIdNamespace();
+					if (sourceIdNameSpace != null && sourceIdNameSpace.equals("originalGenusId")) {
+						// This should never be the case for source of synonyms
+						result = "Nominal Taxon from TAX_ID: " + source.getIdInSource();
+					} else {
+						result = "TAX_ID: " + source.getIdInSource();
+					}
+				}
+			} else if (sources.size() > 1) {
+				logger.warn("Taxon has multiple IdentifiableSources: " + singleEntity.getUuid() + " (" + singleEntity.getTitleCache() + ")");
+				int count = 1;
 				for (IdentifiableSource source : sources) {
+					result = "TAX_ID: ";
 					String sourceIdNameSpace = source.getIdNamespace();
 					if (sourceIdNameSpace.equals("originalGenusId")) {
 						result = "Nominal Taxon from TAX_ID: " + source.getIdInSource();
+						break;
+					} else {
+						result += source.getIdInSource();
+						if (count < sources.size()) {
+							result += "; ";
+						}
+						count++;
 					}
-//					else if (sourceIdNameSpace.equals("taxonId")) {
-//						result = "TAX_ID: " + source.getIdInSource();
-//					}
 				}
+
 			}
-		} else if (taxa.size() > 1) {
-			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 		}
 		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return result;
 	}
 	
