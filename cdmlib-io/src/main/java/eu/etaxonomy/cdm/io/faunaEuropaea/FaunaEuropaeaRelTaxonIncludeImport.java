@@ -49,6 +49,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	
 	public static final String OS_NAMESPACE_TAXON = "Taxon";
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRelTaxonIncludeImport.class);
+	private static final String acceptedTaxonUUID = "EC765B43-E909-4D32-8822-34DA186424E8"; // any accepted taxon uuid, taken from original fauna europaea database
 	
 	private ReferenceBase<?> sourceRef;
 	private static String ALL_SYNONYM_FROM_CLAUSE = " FROM Taxon INNER JOIN Taxon AS Parent " +
@@ -104,7 +105,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		TransactionStatus txStatus = startTransaction();
 		
 		// the uuid of an accepted taxon is needed here. any accepted taxon will do.
-		TaxonBase taxon = getTaxonService().find(UUID.fromString("EC765B43-E909-4D32-8822-34DA186424E8"));
+		TaxonBase taxon = getTaxonService().find(UUID.fromString(acceptedTaxonUUID));
 		sourceRef = taxon.getSec();
 
 		TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
@@ -427,7 +428,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	 */
 	private boolean createParentChildRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> childParentMap) {
 		//gets the taxon "Hydroscaphidae"(family)
-		TaxonBase taxon = getTaxonService().find(UUID.fromString("5932B630-5299-4A65-A4BF-BC38C6C108E2"));
+		TaxonBase taxon = getTaxonService().find(UUID.fromString(acceptedTaxonUUID));
 		sourceRef = taxon.getSec();
 		boolean success = true;
 		int limit = state.getConfig().getLimitSave();
@@ -547,7 +548,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 
 		//gets the taxon "Hydroscaphidae" (family)
 		
-		TaxonBase taxon = getTaxonService().find(UUID.fromString("5932B630-5299-4A65-A4BF-BC38C6C108E2"));
+		TaxonBase taxon = getTaxonService().find(UUID.fromString(acceptedTaxonUUID));
 		sourceRef = taxon.getSec();
 		boolean success = true;
 		int limit = state.getConfig().getLimitSave();
