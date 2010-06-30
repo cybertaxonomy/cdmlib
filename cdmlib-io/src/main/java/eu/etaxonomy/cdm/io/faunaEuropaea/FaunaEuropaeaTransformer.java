@@ -42,7 +42,7 @@ public final class FaunaEuropaeaTransformer {
 	public static final int T_STATUS_NOT_ACCEPTED = 0;
 	
 	// Author
-	public static final int A_AUCT = 0; // Was A_AUCT = 1
+	public static final int A_AUCT = 1;
 	public static final String A_AUCTNAME = "auct.";
 	
 	// Parenthesis
