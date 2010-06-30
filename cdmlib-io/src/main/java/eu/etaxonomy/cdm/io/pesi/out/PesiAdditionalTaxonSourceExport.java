@@ -116,27 +116,28 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 				taxonCount += list.size();
 				logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
 				
-				logger.error("Looking for " + pluralString + " to export:");
-				logger.error("PHASE 1: Check for SourceUse 'NomenclaturalReference'");
-				sourceUse_NomenclaturalReference = true;
-				for (TaxonBase taxonBase : list) {
-					// Set the current Taxon
-					currentTaxon = taxonBase;
-
-					ReferenceBase<?> nomenclaturalReference = (ReferenceBase)taxonBase.getName().getNomenclaturalReference();
-					if (nomenclaturalReference != null) {
-						if (neededValuesNotNull(nomenclaturalReference, state)) {
-							doCount(count++, modCount, pluralString);
-							success &= mapping.invoke(nomenclaturalReference);
-						}
-					}
-				}
-				sourceUse_NomenclaturalReference = false;
-				logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
+//				logger.error("Looking for " + pluralString + " to export:");
+//				logger.error("PHASE 1: Check for SourceUse 'NomenclaturalReference'");
+//				sourceUse_NomenclaturalReference = true;
+//				for (TaxonBase taxonBase : list) {
+//					// Set the current Taxon
+//					currentTaxon = taxonBase;
+//
+//					ReferenceBase<?> nomenclaturalReference = (ReferenceBase)taxonBase.getName().getNomenclaturalReference();
+//					if (nomenclaturalReference != null) {
+//						if (neededValuesNotNull(nomenclaturalReference, state)) {
+//							doCount(count++, modCount, pluralString);
+//							success &= mapping.invoke(nomenclaturalReference);
+//						}
+//					}
+//				}
+//				sourceUse_NomenclaturalReference = false;
+//				logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
 				
 				logger.error("PHASE 2: Check for SourceUse 'Additional Source'");
 				sourceUse_AdditionalSource = true;
 				for (TaxonBase taxonBase : list) {
+					
 					// Set the current Taxon
 					currentTaxon = taxonBase;
 
@@ -150,6 +151,8 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 						// Determine the DescriptionElements (Citations) for the current Taxon
 						for (TaxonDescription taxonDescription : taxonDescriptions) {
 							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
+							
+							// According to FaEu Import those DescriptionElementBase elements are of instance TextData
 							for (DescriptionElementBase descriptionElement : descriptionElements) {
 								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
 								
@@ -172,33 +175,34 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 							}
 						}
 					}
+					
 				}
 				sourceUse_AdditionalSource = false;
 				logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
 				
 				logger.error("PHASE 3: Check for SourceUse 'Source of Synonymy'");
 				ReferenceBase reference = null;
-				sourceUse_SourceOfSynonymy = true;
-				for (TaxonBase taxonBase : list) {
-					if (taxonBase.isInstanceOf(Synonym.class)) {
-						Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-						Set<SynonymRelationship> synonymRelations = synonym.getSynonymRelations();
-						for (SynonymRelationship relation : synonymRelations) {
-
-							currentTaxon = relation.getAcceptedTaxon();
-							reference = relation.getCitation();
-
-							// Citations can be empty (null): Is it wrong data or just a normal case?
-							if (reference != null && state.getDbId(reference) != null) {
-								if (neededValuesNotNull(reference, state)) {
-									doCount(count++, modCount, pluralString);
-									success &= mapping.invoke(reference);
-								}
-							}
-						}
-					}
-				}
-				sourceUse_SourceOfSynonymy = false;
+//				sourceUse_SourceOfSynonymy = true;
+//				for (TaxonBase taxonBase : list) {
+//					if (taxonBase.isInstanceOf(Synonym.class)) {
+//						Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+//						Set<SynonymRelationship> synonymRelations = synonym.getSynonymRelations();
+//						for (SynonymRelationship relation : synonymRelations) {
+//
+//							currentTaxon = relation.getAcceptedTaxon();
+//							reference = relation.getCitation();
+//
+//							// Citations can be empty (null): Is it wrong data or just a normal case?
+//							if (reference != null && state.getDbId(reference) != null) {
+//								if (neededValuesNotNull(reference, state)) {
+//									doCount(count++, modCount, pluralString);
+//									success &= mapping.invoke(reference);
+//								}
+//							}
+//						}
+//					}
+//				}
+//				sourceUse_SourceOfSynonymy = false;
 				
 				// Commit transaction
 				commitTransaction(txStatus);
