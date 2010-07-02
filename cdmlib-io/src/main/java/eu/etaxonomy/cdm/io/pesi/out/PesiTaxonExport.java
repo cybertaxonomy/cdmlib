@@ -619,7 +619,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			if (object instanceof String) {
 				// Name part
 //				logger.error("Name part found: " + object);
-				if (! openTag) {
+				if (! openTag && ! teamPart) {
 					if (start) {
 						result = "<i>";
 						start = false;
@@ -642,7 +642,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				} else {
 					result += " ";
 				}
-				result += rank.getLabel(); // TODO: change to getAbbreviation()
+				result += rank.getAbbreviation();
 				rankPart = true;
 			} else if (object instanceof Team) {
 //				logger.error("Team: " + object);
@@ -681,7 +681,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (openTag) {
 			result += "</i>";
 		}
-//		logger.error("WebShowName: " + result);
+		logger.error("WebShowName: " + result);
 
 		return result;
 	}
