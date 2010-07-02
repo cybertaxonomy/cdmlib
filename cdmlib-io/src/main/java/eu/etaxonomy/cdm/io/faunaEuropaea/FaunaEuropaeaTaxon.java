@@ -30,7 +30,7 @@ public class FaunaEuropaeaTaxon {
 	private int greatGrandParentRankId;
 	private int greatGreatGrandParentId;
 	private int originalGenusId;
-	private int year;
+	private Integer year;
 	private String localName;
 	private String parentName;
 	private String grandParentName;
@@ -174,14 +174,17 @@ public class FaunaEuropaeaTaxon {
 	/**
 	 * @return the year
 	 */
-	public int getYear() {
+	public Integer getYear() {
 		return year;
 	}
 
 	/**
 	 * @param year the year to set
 	 */
-	public void setYear(int year) {
+	public void setYear(Integer year) {
+		if (year != null && year.intValue() == 0) {
+			year = null;
+		}
 		this.year = year;
 	}
 

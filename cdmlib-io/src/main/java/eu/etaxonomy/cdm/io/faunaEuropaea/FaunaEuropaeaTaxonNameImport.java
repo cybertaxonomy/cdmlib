@@ -211,7 +211,13 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				int originalGenusId = rs.getInt("TAX_TAX_IDGENUS");
 				int autId = rs.getInt("TAX_AUT_ID");
 				int status = rs.getInt("TAX_VALID");
-				int year = rs.getInt("TAX_YEAR");
+				
+				// Avoid publication year 0 for NULL values in database.
+				Integer year = rs.getInt("TAX_YEAR");
+				if (year != null && year.intValue() == 0) {
+					year = null;
+				}
+				
 				//int familyId = rs.getInt("TAX_TAX_IDFAMILY");
 
 				Rank rank = null;
@@ -496,8 +502,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	private String buildNameTitleCache(String nameString, boolean useOriginalGenus, FaunaEuropaeaTaxon fauEuTaxon) {
 		
 		StringBuilder titleCacheStringBuilder = new StringBuilder(nameString);
-		int year = fauEuTaxon.getYear();
-		if (year != 0) { // TODO: Ignore authors like xp, xf, etc?
+		Integer year = fauEuTaxon.getYear();
+		if (year != null) { // TODO: Ignore authors like xp, xf, etc?
 			titleCacheStringBuilder.append(" ");
 			if ((fauEuTaxon.isParenthesis() == true) && !useOriginalGenus) {
 				titleCacheStringBuilder.append("(");
