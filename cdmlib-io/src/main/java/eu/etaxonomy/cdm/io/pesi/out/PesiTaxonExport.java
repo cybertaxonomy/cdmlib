@@ -681,7 +681,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (openTag) {
 			result += "</i>";
 		}
-		logger.error("WebShowName: " + result);
+//		logger.error("WebShowName: " + result);
 
 		return result;
 	}
