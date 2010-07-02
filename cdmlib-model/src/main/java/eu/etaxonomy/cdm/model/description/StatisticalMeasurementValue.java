@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -65,6 +66,7 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch = FetchType.LAZY)
+	@NotNull
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "StatisticalMeasureType")
