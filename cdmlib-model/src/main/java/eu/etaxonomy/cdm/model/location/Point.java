@@ -365,7 +365,10 @@ public class Point implements Cloneable, Serializable {
 	        return value.doubleValue( );
 		}
 
-		
+		@Override
+		public String toString(){
+			return toString(false);
+		}
 		public String toString(boolean includeEmptySeconds){
 			String result;
 			result = String.valueOf(CdmUtils.Nz(degree)) + "°";
@@ -387,13 +390,13 @@ public class Point implements Cloneable, Serializable {
 	@Transient
 	public Sexagesimal getLongitudeSexagesimal (){
 		boolean isLatitude = false;
-		return Sexagesimal.valueOf(latitude, isLatitude);
+		return Sexagesimal.valueOf(longitude, isLatitude);
 	}
 
 	@Transient
 	public Sexagesimal getLatitudeSexagesimal (){
 		boolean isLatitude = true;
-		return Sexagesimal.valueOf(longitude, isLatitude);
+		return Sexagesimal.valueOf(latitude, isLatitude);
 	}
 	
 	@Transient
