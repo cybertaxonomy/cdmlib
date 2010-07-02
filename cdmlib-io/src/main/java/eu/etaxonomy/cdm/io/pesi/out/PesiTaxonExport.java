@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -602,156 +604,85 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getWebShowName(TaxonNameBase taxonName) {
-		String result = null;
-		try {
-			if (taxonName != null) {
-				if (taxonName != null && taxonName.isInstanceOf(NonViralName.class)) {
-					NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
-					String singleWhitespace = "\\s";
-					String multipleWhitespaces = "\\s*";
-					String whitespaceOrNothing = "\\s?";
-					String singleBlank = " ";
-					String anyNumberOfCharacters = ".*";
-					String backSlashRegEx = "\\";
-	//				String periodRegEx = "\\.";
-	//				String asterixRegEx = "\\*";
-					String questionMarkRegEx = "\\?";
-	//				String plusRegEx = "\\+";
-	//				String squareBracketRegEx = "\\[";
-	//				String curlyBracketRegEx = "\\{";
-	//				String pipeRegEx = "\\|";
-	//				String accentRegEx = "\\^";
-	//				String dollarSignRegEx = "\\$";
-					String openingParenthesisRegEx = "\\(";
-					String closingParenthesisRegEx = "\\)";
-					String openParenthesis = "(";
-					String closeParenthesis = ")";
-					String italicBeginTag = "<i>";
-					String italicEndTag = "</i>";
-					String endAnchor = "$";
-					
-					String questionMarkReplacement = backSlashRegEx + questionMarkRegEx;
-	//				String backSlashReplacement = backSlashRegEx + backSlashRegEx;
-	//				String periodReplacement = backSlashRegEx + periodRegEx;
-	//				String asterixReplacement = backSlashRegEx + asterixRegEx;
-	//				String plusReplacement = backSlashRegEx + plusRegEx;
-	//				String squareBracketReplacement = backSlashRegEx + squareBracketRegEx;
-	//				String curlyBracketReplacement = backSlashRegEx + curlyBracketRegEx;
-	//				String pipeReplacement = backSlashRegEx + pipeRegEx;
-	//				String accentReplacement = backSlashRegEx + accentRegEx;
-	//				String dollarSignReplacement = backSlashRegEx + dollarSignRegEx;
-	
-					if (nonViralName != null) {
-						if (nonViralName.getTitleCache() != null) {
-							try {
-								String fullName = nonViralName.getTitleCache();
-								
-								// This deals with question marks that are reserved in regular expressions
-								fullName = fullName.replaceAll(questionMarkRegEx, questionMarkReplacement);
-
-								String genusOrUninomial = nonViralName.getGenusOrUninomial();
-								String infraGenericEpithet = nonViralName.getInfraGenericEpithet();
-								if (infraGenericEpithet != null) {
-									infraGenericEpithet = openParenthesis + infraGenericEpithet + closeParenthesis;
-								}
-								String specificEpithet = nonViralName.getSpecificEpithet();
-								String infraSpecificEpithet = nonViralName.getInfraSpecificEpithet();
-								
-								StringBuffer replaceFullName = new StringBuffer(fullName);
-								List<NamePosition> genusOrUninomialPosition = getPosition(genusOrUninomial, fullName);
-								List<NamePosition> infraGenericEpithetPosition = getPosition(infraGenericEpithet, fullName);
-								List<NamePosition> specificEpithetPosition = getPosition(specificEpithet, fullName);
-								List<NamePosition> authorshipPosition = getPosition(specificEpithet, fullName);
-								if (nameExists(genusOrUninomialPosition) || nameExists(infraGenericEpithetPosition) || nameExists(specificEpithetPosition)) {
-									replaceFullName.insert(0, italicBeginTag);
-									
-									if (nameExists(specificEpithetPosition)) {
-										boolean insertSpecificEpithetEndTag = true;
-
-										if ((specificEpithet.equals(infraSpecificEpithet) && countPattern(infraSpecificEpithet, fullName) == 2) |
-												(! specificEpithet.equals(infraSpecificEpithet) && countPattern(infraSpecificEpithet, fullName) == 1)) {
-											// infraSpecificEpithet exists
-
-											// Determine position of infraSpecificEpithet
-											int infraSpecificEpithetLocation = replaceFullName.lastIndexOf(infraSpecificEpithet);
-											int infraSpecificEpithetBeginLocation = infraSpecificEpithetLocation;
-											int infraSpecificEpithetEndLocation = infraSpecificEpithetLocation + infraSpecificEpithet.length();
-											
-											// Check whether rank information exists between specificEpithet and infraSpecificEpithet
-											String rankExistsRegEx = specificEpithet + singleWhitespace + anyNumberOfCharacters + singleWhitespace + infraSpecificEpithet;
-											List<NamePosition> rankPosition = getPosition(rankExistsRegEx, fullName);
-											if (rankPosition != null && nameExists(rankPosition)) {
-												// Rank information exists
-
-												// Insert italicBeginTag
-												replaceFullName.insert(infraSpecificEpithetBeginLocation, italicBeginTag);
-
-												// Check position of infraSpecificEpithet
-												List<NamePosition> infraSpecificEpithetPosition = getPosition(infraSpecificEpithet, fullName);
-												if (infraSpecificEpithetPosition != null) {
-													if (infraSpecificEpithetPosition.contains(NamePosition.end)) {
-														// Append italicEndTag
-														replaceFullName.append(italicEndTag);
-													} else {
-														// Insert italicEndTag
-														replaceFullName.insert(infraSpecificEpithetEndLocation + italicBeginTag.length(), italicEndTag);
-													}
-												}
-											} else if (rankPosition != null && ! nameExists(rankPosition)) {
-												// Rank information does not exist
-												insertSpecificEpithetEndTag = false;
-												
-												// Insert italicEndTag
-												replaceFullName.insert(infraSpecificEpithetEndLocation, italicEndTag);
-											}
-										}
-
-										// Insert an italicEndTag for the specificEpithet
-										if (insertSpecificEpithetEndTag) {
-											int specificEpithetLocation = replaceFullName.indexOf(specificEpithet) + specificEpithet.length();
-											if (specificEpithetPosition.contains(NamePosition.end)) {
-												replaceFullName.append(italicEndTag);
-											} else {
-												replaceFullName.insert(specificEpithetLocation, italicEndTag);
-											}
-										}
-									} else if (nameExists(infraGenericEpithetPosition)) {
-										int infraGenericEpithetLocation = replaceFullName.indexOf(infraGenericEpithet) + 
-												openParenthesis.length() + infraGenericEpithet.length() + closeParenthesis.length();
-										if (infraGenericEpithetPosition.contains(NamePosition.end)) {
-											replaceFullName.append(italicEndTag);
-										} else {
-											replaceFullName.insert(infraGenericEpithetLocation, italicEndTag);
-										}
-									} else if (nameExists(genusOrUninomialPosition)) {
-										replaceFullName.insert(genusOrUninomial.length() + italicBeginTag.length(), italicEndTag);
-									}
-								}
-								
-								result = replaceFullName.toString();
-
-							} catch (Exception e) {
-								// This needs a workaround since very likely there is a character in the fullName that is reserved in regular expressions
-								logger.error("WebShowName could not be determined for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + "): " + e.getMessage());
-//								e.printStackTrace();
-								result = nonViralName.getTitleCache();
-							}
-						} else {
-							logger.error("WebShowName could not be determined: TitleCache is NULL for NonViralName " + nonViralName.getUuid() + " (" + nonViralName.getTitleCache() + ")");
-						}
-					} else {
-						logger.error("WebShowName could not be determined: NonViralName is NULL for TaxonName" + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-					}
-					
-				}
-			} else {
-				logger.warn("WebShowName could not be determined: TaxonName is NULL");
-			}
+		String result = "";
 		
-//		logger.error("final result: " + result);
-		} catch (Exception e) {
-			e.printStackTrace();
+		List taggedName = taxonName.getTaggedName();
+//		logger.error("----------------------------------------");
+		boolean stringPart = false;
+		boolean rankPart = false;
+		boolean teamPart = false;
+		boolean datePart = false;
+		boolean referencePart = false;
+		boolean openTag = false;
+		boolean start = true;
+		for (Object object : taggedName) {
+			if (object instanceof String) {
+				// Name part
+//				logger.error("Name part found: " + object);
+				if (! openTag) {
+					if (start) {
+						result = "<i>";
+						start = false;
+					} else {
+						result += " <i>";
+					}
+					openTag = true;
+				} else {
+					result += " ";
+				}
+				result += object;
+				stringPart = true;
+			} else if (object instanceof Rank) {
+				// Rank
+				Rank rank = CdmBase.deproxy(object, Rank.class);
+//				logger.error("Rank found: " + rank.getLabel());
+				if (openTag) {
+					result += "</i> ";
+					openTag = false;
+				} else {
+					result += " ";
+				}
+				result += rank.getLabel(); // TODO: change to getAbbreviation()
+				rankPart = true;
+			} else if (object instanceof Team) {
+//				logger.error("Team: " + object);
+				if (openTag) {
+					result += "</i> ";
+					openTag = false;
+				} else {
+					result += " ";
+				}
+				result += object;
+				teamPart = true;
+			} else if (object instanceof Date) {
+//				logger.error("Date found: " + object);
+				if (openTag) {
+					result += "</i> ";
+					openTag = false;
+				} else {
+					result += " ";
+				}
+				result += object;
+				datePart = true;
+			} else if (object instanceof ReferenceBase) {
+//				logger.error("Reference found: " + object);
+				if (openTag) {
+					result += "</i> ";
+					openTag = false;
+				} else {
+					result += " ";
+				}
+				result += object;
+				referencePart = true;
+			} else {
+				logger.error("Instance unknown: " + object.getClass());
+			}
 		}
+		if (openTag) {
+			result += "</i>";
+		}
+//		logger.error("WebShowName: " + result);
+
 		return result;
 	}
 
