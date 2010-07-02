@@ -21,7 +21,6 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.location.Point.Direction;
 import eu.etaxonomy.cdm.model.location.Point.Sexagesimal;
-import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionResults;
 
 /**
  * @author a.mueller
@@ -122,7 +121,7 @@ public class PointTest {
 	
 	@Test
 	public void testGetLongitudeSexagesimal(){
-		Assert.assertEquals("23°7'25\"E", point1.getLongitudeSexagesimal().toString());
+		Assert.assertEquals("23°7'25\"E", point1.getLongitudeSexagesimal().toString(true));
 		
 		point2.setLongitudeSexagesimal(Sexagesimal.NewInstance(5, 22, null, Direction.WEST));
 		Assert.assertTrue(point2.getLongitudeSexagesimal().minutes == 22);
