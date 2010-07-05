@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -105,5 +107,8 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String query, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths);
 	
 	public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache();
+	
 	public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache();
+	
+	public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 }

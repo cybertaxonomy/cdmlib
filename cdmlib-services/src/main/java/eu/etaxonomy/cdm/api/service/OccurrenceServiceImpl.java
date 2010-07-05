@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -138,5 +141,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	@Override
 	public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache() {
 		return dao.getFieldObservationUuidAndTitleCache();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getDerivedUnitFacade(eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase)
+	 */
+	@Override
+	public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
+		derivedUnit = (DerivedUnitBase<?>)dao.load(derivedUnit.getUuid(), null);
+		DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
+		DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
+		return derivedUnitFacade;
 	}
 }

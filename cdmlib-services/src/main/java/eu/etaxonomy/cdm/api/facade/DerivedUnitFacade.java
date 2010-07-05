@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.mail.MethodNotSupportedException;
+import javax.mail.MethodNotSupportedException; //FIMXE use other execption class
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlTransient;
 
