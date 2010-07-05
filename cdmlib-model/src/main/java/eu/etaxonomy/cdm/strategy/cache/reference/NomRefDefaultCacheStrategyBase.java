@@ -110,9 +110,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 		if (! "".equals(microReference)){
 			microReference = getBeforeMicroReference() + microReference;
 		}
-		if (result != null){
-			result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
-		}
+		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
 		return result;
 	}
 }

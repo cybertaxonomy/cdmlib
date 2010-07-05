@@ -66,7 +66,7 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch = FetchType.LAZY)
-	@NotNull
+	@NotNull // avoids creating a UNIQUE key for this field
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "StatisticalMeasureType")

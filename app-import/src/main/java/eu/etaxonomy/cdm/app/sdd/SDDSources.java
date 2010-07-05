@@ -74,9 +74,16 @@ public class SDDSources {
 	}
 	
 	public static String FreshwaterAquaticInsects_local(){
-		//		SDD export from an Xper� application
+		//		SDD export from an Xper2 application
 		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Freshwater aquatic insects/test v2.sdd.xml";
 		return sourceUrl;
 	}
+	
+	public static String Crepis_test_local(){
+		URL url = new SDDSources().getClass().getResource("/sdd/Crepis-test.sdd");
+		String sourceUrl = url.toString();
+		return sourceUrl;
+		
+}
 	
 }

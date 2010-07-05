@@ -40,6 +40,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/references/EndNoteImportActivator.
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/AnthuriumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadUpdateActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CichorieaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ErythroneuraActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ErythroneuraUpdateActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/FreshwaterAquaticInsectsActivator.java -text
@@ -107,6 +108,7 @@ app-import/src/main/resources/images/protologue_links_palmae.xls -text
 app-import/src/main/resources/log4j.properties -text
 app-import/src/main/resources/sdd/Cicad.sdd11.xml -text
 app-import/src/main/resources/sdd/Cicad2.sdd11.xml -text
+app-import/src/main/resources/sdd/Crepis-test.sdd -text
 app-import/src/main/resources/sdd/Erythroneura.sdd11.xml -text
 app-import/src/main/resources/sdd/LIAS_Main.sdd11.xml -text
 app-import/src/main/resources/sdd/SDD-Test-Simple.xml -text

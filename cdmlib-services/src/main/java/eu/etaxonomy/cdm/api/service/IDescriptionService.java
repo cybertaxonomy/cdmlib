@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -241,6 +242,26 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     
     public List<DescriptionElementBase> getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-	public DistributionTree getOrderedDistributionsB(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels, List<String> propertyPaths);
+	public DistributionTree getOrderedDistributionsB(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels);
 
+	/**
+	  * Generate a string representation of the structured <code>description</code> supplied in natural language
+	  * The <code>featureTree</code> will be used to structure the NaturalLanguageDescription.
+	  * This method does not require a initialization strategy so there is no <code>propertyPaths</code> parameter. 
+	  * @param featureTree
+	  * @param description
+	  * @param preferredLanguages
+	  * @param separator 
+	  * @return
+	  */
+	public String generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, List<Language> preferredLanguages, String separator);
+
+	/**
+	 * Preliminary method to test whether a description contains structured data. 
+	 * @deprecated The means of determining this fact may change soon, so this method is annotated a beeing deprecated.
+	 * @param description
+	 * @return
+	 */
+	@Deprecated
+	public boolean hasStructuredData(DescriptionBase<?> description);
 }

@@ -18,11 +18,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -119,25 +121,6 @@ public class BookSectionDefaultCacheStrategyTest {
 		bookSection1.setAuthorTeam(sectionTeam1);
 		book1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("in Book Author, My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
-	}
-	
-	@Test
-	public void testRealCichorieaeExample(){
-		IBookSection bookSection = ReferenceFactory.newBookSection();
-		bookSection.setTitle("129. Crepis L.");
-		Person person = Person.NewTitledInstance("Lamond J. M.");
-		bookSection.setAuthorTeam(person);
-		bookSection.setPages("814-841");
-		
-		IBook book = ReferenceFactory.newBook();
-		book.setTitle("Flora of Turkey and the East Aegean Islands");
-		book.setPlacePublished("Edinburgh");
-		book.setDatePublished(TimePeriod.NewInstance(1975));
-		book.setPublisher("University of Edinburgh");
-		book.setVolume("5");
-		book.setAuthorTeam(Team.NewTitledInstance("Davis, P. H.", null));
-		bookSection.setInBook(book);
-		Assert.assertEquals("Lamond J. M. - 129. Crepis L. in Davis, P. H., Flora of Turkey and the East Aegean Islands 5. 1975", bookSection.getTitleCache());
 	}
 	
 }

@@ -11,7 +11,7 @@ public class ReferenceBaseBeanProcessor extends AbstractCdmBeanProcessor<Referen
 
 	@Override
 	public List<String> getIgnorePropNames() {
-		return Arrays.asList(new String[]{ "authorTeam" });
+		return Arrays.asList(new String[]{ "authorTeam" }); //FIXME ?????
 	}
 
 	@Override

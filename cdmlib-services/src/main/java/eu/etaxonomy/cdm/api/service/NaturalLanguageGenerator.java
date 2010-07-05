@@ -5,14 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.xerces.dom.ElementImpl;
 import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -26,9 +23,6 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.common.Language;
 
 @Component
 public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
@@ -56,25 +50,24 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		else {
 			Feature fref = parent.getFeature();
 			if (fref!=null) { // needs a better algorithm
-				int k=0;
-					Set<DescriptionElementBase> elements = description.getElements();
-					for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){
-						DescriptionElementBase descriptionElement = deb.next();
-						TextData textData = TextData.NewInstance();
-						if (descriptionElement.getFeature().equals(fref)){
-							if (descriptionElement instanceof CategoricalData) {
-								CategoricalData categoricalData = (CategoricalData) descriptionElement;
-								//textData = buildCategoricalDescr(categoricalData, language);
-								textData = categoricalDescriptionBuilder.build(categoricalData);
-								listTextData.add(textData);
-							}
-							if (descriptionElement instanceof QuantitativeData) {
-								QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
-								textData = quantitativeDescriptionBuilder.build(quantitativeData);
-								listTextData.add(textData);
-							}
+				Set<DescriptionElementBase> elements = description.getElements();
+				for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){
+					DescriptionElementBase descriptionElement = deb.next();
+					TextData textData = TextData.NewInstance();
+					if (descriptionElement.getFeature().equals(fref)){
+						if (descriptionElement instanceof CategoricalData) {
+							CategoricalData categoricalData = (CategoricalData) descriptionElement;
+							//textData = buildCategoricalDescr(categoricalData, language);
+							textData = categoricalDescriptionBuilder.build(categoricalData);
+							listTextData.add(textData);
+						}
+						if (descriptionElement instanceof QuantitativeData) {
+							QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
+							textData = quantitativeDescriptionBuilder.build(quantitativeData);
+							listTextData.add(textData);
 						}
 					}
+				}
 				leaf = true;
 			}
 		}

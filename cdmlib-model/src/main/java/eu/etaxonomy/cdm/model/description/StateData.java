@@ -80,7 +80,7 @@ public class StateData extends VersionableEntity {
 	@XmlElement(name = "Modifier")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	@NotNull
+	@NotNull // avoids creating a UNIQUE key for this field
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "ModifyingText")

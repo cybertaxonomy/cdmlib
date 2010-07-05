@@ -16,7 +16,9 @@ public abstract class AbstractQuantitativeDescriptionBuilder extends Description
 		   for (StatisticalMeasurementValue smv : data.getStatisticalValues()){
 		     measures.put(smv.getType(),smv.getValue());
 		   }
-		   return doBuild(measures,data.getUnit());
+		   TextData textdata = doBuild(measures,data.getUnit());
+		   textdata.setFeature(data.getFeature());
+		   return textdata;
 		 }
 
 	protected abstract TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit unit);

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,22 +27,24 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -68,6 +71,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	protected IFeatureDao featureDao;
 	protected ITermVocabularyDao vocabularyDao;
 	protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
+	private INaturalLanguageGenerator naturalLanguageGenerator;
 	
 	@Autowired
 	protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
@@ -97,6 +101,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	@Autowired
 	protected void setDescriptionElementDao(IDescriptionElementDao descriptionElementDao) {
 		this.descriptionElementDao = descriptionElementDao;
+	}
+	
+	@Autowired
+	protected void setNaturalLanguageGenerator(INaturalLanguageGenerator naturalLanguageGenerator) {
+		this.naturalLanguageGenerator = naturalLanguageGenerator;
 	}
 	
 	/**
@@ -206,14 +215,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	
 	public DistributionTree getOrderedDistributionsB(
 			Set<TaxonDescription> taxonDescriptions,
-			Set<NamedAreaLevel> omitLevels,
-			List<String> propertyPaths){
+			Set<NamedAreaLevel> omitLevels){
 		
 		DistributionTree tree = new DistributionTree();
 		List<Distribution> distList = new ArrayList<Distribution>();
 		
 		for (TaxonDescription taxonDescription : taxonDescriptions) {
-			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid(), propertyPaths);
+			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid());
 			Set<DescriptionElementBase> elements = taxonDescription.getElements();
 			for (DescriptionElementBase element : elements) {
 				if(element.isInstanceOf(Distribution.class)){
@@ -333,5 +341,80 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 			Class<? extends DescriptionElementBase> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
 		 return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#generateNaturalLanguageDescription(eu.etaxonomy.cdm.model.description.FeatureTree, eu.etaxonomy.cdm.model.description.TaxonDescription, eu.etaxonomy.cdm.model.common.Language, java.util.List)
+	 */
+	@Override
+	public String generateNaturalLanguageDescription(FeatureTree featureTree,
+			TaxonDescription description, List<Language> preferredLanguages, String separator) {
+		
+		Language lang = preferredLanguages.size() > 0 ? preferredLanguages.get(0) : Language.DEFAULT();
+		
+		description = (TaxonDescription)load(description.getUuid());
+		featureTree = featureTreeDao.load(featureTree.getUuid());
+		
+		StringBuilder naturalLanguageDescription = new StringBuilder();
+		
+		if(description.hasStructuredData()){
+			
+			List<TextData> textDataList = naturalLanguageGenerator.generateNaturalLanguageDescription(
+					featureTree, 
+					((TaxonDescription)description),
+					lang);
+			
+			String lastCategory = null;
+			String categorySeparator = "; ";
+			
+			String sep = separator;
+
+			for (TextData textData : textDataList.toArray(new TextData[textDataList.size()])){
+				if(textData.getMultilanguageText().size() > 0){
+					
+					if (!textData.getFeature().equals(Feature.UNKNOWN())) {
+						String featureLabel = textData.getFeature().getLabel(lang);
+						
+						/*
+						 *  WARNING
+						 *  The code lines below are desinged to handle
+						 *  a special case where as the fealure label contains 
+						 *  hirarchical information on the features. This code 
+						 *  exist only as a base for discussion, and is not 
+						 *  intendet to be used in production.
+						 */
+						featureLabel = StringUtils.remove(featureLabel, '>');
+						
+						String[] labelTokens = StringUtils.split(featureLabel, '<');
+						if(labelTokens[0].equals(lastCategory) && labelTokens.length > 1){
+							if(naturalLanguageDescription.length() > 0){
+								naturalLanguageDescription.append(separator);
+}
+							naturalLanguageDescription.append(labelTokens[1]);
+						} else {
+							if(naturalLanguageDescription.length() > 0){
+								naturalLanguageDescription.append(categorySeparator);
+							}
+							naturalLanguageDescription.append(StringUtils.join(labelTokens));
+						}
+						lastCategory = labelTokens[0];
+						// end of demo code
+					}
+					String text = textData.getMultilanguageText().values().iterator().next().getText();
+					naturalLanguageDescription.append(text);		
+					
+				}
+			}
+		
+		}
+		return naturalLanguageDescription.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#hasStructuredData(eu.etaxonomy.cdm.model.description.DescriptionBase)
+	 */
+	@Override
+	public boolean hasStructuredData(DescriptionBase<?> description) {
+		return load(description.getUuid()).hasStructuredData();
 	}
 }

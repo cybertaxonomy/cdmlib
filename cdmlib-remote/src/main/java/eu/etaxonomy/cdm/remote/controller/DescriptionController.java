@@ -12,43 +12,38 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
-import eu.etaxonomy.cdm.api.service.DescriptionServiceImpl;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
-import eu.etaxonomy.cdm.api.service.NamedAreaTree;
+import eu.etaxonomy.cdm.api.service.INaturalLanguageGenerator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
-
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * TODO write controller documentation
@@ -63,6 +58,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 {
 	@Autowired
 	private IFeatureTreeService featureTreeService;
+	
 	
 	public DescriptionController(){
 		super();
@@ -142,5 +138,64 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		return areaTree;
 	}
 	*/
+
+	@RequestMapping(value = "/{uuid}/naturallanguagedescription/{featuretree_uuid}", method = RequestMethod.GET)
+	public ModelAndView doGenerateNaturalLanguageDescription(
+			@PathVariable("uuid") UUID uuid,
+			@PathVariable("featuretree_uuid") UUID featureTreeUuid,
+			HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		logger.info("doGenerateNaturalLanguageDescription() - " + request.getServletPath());
+
+		DescriptionBase description = service.load(uuid);
+		
+		ModelAndView mv = new ModelAndView();
+		
+		List<Language> languages = LocaleContext.getLanguages();
+		
+		if(!(description instanceof TaxonDescription)){
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+			// will terminate thread
+		}
+		
+		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
+		if(featureTree == null){
+			HttpStatusMessage.UUID_NOT_FOUND.send(response);
+			// will terminate thread
+		}
+		
+		String naturalLanguageDescription = service.generateNaturalLanguageDescription(
+				featureTree, 
+				(TaxonDescription)description, 
+				languages,
+				", ");
+		
+		mv.addObject(naturalLanguageDescription);
+		return mv;
+	}
+	
+
+	@RequestMapping(value = "/{uuid}/hasstructureddata", method = RequestMethod.GET)
+	public ModelAndView doHasStructuredData(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		logger.info("doHasStructuredData() - " + request.getServletPath());
+
+		ModelAndView mv = new ModelAndView();
+		
+		DescriptionBase description = service.load(uuid);
+		
+		if(!(description instanceof TaxonDescription)){
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+			// will terminate thread
+		}
+		
+		boolean hasStructuredData = service.hasStructuredData(description);
+		
+		mv.addObject(hasStructuredData);
+		
+		return mv;
+	}
 
 }

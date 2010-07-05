@@ -1005,6 +1005,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 
 	
+	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		rectifyCacheStrategy();
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
@@ -1035,6 +1036,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		}
 	}
 
+	@Transient // prevent from being serialized by webservice
 	public IJournal getInJournal() {
 		IJournal journal = this.inReference;
 		return journal;
@@ -1045,16 +1047,17 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		
 	}
 
+	@Transient // prevent from being serialized by webservice
 	public IPrintSeries getInSeries() {
 		IPrintSeries printSeries = this.inReference;
 		return printSeries;
 	}
-
+	
 	public void setInSeries(IPrintSeries inSeries) {
 		this.inReference = (ReferenceBase<IReferenceBaseCacheStrategy<ReferenceBase>>) inSeries;
-		
 	}
 
+	@Transient // prevent from being serialized by webservice
 	public IBook getInBook() {
 		IBook book = this.inReference;
 		return book;
@@ -1062,9 +1065,9 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 
 	public void setInBook(IBook book) {
 		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) book;
-		
 	}
 	
+	@Transient // prevent from being serialized by webservice
 	public IProceedings getInProceedings() {
 		IProceedings proceedings = this.inReference;
 		return proceedings;
