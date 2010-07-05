@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>> implements IService<T>, ApplicationContextAware {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	//flush after saving this number of objects
@@ -151,6 +152,11 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	@Transactional(readOnly = false)
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);
+	}
+	
+	@Transactional(readOnly = false)
+	public Map<UUID, T> saveOrUpdateAll(Collection<T> transientInstances) {
+		return dao.saveOrUpdateAll(transientInstances);
 	}
 
 	/* (non-Javadoc)
