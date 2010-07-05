@@ -151,15 +151,39 @@ public class Distribution extends DescriptionElementBase {
 		this.status = status;
 	}
 	
+	/**
+	 * Special equal method for building an sorted distribution tree
+	 * @param dist
+	 * @return
+	 */
 	public boolean equalsForTree(Distribution dist){
 		boolean result = false;
+		//same area level and area label
 		if (this.getArea().getLabel().compareTo(dist.getArea().getLabel()) == 0 &&
 				this.getArea().getLevel().getLabel().compareTo(dist.getArea().getLevel().getLabel()) == 0){
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Special function for building the sorted distribution tree. The function returns true 
+	 * if the sources of the two different objects are different
+	 * @param dist
+	 * @return
+	 */
+	public boolean isDifferentSources(Distribution dist){
+		boolean result = false;
+		if(this.getSources().equals(dist.getSources())){
 			result = true;
 		}
 		return result;
 	}
 	
+	/**
+	 * Implementation of the toString() function
+	 */
 	public String toString(){
 		String result = "null";
 		if (this.area != null){			
