@@ -176,12 +176,34 @@ public class PesiTaxonExport extends PesiExportBase {
 					String infraSpecificEpithet = getInfraSpecificEpithet(taxonName);
 					String infraGenericEpithet = getInfraGenericEpithet(taxonName);
 					Integer rank = getRankFk(taxonName, nomenclaturalCode);
-
+					
 					if (rank == null) {
 						logger.error("Rank was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 					} else {
+						
+						// Check whether infraGenericEpithet is set correctly
+						// 1. Childs of an accepted taxon of rank subgenus that are accepted taxon of rank species have to have an infraGenericEpithet
+						// 2. Grandchilds of an accepted taxon of rank subgenus that are accepted taxon of rank subspecies have to have an infraGenericEpithet
+						
+						int ancestorLevel = 0;
+						if (taxonName.getRank().equals(Rank.SUBSPECIES())) {
+							ancestorLevel  = 1;
+						}
+						if (taxonName.getRank().equals(Rank.SPECIES())) {
+							ancestorLevel = 2;
+						}
+						if (ancestorLevel > 0) {
+							if (ancestorOfSpecificRank(taxonName, ancestorLevel, Rank.SUBGENUS())) {
+								// The child (species) of this parent (subgenus) has to have an infraGenericEpithet
+								if (infraGenericEpithet == null) {
+									logger.error("InfraGenericEpithet does not exist even though it should for: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+									// maybe the taxon could be named here
+								}
+							}
+						}
+						
 						if (infraGenericEpithet == null && rank.intValue() == 190) {
-							logger.error("InfraSpecificEpithet was not determined although it should exist for rank 190: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+							logger.error("InfraGenericEpithet was not determined although it should exist for rank 190: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 						}
 						if (specificEpithet != null && rank.intValue() < 220) {
 							logger.error("SpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 220: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
@@ -324,6 +346,54 @@ public class PesiTaxonExport extends PesiExportBase {
 			logger.error(e.getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * Checks whether a parent at specific level has a specific Rank.
+	 * @param taxonName
+	 * @param i
+	 * @param subgenus
+	 * @return
+	 */
+	private boolean ancestorOfSpecificRank(TaxonNameBase taxonName, int level,
+			Rank ancestorRank) {
+		boolean result = false;
+		Set<Taxon> taxa = taxonName.getTaxa();
+		TaxonNode parentNode = null;
+		if (taxa != null && taxa.size() > 0) {
+			if (taxa.size() == 1) {
+				Taxon taxon = taxa.iterator().next();
+				if (taxon != null) {
+					// Get ancestor Taxon via TaxonNode
+					
+					Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
+					if (taxonNodes.size() == 1) {
+						TaxonNode taxonNode = taxonNodes.iterator().next();
+						if (taxonNode != null) {
+							for (int i = 0; i < level; i++) {
+								if (taxonNode != null) {
+									taxonNode  = taxonNode.getParent();
+								}
+							}
+							parentNode = taxonNode;
+						}
+					} else if (taxonNodes.size() > 1) {
+						logger.error("This taxon has " + taxonNodes.size() + " taxonNodes: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
+					}
+				}
+			} else {
+				logger.error("This taxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			}
+		}
+		if (parentNode != null) {
+			TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
+			Taxon parentTaxon = node.getTaxon();
+			TaxonNameBase parentTaxonName = parentTaxon.getName();
+			if (parentTaxonName != null && parentTaxonName.getRank().equals(ancestorRank)) {
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	/**
