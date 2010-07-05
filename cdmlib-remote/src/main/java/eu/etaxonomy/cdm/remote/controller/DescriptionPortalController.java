@@ -89,14 +89,14 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 			"$",
 			"elements.$",
 			"elements.sources.citation.",
-//			"elements.sources.citation.authorTeam.$",		
+			"elements.sources.citation.authorTeam.$",		
 //			"elements.sources.citation.authorTeam.titleCache",
 //			"elements.sources.citation.authorTeam.nomenclaturalTitleCache",
-			"elements.sources.nameUsedInSource.titleCache",
-			"elements.sources.nameUsedInSource.originalNameString",
+//			"elements.sources.nameUsedInSource.titleCache",
+//			"elements.sources.nameUsedInSource.originalNameString",
 //			"elements.area",
 			"elements.area.level",
-			"elements.modifyingText",
+//			"elements.modifyingText",
 	});
 	
 	@InitBinder
@@ -174,10 +174,10 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
 		TaxonDescription description;
 		for (UUID descriptionUuid : descriptionUuidList) {
-			description = (TaxonDescription) service.load(descriptionUuid, TAXONDESCRIPTION_INIT_STRATEGY);
+			description = (TaxonDescription) service.load(descriptionUuid, null);
 			taxonDescriptions.add(description);
 		}
-		DistributionTree distTree = service.getOrderedDistributionsB(taxonDescriptions, levels);
+		DistributionTree distTree = service.getOrderedDistributionsB(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
 		return distTree;
 	}
 	
