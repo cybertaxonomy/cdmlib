@@ -607,19 +607,13 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = "";
 		
 		List taggedName = taxonName.getTaggedName();
-//		logger.error("----------------------------------------");
-		boolean stringPart = false;
-		boolean rankPart = false;
-		boolean teamPart = false;
-		boolean datePart = false;
-		boolean referencePart = false;
 		boolean openTag = false;
 		boolean start = true;
 		for (Object object : taggedName) {
 			if (object instanceof String) {
 				// Name part
-//				logger.error("Name part found: " + object);
-				if (! openTag && ! teamPart) {
+//				if (! openTag && ! teamPart) {
+				if (! openTag) {
 					if (start) {
 						result = "<i>";
 						start = false;
@@ -631,21 +625,22 @@ public class PesiTaxonExport extends PesiExportBase {
 					result += " ";
 				}
 				result += object;
-				stringPart = true;
 			} else if (object instanceof Rank) {
 				// Rank
 				Rank rank = CdmBase.deproxy(object, Rank.class);
-//				logger.error("Rank found: " + rank.getLabel());
-				if (openTag) {
-					result += "</i> ";
-					openTag = false;
+				
+				if ("".equals(rank.getAbbreviation().trim())) {
+					logger.error("Rank is an empty string: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 				} else {
-					result += " ";
+					if (openTag) {
+						result += "</i> ";
+						openTag = false;
+					} else {
+						result += " ";
+					}
+					result += rank.getAbbreviation();
 				}
-				result += rank.getAbbreviation();
-				rankPart = true;
 			} else if (object instanceof Team) {
-//				logger.error("Team: " + object);
 				if (openTag) {
 					result += "</i> ";
 					openTag = false;
@@ -653,9 +648,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					result += " ";
 				}
 				result += object;
-				teamPart = true;
 			} else if (object instanceof Date) {
-//				logger.error("Date found: " + object);
 				if (openTag) {
 					result += "</i> ";
 					openTag = false;
@@ -663,9 +656,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					result += " ";
 				}
 				result += object;
-				datePart = true;
 			} else if (object instanceof ReferenceBase) {
-//				logger.error("Reference found: " + object);
 				if (openTag) {
 					result += "</i> ";
 					openTag = false;
@@ -673,7 +664,6 @@ public class PesiTaxonExport extends PesiExportBase {
 					result += " ";
 				}
 				result += object;
-				referencePart = true;
 			} else {
 				logger.error("Instance unknown: " + object.getClass());
 			}
@@ -681,7 +671,6 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (openTag) {
 			result += "</i>";
 		}
-//		logger.error("WebShowName: " + result);
 
 		return result;
 	}
