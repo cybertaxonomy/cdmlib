@@ -385,7 +385,7 @@ public class FaunaEuErmsFindIdenticalNamesActivator {
 				Taxon taxon = null;
 				while (taxaIterator.hasNext()){
 					taxon = (Taxon) taxaIterator.next();
-					if (!taxon.isMisappliedName()){
+					if (!taxon.isMisapplication()){
 						break;
 					}
 				}
@@ -416,7 +416,7 @@ public class FaunaEuErmsFindIdenticalNamesActivator {
 				Taxon taxon = null;
 				while (taxaIterator.hasNext()){
 					taxon = (Taxon) taxaIterator.next();
-					if (!taxon.isMisappliedName()){
+					if (!taxon.isMisapplication()){
 						break;
 					}
 				}
