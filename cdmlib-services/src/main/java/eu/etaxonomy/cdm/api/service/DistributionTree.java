@@ -19,7 +19,7 @@ public class DistributionTree extends Tree<Distribution>{
 		NamedArea area = new NamedArea();
 		Distribution data = Distribution.NewInstance();
 		data.setArea(area);
-		data.addModifyingText("test", Language.ENGLISH());
+		//data.addModifyingText("test", Language.ENGLISH());
 		TreeNode<Distribution> rootElement = new TreeNode<Distribution>();
 		List<TreeNode<Distribution>> children = new ArrayList<TreeNode<Distribution>>();
 		
@@ -96,34 +96,33 @@ public class DistributionTree extends Tree<Distribution>{
 						  NamedAreaLevel level,
 				 		  List<NamedArea> areaHierarchieList, 
 				 		  TreeNode<Distribution> root){
+		boolean containsChild, sameLevel = false;
 		TreeNode<Distribution> highestDistNode;
 		TreeNode<Distribution> child;// the new child to add or the child to follow through the tree
 		//if the list to merge is empty finish the execution
 		if (areaHierarchieList.isEmpty()) {
 			return;
 		}
-		//getting the highest area and inserting it into the tree
+		//getting the highest area and inserting it (if neccesary) into the tree
 		NamedArea highestArea = areaHierarchieList.get(0);
-		//NamedAreaLevel highestAreaLevel = (NamedAreaLevel) HibernateProxyHelper.deproxy(highestArea.getLevel());
-		//NamedAreaLevel currentLevel = (NamedAreaLevel) HibernateProxyHelper.deproxy(level);
-		//if (highestAreaLevel.compareTo(currentLevel) == 0){//if distribution.status is relevant
-		
-		if (highestArea.getLevel().getLabel().compareTo(level.getLabel()) == 0){
-			highestDistNode = new TreeNode<Distribution>(distribution);//distribution.area comes from proxy!!!!
+		sameLevel = highestArea.getLevel().getLabel().compareTo(level.getLabel()) == 0;
+		if (sameLevel){
+			highestDistNode = new TreeNode<Distribution>(distribution);
 		}else{ //if distribution.status is not relevant
 			Distribution data = Distribution.NewInstance(highestArea, null);
 			highestDistNode = new TreeNode<Distribution>(data);
 		}
-		if(highestDistNode.data.getModifyingText().isEmpty()){
-			highestDistNode.data.addModifyingText("test", Language.ENGLISH());
-		}
-
-		if (root.getChildren().isEmpty() || !containsChild(root, highestDistNode)) {
+		containsChild = containsChild(root, highestDistNode);
+		if (root.getChildren().isEmpty() || !containsChild) {
 			//if the highest level is not on the depth-1 of the tree we add it.
 			//child = highestDistNode;
-			child = new TreeNode<Distribution>(highestDistNode.data);
-			root.addChild(child);//child.getData().getArea().getUuid().toString().equals("8cfc1722-e1e8-49d3-95a7-9879de6de490");
+			child = new TreeNode<Distribution>(highestDistNode.data); 
+			root.addChild(child);
 		}else {
+			//adding the sources to the child
+			if(containsChild && sameLevel){
+				getChild(root, highestDistNode).data.getSources().addAll(highestDistNode.data.getSources());
+			}
 			//if the deepth-1 of the tree contains the highest area level
 			//get the subtree or create it in order to continuing merging
 			child = getChild(root,highestDistNode);
