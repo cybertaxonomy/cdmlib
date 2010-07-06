@@ -46,15 +46,6 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 	public ProtologueImport(){
 		super();
 	}
-	
-	public boolean doCheck(DefaultImportState state){
-		boolean result = true;
-		logger.warn("Checking for Facts not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
-	}
 
 	public boolean doInvoke(DefaultImportState<PalmaeProtologueImportConfigurator> state){
 		boolean success = true;
@@ -106,7 +97,7 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 		//for testing only
 		TaxonNameBase taxonName = getTaxonName(originalSourceId, namespace);
 		if (taxonName == null){
-			logger.warn("Name not found");
+			logger.warn("Name not found for " + originalSourceId);
 			return null;
 		}
 		
@@ -119,11 +110,10 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 		try{
 			Media media = getMedia(state, file);
 			if (media.getRepresentations().size() > 0){
-				TaxonNameDescription description = TaxonNameDescription.NewInstance();
+				TaxonNameDescription description = getNameDescription(taxonName);
 				TextData protolog = TextData.NewInstance(Feature.PROTOLOGUE());
 				protolog.addMedia(media);
 				description.addElement(protolog);
-				taxonName.addDescription(description);
 				return taxonName;
 			}
 			
@@ -133,6 +123,18 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 		}
 		return null;
 		
+	}
+
+	private TaxonNameDescription getNameDescription(TaxonNameBase taxonName) {
+		TaxonNameDescription result;
+		if (taxonName.getDescriptions().size()> 0){
+			result = (TaxonNameDescription)taxonName.getDescriptions().iterator().next();
+		}else{
+			result = TaxonNameDescription.NewInstance();
+			taxonName.addDescription(result);
+		}
+		
+		return result;
 	}
 	
 	private Media getMedia(DefaultImportState<PalmaeProtologueImportConfigurator> state, File file){
@@ -169,6 +171,12 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 		if (result == null){
 			logger.warn("Taxon (id: " + originalSourceId + ", namespace: " + namespace + ") could not be found");
 		}
+		return result;
+	}
+	
+	
+	public boolean doCheck(DefaultImportState state){
+		boolean result = true;
 		return result;
 	}
 	

@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.io.ProtologueImport;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -39,7 +38,7 @@ public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<D
 	private static IInputTransformer defaultTransformer = null;
 
 	
-	public static PalmaeProtologueImportConfigurator NewInstance(String source, ICdmDataSource datasource, String urlString){
+	public static PalmaeProtologueImportConfigurator NewInstance(File source, ICdmDataSource datasource, String urlString){
 		PalmaeProtologueImportConfigurator result = new PalmaeProtologueImportConfigurator();
 		result.setSource(source);
 		result.setDestination(datasource);
