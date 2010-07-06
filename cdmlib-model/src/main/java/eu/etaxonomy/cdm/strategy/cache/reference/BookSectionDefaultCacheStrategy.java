@@ -89,26 +89,39 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 	public String getTitleCache(T bookSection) {
 		boolean hasBook = (bookSection.getInBook() != null);
 		String result;
+		// get book part
 		if (hasBook){
 			result = bookSection.getInReference().getTitleCache();
 		}else{
 			result = "- undefined book -";
 		}
-		TeamOrPersonBase<?> sectionTeam = bookSection.getAuthorTeam();
-		String sectionAuthor = CdmUtils.Nz(sectionTeam == null ? "" : sectionTeam.getTitleCache());
+		
+		//in
 		result = inBook +  result;
+		
+		//section title
 		String title = CdmUtils.Nz(bookSection.getTitle());
 		if (title.length() > 0){
 			result = title + blank + result;
 		}
+		
+		//section author
+		TeamOrPersonBase<?> sectionTeam = bookSection.getAuthorTeam();
+		String sectionAuthor = CdmUtils.Nz(sectionTeam == null ? "" : sectionTeam.getTitleCache());
 		result = sectionAuthor + afterSectionAuthor + result;
+		
+		//date
 		if (bookSection.getDatePublished() != null && ! bookSection.getDatePublished().isEmpty()){
 			String bookSectionDate = bookSection.getDatePublished().toString();
 			if (hasBook && bookSection.getInBook().getDatePublished() != null){
 				TimePeriod bookDate = bookSection.getInBook().getDatePublished();
-				String bookDateString = bookDate.toString();
+				String bookDateString = bookDate.getYear();
 				int pos = StringUtils.lastIndexOf(result, bookDateString);
-				result = result.substring(0, pos) + bookSectionDate + result.substring(pos + bookDateString.length());
+				if (pos > -1 ){
+					result = result.substring(0, pos) + bookSectionDate + result.substring(pos + bookDateString.length());
+				}else{
+					logger.warn("BookDateString (" + bookDateString + ") could not be found in result (" + result +")");
+				}
 			}else{
 				result = result + beforeYear + bookSectionDate;
 			}

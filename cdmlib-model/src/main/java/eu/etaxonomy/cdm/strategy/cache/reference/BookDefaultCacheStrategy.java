@@ -72,7 +72,9 @@ public class BookDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDe
 		String lastChar;
 		String character =".";
 		len = titelAbbrev.length();
-		if (len > 0){lastChar = titelAbbrev.substring(len-1, len);}
+		if (len > 0){
+			lastChar = titelAbbrev.substring(len-1, len);
+		}
 		//lastCharIsDouble = f_core_CompareStrings(RIGHT(@TitelAbbrev,1),character);
 		lastCharIsDouble = titelAbbrev.equals(character);
 
@@ -83,7 +85,6 @@ public class BookDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDe
 		
 		boolean needsComma = false;
 		//titelAbbrev
-		String titelAbbrevPart = "";
 		if (!"".equals(titelAbbrev)){
 			nomRefCache = titelAbbrev + blank; 
 		}
@@ -129,84 +130,6 @@ public class BookDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDe
 			nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
 		}
 		
-		
-		
-
-		
-		//	--Edition and series are null or numeric
-
-//		if (isNumeric(edition) ){
-//			if (titelAbbrev.length() > 0 && edition.length() > 0 &&  series.length() > 0 && isNumeric(series) && volume.length() > 0 && refYear.length() > 0 ){
-//				nomRefCache = titelAbbrev + blank + prefixEdition + blank + edition + comma + blank + prefixSeries + blank + series + comma + blank + volume + dot + blank + refYear + dot;
-//			}
-//		}
-
-		
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) > 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma +  @blank + @Refyear + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) = 0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition+ @blank + @Edition +  @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) = 0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixSeries + @blank + @Series + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) = 0 AND len(@Series) = 0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) = 0 AND len(@Series) = 0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) = 0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixEdition + @blank + @Edition +  @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) = 0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixEdition + @blank + @Edition +  @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixSeries + @blank + @Series + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) = 0 AND len(@Series) = 0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) = 0 AND len(@Series) = 0 AND len(@Volume) = 0 AND len(@RefYear) > 0) SET @NomRefCache = @Refyear + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) = 0 AND len(@Series) = 0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = NULL
-//
-//
-//
-//
-//
-//
-//	--Edition and/or Series is not numeric
-//
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Edition +  @comma + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) = 0 AND len(@RefYear) > 0) SET @NomRefCache = @TitelAbbrev + @blank + @Edition +  @comma + @blank + @Series + @comma +  @blank + @Refyear + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Edition +  @comma + @blank + @Series + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) = 0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Edition +  @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) = 0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Edition +  @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Series + @comma + @blank + @Volume + @dot
-//
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Series + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @Edition +  @comma + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @Edition +  @comma + @blank + @Series + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) = 0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @Edition +  @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) = 0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @Edition +  @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) = 0 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @Series + @dot
-//
-//
-//
-//
-//	--Edition is numeric and series is not numeric
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) = 0 AND len(@RefYear) > 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @Series + @comma +  @blank + @Refyear + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixEdition + @blank + @Edition +  @comma + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=0 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @prefixEdition + @blank + @Edition+  @comma + @blank + @Series + @dot
-//
-//
-//
-//	--Series is numeric and editon is not numeric
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) > 0) SET @NomRefCache = @TitelAbbrev + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma +  @blank + @Refyear + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=0 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @Edition+  @comma + @blank + @prefixSeries + @blank + @Series + @dot
-//
-//	--Changes (Marc Geoffroy)
-//
-//		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) = 0)  SET @NomRefCache = NULL
-//
-//
-//		Return @NomRefCache
-
 		return nomRefCache.trim();
 	}
 	
