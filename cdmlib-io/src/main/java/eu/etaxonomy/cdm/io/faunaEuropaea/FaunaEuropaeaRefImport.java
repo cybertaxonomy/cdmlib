@@ -190,7 +190,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				//ReferenceFactory refFactory = ReferenceFactory.newInstance();
 				reference = ReferenceFactory.newGeneric();
 
-				reference.setTitleCache(title);
+//				reference.setTitleCache(title);
+				reference.setTitle(title);
 				reference.setDatePublished(ImportHelper.getDatePublished(year));
 				
 				if (!authors.containsKey(refAuthor)) {
@@ -198,7 +199,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 						logger.warn("Reference author is null");
 					}
 					author = Team.NewInstance();
-					author.setTitleCache(refAuthor);
+					author.setTitleCache(refAuthor, true);
 					authors.put(refAuthor,author); 
 					if (logger.isTraceEnabled()) { 
 						logger.trace("Stored author (" + refAuthor + ")");

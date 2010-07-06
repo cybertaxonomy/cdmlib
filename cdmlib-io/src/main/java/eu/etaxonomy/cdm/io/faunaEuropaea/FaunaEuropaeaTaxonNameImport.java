@@ -383,7 +383,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		if(logger.isDebugEnabled()) { logger.debug("Processing taxa second pass..."); }
 
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
-		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
 		
 		boolean success = true;
 
@@ -887,17 +886,17 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		//TODO: use generate NameCache
 		//zooName.setNameCache(concatString);
 		String result = zooName.getNameCache();
-		zooName.generateTitle();
+//		zooName.generateTitle();
 		//String titleCache = buildNameTitleCache(concatString, useOriginalGenus, fauEuTaxon);
 		//zooName.setTitleCache(titleCache);
 		//titleCache = buildNameFullTitleCache(concatString, fauEuConfig);
-		zooName.generateFullTitle();
+//		zooName.generateFullTitle();
 		//zooName.setFullTitleCache(titleCache); // TODO: Add reference, NC status
 		
 //		ImportHelper.setOriginalSource(taxonName, fauEuConfig.getSourceReference(), 
 //				fauEuTaxon.getId(), "TaxonName");
-		taxonBase.setSec(fauEuConfig.getSourceReference());
-		taxonBase.generateTitle();
+//		taxonBase.setSec(fauEuConfig.getSourceReference());
+//		taxonBase.generateTitle();
 		//titleCache = buildTaxonTitleCache(concatString, fauEuConfig.getSourceReference());
 		//taxonBase.setTitleCache(titleCache);
 		
