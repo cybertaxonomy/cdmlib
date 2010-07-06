@@ -102,4 +102,15 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		return getInfraSpeciesNameCache(nonViralName, includeMarker);
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#isAutonym(eu.etaxonomy.cdm.model.name.NonViralName)
+	 */
+	@Override
+	protected boolean isAutonym(NonViralName nonViralName) {
+		return false;
+	}
+	
+	
+
 }
