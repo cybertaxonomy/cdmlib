@@ -22,12 +22,12 @@ import java.util.Set;
 
 import javax.mail.MethodNotSupportedException; //FIMXE use other execption class
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlTransient;
+
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -71,9 +71,6 @@ public class DerivedUnitFacade {
 	
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
 	
-	@Transient
-	@XmlTransient
-	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	/**
 	 * Enum that defines the class the "Specimen" belongs to.
@@ -135,18 +132,32 @@ public class DerivedUnitFacade {
 	private TextData ecology;
 	private TextData plantDescription;
 	
+	
+	/**
+	 * Creates a derived unit facade for a new derived unit of type <code>type</code>.
+	 * @param type
+	 * @return
+	 */
 	public static DerivedUnitFacade NewInstance(DerivedUnitType type){
 		return new DerivedUnitFacade(type);
 	}
 
+	/**
+	 * Creates a derived unit facade for a given derived unit using the default configuation.
+	 * @param derivedUnit
+	 * @return
+	 * @throws DerivedUnitFacadeNotSupportedException
+	 */
 	public static DerivedUnitFacade NewInstance(DerivedUnitBase derivedUnit) throws DerivedUnitFacadeNotSupportedException{
-		return new DerivedUnitFacade(derivedUnit, null, DerivedUnitType.Specimen);
+		return new DerivedUnitFacade(derivedUnit, null);
 	}
 	
 	public static DerivedUnitFacade NewInstance(DerivedUnitBase derivedUnit, DerivedUnitFacadeConfigurator config) throws DerivedUnitFacadeNotSupportedException{
-		return new DerivedUnitFacade(derivedUnit, config, DerivedUnitType.Specimen);
+		return new DerivedUnitFacade(derivedUnit, config);
 	}
 
+
+	
 // ****************** CONSTRUCTOR ****************************************************
 	
 	private DerivedUnitFacade(DerivedUnitType type){
@@ -157,8 +168,7 @@ public class DerivedUnitFacade {
 		setCacheStrategy();
 	}
 	
-	private DerivedUnitFacade(DerivedUnitBase derivedUnit, DerivedUnitFacadeConfigurator config, DerivedUnitType type) throws DerivedUnitFacadeNotSupportedException{
-		//this.type = type;  ??
+	private DerivedUnitFacade(DerivedUnitBase derivedUnit, DerivedUnitFacadeConfigurator config) throws DerivedUnitFacadeNotSupportedException{
 		
 		if (config == null){
 			config = DerivedUnitFacadeConfigurator.NewInstance();
@@ -180,10 +190,13 @@ public class DerivedUnitFacade {
 				//fieldObservation = FieldObservation.NewInstance();
 			}else if (fieldOriginals.size() == 1){
 				fieldObservation = fieldOriginals.iterator().next();
+				fieldObservation = getInitializedFieldObservation(fieldObservation);
+				fieldObservation.addPropertyChangeListener(getNewEventPropagationListener());
 			}else{
 				throw new IllegalStateException("Illegal state");
 			}	
 		}
+		derivedUnit = getInitializedDerivedUnit(derivedUnit);
 
 		//test if unsupported
 		
@@ -233,6 +246,179 @@ public class DerivedUnitFacade {
 		plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), false, false);
 	}
 	
+
+	private DerivedUnitBase getInitializedDerivedUnit(DerivedUnitBase derivedUnit) {
+		IOccurrenceService occurrenceService = this.config.getOccurrenceService();
+		if (occurrenceService == null){
+			return derivedUnit;
+		}
+		List<String> propertyPaths = this.config.getPropertyPaths();
+		if (propertyPaths == null){
+			return derivedUnit;
+		}
+		propertyPaths = getDerivedUnitPropertyPaths(propertyPaths);
+		DerivedUnitBase result = (DerivedUnitBase)occurrenceService.load(derivedUnit.getUuid(), propertyPaths);
+		return result;
+	}
+
+	/**
+	 * Initializes the derived unit according to the configuartions property path.
+	 * If the property path is <code>null</code> or no occurrence service is given the
+	 * returned object is the same as the input parameter.
+	 * @param fieldObservation2
+	 * @return
+	 */
+	private FieldObservation getInitializedFieldObservation(FieldObservation fieldObservation) {
+		IOccurrenceService occurrenceService = this.config.getOccurrenceService();
+		if (occurrenceService == null){
+			return fieldObservation;
+		}
+		List<String> propertyPaths = this.config.getPropertyPaths();
+		if (propertyPaths == null){
+			return fieldObservation;
+		}
+		propertyPaths = getFieldObjectPropertyPaths(propertyPaths);
+		FieldObservation result = (FieldObservation)occurrenceService.load(fieldObservation.getUuid(), propertyPaths);
+		return result;
+	}
+
+	/**
+	 * Transforms the property paths in a way that the facade is handled just like an 
+	 * ordinary CdmBase object.<BR>
+	 * E.g. a property path "collectinAreas" will be translated into gatheringEvent.collectingAreas
+	 * @param propertyPaths
+	 * @return
+	 */
+	private List<String> getFieldObjectPropertyPaths(List<String> propertyPaths) {
+		List<String> result = new ArrayList<String>();
+		for (String facadePath : propertyPaths){
+			// collecting areas (named area)
+			if (facadePath.startsWith("collectingAreas")){
+				facadePath = "gatheringEvent." + facadePath;
+				result.add(facadePath);
+			}
+			// collector (agentBase)
+			else if (facadePath.startsWith("collector")){
+				facadePath = facadePath.replace("collector", "gatheringEvent.actor");
+				result.add(facadePath);
+			}
+			// exactLocation (agentBase)
+			else if (facadePath.startsWith("exactLocation")){
+				facadePath = "gatheringEvent." + facadePath;
+				result.add(facadePath);
+			}
+			// gatheringPeriod (TimePeriod)
+			else if (facadePath.startsWith("gatheringPeriod")){
+				facadePath = facadePath.replace("gatheringPeriod", "gatheringEvent.timeperiod");
+				result.add(facadePath);
+			}
+			// (locality/ localityLanguage , LanguageString)
+			else if (facadePath.startsWith("locality")){
+				facadePath = "gatheringEvent." + facadePath;
+				result.add(facadePath);
+			}
+			//*********** FIELD OBJECT ************
+			// fieldObjectDefinitions (Map<language, languageString)
+			else if (facadePath.startsWith("fieldObjectDefinitions")){
+				// TODO or definition ???
+				facadePath = facadePath.replace("fieldObjectDefinitions", "description");
+				result.add(facadePath);
+			}
+			// fieldObjectMedia  (Media)
+			else if (facadePath.startsWith("fieldObjectMedia")){
+				// TODO ??? 
+				facadePath = facadePath.replace("fieldObjectMedia", "descriptions.elements.media");
+				result.add(facadePath);
+			}
+			
+			//Gathering Event will always be added
+			result.add("gatheringEvent");
+			
+		}
+		
+/*
+		Gathering Event
+		====================
+		- gatheringEvent (GatheringEvent)
+
+		Field Object
+		=================
+		- ecology/ ecologyAll (String)  ???
+		- plant description (like ecology)
+		
+		- fieldObjectImageGallery (SpecimenDescription)  - is automatically initialized via fieldObjectMedia
+
+*/
+		
+		return result;
+	}
+	
+	/**
+	 * Transforms the property paths in a way that the facade is handled just like an 
+	 * ordinary CdmBase object.<BR>
+	 * E.g. a property path "collectinAreas" will be translated into gatheringEvent.collectingAreas
+	 * @param propertyPaths
+	 * @return
+	 */
+	private List<String> getDerivedUnitPropertyPaths(List<String> propertyPaths) {
+		List<String> result = new ArrayList<String>();
+		for (String facadePath : propertyPaths){
+			// determinations (DeterminationEvent)
+			if (facadePath.startsWith("determinations")){
+				facadePath = "" + facadePath;  //no change
+				result.add(facadePath);
+			}
+			// storedUnder (TaxonNameBase)
+			else if (facadePath.startsWith("storedUnder")){
+				facadePath = "" + facadePath;  //no change
+				result.add(facadePath);
+			}
+			// sources (IdentifiableSource)
+			else if (facadePath.startsWith("sources")){
+				facadePath = "" + facadePath;  //no change
+				result.add(facadePath);
+			}
+			// collection (Collection)
+			else if (facadePath.startsWith("collection")){
+				facadePath = "" + facadePath;  //no change
+				result.add(facadePath);
+			}
+			// (locality/ localityLanguage , LanguageString)
+			else if (facadePath.startsWith("locality")){
+				facadePath = "gatheringEvent." + facadePath;
+				result.add(facadePath);
+			}
+		
+			//*********** FIELD OBJECT ************
+			// derivedUnitDefinitions (Map<language, languageString)
+			else if (facadePath.startsWith("derivedUnitDefinitions")){
+				// TODO or definition ???
+				facadePath = facadePath.replace("derivedUnitDefinitions", "description");
+				result.add(facadePath);
+			}
+			
+			// derivedUnitMedia  (Media)
+			else if (facadePath.startsWith("derivedUnitMedia")){
+				// TODO ??? 
+				facadePath = facadePath.replace("derivedUnitMedia", "descriptions.elements.media");
+				result.add(facadePath);
+			}
+			
+		}
+		
+/*
+		//TODO
+		Derived Unit
+		=====================
+		
+		- derivedUnitImageGallery (SpecimenDescription)  - is automatically initialized via derivedUnitMedia
+		
+		- derivationEvent (DerivationEvent)  - will always be initialized
+		- duplicates (??? Specimen???) ???
+*/
+		
+		return result;
+	}
 
 	/**
 	 * 
@@ -818,6 +1004,7 @@ public class DerivedUnitFacade {
 	 * @see #getCollector()	
 	 * @param gatheringEvent
 	 */
+	@Transient
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
 		getFieldObservation(true).setGatheringEvent(gatheringEvent);
 	}
@@ -1102,6 +1289,7 @@ public class DerivedUnitFacade {
 	 * Returns the field observation as an object.
 	 * @return
 	 */
+	@Transient
 	public FieldObservation getFieldObservation(){
 		return getFieldObservation(false);
 	}
@@ -1286,6 +1474,7 @@ public class DerivedUnitFacade {
 	 * Returns the derived unit itself.
 	 * @return the derived unit
 	 */
+	@Transient
 	public DerivedUnitBase getDerivedUnit() {
 		return this.derivedUnit;
 	}
@@ -1373,10 +1562,7 @@ public class DerivedUnitFacade {
 		};
 		return listener;
 	}
-//	
-//	private void firePropertyChange(PropertyChangeEvent evt) {
-//		propertyChangeSupport.firePropertyChange(evt);
-//	}
+
 		
 	
 

@@ -152,6 +152,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
 		derivedUnit = (DerivedUnitBase<?>)dao.load(derivedUnit.getUuid(), null);
 		DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
+		config.setPropertyPaths(propertyPaths);
+		config.setOccurrenceService(this);
 		DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 		return derivedUnitFacade;
 	}

@@ -9,7 +9,11 @@
 
 package eu.etaxonomy.cdm.api.facade;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 
 /**
  * @author a.mueller
@@ -28,6 +32,12 @@ public class DerivedUnitFacadeConfigurator {
 	private boolean moveFieldObjectMediaToGallery = false;
 	
 	private boolean moveDerivedUnitMediaToGallery = false;
+	
+	//needed if inititialization via property paths is required
+	private IOccurrenceService occurrenceService;
+	
+	//for object initialization 
+	private List<String> propertyPaths;
 
 	
 	private DerivedUnitFacadeConfigurator(){
@@ -52,6 +62,34 @@ public class DerivedUnitFacadeConfigurator {
 
 	public boolean isMoveDerivedUnitMediaToGallery() {
 		return moveDerivedUnitMediaToGallery;
+	}
+
+	public void setOccurrenceService(IOccurrenceService occurrenceService) {
+		this.occurrenceService = occurrenceService;
+	}
+
+	
+	/**
+	 * Needed for object initialization. 
+	 * @see #getPropertyPaths()
+	 * @return
+	 */
+	public IOccurrenceService getOccurrenceService() {
+		return occurrenceService;
+	}
+
+	public void setPropertyPaths(List<String> propertyPaths) {
+		this.propertyPaths = propertyPaths;
+	}
+
+	/**
+	 * Needed for object initialization.
+	 * Also requires to set occurrence service
+	 * @see #getOccurrenceService()
+	 * @return
+	 */
+	public List<String> getPropertyPaths() {
+		return propertyPaths;
 	}
 	
 	
