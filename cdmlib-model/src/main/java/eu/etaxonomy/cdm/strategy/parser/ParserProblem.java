@@ -61,7 +61,7 @@ public enum ParserProblem {
 		if (this == CheckRank){
 			return "check rank";
 		}else if (this == CheckDetailOrYear){
-			return "detail or year part ambigous";
+			return "detail or year part ambiguous";
 		}else if (this == NameReferenceSeparation){
 			return "name or authorship not parsable or name-reference separation not possible";
 		}else if (this == UnparsableReferenceTitle){
