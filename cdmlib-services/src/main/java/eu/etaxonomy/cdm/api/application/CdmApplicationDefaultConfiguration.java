@@ -88,9 +88,6 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ICommonService commonService;
 	@Autowired
 	private ILocationService locationService;
-//	@Autowired
-	//@Qualifier("mainService")
-	private IService<CdmBase> mainService;
 	@Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
@@ -107,6 +104,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IVocabularyService vocabularyService;
 	@Autowired
 	private ITaxonNodeService taxonNodeService;
+//	@Autowired
+	//@Qualifier("mainService")
+	private IService<CdmBase> mainService;
 	
 	/**
 	 * 
