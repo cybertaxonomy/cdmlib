@@ -219,6 +219,15 @@ public class PesiSourceExport extends PesiExportBase {
 			return null;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @return
+	 */
+	private static String getTitle(ReferenceBase<?> reference) {
+		return null;
+	}
 
 	/**
 	 * Returns the <code>AuthorString</code> attribute. The corresponding CDM attribute is the <code>titleCache</code> of an <code>authorTeam</code>.
@@ -233,8 +242,8 @@ public class PesiSourceExport extends PesiExportBase {
 		if (reference != null) {
 			TeamOrPersonBase team = reference.getAuthorTeam();
 			if (team != null) {
-	//			result = team.getTitleCache();
-				result = team.getNomenclaturalTitle();
+				result = team.getTitleCache();
+//				result = team.getNomenclaturalTitle();
 			} else {
 				result = null;
 			}

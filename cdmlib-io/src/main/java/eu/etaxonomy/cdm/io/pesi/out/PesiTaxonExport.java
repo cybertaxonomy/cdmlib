@@ -69,6 +69,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static final String dbTableName = "Taxon";
 	private static final String pluralString = "Taxa";
 	private PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt;
+	private PreparedStatement rankDataSqlStmt;
 	private NomenclaturalCode nomenclaturalCode;
 	private Integer kingdomFk;
 	private HashMap<Rank, Rank> rankMap = new HashMap<Rank, Rank>();
@@ -132,6 +133,9 @@ public class PesiTaxonExport extends PesiExportBase {
 			String parentTaxonFk_TreeIndex_KingdomFkSql = "UPDATE Taxon SET ParentTaxonFk = ?, TreeIndex = ?, " +
 					"KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
 			parentTaxonFk_TreeIndex_KingdomFkStmt = connection.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
+			
+			String rankDataSql = "UPDATE Taxon SET RankFk = ?, RankCache = ? WHERE TaxonId = ?";
+			rankDataSqlStmt = connection.prepareStatement(rankDataSql);
 
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
@@ -182,19 +186,21 @@ public class PesiTaxonExport extends PesiExportBase {
 					} else {
 						
 						// Check whether infraGenericEpithet is set correctly
-						// 1. Childs of an accepted taxon of rank subgenus that are accepted taxon of rank species have to have an infraGenericEpithet
-						// 2. Grandchilds of an accepted taxon of rank subgenus that are accepted taxon of rank subspecies have to have an infraGenericEpithet
+						// 1. Childs of an accepted taxon of rank subgenus that are accepted taxa of rank species have to have an infraGenericEpithet
+						// 2. Grandchilds of an accepted taxon of rank subgenus that are accepted taxa of rank subspecies have to have an infraGenericEpithet
 						
 						int ancestorLevel = 0;
 						if (taxonName.getRank().equals(Rank.SUBSPECIES())) {
-							ancestorLevel  = 1;
+							// The accepted taxon two rank levels above should be of rank subgenus
+							ancestorLevel  = 2;
 						}
 						if (taxonName.getRank().equals(Rank.SPECIES())) {
-							ancestorLevel = 2;
+							// The accepted taxon one rank level above should be of rank subgenus
+							ancestorLevel = 1;
 						}
 						if (ancestorLevel > 0) {
 							if (ancestorOfSpecificRank(taxonName, ancestorLevel, Rank.SUBGENUS())) {
-								// The child (species) of this parent (subgenus) has to have an infraGenericEpithet
+								// The child (species or subspecies) of this parent (subgenus) has to have an infraGenericEpithet
 								if (infraGenericEpithet == null) {
 									logger.error("InfraGenericEpithet does not exist even though it should for: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 									// maybe the taxon could be named here
@@ -338,6 +344,36 @@ public class PesiTaxonExport extends PesiExportBase {
 				}
 			}
 
+			logger.error("PHASE 3...");
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			while ((list = getNameService().list(null, limit, count, null, null)).size() > 0) {
+
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
+				for (TaxonNameBase taxonName : list) {
+					doCount(count++, modCount, pluralString);
+
+					invokeRankData(taxonName, nomenclaturalCode, state.getDbId(taxonName));
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+			
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
 			return success;
@@ -508,13 +544,41 @@ public class PesiTaxonExport extends PesiExportBase {
 			if (parentTaxonFk != null) {
 				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(1, parentTaxonFk);
 			} else {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(1, parentTaxonFk);
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(1, null);
 			}
-			parentTaxonFk_TreeIndex_KingdomFkStmt.setString(2, treeIndex.toString());
-			parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(3, kingdomFk);
-			parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(4, getRankFk(taxonName, nomenclaturalCode));
-			parentTaxonFk_TreeIndex_KingdomFkStmt.setString(5, getRankCache(taxonName, nomenclaturalCode));
-			parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(6, currentTaxonFk);
+
+			if (treeIndex != null) {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setString(2, treeIndex.toString());
+			} else {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(2, null);
+			}
+
+			if (kingdomFk != null) {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(3, kingdomFk);
+			} else {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(3, null);
+			}
+			
+			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
+			if (rankFk != null) {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(4, rankFk);
+			} else {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(4, null);
+			}
+
+			String rankCache = getRankCache(taxonName, nomenclaturalCode);
+			if (rankCache != null) {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setString(5, rankCache);
+			} else {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(5, null);
+			}
+			
+			if (currentTaxonFk != null) {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(6, currentTaxonFk);
+			} else {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(6, null);
+			}
+			
 			parentTaxonFk_TreeIndex_KingdomFkStmt.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -526,6 +590,40 @@ public class PesiTaxonExport extends PesiExportBase {
 			logger.error("rankCache: " + getRankCache(taxonName, nomenclaturalCode));
 			logger.error("taxonFk: " + currentTaxonFk);
 //			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Insert rank data only into the Taxon database table.
+	 * @param taxonName
+	 */
+	private boolean invokeRankData(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer taxonFk) {
+		try {
+			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
+			if (rankFk != null) {
+				rankDataSqlStmt.setInt(1, rankFk);
+			} else {
+				rankDataSqlStmt.setObject(1, null);
+			}
+	
+			String rankCache = getRankCache(taxonName, nomenclaturalCode);
+			if (rankCache != null) {
+				rankDataSqlStmt.setString(2, rankCache);
+			} else {
+				rankDataSqlStmt.setObject(2, null);
+			}
+			
+			if (taxonFk != null) {
+				rankDataSqlStmt.setInt(3, taxonFk);
+			} else {
+				rankDataSqlStmt.setObject(3, null);
+			}
+			
+			rankDataSqlStmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+	//		e.printStackTrace();
 			return false;
 		}
 	}
@@ -1256,7 +1354,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 		if (synonyms.size() == 1) {
 			singleEntity = (IdentifiableEntity) synonyms.iterator().next();
-		} else if (taxa.size() > 1) {
+		} else if (synonyms.size() > 1) {
 			logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 		}
 		
