@@ -60,7 +60,6 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
-//import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
@@ -739,7 +738,8 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public String getYear(){
 		TimePeriod datePublished = this.getDatePublished();
 		if (datePublished != null ){
-			return getDatePublished().getYear();
+			String result = getDatePublished().getYear();
+			return result;
 		}else{
 			return null;
 		}
