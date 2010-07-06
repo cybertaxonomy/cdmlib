@@ -37,7 +37,7 @@ public class PalmaeProtologueImportActivator {
 	static final String protologueSource = "\\\\Media\\EditWP6\\palmae\\protologe";
 //	public static final String protologueSource = "C:\\localCopy\\Data\\palmae";
 	
-	static ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae_a();
+	static ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 	
 	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
