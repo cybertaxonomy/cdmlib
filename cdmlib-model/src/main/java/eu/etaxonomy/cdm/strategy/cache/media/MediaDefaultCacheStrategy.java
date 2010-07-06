@@ -57,7 +57,7 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 		if (StringUtils.isBlank(result)){
 			for (MediaRepresentation mediaRepresentation : media.getRepresentations()){
 				for (MediaRepresentationPart part : mediaRepresentation.getParts()){
-					result = part.getUri();
+					result = part == null ? null : part.getUri();
 					if (StringUtils.isBlank(result)){
 						continue;
 					}
