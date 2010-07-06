@@ -64,6 +64,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestDatabase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestTransaction.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/viennaImport/ViennaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeCacheUpdater.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/TaraxacumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraActivator.java -text
