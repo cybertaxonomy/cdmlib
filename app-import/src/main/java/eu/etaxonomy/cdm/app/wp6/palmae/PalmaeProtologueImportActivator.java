@@ -32,40 +32,33 @@ public class PalmaeProtologueImportActivator {
 	private static final Logger logger = Logger.getLogger(PalmaeProtologueImportActivator.class);
 	
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 	
 	static final String protologueSource = "\\\\Media\\EditWP6\\palmae\\protologe";
-	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
-
+//	public static final String protologueSource = "C:\\localCopy\\Data\\palmae";
 	
-	
-	//static File source  = TcsSources.taxonX_localDir();
-	static File source = new File ("\\\\media\\EditWP6\\palmae\\protologe");
-	static ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
+	static ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae_a();
 	
 	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
 	//check - import
 	static CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
-	static boolean doProtologues = true;
 	
 	public boolean runImport(){
 		boolean success = true;
 		//make destination
 		ICdmDataSource destination = cdmDestination;
 		
-		PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, destination, urlString);
+		File source = new File (protologueSource);
+		String protologueUrl = PalmaeActivator.protologueUrlString;
+		PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(source, destination, protologueUrl);
+		
 		// invoke import
 		CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
-		
-		//protologConfig.setDoFacts(doDescriptions);
 		protologConfig.setCheck(check);
 		protologConfig.setDbSchemaValidation(hbm2dll);
-
 		cdmImport.startController(protologConfig, destination);
-		
-		protologConfig.setSource(source);
 		success &= cdmImport.invoke(protologConfig);
 		
 		return success;
@@ -75,10 +68,10 @@ public class PalmaeProtologueImportActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from Source("+ source.toString() + ") ...");
+		System.out.println("Start protologue import to("+ cdmDestination.toString() + ") ...");
 		PalmaeProtologueImportActivator importer = new PalmaeProtologueImportActivator();
 		importer.runImport();
-		System.out.println("End import from Source ("+ source.toString() + ")...");
+		System.out.println("End protologue import to ("+ cdmDestination.toString() + ")...");
 	}
 
 	

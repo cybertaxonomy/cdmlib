@@ -48,7 +48,7 @@ public class PalmaeActivator {
 	// set the webserver path to the images
 	private static final String imageUrlString = "http://wp5.e-taxonomy.eu/media/palmae/photos/";
 	// set the webserver path to the protologues
-	private static final String protologueUrlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
+	public static final String protologueUrlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
 
 	public static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
@@ -199,18 +199,17 @@ public class PalmaeActivator {
 		}
 		if (includeMediaProtologue){
 			System.out.println("Start importing protologues from \\\\media...");
-			String protologueSource = "\\\\media\\EditWP6\\palmae\\protologe";
-			String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
+			String protologueSource = PalmaeProtologueImportActivator.protologueSource;
+			String urlString = protologueUrlString;
+			
 			File source = new File (protologueSource);
-
-			PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, destination, urlString);
+			PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(source, destination, urlString);
 			CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 			
 			//protologConfig.setDoFacts(doDescriptions);
 			protologConfig.setCheck(check);
 			protologConfig.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 
-			protologConfig.setSource(source);
 			success &= cdmImport.invoke(protologConfig);
 
 			System.out.println("End importing protologues ...");
