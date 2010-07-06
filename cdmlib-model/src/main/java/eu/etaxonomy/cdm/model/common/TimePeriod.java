@@ -572,14 +572,16 @@ public class TimePeriod implements Cloneable, Serializable {
 		
 	}
 	
+//**************************** to String ****************************************	
+	
 	public String toString(){
 		String result = null;
 		DateTimeFormatter formatter = new TimePeriodPartialFormatter();
 		if ( CdmUtils.isNotEmpty(this.getFreeText())){
 			result = this.getFreeText();
 		}else{
-			String strStart = start != null? start.toString(formatter): null;
-			String strEnd = end != null? end.toString(formatter): null;
+			String strStart = start != null ? start.toString(formatter): null;
+			String strEnd = end != null ? end.toString(formatter): null;
 			result = CdmUtils.concat("-", strStart, strEnd);
 		}
 		return result;
