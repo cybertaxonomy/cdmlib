@@ -225,7 +225,7 @@ public class TestService {
 	
 	public void regenerateTaxonTitleCache(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
-		taxonService.generateTitleCache();
+		taxonService.updateTitleCache();
 	}
 	
 	private void test(){

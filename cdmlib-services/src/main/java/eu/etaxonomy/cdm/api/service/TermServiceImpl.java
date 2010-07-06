@@ -31,12 +31,14 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
@@ -177,9 +179,14 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return languageStringBaseDao.save(languageData);
 	}
 
-	public void generateTitleCache() {
-		// TODO Auto-generated method stub
-		logger.warn("generateTitleCache not yet implemented");
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		//TODO shouldnt this be TermBase instead of DefinedTermBase
+		Class<DefinedTermBase> clazz = DefinedTermBase.class;
+		super.updateTitleCache(clazz, null, null);
 	}	
 	
 	

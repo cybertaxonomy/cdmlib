@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 
@@ -54,9 +55,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return dao.getInstitutionByCode(code);
 	}
 
-	public void generateTitleCache() {
-		// TODO Auto-generated method stub
-		
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		Class<AgentBase> clazz = AgentBase.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 
 	@Autowired

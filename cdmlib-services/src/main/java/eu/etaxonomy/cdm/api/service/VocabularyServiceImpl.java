@@ -36,8 +36,13 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		this.dao = dao;
 	}
 
-	public void generateTitleCache() {
-		// TODO Auto-generated method stub
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		Class<TermVocabulary> clazz = TermVocabulary.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 	
 	public TermVocabulary<DefinedTermBase> getVocabulary(VocabularyEnum vocabularyType){

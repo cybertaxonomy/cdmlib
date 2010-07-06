@@ -2815,6 +2815,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCache
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
@@ -2853,6 +2854,8 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/TaxonNameCannotBeAccep
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.testGenerateTitleCache-result.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/MediaDaoImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif -text

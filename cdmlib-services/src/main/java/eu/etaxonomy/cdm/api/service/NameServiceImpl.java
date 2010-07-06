@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -223,10 +224,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return typeDesignationVocabulary;
 	}
 
-	public void generateTitleCache() {
-		logger.warn("Not yet implemented");
-		// TODO Auto-generated method stub
-	}
 
 	@Autowired
 	protected void setDao(ITaxonNameDao dao) {
@@ -344,4 +341,32 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public HomotypicalGroup findHomotypicalGroup(UUID uuid) {
 		return homotypicalGroupDao.findByUuid(uuid);
 	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		Class<TaxonNameBase> clazz = TaxonNameBase.class;
+		super.updateTitleCache(clazz, null, null);
+	}
+	
+	@Override
+	protected void setOtherCachesNull(TaxonNameBase name) {
+		if (name.isInstanceOf(NonViralName.class)){
+			NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+			if (! nvn.isProtectedNameCache()){
+				nvn.setNameCache(null, false);
+			}
+			if (! nvn.isProtectedAuthorshipCache()){
+				nvn.setAuthorshipCache(null, false);
+			}
+			if (! nvn.isProtectedFullTitleCache()){
+				nvn.setFullTitleCache(null, false);
+			}
+		}
+	}
+	
+	
 }

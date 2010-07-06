@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -48,8 +49,13 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 		this.featureNodeDao = featureNodeDao;
 	}
 
-	public void generateTitleCache() {
-		// TODO Auto-generated method stub
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		Class<FeatureTree> clazz = FeatureTree.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 
 	public List<FeatureNode> getFeatureNodesAll() {

@@ -34,6 +34,8 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 
 @Service
 @Transactional(readOnly=true, propagation = Propagation.SUPPORTS)
@@ -66,11 +68,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public void generateTitleCache() {
-		// TODO Auto-generated method stub
-		
-	}
-	
+
 	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException{
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		imageMetaData.readImageInfo(imageUri, timeOut);
@@ -107,5 +105,15 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 			logger.trace("IOException when trying to get filesize for: " +imageUri);
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		Class<Media> clazz = Media.class;
+		//IIdentifiableEntityCacheStrategy<Media> cacheStrategy = MediaDefaultCacheStrategy();
+		super.updateTitleCache(clazz, null, null);
 	}
 }

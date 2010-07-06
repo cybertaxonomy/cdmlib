@@ -336,15 +336,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return fromTaxon;
 	}
 
-	public void generateTitleCache() {
-		generateTitleCache(true);
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	@Transactional(readOnly = false)
+	public void updateTitleCache() {
+		Class<TaxonBase> clazz = TaxonBase.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 	
-	//TODO
-	public void generateTitleCache(boolean forceProtected) {
-		logger.warn("generateTitleCache not yet fully implemented!");
-	}
-
 	@Autowired
 	protected void setDao(ITaxonDao dao) {
 		this.dao = dao;

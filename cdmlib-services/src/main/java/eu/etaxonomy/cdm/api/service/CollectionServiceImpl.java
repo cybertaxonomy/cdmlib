@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -35,8 +36,13 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 		this.dao = dao;
 	}
 
-	public void generateTitleCache() {
-		logger.warn("Not yet implemented");
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		Class<Collection> clazz = Collection.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 	
 	public List<Collection> searchByCode(String code) {

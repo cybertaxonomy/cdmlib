@@ -30,12 +30,13 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
-	@SuppressWarnings("unused")
-	protected
-	static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
+	
+	protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
+	protected static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 
 	@Transactional(readOnly = true)
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -146,6 +147,48 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		}
 		
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	@Transactional(readOnly = false)
+	public void updateTitleCache(Class<? extends T> clazz) {
+		IIdentifiableEntityCacheStrategy<T> cacheStrategy = null;
+		updateTitleCache(clazz, UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE, cacheStrategy);
+	}
+
+	
+	@Transactional(readOnly = false)
+	public void updateTitleCache(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy) {
+		if (stepSize == null){
+			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
+		}
+		 
+		int count = dao.count(clazz);
+		for(int i = 0 ; i < count ; i = i + stepSize){
+			// not sure if such strict ordering is necessary here, but for safety reasons I do it
+			ArrayList<OrderHint> orderHints = new ArrayList<OrderHint>();
+			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
+			List<T> list = this.list(clazz, stepSize, i, orderHints, null);
+			for (T entity : list){
+				if (entity.isProtectedTitleCache() == false){
+					if (cacheStrategy != null){
+						entity.setCacheStrategy(cacheStrategy);
+					}
+					entity.setTitleCache(null);
+					setOtherCachesNull(entity);
+					entity.getTitleCache();
+				}
+			}
+			saveOrUpdateAll(list);
+			
+		}
+	}
+
+	/**
+	 * Needs override if not only the title cache should be set to null to
+	 * generate the correct new title cache
+	 */
+	protected void setOtherCachesNull(T entity) {
+		return;
 	}
 }
 

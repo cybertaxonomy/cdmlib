@@ -36,10 +36,13 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		if (logger.isDebugEnabled()) { logger.debug("Load ReferenceService Bean"); }
 	}
 
-	public void generateTitleCache() {
-		logger.warn("Not yet implemented");
-		// TODO Auto-generated method stub
-		
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		Class<ReferenceBase> clazz = ReferenceBase.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 
 	@Autowired

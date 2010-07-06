@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -56,11 +57,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#generateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
 	 */
-	public void generateTitleCache() {
-		// TODO Auto-generated method stub
-		logger.warn("Not yet implemented");
+	@Override
+	public void updateTitleCache() {
+		Class<SpecimenOrObservationBase> clazz = SpecimenOrObservationBase.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 
 	/**

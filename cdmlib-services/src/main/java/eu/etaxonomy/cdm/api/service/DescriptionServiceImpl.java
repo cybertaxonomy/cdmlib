@@ -116,12 +116,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#generateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
 	 */
-	public void generateTitleCache() {
-		logger.warn("generateTitleCache not yet implemented");
+	@Override
+	public void updateTitleCache() {
+		Class<DescriptionBase> clazz = DescriptionBase.class;
+		super.updateTitleCache(clazz, null, null);
 	}
-
+	
 	public TermVocabulary<Feature> getDefaultFeatureVocabulary(){
 		String uuidFeature = "b187d555-f06f-4d65-9e53-da7c93f8eaa8";
 		UUID featureUuid = UUID.fromString(uuidFeature);

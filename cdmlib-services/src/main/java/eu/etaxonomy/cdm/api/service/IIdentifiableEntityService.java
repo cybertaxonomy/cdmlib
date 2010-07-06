@@ -24,14 +24,19 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 public interface IIdentifiableEntityService<T extends IdentifiableEntity> extends IAnnotatableService<T> {
 
 	/**
 	 * (Re-)generate the title caches for all objects of this concrete IdentifiableEntity class
 	 */
-	public void generateTitleCache();
-
+	public void updateTitleCache();
+	
+	public void updateTitleCache(Class<? extends T> clazz);
+	
+	public void updateTitleCache(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy);
+	
 	/**
 	 * Finds an object with a given LSID. If the object does not currently exist in the current view, then
 	 * the most recent prior version of the object will be returned, or null if an object with this identifier

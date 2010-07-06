@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
@@ -342,9 +343,11 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#generateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
 	 */
-	public void generateTitleCache() {
-		logger.warn("generateTitleCache not yet fully implemented!");
+	@Override
+	public void updateTitleCache() {
+		Class<TaxonomicTree> clazz = TaxonomicTree.class;
+		super.updateTitleCache(clazz, null, null);
 	}
 }
