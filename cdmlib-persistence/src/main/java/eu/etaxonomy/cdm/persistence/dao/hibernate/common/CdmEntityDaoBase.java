@@ -110,6 +110,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 	
     //TODO: Use everywhere CdmEntityDaoBase.saveAll() instead of ServiceBase.saveCdmObjectAll()?
+	//TODO: why does this use saveCdmObject_ which actually savesOrUpdateds data ?
 	public Map<UUID, T> saveAll(Collection<T> cdmObjCollection){
 		int types = cdmObjCollection.getClass().getTypeParameters().length;
 		if (types > 0){
@@ -128,12 +129,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			i++;
 			if ( (i % flushAfterNo) == 0){
 				try{
-					//TODO: fixme!!
-					logger.debug("flush");
+					if (logger.isDebugEnabled()){logger.debug("flush");}
 					flush();
 				}catch(Exception e){
-					logger.error("UUUIIIII");
+					logger.error("An exception occurred when trying to flush data");
 					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			}
 		}
@@ -141,6 +142,46 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
 		return resultMap;
 	}
+	
+    private UUID saveOrUpdateCdmObject(T cdmObj){
+		getSession().saveOrUpdate(cdmObj);
+		return cdmObj.getUuid();
+	}
+    
+	public Map<UUID, T> saveOrUpdateAll(Collection<T> cdmObjCollection){
+		int types = cdmObjCollection.getClass().getTypeParameters().length;
+		if (types > 0){
+			if (logger.isDebugEnabled()){logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);}
+		}
+
+		Map<UUID, T> resultMap = new HashMap<UUID, T>();
+		Iterator<T> iterator = cdmObjCollection.iterator();
+		int i = 0;
+		while(iterator.hasNext()){
+			if ( ( (i % 2000) == 0) && (i > 0)   ){logger.debug("Saved " + i + " objects" );}
+			T cdmObj = iterator.next();
+			UUID uuid = saveOrUpdateCdmObject(cdmObj);
+			if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
+			resultMap.put(uuid, cdmObj);
+			i++;
+			if ( (i % flushAfterNo) == 0){
+				try{
+					if (logger.isDebugEnabled()){logger.debug("flush");}
+					flush();
+				}catch(Exception e){
+					logger.error("An exception occurred when trying to flush data");
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
+		return resultMap;
+	}
+	
+	
+	
 	
 	public T replace(T x, T y) {
 		if(x.equals(y)) {

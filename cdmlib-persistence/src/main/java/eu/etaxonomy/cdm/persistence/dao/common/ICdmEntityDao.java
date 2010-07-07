@@ -97,6 +97,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
 	public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
 
+	public Map<UUID, T> saveOrUpdateAll(Collection<T> cdmObjCollection);
+	
 	/**
 	 * @param transientObject
 	 * @return
