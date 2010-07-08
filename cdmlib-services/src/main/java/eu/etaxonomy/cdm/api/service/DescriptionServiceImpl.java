@@ -370,13 +370,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 			String categorySeparator = "; ";
 			
 			String sep = separator;
+			
+			boolean doItBetter = false;
 
 			for (TextData textData : textDataList.toArray(new TextData[textDataList.size()])){
 				if(textData.getMultilanguageText().size() > 0){
 					
 					if (!textData.getFeature().equals(Feature.UNKNOWN())) {
 						String featureLabel = textData.getFeature().getLabel(lang);
-						
+
+						if(doItBetter){
 						/*
 						 *  WARNING
 						 *  The code lines below are desinged to handle
@@ -401,6 +404,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 						}
 						lastCategory = labelTokens[0];
 						// end of demo code
+						} else {
+							if(naturalLanguageDescription.length() > 0){
+								naturalLanguageDescription.append(categorySeparator);
+							}
+							naturalLanguageDescription.append(textData.getFeature().getLabel(lang));							
+						}
 					}
 					String text = textData.getMultilanguageText().values().iterator().next().getText();
 					naturalLanguageDescription.append(text);		
