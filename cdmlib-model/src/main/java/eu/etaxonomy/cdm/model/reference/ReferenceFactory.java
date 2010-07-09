@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
@@ -21,6 +23,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
 import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 
 public class ReferenceFactory {
+	private static final Logger logger = Logger.getLogger(ReferenceFactory.class);
 	
 	
 	/**
@@ -62,7 +65,7 @@ public class ReferenceFactory {
 	}
 	
 	public static ReferenceBase newProceedings(){
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> proceedings = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.InProceedings);
+		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> proceedings = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Proceedings);
 		proceedings.setCacheStrategy(ReferenceType.Proceedings.getCacheStrategy());
 		return proceedings;
 	}
@@ -151,8 +154,16 @@ public class ReferenceFactory {
 		return article;
 	}
 
+	/**
+	 * Returns a new reference for the according reference type. If reference type is <code>null</code>,
+	 * <code>null</code> is returned.
+	 * @param referenceType
+	 * @return
+	 */
 	public static ReferenceBase newReference(ReferenceType referenceType) {
-		
+		if (referenceType == null){
+			return null;
+		}
 		switch(referenceType){
 			case Article:
 				return newArticle();
@@ -180,7 +191,14 @@ public class ReferenceFactory {
 				return newReport();
 			case Thesis:
 				return newThesis();
+			case WebPage:
+				return newWebPage();
+			case Book:
+				return newBook();
+			case Generic:
+				return newGeneric();
 			default:
+				logger.warn("Unknown reference type " + referenceType.getMessage() + ". Created generic reference instead.");
 				return newGeneric();	
 		}
 	}
