@@ -159,6 +159,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 * @see #getDescriptions()
 	 * @return
 	 */
+	@Transient
 	public Set<SpecimenDescription> getSpecimenDescriptions() {
 		return getSpecimenDescriptions(true);
 	}

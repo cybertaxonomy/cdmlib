@@ -63,6 +63,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> extends ReferencedEntityBase implements ITypeDesignation {
+
+	private static final long serialVersionUID = 1L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
 
