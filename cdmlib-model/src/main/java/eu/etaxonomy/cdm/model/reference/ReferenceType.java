@@ -33,41 +33,59 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
  */
 @XmlEnum
 public enum ReferenceType {
-	@XmlEnumValue("Article")
+	//0
+	@XmlEnumValue("Article")   
 	Article("Article", ArticleDefaultCacheStrategy.class),
-	@XmlEnumValue("Book")
+	//1
+	@XmlEnumValue("Book")      
 	Book("Book", BookDefaultCacheStrategy.class),
-	@XmlEnumValue("Book Section")
+	//2
+	@XmlEnumValue("Book Section")  
 	BookSection("Book Section", BookSectionDefaultCacheStrategy.class),
+	//3
 	@XmlEnumValue("CD or DVD")
 	CdDvd("CD or DVD", CdDvdDefaultCacheStrategy.class),
+	//4
 	@XmlEnumValue("Database")
 	Database("Database", ReferenceBaseDefaultCacheStrategy.class),
+	//5
 	@XmlEnumValue("Generic")
 	Generic("Generic", GenericDefaultCacheStrategy.class),
+	//6
 	@XmlEnumValue("Inproceedings")
 	InProceedings("In Proceedings", ReferenceBaseDefaultCacheStrategy.class),
+	//7
 	@XmlEnumValue("Journal")
 	Journal("Journal", JournalDefaultCacheStrategy.class),
+	//8
 	@XmlEnumValue("Map")
 	Map("Map", ReferenceBaseDefaultCacheStrategy.class),
+	//9
 	@XmlEnumValue("Patent")
 	Patent("Patent", ReferenceBaseDefaultCacheStrategy.class),
+	//10
 	@XmlEnumValue("Personal Communication")
 	PersonalCommunication("Personal Communication", ReferenceBaseDefaultCacheStrategy.class),
+	//11
 	@XmlEnumValue("Print Series")
 	PrintSeries("Print Series", ReferenceBaseDefaultCacheStrategy.class),
+	//12
 	@XmlEnumValue("Proceedings")
 	Proceedings("Proceedings", ReferenceBaseDefaultCacheStrategy.class),
+	//13
 	@XmlEnumValue("Report")
 	Report("Report", ReferenceBaseDefaultCacheStrategy.class),
+	//14
 	@XmlEnumValue("Thesis")
 	Thesis("Thesis", ThesisDefaultCacheStrategy.class),
+	//15
 	@XmlEnumValue("Web Page")
 	WebPage("Web Page", ReferenceBaseDefaultCacheStrategy.class), 
+	//16
 	@XmlEnumValue("Printed Unit Base")
 	@Deprecated // all references are ReferenceBases this type should not longer be used. Use isPrintedUnit() for tests against this type instead.
 	PrintedUnitBase("Printed Unit Base", ReferenceBaseDefaultCacheStrategy.class), 
+	//17
 	@XmlEnumValue("Publication Base")
 	@Deprecated // all references are ReferenceBases this type should not longer be used. Use isPublication() for tests against this type instead.
 	PublicationBase("Publication Base", ReferenceBaseDefaultCacheStrategy.class);
