@@ -17,10 +17,11 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 	
 	@Override
 	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit){
-		StringBuilder QuantitativeDescription = new StringBuilder();
-		TextData textData = TextData.NewInstance();
+		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
+		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
 		Language language = Language.DEFAULT();
 		
+		// booleans indicating whether a kind of value is present or not and the float that will eventually hold the value
 		boolean average = false;
 		float averagevalue = new Float(0);
 		boolean sd = false;
@@ -34,8 +35,12 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		boolean upperb = false;
 		float upperbvalue = new Float(0);
 		
-		String unit = mUnit.getLabel();
+		String unit = "(unknown unit)";
+		if ((mUnit!=null)&&(mUnit.getLabel()!=null)){
+			unit = mUnit.getLabel();
+		}
 		
+		// the different linking words are taken from NaturalLanguageTerm.class (should this be changed ?)
 		NaturalLanguageTerm nltFrom = NaturalLanguageTerm.FROM();
 		String from = nltFrom.getPreferredRepresentation(language).getLabel();
 		NaturalLanguageTerm nltTo = NaturalLanguageTerm.TO();
@@ -48,8 +53,9 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		String on_Average = nltOn_Average.getPreferredRepresentation(language).getLabel();
 		NaturalLanguageTerm nltMore_Or_Less = NaturalLanguageTerm.MORE_OR_LESS();
 		String more_Or_Less = nltMore_Or_Less.getPreferredRepresentation(language).getLabel();
-		String space = " ";
+		String space = " "; // should "space" be considered as a linking word and thus be stored in NaturalLanguageTerm.class ?
 		
+		// the booleans and floats are updated according to the presence or absence of values
 			if (measures.containsKey(StatisticalMeasure.AVERAGE())) {
 				average = true;
 				averagevalue = measures.get(StatisticalMeasure.AVERAGE());
@@ -70,6 +76,8 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 				upperbvalue = measures.get(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
 			}
 			
+			
+		// depending on the different associations of values, a sentence is built	
 		if (max && min) {
 			QuantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
 		}
@@ -80,7 +88,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			QuantitativeDescription.append(space + up_To + space + maxvalue + space + unit);
 		}
 		if ((max||min)&&(lowerb||upperb)) {
-			QuantitativeDescription.append(","); // fusion avec dessous ?
+			QuantitativeDescription.append(","); // merge with below ?
 		}
 		if ((lowerb||upperb)&&(min||max)) {
 			QuantitativeDescription.append(space + most_Frequently + space);
@@ -89,7 +97,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			QuantitativeDescription.append(space + from + space + lowerbvalue + space + to + space + upperbvalue + space + unit);
 		}
 		else if (lowerb) {
-			QuantitativeDescription.append(space + from + lowerbvalue + space + unit);
+			QuantitativeDescription.append(space + from + space + lowerbvalue + space + unit);
 		}
 		else if (upperb) {
 			QuantitativeDescription.append(space + up_To + space + upperbvalue + space + unit);
@@ -104,7 +112,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			}
 		}
 		textData.putText(QuantitativeDescription.toString(), language);
-		textData.setFormat(TextFormat.NewInstance(null, "HTML",null ));
+		textData.setFormat(TextFormat.NewInstance(null, "HTML",null )); // the data format is set (not yet real HTML)
 		
 		return textData;
 	}
