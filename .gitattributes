@@ -2464,7 +2464,6 @@ cdmlib-remote/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug.launch -te
 cdmlib-remote/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text
 cdmlib-remote/pom.xml -text
-cdmlib-remote/src/main/installer/templates/.cdmLibrary/datasources.xml -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathFilter.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcher.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcherException.java -text
