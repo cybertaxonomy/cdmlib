@@ -13,16 +13,15 @@ import eu.etaxonomy.cdm.model.description.TextData;
 public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDescriptionBuilder{
 	
 	protected TextData doBuild(List<StateData> states){
-		TextData textData = TextData.NewInstance();
+		TextData textData = TextData.NewInstance();// TextData that will contain the description and the language corresponding
 		Language language = Language.DEFAULT();
 		
 		StringBuilder CategoricalDescription = new StringBuilder();
-		//CategoricalDescription.append(" "+feature.getLabel());
 
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
 			State s = stateData.getState();
-			Set<Modifier> modifiers = stateData.getModifiers();
+			Set<Modifier> modifiers = stateData.getModifiers(); // the states and their according modifiers are simply written one after the other
 			for (Iterator<Modifier> mod = modifiers.iterator() ; mod.hasNext() ;){
 				Modifier modifier = mod.next();
 				CategoricalDescription.append(" " + modifier.getPreferredRepresentation(language).getLabel());
