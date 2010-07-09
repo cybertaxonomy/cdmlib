@@ -367,11 +367,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 					lang);
 			
 			String lastCategory = null;
-			String categorySeparator = "; ";
+			String categorySeparator = ". ";
 			
 			String sep = separator;
 			
-			boolean doItBetter = false;
+			boolean doItBetter = true;
 
 			for (TextData textData : textDataList.toArray(new TextData[textDataList.size()])){
 				if(textData.getMultilanguageText().size() > 0){

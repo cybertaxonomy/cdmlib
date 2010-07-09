@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -50,6 +51,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	
 	@Autowired
 	private IDefinedTermDao definedTermDao;	
+	
+	@Autowired
+	private AbstractBeanInitializer beanInitializer;
+	
+	
 
 	public OccurrenceServiceImpl() {
 		logger.debug("Load OccurrenceService Bean");
@@ -151,9 +157,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
 		derivedUnit = (DerivedUnitBase<?>)dao.load(derivedUnit.getUuid(), null);
 		DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
-		config.setPropertyPaths(propertyPaths);
-		config.setOccurrenceService(this);
+		config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
 		DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
+		beanInitializer.initialize(derivedUnitFacade, propertyPaths);
 		return derivedUnitFacade;
 	}
 }

@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author a.kohlbecker
  * @date 23.06.2009
@@ -27,6 +29,16 @@ public class AbstractController {
 	protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
 			"$"
 	});
+	
+	public static final Logger logger = Logger.getLogger(BaseController.class);
+	
+	protected static final Integer DEFAULT_PAGE_SIZE = 30;
+	
+	protected List<String> initializationStrategy = DEFAULT_INIT_STRATEGY;
+	
+	public void setInitializationStrategy(List<String> initializationStrategy) {
+		this.initializationStrategy = initializationStrategy;
+	}
 	
 	protected Pattern uuidParameterPattern = null;
 	

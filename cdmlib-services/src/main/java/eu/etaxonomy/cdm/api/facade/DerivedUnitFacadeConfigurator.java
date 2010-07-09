@@ -33,6 +33,9 @@ public class DerivedUnitFacadeConfigurator {
 	
 	private boolean moveDerivedUnitMediaToGallery = false;
 	
+	private boolean throwExceptionForNonSpecimenPreservationMethodRequest = true;
+
+	
 	//needed if inititialization via property paths is required
 	private IOccurrenceService occurrenceService;
 	
@@ -90,6 +93,21 @@ public class DerivedUnitFacadeConfigurator {
 	 */
 	public List<String> getPropertyPaths() {
 		return propertyPaths;
+	}
+
+	/**
+	 * @param throwExceptionForNonSpecimenPreservationMethodRequest the throwExceptionForNonSpecimenPreservationMethodRequest to set
+	 */
+	public void setThrowExceptionForNonSpecimenPreservationMethodRequest(
+			boolean throwExceptionForNonSpecimenPreservationMethodRequest) {
+		this.throwExceptionForNonSpecimenPreservationMethodRequest = throwExceptionForNonSpecimenPreservationMethodRequest;
+	}
+
+	/**
+	 * @return the throwExceptionForNonSpecimenPreservationMethodRequest
+	 */
+	public boolean isThrowExceptionForNonSpecimenPreservationMethodRequest() {
+		return throwExceptionForNonSpecimenPreservationMethodRequest;
 	}
 	
 	

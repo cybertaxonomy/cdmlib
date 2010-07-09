@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -71,7 +72,6 @@ public class DerivedUnitFacade {
 	
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
 	
-
 	/**
 	 * Enum that defines the class the "Specimen" belongs to.
 	 * Some methods of the facade are not available for certain classes
@@ -190,13 +190,13 @@ public class DerivedUnitFacade {
 				//fieldObservation = FieldObservation.NewInstance();
 			}else if (fieldOriginals.size() == 1){
 				fieldObservation = fieldOriginals.iterator().next();
-				fieldObservation = getInitializedFieldObservation(fieldObservation);
+				//###fieldObservation = getInitializedFieldObservation(fieldObservation);
 				fieldObservation.addPropertyChangeListener(getNewEventPropagationListener());
 			}else{
 				throw new IllegalStateException("Illegal state");
 			}	
 		}
-		derivedUnit = getInitializedDerivedUnit(derivedUnit);
+		// #### derivedUnit = getInitializedDerivedUnit(derivedUnit);
 
 		//test if unsupported
 		
@@ -317,6 +317,7 @@ public class DerivedUnitFacade {
 				facadePath = "gatheringEvent." + facadePath;
 				result.add(facadePath);
 			}
+			
 			//*********** FIELD OBJECT ************
 			// fieldObjectDefinitions (Map<language, languageString)
 			else if (facadePath.startsWith("fieldObjectDefinitions")){
@@ -957,6 +958,7 @@ public class DerivedUnitFacade {
 	public LanguageString getLocality(){
 		return (hasGatheringEvent() ? getGatheringEvent(true).getLocality() : null);
 	}
+	@Transient
 	public String getLocalityText(){
 		LanguageString locality = getLocality();
 		if(locality != null){
@@ -964,6 +966,7 @@ public class DerivedUnitFacade {
 		}
 		return null;
 	}
+	@Transient
 	public Language getLocalityLanguage(){
 		LanguageString locality = getLocality();
 		if(locality != null){
@@ -1004,13 +1007,13 @@ public class DerivedUnitFacade {
 	 * @see #getCollector()	
 	 * @param gatheringEvent
 	 */
-	@Transient
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
 		getFieldObservation(true).setGatheringEvent(gatheringEvent);
 	}
 	public boolean hasGatheringEvent(){
 		return (getGatheringEvent(false) != null);
 	}
+	@Transient
 	public GatheringEvent getGatheringEvent() {
 		return getGatheringEvent(false);
 	}
@@ -1037,6 +1040,7 @@ public class DerivedUnitFacade {
 	}
 	
 	//ecology
+	@Transient
 	public String getEcology(){
 		return getEcology(Language.DEFAULT());
 	}
@@ -1094,6 +1098,7 @@ public class DerivedUnitFacade {
 
 	
 	//plant description
+	@Transient
 	public String getPlantDescription(){
 		return getPlantDescription(null);
 	}
@@ -1142,12 +1147,11 @@ public class DerivedUnitFacade {
 		setPlantDescription(null, language);
 	}
 	
-
-	
 	//field object definition
 	public void addFieldObjectDefinition(String text, Language language) {
 		getFieldObservation(true).addDefinition(text, language);
 	}
+	
 	public Map<Language, LanguageString> getFieldObjectDefinition() {
 		if (! hasFieldObservation()){
 			return new HashMap<Language, LanguageString>();
@@ -1423,7 +1427,11 @@ public class DerivedUnitFacade {
 		if (derivedUnit.isInstanceOf(Specimen.class)){
 			return CdmBase.deproxy(derivedUnit, Specimen.class).getPreservation();
 		}else{
-			throw new MethodNotSupportedByDerivedUnitTypeException("A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
+			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()){
+				throw new MethodNotSupportedByDerivedUnitTypeException("A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
+			}else{
+				return null;
+			}
 		}
 	}
 	/**
@@ -1435,8 +1443,11 @@ public class DerivedUnitFacade {
 		if (derivedUnit.isInstanceOf(Specimen.class)){
 			CdmBase.deproxy(derivedUnit, Specimen.class).setPreservation(preservation);
 		}else{
-			throw new MethodNotSupportedByDerivedUnitTypeException("A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
-			
+			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()){
+				throw new MethodNotSupportedByDerivedUnitTypeException("A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
+			}else{
+				return;
+			}
 		}
 	}
 
@@ -1598,6 +1609,8 @@ public class DerivedUnitFacade {
 		//TODO check derivedUnitType
 		getDerivationEvent(true).addDerivative(duplicateSpecimen);  
 	}
+	
+	@Transient
 	public Set<Specimen> getDuplicates(){
 		Set<Specimen> result = new HashSet<Specimen>();
 		if (hasDerivationEvent()){

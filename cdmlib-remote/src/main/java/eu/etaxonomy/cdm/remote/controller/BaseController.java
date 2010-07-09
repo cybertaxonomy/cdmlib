@@ -39,21 +39,10 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 
 public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController {
-	
-	public static final Logger logger = Logger.getLogger(BaseController.class);
-	
-	protected static final Integer DEFAULT_PAGE_SIZE = 30;
-	
+
 	protected SERVICE service;
 	
-	
-	protected List<String> initializationStrategy = DEFAULT_INIT_STRATEGY;
-
 	public abstract void setService(SERVICE service);
-	
-	public void setInitializationStrategy(List<String> initializationStrategy) {
-		this.initializationStrategy = initializationStrategy;
-	}
 
 	@InitBinder
     public void initBinder(WebDataBinder binder) {

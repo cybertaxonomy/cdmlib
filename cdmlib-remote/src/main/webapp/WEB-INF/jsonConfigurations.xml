@@ -29,6 +29,7 @@
 					   <property name="excludes">
                             <set value-type="java.lang.String">
                                 <value>partOf</value><!-- FIXME exclude partOf to avoid  lazy loading exceptions  -->
+                                <value>kindOf</value><!-- FIXME exclude kindOf to avoid  lazy loading exceptions  -->
                                 <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
                             </set>
                         </property>

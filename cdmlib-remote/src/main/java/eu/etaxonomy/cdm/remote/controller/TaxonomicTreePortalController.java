@@ -58,8 +58,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * TODO this controller should be a portal controller!!
  */
 @Controller
-//@RequestMapping(value = {"/portal/taxontree/*","/portal/taxontree/*/annotation"})
-public class TaxonomicTreePortalController extends BaseController<TaxonomicTree,ITaxonTreeService> {
+@RequestMapping(value = {"/portal/taxontree/*","/portal/taxontree/{uuid}"})
+public class TaxonomicTreePortalController extends AnnotatableController<TaxonomicTree,ITaxonTreeService> {
 	
 	
 	private static final List<String> TAXONTREE_INIT_STRATEGY = Arrays.asList(new String[]{
