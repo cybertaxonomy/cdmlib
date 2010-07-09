@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/cdm-server/src/main/java/eu/etaxonomy/cdm/server/Bootloader.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="eu.etaxonomy.cdm.server.Bootloader"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-webapp=D:\workspaces\cdmlib-trunk\cdmlib-remote\src\main\webapp"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cdm-server"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;&#13;&#10;-XX:PermSize=128m &#13;&#10;-XX:MaxPermSize=192m&#13;&#10;&#13;&#10;-XX:+UseConcMarkSweepGC &#13;&#10;-XX:+CMSClassUnloadingEnabled &#13;&#10;-XX:+CMSPermGenSweepingEnabled"/>
+</launchConfiguration>
