@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -56,16 +57,17 @@ public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRe
 	
 	
 	@Override
-	public String getTitleCache(T nomenclaturalReference) {
-		if (nomenclaturalReference.isProtectedTitleCache()){
-			return nomenclaturalReference.getTitleCache();
+	public String getTitleCache(T article) {
+		if (article.isProtectedTitleCache()){
+			return article.getTitleCache();
 		}
-		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
-		result = addYear(result, nomenclaturalReference);
-		TeamOrPersonBase<?> team = nomenclaturalReference.getAuthorTeam();
-		result = CdmUtils.concat(" ", nomenclaturalReference.getTitle(), result);
+		String result =  getNomRefTitleWithoutYearAndAuthor(article);
+		result = addYear(result, article);
+		TeamOrPersonBase<?> team = article.getAuthorTeam();
+		result = CdmUtils.concat(" ", article.getTitle(), result);
 		if (team != null &&  CdmUtils.isNotEmpty(team.getTitleCache())){
-			result = team.getTitleCache() + afterAuthor + result;
+			String authorSeparator = StringUtils.isNotBlank(article.getTitle())? afterAuthor : " ";
+			result = team.getTitleCache() + authorSeparator + result;
 		}
 		return result;
 	}
