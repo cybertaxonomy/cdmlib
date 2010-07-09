@@ -27,6 +27,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -156,7 +158,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false)  //TODO check transactional behaviour, e.g. what happens with the session if count is very large 
 	public void updateTitleCache(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
@@ -168,18 +170,29 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			ArrayList<OrderHint> orderHints = new ArrayList<OrderHint>();
 			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
 			List<T> list = this.list(clazz, stepSize, i, orderHints, null);
+			List<T> entitiesToUpdate = new ArrayList<T>();
 			for (T entity : list){
 				if (entity.isProtectedTitleCache() == false){
-					if (cacheStrategy != null){
-						entity.setCacheStrategy(cacheStrategy);
+					IIdentifiableEntityCacheStrategy entityCacheStrategy = cacheStrategy;
+					if (entityCacheStrategy == null){
+						entityCacheStrategy = entity.getCacheStrategy();
+						//FIXME find out why the wrong cache strategy is loaded here, see #1876 
+						if (entity instanceof ReferenceBase){
+							entityCacheStrategy = ReferenceFactory.newReference(((ReferenceBase)entity).getType()).getCacheStrategy();
+						}
 					}
-					entity.setTitleCache(null);
-					setOtherCachesNull(entity);
-					entity.getTitleCache();
+					entity.setCacheStrategy(entityCacheStrategy);
+					//entity.setTitleCache(null);
+					setOtherCachesNull(entity); //TODO find better solution
+					String titleCache = entity.getTitleCache();
+					String newTitleCache = entityCacheStrategy.getTitleCache(entity);
+					if (titleCache != null && ! titleCache.equals(newTitleCache)){
+						entity.getTitleCache();
+						entitiesToUpdate.add(entity);
+					}
 				}
 			}
 			saveOrUpdateAll(list);
-			
 		}
 	}
 
