@@ -15,17 +15,18 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class DataSourceProperties {
+public class CdmInstanceProperties {
  
-	public static final Logger logger = Logger.getLogger(DataSourceProperties.class);
+	public static final Logger logger = Logger.getLogger(CdmInstanceProperties.class);
 
 	private String dataSourceName;
 	private String password;
 	private String username;
 	private String url;
 	private String driverClass;
+	private List<String> problems;
+	private Status status = Status.uninitialized;
 	
-	List<String> problems;
 	public List<String> getProblems() {
 		if(problems == null){
 			problems = new ArrayList<String>();
@@ -78,5 +79,27 @@ public class DataSourceProperties {
 	public String toString(){
 		return dataSourceName + " : " +  username + "@" + url;
 		
+	}
+	
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	/**
+	 * @return the status
+	 */
+	public Status getStatus() {
+		return status;
+	}
+
+	public enum Status{
+		uninitialized,
+		initializing,
+		starting,
+		started,
+		stopped,
+		error
 	}
 }

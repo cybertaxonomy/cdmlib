@@ -26,7 +26,11 @@ public class CommandOptions{
 			.withArgName("file")
 			.hasArg()
 			.withDescription( "use the specified webapplication this either can be a compresses war  or extracted file. " +
-					"If this options is used extraction of the war from the cdmserver jar file is omitted." )
+					"If this options is used extraction of the war from the cdmserver jar file is omitted." +
+					"Developers can run the server completely from the traget folder or completly from source " +
+					"when using the following paths: \n" +
+					"'{cdmlib-project-root}/cdmlib-remote/target/cdmserver' " +
+					"'{cdmlib-project-root}/cdmlib-remote/src/main/webapp' " )
 			.create("webapp");
 
 	@SuppressWarnings("static-access")

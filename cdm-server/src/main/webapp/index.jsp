@@ -4,11 +4,12 @@
 <%@page import="eu.etaxonomy.cdm.server.Bootloader"%>
 <%@page import="java.util.Set" %>
 <%@page import="java.net.URL" %>
-<%@page import="eu.etaxonomy.cdm.server.DataSourceProperties"%>
+<%@page import="eu.etaxonomy.cdm.server.CdmInstanceProperties"%>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
 	<title>CDM Server</title>
+	<meta http-equiv="refresh" content="3; URL=/" />
 	<link type="text/css" rel="stylesheet" media="all" href="/css/style.css" />
 	<link type="text/css" rel="stylesheet" media="all" href="/css/server.css" />
 	<script type="text/javascript" src="/js/jquery.js"></script>
@@ -54,24 +55,37 @@
 										<table>
 											<tr><th>Path</th><th>Database Url</th><th>Status</th><th>OAI-PMH Provider</th></tr>
                                             <%
-                                           java.util.Set<DataSourceProperties> dsSet = Bootloader.loadDataSources();
-                                           if(dsSet != null){
-
-                                        	   for(DataSourceProperties props : dsSet){
+                                           java.util.Set<CdmInstanceProperties> configAndStatus = Bootloader.getBootloader().getConfigAndStatus();
+                                           if(configAndStatus != null){
+                                        	   int i = 0;
+                                        	   for(CdmInstanceProperties props : configAndStatus){
+                                        		   i++;
                                         		   String basePath = "/" + props.getDataSourceName();
                                                    URL fullURL = new URL(request.getScheme(),
                                                            request.getServerName(),
                                                            request.getServerPort(),
                                                            basePath);
                                                    
-	                                        	   out.append("<tr class=\"entry\">");
-	                                        	   out.append("<td class=\"base-url\"><a href=\"" + fullURL + "\">" + basePath + "</a></td>");
+                                                   String oddOrEven = i % 2 == 0 ? "odd" : "even";
+                                                   String noBottomBorder = props.getStatus().equals(CdmInstanceProperties.Status.error) ? " style=\"border-bottom:none;\"" : "";
+                                                   
+	                                        	   out.append("<tr class=\"entry " + oddOrEven + "\" " +noBottomBorder+ ">");
+	                                        	   out.append("<td class=\"base-url\"><a href=\"" + fullURL + "/portal/taxontree/\">" + basePath + "</a></td>");
                                                    out.append("<td class=\"db-url\">" + props.getUrl() + "</td>");
-                                                   out.append("<td class=\"status\">" + "OK" + "</td>");
+                                                   out.append("<td class=\"status " + props.getStatus() + "\">" + props.getStatus() + "</td>");
                                                    
                                                    // OAI-PMH Status will be requested using javascript
                                                    out.append("<td class=\"oai-pmh\">requesting status ...</td>");
                                                    out.append("</tr>");
+                                                   if(props.getStatus().equals(CdmInstanceProperties.Status.error)){
+                                                	   out.append("<tr class=\"error-log " + oddOrEven + "\">");
+                                                	   out.append("<td></td><td  class=\"error\" colspan=\"3\">");
+                                                			   for( String problem : props.getProblems()){
+                                                				   out.append("<div>" + problem + "</div>");
+                                                			   }
+                                                	   out.append("</td>");
+                                                	   out.append("</tr>");
+                                                   }
 	                                           }
                                            }
                                            %>

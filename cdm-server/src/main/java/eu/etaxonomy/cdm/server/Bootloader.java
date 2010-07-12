@@ -27,9 +27,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.EventListener;
 import java.util.Set;
 
 import javax.naming.NamingException;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 import org.apache.commons.cli.CommandLine;
@@ -42,6 +45,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -85,21 +89,42 @@ public final class Bootloader {
     
     private static final int KB = 1024;
     
-    private static Set<DataSourceProperties> configs = null;
-    private static File webappFile = null;
+    private static Set<CdmInstanceProperties> configAndStatus = null;
+    
+    public static Set<CdmInstanceProperties> getConfigAndStatus() {
+		return configAndStatus;
+	}
+
+	private static File webappFile = null;
     private static File defaultWebAppFile = null;
+    
+    private static Server server = null;
+    private static ContextHandlerCollection contexts = new ContextHandlerCollection();
+    
+    private static Bootloader instance = null;
+
+	private static CommandLine cmdLine;
+    
 
     private Bootloader() {
-        // is started from main
+    	
+    	
     }
     
-    public static Set<DataSourceProperties> loadDataSources(){
-    	if(configs == null){
-    		File datasourcesFile = new File(USERHOME_CDM_LIBRARY_PATH, DATASOURCE_BEANDEF_FILE); 
-    		configs = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
-        	logger.info("cdm server instance names loaded: "+ configs.toString());
+    public static Bootloader getBootloader(){
+    	if(instance ==  null){
+    		instance = new Bootloader();
     	}
-    	return configs;
+    	return instance;
+    }
+    
+    private static Set<CdmInstanceProperties> loadDataSources(){
+    	if(configAndStatus == null){
+    		File datasourcesFile = new File(USERHOME_CDM_LIBRARY_PATH, DATASOURCE_BEANDEF_FILE); 
+    		configAndStatus = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
+        	logger.info("cdm server instance names loaded: "+ configAndStatus.toString());
+    	}
+    	return configAndStatus;
     }
 
     public static int writeStreamTo(final InputStream input, final OutputStream output, int bufferSize) throws IOException {
@@ -115,7 +140,7 @@ public final class Bootloader {
         return answer;
     }
 
-	private static boolean bindJndiDataSource(DataSourceProperties conf) {
+	private static boolean bindJndiDataSource(CdmInstanceProperties conf) {
 		try {
 			Class<DataSource> dsCass = (Class<DataSource>) Thread.currentThread().getContextClassLoader().loadClass("com.mchange.v2.c3p0.ComboPooledDataSource");
 			DataSource datasource = dsCass.newInstance();
@@ -165,9 +190,16 @@ public final class Bootloader {
 		return false;
 	}
 	
-	private static CommandLine parseCommandOptions(String[] args) throws ParseException {
+	private static void parseCommandOptions(String[] args) throws ParseException {
 		CommandLineParser parser = new GnuParser();
-		return parser.parse( CommandOptions.getOptions(), args );
+		cmdLine = parser.parse( CommandOptions.getOptions(), args );
+		
+		 // print the help message
+		 if(cmdLine.hasOption(HELP.getOpt())){
+			 HelpFormatter formatter = new HelpFormatter();
+			 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
+			 System.exit(0);
+		 }
 	}
 
 
@@ -197,16 +229,16 @@ public final class Bootloader {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+	
+		Bootloader bootloader = Bootloader.getBootloader();
     	
-		CommandLine cmdLine = parseCommandOptions(args);
+		bootloader.parseCommandOptions(args);
 		
-		 // print the help message
-		 if(cmdLine.hasOption(HELP.getOpt())){
-			 HelpFormatter formatter = new HelpFormatter();
-			 formatter.printHelp( "java .. ", CommandOptions.getOptions() );
-			 System.exit(0);
-		 }
+		bootloader.startServer();
+    }
 
+	private static void startServer() throws IOException,
+			FileNotFoundException, Exception, InterruptedException {
 		logger.info("Starting "+APPLICATION_NAME);
 		logger.info("Using  " + System.getProperty("user.home") + " as home directory. Can be specified by -Duser.home=<FOLDER>");
     	
@@ -259,7 +291,9 @@ public final class Bootloader {
     	
     	loadDataSources();
     	
-		Server server = new Server(httpPort);
+    	//System.setProperty("DEBUG", "true");
+    	
+		server = new Server(httpPort);
 		
 		// JMX support
 		if(cmdLine.hasOption(JMX.getOpt())){
@@ -271,7 +305,7 @@ public final class Bootloader {
 		}
 		
 		// add servelet contexts
-		ContextHandlerCollection contexts = new ContextHandlerCollection();
+		
 		
 		//
 		// 1. default context
@@ -286,17 +320,61 @@ public final class Bootloader {
     	//
 		// 2. cdm server contexts
     	//
-        for(DataSourceProperties conf : configs){
+    	server.addLifeCycleListener(new LifeCycle.Listener(){
+
+			@Override
+			public void lifeCycleFailure(LifeCycle event, Throwable cause) {
+			}
+
+			@Override
+			public void lifeCycleStarted(LifeCycle event) {
+				logger.info("cdmserver has started, now adding CDM server contexts");
+				try {
+					addCdmServerContexts(true);
+				} catch (IOException e1) {
+					logger.error(e1);
+				}		
+			}
+
+			@Override
+			public void lifeCycleStarting(LifeCycle event) {
+			}
+
+			@Override
+			public void lifeCycleStopped(LifeCycle event) {
+			}
+
+			@Override
+			public void lifeCycleStopping(LifeCycle event) {
+			}
+			
+			});
+        
+        
+        logger.info("setting contexts ...");
+        server.setHandler(contexts);
+        logger.info("starting jetty ...");
+        server.start();
+        server.join();
+        logger.info(APPLICATION_NAME+" stopped.");
+    	System.exit(0);
+	}
+
+	private static void addCdmServerContexts(boolean austostart) throws IOException {
+		
+		for(CdmInstanceProperties conf : configAndStatus){
+			conf.setStatus(CdmInstanceProperties.Status.initializing);
         	logger.info("preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
         	WebAppContext cdmWebappContext = new WebAppContext();
-        	
+         
 	        cdmWebappContext.setContextPath("/"+conf.getDataSourceName());
 	        cdmWebappContext.setTempDirectory(CDM_WEBAPP_TEMP_FOLDER);
 	        
             if(!bindJndiDataSource(conf)){
             	// a problem with the datasource occurred skip this webapp
             	cdmWebappContext = null;
-            	logger.error("a problem with the datasource occurred -> skipping /"+conf.getDataSourceName());
+            	logger.error("a problem with the datasource occurred -> skipping /" + conf.getDataSourceName());
+				conf.setStatus(CdmInstanceProperties.Status.error);
             	continue;
             }
             
@@ -307,7 +385,7 @@ public final class Bootloader {
         		
 				/*
 				 * when running the webapp from {projectpath} src/main/webapp we
-				 * havew to assure that each web application is using it's own
+				 * must assure that each web application is using it's own
 				 * classloader thus we tell the WebAppClassLoader where the
 				 * dependencies of the webapplication can be found. Otherwise
 				 * the system classloader would load these resources.
@@ -319,18 +397,21 @@ public final class Bootloader {
 	        	cdmWebappContext.setClassLoader(classLoader);
         	}
 	        
-	        contexts.addHandler(cdmWebappContext);
+	        contexts.addHandler(cdmWebappContext);  
+	        
+	        if(austostart){
+		        try {
+		        	conf.setStatus(CdmInstanceProperties.Status.starting);
+					cdmWebappContext.start();
+					conf.setStatus(CdmInstanceProperties.Status.started);
+				} catch (Exception e) {
+					logger.error("Could not start " + cdmWebappContext.getContextPath());
+					conf.setStatus(CdmInstanceProperties.Status.error);
+				}
+	        }
 
         }
-        logger.info("setting contexts ...");
-        server.setHandler(contexts);
-        logger.info("starting jetty ...");
-        server.start();
-        logger.info("cdmserver has started!");
-        server.join();
-        logger.info(APPLICATION_NAME+" stopped.");
-    	System.exit(0);
-    }
+	}
 
 	private static void setWebApp(WebAppContext context, File webApplicationResource) {
 		if(webApplicationResource.isDirectory()){
@@ -343,6 +424,7 @@ public final class Bootloader {
 	}
 
 	private static boolean isRunningFromSource() {
-		return webappFile.getAbsolutePath().replace('\\', '/').endsWith("src/main/webapp");
+		String webappPathNormalized = webappFile.getAbsolutePath().replace('\\', '/');
+		return webappPathNormalized.endsWith("src/main/webapp") || webappPathNormalized.endsWith("cdmlib-remote/target/cdmserver");
 	}
 }

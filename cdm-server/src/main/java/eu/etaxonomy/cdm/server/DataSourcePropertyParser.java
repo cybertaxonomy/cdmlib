@@ -34,16 +34,16 @@ public class DataSourcePropertyParser {
 	
 	public static final Logger logger = Logger.getLogger(DataSourcePropertyParser.class);
 	
-	public static Set<DataSourceProperties> parseDataSourceConfigs(File datasourcesFile){
+	public static Set<CdmInstanceProperties> parseDataSourceConfigs(File datasourcesFile){
 
 		logger.info("loading bean definition file: " + datasourcesFile.getAbsolutePath());
-		Set<DataSourceProperties> configSet = new HashSet<DataSourceProperties>();
+		Set<CdmInstanceProperties> configSet = new HashSet<CdmInstanceProperties>();
     	try {
     		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = builder.parse(datasourcesFile);
 			NodeList beanNodes  = doc.getElementsByTagName("bean");
 			for(int i=0; i < beanNodes.getLength(); i++){
-				DataSourceProperties conf = new DataSourceProperties();
+				CdmInstanceProperties conf = new CdmInstanceProperties();
 				Node beanNode = beanNodes.item(i);
 				// ATTRIBUTE_DATASOURCE_NAME
 				NamedNodeMap namedNodeMap = beanNode.getAttributes();
