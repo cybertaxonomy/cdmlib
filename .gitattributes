@@ -2082,6 +2082,7 @@ cdmlib-model/src/site/resources/images/uml/Types_section.png -text
 cdmlib-model/src/site/resources/images/uml/package_overview.png -text
 cdmlib-model/src/site/site.xml -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionTypeTest.java -text
