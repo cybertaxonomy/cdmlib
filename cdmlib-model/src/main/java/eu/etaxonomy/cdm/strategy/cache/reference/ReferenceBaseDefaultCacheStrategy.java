@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @created 08-Aug-2008 22:06:45
  */
 public class ReferenceBaseDefaultCacheStrategy<T extends ReferenceBase> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceBaseDefaultCacheStrategy.class);
 	
 	/**
