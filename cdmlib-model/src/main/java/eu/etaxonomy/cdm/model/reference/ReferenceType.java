@@ -136,7 +136,7 @@ public enum ReferenceType {
 	 * Returns true if references of this type have volume information.
 	 */
 	public boolean isVolumeReference(){
-		return (this == Article || isPrintedUnit());
+		return (this == Article || isPrintedUnit() || this == Generic);
 	}
 	
 	/**
@@ -146,8 +146,8 @@ public enum ReferenceType {
 	public boolean isPublication(){
 		return (this == CdDvd || this == Database || this == Generic
 				|| this == Journal || isPrintedUnit() ||  this == PrintSeries
-				|| this == Proceedings || this == Report 
-				|| this == Thesis || this == WebPage);			
+				|| this == Report  || this == Thesis 
+				|| this == WebPage || this == Map);			
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public enum ReferenceType {
 	 * representing the series (seriesPart).
 	 */
 	public boolean isPrintedUnit(){
-		return (this == Book);
+		return (this == Book || this == Proceedings);
 	}
 	
 	/**
@@ -164,7 +164,8 @@ public enum ReferenceType {
 	 * {@link ISectionBase}) and therefore may have an in-reference and pages.
 	 */
 	public boolean isSection(){
-		return (this == BookSection || this == InProceedings || isVolumeReference());
+		return (this == BookSection || this == InProceedings 
+				|| isPrintedUnit() || this == Article );
 	}
 	
 }
