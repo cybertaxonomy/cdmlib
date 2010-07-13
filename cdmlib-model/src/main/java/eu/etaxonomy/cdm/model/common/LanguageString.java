@@ -20,6 +20,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 /**
+ * This class is an instantiatable class for the base class {@link LanguageStringBase}.
+ * No further functionality is added.
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:32
