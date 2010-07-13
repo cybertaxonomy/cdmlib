@@ -11,17 +11,39 @@ package eu.etaxonomy.cdm.model.reference;
 
 public interface IPublicationBase extends IReferenceBase {
 	
+	/**
+	 * Returns the publisher string for this reference
+	 */
 	public String getPublisher() ;
 	
-	public void setPublisher(String publisher) ;
 	/**
+	 * Sets the publisher string for this reference
+	 * @param publisher
+	 */
+	public void setPublisher(String publisher) ;
+
+	/**
+	 * Returns the string which represents the place where this 
+	 * reference was published
+	 */
+	public String getPlacePublished() ;
+	
+	/**
+	 * Sets the string which represents the place where this 
+	 * reference was published
+	 */
+	public void setPlacePublished(String placePublished) ;
+
+	/**
+	 * Sets the publisher and the publication place
+	 * 
+	 * @see #setPublisher(String)
+	 * @see #setPlacePublished(String)
+	 * 
 	 * @param publisher the publisher to set
 	 * @param placePublished the place where the publication was published
 	 */
 	public void setPublisher(String publisher, String placePublished);
-		
 
-	public String getPlacePublished() ;
-	
-	public void setPlacePublished(String placePublished) ;
+
 }
