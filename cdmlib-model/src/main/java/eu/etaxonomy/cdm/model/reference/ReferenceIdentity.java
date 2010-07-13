@@ -14,7 +14,6 @@ package eu.etaxonomy.cdm.model.reference;
 
 import java.util.Set;
 
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -30,7 +29,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -49,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 //@Entity
 public class ReferenceIdentity extends VersionableEntity {
 	private static final long serialVersionUID = -6114973116800471106L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceIdentity.class);
 	
 	@XmlElementWrapper(name = "References")
