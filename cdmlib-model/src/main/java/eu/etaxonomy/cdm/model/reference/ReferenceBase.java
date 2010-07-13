@@ -901,103 +901,83 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	/* Casting methods */
 	
 	public IArticle castReferenceToArticle(){
-		((IArticle) this).setCacheStrategy(ArticleDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Article;
-		
+		setType(ReferenceType.Article);
 		return (IArticle) this;
 	}
 	
 	public IBook castReferenceToBook(){
-		((IBook) this).setCacheStrategy(BookDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Book;
+		setType(ReferenceType.Book);
 		return (IBook) this;
 	}
 	
 	public IBookSection castReferenceToBookSection(){
-		((IBookSection) this).setCacheStrategy(BookSectionDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.BookSection;
-		
+		setType(ReferenceType.BookSection);
 		return (IBookSection) this;
 	}
 	
 	public ICdDvd castReferenceToCdDvd(){
-		((ICdDvd) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.CdDvd;
+		setType(ReferenceType.CdDvd);
 		return (ICdDvd) this;
 	}
 	
 	public IDatabase castReferenceToDatabase(){
-		((IDatabase) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Database;
+		setType(ReferenceType.Database);
 		return (IDatabase) this;
 	}
 	
 	public IGeneric castReferenceToGeneric(){
-		((IGeneric) this).setCacheStrategy(GenericDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Generic;
+		setType(ReferenceType.Generic);
 		return (IGeneric) this;
 	}
 	
 	public IInProceedings castReferenceToInProceedings(){
-		((IInProceedings) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.InProceedings;
+		setType(ReferenceType.InProceedings);
 		return (IInProceedings) this;
 	}
 	
 	public IJournal castReferenceToJournal(){
-		((IJournal) this).setCacheStrategy(JournalDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Journal;
-		IJournal test = this;
-		return (IJournal) test;
+		setType(ReferenceType.Journal);
+		return (IJournal) this;
 	}
 	
-	public IMap castReferenceToMap(ReferenceBase ref){
-		((IMap) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Map;
-		return (IMap) ref;
+	public IMap castReferenceToMap(){
+		setType(ReferenceType.Map);
+		return (IMap) this;
 	}
 	
-	public IPatent castReferenceToPatent(ReferenceBase ref){
-		((IPatent) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Patent;
-		return (IPatent) ref;
+	public IPatent castReferenceToPatent(){
+		setType(ReferenceType.Patent);
+		return (IPatent) this;
 	}
 	
-	public IPersonalCommunication castReferenceToPersonalCommunication(ReferenceBase ref){
-		((IPersonalCommunication) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.PersonalCommunication;
-		return (IPersonalCommunication) ref;
+	public IPersonalCommunication castReferenceToPersonalCommunication(){
+		setType(ReferenceType.PersonalCommunication);
+		return (IPersonalCommunication) this;
 	}
 	
-	public IPrintSeries castReferenceToPrintSeries(ReferenceBase ref){
-		((IPrintSeries) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.PrintSeries;
-		return (IPrintSeries) ref;
+	public IPrintSeries castReferenceToPrintSeries(){
+		setType(ReferenceType.PrintSeries);
+		return (IPrintSeries) this;
 	}
 	
-	public IWebPage castReferenceToWebPage(ReferenceBase ref){
-		((IWebPage) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.WebPage;
-		return (IWebPage) ref;
+	public IWebPage castReferenceToWebPage(){
+		setType(ReferenceType.WebPage);
+		return (IWebPage) this;
 	}
 	
-	public IProceedings castReferenceToProceedings(ReferenceBase ref){
-		((IProceedings) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Proceedings;
-		return (IProceedings) ref;
+	public IProceedings castReferenceToProceedings(){
+		setType(ReferenceType.Proceedings);
+		return (IProceedings) this;
 	}
 	
-	public IReport castReferenceToReport(ReferenceBase ref){
-		((IReport) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Report;
-		
-		return (IReport) ref;
+	public IReport castReferenceToReport(){
+		setType(ReferenceType.Report);
+		return (IReport) this;
 	}
 
-	public IThesis castReferenceToThesis(ReferenceBase ref){
-		((IThesis) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
-		this.type = ReferenceType.Thesis;
-		return (IThesis) ref;
+	public IThesis castReferenceToThesis(){
+		setType(ReferenceType.Thesis);
+		return (IThesis) this;
 	}
 
 	
