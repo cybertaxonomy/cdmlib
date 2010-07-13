@@ -259,42 +259,19 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#swapSynonymWithAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym)
 	 */
 	@Transactional(readOnly = false)
-	public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, SynonymRelationshipType synonymRelationshipType){
+	public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
 		
-		// create a new synonym with the old acceptedName
-		TaxonNameBase oldAcceptedTaxonName = acceptedTaxon.getName();
+		TaxonNameBase synonymName = synonym.getName();
+		synonymName.removeTaxonBase(synonym);
+		TaxonNameBase taxonName = acceptedTaxon.getName();
+		taxonName.removeTaxonBase(acceptedTaxon);
 		
-		// store the synonyms name
-		TaxonNameBase newAcceptedTaxonName = synonym.getName();
+		synonym.setName(taxonName);
+		acceptedTaxon.setName(synonymName);
 		
-		Set<SynonymRelationship> synrels = acceptedTaxon.getSynonymRelations();
-		Iterator<SynonymRelationship> synRelIterator = synrels.iterator();
-		SynonymRelationshipType type = null;
-		while (synRelIterator.hasNext()){
-			SynonymRelationship synRel = synRelIterator.next();
-			if (synRel.getSynonym().equals(synonym)){
-				type = synRel.getType();
-				break;
-			}
-		}
-		
-		// remove synonym from oldAcceptedTaxon
-		acceptedTaxon.removeSynonym(synonym);
-		
-		// make synonym name the accepted taxons name
-		acceptedTaxon.setName(newAcceptedTaxonName);
-		synonym.setName(oldAcceptedTaxonName);
-		
-		// add the new synonym to the acceptedTaxon
-		if(synonymRelationshipType == null){
-			//synonymRelationshipType = SynonymRelationshipType.SYNONYM_OF();
-			synonymRelationshipType = type;
-		}
-		if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
-			acceptedTaxon.addHomotypicSynonym(synonym, null, null);
-		}else{
-			acceptedTaxon.addSynonymName(oldAcceptedTaxonName, synonymRelationshipType);
-		}
+		// the accepted taxon needs a new uuid because the concept has changed
+		// FIXME this leads to an error "HibernateException: immutable natural identifier of an instance of eu.etaxonomy.cdm.model.taxon.Taxon was altered"
+		//acceptedTaxon.setUuid(UUID.randomUUID());
 	}
 		
 	
