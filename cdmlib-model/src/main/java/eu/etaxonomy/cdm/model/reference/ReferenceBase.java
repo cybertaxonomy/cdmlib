@@ -63,11 +63,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
- * The upmost (abstract) class for references (information sources). Its two
- * direct subclasses {@link StrictReferenceBase StrictReferenceBase} and {@link BibtexReference BibtexReference}
- * allow either on the one side to handle different kind of references with their
- * peculiarities or on the other side to follow the flat BibTeX format
- * (see "http://en.wikipedia.org/wiki/BibTeX").
+ * The upmost (abstract) class for references (information sources). 
  * <P>
  * This class corresponds to: <ul>
  * <li> PublicationCitation according to the TDWG ontology
