@@ -1966,6 +1966,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/IReferenceB
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/JournalDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/NomRefDefaultCacheStrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ReferenceBaseDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ReferenceTypeTest.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
