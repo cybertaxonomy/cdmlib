@@ -8,10 +8,25 @@
 */ 
 
 package eu.etaxonomy.cdm.model.reference;
-
+/**
+* This interface represents conference proceedings. Proceedings are a
+* collection of academic papers that are published in the context of an
+* academic conference. Each paper typically is quite isolated from the other
+* papers in the proceedings. Proceedings are published in-house, by the
+* organizing institution of the conference, or via an academic publisher. 
+* <P>
+* This class corresponds, according to the TDWG ontology, to the publication type
+* term (from PublicationTypeTerm): "ConferenceProceedings".
+*/
 public interface IProceedings extends IPrintedUnitBase{
 
+	/**
+	 * Returns the organization which published this reference
+	 */
 	public String getOrganization();
 	
+	/**
+	 * Sets the organization which published this reference
+	 */
 	public void setOrganization(String organization);
 }

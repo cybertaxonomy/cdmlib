@@ -9,24 +9,45 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 
+/**
+ * This interface represents articles in a {@link IJournal journal}. An article is an independent
+ * piece of prose written by an {@link TeamOrPersonBase author (team)} which is published among
+ * other articles within a particular issue of a journal.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * terms (from PublicationTypeTerm): <ul>
+ * <li> "JournalArticle"
+ * <li> "NewspaperArticle"
+ * <li> "MagazineArticle"
+ * </ul>
+ */
 public interface IArticle extends IVolumeReference, IReferenceBase, ISectionBase, INomenclaturalReference{
 	
-	public void setSeries(String series);
-	
+	/**
+	 * Returns the series information for this article
+	 */
 	public String getSeries();
 
+	/**
+	 * Sets the series information for this article
+	 * @param series
+	 */
+	public void setSeries(String series);
+	
+	
 	
 	/**
-	 * Returns the articles journal.
+	 * Returns this articles journal.
 	 * @return
 	 */
 	public IJournal getInJournal();
 	
 	
 	/**
-	 * Sets the articles journal 
+	 * Sets this articles journal 
 	 * @param journal
 	 */
 	public void setInJournal(IJournal journal);

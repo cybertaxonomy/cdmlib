@@ -9,6 +9,13 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+/**
+ * This interface represents a database used as an information source. A database is
+ * a structured collection of records or data.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, partially to the
+ * publication type term (from PublicationTypeTerm): "ComputerProgram".
+ */
 public interface IDatabase extends IPublicationBase{
 
 }

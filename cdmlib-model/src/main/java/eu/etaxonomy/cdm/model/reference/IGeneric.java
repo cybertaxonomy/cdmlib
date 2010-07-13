@@ -11,28 +11,57 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 
-public interface IGeneric extends IPublicationBase, INomenclaturalReference{
+/**
+ * This interface represents all references which cannot be clearly assigned to a
+ * particular {@link StrictReferenceBase reference} subclass. Therefore attributes which are
+ * characteristic for a unique reference subclass are not necessary here.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * terms (from PublicationTypeTerm): <ul>
+ * <li> "Generic"
+ * <li> "Artwork"
+ * <li> "AudiovisualMaterial"
+ * <li> "ComputerProgram"
+ * <li> "Determination"
+ * <li> "Commentary"
+ * <li> "SubReference"
+ * </ul>
+ */
+public interface IGeneric extends IPublicationBase, INomenclaturalReference, IVolumeReference{
 
+	/**
+	 * Returns the editor of this generic reference
+	 */
 	public String getEditor();
 	
+	/**
+	 * Sets the editor for this generic reference
+	 * @param editor
+	 */
 	public void setEditor(String editor);
 	
+	/**
+	 * Returns the series of this generic reference
+	 */
 	public String getSeries();
 	
+	/**
+	 * Sets the series for this generic reference
+	 * @param series
+	 */
 	public void setSeries(String series);
 	
+	/**
+	 * Returns the pages (page span this reference covers in its in-reference) 
+	 */
 	public String getPages();
 	
+	/**
+	 * Sets the pages (page span this reference covers in its in-reference) 
+	 * @param pages
+	 */
 	public void setPages(String pages);
-	/**
-	 * Returns the volume of a reference.
-	 */
-	public String getVolume();
-	
-	/**
-	 * Sets the volume of the reference.
-	 */
-	public void setVolume(String volume);
+
 	
 	void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy);
 	

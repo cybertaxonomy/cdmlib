@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
  * This (abstract) class represents printed {@link PublicationBase published references} which
- * are recurrent products of publishing companies or of research organisations.
+ * are recurrent products of publishing companies or of research organizations.
  * In this case it is generally possible to distinguish authors, editors and
  * publishers. 
  * 

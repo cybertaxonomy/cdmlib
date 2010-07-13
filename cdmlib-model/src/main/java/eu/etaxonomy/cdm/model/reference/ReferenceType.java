@@ -27,6 +27,10 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 
 
 /**
+ * The reference type is used to define the type of a {@link ReferenceBase reference}.<BR>
+ * When changing the type of a reference one must be careful with handling attached information.
+ * E.g. changing the type of a reference from article to book section requires to either exchange
+ * the in reference or to change the type of the in reference which may have further consequences.
  * @author a.mueller
  * @created 20.09.2009
  * @version 1.0
@@ -128,10 +132,17 @@ public enum ReferenceType {
 		return ReferenceBaseDefaultCacheStrategy.NewInstance();
 	}
 	
+	/**
+	 * Returns true if references of this type have volume information.
+	 */
 	public boolean isVolumeReference(){
 		return (this == Article || isPrintedUnit());
 	}
 	
+	/**
+	 * Returns true if references of this type are publications (inheriting from
+	 * {@link IPublicationBase}) and therefore have a publisher and a publication place.
+	 */
 	public boolean isPublication(){
 		return (this == CdDvd || this == Database || this == Generic
 				|| this == Journal || isPrintedUnit() ||  this == PrintSeries
@@ -139,10 +150,19 @@ public enum ReferenceType {
 				|| this == Thesis || this == WebPage);			
 	}
 	
+	/**
+	 * Returns true if references of this type are printed units (inheriting from
+	 * {@link IPrintedUnitBase}) and therefore may have an editor, an in-series or an string 
+	 * representing the series (seriesPart).
+	 */
 	public boolean isPrintedUnit(){
 		return (this == Book);
 	}
 	
+	/**
+	 * Returns true if references of this type are parts of other references (inheriting from
+	 * {@link ISectionBase}) and therefore may have an in-reference and pages.
+	 */
 	public boolean isSection(){
 		return (this == BookSection || this == InProceedings || isVolumeReference());
 	}

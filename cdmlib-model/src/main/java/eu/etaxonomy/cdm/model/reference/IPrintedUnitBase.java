@@ -10,6 +10,12 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+/**
+ * This interface represents printed {@link IPublicationBase published references} which
+ * are recurrent products of publishing companies or of research organizations.
+ * In this case it is generally possible to distinguish authors, editors and
+ * publishers. 
+ */
 public interface IPrintedUnitBase extends IPublicationBase, ISectionBase, IVolumeReference {
 
 	/**
@@ -25,12 +31,26 @@ public interface IPrintedUnitBase extends IPublicationBase, ISectionBase, IVolum
 	public void setInSeries(IPrintSeries series);
 
 	
+	/**
+	 * Returns the editor of this reference
+	 */
 	public String getEditor();
 	
+	/**
+	 * Sets the editor for this reference
+	 * @param editor
+	 */
 	public void setEditor(String editor);
 	
+	/**
+	 * Returns the series part for this printed unit
+	 */
 	public String getSeriesPart();
 	
+	/**
+	 * Sets the series part for this printed unit
+	 * @param seriesPart
+	 */
 	public void setSeriesPart(String seriesPart);
 	
 }

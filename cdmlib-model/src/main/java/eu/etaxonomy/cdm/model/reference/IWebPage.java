@@ -9,6 +9,12 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-public interface IWebPage extends IPublicationBase {
+/**
+ * This interface represents electronic publications available on the world wide web.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * term (from PublicationTypeTerm): "WebPage".
+ */ 
+ public interface IWebPage extends IPublicationBase {
 
 }

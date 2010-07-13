@@ -17,6 +17,16 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
+
+/**
+ * The upmost interface for references (information sources). 
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> PublicationCitation according to the TDWG ontology
+ * <li> Publication according to the TCS
+ * <li> Reference according to the ABCD schema
+ * </ul>
+ */
 public interface IReferenceBase extends IIdentifiableEntity, IParsable, IMergable, IMatchable{
 
 	/**

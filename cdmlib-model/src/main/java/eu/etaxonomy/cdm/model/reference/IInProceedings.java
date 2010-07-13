@@ -9,12 +9,25 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-
+/**
+ * This interface represents isolated parts (usually papers or abstracts) within
+ * {@link IProceedings conference proceedings}.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, partially to the
+ * publication type term (from PublicationTypeTerm): "SubReference".
+ */
 public interface IInProceedings extends ISectionBase{
 	
 
+	/**
+	 * Returns the proceedings for these inProceedings
+	 */
 	public IProceedings getInProceedings();
 	
+	/**
+	 * Sets the proceedings for these inProceedings
+	 * @param inProceedings
+	 */
 	public void setInProceedings(IProceedings inProceedings);
 	
 }

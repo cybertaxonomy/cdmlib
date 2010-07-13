@@ -9,8 +9,14 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 
+/**
+ * This interface represents electronic publications the support of which are Cds 
+ * (Compact Discs) or Dvds (Digital Versatile Discs). This class applies for Cds
+ * or Dvds as a whole but not for parts of it.
+ * CdDvd implements INomenclaturalReference as this seems to be allowed by the ICZN
+ * (see http://www.iczn.org/electronic_publication.html)
+ */
 public interface ICdDvd extends IPublicationBase{
 
 	

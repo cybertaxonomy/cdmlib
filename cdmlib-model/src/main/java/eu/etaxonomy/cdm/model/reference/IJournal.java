@@ -11,10 +11,24 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 
+/**
+ * This interface represents journals. A journal is a periodical 
+ * {@link IPublicationBase publication} containing several {@link IArticle articles}.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * term (from PublicationTypeTerm): "Journal".
+ */
 public interface IJournal extends IPublicationBase{
 
+	/**
+	 * Returns the ISSN (International Standard Serial Number)
+	 */
 	public String getIssn();
 	
+	/**
+	 * Sets the ISSN (International Standard Serial Number)
+	 * @param issn
+	 */
 	public void setIssn(String issn);
 	
 	void setCacheStrategy(JournalDefaultCacheStrategy cacheStrategy);

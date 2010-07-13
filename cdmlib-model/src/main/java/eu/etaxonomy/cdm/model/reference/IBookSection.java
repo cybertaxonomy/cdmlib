@@ -11,17 +11,23 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
 
-
+/**
+ * This interface represents isolated sections (parts or chapters) within a 
+ * {@link IBook book} or {@link IProceedings proceedings}.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * term (from PublicationTypeTerm): "BookSection".
+ */
 public interface IBookSection extends ISectionBase, INomenclaturalReference{
 
 	/**
-	 * Returns the book sections book
+	 * Returns this book sections book
 	 * @return
 	 */
 	public IBook getInBook();
 	
 	/**
-	 * Sets the book sections book.
+	 * Sets this book sections book.
 	 * @param book
 	 */
 	public void setInBook (IBook book);
