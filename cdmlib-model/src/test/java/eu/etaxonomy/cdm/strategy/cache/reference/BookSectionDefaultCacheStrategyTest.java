@@ -120,4 +120,26 @@ public class BookSectionDefaultCacheStrategyTest {
 		Assert.assertEquals("in Book Author, My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
 	}
 	
+	@Test
+	public void testRealExample(){
+		Team bookTeam = Team.NewTitledInstance("Chaudhary S. A.(ed.)", "Chaudhary S. A.(ed.)");
+		IBook book = ReferenceFactory.newBook();
+		book.setTitle("Flora of the Kingdom of Saudi Arabia");
+		book.setAuthorTeam(bookTeam);
+		book.setVolume("2(3)");
+		book.setPlacePublished("Riyadh");
+		book.setPublisher("National Herbarium");
+		book.setDatePublished(TimePeriod.NewInstance(2000));
+		
+		Team sectionTeam = Team.NewTitledInstance("Chaudhary S. A.", "Chaudhary S. A.");
+		IBookSection bookSection = ReferenceFactory.newBookSection();
+		bookSection.setTitle("73. Hedypnois - 87. Crepis");
+		bookSection.setInBook(book);
+		bookSection.setAuthorTeam(sectionTeam);
+		bookSection.setPages("222-251");
+		System.out.println(bookSection.getTitleCache());
+		Assert.assertEquals("Chaudhary S. A. - 73. Hedypnois - 87. Crepis in Chaudhary S. A.(ed.), Flora of the Kingdom of Saudi Arabia 2(3). 2000", bookSection.getTitleCache());
+		
+	}
+	
 }

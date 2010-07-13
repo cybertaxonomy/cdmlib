@@ -126,4 +126,18 @@ public class ArticleDefaultCacheStrategyTest {
 		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getNomRefTitleWithoutYearAndAuthor((ReferenceBase)article1));
 	}
 	
+	@Test 
+	public void testOldExistingBugs(){
+		journal1.setTitle("Univ. Calif. Publ. Bot.");
+		journal1.setAuthorTeam(null);
+		
+		Team articleAuthor = Team.NewTitledInstance("Babc. & Stebbins", "Babc. & Stebbins");
+		article1.setTitle("");
+		article1.setInJournal(journal1);
+		article1.setAuthorTeam(articleAuthor);
+		article1.setVolume("18");
+		article1.setDatePublished(TimePeriod.NewInstance(1943));
+		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((ReferenceBase)article1));
+	}
+	
 }
