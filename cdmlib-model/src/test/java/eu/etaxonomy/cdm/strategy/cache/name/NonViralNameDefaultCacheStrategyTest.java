@@ -386,15 +386,15 @@ public class NonViralNameDefaultCacheStrategyTest {
 		assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);
 		//test species aggregates and species groups
 		nonViralName.setRank(Rank.SPECIESAGGREGATE());
-		nonViralName.setSpecificEpithet("species");
+		nonViralName.setSpecificEpithet("myspecies");
 		String aggrNameCache = strategy.getInfraGenusNameCache(nonViralName);
-		assertEquals("Species aggregate name should be 'Genus species aggr.'.", "Genus species aggr.", aggrNameCache);
+		assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameCache);
 		String aggrNameTitle = strategy.getTitleCache(nonViralName);
 		Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
-		assertEquals("Species aggregate name should be 'Genus species aggr.'.", "Genus species aggr.", aggrNameTitle);
+		assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameTitle);
 		nonViralName.setRank(Rank.SPECIESGROUP());
 		String groupNameTitle = strategy.getTitleCache(nonViralName);
-		assertEquals("Species group name should be 'Genus species group'.", "Genus species group", groupNameTitle);
+		assertEquals("Species group name should be 'Genus myspecies species group'.", "Genus myspecies species group", groupNameTitle);
 		
 	}
 	

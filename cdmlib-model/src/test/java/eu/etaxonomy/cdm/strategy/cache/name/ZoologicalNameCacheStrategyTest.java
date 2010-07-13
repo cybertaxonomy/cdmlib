@@ -132,14 +132,19 @@ public class ZoologicalNameCacheStrategyTest {
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
 		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString  + ", " + originalPublicationYear +")" +  " " + exAuthorString + " ex " + authorString + ", " + publicationYear, strategy.getTitleCache(subSpeciesName));
 		
-		//Autonym TODO are there autonyms in zoology?
+		//Autonym, 
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorTeam(author);
 		subSpeciesName.setBasionymAuthorTeam(null);
 		subSpeciesName.setExCombinationAuthorTeam(null);
 		subSpeciesName.setExBasionymAuthorTeam(null);
-		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
-		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
+		//old
+		//assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
+		//assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
+		//new we now assume that there are no autonyms in zoology (source: they do not exist in Fauna Europaea)
+		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
+		assertEquals("Abies alba subsp. alba (1860) L., 1928", strategy.getTitleCache(subSpeciesName));
+		
 	}
 
 	/**
@@ -220,8 +225,13 @@ public class ZoologicalNameCacheStrategyTest {
 	public final void testAutonyms() {
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorTeam(author);
-		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
-		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
+		//old
+//		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
+//		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
+		//new
+		//new: we now assume that there are no autonyms in zoology (source: they do not exist in Fauna Europaea)
+		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
+		assertEquals("Abies alba subsp. alba L.", strategy.getTitleCache(subSpeciesName));
 	}
 	
 	
