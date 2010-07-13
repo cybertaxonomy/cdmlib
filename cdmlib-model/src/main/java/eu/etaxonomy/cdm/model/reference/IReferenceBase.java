@@ -19,29 +19,54 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
 public interface IReferenceBase extends IIdentifiableEntity, IParsable, IMergable, IMatchable{
 
-	//public ReferenceBase getInReference() ;
-
-	//public void setInReference(ReferenceBase inReference) ;
-
-	public void setType(ReferenceType type) ;
-	
+	/**
+	 * Returns the reference type
+	 */
 	public ReferenceType getType() ;
 	
-	public String getTitle();
+	/**
+	 * Sets the reference type
+	 * @param type
+	 */
+	public void setType(ReferenceType type) ;
 	
-	public void setTitle(String title);
+	/**
+	 * Returns true if the type of the reference is the same as the passed parameter
+	 * @param type
+	 * @return boolean
+	 */
+	public boolean isOfType(ReferenceType type);
 	
-	public TimePeriod getDatePublished();
-	
-	public void setDatePublished(TimePeriod datePublished);
-	
-	public String getNomenclaturalCitation(String microReference);
-	
-	public void setAuthorTeam(TeamOrPersonBase authorTeam);
-	
+	/**
+	 * Returns the references author(s)
+	 */
 	public TeamOrPersonBase getAuthorTeam();
 	
-	void setCacheStrategy(IReferenceBaseCacheStrategy cacheStrategy);
+	/**
+	 * Sets the references author(s)
+	 */
+	public void setAuthorTeam(TeamOrPersonBase authorTeam);
+	
+	/**
+	 * Returns the references title
+	 */
+	public String getTitle();
+	
+	/**
+	 * Sets the references title
+	 * @param title
+	 */
+	public void setTitle(String title);
+	
+	/**
+	 * Returns the date when the reference was published as a {@link TimePeriod}
+	 */
+	public TimePeriod getDatePublished();
+	
+	/**
+	 * Sets the date when the reference was published.
+	 */
+	public void setDatePublished(TimePeriod datePublished);
 	
 	/**
 	 * Returns the Uniform Resource Identifier (URI) corresponding to <i>this</i>
@@ -55,10 +80,33 @@ public interface IReferenceBase extends IIdentifiableEntity, IParsable, IMergabl
 	 * @see #getUri()
 	 */
 	public void setUri(String uri);
-		
+
+	
+	/**
+	 * Returns the references abstract which is a summary of the content
+	 */
 	public String getReferenceAbstract();
 	
+	/**
+	 * Sets the references abstract which is a summary of the content
+	 * @param referenceAbstract
+	 */
 	public void setReferenceAbstract(String referenceAbstract);
+		
+	/**
+	 * Returns the citation string including the detail (micro reference) information.
+	 * E.g. if the references title cache is <i>L., Sp. Pl. 3. 1757</i> the nomenclatural citation
+	 * may be something like <i>L., Sp. Pl. 3: 45. 1757</i>
+	 * @param microReference the detail, e.g. a page number, a figure, ...
+	 * @return String
+	 */
+	public String getNomenclaturalCitation(String microReference);
 	
-	public boolean isOfType(ReferenceType type);
+	/**
+	 * Sets the cache strategy for this reference
+	 * @param cacheStrategy
+	 */
+	void setCacheStrategy(IReferenceBaseCacheStrategy cacheStrategy);
+	
+
 }
