@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
  */
 public class MultilanguageText extends HashMap<Language, LanguageString> implements Cloneable, IMultiLanguageText {
 	private static final long serialVersionUID = 7876604337076705862L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MultilanguageText.class);
 		
 	/**
