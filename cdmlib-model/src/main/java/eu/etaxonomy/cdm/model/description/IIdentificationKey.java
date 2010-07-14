@@ -11,9 +11,9 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.Set;
+
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.common.Representation;
 
 /**
  * @author a.mueller
