@@ -186,13 +186,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 					setOtherCachesNull(entity); //TODO find better solution
 					String titleCache = entity.getTitleCache();
 					String newTitleCache = entityCacheStrategy.getTitleCache(entity);
-					if (titleCache != null && ! titleCache.equals(newTitleCache)){
+					if (titleCache == null || titleCache != null && ! titleCache.equals(newTitleCache)){
+						entity.setTitleCache(null, false);
 						entity.getTitleCache();
 						entitiesToUpdate.add(entity);
 					}
 				}
 			}
-			saveOrUpdateAll(list);
+			saveOrUpdateAll(entitiesToUpdate);
+			
 		}
 	}
 
