@@ -27,9 +27,10 @@ import eu.etaxonomy.cdm.model.common.Representation;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
-	
 	private static final long serialVersionUID = 6754598791831848705L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NaturalLanguageTerm.class);
+	
 	private static NaturalLanguageTerm FROM = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm TO = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm UP_TO = new NaturalLanguageTerm();
