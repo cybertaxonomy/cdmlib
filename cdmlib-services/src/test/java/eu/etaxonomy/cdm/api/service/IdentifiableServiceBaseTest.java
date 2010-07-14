@@ -46,7 +46,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	@Test
 	@DataSet
 	@ExpectedDataSet
-	public final void testGenerateTitleCache() {
+	public final void testUpdateTitleCache() {
 		Assert.assertEquals("There should be 5 TaxonNames in the data set", 5, nameService.count(TaxonNameBase.class));
 		Class clazz = TaxonNameBase.class;
 		int stepSize = 2;
@@ -54,11 +54,11 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 //		TaxonNameBase name = nameService.find(UUID.fromString("5d74500b-9fd5-4d18-b9cd-cc1c8a372fec"));
 		setComplete();
 		endTransaction();
-//		try {
-//			printDataSet(new FileOutputStream("C:\\tmp\\test.xml"), new String[]{"TaxonNameBase"});
-//		} catch(Exception e) { 
-//			logger.warn(e);
-//		} 
+		try {
+			printDataSet(new FileOutputStream("C:\\tmp\\test.xml"), new String[]{"TaxonNameBase"});
+		} catch(Exception e) { 
+			logger.warn(e);
+		} 
 		
 	}
 
