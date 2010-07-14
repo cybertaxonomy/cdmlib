@@ -52,14 +52,14 @@ public class CampanulaceaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.Campanulaceae();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_campanulaceae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_campanulaceae_production();
 
 	static final UUID secUuid = UUID.fromString("ed7dd0ea-fcdd-405d-9fe1-52652aa06119");
 	static final UUID taxonomicTreeUuid = UUID.fromString("e305ddac-7200-4293-aa5d-d3426133ed9f");
-	static final int sourceSecId = 7800000;
+	static final int sourceSecId = 100000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("231809ce-ad9e-4a50-8a48-668bd336cb7e");
-	static final Object[] featureKeyList = new Integer[]{1, 43, 31, 4, 12, 98, 41}; 	
+	static final Object[] featureKeyList = new Integer[]{}; 	
 	
 	
 	// set to zero for unlimited nameFacts
@@ -98,9 +98,9 @@ public class CampanulaceaeActivator {
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
-	static final boolean doFacts = true;
+	static final boolean doFacts = false;  //no facts exist campanulaceae
 	static final boolean doOccurences = true;
-	static final boolean doCommonNames = true;
+	static final boolean doCommonNames = false;  //no common names exist in campanulaceae
 
 	//etc.
 	static final boolean doMarker = true;
@@ -181,10 +181,8 @@ public class CampanulaceaeActivator {
 			
 			//make feature tree
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
-			FeatureNode imageNode = FeatureNode.NewInstance(Feature.IMAGE());
-			tree.getRoot().addChild(imageNode);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
-			tree.getRoot().addChild(distributionNode, 2); 
+			tree.getRoot().addChild(distributionNode, 1); 
 			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		
