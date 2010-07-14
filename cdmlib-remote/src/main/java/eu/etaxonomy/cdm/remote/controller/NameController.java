@@ -53,7 +53,8 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 			"typeStatus.representations",
 			"typifiedNames.titleCache",
 			"typeSpecimen.titleCache",
-			
+			"typeName.titleCache",
+			"citation",				
 	});
 	
 	private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
@@ -96,6 +97,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 			value = {"*/typeDesignations"},
 			method = RequestMethod.GET)
 	public List<TypeDesignationBase> doGetNameTypeDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+		logger.info("doGetTypeDesignations()" + request.getServletPath());
 		TaxonNameBase tnb = getCdmBase(request, response, null, TaxonNameBase.class);
 		Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
 		return p.getRecords();
