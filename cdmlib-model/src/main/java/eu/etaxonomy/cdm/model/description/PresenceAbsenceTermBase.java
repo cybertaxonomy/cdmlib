@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,8 +25,7 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
+
 
 /**
  * This (abstract) class represents terms describing the {@link AbsenceTerm absence}
