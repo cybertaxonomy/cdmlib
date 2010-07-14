@@ -40,6 +40,8 @@ public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends No
 	/**
 	 * Returns the AuthorCache part for a combination of an author and an ex author. This applies on combination authors
 	 * as well as on basionym/orginal combination authors.
+	 * The correct order is exAuthor ex author though some botanist do not know about and do it the 
+	 * other way round. 
 	 * @param author the author
 	 * @param exAuthor the ex-author
 	 * @return
@@ -48,15 +50,16 @@ public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends No
 		String result = "";
 		String authorString = "";
 		String exAuthorString = "";
+		
 		if (author != null){
 			authorString = CdmUtils.Nz(author.getNomenclaturalTitle());
 		}
 		if (exAuthor != null){
-			authorString += ExAuthorSeperator;
 			exAuthorString = CdmUtils.Nz(exAuthor.getNomenclaturalTitle());
+			exAuthorString += ExAuthorSeperator;
 		}
 		
-		result = authorString + exAuthorString;
+		result = exAuthorString + authorString; 
 		return result;
  
 	}

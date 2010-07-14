@@ -197,22 +197,22 @@ public class NonViralNameParserImplTest {
 		NonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-		assertEquals("D'M\u00FCller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals("de Greuther", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
-		INomenclaturalAuthor basionymTeam2 = nameBasionymExAuthor.getBasionymAuthorTeam();
+		assertEquals("D'M\u00FCller", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("de Greuther", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		INomenclaturalAuthor basionymTeam2 = nameBasionymExAuthor.getExBasionymAuthorTeam();
 		assertEquals("Ciardelli", basionymTeam2.getNomenclaturalTitle());
-		INomenclaturalAuthor exBasionymTeam2 = nameBasionymExAuthor.getExBasionymAuthorTeam();
+		INomenclaturalAuthor exBasionymTeam2 = nameBasionymExAuthor.getBasionymAuthorTeam();
 		assertEquals("D\u00F6ring", exBasionymTeam2.getNomenclaturalTitle());
 		
 		BotanicalName nameBasionymExAuthor2 = (BotanicalName)parser.parseFullName("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", null, Rank.SPECIES());
 		assertEquals("Washingtonia", nameBasionymExAuthor2.getGenusOrUninomial());
 		assertEquals("filifera", nameBasionymExAuthor2.getSpecificEpithet());
-		assertEquals("H.Wendl.", nameBasionymExAuthor2.getCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals("de Bary", nameBasionymExAuthor2.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("H.Wendl.", nameBasionymExAuthor2.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("de Bary", nameBasionymExAuthor2.getCombinationAuthorTeam().getNomenclaturalTitle());
 		INomenclaturalAuthor basionymTeam3 = nameBasionymExAuthor2.getBasionymAuthorTeam();
-		assertEquals("Linden", basionymTeam3.getNomenclaturalTitle());
+		assertEquals("Andre", basionymTeam3.getNomenclaturalTitle());
 		INomenclaturalAuthor exBasionymTeam3 = nameBasionymExAuthor2.getExBasionymAuthorTeam();
-		assertEquals("Andre", exBasionymTeam3.getNomenclaturalTitle());
+		assertEquals("Linden", exBasionymTeam3.getNomenclaturalTitle());
 		String title = nameBasionymExAuthor2.generateTitle();
 		assertEquals("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", title);
 	
@@ -278,7 +278,7 @@ public class NonViralNameParserImplTest {
 		String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex Müller & Schmidt)Clark ex Ciardelli"; 
 		BotanicalName authorname = (BotanicalName)parser.parseFullName(fullNameString);
 		assertFalse(authorname.hasProblem());
-		assertEquals("Basionym author should have 3 authors", 3, ((Team)authorname.getBasionymAuthorTeam()).getTeamMembers().size());
+		assertEquals("Basionym author should have 3 authors", 3, ((Team)authorname.getExBasionymAuthorTeam()).getTeamMembers().size());
 	}
 	
 	private void testName_StringNomcodeRank(Method parseMethod) 
@@ -302,10 +302,10 @@ public class NonViralNameParserImplTest {
 		NonViralName nameBasionymExAuthor = (NonViralName)parseMethod.invoke(parser, strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-		assertEquals("D'Mueller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals("de Greuther", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals("Ciardelli", nameBasionymExAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
-		assertEquals("Doering", nameBasionymExAuthor.getExBasionymAuthorTeam().getNomenclaturalTitle());
+		assertEquals("D'Mueller", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("de Greuther", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Ciardelli", nameBasionymExAuthor.getExBasionymAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Doering", nameBasionymExAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
 		
 		NonViralName name2 = (NonViralName)parseMethod.invoke(parser, strNameAbiesSub1, null, Rank.SPECIES());
 		assertEquals("Abies", name2.getGenusOrUninomial());

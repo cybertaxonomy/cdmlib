@@ -1020,16 +1020,17 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		//TODO noch allgemeiner am anfang durch Replace etc. 
 		authorTeamString = authorTeamString.trim();
 		authorTeamString = authorTeamString.replaceFirst(oWs + "ex" + oWs, " ex. " ); 
-		int authorEnd = authorTeamString.length();
+		//int authorEnd = authorTeamString.length();
+		int authorBegin = 0;
 		
 		Matcher exAuthorMatcher = exAuthorPattern.matcher(authorTeamString);
 		if (exAuthorMatcher.find(0)){
-			int exAuthorBegin = exAuthorMatcher.end(0);
-			String exString = authorTeamString.substring(exAuthorBegin).trim();
-			authorEnd = exAuthorMatcher.start(0);
+			authorBegin = exAuthorMatcher.end(0);
+			int exAuthorEnd = exAuthorMatcher.start(0);
+			String exString = authorTeamString.substring(0, exAuthorEnd).trim();
 			authors [1] = author(exString);
 		}
-		zooOrBotanicAuthor(authorTeamString.substring(0, authorEnd), authors, years );
+		zooOrBotanicAuthor(authorTeamString.substring(authorBegin), authors, years );
 	}
 	
 	/**

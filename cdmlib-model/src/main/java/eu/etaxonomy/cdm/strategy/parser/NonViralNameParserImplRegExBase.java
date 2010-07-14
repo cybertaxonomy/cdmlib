@@ -84,7 +84,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String teamSplitter = fWs + "(&)" + fWs;
     protected static String authorTeam = fWs + "(" + author + teamSplitter + ")*" + author + "(" + teamSplitter + "al.)?" + fWs;
     protected static String exString = "(ex.?)";
-    protected static String authorAndExTeam = authorTeam + "(" + oWs + exString + oWs + authorTeam + ")?";
+    protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
     protected static String basEnd = "\\)";
     protected static String botanicBasionymAuthor = basStart + "(" + authorAndExTeam + ")" + basEnd;  // '(' and ')' is for evaluation with RE.paren(x)

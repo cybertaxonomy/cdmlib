@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -158,10 +157,10 @@ public class BotanicNameCacheStrategyTest {
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
-		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex " + exBasAuthorString + ")" +  " " + authorString + " ex " + exAuthorString  , strategy.getTitleCache(subSpeciesName));
+		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getTitleCache(subSpeciesName));
 		
 		subSpeciesName.setExCombinationAuthorTeam(null);
-		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex " + exBasAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
+		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
 				
 		subSpeciesName.setExBasionymAuthorTeam(null);
 		assertEquals(subSpeciesNameString + " (" + basAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
@@ -202,13 +201,13 @@ public class BotanicNameCacheStrategyTest {
 		assertEquals(authorString, strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
-		assertEquals(authorString + " ex " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals(exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
-		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
-		assertEquals("(" + basAuthorString + " ex " + exBasAuthorString + ")" +  " " + authorString + " ex " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals("(" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
 		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
 	}
