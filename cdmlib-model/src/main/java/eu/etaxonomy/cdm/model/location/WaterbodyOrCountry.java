@@ -39,7 +39,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * +/- current ISO codes. year given with each entry
