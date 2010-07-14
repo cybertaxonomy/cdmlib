@@ -28,16 +28,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfigurator>>{
 	private static final Logger logger = Logger.getLogger(CacheUpdater.class);
 
-//	public void invoke(CacheUpdaterConfigurator config){
-//		if (config.)
-//		
-//		//		if (config.isDoDefinedTermBase()){
-////			getTermService().generateTitleCache(DefinedTermBase.class, 1000);
-////		}
-//		
-//	}
-	
-
 	@Override
 	protected boolean doInvoke(DefaultImportState<CacheUpdaterConfigurator> state) {
 		CacheUpdaterConfigurator config = state.getConfig();
