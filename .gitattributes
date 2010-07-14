@@ -8,6 +8,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/abcdImport/SynthesysCacheActivator
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/AlgaTerraActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelSources.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/CampanulaceaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorExport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
