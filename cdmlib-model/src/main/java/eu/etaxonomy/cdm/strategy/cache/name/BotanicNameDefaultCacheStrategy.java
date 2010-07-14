@@ -41,7 +41,7 @@ public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends No
 	 * Returns the AuthorCache part for a combination of an author and an ex author. This applies on combination authors
 	 * as well as on basionym/orginal combination authors.
 	 * The correct order is exAuthor ex author though some botanist do not know about and do it the 
-	 * other way round. 
+	 * other way round. (see 46.4-46.6 ICBN (Vienna Code, 2006))
 	 * @param author the author
 	 * @param exAuthor the ex-author
 	 * @return
