@@ -217,13 +217,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	
 	public DistributionTree getOrderedDistributionsB(
 			Set<TaxonDescription> taxonDescriptions,
-			Set<NamedAreaLevel> omitLevels){
+			Set<NamedAreaLevel> omitLevels,
+			List<String> propertyPaths){
 		
 		DistributionTree tree = new DistributionTree();
 		List<Distribution> distList = new ArrayList<Distribution>();
 		
 		for (TaxonDescription taxonDescription : taxonDescriptions) {
-			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid());
+			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid(), propertyPaths);
 			Set<DescriptionElementBase> elements = taxonDescription.getElements();
 			for (DescriptionElementBase element : elements) {
 				if(element.isInstanceOf(Distribution.class)){

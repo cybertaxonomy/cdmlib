@@ -518,7 +518,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			value = {"/portal/taxon/*/fromNameRelationships"},
 			method = RequestMethod.GET)
 	public List<NameRelationship> doGetFromNameRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
-		logger.info("doGetNameRelations()" + request.getServletPath());
+		logger.info("doGetNameFromNameRelations()" + request.getServletPath());
 		TaxonBase tb = getCdmBase(request, response, SIMPLE_TAXON_INIT_STRATEGY, Taxon.class);
 		List<NameRelationship> list = nameService.listFromNameRelationships(tb.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;

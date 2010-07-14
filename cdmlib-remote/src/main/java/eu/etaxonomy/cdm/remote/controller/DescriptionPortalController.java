@@ -89,7 +89,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 			"$",
 			"elements.$",
 			"elements.sources.citation.",
-//			"elements.sources.citation.authorTeam.$",		
+			"elements.sources.citation.authorTeam.$",		
 //			"elements.sources.citation.authorTeam.titleCache",
 //			"elements.sources.citation.authorTeam.nomenclaturalTitleCache",
 			"elements.sources.nameUsedInSource.titleCache",
@@ -177,7 +177,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 			description = (TaxonDescription) service.load(descriptionUuid, TAXONDESCRIPTION_INIT_STRATEGY);
 			taxonDescriptions.add(description);
 		}
-		DistributionTree distTree = service.getOrderedDistributionsB(taxonDescriptions, levels);
+		DistributionTree distTree = service.getOrderedDistributionsB(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
 		return distTree;
 	}
 	
