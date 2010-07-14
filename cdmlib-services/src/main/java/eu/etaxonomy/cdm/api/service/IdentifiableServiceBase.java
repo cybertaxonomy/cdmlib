@@ -182,7 +182,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 						}
 					}
 					entity.setCacheStrategy(entityCacheStrategy);
-					//entity.setTitleCache(null, false);
+					//TODO this won't work for those classes that always generate the title cache new
 					String titleCache = entity.getTitleCache();
 					setOtherCachesNull(entity); //TODO find better solution
 					String newTitleCache = entityCacheStrategy.getTitleCache(entity);
