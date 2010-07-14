@@ -70,7 +70,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 public class FeatureNode extends VersionableEntity {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 	
     @XmlElement(name = "Feature")
