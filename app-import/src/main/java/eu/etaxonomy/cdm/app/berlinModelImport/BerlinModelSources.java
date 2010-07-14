@@ -30,6 +30,16 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
+	public static Source Campanulaceae(){
+		//	BerlinModel - Campanulaceae
+		String dbms = Source.SQL_SERVER_2005;
+		String strServer = "BGBM111";
+		String strDB = "Campanulaceae";
+		int port = 1247;
+		String userName = "webUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+	
 	public static Source EDIT_CICHORIEAE(){
 		//	BerlinModel - EditWP6
 		String dbms = Source.SQL_SERVER_2005;
