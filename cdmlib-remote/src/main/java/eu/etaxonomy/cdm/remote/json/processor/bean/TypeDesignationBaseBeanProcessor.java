@@ -42,6 +42,7 @@ public class TypeDesignationBaseBeanProcessor extends AbstractCdmBeanProcessor<T
 			json.element("typeSpecimen", ((SpecimenTypeDesignation)bean).getTypeSpecimen(), jsonConfig);
 		} else if (bean.getClass().isAssignableFrom(NameTypeDesignation.class)){
 			json.element("typeName", ((NameTypeDesignation)bean).getTypeName(), jsonConfig);
+			json.element("citation", ((NameTypeDesignation)bean).getCitation(), jsonConfig);
 		}
 		return json;
 	}
