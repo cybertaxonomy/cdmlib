@@ -82,8 +82,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
             " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurrence.Native, emOccurrence.Introduced, " +
             		" emOccurrence.Cultivated, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
-                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
-                	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
+                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.TDWGCode " + 
                 " FROM emOccurrence INNER JOIN " +  
                 	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
                 	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
