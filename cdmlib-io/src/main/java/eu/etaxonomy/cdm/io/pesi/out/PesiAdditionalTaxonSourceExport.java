@@ -180,8 +180,8 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 				sourceUse_AdditionalSource = false;
 				logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
 				
-				logger.error("PHASE 3: Check for SourceUse 'Source of Synonymy'");
-				ReferenceBase reference = null;
+//				logger.error("PHASE 3: Check for SourceUse 'Source of Synonymy'");
+//				ReferenceBase reference = null;
 //				sourceUse_SourceOfSynonymy = true;
 //				for (TaxonBase taxonBase : list) {
 //					if (taxonBase.isInstanceOf(Synonym.class)) {
