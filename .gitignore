@@ -40,6 +40,9 @@ cdmlib-ext/.classpath
 cdmlib-ext/.project
 cdmlib-ext/.settings
 cdmlib-ext/target
+cdmlib-feature-source/.classpath
+cdmlib-feature-source/.settings
+cdmlib-feature-source/src
 cdmlib-feature/.settings
 cdmlib-io/.classpath
 cdmlib-io/.project
@@ -134,8 +137,5 @@ cdmlib-updateSite/features/*.jar
 cdmlib-updateSite/plugins/*.jar
 cdmlib-updateSite/plugins/*.zip
 cdmlib-updateSite/src
-cmlib-feature-source/.classpath
-cmlib-feature-source/.settings
-cmlib-feature-source/src
 /target
 /testANTLR

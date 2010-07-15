@@ -1244,6 +1244,9 @@ cdmlib-ext/src/test/resources/eu/etaxonomy/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/log4j.properties -text
+cdmlib-feature-source/.project -text
+cdmlib-feature-source/build.properties -text
+cdmlib-feature-source/feature.xml -text
 cdmlib-feature/.classpath -text
 cdmlib-feature/.project -text
 cdmlib-feature/build.properties -text
@@ -3031,9 +3034,6 @@ cdmlib-services/src/test/resources/unitils.properties -text
 cdmlib-updateSite/.project -text
 cdmlib-updateSite/index.html -text
 cdmlib-updateSite/site.xml -text
-cmlib-feature-source/.project -text
-cmlib-feature-source/build.properties -text
-cmlib-feature-source/feature.xml -text
 pdfdocs/cdm.pdf -text
 pdfdocs/cdmlib-config.properties -text
 pdfdocs/cdmlib-doc.sh -text
