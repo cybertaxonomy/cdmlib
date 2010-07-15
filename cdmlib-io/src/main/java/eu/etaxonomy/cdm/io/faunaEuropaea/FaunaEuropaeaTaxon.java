@@ -29,6 +29,9 @@ public class FaunaEuropaeaTaxon {
 	private int greatGrandParentId;
 	private int greatGrandParentRankId;
 	private int greatGreatGrandParentId;
+	private int greatGreatGrandParentRankId;
+	private int greatGreatGreatGrandParentRankId;
+	private int greatGreatGreatGrandParentId;
 	private int originalGenusId;
 	private Integer year;
 	private String localName;
@@ -36,6 +39,7 @@ public class FaunaEuropaeaTaxon {
 	private String grandParentName;
 	private String greatGrandParentName;
 	private String greatGreatGrandParentName;
+	private String greatGreatGreatGrandParentName;
 	private String originalGenusName;
 	private String authorName;
 	private boolean parenthesis = false;
@@ -90,11 +94,55 @@ public class FaunaEuropaeaTaxon {
 //	}
 	
 	/**
+	 * @return the greatGreatGrandParentRankId
+	 */
+	protected int getGreatGreatGrandParentRankId() {
+		return greatGreatGrandParentRankId;
+	}
+
+	/**
+	 * @param greatGreatGrandParentRankId the greatGreatGrandParentRankId to set
+	 */
+	protected void setGreatGreatGrandParentRankId(int greatGreatGrandParentRankId) {
+		this.greatGreatGrandParentRankId = greatGreatGrandParentRankId;
+	}
+
+	/**
+	 * @return the greatGreatGreatGrandParentRankId
+	 */
+	protected int getGreatGreatGreatGrandParentRankId() {
+		return greatGreatGreatGrandParentRankId;
+	}
+
+	/**
+	 * @param greatGreatGreatGrandParentRankId the greatGreatGreatGrandParentRankId to set
+	 */
+	protected void setGreatGreatGreatGrandParentRankId(
+			int greatGreatGreatGrandParentRankId) {
+		this.greatGreatGreatGrandParentRankId = greatGreatGreatGrandParentRankId;
+	}
+
+	/**
+	 * @return the greatGreatGreatGrandParentId
+	 */
+	protected int getGreatGreatGreatGrandParentId() {
+		return greatGreatGreatGrandParentId;
+	}
+
+	/**
+	 * @param greatGreatGreatGrandParentId the greatGreatGreatGrandParentId to set
+	 */
+	protected void setGreatGreatGreatGrandParentId(int greatGreatGreatGrandParentId) {
+		this.greatGreatGreatGrandParentId = greatGreatGreatGrandParentId;
+	}
+
+	/**
 	 * @return the parentId
 	 */
 	public int getParentId() {
 		return parentId;
 	}
+
 	/**
 	 * @param parentId the parentId to set
 	 */
@@ -284,6 +332,21 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setGreatGrandParentName(String greatGrandParentName) {
 		this.greatGrandParentName = greatGrandParentName;
+	}
+
+	/**
+	 * @return the greatGreatGreatGrandParentName
+	 */
+	protected String getGreatGreatGreatGrandParentName() {
+		return greatGreatGreatGrandParentName;
+	}
+
+	/**
+	 * @param greatGreatGreatGrandParentName the greatGreatGreatGrandParentName to set
+	 */
+	protected void setGreatGreatGreatGrandParentName(
+			String greatGreatGreatGrandParentName) {
+		this.greatGreatGreatGrandParentName = greatGreatGreatGrandParentName;
 	}
 
 	/**
