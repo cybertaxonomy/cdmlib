@@ -779,8 +779,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		boolean start = true;
 		for (Object object : taggedName) {
 			if (object instanceof String) {
-				// Name part
-//				if (! openTag && ! teamPart) {
+				// Name
 				if (! openTag) {
 					if (start) {
 						result = "<i>";
