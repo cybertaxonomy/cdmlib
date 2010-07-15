@@ -57,7 +57,7 @@ public class XmlView extends AbstractView {
 		    		response.addHeader("Location", locationPrefix + identifiableEntity.getUuid().toString());
 		    	}
 		        marshaller.marshal(identifiableEntity, new StreamResult(response.getOutputStream()));
-		    } else if(object instanceof Throwable) {
+		    } else if(object instanceof Throwable) {  
 		    	eu.etaxonomy.cdm.io.jaxb.Error error = new eu.etaxonomy.cdm.io.jaxb.Error((Throwable)object);
 		    	marshaller.marshal(error, new StreamResult(response.getOutputStream()));
 		    }

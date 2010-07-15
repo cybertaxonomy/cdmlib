@@ -171,7 +171,6 @@ Export-Package: eu.etaxonomy.cdm,
    org.hsqldb,
    org.springframework.transaction.support",
  eu.etaxonomy.cdm.database.types;uses:="eu.etaxonomy.cdm.database",
- eu.etaxonomy.cdm.datagenerator;uses:="eu.etaxonomy.cdm.model.taxon,eu.etaxonomy.cdm.model.description",
  eu.etaxonomy.cdm.ext;uses:="org.apache.log4j,eu.etaxonomy.cdm.model.taxon,eu.etaxonomy.cdm.model.description",
  eu.etaxonomy.cdm.hibernate;uses:="org.hibernate.search.bridge",
  eu.etaxonomy.cdm.io.berlinModel;
