@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 /**
@@ -42,7 +43,8 @@ public class CichorieaeCacheUpdater {
 	static final List<String> classListStrings =  Arrays.asList(new String[]{
 			//IdentifiableEntity.class.getName(),
 //			IdentifiableEntity.class.getName(),
-			TaxonNameBase.class.getName()
+			TaxonNameBase.class.getName(),
+			TaxonBase.class.getName()
 	});
 	//new ArrayList<Class<? extends IdentifiableEntity>>();
 
