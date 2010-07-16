@@ -19,13 +19,17 @@ public class CommandOptions{
 	private static Options options = null;
 	
 	public static final Option HELP = new Option( "help", "print this message" );
-	public static final Option JMX = new Option( "jmx", "Start the server with the Jetty MBeans. " );
+	public static final Option JMX = new Option( "jmx", "Start the server with the Jetty MBeans in JMX Management mode. \n" +
+			"For testing you can use the following jvm options:\n" +
+			"   -Dcom.sun.management.jmxremote.ssl=false\n" +
+			"   -Dcom.sun.management.jmxremote.authenticate=false\n" +
+			"   -Dcom.sun.management.jmxremote.port=9999\n" );
 	
 	@SuppressWarnings("static-access")
 	public static final Option WEBAPP = OptionBuilder
 			.withArgName("file")
 			.hasArg()
-			.withDescription( "use the specified webapplication this either can be a compresses war  or extracted file. " +
+			.withDescription( "use the specified webapplication this either can be a compressed war or extracted file. " +
 					"If this options is used extraction of the war from the cdmserver jar file is omitted." +
 					"Developers can run the server completely from the traget folder or completly from source " +
 					"when using the following paths: \n" +

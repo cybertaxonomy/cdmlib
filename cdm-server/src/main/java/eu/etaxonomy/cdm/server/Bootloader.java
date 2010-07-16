@@ -89,36 +89,33 @@ public final class Bootloader {
     
     private static final int KB = 1024;
     
-    private static Set<CdmInstanceProperties> configAndStatus = null;
+    private Set<CdmInstanceProperties> configAndStatus = null;
     
-    public static Set<CdmInstanceProperties> getConfigAndStatus() {
+    public Set<CdmInstanceProperties> getConfigAndStatus() {
 		return configAndStatus;
 	}
 
-	private static File webappFile = null;
-    private static File defaultWebAppFile = null;
+	private File webappFile = null;
+    private File defaultWebAppFile = null;
     
-    private static Server server = null;
-    private static ContextHandlerCollection contexts = new ContextHandlerCollection();
+    private Server server = null;
+    private ContextHandlerCollection contexts = new ContextHandlerCollection();
     
-    private static Bootloader instance = null;
+    private CommandLine cmdLine;
+    
+    /* thread save singleton implementation */
 
-	private static CommandLine cmdLine;
-    
+	private static Bootloader instance = new Bootloader();
 
-    private Bootloader() {
-    	
-    	
-    }
+    private Bootloader() {}
     
-    public static Bootloader getBootloader(){
-    	if(instance ==  null){
-    		instance = new Bootloader();
-    	}
+    public synchronized static Bootloader getBootloader(){
     	return instance;
     }
     
-    private static Set<CdmInstanceProperties> loadDataSources(){
+    /* end of singleton implementation */
+    
+    private Set<CdmInstanceProperties> loadDataSources(){
     	if(configAndStatus == null){
     		File datasourcesFile = new File(USERHOME_CDM_LIBRARY_PATH, DATASOURCE_BEANDEF_FILE); 
     		configAndStatus = DataSourcePropertyParser.parseDataSourceConfigs(datasourcesFile);
@@ -127,7 +124,7 @@ public final class Bootloader {
     	return configAndStatus;
     }
 
-    public static int writeStreamTo(final InputStream input, final OutputStream output, int bufferSize) throws IOException {
+    public int writeStreamTo(final InputStream input, final OutputStream output, int bufferSize) throws IOException {
         int available = Math.min(input.available(), 256 * KB);
         byte[] buffer = new byte[Math.max(bufferSize, available)];
         int answer = 0;
@@ -140,7 +137,7 @@ public final class Bootloader {
         return answer;
     }
 
-	private static boolean bindJndiDataSource(CdmInstanceProperties conf) {
+	private boolean bindJndiDataSource(CdmInstanceProperties conf) {
 		try {
 			Class<DataSource> dsCass = (Class<DataSource>) Thread.currentThread().getContextClassLoader().loadClass("com.mchange.v2.c3p0.ComboPooledDataSource");
 			DataSource datasource = dsCass.newInstance();
@@ -190,7 +187,7 @@ public final class Bootloader {
 		return false;
 	}
 	
-	private static void parseCommandOptions(String[] args) throws ParseException {
+	private void parseCommandOptions(String[] args) throws ParseException {
 		CommandLineParser parser = new GnuParser();
 		cmdLine = parser.parse( CommandOptions.getOptions(), args );
 		
@@ -203,7 +200,7 @@ public final class Bootloader {
 	}
 
 
-	private static File extractWar(String warName) throws IOException, FileNotFoundException {
+	private File extractWar(String warName) throws IOException, FileNotFoundException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		String warFileName = warName + WAR_POSTFIX;
     	URL resource = classLoader.getResource(warFileName);
@@ -237,7 +234,7 @@ public final class Bootloader {
 		bootloader.startServer();
     }
 
-	private static void startServer() throws IOException,
+	private void startServer() throws IOException,
 			FileNotFoundException, Exception, InterruptedException {
 		logger.info("Starting "+APPLICATION_NAME);
 		logger.info("Using  " + System.getProperty("user.home") + " as home directory. Can be specified by -Duser.home=<FOLDER>");
@@ -264,7 +261,9 @@ public final class Bootloader {
     			 logger.info("using user defined warfile: " + webappFile.getAbsolutePath());
     		 }
     		 if(isRunningFromSource()){
+    			 //FIXME check if all local paths are valid !!!!
     	    	defaultWebAppFile = new File("./src/main/webapp");	
+    	    	
     	     } else {
     	    	//defaultWebAppFile = extractWar(DEFAULT_WEBAPP_WAR_NAME);
     	     }
@@ -315,6 +314,10 @@ public final class Bootloader {
     	setWebApp(defaultWebappContext, defaultWebAppFile);
         defaultWebappContext.setContextPath("/");
         defaultWebappContext.setTempDirectory(DEFAULT_WEBAPP_TEMP_FOLDER);
+        // Important:
+        // the defaultWebappContext MUST USE the super classloader 
+        // otherwise the status page (index.jsp) might not work
+        defaultWebappContext.setClassLoader(this.getClass().getClassLoader());
     	contexts.addHandler(defaultWebappContext);
     	
     	//
@@ -360,7 +363,7 @@ public final class Bootloader {
     	System.exit(0);
 	}
 
-	private static void addCdmServerContexts(boolean austostart) throws IOException {
+	private void addCdmServerContexts(boolean austostart) throws IOException {
 		
 		for(CdmInstanceProperties conf : configAndStatus){
 			conf.setStatus(CdmInstanceProperties.Status.initializing);
@@ -413,7 +416,7 @@ public final class Bootloader {
         }
 	}
 
-	private static void setWebApp(WebAppContext context, File webApplicationResource) {
+	private void setWebApp(WebAppContext context, File webApplicationResource) {
 		if(webApplicationResource.isDirectory()){
 			context.setResourceBase(webApplicationResource.getAbsolutePath());
 			logger.debug("setting directory " + webApplicationResource.getAbsolutePath() + " as webapplication");
@@ -423,7 +426,7 @@ public final class Bootloader {
 		}
 	}
 
-	private static boolean isRunningFromSource() {
+	private boolean isRunningFromSource() {
 		String webappPathNormalized = webappFile.getAbsolutePath().replace('\\', '/');
 		return webappPathNormalized.endsWith("src/main/webapp") || webappPathNormalized.endsWith("cdmlib-remote/target/cdmserver");
 	}

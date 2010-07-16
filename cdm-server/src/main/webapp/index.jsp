@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page import="eu.etaxonomy.cdm.server.Bootloader"%>
 <%@page import="java.util.Set" %>
@@ -55,7 +54,10 @@
 										<table>
 											<tr><th>Path</th><th>Database Url</th><th>Status</th><th>OAI-PMH Provider</th></tr>
                                             <%
-                                           java.util.Set<CdmInstanceProperties> configAndStatus = Bootloader.getBootloader().getConfigAndStatus();
+                                           // the servelt context must use the class loader of the Bootloader class otherwise 
+                                           // getting the status will not work in mulithreading environments !!!
+                                           Bootloader bootloader = Bootloader.getBootloader();
+                                           java.util.Set<CdmInstanceProperties> configAndStatus = bootloader.getConfigAndStatus();
                                            if(configAndStatus != null){
                                         	   int i = 0;
                                         	   for(CdmInstanceProperties props : configAndStatus){
