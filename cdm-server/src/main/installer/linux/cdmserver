@@ -123,6 +123,15 @@ case "$1" in
 		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
 	esac
 	;;
+  debug)
+    DAEMON_ARGS=" -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 $DAEMON_ARGS"
+    [ "$VERBOSE" != no ] && log_daemon_msg "Starting in debug mode $DESC" "$NAME"
+    do_start
+    case "$?" in
+        0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+        2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+    esac
+    ;;
   stop)
 	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
 	do_stop
@@ -164,7 +173,7 @@ case "$1" in
 	;;
   *)
 	#echo "Usage: $SCRIPTNAME {start|stop|restart|reload|force-reload}" >&2
-	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload|debug}" >&2
 	exit 3
 	;;
 esac
