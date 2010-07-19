@@ -57,9 +57,9 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 	 *            If null the base type <code>&lt;T&gt;</code> is being used. - <i>optional parameter</i>
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, params = "pageNumber")
 	public Pager<T> doPage(
-			@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+			@RequestParam(value = "pageNumber", required = true) Integer pageNumber,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
 			@RequestParam(value = "class", required = false) Class<T> type) {
 		
@@ -85,13 +85,14 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 	 *            The offset index from the start of the list. The first entity
 	 *            has the index = 0 - <i>required parameter</i>
 	 * @param limit
-	 *            The maximum number of entities returned. - <i>optional parameter</i>
+	 *            The maximum number of entities returned. - <i>optional parameter</i> 
+	 *            If limit is set to a value < 1 all entities will be returned
 	 * @param type
 	 *            Further restricts the type of entities to be returned. 
 	 *            If null the base type <code>&lt;T&gt;</code> is being used. - <i>optional parameter</i>
 	 * @return a List of entities
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, params = "start")
 	public List<T> doList(
 			@RequestParam(value = "start", required = true) Integer start,
 			@RequestParam(value = "limit", required = false) Integer limit,
@@ -99,7 +100,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 		
 		//if(start == null){ start = 0;}
 		if(limit == null){ limit = DEFAULT_PAGESIZE;}
-		//TODO implement initialization
+		if(limit < 1){ limit = null;}
 		return service.list(type, limit, start, null, DEFAULT_INIT_STRATEGY);
 	}
 
