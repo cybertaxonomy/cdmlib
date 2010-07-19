@@ -11,18 +11,26 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.mapping.Map;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -91,7 +99,67 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			return null;
 		}
 	}
-
+	
+	protected T getCdmBaseInstance(UUID uuid, 
+			HttpServletResponse response, 
+			List<String> pathProperties) throws IOException{
+		CdmBase cdmBaseObject = service.load(uuid, pathProperties);
+		if(cdmBaseObject == null){
+			HttpStatusMessage.UUID_NOT_FOUND.send(response);
+		}
+		return (T) cdmBaseObject;
+	}
+	
+	protected T getCdmBaseInstance(UUID uuid, HttpServletResponse response, String pathProperty) throws IOException{
+		return getCdmBaseInstance(uuid, response, Arrays.asList(new String[]{pathProperty}));
+	}
+	
+	
+	@RequestMapping(value = "{uuid}/*", method = RequestMethod.GET)
+	public ModelAndView doGetMethod(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		logger.info("doGetMethod() " + request.getServletPath());
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		String servletPath = request.getServletPath();
+		String baseName = FilenameUtils.getBaseName(servletPath);
+		
+		T instance = getCdmBaseInstance(uuid, response, Arrays.asList(new String[]{baseName + ".titleCache"}));
+		
+		try {
+			Method method = instance.getClass().getDeclaredMethod("get" + StringUtils.capitalize(baseName), null);
+			
+			Class<?> returnType = method.getReturnType();
+			
+			if(CdmBase.class.isAssignableFrom(returnType)){
+				CdmBase resultInstance = (CdmBase) method.invoke(instance, null);
+				modelAndView.addObject(resultInstance);
+			}
+			else if(Collection.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType)){
+				// TODO
+				logger.warn("Collections or Maps not implemented yet.");
+			}else{
+				HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+			}
+		} catch (SecurityException e) {
+			logger.error("SecurityException: ", e);
+			HttpStatusMessage.INTERNAL_ERROR.send(response);
+		} catch (NoSuchMethodException e) {
+			HttpStatusMessage.PROPERTY_NOT_FOUND.send(response);
+		} catch (IllegalArgumentException e) {
+			HttpStatusMessage.PROPERTY_NOT_FOUND.send(response);
+		} catch (IllegalAccessException e) {
+			HttpStatusMessage.PROPERTY_NOT_FOUND.send(response);
+		} catch (InvocationTargetException e) {
+			HttpStatusMessage.PROPERTY_NOT_FOUND.send(response);
+		}
+		
+		return modelAndView;
+	}
+	
+	
 	  /* TODO implement
 	   
 	  private Validator validator;

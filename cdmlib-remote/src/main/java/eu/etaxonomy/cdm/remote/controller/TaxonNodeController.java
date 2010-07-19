@@ -27,8 +27,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @version 1.0
  */
 @Controller
-@RequestMapping(value = {"/taxonNode/*","/taxonNode/*/*", "/taxonNode/*/annotation"})
-public class TaxonNodeController extends BaseController<TaxonNode, ITaxonNodeService> {
+@RequestMapping(value = {"/taxonNode/*", "/taxonNode/{uuid}"})
+public class TaxonNodeController extends AnnotatableController<TaxonNode, ITaxonNodeService> {
 	private static final Logger logger = Logger
 			.getLogger(TaxonNodeController.class);
 	

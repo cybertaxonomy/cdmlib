@@ -29,7 +29,10 @@ public class HttpStatusMessage {
 	public final static HttpStatusMessage UUID_NOT_FOUND = new HttpStatusMessage(HttpServletResponse.SC_NOT_FOUND, "uuid not found");
 	public final static HttpStatusMessage UUID_REFERENCES_WRONG_TYPE = new HttpStatusMessage(HttpServletResponse.SC_NOT_FOUND, "uuid references wrong type");
 
-
+	public final static HttpStatusMessage PROPERTY_NOT_FOUND = new HttpStatusMessage(HttpServletResponse.SC_NOT_FOUND, "property not found");
+	
+	public final static HttpStatusMessage INTERNAL_ERROR = new HttpStatusMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "internal server error");
+	
 	
 	private int statusCode;
 	
