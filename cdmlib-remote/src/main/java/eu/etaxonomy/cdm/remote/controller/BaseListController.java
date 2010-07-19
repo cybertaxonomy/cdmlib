@@ -68,6 +68,18 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 		
 		return service.page(type, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
 	}
+	
+	/**
+	 * Parameter less method to be used as default when request without parameter are made. Otherwise
+	 * the nameless methods {@link #doPage(Integer, Integer, Class)} and {@link #doList(Integer, Integer, Class)}
+	 * are ambigous.
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	public Pager<T> doPage(){
+		return doPage(null, null, null);
+	}
+	
 	/**
 	 * @param start
 	 *            The offset index from the start of the list. The first entity
