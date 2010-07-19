@@ -129,7 +129,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		T instance = getCdmBaseInstance(uuid, response, Arrays.asList(new String[]{baseName + ".titleCache"}));
 		
 		try {
-			Method method = instance.getClass().getDeclaredMethod("get" + StringUtils.capitalize(baseName), null);
+			String methodName = "get" + StringUtils.capitalize(baseName);
+			Method method = instance.getClass().getMethod(methodName, null);
 			
 			Class<?> returnType = method.getReturnType();
 			
