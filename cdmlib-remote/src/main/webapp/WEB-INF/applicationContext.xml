@@ -36,6 +36,10 @@
     <!-- CONFIGURE WEB APPLICATION HERE -->
     <import resource="datasources/configurable.xml" />
     
+    <context:annotation-config/>
+    <bean class="eu.etaxonomy.cdm.remote.config.LoggingConfigurer">
+    </bean>
+    
     
     <!-- OAI-PMH TODO externalize? -->
      <bean name="taxonOaiPmhController" class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
