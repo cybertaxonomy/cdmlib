@@ -19,20 +19,16 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.jndi.JndiObjectFactoryBean;
-import org.springframework.jndi.JndiTemplate;
-import org.springframework.web.context.WebApplicationContext;
 
 @Configuration
-public class DataSourceConfig {
+public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 	
-	public static final Logger logger = Logger.getLogger(DataSourceConfig.class);
+	public static final Logger logger = Logger.getLogger(DataSourceConfigurer.class);
 
     private static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
     private static final String ATTRIBUTE_HIBERNATE_DIALECT = "hibernate.dialect";
@@ -47,7 +43,7 @@ public class DataSourceConfig {
 		beanDefinitionFile = filename;
 	}
 	
-	private WebApplicationContext webApplicationContext;
+	
 	private DataSource dataSource;
 	
 	private Properties getHibernateProperties() {
@@ -55,15 +51,7 @@ public class DataSourceConfig {
 		return hibernateProperties;
 	}
 
-	@Autowired
-	public void setApplicationContext(ApplicationContext applicationContext){
 
-		if(WebApplicationContext.class.isAssignableFrom(applicationContext.getClass())) {
-			this.webApplicationContext = (WebApplicationContext)applicationContext;
-		} else {
-			logger.error("The DataSourceConfig class only can be used within a WebApplicationContext");
-		}
-	}
 	
 	@Bean
 	public DataSource dataSource() {
@@ -75,7 +63,8 @@ public class DataSourceConfig {
 			} else {
 				String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
 				dataSource = loadDataSourceBean(beanName);
-			}			
+			}
+			
 		}
 		return dataSource; 
 	}
@@ -122,25 +111,6 @@ public class DataSourceConfig {
 		return props;
 	}
 
-	private String findProperty(String property, boolean required) {
-		// 1. look for the dataSource beanName in the ServletContext
-		Object obj = webApplicationContext.getServletContext().getAttribute(property);
-		String value = (String)obj;
-		// 2. look for the dataSource beanName in environment variables of the OS
-		if(value == null){
-			value = System.getProperty(property);
-		}
-		if(value == null && required){
-			logger.error("property {" + property + "} not found.");
-			logger.error("--> This property can be set in two ways:");
-			logger.error("--> 		1. as attribute to the ServletContext");
-			logger.error("--> 		2. as system property e.g. -D" + property);
-			logger.error("Stopping application ...");
-			System.exit(-1);
-		}
-		return value;
-	}
-	
 	public String inferHibernateDialectName() {
 		DataSource ds = dataSource();
 		String url = "<SEE PRIOR REFLECTION ERROR>";

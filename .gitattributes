@@ -2621,7 +2621,9 @@ cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPat
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcher.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcherException.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedUrlHandlerMapping.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfig.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApplicationConfigurer.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractOaiPmhController.java -text
