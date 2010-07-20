@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -301,6 +303,25 @@ public class CdmUtils {
 			return true;
 		} catch (NumberFormatException e) {
 			return false;
+		}
+		
+	}
+	
+	/**
+	 * Returns true if the passed string starts with an upper case letter.
+	 * @param string
+	 * @return
+	 */
+	static public boolean isCapital(String string){
+		if (isEmpty(string)){
+			return false;
+		}else{
+			Character firstChar = string.charAt(0);
+			if (firstChar.equals(Character.toUpperCase(firstChar))){
+				return true;
+			}else{
+				return false;
+			}
 		}
 		
 	}
