@@ -40,7 +40,15 @@ public class JsonView extends BaseView implements View{
 	private JsonConfig jsonConfig;
 	
 	public enum Type{
-		JSON, XML
+		JSON, XML;
+		
+		public String toString(){
+			if(this.equals(XML)){
+				return "application/xml";
+			}
+			return "application/json";
+			
+		}
 	}
 
 	private Type type = Type.JSON;
@@ -68,7 +76,7 @@ public class JsonView extends BaseView implements View{
 	}
 
 	public String getContentType() {
-		return "application/json";
+		return type.toString();
 	}
 	
 	

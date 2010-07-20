@@ -36,7 +36,6 @@
     <!-- CONFIGURE WEB APPLICATION HERE -->
     <import resource="datasources/configurable.xml" />
     
-    
     <!-- OAI-PMH TODO externalize? -->
      <bean name="taxonOaiPmhController" class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
 	   <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/>

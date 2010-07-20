@@ -25,8 +25,6 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.XmlViewResolver;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 /**
  * Resolves views by using a {@link PathMatcher} to match the view name to the bean names.
  * 
@@ -39,11 +37,13 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
  *  </ul>
  * @author ben.clark
  */
-@Component
 public class PatternViewResolver extends XmlViewResolver {
+	
 	private final Set<String> viewSet = new HashSet<String>();
 	
 	private PathMatcher pathMatcher = new AntPathMatcher();
+	
+	
 	
 	public void setPathMatcher(PathMatcher pathMatcher) {
 		Assert.notNull(pathMatcher, "PathMatcher must not be null");

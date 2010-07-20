@@ -53,6 +53,9 @@
           <entry key="dateTimeConverter">
             <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.DateTimeConverter"/>
           </entry>
+           <entry key="timePeriodConverter">
+            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.TimePeriodConverter"/>
+          </entry>
           <entry key="hibernateProxyDeepConverter">
             <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.HibernateProxyNullSafeDeepConverter"/>
           </entry>

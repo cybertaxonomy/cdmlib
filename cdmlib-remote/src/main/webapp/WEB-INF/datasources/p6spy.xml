@@ -22,7 +22,7 @@
         <property name="driverClassName" value="com.p6spy.engine.spy.P6SpyDriver"/>
     	<property name="username" value="${local.usr}"/>
         <property name="password" value="${local.pwd}"/>
-        <property name="url" value="jdbc:mysql://${local.host}/cdm_local_cichorieae"/>
+        <property name="url" value="jdbc:mysql://${local.host}/cdm_edit_cichorieae_a"/>
     </bean>
     
  

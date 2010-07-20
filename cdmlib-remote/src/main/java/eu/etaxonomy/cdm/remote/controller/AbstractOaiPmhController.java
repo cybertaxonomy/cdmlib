@@ -181,9 +181,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
  
         ModelAndView modelAndView = new ModelAndView("oai/listMetadataFormats");
         
-        T object = service.find(UUID.fromString("c34eb662-6bba-4ad7-b84e-dd98f2fd9788"));
-        if(false && identifier != null) {
-        	object = service.find(identifier);
+        if(identifier != null) {
+        	T  object = service.find(identifier);
 	        if(object == null) {
 		        throw new IdDoesNotExistException(identifier);
 	        }
@@ -247,8 +246,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         }
         
         List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-        criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
-        Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, 0, AuditEventSort.FORWARDS,null); 
+        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+        Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz, fromAuditEvent, untilAuditEvent, criteria, pageSize, 0, AuditEventSort.FORWARDS, null); 
         
         if(results.getCount() == 0) {
         	throw new NoRecordsMatchException("No records match");
@@ -292,7 +293,9 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             }
             
             List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-            criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
+            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
             Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, (resumptionToken.getCursor().intValue() / pageSize) + 1, AuditEventSort.FORWARDS,null); 
         
             if(results.getCount() == 0) {
@@ -318,7 +321,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListRecords", "!resumptionToken"})
-    public ModelAndView listRecords(@RequestParam(value = "from", required = false) DateTime from, @RequestParam(value = "until", required = false) DateTime until,@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix, @RequestParam(value = "set", required = false) SetSpec set) {
+    public ModelAndView listRecords(@RequestParam(value = "from", required = false) DateTime from, 
+    		@RequestParam(value = "until", required = false) DateTime until,
+    		@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix, 
+    		@RequestParam(value = "set", required = false) SetSpec set) {
  
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("metadataPrefix",metadataPrefix);
@@ -351,8 +357,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         }
         
         List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-        criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
-        Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, 0, AuditEventSort.FORWARDS,getPropertyPaths()); 
+        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+        Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz, fromAuditEvent, untilAuditEvent, criteria, pageSize, 0, AuditEventSort.FORWARDS, getPropertyPaths()); 
         
         if(results.getCount() == 0) {
         	throw new NoRecordsMatchException("No records match");
@@ -363,7 +371,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         if(results.getCount() > results.getRecords().size() && cacheProviderFacade != null) {
 	        ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
             modelAndView.addObject("resumptionToken",resumptionToken);
-            cacheProviderFacade.putInCache(resumptionToken.getValue(),cachingModel,resumptionToken);
+            cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
         }
 
         return modelAndView;
@@ -405,7 +413,9 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
               clazz = (Class)resumptionToken.getSet().getSetClass();
             }
             List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-            criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
+            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
             Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, (resumptionToken.getCursor().intValue()  / pageSize) + 1, AuditEventSort.FORWARDS,getPropertyPaths()); 
         
             if(results.getCount() == 0) {

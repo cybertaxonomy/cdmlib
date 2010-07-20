@@ -2501,6 +2501,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermListControlle
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/ContentNegociationHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/DatasourceContextHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/LocaleContextHandlerInterceptor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/ReferenceOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/TaxonOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TagEnum.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaggedText.java -text
@@ -2514,6 +2515,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/Lsid
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/PreferLsidToUriConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/RemoveHTMLReader.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/StripTagsConverter.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/TimePeriodConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dc/Relation.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/About.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/DeletedRecord.java -text
@@ -2655,9 +2657,12 @@ cdmlib-remote/src/main/webapp/WEB-INF/datasources/example.cdmlibrary/use-A-set.s
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/example.cdmlibrary/use-B-set.sh -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/json-views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/jsonConfigurations.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/oai-views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/xml-views.xml -text
 cdmlib-remote/src/main/webapp/human.xsl -text
 cdmlib-remote/src/main/webapp/oai2.xsl -text
 cdmlib-remote/src/site/site.xml -text
