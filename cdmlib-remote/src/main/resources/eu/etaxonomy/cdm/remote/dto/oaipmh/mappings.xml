@@ -69,6 +69,19 @@
             <a>title</a>
             <b>title</b>
        </field>
+       <field>
+            <a>publisher</a>
+            <b>publisher</b>
+       </field>
+       <field>
+            <a>inReference.title</a>
+            <b>relation</b>
+       </field>
+       <field>
+            <a>type</a>
+            <b>type</b>
+       </field>
+       
     </mapping>
     
 </mappings>
