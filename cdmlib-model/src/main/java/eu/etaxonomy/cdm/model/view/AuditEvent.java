@@ -32,7 +32,7 @@ public class AuditEvent implements Serializable {
 	 */
 	private static final long serialVersionUID = 6584537382484488953L;
 
-public static final AuditEvent CURRENT_VIEW;
+	public static final AuditEvent CURRENT_VIEW;
 	
 	static {
 		CURRENT_VIEW = new AuditEvent();
