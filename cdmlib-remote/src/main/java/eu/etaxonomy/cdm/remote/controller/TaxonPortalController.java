@@ -180,6 +180,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName",
+			"synonymRelations.synonym.name.combinationAuthorTeam.$",
 			
 			"name.homotypicalGroup.$",
 			"name.homotypicalGroup.typifiedNames.$",

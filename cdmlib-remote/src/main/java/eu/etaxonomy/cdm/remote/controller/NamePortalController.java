@@ -52,15 +52,19 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
  */
 
 @Controller
-@RequestMapping(value = {"/portal/name/*","/portal/name/*/typedesignations"})
-public class NamePortalController extends BaseController<TaxonNameBase, INameService>
+@RequestMapping(value = {"/portal/name/*","/portal/name/{uuid}"})
+public class NamePortalController extends NameController
 {
 	
-	private static final List<String> TYPE_INIT_STRATEGY = Arrays.asList(new String []{
-			"citation.authorTeam",
+	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{			
 			"typeName.$",
-			"typeName.taggedName",
+			"typeName.titleCache",
+			"typeSpecimen.titleCache",
 			"typeStatus.representations",
+			"typeStatus.representations",
+			"typifiedNames.titleCache",
+			"citation",
+			"citation.authorTeam.$",
 			"typeSpecimen.media.representations.parts"
 	});
 
@@ -70,38 +74,4 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 		setInitializationStrategy(Arrays.asList(new String[]{"$"}));
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Autowired
-	@Override
-	public void setService(INameService service) {
-		this.service = service;
-	}
-
-	/**
-     * Get the list of {@link TypeDesignationBase}s of the 
-	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
-	 * <p>
-	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
-	 * 
-	 * @param request
-	 * @param response
-	 * @return a List of {@link TypeDesignationBase} entities which are initialized
-	 *         using the following initialization strategy:
-	 *         {@link #TYPE_INIT_STRATEGY}
-	 * @throws IOException
-	 */
-	@RequestMapping(
-			value = {"/portal/name/*/typedesignations"},
-			method = RequestMethod.GET)
-	public ModelAndView doGetTypeDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
-		ModelAndView mv = new ModelAndView();
-		TaxonNameBase name = getCdmBase(request, response, null, TaxonNameBase.class);
-		Pager p = service.getTypeDesignations(name,  null, null, null, TYPE_INIT_STRATEGY);
-		mv.addObject(p.getRecords());
-		return mv;
-	}
-
-
 }

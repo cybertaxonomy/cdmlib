@@ -54,7 +54,8 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 			"typifiedNames.titleCache",
 			"typeSpecimen.titleCache",
 			"typeName.titleCache",
-			"citation",				
+			"citation",
+			"citation.authorTeam.$",
 	});
 	
 	private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{

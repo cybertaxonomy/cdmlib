@@ -44,9 +44,11 @@
 		    <entry key="eu.etaxonomy.cdm.model.reference.ReferenceBase">
 	          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
 	        </entry>
+ 
 	        <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor"/>
-            </entry>
+          </entry>
+
 		  </map>
 		</property>
 		<property name="jsonPropertyFilter">
