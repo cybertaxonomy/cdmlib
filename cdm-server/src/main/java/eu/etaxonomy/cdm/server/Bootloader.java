@@ -27,12 +27,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.EventListener;
 import java.util.Set;
 
 import javax.naming.NamingException;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 import org.apache.commons.cli.CommandLine;
@@ -42,6 +39,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.RollingFileAppender;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -76,6 +75,7 @@ public final class Bootloader {
 	private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
 	private static final String USERHOME_CDM_LIBRARY_PATH = System.getProperty("user.home")+File.separator+".cdmLibrary"+File.separator;
 	private static final String TMP_PATH = USERHOME_CDM_LIBRARY_PATH + "server" + File.separator;
+	private static final String LOG_PATH = USERHOME_CDM_LIBRARY_PATH + "log" + File.separator;
 	
 	private static final String APPLICATION_NAME = "CDM Server";
     private static final String WAR_POSTFIX = ".war";
@@ -86,6 +86,7 @@ public final class Bootloader {
     private static final File CDM_WEBAPP_TEMP_FOLDER = new File(TMP_PATH + CDM_WEBAPP_WAR_NAME);
     
     private static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
+    private static final String CDM_LOGFILE = "cdm.logfile";
     
     private static final int KB = 1024;
     
@@ -236,6 +237,17 @@ public final class Bootloader {
 
 	private void startServer() throws IOException,
 			FileNotFoundException, Exception, InterruptedException {
+		
+		
+		//assure LOG_PATH exists
+		File logPath = new File(LOG_PATH);
+		if(!logPath.exists()){
+			FileUtils.forceMkdir(new File(LOG_PATH));
+		}
+		
+		//append logger
+		configureFileLogger();
+		
 		logger.info("Starting "+APPLICATION_NAME);
 		logger.info("Using  " + System.getProperty("user.home") + " as home directory. Can be specified by -Duser.home=<FOLDER>");
     	
@@ -252,6 +264,7 @@ public final class Bootloader {
     	}
     	tempDir = null;
     	 
+    	
     	 // WARFILE
     	 if(cmdLine.hasOption(WEBAPP.getOpt())){
     		 webappFile = new File(cmdLine.getOptionValue(WEBAPP.getOpt()));
@@ -363,6 +376,27 @@ public final class Bootloader {
     	System.exit(0);
 	}
 
+	/**
+	 * Configueres and adds a {@link RollingFileAppender} to the root logger
+	 * 
+	 * The log files of the cdm-remote instances are configured by the 
+	 * {@link eu.etaxonomy.cdm.remote.config.LoggingConfigurer}
+	 */
+	private void configureFileLogger() {
+
+		PatternLayout layout = new PatternLayout("%d %p [%c] - %m%n");
+		try {
+			String logFile = LOG_PATH + File.separator + "cdmserver.log";
+			RollingFileAppender appender = new RollingFileAppender(layout, logFile);
+			appender.setMaxBackupIndex(3);
+			appender.setMaxFileSize("250MB");
+			Logger.getRootLogger().addAppender(appender);
+			logger.info("logging to :" + logFile);
+		} catch (IOException e) {
+			logger.error("Creating RollingFileAppender failed:", e);
+		}
+	}
+
 	private void addCdmServerContexts(boolean austostart) throws IOException {
 		
 		for(CdmInstanceProperties conf : configAndStatus){
@@ -384,6 +418,10 @@ public final class Bootloader {
             cdmWebappContext.setAttribute(ATTRIBUTE_JDBC_JNDI_NAME, conf.getJdbcJndiName());
 	        setWebApp(cdmWebappContext, webappFile);
 	        
+			cdmWebappContext.setAttribute(CDM_LOGFILE,
+					LOG_PATH + File.separator + "cdm-"
+							+ conf.getDataSourceName() + ".log");
+   
 	        if(webappFile.isDirectory() && isRunningFromSource()){
         		
 				/*
@@ -394,8 +432,10 @@ public final class Bootloader {
 				 * the system classloader would load these resources.
 				 */
         		logger.info("Running webapp from source folder, thus adding java.class.path to WebAppClassLoader");
+
+        		WebAppClassLoader classLoader = new WebAppClassLoader(cdmWebappContext);
+	        	
 	        	String classPath = System.getProperty("java.class.path");
-	        	WebAppClassLoader classLoader = new WebAppClassLoader(cdmWebappContext);
 	        	classLoader.addClassPath(classPath);
 	        	cdmWebappContext.setClassLoader(classLoader);
         	}

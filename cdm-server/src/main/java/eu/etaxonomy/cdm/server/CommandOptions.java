@@ -23,18 +23,17 @@ public class CommandOptions{
 			"For testing you can use the following jvm options:\n" +
 			"   -Dcom.sun.management.jmxremote.ssl=false\n" +
 			"   -Dcom.sun.management.jmxremote.authenticate=false\n" +
-			"   -Dcom.sun.management.jmxremote.port=9999\n" );
+			"   -Dcom.sun.management.jmxremote.port=9999" );
 	
 	@SuppressWarnings("static-access")
 	public static final Option WEBAPP = OptionBuilder
 			.withArgName("file")
 			.hasArg()
 			.withDescription( "use the specified webapplication this either can be a compressed war or extracted file. " +
-					"If this options is used extraction of the war from the cdmserver jar file is omitted." +
-					"Developers can run the server completely from the traget folder or completly from source " +
-					"when using the following paths: \n" +
-					"'{cdmlib-project-root}/cdmlib-remote/target/cdmserver' " +
-					"'{cdmlib-project-root}/cdmlib-remote/src/main/webapp' " )
+					"If this option is used extraction of the war from the cdmserver jar file is omitted." +
+					"Using the following paths developers can run the server completely from the target folder or completely from source:\n" +
+					"'{cdmlib-project-root}/cdmlib-remote/target/cdmserver'\n " +
+					"'{cdmlib-project-root}/cdmlib-remote/src/main/webapp'" )
 			.create("webapp");
 
 	@SuppressWarnings("static-access")
