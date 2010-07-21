@@ -224,7 +224,7 @@ public abstract class TermBase extends IdentifiableEntity {
 	public String toString() {
 		//TODO eliminate nasty LazyInitializationException loggings
 		try {
-			return super.toString()+" "+this.getLabel();
+			return super.toString(); 
 		} catch (LazyInitializationException e) {
 			return super.toString()+" "+this.getUuid();
 		}
