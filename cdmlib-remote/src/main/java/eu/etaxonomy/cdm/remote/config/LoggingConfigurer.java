@@ -30,10 +30,14 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
 	protected void configureLogFile() {
 		PatternLayout layout = new PatternLayout("%d %p [%c] - %m%n");
 		String logFile = findProperty(CDM_LOGFILE, false);
+		if (logFile == null) {
+			logger.info("No logfile specified, runing without.");
+			return;
+		}
 		try {
 			RollingFileAppender appender = new RollingFileAppender(layout, logFile);
 			appender.setMaxBackupIndex(3);
-			appender.setMaxFileSize("250MB");
+			appender.setMaxFileSize("2MB");
 			Logger.getRootLogger().addAppender(appender);
 			logger.info("logging to :" + logFile);
 		} catch (IOException e) {

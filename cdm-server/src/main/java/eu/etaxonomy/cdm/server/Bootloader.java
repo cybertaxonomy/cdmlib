@@ -389,7 +389,7 @@ public final class Bootloader {
 			String logFile = LOG_PATH + File.separator + "cdmserver.log";
 			RollingFileAppender appender = new RollingFileAppender(layout, logFile);
 			appender.setMaxBackupIndex(3);
-			appender.setMaxFileSize("250MB");
+			appender.setMaxFileSize("2MB");
 			Logger.getRootLogger().addAppender(appender);
 			logger.info("logging to :" + logFile);
 		} catch (IOException e) {
