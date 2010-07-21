@@ -10,33 +10,39 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.mapping.Map;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
-//$Id$
 /**
  * based on org.cateproject.controller.common
  * @author b.clark
@@ -50,6 +56,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 
 	protected SERVICE service;
 	
+	protected Class<T> baseClass;
+	
 	public abstract void setService(SERVICE service);
 
 	@InitBinder
@@ -57,90 +65,186 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
 	}
 	
-	@SuppressWarnings("unchecked")
+	//TODO implement bulk version of this method
 	@RequestMapping(method = RequestMethod.GET)
-	public T doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public T doGet(@PathVariable("uuid") UUID uuid,
+				HttpServletRequest request, 
+				HttpServletResponse response) throws IOException {
 		logger.info("doGet() " + request.getServletPath());
-		T obj = (T) getCdmBase(request, response, initializationStrategy, CdmBase.class);
+		T obj = (T) getCdmBaseInstance(uuid, response, initializationStrategy);
 		return obj;
 	}
-
+	
 	/**
+	 * @param uuid
 	 * @param request
 	 * @param response
-	 * @param obj
 	 * @return
 	 * @throws IOException
+	 * 
+	 * TODO implement bulk version of this method
 	 */
-	protected <CDM_BASE> CDM_BASE  getCdmBase(HttpServletRequest request, HttpServletResponse response, 
-			List<String> initStrategy, Class<CDM_BASE> clazz) throws IOException {
-		T obj = null;
-		try {
-			UUID uuid = readValueUuid(request, null);
-			Assert.notNull(uuid, HttpStatusMessage.UUID_MISSING.toString());
-			
-			if(initStrategy == null){
-				// may be null is set to null via the setter
-				obj = service.find(uuid);
-			} else {				
-				obj = service.load(uuid, initStrategy);
-			}
-			Assert.notNull(obj, HttpStatusMessage.UUID_NOT_FOUND.toString());
-			
-		} catch (IllegalArgumentException iae) {
-			HttpStatusMessage.fromString(iae.getMessage()).send(response);
-		}
-		CDM_BASE t;
-		try {
-			t = (CDM_BASE)obj;
-			return t;
-		} catch (Exception e) {
-			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-			return null;
-		}
-	}
-	
-	protected T getCdmBaseInstance(UUID uuid, 
-			HttpServletResponse response, 
-			List<String> pathProperties) throws IOException{
-		CdmBase cdmBaseObject = service.load(uuid, pathProperties);
-		if(cdmBaseObject == null){
-			HttpStatusMessage.UUID_NOT_FOUND.send(response);
-		}
-		return (T) cdmBaseObject;
-	}
-	
-	protected T getCdmBaseInstance(UUID uuid, HttpServletResponse response, String pathProperty) throws IOException{
-		return getCdmBaseInstance(uuid, response, Arrays.asList(new String[]{pathProperty}));
-	}
-	
-	
-	@RequestMapping(value = "{uuid}/*", method = RequestMethod.GET)
-	public ModelAndView doGetMethod(@PathVariable("uuid") UUID uuid,
+	@RequestMapping(value = "*", method = RequestMethod.GET)
+	public ModelAndView doGetMethod(
+			@PathVariable("uuid") UUID uuid,
+			// doPage request parametes
+			@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", required = false) Integer pageSize,
+			// doList request parametes
+			@RequestParam(value = "start", required = false) Integer start,
+			@RequestParam(value = "limit", required = false) Integer limit,
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		logger.info("doGetMethod() " + request.getServletPath());
 		
-		ModelAndView modelAndView = new ModelAndView();
+		ModelAndView modelAndView = null;
 		
 		String servletPath = request.getServletPath();
 		String baseName = FilenameUtils.getBaseName(servletPath);
 		
+		logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getServletPath());
+	
 		T instance = getCdmBaseInstance(uuid, response, Arrays.asList(new String[]{baseName + ".titleCache"}));
 		
+		Object objectFromProperty = invokeProperty(instance, baseName, response);
+		
+		if(objectFromProperty != null){
+			
+			modelAndView = new ModelAndView();
+
+			if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
+				// Map types cannot be returend as list or in a pager!
+				Collection c = (Collection)objectFromProperty;
+				if(start != null){
+					// return list
+					limit = (limit == null ? DEFAULT_PAGE_SIZE : limit);
+					Collection sub_c = subCollection(c, start, limit);
+					modelAndView.addObject(sub_c);
+					
+				} else {
+					pageSize = (pageSize == null ? DEFAULT_PAGE_SIZE : pageSize);
+					pageNumber = (pageNumber == null ? 0 : pageNumber);
+					start = pageNumber * pageSize;
+					List sub_c = subCollection(c, start, pageSize);
+					Pager p = new DefaultPagerImpl(pageNumber, c.size(), pageSize, sub_c);
+					modelAndView.addObject(p);
+				}
+				
+			} else {
+				modelAndView.addObject(objectFromProperty);							
+			}
+
+		}
+		
+		return modelAndView;
+	}
+
+	/**
+	 * @param <SUB_T>
+	 * @param clazz
+	 * @param uuid
+	 * @param response
+	 * @param pathProperties
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, List<String> pathProperties)
+	throws IOException {
+
+		CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperties);
+		if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+		}
+		return (SUB_T) cdmBaseObject;
+	}
+	
+	/**
+	 * @param <SUB_T>
+	 * @param clazz
+	 * @param uuid
+	 * @param response
+	 * @param pathProperty
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, String pathProperty)
+	throws IOException {
+		
+		CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperty);
+		if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+		}
+		return (SUB_T) cdmBaseObject;
+	}
+	
+	/**
+	 * @param uuid
+	 * @param response
+	 * @param pathProperty
+	 * @return
+	 * @throws IOException
+	 */
+	protected final T getCdmBaseInstance(UUID uuid, HttpServletResponse response, String pathProperty)
+			throws IOException {
+		return getCdmBaseInstance(baseClass, uuid, response, Arrays
+				.asList(new String[] { pathProperty }));
+	}
+	
+	
+	/**
+	 * @param uuid
+	 * @param response
+	 * @param pathProperties
+	 * @return
+	 * @throws IOException
+	 */
+	protected final T getCdmBaseInstance(UUID uuid, HttpServletResponse response, List<String> pathProperties)
+			throws IOException {
+		return getCdmBaseInstance(baseClass, service, uuid, response, pathProperties);
+	}
+
+	/**
+	 * @param <CDM_BASE>
+	 * @param clazz
+	 * @param service
+	 * @param uuid
+	 * @param response
+	 * @param pathProperties
+	 * @return
+	 * @throws IOException
+	 */
+	protected final <CDM_BASE extends CdmBase> CDM_BASE getCdmBaseInstance(Class<CDM_BASE> clazz, IService<CDM_BASE> service, UUID uuid, HttpServletResponse response, List<String> pathProperties)
+	throws IOException {
+	
+		CDM_BASE cdmBaseObject = service.load(uuid, pathProperties);
+		if (cdmBaseObject == null) {
+			HttpStatusMessage.UUID_NOT_FOUND.send(response);
+		}
+		return cdmBaseObject;
+		}
+
+	/**
+	 * @param instance
+	 * @param baseName
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	private final Object invokeProperty(T instance,
+			String baseName, HttpServletResponse response) throws IOException {
+		
+		Object result = null; 
 		try {
-			String methodName = "get" + StringUtils.capitalize(baseName);
-			Method method = instance.getClass().getMethod(methodName, null);
+			PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(instance, baseName);
+			Method method = propertyDescriptor.getReadMethod();
 			
 			Class<?> returnType = method.getReturnType();
 			
-			if(CdmBase.class.isAssignableFrom(returnType)){
-				CdmBase resultInstance = (CdmBase) method.invoke(instance, null);
-				modelAndView.addObject(resultInstance);
-			}
-			else if(Collection.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType)){
-				// TODO
-				logger.warn("Collections or Maps not implemented yet.");
+			if(CdmBase.class.isAssignableFrom(returnType) 
+					|| Collection.class.isAssignableFrom(returnType) 
+					|| Map.class.isAssignableFrom(returnType)){
+				result = method.invoke(instance, (Object[])null);
 			}else{
 				HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
 			}
@@ -156,8 +260,21 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		} catch (InvocationTargetException e) {
 			HttpStatusMessage.PROPERTY_NOT_FOUND.send(response);
 		}
+		return result;
+	}
+	
+	private <E> List<E> subCollection(Collection<? extends E> c, Integer start, Integer length){
+		List<E> sub_c = new ArrayList<E>(length);
+		if(c.size() > length){
+			E[] a = (E[]) c.toArray();
+			for(int i = start; i < start + length; i++){
+				sub_c.add(a[i]);
+			}
+		} else {
+			sub_c.addAll(c);
+		}
+		return sub_c;
 		
-		return modelAndView;
 	}
 	
 	
