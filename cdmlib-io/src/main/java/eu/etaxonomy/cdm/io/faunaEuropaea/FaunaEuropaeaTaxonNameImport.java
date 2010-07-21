@@ -416,12 +416,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.info("Name of Synonym: " + nameString);
 			}
 			
-			// TEST
-			if (nameString.startsWith("Anoecia vagans")) {
-				logger.error("Anoecia vagans (Koch, 1856)");
-			}
-			// TEST
-
 			if (fauEuConfig.isDoBasionyms() 
 					&& fauEuTaxon.getRankId() > R_SUBGENUS
 					&& (fauEuTaxon.getOriginalGenusId() != 0)) {
