@@ -9,10 +9,14 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import java.util.List;
 import java.util.Set;
 
 
+/**
+ * Interface for all objects having {@link Media} attached
+ * @author a.mueller
+ *
+ */
 public interface IMediaDocumented {
 	public Set<Media> getMedia();
 }

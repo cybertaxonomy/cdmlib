@@ -9,14 +9,11 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import java.util.List;
 import java.util.Set;
 
 /**
  * If a class is implementing this interface a set of <code>media</code> may be added
- * to an instance of this class. The class should also implement the protected method:
- * <code>protected void setMedia(Set<Media> media)</code> that maybe used by the persistence
- *  framework (e.g. hibernate) 
+ * to an instance of this class. 
  *  
  * @author a.mueller
  * @created 07.07.2008
