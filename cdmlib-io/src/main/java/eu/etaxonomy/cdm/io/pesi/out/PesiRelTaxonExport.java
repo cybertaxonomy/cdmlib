@@ -127,8 +127,6 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			rankMap.put(Rank.GENUS(), null); // Since NULL does not match an existing Rank, traverse all the way down to the leaves
 			rankMap.put(Rank.KINGDOM(), Rank.GENUS()); // excludes rank genus
 			
-			StringBuffer treeIndex = new StringBuffer();
-			
 			// Retrieve list of Taxonomic Trees
 			txStatus = startTransaction(true);
 			logger.error("Started transaction. Fetching all Taxonomic Trees...");
@@ -241,7 +239,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 				Set<Taxon> taxa = childNodeTaxonName.getTaxa(); // accepted taxa
 				if (taxa.size() == 1) {
 					Taxon taxon = CdmBase.deproxy(taxa.iterator().next(), Taxon.class);
-					Set<TaxonRelationship> taxonRelations = taxon.getRelationsFromThisTaxon();
+					Set<TaxonRelationship> taxonRelations = taxon.getRelationsToThisTaxon();
 					for (TaxonRelationship taxonRelationship : taxonRelations) {
 						try {
 							if (neededValuesNotNull(taxonRelationship, state)) {
