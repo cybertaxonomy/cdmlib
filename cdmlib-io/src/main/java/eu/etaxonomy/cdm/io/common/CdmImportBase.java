@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
@@ -30,7 +31,10 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
@@ -218,6 +222,34 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				return;
 			}
 			sourceable.addSource(source);
+		}
+	}
+	
+
+	/**
+	 * If the child taxon is missing genus or species epithet information and the rank is below <i>genus</i>
+	 * or <i>species</i> respectively the according epithets are taken from the parent taxon.
+	 * @param parentTaxon
+	 * @param childTaxon
+	 */
+	protected void fillMissingEpithetsForTaxa(Taxon parentTaxon, Taxon childTaxon) {
+		NonViralName parentName = HibernateProxyHelper.deproxy(parentTaxon.getName(), NonViralName.class);
+		NonViralName childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
+		fillMissingEpithets(parentName, childName);
+	}
+	
+	/**
+	 * If the child name is missing genus or species epithet information and the rank is below <i>genus</i>
+	 * or <i>species</i> respectively the according epithets are taken from the parent name.
+	 * @param parentTaxon
+	 * @param childTaxon
+	 */
+	protected void fillMissingEpithets(NonViralName parentName, NonViralName childName) {
+		if (CdmUtils.isEmpty(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
+			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
+		}
+		if (CdmUtils.isEmpty(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
+			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
 	}
 	
