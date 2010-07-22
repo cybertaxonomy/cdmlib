@@ -24,15 +24,10 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/occurrence/*","/occurrence/{uuid}"})
+@RequestMapping(value = {"/occurrence/{uuid}"})
 public class OccurrenceController extends AnnotatableController<SpecimenOrObservationBase, IOccurrenceService>
 {
-	
-	public OccurrenceController(){
-		super();
-		setUuidParameterPattern("^/occurrence/([^/?#&\\.]+).*");
-	}
-	
+		
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
 	 */

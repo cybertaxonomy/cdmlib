@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * TODO this controller should be a portal controller!!
  */
 @Controller
-@RequestMapping(value = {"/portal/taxontree/*","/portal/taxontree/{uuid}"})
+@RequestMapping(value = {"/portal/taxontree/{uuid}"})
 public class TaxonomicTreePortalController extends AnnotatableController<TaxonomicTree,ITaxonTreeService> {
 	
 	
@@ -77,7 +77,6 @@ public class TaxonomicTreePortalController extends AnnotatableController<Taxonom
 	
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
 		binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
 	}
 	
@@ -87,7 +86,6 @@ public class TaxonomicTreePortalController extends AnnotatableController<Taxonom
 	public TaxonomicTreePortalController() {
 		super();
 		setInitializationStrategy(TAXONTREE_INIT_STRATEGY);
-		setUuidParameterPattern("^/portal/taxontree/([^/?#&\\.]+).*");
 	}
 
 	

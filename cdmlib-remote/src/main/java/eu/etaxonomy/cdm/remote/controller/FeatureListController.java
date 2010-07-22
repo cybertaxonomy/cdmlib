@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -36,19 +35,13 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 
 @Controller
-@RequestMapping(value = {"/feature/", "/feature/*"})
+@RequestMapping(value = {"/feature/", "/feature/{uuid}"}) //FIXME refactor type mappings
 public class FeatureListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
 	private ITermService termService;
 
 	private static final List<String> FEATURE_INIT_STRATEGY = Arrays.asList(new String[]{"representations"});
-
-
-	public FeatureListController(){
-		super();
-		setUuidParameterPattern("^/feature/([^/?#&\\.]+).*");
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)

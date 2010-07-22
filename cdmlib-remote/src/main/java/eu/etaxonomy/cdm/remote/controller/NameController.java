@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -45,7 +46,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 
 @Controller
-@RequestMapping(value = {"/name/*", "/name/{uuid}"})
+@RequestMapping(value = {"/name/{uuid}"})
 public class NameController extends AnnotatableController<TaxonNameBase, INameService>
 {
 	
@@ -64,8 +65,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	
 	public NameController(){
 		super();
-		setUuidParameterPattern("^/name/([^/?#&\\.]+).*");
-		setInitializationStrategy(Arrays.asList(new String[]{"$"}));
+		setInitializationStrategy(Arrays.asList(new String[]{"$"})); //TODO still needed????
 	}
 	
 	/* (non-Javadoc)
@@ -77,10 +77,6 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 		this.service = service;
 	}
 	
-	@InitBinder
-    public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
-	}
 	
 	/**
      * Get the list of {@link TypeDesignationBase}s of the 
@@ -93,27 +89,36 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	 * @return a List of {@link TypeDesignationBase} entities which are initialized
 	 *         using the {@link #TYPEDESIGNATION_INIT_STRATEGY}
 	 * @throws IOException
-	 */
-	@RequestMapping(
-			value = {"*/typeDesignations"},
-			method = RequestMethod.GET)
-	public List<TypeDesignationBase> doGetNameTypeDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	 *///TODO obsolete method?
+	@RequestMapping(value = { "typeDesignations" }, method = RequestMethod.GET)
+	public List<TypeDesignationBase> doGetNameTypeDesignations(
+			@PathVariable("uuid") UUID uuid, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		
 		logger.info("doGetTypeDesignations()" + request.getServletPath());
-		TaxonNameBase tnb = getCdmBase(request, response, null, TaxonNameBase.class);
-		Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
+		TaxonNameBase tnb = getCdmBaseInstance(uuid, response,
+				(List<String>) null);
+		Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null,
+				null, null, TYPEDESIGNATION_INIT_STRATEGY);
 		return p.getRecords();
+		
 	}
 	
+	//TODO obsolete method?
 	@RequestMapping(
-			value = {"*/nameCache"},
+			value = {"nameCache"},
 			method = RequestMethod.GET)
-	public List<String> doGetNameCache(HttpServletRequest request, HttpServletResponse response)throws IOException {
-		TaxonNameBase tnb = getCdmBase(request, response, NAME_CACHE_INIT_STRATEGY, TaxonNameBase.class);
+	public List<String> doGetNameCache(@PathVariable("uuid") UUID uuid, 
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
+		
+		logger.info("doGetNameCache()" + request.getServletPath());
+		TaxonNameBase tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
 		NonViralName nvn = (NonViralName) tnb;
 		String nameCacheString = nvn.getNameCache();
 		List result = new ArrayList<String>();
 		result.add(nameCacheString);
 		return result;
+		
 	}
 	
 }

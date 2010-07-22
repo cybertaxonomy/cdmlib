@@ -50,14 +50,10 @@ import eu.etaxonomy.cdm.model.common.Annotation;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/agent/*","/agent/annotation"})
+@RequestMapping(value = {"/agent/{uuid}"})
 public class AgentController extends AnnotatableController<AgentBase, IAgentService>
 {
 
-	public AgentController(){
-		super();
-		setUuidParameterPattern("^/(?:[^/]+)/agent/([^/?#&\\.]+).*");
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
  *
  */
 @Controller
-@RequestMapping(value = {"/term/", "/term/?*", "/term/?*/*", "/term/*/compareTo/?*"})
+@RequestMapping(value = {"/term/", "/term/{uuid}"}) //FIXME refactor type mappings
 public class TermListController extends BaseListController<DefinedTermBase, ITermService> {
 	
 	private static final List<String> VOCABULARY_LIST_INIT_STRATEGY = Arrays.asList(new String []{
@@ -104,9 +105,10 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.GET,
-		value = "/term/?*")
-	public TermVocabulary<DefinedTermBase> doGetTerms(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		UUID uuid = readValueUuid(request, "^/term/([^/?#&\\.]+).*");
+		value = "/term/{uuid}")
+	public TermVocabulary<DefinedTermBase> doGetTerms(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		TermVocabulary<DefinedTermBase> vocab = vocabularyService.load(uuid, VOCABULARY_INIT_STRATEGY);
 		return vocab;
 	}
@@ -120,11 +122,11 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.GET,
-		value = "/term/*/compareTo/?*")
-	public ModelAndView doCompare(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		value = "/term/{uuid}/compareTo/{uuidThat}")
+	public ModelAndView doCompare(@PathVariable("uuid") UUID uuidThis,
+			@PathVariable("uuidThat") UUID uuidThat,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		ModelAndView mv = new ModelAndView();
-		UUID uuidThis = readValueUuid(request, "^/term/([^/?#&\\.]+).*");
-		UUID uuidThat = readValueUuid(request, "^/term/(?:[^/]+)/compareTo/([^/?#&\\.]+).*");
 		DefinedTermBase thisTerm = service.load(uuidThis, TERM_COMPARE_INIT_STRATEGY);
 		DefinedTermBase thatTerm = service.load(uuidThat, TERM_COMPARE_INIT_STRATEGY);
 		if(thisTerm.getVocabulary().equals(thatTerm.getVocabulary())){

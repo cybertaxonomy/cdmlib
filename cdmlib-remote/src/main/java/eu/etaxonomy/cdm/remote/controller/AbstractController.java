@@ -39,35 +39,5 @@ public class AbstractController {
 	public void setInitializationStrategy(List<String> initializationStrategy) {
 		this.initializationStrategy = initializationStrategy;
 	}
-	
-	protected Pattern uuidParameterPattern = null;
-	
-	protected void setUuidParameterPattern(String pattern){
-		uuidParameterPattern = Pattern.compile(pattern);
-	}
-	
-	protected UUID readValueUuid(HttpServletRequest request, String pattern) {
-		String path = request.getServletPath();
-		if(path != null) {
-			Matcher uuidMatcher;
-			if(pattern != null){
-				Pattern suppliedPattern = Pattern.compile(pattern);
-				uuidMatcher = suppliedPattern.matcher(path);
-			} else {
-				uuidMatcher = uuidParameterPattern.matcher(path);				
-			}
-			if(uuidMatcher.matches() && uuidMatcher.groupCount() > 0){
-				try {
-					UUID uuid = UUID.fromString(uuidMatcher.group(1));
-					return uuid;
-				} catch (Exception e) {
-					throw new IllegalArgumentException(HttpStatusMessage.UUID_INVALID.toString());
-				}
-			} else {
-				throw new IllegalArgumentException(HttpStatusMessage.UUID_MISSING.toString());
-			}
-		}
-		return null;
-	}
 
 }

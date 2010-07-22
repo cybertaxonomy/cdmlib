@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 
 @Controller
-@RequestMapping(value = {"/reference/*","/reference/{uuid}"})
+@RequestMapping(value = {"/reference/{uuid}"})
 public class ReferenceController extends AnnotatableController<ReferenceBase, IReferenceService>
 {
 	
@@ -63,8 +63,6 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	}
 	
 	public ReferenceController(){
-		super();
-		setUuidParameterPattern("^/reference/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{
 				"$",
 				"authorTeam.$" // TODO obsolete??
@@ -89,7 +87,7 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	 * @throws IOException
 	 */
 	@RequestMapping(
-		value = {"{uuid}/nomenclaturalCitation"},
+		value = {"nomenclaturalCitation"},
 		method = RequestMethod.GET)
 	public ModelAndView doGetNomenclaturalCitation(
 			@PathVariable("uuid") UUID uuid,
@@ -109,7 +107,7 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	}
 	
 	@RequestMapping(
-			value = {"{uuid}/authorTeam"},
+			value = {"authorTeam"},
 			method = RequestMethod.GET)
 		public ModelAndView doGetAuthorTeam(
 				@PathVariable("uuid") UUID uuid,

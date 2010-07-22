@@ -17,12 +17,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -40,14 +42,9 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
  */
 
 @Controller
-@RequestMapping(value = {"/media/*","/media/*/annotation", "/media/*/metadata"})
+@RequestMapping(value = {"/media/{uuid}"})
 public class MediaController extends AnnotatableController<Media, IMediaService>
 {
-
-	public MediaController(){
-		super();
-		setUuidParameterPattern("^/media/([^/?#&\\.]+).*");
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
@@ -63,10 +60,11 @@ public class MediaController extends AnnotatableController<Media, IMediaService>
 			"representations.parts"
 	});
 	
-	@RequestMapping(value = {"/media/*/metadata"})
-	public ModelAndView doGetMediaMetaData(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping(value = {"metadata"})
+	public ModelAndView doGetMediaMetaData(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Map<String, String> result;
-		Media media = getCdmBase(request, response, MEDIA_INIT_STRATEGY, Media.class);
+		Media media = getCdmBaseInstance(uuid, response, MEDIA_INIT_STRATEGY);
 		
 		Set<MediaRepresentation> representations = media.getRepresentations();
 		//get first representation and retrieve the according metadata

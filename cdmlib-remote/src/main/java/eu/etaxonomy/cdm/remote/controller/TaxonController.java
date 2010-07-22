@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
-@RequestMapping(value = {"/taxon/*", "/taxon/{uuid}"})
+@RequestMapping(value = {"/taxon/{uuid}"})
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonController.class);
@@ -55,7 +55,6 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	
 	public TaxonController(){
 		super();
-		setUuidParameterPattern("^/taxon/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
 	}
 	
@@ -82,7 +81,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	 *         {@link #DEFAULT_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "{uuid}/accepted", method = RequestMethod.GET)
+	@RequestMapping(value = "accepted", method = RequestMethod.GET)
 	public Set<TaxonBase> doGetAccepted(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, 
@@ -102,7 +101,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 		return resultset;
 	}
 	
-	@RequestMapping(value = "{uuid}/taxonNodes", method = RequestMethod.GET)
+	@RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
 	public Set<TaxonNode>  doGetTaxonNodes(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, 

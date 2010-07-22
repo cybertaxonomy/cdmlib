@@ -96,23 +96,23 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		
-		ModelAndView modelAndView = null;
+		ModelAndView modelAndView = new ModelAndView();
 		
 		String servletPath = request.getServletPath();
 		String baseName = FilenameUtils.getBaseName(servletPath);
 		
 		logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getServletPath());
-	
+		
 		T instance = getCdmBaseInstance(uuid, response, Arrays.asList(new String[]{baseName + ".titleCache"}));
 		
-		Object objectFromProperty = invokeProperty(instance, baseName, response);
+		//Class<?> propertyClass = propertyClass(instance, baseName);
 		
+		Object objectFromProperty = invokeProperty(instance, baseName, response);
 		if(objectFromProperty != null){
-			
-			modelAndView = new ModelAndView();
 
 			if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
 				// Map types cannot be returend as list or in a pager!
+				
 				Collection c = (Collection)objectFromProperty;
 				if(start != null){
 					// return list
@@ -130,12 +130,38 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 				}
 				
 			} else {
-				modelAndView.addObject(objectFromProperty);							
+				modelAndView.addObject(objectFromProperty);												
 			}
 
 		}
-		
-		return modelAndView;
+
+		if(modelAndView.isEmpty()){
+			return null;	
+		} else {
+			
+			return modelAndView;
+		}
+	}
+
+	private Class<?> propertyClass(T instance, String baseName) {
+		PropertyDescriptor propertyDescriptor = null;
+		Class<?> c = null;
+		try {
+			propertyDescriptor = PropertyUtils.getPropertyDescriptor(instance, baseName);
+			if(propertyDescriptor != null){
+				c =  propertyDescriptor.getClass(); 
+			}
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return c;
 	}
 
 	/**

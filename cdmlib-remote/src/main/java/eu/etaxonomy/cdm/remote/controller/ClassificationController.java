@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
-@RequestMapping(value = {"/classification/*", "/classification/{uuid}"})
+@RequestMapping(value = {"/classification/{uuid}"})
 public class ClassificationController extends AnnotatableController<TaxonomicTree,ITaxonTreeService> {
 
 
@@ -63,7 +63,6 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	@InitBinder
 	@Override
     public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
 		binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
 	}
 	
@@ -79,11 +78,6 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 			"taxonomicTree"
 	});}
 	
-	public ClassificationController(){
-		super();
-		setUuidParameterPattern("^/(?:[^/]+)/([^/?#&\\.]+).*");
-	}
-	
 	/**
 	 * @param classificationUuid
 	 * @param response
@@ -91,7 +85,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"{uuid}/childNodes/"},
+			value = {"childNodes/"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodes(
 			@PathVariable("uuid") UUID classificationUuid,
@@ -102,7 +96,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	}
 	
 	@RequestMapping(
-			value = {"{uuid}/childNodesAt/{rankUuid}/"},
+			value = {"childNodesAt/{rankUuid}/"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodesAtRank(
 			@PathVariable("uuid") UUID classificationUuid,

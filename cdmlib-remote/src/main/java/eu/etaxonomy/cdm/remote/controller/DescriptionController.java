@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  */
 
 @Controller
-@RequestMapping(value = {"/description/*","/description/{uuid}", "/description/{uuid_list}", "/descriptionelement/*", "/featuretree/*"})
+@RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}", "/descriptionelement/{descriptionelement_uuid}", "/featuretree/{featuretree_uuid}"})
 public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
@@ -62,7 +62,6 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	
 	public DescriptionController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
 	
 	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
@@ -101,15 +100,14 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 			@PathVariable("featuretree_uuid") UUID uuid,
 			HttpServletRequest request, 
 			HttpServletResponse response)throws IOException {
-		UUID featureTreeUuid = readValueUuid(request, null);
-		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
+		FeatureTree featureTree = featureTreeService.load(uuid, FEATURETREE_INIT_STRATEGY);
 		if(featureTree == null){
 			HttpStatusMessage.UUID_NOT_FOUND.send(response);
 		}
 		return featureTree;
 	}
 	
-	@RequestMapping(value = "/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
+	@RequestMapping(value = "/descriptionelement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
 			@PathVariable("descriptionelement_uuid") UUID uuid,
 			HttpServletRequest request,
@@ -139,7 +137,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	}
 	*/
 
-	@RequestMapping(value = "/{uuid}/naturallanguagedescription/{featuretree_uuid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/description/{uuid}/naturallanguagedescription/{featuretree_uuid}", method = RequestMethod.GET)
 	public ModelAndView doGenerateNaturalLanguageDescription(
 			@PathVariable("uuid") UUID uuid,
 			@PathVariable("featuretree_uuid") UUID featureTreeUuid,
@@ -175,7 +173,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	}
 	
 
-	@RequestMapping(value = "/{uuid}/hasstructureddata", method = RequestMethod.GET)
+	@RequestMapping(value = "/description/{uuid}/hasstructureddata", method = RequestMethod.GET)
 	public ModelAndView doHasStructuredData(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request,

@@ -93,7 +93,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  *
  */
 @Controller
-@RequestMapping(value = {"/portal/taxon/*", "/portal/taxon/{uuid}", "/portal/taxon/*/*", "/portal/name/*/*", "/portal/taxon/*/media/*/*", "/portal/taxon/*/subtree/media/*/*"})
+@RequestMapping(value = {"/portal/taxon/{uuid}"})
 public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
@@ -261,7 +261,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	public TaxonPortalController(){
 		super();
 		setInitializationStrategy(TAXON_INIT_STRATEGY);
-		setUuidParameterPattern("^/portal/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)
@@ -395,14 +394,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxon/*/synonymy"},
+			value = {"synonymy"},
 			method = RequestMethod.GET)
-	public ModelAndView doGetSynonymy(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public ModelAndView doGetSynonymy(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		
 		logger.info("doGetSynonymy() " + request.getServletPath());
 		ModelAndView mv = new ModelAndView();
-		TaxonBase tb = getCdmBase(request, response, null, Taxon.class);
-		Taxon taxon = (Taxon)tb;
+		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 		Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
 		synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
 		synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
@@ -423,12 +422,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *         {@link #SYNONYMY_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/portal/taxon/*/accepted", method = RequestMethod.GET)
-	public Set<TaxonBase> getAccepted(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping(value = "accepted", method = RequestMethod.GET)
+	public Set<TaxonBase> getAccepted(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		logger.info("getAccepted() " + request.getServletPath());
 		
-		UUID uuid = readValueUuid(request, null);
 		TaxonBase tb = service.load(uuid, SYNONYMY_INIT_STRATEGY);
 		if(tb == null){
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "A taxon with the uuid " + uuid + " does not exist");
@@ -463,13 +462,13 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxon/*/taxonRelationships"},
+			value = {"taxonRelationships"},
 			method = RequestMethod.GET)
-	public List<TaxonRelationship> doGetTaxonRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<TaxonRelationship> doGetTaxonRelations(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
 
 		logger.info("doGetTaxonRelations()" + request.getServletPath());
-		TaxonBase tb = getCdmBase(request, response, null, Taxon.class);
-		Taxon taxon = (Taxon)tb;
+		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 		List<TaxonRelationship> relations = new ArrayList<TaxonRelationship>();
 		List<TaxonRelationship> results = service.listToTaxonRelationships(taxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
 		relations.addAll(results);
@@ -493,12 +492,13 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxon/*/toNameRelationships"},
+			value = {"toNameRelationships"},
 			method = RequestMethod.GET)
-	public List<NameRelationship> doGetToNameRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<NameRelationship> doGetToNameRelations(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameRelations()" + request.getServletPath());
-		TaxonBase tb = getCdmBase(request, response, SIMPLE_TAXON_INIT_STRATEGY, Taxon.class);
-		List<NameRelationship> list = nameService.listToNameRelationships(tb.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+		List<NameRelationship> list = nameService.listToNameRelationships(taxon.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;
 	}
 	
@@ -516,12 +516,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxon/*/fromNameRelationships"},
+			value = {"fromNameRelationships"},
 			method = RequestMethod.GET)
-	public List<NameRelationship> doGetFromNameRelations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<NameRelationship> doGetFromNameRelations(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameFromNameRelations()" + request.getServletPath());
-		TaxonBase tb = getCdmBase(request, response, SIMPLE_TAXON_INIT_STRATEGY, Taxon.class);
-		List<NameRelationship> list = nameService.listFromNameRelationships(tb.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+
+		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
+		List<NameRelationship> list = nameService.listFromNameRelationships(taxon.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;
 	}
 	
@@ -539,12 +541,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/name/*/descriptions"},
+			value = {"/portal/name/{uuid}/descriptions"},
 			method = RequestMethod.GET)
-	public List<TaxonNameDescription> doGetNameDescriptions(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<TaxonNameDescription> doGetNameDescriptions(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameDescriptions()" + request.getServletPath());
-		UUID nameUuuid = readValueUuid(request, null);
-		TaxonNameBase tnb = nameService.load(nameUuuid, null);
+		TaxonNameBase tnb = nameService.load(uuid, null);
 		Pager<TaxonNameDescription> p = descriptionService.getTaxonNameDescriptions(tnb, null, null, NAMEDESCRIPTION_INIT_STRATEGY);
 		return p.getRecords();
 	}
@@ -565,16 +567,17 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 */
 	@Deprecated
 	@RequestMapping(
-			value = {"/portal/taxon/*/nameTypeDesignations"},
+			value = {"nameTypeDesignations"},
 			method = RequestMethod.GET)
-	public List<TypeDesignationBase> doGetNameTypeDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<TypeDesignationBase> doGetNameTypeDesignations(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameTypeDesignations()" + request.getServletPath());
-		TaxonBase tb = getCdmBase(request, response, SIMPLE_TAXON_INIT_STRATEGY, Taxon.class);
-		Pager<TypeDesignationBase> p = nameService.getTypeDesignations(tb.getName(), null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
+		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
+		Pager<TypeDesignationBase> p = nameService.getTypeDesignations(taxon.getName(), null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
 		return p.getRecords();
 	}
 	
-	@RequestMapping(value = "{uuid}/taxonNodes", method = RequestMethod.GET)
+	@RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
 	public Set<TaxonNode>  doGetTaxonNodes(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, 
@@ -602,11 +605,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxon/*/descriptions"},
+			value = {"descriptions"},
 			method = RequestMethod.GET)
-	public List<TaxonDescription> doGetDescriptions(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<TaxonDescription> doGetDescriptions(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetDescriptions()" + request.getServletPath());
-		Taxon t = getCdmBase(request, response, null, Taxon.class);
+		Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 		return p.getRecords();
 	}
@@ -638,22 +642,24 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * @throws IOException
 	 */
 	@RequestMapping(
-		value = {"/portal/taxon/*/media/*/*"},
+		value = {"media/*/*"},
 		method = RequestMethod.GET)
-	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public List<Media> doGetMedia(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
-		Taxon t = getCdmBase(request, response, null, Taxon.class);
+		Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 		String path = request.getServletPath();
 		List<Media> returnMedia = getMediaForTaxon(t, path, 5);
 		return returnMedia;
 	}
 	
 	@RequestMapping(
-			value = {"/portal/taxon/*/subtree/media/*/*"},
+			value = {"subtree/media/*/*"},
 			method = RequestMethod.GET)
-		public List<Media> doGetSubtreeMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
+		public List<Media> doGetSubtreeMedia(@PathVariable("uuid") UUID uuid,
+				HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
-		Taxon t = getCdmBase(request, response, TAXON_WITH_NODES_INIT_STRATEGY, Taxon.class);
+		Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, TAXON_WITH_NODES_INIT_STRATEGY);
 		String path = request.getServletPath();
 		List<Media> returnMedia = getMediaForTaxon(t, path, 6);
 		TaxonNode node;

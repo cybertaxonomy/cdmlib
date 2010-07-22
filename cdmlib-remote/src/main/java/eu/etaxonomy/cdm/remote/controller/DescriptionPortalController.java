@@ -58,16 +58,11 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  */
 
 @Controller
-@RequestMapping(value = {"/portal/description/*","/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionelement/*", "/portal/featuretree/*"})
+@RequestMapping(value = {"/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionelement/{descriptionelement_uuid}", "/portal/featuretree/{featuretree_uuid}"})
 public class DescriptionPortalController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
 	private IFeatureTreeService featureTreeService;
-	
-	public DescriptionPortalController(){
-		super();
-		setUuidParameterPattern("^/(?:[^/]+)/([^/?#&\\.]+).*");
-	}
 	
 	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
 			new String[]{
@@ -101,7 +96,6 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
 		binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
 		binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
 	}
@@ -137,7 +131,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		return featureTree;
 	}
 	
-	@RequestMapping(value = "/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
+	@RequestMapping(value = "/portal/descriptionelement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
 			@PathVariable("descriptionelement_uuid") UUID uuid,
 			HttpServletRequest request,
@@ -148,7 +142,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		return annotations;
 	}
 	
-	@RequestMapping(value = "{uuid_list}/namedAreaTree", method = RequestMethod.GET)
+	@RequestMapping(value = "/portal/description/{uuid_list}/namedAreaTree", method = RequestMethod.GET)
 	public NamedAreaTree doGetOrderedDistributions(
 			@PathVariable("uuid_list") UuidList descriptionUuidList,
 			@RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
@@ -165,7 +159,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		return areaTree;
 	}
 	
-	@RequestMapping(value = "{uuid_list}/DistributionTree", method = RequestMethod.GET)
+	@RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
 	public DistributionTree doGetOrderedDistributionsB(
 			@PathVariable("uuid_list") UuidList descriptionUuidList,
 			@RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,

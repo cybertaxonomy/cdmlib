@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -50,7 +53,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  * 
  */
 @Controller
-@RequestMapping(value = { "/geo/map/distribution/*" })
+@RequestMapping(value = { "/geo/map/distribution/{uuid}" })
 public class ExternalGeoController extends BaseController<TaxonBase, ITaxonService> {
 	
 	public static final Logger logger = Logger.getLogger(ExternalGeoController.class);
@@ -59,11 +62,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 	private IEditGeoService geoservice;
 	@Autowired
 	private IDescriptionService descriptionService;
-	
-	public ExternalGeoController() {
-		super();
-		setUuidParameterPattern("^/geo/(?:[^/]+)/(?:[^/]+)/([^/?#&\\.]+).*");
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -91,15 +89,19 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 	 * @return URI parameter Strings for the EDIT Map Service
 	 * @throws IOException TODO write controller method documentation
 	 */
-	@RequestMapping(value = { "/geo/map/distribution/*" }, method = RequestMethod.GET)
-	public ModelAndView doGetDistributionMapUriParams(HttpServletRequest request, HttpServletResponse response)
+	@RequestMapping(value = { "/geo/map/distribution/{uuid}" }, method = RequestMethod.GET)
+	public ModelAndView doGetDistributionMapUriParams(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response)
 			throws IOException {
 		
 		logger.info("doGetDistributionMapUriParams() " + request.getServletPath());
 		ModelAndView mv = new ModelAndView();
+		
 		// get the descriptions for the taxon
-		Taxon taxon = getCdmBase(request, response, null, Taxon.class);
-
+		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+		
 		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
 		//languages
 		List<Language> langs = LocaleContext.getLanguages();

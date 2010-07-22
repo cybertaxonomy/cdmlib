@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @version 1.0
  */
 @Controller
-@RequestMapping(value = {"/taxonNode/*", "/taxonNode/{uuid}"})
+@RequestMapping(value = {"/taxonNode/{uuid}"})
 public class TaxonNodeController extends AnnotatableController<TaxonNode, ITaxonNodeService> {
 	private static final Logger logger = Logger
 			.getLogger(TaxonNodeController.class);
@@ -40,7 +40,6 @@ public class TaxonNodeController extends AnnotatableController<TaxonNode, ITaxon
 	
 	public TaxonNodeController(){
 		super();
-		setUuidParameterPattern("^/taxonNode/([^/?#&\\.]+).*");
 		setInitializationStrategy(NODE_INIT_STRATEGY);
 	}
 	

@@ -13,12 +13,14 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -52,8 +54,8 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
  */
 
 @Controller
-@RequestMapping(value = {"/portal/name/*","/portal/name/{uuid}"})
-public class NamePortalController extends NameController
+@RequestMapping(value = {"/portal/name/{uuid}"})
+public class NamePortalController extends BaseController<TaxonNameBase, INameService>
 {
 	
 	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{			
@@ -70,8 +72,42 @@ public class NamePortalController extends NameController
 
 	public NamePortalController(){
 		super();
-		setUuidParameterPattern("^/portal/name/([^/?#&\\.]+).*");
-		setInitializationStrategy(Arrays.asList(new String[]{"$"}));
+		setInitializationStrategy(Arrays.asList(new String[]{"$"})); //TODO required???
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
+	 */
+	@Autowired
+	@Override
+	public void setService(INameService service) {
+		this.service = service;
+	}
+
+	/**
+     * Get the list of {@link TypeDesignationBase}s of the 
+	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return a List of {@link TypeDesignationBase} entities which are initialized
+	 *         using the following initialization strategy:
+	 *         {@link #TYPEDESIGNATION_INIT_STRATEGY}
+	 * @throws IOException
+	 */
+	@RequestMapping(
+			value = {"typedesignations"},
+			method = RequestMethod.GET)
+	public ModelAndView doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
+		ModelAndView mv = new ModelAndView();
+		TaxonNameBase tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
+		Pager p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
+		mv.addObject(p.getRecords());
+		return mv;
+	}
+
+
 }
