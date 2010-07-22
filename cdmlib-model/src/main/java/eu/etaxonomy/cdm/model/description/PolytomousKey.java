@@ -103,18 +103,32 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@NotNull
 	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
 	
-	/** 
-	 * Class constructor: creates a new empty multi-access key instance.
-	 */
-	protected PolytomousKey() {
-		super();
-	}
+//******************************** STATIC METHODS ********************************/	
 	
 	/** 
 	 * Creates a new empty identification multi-access key instance.
 	 */
 	public static PolytomousKey NewInstance(){
 		return new PolytomousKey();
+	}
+	
+	/** 
+	 * Creates a new empty identification multi-access key instance.
+	 */
+	public static PolytomousKey NewTitledInstance(String title){
+		PolytomousKey result = new PolytomousKey();
+		result.setTitleCache(title, true);
+		return result;
+	}
+	
+	
+// ************************** CONSTRUCTOR *******************************************/
+
+	/** 
+	 * Class constructor: creates a new empty multi-access key instance.
+	 */
+	protected PolytomousKey() {
+		super();
 	}
 	
 	/** 
