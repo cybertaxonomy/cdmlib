@@ -25,6 +25,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LoggingConfigurer extends AbstractWebApplicationConfigurer implements InitializingBean  {
 
+	/**
+	 * 
+	 */
+	private static final String ROLLING_FILE_APPENDER = "rollingFileAppender";
 	private static final String CDM_LOGFILE = "cdm.logfile";
 
 	protected void configureLogFile() {
@@ -36,6 +40,7 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
 		}
 		try {
 			RollingFileAppender appender = new RollingFileAppender(layout, logFile);
+			appender.setName(ROLLING_FILE_APPENDER);
 			appender.setMaxBackupIndex(3);
 			appender.setMaxFileSize("2MB");
 			Logger.getRootLogger().addAppender(appender);
