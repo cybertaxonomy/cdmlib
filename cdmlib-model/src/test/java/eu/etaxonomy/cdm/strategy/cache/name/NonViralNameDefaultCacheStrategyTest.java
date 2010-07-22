@@ -138,6 +138,25 @@ public class NonViralNameDefaultCacheStrategyTest {
 		assertEquals("Empty species string must not result in trailing whitespace", "Genus", specName.getNameCache());
 		
 	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
+	 */
+	@Test
+	public void testNameCacheWithInfraGenericEpithet() {
+		speciesName.setInfraGenericEpithet("Infraabies");
+		assertEquals("Species Name should be Abies (Infraabies) alba", "Abies (Infraabies) alba", speciesName.getNameCache());
+		
+		BotanicalName botName = BotanicalName.NewInstance(Rank.VARIETY());
+		botName.setGenusOrUninomial("Lepidocaryum");
+		botName.setInfraGenericEpithet("Infralepi");
+		botName.setSpecificEpithet("tenue");
+		botName.setInfraSpecificEpithet("tenue");
+		assertEquals("Name cache should be Lepidocaryum (Infralepi) tenue var. tenue", "Lepidocaryum (Infralepi) tenue var. tenue", botName.getNameCache());
+		
+		botName.setInfraGenericEpithet(" ");
+		assertEquals("Empty infrageneric epithet must be neglegted", "Lepidocaryum tenue var. tenue", botName.getNameCache());
+	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
@@ -379,14 +398,17 @@ public class NonViralNameDefaultCacheStrategyTest {
 		nonViralName.setGenusOrUninomial("Genus");
 		nonViralName.setInfraGenericEpithet("subgenus");
 		nonViralName.setAuthorshipCache(author);
+		
 		//test ordinary infrageneric
 		String subGenusNameCache = strategy.getInfraGenusNameCache(nonViralName);
 		assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
 		String subGenusTitle = strategy.getTitleCache(nonViralName);
 		assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);
+		
 		//test species aggregates and species groups
 		nonViralName.setRank(Rank.SPECIESAGGREGATE());
 		nonViralName.setSpecificEpithet("myspecies");
+		nonViralName.setInfraGenericEpithet(null);
 		String aggrNameCache = strategy.getInfraGenusNameCache(nonViralName);
 		assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameCache);
 		String aggrNameTitle = strategy.getTitleCache(nonViralName);
@@ -395,6 +417,23 @@ public class NonViralNameDefaultCacheStrategyTest {
 		nonViralName.setRank(Rank.SPECIESGROUP());
 		String groupNameTitle = strategy.getTitleCache(nonViralName);
 		assertEquals("Species group name should be 'Genus myspecies species group'.", "Genus myspecies species group", groupNameTitle);
+		
+		//test species aggregates and species groups with infrageneric information
+		//TODO check if groups do ever have infrageneric epithets
+		nonViralName.setRank(Rank.SPECIESAGGREGATE());
+		nonViralName.setSpecificEpithet("myspecies");
+		nonViralName.setInfraGenericEpithet("Infragenus");
+		aggrNameCache = strategy.getInfraGenusNameCache(nonViralName);
+		assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameCache);
+		
+		aggrNameTitle = strategy.getTitleCache(nonViralName);
+		Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
+		assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameTitle);
+		
+		nonViralName.setRank(Rank.SPECIESGROUP());
+		groupNameTitle = strategy.getTitleCache(nonViralName);
+		assertEquals("Species group name should be 'Genus (Infragenus) myspecies species group'.", "Genus (Infragenus) myspecies species group", groupNameTitle);
+		
 		
 	}
 	

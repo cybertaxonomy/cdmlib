@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -490,41 +491,25 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 //		aggr.|agg.|group
 		protected String getSpeciesAggregateCache(NonViralName nonViralName){
-			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
+			String result = getGenusAndSpeciesPart(nonViralName);
 			
 			result += " " + getSpeciesAggregateEpithet(nonViralName);
-			/*result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
-			String marker;
-			try {
-				marker = nonViralName.getRank().getInfraGenericMarker();
-			} catch (UnknownCdmTypeException e) {
-				marker = "'unknown aggregat type'";
-			}
-			result += " " + marker;*/
 			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
 		}
 		
 		private String getSpeciesAggregateEpithet(NonViralName nonViralName) {
-			String result;
-			
-			result = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
 			String marker;
 			try {
 				marker = nonViralName.getRank().getInfraGenericMarker();
 			} catch (UnknownCdmTypeException e) {
 				marker = "'unknown aggregat type'";
 			}
-			result += " " + marker;
-			
-			return result;
+			return marker;
 		}
 		
 		protected String getSpeciesNameCache(NonViralName nonViralName){
-			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
-			result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+			String result = getGenusAndSpeciesPart(nonViralName);
 			result = addAppendedPhrase(result, nonViralName).trim();
 			result = result.replace("\\s\\", " ");
 			return result;
@@ -536,14 +521,23 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		
 		protected String getInfraSpeciesNameCache(NonViralName nonViralName, boolean includeMarker){
-			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
-			result += " " + (CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim()).replace("null", "");
+			String result = getGenusAndSpeciesPart(nonViralName);
 			if (includeMarker){ 
 				result += " " + (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
 			}
 			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim().replace("null", "");
 			result = addAppendedPhrase(result, nonViralName).trim();
+			return result;
+		}
+
+
+		private String getGenusAndSpeciesPart(NonViralName nonViralName) {
+			String result;
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
+			if (StringUtils.isNotBlank(nonViralName.getInfraGenericEpithet()) ){
+				result += " (" + nonViralName.getInfraGenericEpithet().trim() + ")";
+			}
+			result += " " + (CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim()).replace("null", "");
 			return result;
 		}
 
