@@ -1182,10 +1182,6 @@ public class PesiTaxonExport extends PesiExportBase {
 				logger.warn("This TaxonName has " + nameTypeDesignations.size() + " NameTypeDesignations: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
 			}
 		}
-		if (result != null) {
-			logger.error("Taxon Id: " + result);
-			logger.error("TaxonName: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() +")");
-		}
 		return result;
 	}
 	
