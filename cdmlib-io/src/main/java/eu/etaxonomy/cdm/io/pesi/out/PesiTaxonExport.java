@@ -428,9 +428,13 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (parentNode != null) {
 			TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
 			Taxon parentTaxon = node.getTaxon();
-			TaxonNameBase parentTaxonName = parentTaxon.getName();
-			if (parentTaxonName != null && parentTaxonName.getRank().equals(ancestorRank)) {
-				result = true;
+			if (parentTaxon != null) {
+				TaxonNameBase parentTaxonName = parentTaxon.getName();
+				if (parentTaxonName != null && parentTaxonName.getRank().equals(ancestorRank)) {
+					result = true;
+				}
+			} else {
+				logger.error("This TaxonNode has no Taxon: " + node.getUuid());
 			}
 		}
 		return result;

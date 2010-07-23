@@ -2569,7 +2569,7 @@ public final class PesiTransformer {
 		}
 		
 		// We differentiate between Animalia and Plantae only for now.
-		if (pesiKingdomId == KINGDOM_ANIMALIA) {
+		if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_ANIMALIA) {
 			if (rank.equals(Rank.KINGDOM())) {
 				result = Animalia_Kingdom;
 			} else if (rank.equals(Rank.SUBKINGDOM())) {
@@ -2633,7 +2633,7 @@ public final class PesiTransformer {
 				logger.warn("Rank for Kingdom Animalia not yet supported in CDM: "+ rank.getLabel());
 				return null;
 			}
-		} else if (pesiKingdomId == KINGDOM_PLANTAE) {
+		} else if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_PLANTAE) {
 			if (rank.equals(Rank.KINGDOM())) {
 				result = Plantae_Kingdom;
 			} else if (rank.equals(Rank.SUBKINGDOM())) {
