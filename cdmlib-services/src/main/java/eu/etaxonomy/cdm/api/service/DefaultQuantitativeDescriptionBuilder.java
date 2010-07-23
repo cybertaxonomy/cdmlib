@@ -1,26 +1,22 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 
 public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeDescriptionBuilder {
 	
 	@Override
-	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit){
+	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit, List<Language> languages){
 		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
 		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
-		Language language = Language.DEFAULT();
-		
+
 		// booleans indicating whether a kind of value is present or not and the float that will eventually hold the value
 		boolean average = false;
 		float averagevalue = new Float(0);
@@ -42,17 +38,17 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		
 		// the different linking words are taken from NaturalLanguageTerm.class (should this be changed ?)
 		NaturalLanguageTerm nltFrom = NaturalLanguageTerm.FROM();
-		String from = nltFrom.getPreferredRepresentation(language).getLabel();
+		String from = nltFrom.getPreferredRepresentation(languages).getLabel();
 		NaturalLanguageTerm nltTo = NaturalLanguageTerm.TO();
-		String to = nltTo.getPreferredRepresentation(language).getLabel();
+		String to = nltTo.getPreferredRepresentation(languages).getLabel();
 		NaturalLanguageTerm nltUp_To = NaturalLanguageTerm.UP_TO();
-		String up_To = nltUp_To.getPreferredRepresentation(language).getLabel();
+		String up_To = nltUp_To.getPreferredRepresentation(languages).getLabel();
 		NaturalLanguageTerm nltMost_Frequently = NaturalLanguageTerm.MOST_FREQUENTLY();
-		String most_Frequently = nltMost_Frequently.getPreferredRepresentation(language).getLabel();
+		String most_Frequently = nltMost_Frequently.getPreferredRepresentation(languages).getLabel();
 		NaturalLanguageTerm nltOn_Average = NaturalLanguageTerm.ON_AVERAGE();
-		String on_Average = nltOn_Average.getPreferredRepresentation(language).getLabel();
+		String on_Average = nltOn_Average.getPreferredRepresentation(languages).getLabel();
 		NaturalLanguageTerm nltMore_Or_Less = NaturalLanguageTerm.MORE_OR_LESS();
-		String more_Or_Less = nltMore_Or_Less.getPreferredRepresentation(language).getLabel();
+		String more_Or_Less = nltMore_Or_Less.getPreferredRepresentation(languages).getLabel();
 		String space = " "; // should "space" be considered as a linking word and thus be stored in NaturalLanguageTerm.class ?
 		
 		// the booleans and floats are updated according to the presence or absence of values
@@ -111,9 +107,11 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 				QuantitativeDescription.append("("+ more_Or_Less + space + sdvalue + ")");
 			}
 		}
-		textData.putText(QuantitativeDescription.toString(), language);
+		textData.putText(QuantitativeDescription.toString(), languages.get(0)); // which language should be put here ?
 		textData.setFormat(TextFormat.NewInstance(null, "HTML",null )); // the data format is set (not yet real HTML)
 		
 		return textData;
 	}
+
+	
 }
