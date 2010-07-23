@@ -22,18 +22,21 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 public class SapindaceaeImportState extends ImportStateBase<SapindaceaeImportConfigurator, SapindaceaeImportBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SapindaceaeImportState.class);
+	
+	private UnmatchedLeads openKeys;
 
 	public SapindaceaeImportState(SapindaceaeImportConfigurator config) {
 		super(config);
 		setTransformer(new SapindaceaTransformer());
 	}
+
+	public UnmatchedLeads getOpenKeys() {
+		return openKeys;
+	}
+
+	public void setOpenKeys(UnmatchedLeads openKeys) {
+		this.openKeys = openKeys;
+	}
 	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-//	 */
-//	@Override
-//	public void initialize(TcsXmlImportConfigurator config) {
-//				
-//	}
 
 }

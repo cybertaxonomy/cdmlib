@@ -9,9 +9,9 @@
 
 package eu.etaxonomy.cdm.io.eflora.sapindaceae;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,32 +19,35 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.filter.ElementFilter;
-import org.jdom.filter.Filter;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.io.eflora.sapindaceae.UnmatchedLeads.UnmatchedLeadsKey;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -53,6 +56,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -81,95 +85,67 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		return result;
 	}
 	
-	//FIXME
-	private static TaxonomicTree taxonomicTree;
-	
 	@Override
 	public boolean doInvoke(SapindaceaeImportState state){
 		logger.info("start make Taxa ...");
-		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		
+		//FIXME reset state
+		state.putTree(null, null);
+		UnmatchedLeads openKeys = state.getOpenKeys();
+		if (openKeys == null){
+			state.setOpenKeys(UnmatchedLeads.NewInstance());
+		}
+		
+		TransactionStatus tx = startTransaction();
+		
+		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		ITaxonService taxonService = getTaxonService();
-
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 
 		Element elbody= getBodyElement(state.getConfig());
-		
-//		childName = "TaxonConcepts";
-//		obligatory = false;
-//		Element elTaxonConcepts = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
-		
-		String tcsElementName = "taxon";
-//		List<Element> elTaxonList = elbody.getChildren(tcsElementName, tcsNamespace);
 		List<Element> elTaxonList = elbody.getChildren();
 		
 		int i = 0;
-		
-		Set<String> unhandledTaxonChildrenNames = new HashSet<String>();
-		//title, nomenclature, chromosomes, references, description, uses, notes, habitatecology, distribution, taxon, key
 		
 		Set<String> unhandledTitleClassess = new HashSet<String>();
 		Set<String> unhandledNomeclatureChildren = new HashSet<String>();
 		Set<String> unhandledDescriptionChildren = new HashSet<String>();
 		
-		taxonomicTree = TaxonomicTree.NewInstance("Sapindaceae");
-		
 		Taxon lastTaxon = null;
 		
 		
-		//for each taxonConcept
+		//for each taxon
 		for (Element elTaxon : elTaxonList){
-			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
-			if (! elTaxon.getName().equalsIgnoreCase("taxon")){
-				logger.warn("body has element other than 'taxon'");
-			}
-			verifyNoAttribute(elTaxon);
-			
-			BotanicalName botanicalName = BotanicalName.NewInstance(Rank.SPECIES());
-			Taxon taxon = Taxon.NewInstance(botanicalName, state.getConfig().getSourceReference());
-			
-			List<Element> children = elTaxon.getChildren();
-			for (Element element : children){
-				String elName = element.getName();
-				
-				if (elName.equalsIgnoreCase("title")){
-					handleTitle(state, element, taxon, unhandledTitleClassess);
-				}else if(elName.equalsIgnoreCase("nomenclature")){
-					handleNomenclature(state, element, taxon, unhandledNomeclatureChildren);
-				}else if(elName.equalsIgnoreCase("description")){
-					handleDescription(state, element, taxon, unhandledDescriptionChildren);
-				}else if(elName.equalsIgnoreCase("habitatecology")){
-					handleEcology(state, element, taxon);
-				}else if(elName.equalsIgnoreCase("distribution")){
-					handleDistribution(state, element, taxon);
-				}else if(elName.equalsIgnoreCase("uses")){
-					handleUses(state, element, taxon);
-				}else if(elName.equalsIgnoreCase("notes")){
-					handleNotes(state, element, taxon);
-				}else if(elName.equalsIgnoreCase("chromosomes")){
-					handleChromosomes(state, element, taxon);
-				}else if(elName.equalsIgnoreCase("taxon")){
-					logger.warn("A taxon should not be part of a taxon");
-				}else{
-					unhandledTaxonChildrenNames.add(elName);
+			try {
+				if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
+				if (! elTaxon.getName().equalsIgnoreCase("taxon")){
+					logger.warn("body has element other than 'taxon'");
 				}
+				verifyNoAttribute(elTaxon);
 				
-			}
-			handleTaxonRelation(state, taxon, lastTaxon);
-			lastTaxon = taxon;
-			taxaToSave.add(taxon);
+				BotanicalName botanicalName = BotanicalName.NewInstance(Rank.SPECIES());
+				Taxon taxon = Taxon.NewInstance(botanicalName, state.getConfig().getSourceReference());
+				
+				List<Element> children = elTaxon.getChildren();
+				for (Element element : children){
+					handleTaxonElement(state, unhandledTitleClassess, unhandledNomeclatureChildren,
+							unhandledDescriptionChildren, taxon, element);
+				}
+				handleTaxonRelation(state, taxon, lastTaxon);
+				lastTaxon = taxon;
+				taxaToSave.add(taxon);
 
 //			testAdditionalElements(elTaxonConcept, elementList);
 //			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
 //			taxonMap.put(strId, taxonBase);
+			} catch (Exception e) {
+				logger.warn("Exception occurred in Sapindacea taxon import: " + e);
+				e.printStackTrace();
+			}
 			
 		}
 		logger.warn("There are taxa with attributes 'excluded' and 'dubious'");
 		
-		logger.info("Children for taxa are: " + unhandledTaxonChildrenNames);
 		logger.info("Children for nomenclature are: " + unhandledNomeclatureChildren);
 		logger.info("Children for description are: " + unhandledDescriptionChildren);
 		logger.info("Children for homotypes are: " + unhandledHomotypeChildren);
@@ -179,11 +155,195 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 		logger.info(i + " taxa handled. Saving ...");
 		taxonService.save(taxaToSave);
+		commitTransaction(tx);
+		
 		logger.info("end makeTaxa ...");
+		logger.info("start makeKey ...");
+//		invokeDoKey(state);
+		logger.info("end makeKey ...");
+		
 		return success.getValue();
+	}
+
+
+//	private void invokeDoKey(SapindaceaeImportState state) {
+//		TransactionStatus tx = startTransaction();
+//		
+//		Set<FeatureNode> nodesToSave = new HashSet<FeatureNode>();
+//		ITaxonService taxonService = getTaxonService();
+//		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
+//
+//		Element elbody= getBodyElement(state.getConfig());
+//		List<Element> elTaxonList = elbody.getChildren();
+//		
+//		int i = 0;
+//		
+//		//for each taxon
+//		for (Element elTaxon : elTaxonList){
+//			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
+//			if (! elTaxon.getName().equalsIgnoreCase("taxon")){
+//				continue;
+//			}
+//			
+//			List<Element> children = elTaxon.getChildren("key");
+//			for (Element element : children){
+//				handleKeys(state, element, null);
+//			}
+//			nodesToSave.add(taxon);
+//
+//		}
+//		
+//	}
+
+
+	// body/taxon/*
+	private void handleTaxonElement(SapindaceaeImportState state,
+			Set<String> unhandledTitleClassess,
+			Set<String> unhandledNomeclatureChildren,
+			Set<String> unhandledDescriptionChildren, Taxon taxon,
+			Element element) {
+		String elName = element.getName();
+		
+		if (elName.equalsIgnoreCase("title")){
+			handleTitle(state, element, taxon, unhandledTitleClassess);
+		}else if(elName.equalsIgnoreCase("nomenclature")){
+			handleNomenclature(state, element, taxon, unhandledNomeclatureChildren);
+		}else if(elName.equalsIgnoreCase("description")){
+			handleDescription(state, element, taxon, unhandledDescriptionChildren);
+		}else if(elName.equalsIgnoreCase("habitatecology")){
+			handleEcology(state, element, taxon);
+		}else if(elName.equalsIgnoreCase("distribution")){
+			handleDistribution(state, element, taxon);
+		}else if(elName.equalsIgnoreCase("uses")){
+			handleUses(state, element, taxon);
+		}else if(elName.equalsIgnoreCase("notes")){
+			handleNotes(state, element, taxon);
+		}else if(elName.equalsIgnoreCase("chromosomes")){
+			handleChromosomes(state, element, taxon);
+		}else if(elName.equalsIgnoreCase("key")){
+			handleKeys(state, element, taxon);
+		}else if(elName.equalsIgnoreCase("taxon")){
+			logger.warn("A taxon should not be part of a taxon");
+		}else if(elName.equalsIgnoreCase("homotypes")){
+			logger.warn("Homotypes should be included in the nomenclature flag but is child of taxon [XPath: body/taxon/homotypes]");
+		}else{
+			logger.warn("Unexpected child for taxon: " + elName);
+		}
 	}
 	
 	
+	private void handleKeys(SapindaceaeImportState state, Element elKey, Taxon taxon) {
+		UnmatchedLeads openKeys = state.getOpenKeys();
+		
+		//title
+		String title = makeKeyTitle(elKey);
+		if (! title.equalsIgnoreCase("KEY TO THE SPECIES")){
+			return;
+		}
+		//key
+		PolytomousKey key = PolytomousKey.NewTitledInstance(title);
+		//TODO add covered taxa etc.
+		verifyNoAttribute(elKey);
+		
+		//notes
+		makeKeyNotes(elKey, key);
+		
+		//keycouplets
+		List<Element> keycouplets = elKey.getChildren("keycouplet");
+		for (Element elKeycouplet : keycouplets){
+
+			List<FeatureNode> childNodes = new ArrayList<FeatureNode>();
+			List<Element> leads = elKeycouplet.getChildren("lead");
+			for(Element elLead : leads){
+				FeatureNode childNode = handleLead(state, key, elLead);
+				childNodes.add(childNode);
+			}
+			
+			Attribute numAttr = elKeycouplet.getAttribute("num");
+			String num = CdmUtils.removeTrailingDot(numAttr.getValue());
+			UnmatchedLeadsKey okk = UnmatchedLeadsKey.NewInstance(key, num);
+			Set<FeatureNode> matchingNodes = openKeys.getNodes(okk);
+			for (FeatureNode matchingNode : matchingNodes){
+				for (FeatureNode childNode : childNodes){
+					matchingNode.addChild(childNode);
+				}
+				openKeys.removeNode(okk, matchingNode);
+			}
+			elKeycouplet.removeAttribute(num);
+
+			//TODO char Attribute
+			verifyNoAttribute(elKeycouplet);
+		
+		}
+		verifyNoChildren(elKey);
+
+	}
+
+
+	private FeatureNode handleLead(SapindaceaeImportState state, PolytomousKey key, Element elLead) {
+		//text
+		String text = elLead.getAttributeValue("text");
+		if (StringUtils.isBlank(text)){
+			logger.warn("Empty text in lead");
+		}
+		FeatureNode node = FeatureNode.NewInstance();
+		node.addQuestion(Representation.NewInstance(text, text, null, Language.DEFAULT()));
+		elLead.removeAttribute("text");
+		
+		//num
+		Attribute numAttr = elLead.getAttribute("num");
+		String num = numAttr.getValue();
+		//TODO num
+		elLead.removeAttribute("num");
+		
+		//goto
+		Attribute gotoAttr = elLead.getAttribute("goto");
+		String strGoto = gotoAttr.getValue();
+		UnmatchedLeadsKey gotoKey = UnmatchedLeadsKey.NewInstance(key, strGoto);
+		UnmatchedLeads openKeys = state.getOpenKeys();
+		Set<FeatureNode> existingNodes = openKeys.getNodes(gotoKey);
+		for (FeatureNode existingNode : existingNodes){
+			node.addChild(existingNode);
+		}
+		openKeys.addKey(gotoKey, node);
+		elLead.removeAttribute("goto");
+		
+		
+		verifyNoAttribute(elLead);
+		
+		return node;
+	}
+
+
+	private void makeKeyNotes(Element keyElement, PolytomousKey key) {
+		Element elNotes = keyElement.getChild("notes");
+		if (elNotes != null){
+			keyElement.removeContent(elNotes);
+			String notes = elNotes.getTextNormalize();
+			if (StringUtils.isNotBlank(notes)){
+				key.addAnnotation(Annotation.NewInstance(notes, AnnotationType.EDITORIAL(), Language.DEFAULT()));
+			}
+		}
+	}
+
+
+	private String makeKeyTitle(Element keyElement) {
+		String title = "- no title - ";
+		Attribute titleAttr = keyElement.getAttribute("title");
+		keyElement.removeAttribute(titleAttr);
+		if (titleAttr == null){
+			Element elTitle = keyElement.getChild("keytitle");
+			keyElement.removeContent(elTitle);
+			if (elTitle != null){
+				title = elTitle.getTextNormalize();
+			}
+		}else{
+			title = titleAttr.getValue();
+		}
+		return title;
+	}
+
+
 	/**
 	 * @param state
 	 * @param element
@@ -252,12 +412,20 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 	 */
 	private void handleNotes(SapindaceaeImportState state, Element element, Taxon taxon) {
 		verifyNoAttribute(element);
+		removeBr(element);
 		verifyNoChildren(element);
 		String value = element.getTextNormalize();
 		value = replaceStart(value, "Notes");
 		value = replaceStart(value, "Note");
 		Annotation annotation = Annotation.NewInstance(value, AnnotationType.EDITORIAL(), Language.ENGLISH());
 		taxon.addAnnotation(annotation);
+	}
+
+
+	private void removeBr(Element element) {
+		element.removeChildren("Br");
+		element.removeChildren("br");
+		element.removeChildren("BR");
 	}
 
 
@@ -358,9 +526,11 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		verifyNoAttribute(elHomotypes);
 		
 		List<Element> elements = elHomotypes.getChildren();
+		HomotypicalGroup homotypicalGroup = null;
 		for (Element element : elements){
 			if (element.getName().equals("nom")){
-				handleNom(state, element, taxon);
+				homotypicalGroup = handleNom(state, element, taxon, homotypicalGroup);
+				
 			}else{
 				unhandledHomotypeChildren.add(element.getName());
 			}
@@ -375,17 +545,18 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 	 * @param element
 	 * @param taxon
 	 */
-	private void handleNom(SapindaceaeImportState state, Element elNom, Taxon taxon) {
+	private HomotypicalGroup handleNom(SapindaceaeImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
 		List<Attribute> attributes = elNom.getAttributes();
+		
 		for (Attribute attribute : attributes){
 			if (! attribute.getName().equalsIgnoreCase("class")){
 				logger.warn("Nom has unhandled attribute " +  attribute.getName());
 			}else{
 				String classValue = attribute.getValue();
 				if (classValue.equalsIgnoreCase("acceptedname")){
-					handleAcceptedName(state, elNom, taxon);
+					homotypicalGroup = handleNomTaxon(state, elNom, taxon,homotypicalGroup, false);
 				}else if (classValue.equalsIgnoreCase("synonym")){
-					handleSynonym(state, elNom, taxon);
+					homotypicalGroup = handleNomTaxon(state, elNom, taxon, homotypicalGroup, true);
 				}else if (classValue.equalsIgnoreCase("typeref")){
 					handleTypeRef(state, elNom, taxon);
 				}else{
@@ -404,9 +575,9 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 				unhandledNomChildren.add(element.getName());
 			}
 		}
+		return homotypicalGroup;
 		
 	}
-
 
 	/**
 	 * @param state
@@ -424,50 +595,49 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		type.setTypeSpecimen(specimen);
 	}
 
-
-	/**
-	 * @param state
-	 * @param elNom
-	 * @param taxon
-	 */
-	boolean firstSynonym = true;
-	private void handleSynonym(SapindaceaeImportState state, Element elNom, Taxon taxon) {
-		if (firstSynonym == true){
-			logger.warn("synonym not yet handled");
-		}
-		firstSynonym = false;
-		
-	}
-
-
 	/**
 	 * @param state
 	 * @param elNom
 	 * @param taxon
 	 */
 	//body/taxon/
-	private void handleAcceptedName(SapindaceaeImportState state, Element elNom, Taxon taxon) {
-		NonViralName name = (NonViralName)taxon.getName();
+	private HomotypicalGroup handleNomTaxon(SapindaceaeImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup, boolean isSynonym) {
+		NonViralName name = makeName(taxon, homotypicalGroup, isSynonym);
+		
 		boolean hasGenusInfo = false;
-		//first look for authors as author information is needed for multiple elements
+		//first look for authors as author information is needed for references too
 		List<Element> elAuthors = XmlHelp.getAttributedChildListWithValue(elNom, "name", "class", "author");
 		handleNameAuthors(elAuthors, name, elNom);
+		
+		//genus
 		List<Element> elGenus = XmlHelp.getAttributedChildListWithValue(elNom, "name", "class", "genus");
 		if (elGenus.size() > 0){
 			hasGenusInfo = true;
+		}else{
+			logger.warn ("No Synonym Genus");
 		}
+		//infra rank -> needed to handle authors correctly
+		List<Element> elInfraRank = XmlHelp.getAttributedChildListWithValue(elNom, "name", "class", "infrank");
+		Rank infraRank = null;
+		infraRank = handleInfRank(name, elInfraRank, infraRank);
 		
-		
+		//get left over elements
 		List<Element> elements = elNom.getChildren();
 		elements.removeAll(elAuthors);
+		elements.removeAll(elInfraRank);
+		
 		for (Element element : elements){
 			if (element.getName().equals("name")){
 				String classValue = element.getAttributeValue("class");
 				String value = element.getValue().trim();
 				if (classValue.equalsIgnoreCase("genus") || classValue.equalsIgnoreCase("family") ){
 					name.setGenusOrUninomial(value);
+				}else if (classValue.equalsIgnoreCase("family") ){
+					name.setGenusOrUninomial(value);
+					name.setRank(Rank.FAMILY());
 				}else if (classValue.equalsIgnoreCase("subgenus")){
 					name.setInfraGenericEpithet(value);
+					name.setRank(Rank.SUBGENUS());
 				} else if (classValue.equalsIgnoreCase("epithet")){
 					if (hasGenusInfo == true){
 						name.setSpecificEpithet(value);
@@ -476,6 +646,8 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 					}
 				}else if (classValue.equalsIgnoreCase("paraut")){
 					handleBasionymAuthor(state, element, name);
+				}else if (classValue.equalsIgnoreCase("infrepi")){
+					handleInfrEpi(name, infraRank, value);
 				}else if (classValue.equalsIgnoreCase("pub")){
 					ReferenceBase nomRef = ReferenceFactory.newGeneric();
 					nomRef.setTitleCache(value, true);
@@ -489,22 +661,101 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 					String microReference = parseReference(ref);
 					TaxonDescription description = getDescription(taxon);
 					TextData textData = TextData.NewInstance(Feature.CITATION());
-					textData.addSource(null, null, ref, microReference);
+					textData.addSource(null, null, ref, microReference, name, null);
 					description.addElement(textData);
 				}else if (classValue.equalsIgnoreCase("num")){
 					//TODO num
 				}else if (classValue.equalsIgnoreCase("typification")){
 					//TODO typification
+				}else if (classValue.equalsIgnoreCase("infrauthor")){
+						//TODO infrauthor
+				}else if (classValue.equalsIgnoreCase("infrapar")){
+						//TODO infrapar
+				}else if (classValue.equalsIgnoreCase("parauthor")){
+						//TODO infrauthor
 				}else if (classValue.equalsIgnoreCase("author")){
 					logger.warn("authors should have been removed already");
 				}else{
 					logger.warn("Unhandled name class: " +  classValue);
 				}
 			}else{
+				// child element is not "name"
 				unhandledNomChildren.add(element.getName());
 			}
 		}
+		return name.getHomotypicalGroup();
 
+	}
+
+
+	/**
+	 * Sets the names rank according to the infrank value
+	 * @param name
+	 * @param elements
+	 * @param elInfraRank
+	 * @param infraRank
+	 * @return
+	 */
+	private Rank handleInfRank(NonViralName name, List<Element> elInfraRank, Rank infraRank) {
+		if (elInfraRank.size() == 1){
+			String strRank = elInfraRank.get(0).getTextNormalize();
+			try {
+				infraRank = Rank.getRankByNameOrAbbreviation(strRank);
+			} catch (UnknownCdmTypeException e) {
+				try{
+					infraRank = Rank.getRankByNameOrAbbreviation(strRank + ".");
+				} catch (UnknownCdmTypeException e2) {
+					logger.warn("Unknown infrank " + strRank + ". Set infraRank to (null).");
+				}
+			}
+		}else if (elInfraRank.size() > 1){
+			logger.warn ("There is more than 1 infrank");
+		}
+		if (infraRank != null){
+			name.setRank(infraRank);
+		}
+		return infraRank;
+	}
+
+
+	private void handleInfrEpi(NonViralName name, Rank infraRank, String value) {
+		if (infraRank != null && infraRank.isInfraSpecific()){
+			name.setInfraSpecificEpithet(value);
+			if (CdmUtils.isCapital(value)){
+				logger.warn("Infraspecific epithet starts with a capital letter: " + value);
+			}
+		}else if (infraRank != null && infraRank.isInfraGeneric()){
+			name.setInfraGenericEpithet(value);
+			if (! CdmUtils.isCapital(value)){
+				logger.warn("Infrageneric epithet does not start with a capital letter: " + value);
+			}
+		}else{
+			logger.warn("Infrepi could not be handled: " + value);
+		}
+	}
+
+
+
+	/**
+	 * Returns the (empty) with the correct homotypical group depending on the taxon status
+	 * @param taxon
+	 * @param homotypicalGroup
+	 * @param isSynonym
+	 * @return
+	 */
+	private NonViralName makeName(Taxon taxon,HomotypicalGroup homotypicalGroup, boolean isSynonym) {
+		NonViralName name;
+		if (isSynonym){
+			name = BotanicalName.NewInstance(Rank.SPECIES(), homotypicalGroup);
+			SynonymRelationshipType synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			if (taxon.getHomotypicGroup().equals(homotypicalGroup)){
+				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+			}
+			taxon.addSynonymName(name, synonymType);
+		}else{
+			name = (NonViralName)taxon.getName();
+		}
+		return name;
 	}
 
 
@@ -752,6 +1003,7 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 	 * @param lastTaxon
 	 */
 	private void handleTaxonRelation(SapindaceaeImportState state, Taxon taxon, Taxon lastTaxon) {
+		
 		TaxonomicTree tree = getTree(state);
 		if (lastTaxon == null){
 			tree.addChildTaxon(taxon, null, null, null);
@@ -764,8 +1016,15 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 			if (thisRank.isLower(lastRank )  ){
 				//FIXME
 				lastNode.addChildTaxon(taxon, null, null, null);
+				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			}else if (thisRank.equals(lastRank)){
-				lastNode.getParent().addChildTaxon(taxon, null, null, null);
+				TaxonNode parent = lastNode.getParent();
+				if (parent != null){
+					parent.addChildTaxon(taxon, null, null, null);
+					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
+				}else{
+					tree.addChildTaxon(taxon, null, null, null);
+				}
 			}else if (thisRank.isHigher(lastRank)){
 				handleTaxonRelation(state, taxon, lastNode.getParent().getTaxon());
 //				TaxonNode parentNode = handleTaxonRelation(state, taxon, lastNode.getParent().getTaxon());
@@ -776,14 +1035,36 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		}
 	}
 
+
+
 	/**
 	 * @param state
 	 * @return 
 	 */
 	private TaxonomicTree getTree(SapindaceaeImportState state) {
-		//FIXME
-		return taxonomicTree;
-		
+		TaxonomicTree result = state.getTree(null);
+		if (result == null){
+			UUID uuid = state.getConfig().getTaxonomicTreeUuid();
+			if (uuid == null){
+				logger.warn("No classification uuid is defined");
+				result = getNewClassification(state);
+			}else{
+				result = getTaxonTreeService().getTaxonomicTreeByUuid(uuid);
+				if (result == null){
+					result = getNewClassification(state);
+					result.setUuid(uuid);
+				}
+			}
+		}
+		return result;
+	}
+
+
+	private TaxonomicTree getNewClassification(SapindaceaeImportState state) {
+		TaxonomicTree result;
+		result = TaxonomicTree.NewInstance(state.getConfig().getClassificationTitle());
+		state.putTree(null, result);
+		return result;
 	}
 
 
@@ -851,7 +1132,10 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 			TimePeriod datePublished = TimePeriod.NewInstance(Integer.valueOf(year.substring(1,5)));
 			ref.setDatePublished(datePublished);
 			ref.setTitle(title);
-			detailResult = detail;
+			detailResult = CdmUtils.removeTrailingDot(detail);
+			if (detailResult.endsWith(".")){
+				detailResult = detailResult.substring(0, detailResult.length() -1);
+			}
 			ref.setProtectedTitleCache(false);
 		}else{
 			logger.warn("Could not parse reference: " +  titleToParse);
@@ -868,70 +1152,5 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 	protected boolean isIgnore(SapindaceaeImportState state){
 		return ! state.getConfig().isDoTaxa();
 	}
-
-//**************************** TCS OLD **************************************************	
-	
-
-	private boolean hasIsSynonymRelation(Element taxonConcept, Namespace rdfNamespace){
-		boolean result = false;
-		if (taxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(taxonConcept.getName()) ){
-			return false;
-		}
-		
-		String elName = "relationshipCategory";
-		Filter filter = new ElementFilter(elName, taxonConcept.getNamespace());
-		Iterator<Element> relationshipCategories = taxonConcept.getDescendants(filter);
-		while (relationshipCategories.hasNext()){
-			Element relationshipCategory = relationshipCategories.next();
-			Attribute resource = relationshipCategory.getAttribute("resource", rdfNamespace);
-			String isSynonymFor = "http://rs.tdwg.org/ontology/voc/TaxonConcept#IsSynonymFor";
-			if (resource != null && isSynonymFor.equalsIgnoreCase(resource.getValue()) ){
-				return true;
-			}
-		}
-		return result;
-	}
-	
-	
-	/**
-	 * @param elTaxonRelationships
-	 * @param success
-	 */
-	private TaxonNameBase<?, ?> makeName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonNameBase<?,?>> objectMap, ResultWrapper<Boolean> success){
-		TaxonNameBase<?, ?> result = null;
-		if (elName != null){
-			//scientific
-			try {
-				String strScientific = elName.getAttributeValue("scientific");
-				boolean scientific = Boolean.valueOf(strScientific);
-				if (! scientific){
-					logger.warn("Non scientific names not yet implemented");
-					success.setValue(false);
-				}
-			} catch (Exception e) {
-				logger.warn("Value for scientific is not boolean");
-			}
-			String language = elName.getAttributeValue("language");
-			//TODO language
-			//Language
-			if (language != null){
-				logger.warn("language for name not yet implemented");	
-			}
-			Class<? extends IdentifiableEntity> clazz = (Class<? extends IdentifiableEntity>)NonViralName.class;
-			if (code != null){
-				clazz = code.getCdmClass();
-			}
-			result = (TaxonNameBase<?,?>)makeReferenceType (elName, clazz , objectMap, success);
-			if(result == null){
-				logger.warn("Name not found");
-				success.setValue(false);
-			}
-		}else{
-			logger.warn("Name element is null");
-		}
-		return result;
-	}
-
-
 
 }

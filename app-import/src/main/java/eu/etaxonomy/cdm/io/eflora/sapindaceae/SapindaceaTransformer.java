@@ -38,7 +38,10 @@ public final class SapindaceaTransformer extends InputTransformerBase {
 	public static final UUID uuidInflorescences = UUID.fromString("c476f5fb-dc06-4408-af36-f48e625f5767");
 	public static final UUID uuidFlowers = UUID.fromString("7fd80f15-9abf-44e7-b55a-be264b9dd7ac");
 	public static final UUID uuidSepals = UUID.fromString("d6867f7c-68c9-4b7c-9094-862bdfe1e064");
+	public static final UUID uuidOuterSepals = UUID.fromString("e95b65f8-656f-4770-b716-2824cb4b54b6");
+	public static final UUID uuidAnthers = UUID.fromString("3f40ea65-320b-4875-86e6-f499017b4bc6");
 	public static final UUID uuidPetals = UUID.fromString("ddcba956-a461-4e66-a996-a4db808d1d9f");
+	public static final UUID uuidPetal = UUID.fromString("271c2e09-5965-4c03-9ab5-6ed31a0e7e17");
 	public static final UUID uuidDisc = UUID.fromString("a98875f5-fdb8-4432-98dd-3840552bf701");
 	public static final UUID uuidStamens = UUID.fromString("88a6e1ff-aba2-49a1-82c5-b6a20c44d825");
 	public static final UUID uuidFruits = UUID.fromString("e19b1b3c-e3fe-4496-a254-46f01ab514b3");
@@ -48,6 +51,7 @@ public final class SapindaceaTransformer extends InputTransformerBase {
 	public static final UUID uuidBracts = UUID.fromString("7e1f2b3e-caa5-4e12-af4c-3fc379cea89f");
 	public static final UUID uuidPedicels = UUID.fromString("fdb43c85-c3dd-4d13-b5e7-51cca60d25b1");
 	public static final UUID uuidFigure = UUID.fromString("5165cd6a-9b31-4a1f-8b30-04ab740c502c");
+	public static final UUID uuidFigures = UUID.fromString("6dfb4e78-c67e-410c-8989-c1fb1295abf6");
 	public static final UUID uuidPistil = UUID.fromString("51df329b-2b2b-4f45-960c-bf4430be5910");
 	public static final UUID uuidOvary = UUID.fromString("0757d8bc-d91c-4482-bde0-d239b4122934");
 	public static final UUID uuidTwigs = UUID.fromString("e1eb9d5e-1397-4a4e-84e7-483e77822c6b");
@@ -72,6 +76,18 @@ public final class SapindaceaTransformer extends InputTransformerBase {
 	public static final UUID uuidTrees = UUID.fromString("03a2f775-e7c7-4487-a725-51b290084e14");
 	public static final UUID uuidStigma = UUID.fromString("e68292cb-3711-4129-9b1a-992fb17059e3");
 	public static final UUID uuidPetiole = UUID.fromString("7e926909-5983-490e-aebe-532a329fb21f");
+	public static final UUID uuidAxillary = UUID.fromString("aa1eee6e-dd2f-464e-95ed-79cc5313e8d1");
+	public static final UUID uuidPetiolules = UUID.fromString("9db0732d-35f9-476b-8824-727840faabb9");
+	public static final UUID uuidMaleFlowers = UUID.fromString("036ed3cb-4598-4ccd-ae77-e66dff4274f8");
+	public static final UUID uuidYoungInflorescences = UUID.fromString("c92baa8b-b20e-44ec-bbc4-5990d548431c");
+	public static final UUID uuidSepal = UUID.fromString("7af26081-17c8-4966-9d58-affe26b8dc34");
+	public static final UUID uuidThyrses = UUID.fromString("74af0814-5f11-4c1d-82c2-06ed97471fc5");
+	public static final UUID uuidThyrsus = UUID.fromString("ff0ddbd3-6049-416e-91b5-fa8fe42621dd");
+	public static final UUID uuidBark = UUID.fromString("a8cd7ed7-0e55-4aa6-8a6f-52bf497e1602");
+	
+	
+	
+	
 
 	//extension type uuids
 
@@ -102,12 +118,17 @@ public final class SapindaceaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Inflorescences")){return uuidInflorescences;
 		}else if (key.equalsIgnoreCase("Flowers")){return uuidFlowers;
 		}else if (key.equalsIgnoreCase("Sepals")){return uuidSepals;
+		}else if (key.equalsIgnoreCase("Outer Sepals")){return uuidOuterSepals;
+		}else if (key.equalsIgnoreCase("Anthers")){return uuidAnthers;
 		}else if (key.equalsIgnoreCase("Petals")){return uuidPetals;
+		}else if (key.equalsIgnoreCase("Petal")){return uuidPetal;
 		}else if (key.equalsIgnoreCase("Disc")){return uuidDisc;
 		}else if (key.equalsIgnoreCase("Stamens")){return uuidStamens;
 		}else if (key.equalsIgnoreCase("Fruits")){return uuidFruits;
 		}else if (key.equalsIgnoreCase("Indumentum")){return uuidIndumentum;
 		}else if (key.equalsIgnoreCase("figure")){return uuidFigure;
+		}else if (key.equalsIgnoreCase("fig")){return uuidFigure;
+		}else if (key.equalsIgnoreCase("figs")){return uuidFigures;
 		}else if (key.equalsIgnoreCase("Seeds")){return uuidSeeds;
 		}else if (key.equalsIgnoreCase("Flowering")){return uuidFlowering;
 		}else if (key.equalsIgnoreCase("Bracts")){return uuidBracts;
@@ -137,6 +158,15 @@ public final class SapindaceaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Stems")){return uuidStems;
 		}else if (key.equalsIgnoreCase("Trees")){return uuidTrees;
 		}else if (key.equalsIgnoreCase("Chromosomes")){return uuidChromosomes;
+		}else if (key.equalsIgnoreCase("Axillary")){return uuidAxillary;
+		}else if (key.equalsIgnoreCase("Petiolules")){return uuidPetiolules;
+		}else if (key.equalsIgnoreCase("Male flowers")){return uuidMaleFlowers;
+		}else if (key.equalsIgnoreCase("Young inflorescences")){return uuidYoungInflorescences;
+		}else if (key.equalsIgnoreCase("Sepal")){return uuidSepal;
+		}else if (key.equalsIgnoreCase("Thyrses")){return uuidThyrses;
+		}else if (key.equalsIgnoreCase("Thyrsus")){return uuidThyrsus;
+		}else if (key.equalsIgnoreCase("Bark")){return uuidBark;
+		
 		
 		}else{
 			return null;

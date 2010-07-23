@@ -31,6 +31,7 @@ public class SapindaceaeImportConfigurator extends ImportConfiguratorBase<Sapind
 	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
+	private static String classificationTitle = "Sapindaceae";
 
 	
 	protected void makeIoClassList(){
@@ -137,6 +138,14 @@ public class SapindaceaeImportConfigurator extends ImportConfiguratorBase<Sapind
 		}else{
 			return this.getSource();
 		}
+	}
+
+	public static void setClassificationTitle(String classificationTitle) {
+		SapindaceaeImportConfigurator.classificationTitle = classificationTitle;
+	}
+
+	public static String getClassificationTitle() {
+		return classificationTitle;
 	}
 	
 

@@ -21,9 +21,15 @@ public class EfloraSources {
 	private static final Logger logger = Logger.getLogger(EfloraSources.class);
 
 	
+	//Sapindaceae
 	public static String sapindaceae_local(){
-		//		Sapindaceae
 		String sourceUrl = "file:C:/localCopy/Data/eflora/sapindaceae/sapindaceae-01.xml";
+		return sourceUrl;
+	}
+	
+	//Sapindaceae2
+	public static String sapindaceae2_local(){
+		String sourceUrl = "file:C:/localCopy/Data/eflora/sapindaceae/sapindaceae-02final.xml";
 //		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
 //		String sourceUrl = url.toString();
 		return sourceUrl;

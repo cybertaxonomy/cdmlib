@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.eflora.sapindaceae.SapindaceaeImportConfigurator;
 
 /**
@@ -32,54 +31,52 @@ public class SapindaceaeActivator {
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String sapSource = EfloraSources.sapindaceae_local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final String sapSource1 = EfloraSources.sapindaceae_local();
+	static final String sapSource2 = EfloraSources.sapindaceae2_local();
+	
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_malesiana_production();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	static final UUID treeUuid = UUID.fromString("ca4e4bcb-a1d1-4124-a358-a3d3c41dd450");
 	
 	//check - import
-	static final CHECK check = CHECK.CHECK_AND_IMPORT;
-	
-	//authors
-	static final boolean doMetaData = true;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	//names
-	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = true;
+	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
 	//taxa
 	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = true;
+
+	private boolean includeSapindaceae1 = true;
+	private boolean includeSapindaceae2 = false;
 
 	
-	private void doImport(){
-		System.out.println("Start import from ("+ sapSource.toString() + ") ...");
+	private void doImport(ICdmDataSource cdmDestination){
 		
 		//make BerlinModel Source
-		String source = sapSource;
-		ICdmDataSource destination = cdmDestination;
+		String source = sapSource1;
+		SapindaceaeImportConfigurator sapindaceaeConfig= SapindaceaeImportConfigurator.NewInstance(source, cdmDestination);
+		sapindaceaeConfig.setTaxonomicTreeUuid(treeUuid);
+		sapindaceaeConfig.setDoTaxa(doTaxa);
+		sapindaceaeConfig.setCheck(check);
+		sapindaceaeConfig.setDbSchemaValidation(hbm2dll);
 		
-		SapindaceaeImportConfigurator sapindaceaeImportConfigurator = SapindaceaeImportConfigurator.NewInstance(source,  destination);
-		
-		sapindaceaeImportConfigurator.setTaxonomicTreeUuid(treeUuid);
-		
-//		sapindaceaeImportConfigurator.setDoMetaData(doMetaData);
-		sapindaceaeImportConfigurator.setDoReferences(doReferences);
-		sapindaceaeImportConfigurator.setDoTaxonNames(doTaxonNames);
-		sapindaceaeImportConfigurator.setDoRelNames(doRelNames);
-		
-		sapindaceaeImportConfigurator.setDoTaxa(doTaxa);
-		sapindaceaeImportConfigurator.setDoRelTaxa(doRelTaxa);
-		
-		sapindaceaeImportConfigurator.setCheck(check);
-		sapindaceaeImportConfigurator.setDbSchemaValidation(hbm2dll);
-
-		// invoke import
 		CdmDefaultImport<SapindaceaeImportConfigurator> myImport = new CdmDefaultImport<SapindaceaeImportConfigurator>();
-		myImport.invoke(sapindaceaeImportConfigurator);
 		
+		//Sapindaceae1
+		if (includeSapindaceae1){
+			System.out.println("Start import from ("+ sapSource1.toString() + ") ...");
+			myImport.invoke(sapindaceaeConfig);
+			System.out.println("End import from ("+ sapSource1.toString() + ")...");
+		}
+		
+		//Sapindaceae2
+		if (includeSapindaceae2){
+			System.out.println("Start import from ("+ sapSource2.toString() + ") ...");
+			source = sapSource2;
+			sapindaceaeConfig.setSource(source);
+			myImport.invoke(sapindaceaeConfig);
+			System.out.println("End import from ("+ sapSource2.toString() + ")...");
+		}
 		
 //		IReferenceService refService = myImport.getCdmAppController().getReferenceService();
 //		ReferenceFactory refFactory = ReferenceFactory.newInstance();
@@ -89,7 +86,7 @@ public class SapindaceaeActivator {
 //		refService.saveOrUpdate((ReferenceBase)book);
 //		myImport.getCdmAppController().close();
 //		logger.info("End");
-		System.out.println("End import from ("+ sapSource.toString() + ")...");
+
 	}
 
 	/**
@@ -97,7 +94,7 @@ public class SapindaceaeActivator {
 	 */
 	public static void main(String[] args) {
 		SapindaceaeActivator me = new SapindaceaeActivator();
-		me.doImport();
+		me.doImport(cdmDestination);
 	}
 	
 }
