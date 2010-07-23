@@ -349,6 +349,8 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 
 			logger.error("PHASE 3...");
+			// Be sure to add rank information to any taxonName
+			
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -671,12 +673,15 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static Integer getRankFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode) {
 		Integer result = null;
 		if (nomenclaturalCode != null) {
-			if (taxonName != null && taxonName.getRank() == null) {
-				logger.warn("Rank is null: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			if (taxonName != null) {
+				if (taxonName.getRank() == null) {
+					logger.warn("Rank is null: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				} else {
+					result = PesiTransformer.rank2RankId(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+				}
 			}
-			result = PesiTransformer.rank2RankId(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
 			if (result == null) {
-				logger.warn("Rank " + taxonName.getRank().getLabel() + " could not be determined for PESI-Kingdom-Id " + PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+				logger.warn("Rank could not be determined for PESI-Kingdom-Id " + PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode) + " and TaxonName " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
 		}
 		return result;
