@@ -412,4 +412,19 @@ public class CdmUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * Trims the string and if the string ends with a dot removes it.
+	 * @param string
+	 * @return
+	 */
+	public static String removeTrailingDot(String string){
+		if (string == null){
+			return null;
+		}
+		if (string.trim().endsWith(".")){
+			return string.substring(0, string.length() -1);
+		}
+		return string;
+	}
 }
