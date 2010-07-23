@@ -17,14 +17,17 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -178,8 +181,6 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getIMIS_Id(ReferenceBase<?> reference) {
-		// TODO
-		// Where is the IMIS_Id from an ERMS import stored in CDM?
 		return null;
 	}
 	
@@ -364,9 +365,18 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
+		ExtensionType extensionType = null;
 		
 		mapping.addMapper(IdMapper.NewInstance("SourceId"));
-		mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
+		
+		// IMIS_Id
+		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.IMIS_UUID);
+		if (extensionType != null) {
+			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "IMIS_Id"));
+		} else {
+			mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
+		}
+		
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryFK", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Name", this));

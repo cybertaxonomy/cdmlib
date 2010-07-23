@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -1283,209 +1284,251 @@ public final class PesiTransformer {
 		if (area == null) {
 			return null;
 		} else if (area.isInstanceOf(TdwgArea.class)) {
-			TdwgArea tdwgArea = CdmBase.deproxy(area, TdwgArea.class);
+			NamedArea namedArea = CdmBase.deproxy(area, NamedArea.class);
 
-			// TODO: Areas identified by the string "TODO" (for now) have to be identified correctly after additions have been made to the list of TdwgArea's
-			if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EAST_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EAI-OO")) { return STR_AREA_GREEK_EAST_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TURKISH_EAST_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALB-OO")) { return STR_AREA_ALBANIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT")) { return STR_AREA_AUSTRIA_WITH_LIECHTENSTEIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-AU")) { return STR_AREA_AUSTRIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-LI")) { return STR_AREA_LIECHTENSTEIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZO-OO")) { return STR_AREA_AZORES; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CORVO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FAIAL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GRACIOSA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SAO_JORGE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FLORES; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SAO_MIGUEL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_PICO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SANTA_MARIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TERCEIRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM")) { return STR_AREA_BELGIUM_WITH_LUXEMBOURG; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-BE")) { return STR_AREA_BELGIUM; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-LU")) { return STR_AREA_LUXEMBOURG; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-BH")) { return STR_AREA_BOSNIA_HERZEGOVINA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BAL-OO")) { return STR_AREA_BALEARES; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IBIZA_WITH_FORMENTERA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MALLORCA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MENORCA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRB-OO")) { return STR_AREA_GREAT_BRITAIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT")) { return STR_AREA_BALTIC_STATES_ESTONIA_LATVIA_LITHUANIA_AND_KALININGRAD_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BUL-OO")) { return STR_AREA_BULGARIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLR-OO")) { return STR_AREA_BELARUS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CNY-OO")) { return STR_AREA_CANARY_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GRAN_CANARIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FUERTEVENTURA_WITH_LOBOS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GOMERA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_HIERRO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_LANZAROTE_WITH_GRACIOSA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_LA_PALMA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TENERIFE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MN")) { return STR_AREA_MONTENEGRO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("COR-OO")) { return STR_AREA_CORSE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRI-OO")) { return STR_AREA_CRETE_WITH_KARPATHOS_KASOS_AND_GAVDHOS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-CZ")) { return STR_AREA_CZECH_REPUBLIC; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-CR")) { return STR_AREA_CROATIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CYP-OO")) { return STR_AREA_CYPRUS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE")) { return STR_AREA_FORMER_CZECHOSLOVAKIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("DEN-OO")) { return STR_AREA_DENMARK_WITH_BORNHOLM; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-ES")) { return STR_AREA_ESTONIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FOR-OO")) { return STR_AREA_FAROE_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FIN-OO")) { return STR_AREA_FINLAND_WITH_AHVENANMAA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA")) { return STR_AREA_FRANCE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-CI")) { return STR_AREA_CHANNEL_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-FR")) { return STR_AREA_FRENCH_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-MO")) { return STR_AREA_MONACO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GER-OO")) { return STR_AREA_GERMANY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRC-OO")) { return STR_AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE")) { return STR_AREA_IRELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-IR")) { return STR_AREA_REPUBLIC_OF_IRELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-NI")) { return STR_AREA_NORTHERN_IRELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWI-OO")) { return STR_AREA_SWITZERLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NET-OO")) { return STR_AREA_NETHERLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA")) { return STR_AREA_SPAIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-AN")) { return STR_AREA_ANDORRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-GI")) { return STR_AREA_GIBRALTAR; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-SP")) { return STR_AREA_KINGDOM_OF_SPAIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("HUN-OO")) { return STR_AREA_HUNGARY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ICE-OO")) { return STR_AREA_ICELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA")) { return STR_AREA_ITALY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-IT")) { return STR_AREA_ITALIAN_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-SM")) { return STR_AREA_SAN_MARINO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG")) { return STR_AREA_FORMER_JUGOSLAVIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LA")) { return STR_AREA_LATVIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LI")) { return STR_AREA_LITHUANIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POR-OO")) { return STR_AREA_PORTUGUESE_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MDR-OO")) { return STR_AREA_MADEIRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DESERTAS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MADEIRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_PORTO_SANTO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MA")) { return STR_AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("OKR-MO")) { return STR_AREA_MOLDOVA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NOR-OO")) { return STR_AREA_NORWEGIAN_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POL-OO")) { return STR_AREA_POLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_THE_RUSSIAN_FEDERATION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("WSB-OO")) { return STR_AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC-OO")) { return STR_AREA_CENTRAL_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUE-OO")) { return STR_AREA_EASTERN_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-KA")) { return STR_AREA_KALININGRAD; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN-OO")) { return STR_AREA_NORTHERN_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUW-OO")) { return STR_AREA_NORTHWEST_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS-OO")) { return STR_AREA_SOUTH_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ROM-OO")) { return STR_AREA_ROMANIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FORMER_USSR; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_BALTIC; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_CENTRAL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_SOUTHEAST; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_NORTHERN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_SOUTHWEST; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SAR-OO")) { return STR_AREA_SARDEGNA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SVA-OO")) { return STR_AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SEL-OO")) { return STR_AREA_SELVAGENS_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC")) { return STR_AREA_SICILY_WITH_MALTA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-MA")) { return STR_AREA_MALTA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-SI")) { return STR_AREA_SICILY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-SK")) { return STR_AREA_SLOVAKIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SL")) { return STR_AREA_SLOVENIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SERBIA_WITH_MONTENEGRO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SE")) { return STR_AREA_SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWE-OO")) { return STR_AREA_SWEDEN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUE-OO")) { return STR_AREA_EUROPEAN_TURKEY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UKRAINE_INCLUDING_CRIMEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRY-OO")) { return STR_AREA_CRIMEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("UKR-UK")) { return STR_AREA_UKRAINE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GREEK_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CRETE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DODECANESE_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CYCLADES_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTH_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_VATICAN_CITY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FRANZ_JOSEF_LAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NOVAYA_ZEMLYA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_AZERBAIJAN_INCLUDING_NAKHICHEVAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-AZ")) { return STR_AREA_AZERBAIJAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-NA")) { return STR_AREA_NAKHICHEVAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALG-OO")) { return STR_AREA_ALGERIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ARMENIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CAUCASUS_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EGY-OO")) { return STR_AREA_EGYPT; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GEORGIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL")) { return STR_AREA_ISRAEL_JORDAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-IS")) { return STR_AREA_ISRAEL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-JO")) { return STR_AREA_JORDAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-LB")) { return STR_AREA_LEBANON; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBY-OO")) { return STR_AREA_LIBYA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS")) { return STR_AREA_LEBANON_SYRIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MOR")) { return STR_AREA_MOROCCO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NCS")) { return STR_AREA_NORTH_CAUCASUS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIN-OO")) { return STR_AREA_SINAI; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-SY")) { return STR_AREA_SYRIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUN-OO")) { return STR_AREA_TUNISIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUR-OO")) { return STR_AREA_ASIATIC_TURKEY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TURKEY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTHERN_AFRICA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_AFRO_TROPICAL_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_AUSTRALIAN_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EAST_PALAEARCTIC; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NEARCTIC_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NEOTROPICAL_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NEAR_EAST; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ORIENTAL_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EUROPEAN_MARINE_WATERS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MEDITERRANEAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_WHITE_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTH_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALTIC_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BLACK_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BARENTS_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CASPIAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ENGLISH_CHANNEL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ADRIATIC_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BISCAY_BAY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TIRRENO_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IRISH_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORWEGIAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SKAGERRAK; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_WADDEN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BELT_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MARMARA_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SEA_OF_AZOV; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_AEGEAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SOUTH_BALTIC_PROPER; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALTIC_PROPER; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTH_BALTIC_PROPER; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ARCHIPELAGO_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BOTHNIAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALEAR_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			// TODO: Areas identified by the string "TODO" (for now) have to be identified correctly after additions have been made to the list of NamedArea's according to specific imports, i.e. euro+med
+			if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EAI")) { return STR_AREA_GREEK_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EAI-OO")) { return STR_AREA_GREEK_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TURKISH_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALB")) { return STR_AREA_ALBANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALB-OO")) { return STR_AREA_ALBANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT")) { return STR_AREA_AUSTRIA_WITH_LIECHTENSTEIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-AU")) { return STR_AREA_AUSTRIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-LI")) { return STR_AREA_LIECHTENSTEIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZO")) { return STR_AREA_AZORES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZO-OO")) { return STR_AREA_AZORES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CORVO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FAIAL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GRACIOSA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SAO_JORGE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FLORES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SAO_MIGUEL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_PICO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SANTA_MARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TERCEIRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM")) { return STR_AREA_BELGIUM_WITH_LUXEMBOURG; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-BE")) { return STR_AREA_BELGIUM; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-LU")) { return STR_AREA_LUXEMBOURG; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-BH")) { return STR_AREA_BOSNIA_HERZEGOVINA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BAL")) { return STR_AREA_BALEARES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BAL-OO")) { return STR_AREA_BALEARES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IBIZA_WITH_FORMENTERA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MALLORCA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MENORCA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRB")) { return STR_AREA_GREAT_BRITAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRB-OO")) { return STR_AREA_GREAT_BRITAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT")) { return STR_AREA_BALTIC_STATES_ESTONIA_LATVIA_LITHUANIA_AND_KALININGRAD_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BUL")) { return STR_AREA_BULGARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BUL-OO")) { return STR_AREA_BULGARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLR")) { return STR_AREA_BELARUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLR-OO")) { return STR_AREA_BELARUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CNY")) { return STR_AREA_CANARY_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CNY-OO")) { return STR_AREA_CANARY_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GRAN_CANARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FUERTEVENTURA_WITH_LOBOS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GOMERA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_HIERRO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_LANZAROTE_WITH_GRACIOSA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_LA_PALMA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TENERIFE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MN")) { return STR_AREA_MONTENEGRO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("COR")) { return STR_AREA_CORSE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("COR-OO")) { return STR_AREA_CORSE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRI")) { return STR_AREA_CRETE_WITH_KARPATHOS_KASOS_AND_GAVDHOS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRI-OO")) { return STR_AREA_CRETE_WITH_KARPATHOS_KASOS_AND_GAVDHOS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-CZ")) { return STR_AREA_CZECH_REPUBLIC; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-CR")) { return STR_AREA_CROATIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CYP")) { return STR_AREA_CYPRUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CYP-OO")) { return STR_AREA_CYPRUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE")) { return STR_AREA_FORMER_CZECHOSLOVAKIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("DEN")) { return STR_AREA_DENMARK_WITH_BORNHOLM; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("DEN-OO")) { return STR_AREA_DENMARK_WITH_BORNHOLM; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-ES")) { return STR_AREA_ESTONIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FOR")) { return STR_AREA_FAROE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FOR-OO")) { return STR_AREA_FAROE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FIN")) { return STR_AREA_FINLAND_WITH_AHVENANMAA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FIN-OO")) { return STR_AREA_FINLAND_WITH_AHVENANMAA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA")) { return STR_AREA_FRANCE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-CI")) { return STR_AREA_CHANNEL_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-FR")) { return STR_AREA_FRENCH_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-MO")) { return STR_AREA_MONACO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GER")) { return STR_AREA_GERMANY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GER-OO")) { return STR_AREA_GERMANY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRC")) { return STR_AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRC-OO")) { return STR_AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE")) { return STR_AREA_IRELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-IR")) { return STR_AREA_REPUBLIC_OF_IRELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-NI")) { return STR_AREA_NORTHERN_IRELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWI")) { return STR_AREA_SWITZERLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWI-OO")) { return STR_AREA_SWITZERLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NET")) { return STR_AREA_NETHERLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NET-OO")) { return STR_AREA_NETHERLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA")) { return STR_AREA_SPAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-AN")) { return STR_AREA_ANDORRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-GI")) { return STR_AREA_GIBRALTAR; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-SP")) { return STR_AREA_KINGDOM_OF_SPAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("HUN")) { return STR_AREA_HUNGARY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("HUN-OO")) { return STR_AREA_HUNGARY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ICE")) { return STR_AREA_ICELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ICE-OO")) { return STR_AREA_ICELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA")) { return STR_AREA_ITALY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-IT")) { return STR_AREA_ITALIAN_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-SM")) { return STR_AREA_SAN_MARINO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG")) { return STR_AREA_FORMER_JUGOSLAVIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LA")) { return STR_AREA_LATVIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LI")) { return STR_AREA_LITHUANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POR")) { return STR_AREA_PORTUGUESE_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POR-OO")) { return STR_AREA_PORTUGUESE_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MDR")) { return STR_AREA_MADEIRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MDR-OO")) { return STR_AREA_MADEIRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DESERTAS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_PORTO_SANTO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MA")) { return STR_AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("UKR-MO")) { return STR_AREA_MOLDOVA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NOR")) { return STR_AREA_NORWEGIAN_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NOR-OO")) { return STR_AREA_NORWEGIAN_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POL")) { return STR_AREA_POLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POL-OO")) { return STR_AREA_POLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS")) { return STR_AREA_THE_RUSSIAN_FEDERATION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("WSB")) { return STR_AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("WSB-OO")) { return STR_AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC")) { return STR_AREA_CENTRAL_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC-OO")) { return STR_AREA_CENTRAL_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUE")) { return STR_AREA_EASTERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUE-OO")) { return STR_AREA_EASTERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-KA")) { return STR_AREA_KALININGRAD; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN")) { return STR_AREA_NORTHERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN-OO")) { return STR_AREA_NORTHERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUW")) { return STR_AREA_NORTHWEST_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUW-OO")) { return STR_AREA_NORTHWEST_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS")) { return STR_AREA_SOUTH_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS-OO")) { return STR_AREA_SOUTH_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ROM")) { return STR_AREA_ROMANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ROM-OO")) { return STR_AREA_ROMANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FORMER_USSR; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_BALTIC; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC")) { return STR_AREA_RUSSIA_CENTRAL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_SOUTHEAST; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN")) { return STR_AREA_RUSSIA_NORTHERN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_RUSSIA_SOUTHWEST; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SAR")) { return STR_AREA_SARDEGNA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SAR-OO")) { return STR_AREA_SARDEGNA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SVA")) { return STR_AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SVA-OO")) { return STR_AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SEL")) { return STR_AREA_SELVAGENS_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SEL-OO")) { return STR_AREA_SELVAGENS_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC")) { return STR_AREA_SICILY_WITH_MALTA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-MA")) { return STR_AREA_MALTA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-SI")) { return STR_AREA_SICILY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-SK")) { return STR_AREA_SLOVAKIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SL")) { return STR_AREA_SLOVENIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CS")) { return STR_AREA_SERBIA_WITH_MONTENEGRO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SE")) { return STR_AREA_SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWE")) { return STR_AREA_SWEDEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWE-OO")) { return STR_AREA_SWEDEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUE")) { return STR_AREA_EUROPEAN_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUE-OO")) { return STR_AREA_EUROPEAN_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UKRAINE_INCLUDING_CRIMEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRY")) { return STR_AREA_CRIMEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRY-OO")) { return STR_AREA_CRIMEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("UKR-UK")) { return STR_AREA_UKRAINE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRE")) { return STR_AREA_GREEK_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-KRI")) { return STR_AREA_CRETE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-DOD")) { return STR_AREA_DODECANESE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-CYC")) { return STR_AREA_CYCLADES_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-AEG")) { return STR_AREA_NORTH_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-VC")) { return STR_AREA_VATICAN_CITY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FRANZ_JOSEF_LAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NOVAYA_ZEMLYA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZ")) { return STR_AREA_AZERBAIJAN_INCLUDING_NAKHICHEVAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-AZ")) { return STR_AREA_AZERBAIJAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-NA")) { return STR_AREA_NAKHICHEVAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALG")) { return STR_AREA_ALGERIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALG-OO")) { return STR_AREA_ALGERIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-AR")) { return STR_AREA_ARMENIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("33")) { return STR_AREA_CAUCASUS_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EGY")) { return STR_AREA_EGYPT; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EGY-OO")) { return STR_AREA_EGYPT; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GEORGIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL")) { return STR_AREA_ISRAEL_JORDAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-IS")) { return STR_AREA_ISRAEL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-JO")) { return STR_AREA_JORDAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-LB")) { return STR_AREA_LEBANON; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBY-OO")) { return STR_AREA_LIBYA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS")) { return STR_AREA_LEBANON_SYRIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MOR")) { return STR_AREA_MOROCCO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NCS")) { return STR_AREA_NORTH_CAUCASUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIN")) { return STR_AREA_SINAI; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIN-OO")) { return STR_AREA_SINAI; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-SY")) { return STR_AREA_SYRIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUN")) { return STR_AREA_TUNISIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUN-OO")) { return STR_AREA_TUNISIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ASIATIC_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ASIATIC_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUR")) { return STR_AREA_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUR-OO")) { return STR_AREA_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("20")) { return STR_AREA_NORTHERN_AFRICA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AFR")) { return STR_AREA_AFRO_TROPICAL_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUS")) { return STR_AREA_AUSTRALIAN_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EAST_PALAEARCTIC; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NEA")) { return STR_AREA_NEARCTIC_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NEO")) { return STR_AREA_NEOTROPICAL_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NRE")) { return STR_AREA_NEAR_EAST; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ORR")) { return STR_AREA_ORIENTAL_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EUROPEAN_MARINE_WATERS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MES")) { return STR_AREA_MEDITERRANEAN_SEA; } // abbreviated label missing
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_WHITE_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTH_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALTIC_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLS")) { return STR_AREA_BLACK_SEA; } // abbreviated label missing
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BARENTS_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CAS")) { return STR_AREA_CASPIAN_SEA; } // abbreviated label missing
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ENGLISH_CHANNEL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ADRIATIC_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BISCAY_BAY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TIRRENO_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IRISH_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORWEGIAN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SKAGERRAK; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_WADDEN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BELT_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MARMARA_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SEA_OF_AZOV; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_AEGEAN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SOUTH_BALTIC_PROPER; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALTIC_PROPER; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTH_BALTIC_PROPER; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ARCHIPELAGO_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BOTHNIAN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALEAR_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
 			else {
-				logger.error("Unknown TdwgArea Area: " + area.getTitleCache());
+				logger.error("Unknown NamedArea Area: " + area.getTitleCache());
 				return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
 			}
 		}
@@ -1502,209 +1545,251 @@ public final class PesiTransformer {
 		if (area == null) {
 			return null;
 		} else if (area.isInstanceOf(TdwgArea.class)) {
-			TdwgArea tdwgArea = CdmBase.deproxy(area, TdwgArea.class);
+			NamedArea namedArea = CdmBase.deproxy(area, NamedArea.class);
 
-			// TODO: Areas identified by the string "TODO" (for now) have to be identified correctly after additions have been made to the list of TdwgArea's
-			if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EAST_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EAI-OO")) { return AREA_GREEK_EAST_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TURKISH_EAST_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALB-OO")) { return AREA_ALBANIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT")) { return AREA_AUSTRIA_WITH_LIECHTENSTEIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-AU")) { return AREA_AUSTRIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-LI")) { return AREA_LIECHTENSTEIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZO-OO")) { return AREA_AZORES; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CORVO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FAIAL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GRACIOSA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SAO_JORGE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FLORES; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SAO_MIGUEL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_PICO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SANTA_MARIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TERCEIRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM")) { return AREA_BELGIUM_WITH_LUXEMBOURG; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-BE")) { return AREA_BELGIUM; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-LU")) { return AREA_LUXEMBOURG; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-BH")) { return AREA_BOSNIA_HERZEGOVINA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BAL-OO")) { return AREA_BALEARES; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IBIZA_WITH_FORMENTERA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MALLORCA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MENORCA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRB-OO")) { return AREA_GREAT_BRITAIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT")) { return AREA_BALTIC_STATES_ESTONIA_LATVIA_LITHUANIA_AND_KALININGRAD_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BUL-OO")) { return AREA_BULGARIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLR-OO")) { return AREA_BELARUS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CNY-OO")) { return AREA_CANARY_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GRAN_CANARIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FUERTEVENTURA_WITH_LOBOS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GOMERA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_HIERRO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_LANZAROTE_WITH_GRACIOSA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_LA_PALMA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TENERIFE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MN")) { return AREA_MONTENEGRO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("COR-OO")) { return AREA_CORSE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRI-OO")) { return AREA_CRETE_WITH_KARPATHOS_KASOS_AND_GAVDHOS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-CZ")) { return AREA_CZECH_REPUBLIC; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-CR")) { return AREA_CROATIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CYP-OO")) { return AREA_CYPRUS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE")) { return AREA_FORMER_CZECHOSLOVAKIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("DEN-OO")) { return AREA_DENMARK_WITH_BORNHOLM; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-ES")) { return AREA_ESTONIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FOR-OO")) { return AREA_FAROE_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FIN-OO")) { return AREA_FINLAND_WITH_AHVENANMAA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA")) { return AREA_FRANCE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-CI")) { return AREA_CHANNEL_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-FR")) { return AREA_FRENCH_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-MO")) { return AREA_MONACO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GER-OO")) { return AREA_GERMANY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRC-OO")) { return AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE")) { return AREA_IRELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-IR")) { return AREA_REPUBLIC_OF_IRELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-NI")) { return AREA_NORTHERN_IRELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWI-OO")) { return AREA_SWITZERLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NET-OO")) { return AREA_NETHERLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA")) { return AREA_SPAIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-AN")) { return AREA_ANDORRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-GI")) { return AREA_GIBRALTAR; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-SP")) { return AREA_KINGDOM_OF_SPAIN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("HUN-OO")) { return AREA_HUNGARY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ICE-OO")) { return AREA_ICELAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA")) { return AREA_ITALY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-IT")) { return AREA_ITALIAN_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-SM")) { return AREA_SAN_MARINO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG")) { return AREA_FORMER_JUGOSLAVIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LA")) { return AREA_LATVIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LI")) { return AREA_LITHUANIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POR-OO")) { return AREA_PORTUGUESE_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MDR-OO")) { return AREA_MADEIRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DESERTAS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MADEIRA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_PORTO_SANTO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MA")) { return AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("OKR-MO")) { return AREA_MOLDOVA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NOR-OO")) { return AREA_NORWEGIAN_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POL-OO")) { return AREA_POLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_THE_RUSSIAN_FEDERATION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("WSB-OO")) { return AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC-OO")) { return AREA_CENTRAL_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUE-OO")) { return AREA_EASTERN_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-KA")) { return AREA_KALININGRAD; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN-OO")) { return AREA_NORTHERN_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUW-OO")) { return AREA_NORTHWEST_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS-OO")) { return AREA_SOUTH_EUROPEAN_RUSSIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ROM-OO")) { return AREA_ROMANIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FORMER_USSR; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_BALTIC; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_CENTRAL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_SOUTHEAST; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_NORTHERN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_SOUTHWEST; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SAR-OO")) { return AREA_SARDEGNA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SVA-OO")) { return AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SEL-OO")) { return AREA_SELVAGENS_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC")) { return AREA_SICILY_WITH_MALTA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-MA")) { return AREA_MALTA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-SI")) { return AREA_SICILY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-SK")) { return AREA_SLOVAKIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SL")) { return AREA_SLOVENIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SERBIA_WITH_MONTENEGRO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SE")) { return AREA_SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWE-OO")) { return AREA_SWEDEN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUE-OO")) { return AREA_EUROPEAN_TURKEY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UKRAINE_INCLUDING_CRIMEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRY-OO")) { return AREA_CRIMEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("UKR-UK")) { return AREA_UKRAINE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GREEK_MAINLAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CRETE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DODECANESE_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CYCLADES_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTH_AEGEAN_ISLANDS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_VATICAN_CITY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FRANZ_JOSEF_LAND; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NOVAYA_ZEMLYA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_AZERBAIJAN_INCLUDING_NAKHICHEVAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-AZ")) { return AREA_AZERBAIJAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-NA")) { return AREA_NAKHICHEVAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALG-OO")) { return AREA_ALGERIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ARMENIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CAUCASUS_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EGY-OO")) { return AREA_EGYPT; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GEORGIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL")) { return AREA_ISRAEL_JORDAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-IS")) { return AREA_ISRAEL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-JO")) { return AREA_JORDAN; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-LB")) { return AREA_LEBANON; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBY-OO")) { return AREA_LIBYA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS")) { return AREA_LEBANON_SYRIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MOR")) { return AREA_MOROCCO; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NCS")) { return AREA_NORTH_CAUCASUS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIN-OO")) { return AREA_SINAI; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-SY")) { return AREA_SYRIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUN-OO")) { return AREA_TUNISIA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUR-OO")) { return AREA_ASIATIC_TURKEY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TURKEY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTHERN_AFRICA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_AFRO_TROPICAL_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_AUSTRALIAN_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EAST_PALAEARCTIC; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NEARCTIC_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NEOTROPICAL_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NEAR_EAST; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ORIENTAL_REGION; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EUROPEAN_MARINE_WATERS; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MEDITERRANEAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_WHITE_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTH_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALTIC_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BLACK_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BARENTS_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CASPIAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ENGLISH_CHANNEL; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ADRIATIC_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BISCAY_BAY; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TIRRENO_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IRISH_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORWEGIAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SKAGERRAK; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_WADDEN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BELT_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MARMARA_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SEA_OF_AZOV; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_AEGEAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SOUTH_BALTIC_PROPER; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALTIC_PROPER; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTH_BALTIC_PROPER; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ARCHIPELAGO_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BOTHNIAN_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALEAR_SEA; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((tdwgArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			// TODO: Areas identified by the string "TODO" (for now) have to be identified correctly after additions have been made to the list of NamedArea's according to specific imports, i.e. euro+med
+			if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EAI")) { return AREA_GREEK_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EAI-OO")) { return AREA_GREEK_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TURKISH_EAST_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALB")) { return AREA_ALBANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALB-OO")) { return AREA_ALBANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT")) { return AREA_AUSTRIA_WITH_LIECHTENSTEIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-AU")) { return AREA_AUSTRIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUT-LI")) { return AREA_LIECHTENSTEIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZO")) { return AREA_AZORES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZO-OO")) { return AREA_AZORES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CORVO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FAIAL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GRACIOSA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SAO_JORGE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FLORES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SAO_MIGUEL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_PICO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SANTA_MARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TERCEIRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM")) { return AREA_BELGIUM_WITH_LUXEMBOURG; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-BE")) { return AREA_BELGIUM; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BGM-LU")) { return AREA_LUXEMBOURG; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-BH")) { return AREA_BOSNIA_HERZEGOVINA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BAL")) { return AREA_BALEARES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BAL-OO")) { return AREA_BALEARES; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IBIZA_WITH_FORMENTERA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MALLORCA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MENORCA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRB")) { return AREA_GREAT_BRITAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRB-OO")) { return AREA_GREAT_BRITAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT")) { return AREA_BALTIC_STATES_ESTONIA_LATVIA_LITHUANIA_AND_KALININGRAD_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BUL")) { return AREA_BULGARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BUL-OO")) { return AREA_BULGARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLR")) { return AREA_BELARUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLR-OO")) { return AREA_BELARUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CNY")) { return AREA_CANARY_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CNY-OO")) { return AREA_CANARY_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GRAN_CANARIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FUERTEVENTURA_WITH_LOBOS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GOMERA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_HIERRO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_LANZAROTE_WITH_GRACIOSA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_LA_PALMA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TENERIFE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MN")) { return AREA_MONTENEGRO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("COR")) { return AREA_CORSE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("COR-OO")) { return AREA_CORSE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRI")) { return AREA_CRETE_WITH_KARPATHOS_KASOS_AND_GAVDHOS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRI-OO")) { return AREA_CRETE_WITH_KARPATHOS_KASOS_AND_GAVDHOS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-CZ")) { return AREA_CZECH_REPUBLIC; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-CR")) { return AREA_CROATIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CYP")) { return AREA_CYPRUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CYP-OO")) { return AREA_CYPRUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE")) { return AREA_FORMER_CZECHOSLOVAKIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("DEN")) { return AREA_DENMARK_WITH_BORNHOLM; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("DEN-OO")) { return AREA_DENMARK_WITH_BORNHOLM; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-ES")) { return AREA_ESTONIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FOR")) { return AREA_FAROE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FOR-OO")) { return AREA_FAROE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FIN")) { return AREA_FINLAND_WITH_AHVENANMAA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FIN-OO")) { return AREA_FINLAND_WITH_AHVENANMAA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA")) { return AREA_FRANCE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-CI")) { return AREA_CHANNEL_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-FR")) { return AREA_FRENCH_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("FRA-MO")) { return AREA_MONACO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GER")) { return AREA_GERMANY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GER-OO")) { return AREA_GERMANY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRC")) { return AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRC-OO")) { return AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE")) { return AREA_IRELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-IR")) { return AREA_REPUBLIC_OF_IRELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("IRE-NI")) { return AREA_NORTHERN_IRELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWI")) { return AREA_SWITZERLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWI-OO")) { return AREA_SWITZERLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NET")) { return AREA_NETHERLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NET-OO")) { return AREA_NETHERLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA")) { return AREA_SPAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-AN")) { return AREA_ANDORRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-GI")) { return AREA_GIBRALTAR; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SPA-SP")) { return AREA_KINGDOM_OF_SPAIN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("HUN")) { return AREA_HUNGARY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("HUN-OO")) { return AREA_HUNGARY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ICE")) { return AREA_ICELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ICE-OO")) { return AREA_ICELAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA")) { return AREA_ITALY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-IT")) { return AREA_ITALIAN_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-SM")) { return AREA_SAN_MARINO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG")) { return AREA_FORMER_JUGOSLAVIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LA")) { return AREA_LATVIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-LI")) { return AREA_LITHUANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POR")) { return AREA_PORTUGUESE_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POR-OO")) { return AREA_PORTUGUESE_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MDR")) { return AREA_MADEIRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MDR-OO")) { return AREA_MADEIRA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DESERTAS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_PORTO_SANTO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-MA")) { return AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("UKR-MO")) { return AREA_MOLDOVA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NOR")) { return AREA_NORWEGIAN_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NOR-OO")) { return AREA_NORWEGIAN_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POL")) { return AREA_POLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("POL-OO")) { return AREA_POLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS")) { return AREA_THE_RUSSIAN_FEDERATION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("WSB")) { return AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("WSB-OO")) { return AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC")) { return AREA_CENTRAL_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC-OO")) { return AREA_CENTRAL_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUE")) { return AREA_EASTERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUE-OO")) { return AREA_EASTERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLT-KA")) { return AREA_KALININGRAD; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN")) { return AREA_NORTHERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN-OO")) { return AREA_NORTHERN_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUW")) { return AREA_NORTHWEST_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUW-OO")) { return AREA_NORTHWEST_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS")) { return AREA_SOUTH_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUS-OO")) { return AREA_SOUTH_EUROPEAN_RUSSIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ROM")) { return AREA_ROMANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ROM-OO")) { return AREA_ROMANIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FORMER_USSR; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_BALTIC; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUC")) { return AREA_RUSSIA_CENTRAL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_SOUTHEAST; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("RUN")) { return AREA_RUSSIA_NORTHERN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_RUSSIA_SOUTHWEST; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SAR")) { return AREA_SARDEGNA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SAR-OO")) { return AREA_SARDEGNA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SVA")) { return AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SVA-OO")) { return AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SEL")) { return AREA_SELVAGENS_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SEL-OO")) { return AREA_SELVAGENS_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC")) { return AREA_SICILY_WITH_MALTA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-MA")) { return AREA_MALTA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIC-SI")) { return AREA_SICILY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CZE-SK")) { return AREA_SLOVAKIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SL")) { return AREA_SLOVENIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CS")) { return AREA_SERBIA_WITH_MONTENEGRO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("YUG-SE")) { return AREA_SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWE")) { return AREA_SWEDEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SWE-OO")) { return AREA_SWEDEN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUE")) { return AREA_EUROPEAN_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUE-OO")) { return AREA_EUROPEAN_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UKRAINE_INCLUDING_CRIMEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRY")) { return AREA_CRIMEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("KRY-OO")) { return AREA_CRIMEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("UKR-UK")) { return AREA_UKRAINE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GRE")) { return AREA_GREEK_MAINLAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-KRI")) { return AREA_CRETE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-DOD")) { return AREA_DODECANESE_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-CYC")) { return AREA_CYCLADES_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("GR-AEG")) { return AREA_NORTH_AEGEAN_ISLANDS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ITA-VC")) { return AREA_VATICAN_CITY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FRANZ_JOSEF_LAND; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NOVAYA_ZEMLYA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AZ")) { return AREA_AZERBAIJAN_INCLUDING_NAKHICHEVAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-AZ")) { return AREA_AZERBAIJAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-NA")) { return AREA_NAKHICHEVAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALG")) { return AREA_ALGERIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ALG-OO")) { return AREA_ALGERIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TCS-AR")) { return AREA_ARMENIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("33")) { return AREA_CAUCASUS_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EGY")) { return AREA_EGYPT; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("EGY-OO")) { return AREA_EGYPT; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GEORGIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL")) { return AREA_ISRAEL_JORDAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-IS")) { return AREA_ISRAEL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("PAL-JO")) { return AREA_JORDAN; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-LB")) { return AREA_LEBANON; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBY-OO")) { return AREA_LIBYA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS")) { return AREA_LEBANON_SYRIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MOR")) { return AREA_MOROCCO; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NCS")) { return AREA_NORTH_CAUCASUS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIN")) { return AREA_SINAI; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("SIN-OO")) { return AREA_SINAI; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("LBS-SY")) { return AREA_SYRIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUN")) { return AREA_TUNISIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUN-OO")) { return AREA_TUNISIA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ASIATIC_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ASIATIC_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUR")) { return AREA_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TUR-OO")) { return AREA_TURKEY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("20")) { return AREA_NORTHERN_AFRICA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AFR")) { return AREA_AFRO_TROPICAL_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("AUS")) { return AREA_AUSTRALIAN_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EAST_PALAEARCTIC; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NEA")) { return AREA_NEARCTIC_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NEO")) { return AREA_NEOTROPICAL_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NRE")) { return AREA_NEAR_EAST; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ORR")) { return AREA_ORIENTAL_REGION; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EUROPEAN_MARINE_WATERS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MES")) { return AREA_MEDITERRANEAN_SEA; } // abbreviated label missing
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_WHITE_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTH_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALTIC_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLS")) { return AREA_BLACK_SEA; } // abbreviated label missing
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BARENTS_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CAS")) { return AREA_CASPIAN_SEA; } // abbreviated label missing
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ENGLISH_CHANNEL; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ADRIATIC_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BISCAY_BAY; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TIRRENO_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IRISH_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORWEGIAN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SKAGERRAK; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_WADDEN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BELT_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MARMARA_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SEA_OF_AZOV; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_AEGEAN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SOUTH_BALTIC_PROPER; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALTIC_PROPER; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTH_BALTIC_PROPER; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ARCHIPELAGO_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BOTHNIAN_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALEAR_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
 			else {
-				logger.error("Unknown TdwgArea Area: " + area.getTitleCache());
+				logger.error("Unknown NamedArea Area: " + area.getTitleCache());
 			}
 		}
 		return null;
@@ -2046,6 +2131,10 @@ public final class PesiTransformer {
 		if (feature == null) {
 			return null;
 		}
+		
+		// for erms import data
+//		else if (feature.getUuid().equals(ermstransformer.feature_uuid))
+
 		if (feature.equals(Feature.DESCRIPTION())) {
 			return NoteCategory_STR_description;
 		} else if (feature.equals(Feature.ECOLOGY())) {
@@ -2147,6 +2236,7 @@ public final class PesiTransformer {
 //			NoteCategory_Editor_Brackets = 250;
 //			NoteCategory_Editor_Parenthesis = 251;
 //			NoteCategory_Inedited = 252;
+			
 //			NoteCategory_Comments_on_editing_process = 253;
 //			NoteCategory_Publication_date = 254;
 //			NoteCategory_Morphology = 255;
@@ -3028,4 +3118,47 @@ public final class PesiTransformer {
 
 		return null;
 	}
+	
+	/**
+	 * Returns the QualityStatusFk for a given QualityStatusCache.
+	 * @param qualityStatusCache
+	 * @return
+	 */
+	public Integer QualityStatusCache2QualityStatusFk(String qualityStatusCache) {
+		Integer result = null;
+		if (qualityStatusCache.equalsIgnoreCase("Checked by Taxonomic Editor: included in ERMS 1.1")) {
+			return 0;
+		} else if (qualityStatusCache.equalsIgnoreCase("Added by Database Management Team")) {
+			return 2;
+		} else if (qualityStatusCache.equalsIgnoreCase("Checked by Taxonomic Editor")) {
+			return 3;
+		} else if (qualityStatusCache.equalsIgnoreCase("Edited by Database Management Team")) {
+			return 4;
+		} else {
+			logger.error("QualityStatusFk could not be determined. QualityStatusCache unknown: " + qualityStatusCache);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Returns the FossilStatusFk for a given FossilStatusCache.
+	 * @param fossilStatusCache
+	 * @return
+	 */
+	public Integer FossilStatusCache2FossilStatusFk(String fossilStatusCache) {
+		Integer result = null;
+		if (fossilStatusCache.equalsIgnoreCase("recent only")) {
+			return 1;
+		} else if (fossilStatusCache.equalsIgnoreCase("fossil only")) {
+			return 2;
+		} else if (fossilStatusCache.equalsIgnoreCase("recent + fossil")) {
+			return 3;
+		} else {
+			logger.error("FossilStatusFk could not be determined. FossilStatusCache unknown: " + fossilStatusCache);
+		}
+		
+		return result;
+	}
+
 }

@@ -27,13 +27,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -1597,12 +1601,10 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
+		ExtensionType extensionType = null;
 		
 		mapping.addMapper(IdMapper.NewInstance("TaxonId"));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFK", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
-//		mapping.addMapper(MethodMapper.NewInstance("KingdomFk", this.getClass(), "getKingdomFk", standardMethodParameter, PesiExportState.class));
-//		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));
-//		mapping.addMapper(MethodMapper.NewInstance("RankCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("GenusOrUninomial", this));
 		mapping.addMapper(MethodMapper.NewInstance("InfraGenericEpithet", this));
 		mapping.addMapper(MethodMapper.NewInstance("SpecificEpithet", this));
@@ -1612,27 +1614,56 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("AuthorString", this));
 		mapping.addMapper(MethodMapper.NewInstance("FullName", this));
 		mapping.addMapper(MethodMapper.NewInstance("NomRefString", this));
-		mapping.addMapper(MethodMapper.NewInstance("DisplayName", this));
-		mapping.addMapper(MethodMapper.NewInstance("FuzzyName", this));
+		
+		// DisplayName
+		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidDisplayName);		
+		if (extensionType != null) {
+			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "DisplayName"));
+		} else {
+			mapping.addMapper(MethodMapper.NewInstance("DisplayName", this));
+		}
+
+		// FuzzyName
+		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidFuzzyName);
+		if (extensionType != null) {
+			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "FuzzyName"));
+		} else {
+			mapping.addMapper(MethodMapper.NewInstance("FuzzyName", this));
+		}
+		
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this.getClass(), "getTypeNameFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("QualityStatusFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("QualityStatusCache", this));
+
+		// QualityStatus (Fk, Cache)
+		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidQualityStatus);
+		if (extensionType != null) {
+			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "QualityStatusCache"));
+		} else {
+			mapping.addMapper(MethodMapper.NewInstance("QualityStatusCache", this));
+		}
+		mapping.addMapper(MethodMapper.NewInstance("QualityStatusFk", this)); // PesiTransformer.QualityStatusCache2QualityStatusFk?
+		
 		mapping.addMapper(MethodMapper.NewInstance("TypeDesignationStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeDesignationStatusCache", this));
-//		mapping.addMapper(MethodMapper.NewInstance("TreeIndex", this.getClass(), "getTreeIndex", standardMethodParameter, PesiExportState.class));
-		mapping.addMapper(MethodMapper.NewInstance("FossilStatusFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("FossilStatusCache", this));
+
+		// FossilStatus (Fk, Cache)
+		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidFossilStatus);
+		if (extensionType != null) {
+			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "FossilStatusCache"));
+		} else {
+			mapping.addMapper(MethodMapper.NewInstance("FossilStatusCache", this));
+		}
+		mapping.addMapper(MethodMapper.NewInstance("FossilStatusFk", this)); // PesiTransformer.FossilStatusCache2FossilStatusFk?
+
 		mapping.addMapper(MethodMapper.NewInstance("IdInSource", this));
 		mapping.addMapper(MethodMapper.NewInstance("GUID", this)); // TODO
 		mapping.addMapper(MethodMapper.NewInstance("DerivedFromGuid", this)); // TODO
 		mapping.addMapper(MethodMapper.NewInstance("OriginalDB", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
-//		mapping.addMapper(DbTimePeriodMapper.NewInstance("updated", "LastActionDate"));
 		mapping.addMapper(MethodMapper.NewInstance("LastActionDate", this));
 		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this)); // TODO
 		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this)); // TODO
