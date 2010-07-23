@@ -28,15 +28,24 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * 
 	 */
 	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description) {
-		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, Language.DEFAULT());
+		List<Language> languages = new ArrayList<Language>();
+		languages.add(Language.DEFAULT());
+		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, languages);
 	}
 	
 	
 	/**
 	 * 
 	 */
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, Language language) {
-		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, language);
+	public List<TextData> generatePreferredNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, List<Language> languages) {
+		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, languages);
+	}
+	
+	
+	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description,	Language language) {
+		List<Language> languages = new ArrayList<Language>();
+		languages.add(language);
+		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, languages);
 	}
 	
 	/** recursive function that goes through a tree containing the order in which the description has to be generated,
@@ -48,13 +57,13 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @param language The language in which the description has to be written
 	 * @return
 	 */
-	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, TaxonDescription description, Language language) {
+	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, TaxonDescription description, List<Language> languages) {
 		List<TextData> listTextData = new ArrayList<TextData>(); ;
 		if (!parent.isLeaf()){ // if this node is not a leaf, continue recursively (only the leaves of a FeatureTree contain states)
 			Feature fref = parent.getFeature();
 			for (Iterator<FeatureNode> ifn = children.iterator() ; ifn.hasNext() ;){
 				FeatureNode fn = ifn.next();
-				listTextData.addAll(buildBranchesDescr(fn.getChildren(),fn,description, language));
+				listTextData.addAll(buildBranchesDescr(fn.getChildren(),fn,description, languages));
 			}
 		}
 		else { //once a leaf is reached
@@ -64,12 +73,12 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 					Set<DescriptionElementBase> elements = description.getElements();
 					for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){ // iterates over all the descriptions enclosed in the TaxonDescription
 						DescriptionElementBase descriptionElement = deb.next();
-						TextData textData;// = TextData.NewInstance();
+						TextData textData;
 						if (descriptionElement.getFeature().equals(fref)){ // if one matches the corresponding feature associated to this leaf
 							if (descriptionElement instanceof CategoricalData) { // if this description is a CategoricalData, generate the according TextData
 								CategoricalData categoricalData = (CategoricalData) descriptionElement;
 								//textData = buildCategoricalDescr(categoricalData, language);
-								textData = categoricalDescriptionBuilder.build(categoricalData);
+								textData = categoricalDescriptionBuilder.build(categoricalData, languages);
 								//textData.putText(fref.getLabel(), Language.DEFAULT());
 								TextData featureName = TextData.NewInstance(fref.getLabel(), Language.DEFAULT(), null);
 								listTextData.add(featureName); // if you want to print the name of the feature (Should it be an option ?)
@@ -77,7 +86,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 							}
 							if (descriptionElement instanceof QuantitativeData) { // if this description is a QuantitativeData, generate the according TextData
 								QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
-								textData = quantitativeDescriptionBuilder.build(quantitativeData);
+								textData = quantitativeDescriptionBuilder.build(quantitativeData, languages);
 								TextData featureName = TextData.NewInstance(fref.getLabel(), Language.DEFAULT(), null);
 								listTextData.add(featureName); // if you want to print the name of the feature
 								listTextData.add(textData);
@@ -106,4 +115,5 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	public void setCategoricalDescriptionBuilder(DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder){
 		this.categoricalDescriptionBuilder = categoricalDescriptionBuilder;
 	}
+
 }
