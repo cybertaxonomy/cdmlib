@@ -22,14 +22,22 @@ public class EfloraSources {
 
 	
 	//Sapindaceae
-	public static String sapindaceae_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/sapindaceae/sapindaceae-01.xml";
+	public static String fm_sapindaceae_local(){
+		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-01.xml";
 		return sourceUrl;
 	}
 	
 	//Sapindaceae2
-	public static String sapindaceae2_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/sapindaceae/sapindaceae-02final.xml";
+	public static String fm_sapindaceae2_local(){
+		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-02final.xml";
+//		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
+//		String sourceUrl = url.toString();
+		return sourceUrl;
+	}
+	
+	//Sapindaceae2
+	public static String fm_13_1_local(){
+		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/fm13_1_v8 final.xml";
 //		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
 //		String sourceUrl = url.toString();
 		return sourceUrl;

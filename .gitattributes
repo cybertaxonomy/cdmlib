@@ -17,7 +17,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmImportSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/ImportUtils.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/TestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/EfloraSources.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/SapindaceaeActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/FloraMalesianaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/taxa/NormalExplicitActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/globis/GlobisActivator.java -text
@@ -83,6 +83,12 @@ app-import/src/main/java/eu/etaxonomy/cdm/io/CichorieaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeProtologueImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/ProtologueImport.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaImportBase.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaImportConfigurator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaImportState.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaTaxonImport.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaTransformer.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/UnmatchedLeads.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/sapindaceae/SapindaceaTransformer.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/sapindaceae/SapindaceaeImportBase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/sapindaceae/SapindaceaeImportConfigurator.java -text
