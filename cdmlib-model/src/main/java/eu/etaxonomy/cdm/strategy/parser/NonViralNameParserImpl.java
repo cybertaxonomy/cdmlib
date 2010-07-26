@@ -387,7 +387,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String 
 	 */ 
-	private String parseNomStatus(String fullString, NonViralName nameToBeFilled) {
+	public String parseNomStatus(String fullString, NonViralName nameToBeFilled) {
 		String statusString;
 		Pattern hasStatusPattern = Pattern.compile("(" + pNomStatusPhrase + ")"); 
 		Matcher hasStatusMatcher = hasStatusPattern.matcher(fullString);
