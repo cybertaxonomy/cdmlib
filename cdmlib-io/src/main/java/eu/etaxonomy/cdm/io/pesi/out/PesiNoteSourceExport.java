@@ -186,7 +186,9 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	private static Integer getNoteCategoryFk(DescriptionElementBase descriptionElement) {
 		Integer result = null;
+
 		result = PesiTransformer.textData2NodeCategoryFk(descriptionElement.getFeature());
+
 		return result;
 	}
 
@@ -199,7 +201,10 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getNoteFk(DescriptionElementBase descriptionElement, PesiExportState state) {
-		Integer result = state.getDbId(descriptionElement);
+		Integer result = null;
+
+		result = state.getDbId(descriptionElement);
+
 		return result;
 	}
 	
@@ -211,7 +216,10 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	private static Integer getSourceFk(DescriptionElementBase descriptionElement, PesiExportState state) {
-		Integer result = state.getDbId(descriptionElement);
+		Integer result = null;
+
+		result = state.getDbId(descriptionElement);
+
 //		DescriptionBase description = descriptionElement.getInDescription();
 //		if (description.isInstanceOf(TaxonDescription.class)) {
 //			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
@@ -230,12 +238,14 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getSourceNameCache(DescriptionElementBase descriptionElement) {
 		String result = null;
-		DescriptionBase description = descriptionElement.getInDescription();
-		if (description.isInstanceOf(TaxonDescription.class)) {
-			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+
+		DescriptionBase inDescription = descriptionElement.getInDescription();
+		if (inDescription != null && inDescription.isInstanceOf(TaxonDescription.class)) {
+			TaxonDescription taxonDescription = CdmBase.deproxy(inDescription, TaxonDescription.class);
 			Taxon taxon = taxonDescription.getTaxon();
 			result = taxon.getSec().getTitleCache();
 		}
+
 		return result;
 	}
 	
