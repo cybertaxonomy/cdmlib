@@ -138,7 +138,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					"KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
 			parentTaxonFk_TreeIndex_KingdomFkStmt = connection.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
 			
-			String rankDataSql = "UPDATE Taxon SET RankFk = ?, RankCache = ? WHERE TaxonId = ?";
+			String rankDataSql = "UPDATE Taxon SET RankFk = ?, RankCache = ?, TypeNameFk = ? WHERE TaxonId = ?";
 			rankDataSqlStmt = connection.prepareStatement(rankDataSql);
 
 			// Get the limit for objects to save within a single transaction.
@@ -360,7 +360,8 @@ public class PesiTaxonExport extends PesiExportBase {
 				for (TaxonNameBase taxonName : list) {
 					doCount(count++, modCount, pluralString);
 
-					invokeRankData(taxonName, nomenclaturalCode, state.getDbId(taxonName));
+					Integer typeNameFk = getTypeNameFk(taxonName, state);
+					invokeRankAndTypeNameFkData(taxonName, nomenclaturalCode, state.getDbId(taxonName), typeNameFk);
 				}
 
 				// Commit transaction
@@ -608,7 +609,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * Insert rank data only into the Taxon database table.
 	 * @param taxonName
 	 */
-	private boolean invokeRankData(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer taxonFk) {
+	private boolean invokeRankAndTypeNameFkData(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer taxonFk, Integer typeNameFk) {
 		try {
 			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
 			if (rankFk != null) {
@@ -628,6 +629,12 @@ public class PesiTaxonExport extends PesiExportBase {
 				rankDataSqlStmt.setInt(3, taxonFk);
 			} else {
 				rankDataSqlStmt.setObject(3, null);
+			}
+			
+			if (typeNameFk != null) {
+				rankDataSqlStmt.setInt(4, typeNameFk);
+			} else {
+				rankDataSqlStmt.setObject(4, null);
 			}
 			
 			rankDataSqlStmt.executeUpdate();
@@ -810,7 +817,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				Rank rank = CdmBase.deproxy(object, Rank.class);
 				
 				if ("".equals(rank.getAbbreviation().trim())) {
-					logger.error("Rank is an empty string: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+					logger.error("Rank abbreviation is an empty string: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 				} else {
 					if (openTag) {
 						result += "</i> ";
@@ -1168,7 +1175,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>TypeNameFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getTypeNameFk(TaxonNameBase taxonNameBase, PesiExportState state) {
 		Integer result = null;
 		if (taxonNameBase != null) {
@@ -1178,13 +1184,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				if (nameTypeDesignation != null) {
 					TaxonNameBase typeName = nameTypeDesignation.getTypeName();
 					if (typeName != null) {
-						Set<TaxonBase> taxa = typeName.getTaxa();
-						if (taxa.size() == 1) {
-							TaxonBase singleTaxon = taxa.iterator().next();
-							result = state.getDbId(singleTaxon.getName());
-						} else if (taxa.size() > 1) {
-							logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-						}
+						result = state.getDbId(typeName);
 					}
 				}
 			} else if (nameTypeDesignations.size() > 1) {
@@ -1640,7 +1640,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this.getClass(), "getTypeNameFk", standardMethodParameter, PesiExportState.class));
+//		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this.getClass(), "getTypeNameFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
 
 		// QualityStatus (Fk, Cache)
