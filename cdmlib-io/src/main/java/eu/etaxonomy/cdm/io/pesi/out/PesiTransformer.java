@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -28,7 +27,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.Fossil;
-import eu.etaxonomy.cdm.model.reference.ISectionBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -37,6 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 
 /**
  * @author a.mueller
@@ -1476,57 +1475,60 @@ public final class PesiTransformer {
 			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NEO")) { return STR_AREA_NEOTROPICAL_REGION; }
 			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NRE")) { return STR_AREA_NEAR_EAST; }
 			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ORR")) { return STR_AREA_ORIENTAL_REGION; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EUROPEAN_MARINE_WATERS; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MES")) { return STR_AREA_MEDITERRANEAN_SEA; } // abbreviated label missing
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_WHITE_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTH_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALTIC_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLS")) { return STR_AREA_BLACK_SEA; } // abbreviated label missing
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BARENTS_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CAS")) { return STR_AREA_CASPIAN_SEA; } // abbreviated label missing
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ENGLISH_CHANNEL; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ADRIATIC_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BISCAY_BAY; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TIRRENO_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_IRISH_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORWEGIAN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SKAGERRAK; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_WADDEN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BELT_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MARMARA_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SEA_OF_AZOV; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_AEGEAN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SOUTH_BALTIC_PROPER; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALTIC_PROPER; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_NORTH_BALTIC_PROPER; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ARCHIPELAGO_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BOTHNIAN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_BALEAR_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return STR_AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEuropeanMarineWaters)) { return STR_AREA_EUROPEAN_MARINE_WATERS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MES") ||
+					(namedArea.getUuid().equals(ErmsTransformer.uuidMediterraneanSea))) { return STR_AREA_MEDITERRANEAN_SEA; } // abbreviated label missing
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidWhiteSea)) { return STR_AREA_WHITE_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorthSea)) { return STR_AREA_NORTH_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBalticSea)) { return STR_AREA_BALTIC_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLS") ||
+					(namedArea.getUuid().equals(ErmsTransformer.uuidBlackSea))) { return STR_AREA_BLACK_SEA; } // abbreviated label missing
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBarentsSea)) { return STR_AREA_BARENTS_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CAS") ||
+					(namedArea.getUuid().equals(ErmsTransformer.uuidCaspianSea))) { return STR_AREA_CASPIAN_SEA; } // abbreviated label missing
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidPortugueseExclusiveEconomicZone)) { return STR_AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBelgianExclusiveEconomicZone)) { return STR_AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidFrenchExclusiveEconomicZone)) { return STR_AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEnglishChannel)) { return STR_AREA_ENGLISH_CHANNEL; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidAdriaticSea)) { return STR_AREA_ADRIATIC_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBiscayBay)) { return STR_AREA_BISCAY_BAY; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidDutchExclusiveEconomicZone)) { return STR_AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidUnitedKingdomExclusiveEconomicZone)) { return STR_AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSpanishExclusiveEconomicZone)) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEgyptianExclusiveEconomicZone)) { return STR_AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidGrecianExclusiveEconomicZone)) { return STR_AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidTirrenoSea)) { return STR_AREA_TIRRENO_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidIcelandicExclusiveEconomicZone)) { return STR_AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidIrishExclusiveeconomicZone)) { return STR_AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidIrishSea)) { return STR_AREA_IRISH_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidItalianExclusiveEconomicZone)) { return STR_AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorwegianSea)) { return STR_AREA_NORWEGIAN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidMoroccanExclusiveEconomicZone)) { return STR_AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorwegianExclusiveEconomicZone)) { return STR_AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSkagerrak)) { return STR_AREA_SKAGERRAK; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidTunisianExclusiveEconomicZone)) { return STR_AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidWaddenSea)) { return STR_AREA_WADDEN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBeltSea)) { return STR_AREA_BELT_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidMarmaraSea)) { return STR_AREA_MARMARA_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSeaofAzov)) { return STR_AREA_SEA_OF_AZOV; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidAegeanSea)) { return STR_AREA_AEGEAN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBulgarianExclusiveEconomicZone)) { return STR_AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSouthBalticproper)) { return STR_AREA_SOUTH_BALTIC_PROPER; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBalticProper)) { return STR_AREA_BALTIC_PROPER; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorthBalticproper)) { return STR_AREA_NORTH_BALTIC_PROPER; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidArchipelagoSea)) { return STR_AREA_ARCHIPELAGO_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBothnianSea)) { return STR_AREA_BOTHNIAN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidGermanExclusiveEconomicZone)) { return STR_AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSwedishExclusiveEconomicZone)) { return STR_AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidUkrainianExclusiveEconomicZone)) { return STR_AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidMadeiranExclusiveEconomicZone)) { return STR_AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidLebaneseExclusiveEconomicZone)) { return STR_AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSpanishExclusiveEconomicZoneMediterraneanpart)) { return STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEstonianExclusiveEconomicZone)) { return STR_AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidCroatianExclusiveEconomicZone)) { return STR_AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBalearSea)) { return STR_AREA_BALEAR_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidTurkishExclusiveEconomicZone)) { return STR_AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidDanishExclusiveEconomicZone)) { return STR_AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
 			else {
 				logger.error("Unknown NamedArea Area: " + area.getTitleCache());
 				return null; // Actually the export has to stop here because AreaFk's are not allowed to be NULL.
@@ -1737,57 +1739,60 @@ public final class PesiTransformer {
 			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NEO")) { return AREA_NEOTROPICAL_REGION; }
 			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("NRE")) { return AREA_NEAR_EAST; }
 			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("ORR")) { return AREA_ORIENTAL_REGION; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EUROPEAN_MARINE_WATERS; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MES")) { return AREA_MEDITERRANEAN_SEA; } // abbreviated label missing
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_WHITE_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTH_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALTIC_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLS")) { return AREA_BLACK_SEA; } // abbreviated label missing
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BARENTS_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CAS")) { return AREA_CASPIAN_SEA; } // abbreviated label missing
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ENGLISH_CHANNEL; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ADRIATIC_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BISCAY_BAY; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TIRRENO_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_IRISH_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORWEGIAN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SKAGERRAK; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_WADDEN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BELT_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MARMARA_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SEA_OF_AZOV; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_AEGEAN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SOUTH_BALTIC_PROPER; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALTIC_PROPER; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_NORTH_BALTIC_PROPER; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ARCHIPELAGO_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BOTHNIAN_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_BALEAR_SEA; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
-			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("TODO")) { return AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEuropeanMarineWaters)) { return AREA_EUROPEAN_MARINE_WATERS; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("MES") ||
+					(namedArea.getUuid().equals(ErmsTransformer.uuidMediterraneanSea))) { return AREA_MEDITERRANEAN_SEA; } // abbreviated label missing
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidWhiteSea)) { return AREA_WHITE_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorthSea)) { return AREA_NORTH_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBalticSea)) { return AREA_BALTIC_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("BLS") ||
+					(namedArea.getUuid().equals(ErmsTransformer.uuidBlackSea))) { return AREA_BLACK_SEA; } // abbreviated label missing
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBarentsSea)) { return AREA_BARENTS_SEA; }
+			else if ((namedArea.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel()).equals("CAS") ||
+					(namedArea.getUuid().equals(ErmsTransformer.uuidCaspianSea))) { return AREA_CASPIAN_SEA; } // abbreviated label missing
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidPortugueseExclusiveEconomicZone)) { return AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBelgianExclusiveEconomicZone)) { return AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidFrenchExclusiveEconomicZone)) { return AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEnglishChannel)) { return AREA_ENGLISH_CHANNEL; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidAdriaticSea)) { return AREA_ADRIATIC_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBiscayBay)) { return AREA_BISCAY_BAY; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidDutchExclusiveEconomicZone)) { return AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidUnitedKingdomExclusiveEconomicZone)) { return AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSpanishExclusiveEconomicZone)) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEgyptianExclusiveEconomicZone)) { return AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidGrecianExclusiveEconomicZone)) { return AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidTirrenoSea)) { return AREA_TIRRENO_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidIcelandicExclusiveEconomicZone)) { return AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidIrishExclusiveeconomicZone)) { return AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidIrishSea)) { return AREA_IRISH_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidItalianExclusiveEconomicZone)) { return AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorwegianSea)) { return AREA_NORWEGIAN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidMoroccanExclusiveEconomicZone)) { return AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorwegianExclusiveEconomicZone)) { return AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSkagerrak)) { return AREA_SKAGERRAK; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidTunisianExclusiveEconomicZone)) { return AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidWaddenSea)) { return AREA_WADDEN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBeltSea)) { return AREA_BELT_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidMarmaraSea)) { return AREA_MARMARA_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSeaofAzov)) { return AREA_SEA_OF_AZOV; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidAegeanSea)) { return AREA_AEGEAN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBulgarianExclusiveEconomicZone)) { return AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSouthBalticproper)) { return AREA_SOUTH_BALTIC_PROPER; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBalticProper)) { return AREA_BALTIC_PROPER; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidNorthBalticproper)) { return AREA_NORTH_BALTIC_PROPER; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidArchipelagoSea)) { return AREA_ARCHIPELAGO_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBothnianSea)) { return AREA_BOTHNIAN_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidGermanExclusiveEconomicZone)) { return AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSwedishExclusiveEconomicZone)) { return AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidUkrainianExclusiveEconomicZone)) { return AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidMadeiranExclusiveEconomicZone)) { return AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidLebaneseExclusiveEconomicZone)) { return AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidSpanishExclusiveEconomicZoneMediterraneanpart)) { return AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidEstonianExclusiveEconomicZone)) { return AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidCroatianExclusiveEconomicZone)) { return AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidBalearSea)) { return AREA_BALEAR_SEA; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidTurkishExclusiveEconomicZone)) { return AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE; }
+			else if (namedArea.getUuid().equals(ErmsTransformer.uuidDanishExclusiveEconomicZone)) { return AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE; }
 			else {
 				logger.error("Unknown NamedArea Area: " + area.getTitleCache());
 			}
@@ -2132,9 +2137,6 @@ public final class PesiTransformer {
 			return null;
 		}
 		
-		// for erms import data
-//		else if (feature.getUuid().equals(ermstransformer.feature_uuid))
-
 		if (feature.equals(Feature.DESCRIPTION())) {
 			return NoteCategory_STR_description;
 		} else if (feature.equals(Feature.ECOLOGY())) {
@@ -2145,55 +2147,80 @@ public final class PesiTransformer {
 			return NoteCategory_STR_Common_names;
 		} else if (feature.equals(Feature.OCCURRENCE())) {
 			return NoteCategory_STR_Occurrence;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidRemark)) {
+			return NoteCategory_STR_Remark;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidAdditionalinformation)) {
+			return NoteCategory_STR_Additional_information;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidSpelling)) {
+			return NoteCategory_STR_Spelling;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidDateofPublication)) {
+			return NoteCategory_STR_Date_of_publication;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidSystematics)) {
+			return NoteCategory_STR_Systematics;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidClassification)) {
+			return NoteCategory_STR_Classification;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidEnvironment)) {
+			return NoteCategory_STR_Environment;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidHabitat)) {
+			return NoteCategory_STR_Habitat;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidAuthority)) {
+			return NoteCategory_STR_Authority;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidMorphology)) {
+			return NoteCategory_STR_Morphology;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomicRemarks)) {
+			return NoteCategory_STR_Taxonomic_Remarks;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidNote)){
+			return NoteCategory_STR_Note;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomy)) {
+			return NoteCategory_STR_Taxonomy;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomicstatus)) {
+			return NoteCategory_STR_Taxonomic_status;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidStatus)){
+			return NoteCategory_STR_Status;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidRank)) {
+			return NoteCategory_STR_Rank;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidHomonymy)) {
+			return NoteCategory_STR_Homonymy;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidNomenclature)) {
+			return NoteCategory_STR_Nomenclature;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomicRemark)) {
+			return NoteCategory_STR_Taxonomic_Remark;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidAcknowledgments)){
+			return NoteCategory_STR_Acknowledgments;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidOriginalpublication)) {
+			return NoteCategory_STR_Original_publication;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTypelocality)) {
+			return NoteCategory_STR_Type_locality;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidValidity)) {
+			return NoteCategory_STR_Validity;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidIdentification)) {
+			return NoteCategory_STR_Identification;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidSynonymy)) {
+			return NoteCategory_STR_Synonymy;
 //		} else if (feature.equals(Feature.CITATION())) {
 //			return;
 			
 			// TODO: Unknown NodeCategories
-//			NoteCategory_general_distribution_euromed = 10;
-//			NoteCategory_general_distribution_world = 11;
-//			NoteCategory_Common_names = 12;
-//			NoteCategory_Maps =14;
-//			NoteCategory_Link_to_maps = 20;
-//			NoteCategory_Link_to_images = 21;
-//			NoteCategory_Link_to_taxonomy = 22;
-//			NoteCategory_Link_to_general_information = 23;
-//			NoteCategory_undefined_link = 24;
-//			NoteCategory_Editor_Braces = 249;
-//			NoteCategory_Editor_Brackets = 250;
-//			NoteCategory_Editor_Parenthesis = 251;
-//			NoteCategory_Inedited = 252;
-//			NoteCategory_Comments_on_editing_process = 253;
-//			NoteCategory_Publication_date = 254;
-//			NoteCategory_Morphology = 255;
-//			NoteCategory_Acknowledgments = 257;
-//			NoteCategory_Original_publication = 258;
-//			NoteCategory_Type_locality	= 259;
-//			NoteCategory_Environment = 260;
-//			NoteCategory_Spelling = 261;
-//			NoteCategory_Systematics = 262;
-//			NoteCategory_Remark = 263;
-//			NoteCategory_Date_of_publication = 264;
-//			NoteCategory_Additional_information = 266;
-//			NoteCategory_Status = 267;
-//			NoteCategory_Nomenclature = 268;
-//			NoteCategory_Homonymy = 269;
-//			NoteCategory_Taxonomy = 270;
-//			NoteCategory_Taxonomic_status = 272;
-//			NoteCategory_Authority	= 273;
-//			NoteCategory_Identification = 274;
-//			NoteCategory_Validity = 275;
-//			NoteCategory_Classification = 276;
-//			NoteCategory_Distribution = 278;
-//			NoteCategory_Synonymy = 279;
-//			NoteCategory_Habitat = 280;
-//			NoteCategory_Biology = 281;
-//			NoteCategory_Diagnosis	= 282;
-//			NoteCategory_Host = 283;
-//			NoteCategory_Note = 284;
-//			NoteCategory_Rank = 285;
-//			NoteCategory_Taxonomic_Remark = 286;
-//			NoteCategory_Taxonomic_Remarks = 287;
-
+//			NoteCategory_STR_general_distribution_euromed = 10;
+//			NoteCategory_STR_general_distribution_world = 11;
+//			NoteCategory_STR_Common_names = 12;
+//			NoteCategory_STR_Maps =14;
+//			NoteCategory_STR_Link_to_maps = 20;
+//			NoteCategory_STR_Link_to_images = 21;
+//			NoteCategory_STR_Link_to_taxonomy = 22;
+//			NoteCategory_STR_Link_to_general_information = 23;
+//			NoteCategory_STR_undefined_link = 24;
+//			NoteCategory_STR_Editor_Braces = 249;
+//			NoteCategory_STR_Editor_Brackets = 250;
+//			NoteCategory_STR_Editor_Parenthesis = 251;
+//			NoteCategory_STR_Inedited = 252;
+//			NoteCategory_STR_Comments_on_editing_process = 253;
+//			NoteCategory_STR_Publication_date = 254;
+//			NoteCategory_STR_Distribution = 278;
+//			NoteCategory_STR_Biology = 281;
+//			NoteCategory_STR_Diagnosis	= 282;
+//			NoteCategory_STR_Host = 283;
+		
  		} else {
 			logger.debug("Unknown Feature.");
 			return null;
@@ -2209,16 +2236,67 @@ public final class PesiTransformer {
 		if (feature == null) {
 			return null;
 		}
+
 		if (feature.equals(Feature.DESCRIPTION())) {
 			return NoteCategory_description;
 		} else if (feature.equals(Feature.ECOLOGY())) {
 			return NoteCategory_ecology;
 		} else if (feature.equals(Feature.PHENOLOGY())) {
 			return NoteCategory_phenology;
-//		} else if (feature.equals(Feature.COMMON_NAME())) {
-//			return NoteCategory_Common_names;
-//		} else if (feature.equals(Feature.OCCURRENCE())) {
-//			return NoteCategory_Occurrence;
+		} else if (feature.equals(Feature.COMMON_NAME())) {
+			return NoteCategory_Common_names;
+		} else if (feature.equals(Feature.OCCURRENCE())) {
+			return NoteCategory_Occurrence;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidRemark)) {
+			return NoteCategory_Remark;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidAdditionalinformation)) {
+			return NoteCategory_Additional_information;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidSpelling)) {
+			return NoteCategory_Spelling;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidDateofPublication)) {
+			return NoteCategory_Date_of_publication;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidSystematics)) {
+			return NoteCategory_Systematics;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidClassification)) {
+			return NoteCategory_Classification;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidEnvironment)) {
+			return NoteCategory_Environment;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidHabitat)) {
+			return NoteCategory_Habitat;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidAuthority)) {
+			return NoteCategory_Authority;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidMorphology)) {
+			return NoteCategory_Morphology;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomicRemarks)) {
+			return NoteCategory_Taxonomic_Remarks;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidNote)){
+			return NoteCategory_Note;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomy)) {
+			return NoteCategory_Taxonomy;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomicstatus)) {
+			return NoteCategory_Taxonomic_status;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidStatus)){
+			return NoteCategory_Status;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidRank)) {
+			return NoteCategory_Rank;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidHomonymy)) {
+			return NoteCategory_Homonymy;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidNomenclature)) {
+			return NoteCategory_Nomenclature;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTaxonomicRemark)) {
+			return NoteCategory_Taxonomic_Remark;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidAcknowledgments)){
+			return NoteCategory_Acknowledgments;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidOriginalpublication)) {
+			return NoteCategory_Original_publication;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidTypelocality)) {
+			return NoteCategory_Type_locality;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidValidity)) {
+			return NoteCategory_Validity;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidIdentification)) {
+			return NoteCategory_Identification;
+		} else if (feature.getUuid().equals(ErmsTransformer.uuidSynonymy)) {
+			return NoteCategory_Synonymy;
 //		} else if (feature.equals(Feature.CITATION())) {
 //			return;
 			
@@ -2236,38 +2314,12 @@ public final class PesiTransformer {
 //			NoteCategory_Editor_Brackets = 250;
 //			NoteCategory_Editor_Parenthesis = 251;
 //			NoteCategory_Inedited = 252;
-			
 //			NoteCategory_Comments_on_editing_process = 253;
 //			NoteCategory_Publication_date = 254;
-//			NoteCategory_Morphology = 255;
-//			NoteCategory_Acknowledgments = 257;
-//			NoteCategory_Original_publication = 258;
-//			NoteCategory_Type_locality	= 259;
-//			NoteCategory_Environment = 260;
-//			NoteCategory_Spelling = 261;
-//			NoteCategory_Systematics = 262;
-//			NoteCategory_Remark = 263;
-//			NoteCategory_Date_of_publication = 264;
-//			NoteCategory_Additional_information = 266;
-//			NoteCategory_Status = 267;
-//			NoteCategory_Nomenclature = 268;
-//			NoteCategory_Homonymy = 269;
-//			NoteCategory_Taxonomy = 270;
-//			NoteCategory_Taxonomic_status = 272;
-//			NoteCategory_Authority	= 273;
-//			NoteCategory_Identification = 274;
-//			NoteCategory_Validity = 275;
-//			NoteCategory_Classification = 276;
 //			NoteCategory_Distribution = 278;
-//			NoteCategory_Synonymy = 279;
-//			NoteCategory_Habitat = 280;
 //			NoteCategory_Biology = 281;
 //			NoteCategory_Diagnosis	= 282;
 //			NoteCategory_Host = 283;
-//			NoteCategory_Note = 284;
-//			NoteCategory_Rank = 285;
-//			NoteCategory_Taxonomic_Remark = 286;
-//			NoteCategory_Taxonomic_Remarks = 287;
 
 		}else{
 			logger.warn("Unknown Feature.");
@@ -2288,7 +2340,7 @@ public final class PesiTransformer {
 		}
 		
 		// We differentiate between Animalia and Plantae only for now.
-		if (pesiKingdomId == KINGDOM_ANIMALIA) {
+		if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_ANIMALIA) {
 			if (rank.equals(Rank.KINGDOM())) {
 				result = Animalia_STR_Kingdom;
 			} else if (rank.equals(Rank.SUBKINGDOM())) {
@@ -2352,7 +2404,7 @@ public final class PesiTransformer {
 				logger.warn("Rank for Kingdom Animalia not yet supported in CDM: "+ rank.getLabel());
 				return null;
 			}
-		} else if (pesiKingdomId == KINGDOM_PLANTAE) {
+		} else if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_PLANTAE) {
 			if (rank.equals(Rank.KINGDOM())) {
 				result = Plantae_STR_Kingdom;
 			} else if (rank.equals(Rank.SUBKINGDOM())) {
@@ -2443,7 +2495,7 @@ public final class PesiTransformer {
 		}
 		
 		// We differentiate between Animalia and Plantae only for now.
-		if (pesiKingdomId == KINGDOM_ANIMALIA) {
+		if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_ANIMALIA) {
 			if (rank.equals(Rank.SUBGENUS())) {
 				result = Animalia_Abbrev_Subgenus;
 			} else if (rank.equals(Rank.SPECIES())) {
@@ -2463,7 +2515,7 @@ public final class PesiTransformer {
 				logger.warn("Abbreviation for Rank of Kingdom Animalia not supported in CDM: "+ rank.getLabel());
 				return null;
 			}
-		} else if (pesiKingdomId == KINGDOM_PLANTAE) {
+		} else if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_PLANTAE) {
 			if (rank.equals(Rank.KINGDOM())) {
 				result = Plantae_Abbrev_Kingdom;
 			} else if (rank.equals(Rank.SUBKINGDOM())) {
