@@ -335,10 +335,25 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			NomenclaturalCode nomenclaturalCode, Integer kingdomFk,
 			Integer currentSynonymFk) {
 		try {
-			synonymsStmt.setInt(1, kingdomFk);
-			synonymsStmt.setInt(2, getRankFk(taxonName, nomenclaturalCode));
+			if (kingdomFk != null) {
+				synonymsStmt.setInt(1, kingdomFk);
+			} else {
+				synonymsStmt.setObject(1, null);
+			}
+			
+			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
+			if (rankFk != null) {
+				synonymsStmt.setInt(2, rankFk);
+			} else {
+				synonymsStmt.setObject(2, null);
+			}
 			synonymsStmt.setString(3, getRankCache(taxonName, nomenclaturalCode));
-			synonymsStmt.setInt(4, currentSynonymFk);
+			
+			if (currentSynonymFk != null) {
+				synonymsStmt.setInt(4, currentSynonymFk);
+			} else {
+				synonymsStmt.setObject(4, null);
+			}
 			synonymsStmt.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -488,7 +503,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			}
 			result = PesiTransformer.rank2RankId(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
 			if (result == null) {
-				logger.warn("Rank " + taxonName.getRank().getLabel() + " could not be determined for PESI-Kingdom-Id " + PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+				logger.warn("Rank could not be determined for PESI-Kingdom-Id " + PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode) + " and TaxonName " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
 		}
 		return result;
