@@ -520,7 +520,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	public int getCountChildren() {
 		return countChildren;
 	}
-	
+		
 	/**
 	 * @param countChildren
 	 */
