@@ -35,6 +35,7 @@ public class SapindaceaeActivator {
 	static final String sapSource2 = EfloraSources.sapindaceae2_local();
 	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_malesiana_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_malesiana_production();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
@@ -47,7 +48,7 @@ public class SapindaceaeActivator {
 	static final boolean doTaxa = true;
 
 	private boolean includeSapindaceae1 = true;
-	private boolean includeSapindaceae2 = false;
+	private boolean includeSapindaceae2 = true;
 
 	
 	private void doImport(ICdmDataSource cdmDestination){
@@ -61,6 +62,7 @@ public class SapindaceaeActivator {
 		sapindaceaeConfig.setDbSchemaValidation(hbm2dll);
 		
 		CdmDefaultImport<SapindaceaeImportConfigurator> myImport = new CdmDefaultImport<SapindaceaeImportConfigurator>();
+
 		
 		//Sapindaceae1
 		if (includeSapindaceae1){

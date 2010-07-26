@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.eflora.sapindaceae;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -32,6 +33,10 @@ public class SapindaceaeImportConfigurator extends ImportConfiguratorBase<Sapind
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 	private static String classificationTitle = "Sapindaceae";
+	
+	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
+	//from the first sapindaceae import to the second sapindacea import
+	private UUID lastTaxonUuid;
 
 	
 	protected void makeIoClassList(){
@@ -123,7 +128,7 @@ public class SapindaceaeImportConfigurator extends ImportConfiguratorBase<Sapind
 			logger.warn("getSource Reference not yet fully implemented");
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("XXX", true);
+			sourceReference.setTitleCache("Flora Melesiana", true);
 		}
 		return sourceReference;
 	}
@@ -146,6 +151,16 @@ public class SapindaceaeImportConfigurator extends ImportConfiguratorBase<Sapind
 
 	public static String getClassificationTitle() {
 		return classificationTitle;
+	}
+	
+	
+
+	public UUID getLastTaxonUuid() {
+		return lastTaxonUuid;
+	}
+	
+	public void setLastTaxonUuid(UUID lastTaxonUuid) {
+		this.lastTaxonUuid = lastTaxonUuid;
 	}
 	
 

@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 /**
@@ -98,6 +100,10 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		
 		TransactionStatus tx = startTransaction();
 		
+		//TODO generally do not store the reference object in the config
+		ReferenceBase sourceReference = state.getConfig().getSourceReference();
+		getReferenceService().saveOrUpdate(sourceReference);
+		
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		ITaxonService taxonService = getTaxonService();
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
@@ -111,8 +117,7 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		Set<String> unhandledNomeclatureChildren = new HashSet<String>();
 		Set<String> unhandledDescriptionChildren = new HashSet<String>();
 		
-		Taxon lastTaxon = null;
-		
+		Taxon lastTaxon = getLastTaxon(state);
 		
 		//for each taxon
 		for (Element elTaxon : elTaxonList){
@@ -122,18 +127,18 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 					logger.warn("body has element other than 'taxon'");
 				}
 				verifyNoAttribute(elTaxon);
-				
+
 				BotanicalName botanicalName = BotanicalName.NewInstance(Rank.SPECIES());
 				Taxon taxon = Taxon.NewInstance(botanicalName, state.getConfig().getSourceReference());
 				
 				List<Element> children = elTaxon.getChildren();
 				for (Element element : children){
-					handleTaxonElement(state, unhandledTitleClassess, unhandledNomeclatureChildren,
-							unhandledDescriptionChildren, taxon, element);
+					handleTaxonElement(state, unhandledTitleClassess, unhandledNomeclatureChildren,	unhandledDescriptionChildren, taxon, element);
 				}
 				handleTaxonRelation(state, taxon, lastTaxon);
 				lastTaxon = taxon;
 				taxaToSave.add(taxon);
+				state.getConfig().setLastTaxonUuid(lastTaxon.getUuid());
 
 //			testAdditionalElements(elTaxonConcept, elementList);
 //			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
@@ -163,6 +168,15 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		logger.info("end makeKey ...");
 		
 		return success.getValue();
+	}
+
+
+	private Taxon getLastTaxon(SapindaceaeImportState state) {
+		if (state.getConfig().getLastTaxonUuid() == null){
+			return null;
+		}else{
+			return (Taxon)getTaxonService().find(state.getConfig().getLastTaxonUuid());
+		}
 	}
 
 
@@ -197,10 +211,7 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 
 
 	// body/taxon/*
-	private void handleTaxonElement(SapindaceaeImportState state,
-			Set<String> unhandledTitleClassess,
-			Set<String> unhandledNomeclatureChildren,
-			Set<String> unhandledDescriptionChildren, Taxon taxon,
+	private void handleTaxonElement(SapindaceaeImportState state, Set<String> unhandledTitleClassess, Set<String> unhandledNomeclatureChildren, Set<String> unhandledDescriptionChildren, Taxon taxon,
 			Element element) {
 		String elName = element.getName();
 		
@@ -260,7 +271,7 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 			}
 			
 			Attribute numAttr = elKeycouplet.getAttribute("num");
-			String num = CdmUtils.removeTrailingDot(numAttr.getValue());
+			String num = CdmUtils.removeTrailingDot(numAttr == null? null:numAttr.getValue());
 			UnmatchedLeadsKey okk = UnmatchedLeadsKey.NewInstance(key, num);
 			Set<FeatureNode> matchingNodes = openKeys.getNodes(okk);
 			for (FeatureNode matchingNode : matchingNodes){
@@ -298,16 +309,19 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		
 		//goto
 		Attribute gotoAttr = elLead.getAttribute("goto");
-		String strGoto = gotoAttr.getValue();
-		UnmatchedLeadsKey gotoKey = UnmatchedLeadsKey.NewInstance(key, strGoto);
-		UnmatchedLeads openKeys = state.getOpenKeys();
-		Set<FeatureNode> existingNodes = openKeys.getNodes(gotoKey);
-		for (FeatureNode existingNode : existingNodes){
-			node.addChild(existingNode);
+		if (gotoAttr != null){
+			String strGoto = gotoAttr.getValue();
+			UnmatchedLeadsKey gotoKey = UnmatchedLeadsKey.NewInstance(key, strGoto);
+			UnmatchedLeads openKeys = state.getOpenKeys();
+			Set<FeatureNode> existingNodes = openKeys.getNodes(gotoKey);
+			for (FeatureNode existingNode : existingNodes){
+				node.addChild(existingNode);
+			}
+			openKeys.addKey(gotoKey, node);
+			elLead.removeAttribute("goto");
+		}else{
+			logger.warn("lead has no goto attribute");
 		}
-		openKeys.addKey(gotoKey, node);
-		elLead.removeAttribute("goto");
-		
 		
 		verifyNoAttribute(elLead);
 		
@@ -472,9 +486,14 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		verifyNoAttribute(elEcology);
 		verifyNoChildren(elEcology);
 		String value = elEcology.getTextNormalize();
-		value = replaceStart(value, "Habitat & Ecologie");
-		value = replaceStart(value, "Habitat");
 		Feature feature = Feature.ECOLOGY();
+		if (value.startsWith("Habitat & Ecology")){
+			feature = getFeature("Habitat & Ecology", state);
+			value = replaceStart(value, "Habitat & Ecology");
+		}else if (value.startsWith("Habitat")){
+			value = replaceStart(value, "Habitat");
+			feature = getFeature("Habitat", state);
+		}
 		addDescriptionElement(taxon, value, feature, null);
 	}
 
@@ -486,8 +505,10 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 	 */
 	private String replaceStart(String value, String replacementString) {
 		if (value.startsWith(replacementString) ){
-			value = value.substring(replacementString.length());
-			value.trim();
+			value = value.substring(replacementString.length()).trim();
+		}
+		if (value.startsWith("-") ){
+			value = value.substring("-".length()).trim();
 		}
 		return value;
 	}
@@ -636,7 +657,8 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 					name.setGenusOrUninomial(value);
 					name.setRank(Rank.FAMILY());
 				}else if (classValue.equalsIgnoreCase("subgenus")){
-					name.setInfraGenericEpithet(value);
+					//name.setInfraGenericEpithet(value);
+					name.setNameCache(value.replace(":", "").trim());
 					name.setRank(Rank.SUBGENUS());
 				} else if (classValue.equalsIgnoreCase("epithet")){
 					if (hasGenusInfo == true){
@@ -651,6 +673,7 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 				}else if (classValue.equalsIgnoreCase("pub")){
 					ReferenceBase nomRef = ReferenceFactory.newGeneric();
 					nomRef.setTitleCache(value, true);
+					parseNomStatus(nomRef, name);
 					String microReference = parseReference(nomRef);
 					name.setNomenclaturalMicroReference(microReference);
 					name.setNomenclaturalReference(nomRef);
@@ -686,7 +709,6 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		return name.getHomotypicalGroup();
 
 	}
-
 
 	/**
 	 * Sets the names rank according to the infrank value
@@ -895,7 +917,6 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 	}
 
 
-	private static Set<String> unhandledFeatureNames = new HashSet<String>();
 	/**
 	 * @param classValue
 	 * @param state 
@@ -909,7 +930,8 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 			if (uuid == null){
 				logger.info("Uuid is null for " + classValue);
 			}
-			Feature feature = getFeature(state, uuid, classValue, classValue, classValue);
+			String featureText = StringUtils.capitalize(classValue);
+			Feature feature = getFeature(state, uuid, featureText, featureText, classValue);
 			if (feature == null){
 				throw new NullPointerException(classValue + " not recognized as a feature");
 			}
@@ -1055,6 +1077,7 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 					result.setUuid(uuid);
 				}
 			}
+			state.putTree(null, result);
 		}
 		return result;
 	}
@@ -1104,6 +1127,19 @@ public class SapindaceaeTaxonImport  extends SapindaceaeImportBase implements IC
 		}
 	}
 	
+	
+
+	static NonViralNameParserImpl parser = new NonViralNameParserImpl();
+	private void parseNomStatus(ReferenceBase ref, NonViralName nonViralName) {
+		String titleToParse = ref.getTitleCache();
+		
+		
+		String noStatusTitle = parser.parseNomStatus(titleToParse, nonViralName);
+		if (! noStatusTitle.equals(titleToParse)){
+			ref.setTitleCache(noStatusTitle, true);
+		}
+	}
+
 	
 	private String parseReference(ReferenceBase ref){
 		String detailResult = null;

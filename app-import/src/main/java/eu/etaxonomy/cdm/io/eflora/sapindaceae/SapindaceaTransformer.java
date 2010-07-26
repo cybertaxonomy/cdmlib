@@ -29,6 +29,9 @@ public final class SapindaceaTransformer extends InputTransformerBase {
 	
 	//feature uuids
 
+	public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
+	public static final UUID uuidHabitatEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
+	
 	public static final UUID uuidChromosomes = UUID.fromString("c4a60319-4978-4692-9545-58d60cf8379e");
 	
 	public static final UUID uuidLeaflets = UUID.fromString("0efcfbb5-7f7a-454f-985e-50cea6523fef");
@@ -111,6 +114,8 @@ public final class SapindaceaTransformer extends InputTransformerBase {
 	public UUID getFeatureUuid(String key)
 			throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("Habitat")){return uuidHabitat;
+		}else if (key.equalsIgnoreCase("Habitat & Ecology")){return uuidHabitatEcology;
 		}else if (key.equalsIgnoreCase("Leaflets")){return uuidLeaflets;
 		}else if (key.equalsIgnoreCase("Leaves")){return uuidLeaves;
 		}else if (key.equalsIgnoreCase("Branchlets")){return uuidBranchlets;

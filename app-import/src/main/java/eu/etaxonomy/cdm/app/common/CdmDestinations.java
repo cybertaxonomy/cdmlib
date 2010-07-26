@@ -231,6 +231,14 @@ public class CdmDestinations {
 		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 
+	public static ICdmDataSource cdm_flora_malesiana_preview(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "160.45.63.201";
+		String cdmDB = "cdm_edit_flora_malesiana_a";
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+
 	public static ICdmDataSource cdm_pesi_euroMed(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
