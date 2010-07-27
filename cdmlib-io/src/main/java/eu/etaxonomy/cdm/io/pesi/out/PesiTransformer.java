@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -21,11 +22,14 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -35,7 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 
 /**
  * @author a.mueller
@@ -2607,6 +2610,23 @@ public final class PesiTransformer {
 			result = KINGDOM_PLANTAE;
 		}
 		return result;
+	}
+
+	/**
+	 * Returns the NomenclaturalCode for a given TaxonNameBase.
+	 * @param taxonName
+	 * @return
+	 */
+	public static NomenclaturalCode getNomenclaturalCode(TaxonNameBase taxonName) {
+		NomenclaturalCode code = null;
+		if (taxonName.isInstanceOf(ZoologicalName.class)) {
+			code = NomenclaturalCode.ICZN;
+		} else if (taxonName.isInstanceOf(BotanicalName.class)) {
+			code = NomenclaturalCode.ICBN;
+		} else {
+			logger.error("NomenclaturalCode could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
+		return code;
 	}
 	
 	/**

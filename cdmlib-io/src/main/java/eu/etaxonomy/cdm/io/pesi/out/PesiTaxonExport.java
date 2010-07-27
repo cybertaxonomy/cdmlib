@@ -332,7 +332,7 @@ public class PesiTaxonExport extends PesiExportBase {
 							}
 						}
 						
-						nomenclaturalCode = newNode.getTaxon().getName().getNomenclaturalCode();
+						nomenclaturalCode = PesiTransformer.getNomenclaturalCode(newNode.getTaxon().getName());
 						kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
 						traverseTree(newNode, parentNode, treeIndex, rankMap.get(rank), state);
 						
