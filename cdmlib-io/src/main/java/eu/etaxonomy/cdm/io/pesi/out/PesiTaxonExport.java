@@ -1444,12 +1444,11 @@ public class PesiTaxonExport extends PesiExportBase {
 		try {
 
 		// Sources from TaxonName
-		Set<IdentifiableSource> nameSources = taxonName.getSources();
+		Set<IdentifiableSource> sources = taxonName.getSources();
 
 		// Sources from Taxa or Synonyms
 		IdentifiableEntity taxonBase = null;
 		Set taxa = taxonName.getTaxa();
-		Set<IdentifiableSource> sources = null;
 		if (taxa.size() == 1) {
 			taxonBase = (IdentifiableEntity) taxa.iterator().next();
 			sources  = taxonBase.getSources();
