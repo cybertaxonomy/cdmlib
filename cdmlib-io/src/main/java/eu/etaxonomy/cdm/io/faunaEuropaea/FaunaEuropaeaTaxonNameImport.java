@@ -460,7 +460,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			basionym.setPublicationYear(zooName.getPublicationYear());
 
 			// add originalGenusId as source
-			String originalGenusIdString = "" + fauEuTaxon.getOriginalGenusId();
+			String originalGenusIdString = "" + fauEuTaxon.getId();
 			IdentifiableSource basionymSource = IdentifiableSource.NewInstance(originalGenusIdString, "originalGenusId");
 			basionym.addSource(basionymSource);
 			
