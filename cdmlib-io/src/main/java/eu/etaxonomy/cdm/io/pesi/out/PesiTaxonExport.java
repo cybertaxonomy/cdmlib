@@ -134,11 +134,10 @@ public class PesiTaxonExport extends PesiExportBase {
 
 			// Prepare TreeIndex-And-KingdomFk-Statement
 			Connection connection = state.getConfig().getDestination().getConnection();
-			String parentTaxonFk_TreeIndex_KingdomFkSql = "UPDATE Taxon SET ParentTaxonFk = ?, TreeIndex = ?, " +
-					"KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
+			String parentTaxonFk_TreeIndex_KingdomFkSql = "UPDATE Taxon SET ParentTaxonFk = ?, TreeIndex = ? WHERE TaxonId = ?"; 
 			parentTaxonFk_TreeIndex_KingdomFkStmt = connection.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
 			
-			String rankDataSql = "UPDATE Taxon SET RankFk = ?, RankCache = ?, TypeNameFk = ? WHERE TaxonId = ?";
+			String rankDataSql = "UPDATE Taxon SET RankFk = ?, RankCache = ?, TypeNameFk = ?, KingdomFk = ? WHERE TaxonId = ?";
 			rankDataSqlStmt = connection.prepareStatement(rankDataSql);
 
 			// Get the limit for objects to save within a single transaction.
@@ -361,7 +360,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					doCount(count++, modCount, pluralString);
 
 					Integer typeNameFk = getTypeNameFk(taxonName, state);
-					invokeRankAndTypeNameFkData(taxonName, nomenclaturalCode, state.getDbId(taxonName), typeNameFk);
+					invokeRankDataAndTypeNameFkAndKingdomFk(taxonName, nomenclaturalCode, state.getDbId(taxonName), typeNameFk, kingdomFk);
 				}
 
 				// Commit transaction
@@ -533,9 +532,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				}
 			}
 
-			invokeParentTaxonFkAndTreeIndexAndKingdomFk(childNodeTaxonName, 
-					nomenclaturalCode, 
-					kingdomFk, 
+			invokeParentTaxonFkAndTreeIndex(
 					state.getDbId(parentNodeTaxonName), 
 					currentTaxonFk, 
 					treeIndex);
@@ -550,7 +547,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @param stmt
 	 * @return
 	 */
-	protected boolean invokeParentTaxonFkAndTreeIndexAndKingdomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer kingdomFk, Integer parentTaxonFk, Integer currentTaxonFk, StringBuffer treeIndex) {
+	protected boolean invokeParentTaxonFkAndTreeIndex(Integer parentTaxonFk, Integer currentTaxonFk, StringBuffer treeIndex) {
 		try {
 			if (parentTaxonFk != null) {
 				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(1, parentTaxonFk);
@@ -564,52 +561,30 @@ public class PesiTaxonExport extends PesiExportBase {
 				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(2, null);
 			}
 
-			if (kingdomFk != null) {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(3, kingdomFk);
+			if (currentTaxonFk != null) {
+				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(3, currentTaxonFk);
 			} else {
 				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(3, null);
-			}
-			
-			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
-			if (rankFk != null) {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(4, rankFk);
-			} else {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(4, null);
-			}
-
-			String rankCache = getRankCache(taxonName, nomenclaturalCode);
-			if (rankCache != null) {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setString(5, rankCache);
-			} else {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(5, null);
-			}
-			
-			if (currentTaxonFk != null) {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(6, currentTaxonFk);
-			} else {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(6, null);
 			}
 			
 			parentTaxonFk_TreeIndex_KingdomFkStmt.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-			logger.error("SQLException during treeIndex invoke for taxonName - " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + "): " + e.getMessage());
-			logger.error("parentTaxonFk: " + parentTaxonFk);
-			logger.error("treeIndex: " + treeIndex);
-			logger.error("kingdomFk: " + kingdomFk);
-			logger.error("rankFk: " + getRankFk(taxonName, nomenclaturalCode));
-			logger.error("rankCache: " + getRankCache(taxonName, nomenclaturalCode));
-			logger.error("taxonFk: " + currentTaxonFk);
 //			e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
-	 * Insert rank data only into the Taxon database table.
+	 * Insert Rank data, TypeNameFk and KingdomFk into the Taxon database table.
 	 * @param taxonName
+	 * @param nomenclaturalCode
+	 * @param taxonFk
+	 * @param typeNameFk
+	 * @param kindomFk
+	 * @return
 	 */
-	private boolean invokeRankAndTypeNameFkData(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer taxonFk, Integer typeNameFk) {
+	private boolean invokeRankDataAndTypeNameFkAndKingdomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer taxonFk, Integer typeNameFk, Integer kindomFk) {
 		try {
 			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
 			if (rankFk != null) {
@@ -631,10 +606,16 @@ public class PesiTaxonExport extends PesiExportBase {
 				rankDataSqlStmt.setObject(3, null);
 			}
 			
-			if (typeNameFk != null) {
-				rankDataSqlStmt.setInt(4, typeNameFk);
+			if (kingdomFk != null) {
+				rankDataSqlStmt.setInt(4, kingdomFk);
 			} else {
 				rankDataSqlStmt.setObject(4, null);
+			}
+			
+			if (typeNameFk != null) {
+				rankDataSqlStmt.setInt(5, typeNameFk);
+			} else {
+				rankDataSqlStmt.setObject(5, null);
 			}
 			
 			rankDataSqlStmt.executeUpdate();
