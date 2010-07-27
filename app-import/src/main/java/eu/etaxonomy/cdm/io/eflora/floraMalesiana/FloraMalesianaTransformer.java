@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * @version 1.0
  */
 public final class FloraMalesianaTransformer extends InputTransformerBase {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FloraMalesianaTransformer.class);
 	
 	//feature uuids
@@ -87,9 +88,29 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	public static final UUID uuidThyrses = UUID.fromString("74af0814-5f11-4c1d-82c2-06ed97471fc5");
 	public static final UUID uuidThyrsus = UUID.fromString("ff0ddbd3-6049-416e-91b5-fa8fe42621dd");
 	public static final UUID uuidBark = UUID.fromString("a8cd7ed7-0e55-4aa6-8a6f-52bf497e1602");
+	public static final UUID uuidEndophyticBody = UUID.fromString("5b6c3525-bc9a-4ae9-b16b-814ea0ff3ffc");
+	public static final UUID uuidFloweringBuds = UUID.fromString("b3c8cd80-0eea-4747-83f9-32f2418c34ff");
 	
-	
-	
+	//VOL 13.1
+	public static final UUID uuidPerianth = UUID.fromString("bd1480bb-ce44-495f-a462-98db4ac80530");
+	public static final UUID uuidScales = UUID.fromString("bd1480bb-ce44-495f-a462-98db4ac80530");
+	public static final UUID uuidPerigoneTube = UUID.fromString("d1799423-31ce-4525-b0ba-8d7cc9240abf");
+	public static final UUID uuidCorolla = UUID.fromString("9ff17ff9-cb59-4ad7-bfa1-1d67935e567f");
+	public static final UUID uuidAnnulus = UUID.fromString("d9b93acb-9b49-45ef-8661-09e00081931f");
+	public static final UUID uuidFemaleFlowers = UUID.fromString("2e06cea2-5993-417c-8d0d-81cb571aa17a");
+	public static final UUID uuidCymes = UUID.fromString("ab13622f-fc90-49de-b51c-c1b00ed98728");
+	public static final UUID uuidNutlets = UUID.fromString("d9675d0c-0af7-4378-aeb7-7216cdff7289");
+	public static final UUID uuidStem = UUID.fromString("39f35516-045a-4f10-a3a0-c25f47e30b7d");
+	public static final UUID uuidPollen = UUID.fromString("7c0df742-d1b3-4174-976a-fa04a2664aba");
+	public static final UUID uuidSecondaryXylem = UUID.fromString("f2e07699-edfc-404b-9504-52a8be014131");
+	public static final UUID uuidChromosomeNumber = UUID.fromString("0000feeb-ca15-4207-954b-9e3aa1112950");
+	public static final UUID uuidStemLeaves = UUID.fromString("b5ef43c8-e98b-4e06-b322-c214100370ad");
+	public static final UUID uuidSeed = UUID.fromString("18c725f5-6ffc-4c57-a209-3393b6c28a18");
+	public static final UUID uuidDrupes = UUID.fromString("ec664134-144b-425a-9f7b-ffccd0a4bf1a");
+	public static final UUID uuidFruitingAxes = UUID.fromString("a246d13e-b809-4180-ab01-f6ac1b2d2b46");
+	public static final UUID uuidAndroecium = UUID.fromString("ad600c18-b04c-4c61-b71e-ce6e48de508e");
+	public static final UUID uuidGynoecium = UUID.fromString("02c81ac2-3fd7-4daa-9f62-ffb2d6776f44");
+	public static final UUID uuidFlowerTube = UUID.fromString("4328c13c-f80c-4f16-8c53-b0b3d8ec3cb7");
 	
 
 	//extension type uuids
@@ -171,7 +192,31 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Thyrses")){return uuidThyrses;
 		}else if (key.equalsIgnoreCase("Thyrsus")){return uuidThyrsus;
 		}else if (key.equalsIgnoreCase("Bark")){return uuidBark;
+		}else if (key.equalsIgnoreCase("endophytic body")){return uuidEndophyticBody;
+		}else if (key.equalsIgnoreCase("flowering buds")){return uuidFloweringBuds;
+		//TODO the same ?
+		}else if (key.equalsIgnoreCase("flower buds")){return uuidFloweringBuds;
+		}else if (key.equalsIgnoreCase("perianth")){return uuidPerianth;
+		}else if (key.equalsIgnoreCase("scales")){return uuidScales;
+		}else if (key.equalsIgnoreCase("perigone tube")){return uuidPerigoneTube;
+		}else if (key.equalsIgnoreCase("corolla")){return uuidCorolla;
+		}else if (key.equalsIgnoreCase("annulus")){return uuidAnnulus;
+		}else if (key.equalsIgnoreCase("female flowers")){return uuidFemaleFlowers;
+		}else if (key.equalsIgnoreCase("cymes")){return uuidCymes;
+		}else if (key.equalsIgnoreCase("nutlets")){return uuidNutlets;
+		}else if (key.equalsIgnoreCase("stem")){return uuidStem;
+		}else if (key.equalsIgnoreCase("pollen")){return uuidPollen;
+		}else if (key.equalsIgnoreCase("secondary xylem")){return uuidSecondaryXylem;
+		}else if (key.equalsIgnoreCase("chromosome number")){return uuidChromosomeNumber;
+		}else if (key.equalsIgnoreCase("stem leaves")){return uuidStemLeaves;
+		}else if (key.equalsIgnoreCase("flower tube")){return uuidFlowerTube;
 		
+		}else if (key.equalsIgnoreCase("seed")){return uuidSeed;
+		}else if (key.equalsIgnoreCase("drupes")){return uuidDrupes;
+		}else if (key.equalsIgnoreCase("fruiting axes")){return uuidFruitingAxes;
+		}else if (key.equalsIgnoreCase("androecium")){return uuidAndroecium;
+		}else if (key.equalsIgnoreCase("gynoecium")){return uuidGynoecium;
+				
 		
 		}else{
 			return null;
