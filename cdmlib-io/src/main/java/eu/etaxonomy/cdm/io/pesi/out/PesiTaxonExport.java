@@ -1352,14 +1352,11 @@ public class PesiTaxonExport extends PesiExportBase {
 		
 		try {
 			
-		Set<TaxonNameBase> basionyms = taxonName.getBasionyms();
-		for (TaxonNameBase basionym : basionyms) {
-			Set<IdentifiableSource> basionymSources = basionym.getSources();
-			for (IdentifiableSource basionymSource : basionymSources) {
-				String sourceIdNameSpace = basionymSource.getIdNamespace();
-				if (sourceIdNameSpace != null && sourceIdNameSpace.equals("originalGenusId")) {
-					result = "Nominal Taxon from TAX_ID: " + basionymSource.getIdInSource();
-				}
+		Set<IdentifiableSource> nameSources = taxonName.getSources();
+		for (IdentifiableSource nameSource : nameSources) {
+			String sourceIdNameSpace = nameSource.getIdNamespace();
+			if (sourceIdNameSpace != null && sourceIdNameSpace.equals("originalGenusId")) {
+				result = "Nominal Taxon from TAX_ID: " + nameSource.getIdInSource();
 			}
 		}
 		
@@ -1445,22 +1442,29 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static String getOriginalDB(TaxonNameBase taxonName) {
 		String result = "";
 		try {
+
+		// Sources from TaxonName
+		Set<IdentifiableSource> nameSources = taxonName.getSources();
+
+		// Sources from Taxa or Synonyms
 		IdentifiableEntity taxonBase = null;
 		Set taxa = taxonName.getTaxa();
+		Set<IdentifiableSource> sources = null;
 		if (taxa.size() == 1) {
 			taxonBase = (IdentifiableEntity) taxa.iterator().next();
+			sources  = taxonBase.getSources();
 		} else if (taxa.size() > 1) {
 			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 		}
 		Set synonyms = taxonName.getSynonyms();
 		if (synonyms.size() == 1) {
 			taxonBase = (IdentifiableEntity) synonyms.iterator().next();
+			sources = taxonBase.getSources();
 		} else if (synonyms.size() > 1) {
 			logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 		}
 
-		if (taxonBase != null) {
-			Set<IdentifiableSource> sources = taxonBase.getSources();
+		if (sources != null) {
 			if (sources.size() == 1) {
 				IdentifiableSource source = sources.iterator().next();
 				if (source != null) {
