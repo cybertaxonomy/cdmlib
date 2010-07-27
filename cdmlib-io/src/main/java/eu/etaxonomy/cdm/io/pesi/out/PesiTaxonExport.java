@@ -1446,21 +1446,23 @@ public class PesiTaxonExport extends PesiExportBase {
 		// Sources from TaxonName
 		Set<IdentifiableSource> sources = taxonName.getSources();
 
-		// Sources from Taxa or Synonyms
 		IdentifiableEntity taxonBase = null;
-		Set taxa = taxonName.getTaxa();
-		if (taxa.size() == 1) {
-			taxonBase = (IdentifiableEntity) taxa.iterator().next();
-			sources  = taxonBase.getSources();
-		} else if (taxa.size() > 1) {
-			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
-		}
-		Set synonyms = taxonName.getSynonyms();
-		if (synonyms.size() == 1) {
-			taxonBase = (IdentifiableEntity) synonyms.iterator().next();
-			sources = taxonBase.getSources();
-		} else if (synonyms.size() > 1) {
-			logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+		if (sources == null) {
+			// Sources from Taxa or Synonyms
+			Set taxa = taxonName.getTaxa();
+			if (taxa.size() == 1) {
+				taxonBase = (IdentifiableEntity) taxa.iterator().next();
+				sources  = taxonBase.getSources();
+			} else if (taxa.size() > 1) {
+				logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+			}
+			Set synonyms = taxonName.getSynonyms();
+			if (synonyms.size() == 1) {
+				taxonBase = (IdentifiableEntity) synonyms.iterator().next();
+				sources = taxonBase.getSources();
+			} else if (synonyms.size() > 1) {
+				logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+			}
 		}
 
 		if (sources != null) {
