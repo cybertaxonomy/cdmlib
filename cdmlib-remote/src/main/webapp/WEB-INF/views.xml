@@ -26,12 +26,12 @@
     </bean>
     
     <!-- taxonomy service -->
-    <bean name="**/taxontree.xml **/taxontree/*.xml **/taxontree/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    <bean name="**/taxonTree.xml **/taxonTree/*.xml **/taxonTree/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="type" value="XML" />
         <!--  <property name="xsl" value="humane.xsl" />  -->
         <property name="jsonConfig" ref="jsonConfigTaxonomy" />
     </bean>
-    <bean name="**/taxontree.json **/taxontree/*.json **/taxontree/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    <bean name="**/taxonTree.json **/taxonTree/*.json **/taxonTree/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="jsonConfig" ref="jsonConfigTaxonomy" />
     </bean>
     
