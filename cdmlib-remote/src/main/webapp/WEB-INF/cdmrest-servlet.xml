@@ -27,6 +27,10 @@
 				<ref bean="localeContextHandlerInterceptor" />
 			</list>
 		</property>
+		<property name="pathMatcher">
+		  <!--  must match the pathMatcher as set in AnnotationMethodHandlerAdapter -->
+		  <bean class="eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher" />
+		</property>
 	</bean>
 
     <!-- 
@@ -46,8 +50,11 @@
 	<!-- 
 	======= HandlerAdapters =======
 	-->
-	<bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	   <property name="pathMatcher">
+	        <!--  must match the pathMatcher as set in DefaultAnnotationHandlerMapping -->
+            <bean class="eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher" />
+       </property>
 	</bean>
 
 	<!-- needed when using SimpleUrlHandlerMapping 	-->

@@ -25,9 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 
@@ -70,6 +71,17 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 			"typeSpecimen.media.representations.parts"
 	});
 
+	
+	private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+			"uuid",
+			"feature",
+			"elements.$",
+			"elements.multilanguageText",
+			"elements.media.representations.parts",
+			"elements.media.title",
+	});
+	
+	
 	public NamePortalController(){
 		super();
 		setInitializationStrategy(Arrays.asList(new String[]{"$"})); //TODO required???
@@ -83,6 +95,9 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 	public void setService(INameService service) {
 		this.service = service;
 	}
+	
+	@Autowired
+	private IDescriptionService descriptionService;
 
 	/**
      * Get the list of {@link TypeDesignationBase}s of the 
@@ -97,16 +112,41 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 	 *         {@link #TYPEDESIGNATION_INIT_STRATEGY}
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(
-			value = {"typedesignations"},
+			value = {"typeDesignations"},
 			method = RequestMethod.GET)
 	public ModelAndView doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		ModelAndView mv = new ModelAndView();
 		TaxonNameBase tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
-		Pager p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
+		Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
 		mv.addObject(p.getRecords());
 		return mv;
+	}
+	
+	/**
+     * Get the list of {@link TaxonNameDescription}s of the Name associated with the 
+	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}&#x002F;descriptions</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return a List of {@link TaxonNameDescription} entities which are initialized
+	 *         using the following initialization strategy:
+	 *         {@link #NAMEDESCRIPTION_INIT_STRATEGY}
+	 * @throws IOException
+	 */
+	@RequestMapping(
+			value = {"taxonNameDescriptions"},
+			method = RequestMethod.GET)
+	public List<TaxonNameDescription> doGetNameDescriptions(@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, HttpServletResponse response)throws IOException {
+		logger.info("doGetNameDescriptions()" + request.getServletPath());
+		TaxonNameBase tnb = service.load(uuid, null);
+		Pager<TaxonNameDescription> p = descriptionService.getTaxonNameDescriptions(tnb, null, null, NAMEDESCRIPTION_INIT_STRATEGY);
+		return p.getRecords();
 	}
 
 

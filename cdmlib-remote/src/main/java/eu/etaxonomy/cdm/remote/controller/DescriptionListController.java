@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/description", "/featuretree"})
+@RequestMapping(value = {"/description"})
 public class DescriptionListController extends BaseListController<DescriptionBase, IDescriptionService> {
 	
 	@Autowired

@@ -29,7 +29,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
-import eu.etaxonomy.cdm.api.service.INaturalLanguageGenerator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -37,7 +36,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -53,7 +51,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  */
 
 @Controller
-@RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}", "/descriptionelement/{descriptionelement_uuid}", "/featuretree/{featuretree_uuid}"})
+@RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}"})
 public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
@@ -88,24 +86,20 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	}
 	
 	/**
-	 * TODO write controller method documentation
-	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = {"/featuretree/{featuretree_uuid}"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/featuretree/{uuid}"}, method = RequestMethod.GET)
 	public FeatureTree doGetFeatureTree(
-			@PathVariable("featuretree_uuid") UUID uuid,
+			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, 
 			HttpServletResponse response)throws IOException {
-		FeatureTree featureTree = featureTreeService.load(uuid, FEATURETREE_INIT_STRATEGY);
-		if(featureTree == null){
-			HttpStatusMessage.UUID_NOT_FOUND.send(response);
-		}
+		FeatureTree featureTree = getCdmBaseInstance(FeatureTree.class, featureTreeService, uuid, response, FEATURETREE_INIT_STRATEGY);
 		return featureTree;
 	}
+	
 	
 	@RequestMapping(value = "/descriptionelement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(

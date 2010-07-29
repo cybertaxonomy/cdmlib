@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -51,7 +50,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -68,7 +66,6 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * The TaxonPortalController class is a Spring MVC Controller.
@@ -100,10 +97,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	@Autowired
 	private INameService nameService;
+	
 	@Autowired
 	private IDescriptionService descriptionService;
-	@Autowired
-	private IReferenceService referenceService;
 	
 	@Autowired
 	private ITaxonTreeService taxonTreeService;
@@ -522,33 +518,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameFromNameRelations()" + request.getServletPath());
 
-		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
-		List<NameRelationship> list = nameService.listFromNameRelationships(taxon.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		TaxonBase taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
+		List<NameRelationship> list = nameService.listFromNameRelationships(taxonbase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;
-	}
-	
-	/**
-     * Get the list of {@link TaxonNameDescription}s of the Name associated with the 
-	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
-	 * <p>
-	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}&#x002F;descriptions</b>
-	 * 
-	 * @param request
-	 * @param response
-	 * @return a List of {@link TaxonNameDescription} entities which are initialized
-	 *         using the following initialization strategy:
-	 *         {@link #NAMEDESCRIPTION_INIT_STRATEGY}
-	 * @throws IOException
-	 */
-	@RequestMapping(
-			value = {"/portal/name/{uuid}/descriptions"},
-			method = RequestMethod.GET)
-	public List<TaxonNameDescription> doGetNameDescriptions(@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, HttpServletResponse response)throws IOException {
-		logger.info("doGetNameDescriptions()" + request.getServletPath());
-		TaxonNameBase tnb = nameService.load(uuid, null);
-		Pager<TaxonNameDescription> p = descriptionService.getTaxonNameDescriptions(tnb, null, null, NAMEDESCRIPTION_INIT_STRATEGY);
-		return p.getRecords();
 	}
 	
 	/**

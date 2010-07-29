@@ -41,7 +41,7 @@ public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE
 			"$"
 	});
 
-	@RequestMapping(value = "{uuid}/annotation", method = RequestMethod.GET)
+	@RequestMapping(value = "annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request,

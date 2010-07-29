@@ -250,6 +250,15 @@
 			  <entry key="eu.etaxonomy.cdm.model.reference.ReferenceBase">
                 <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
               </entry>
+              <entry key="eu.etaxonomy.cdm.model.description.TaxonNameDescription">
+                <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameDescriptionBeanProcessor">
+                    <property name="excludes">
+	                    <set value-type="java.lang.String">
+	                      <value>taxonName</value>
+	                    </set>
+                    </property>
+                </bean>
+              </entry>
 			</map>
 		</property>
         <property name="jsonPropertyFilter">
