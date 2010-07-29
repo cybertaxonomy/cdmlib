@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
  *
  */
 @Controller
-@RequestMapping(value = {"/term/"})
+@RequestMapping(value = {"/term"})
 public class TermListController extends BaseListController<DefinedTermBase, ITermService> {
 
 

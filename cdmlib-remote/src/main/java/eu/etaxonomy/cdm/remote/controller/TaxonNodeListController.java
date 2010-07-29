@@ -71,7 +71,7 @@ public class TaxonNodeListController extends BaseListController<TaxonNode, ITaxo
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/taxonNode/{taxonNodeUuid}/childNodes/"},
+			value = {"/taxonNode/{taxonNodeUuid}/childNodes"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodes(
 			@PathVariable("taxonNodeUuid") UUID taxonNodeUuid,

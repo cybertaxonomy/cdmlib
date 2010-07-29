@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/name/"})
+@RequestMapping(value = {"/name"})
 public class NameListController extends BaseListController<TaxonNameBase, INameService> {
 
 	/* (non-Javadoc)

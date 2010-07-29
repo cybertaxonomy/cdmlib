@@ -12,38 +12,42 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
-import net.sf.json.CycleSetAcess;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import net.sf.json.processors.JsonBeanProcessor;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
 
 /**
- * WARNING! The idea i started implementing here will not work at all!!
- * @author a.kohlbecker
- *
+ * OK !!! but should extend AbstractCDMBeanProcessor
  */
-public class TaxonNodeDaoBeanProcessor extends CycleSetAcess implements JsonBeanProcessor {
-	
-	
+public class TaxonNodeDaoBeanProcessor extends AbstractCdmBeanProcessor<TaxonNode> {
+
+
 	/* (non-Javadoc)
-	 * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
+	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor#getIgnorePropNames()
 	 */
-	public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
-	
-		TaxonNode node = (TaxonNode)bean;
-		JSONObject json = new JSONObject();
+	@Override
+	public List<String> getIgnorePropNames() {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
+	 */
+	@Override
+	public JSONObject processBeanSecondStep(TaxonNode bean, JSONObject json,
+			JsonConfig jsonConfig) {
+		
 		json.element("class", "TaxonNodeDao");
-		json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
-		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(node.getTaxon().getName());
+		json.element("titleCache", bean.getTaxon().getName().getTitleCache(), jsonConfig);
+		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(bean.getTaxon().getName());
 		json.element("taggedTitle", taggedTitle, jsonConfig);
-		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
-		json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
-		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
+		json.element("taxonUuid", bean.getTaxon().getUuid(), jsonConfig);
+		json.element("secUuid", bean.getTaxon().getSec().getUuid(), jsonConfig);
+		json.element("taxonomicChildrenCount", bean.getCountChildren(), jsonConfig);
 		String ranklabel = null;
-		if(node.getTaxon().getName().getRank() != null){
-			ranklabel = node.getTaxon().getName().getRank().getLabel();
+		if(bean.getTaxon().getName().getRank() != null){
+			ranklabel = bean.getTaxon().getName().getRank().getLabel();
 		}
 		json.element("rankLabel", ranklabel, jsonConfig);
 		//json.element("treeUuid", node.getTaxonomicTree().getUuid(), jsonConfig);

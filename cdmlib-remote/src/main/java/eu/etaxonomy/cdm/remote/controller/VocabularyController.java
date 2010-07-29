@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  *
  */
 @Controller
-@RequestMapping(value = {"/termvocabulary/{uuid}"})
+@RequestMapping(value = {"/termVocabulary/{uuid}"})
 public class VocabularyController extends BaseController<TermVocabulary, IVocabularyService> {
 
 	/* (non-Javadoc)

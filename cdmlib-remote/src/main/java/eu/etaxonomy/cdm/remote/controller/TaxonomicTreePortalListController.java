@@ -107,7 +107,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 *         the {@link #TAXONTREE_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = { "/portal/taxontree/" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/portal/taxonTree" }, method = RequestMethod.GET)
 	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		logger.info("getTaxonomicTrees()");
@@ -122,7 +122,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxontree/{treeUuid}/childNodes/"},
+			value = {"/portal/taxonTree/{treeUuid}/childNodes"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodes(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -134,7 +134,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	
 	
 	@RequestMapping(
-			value = {"/portal/taxontree/{treeUuid}/childNodesAt/{rankUuid}/"},
+			value = {"/portal/taxonTree/{treeUuid}/childNodesAt/{rankUuid}"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodesAtRank(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -180,7 +180,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/portal/taxontree/{treeUuid}/childNodesOf/{taxonUuid}"}, 
+			value = {"/portal/taxonTree/{treeUuid}/childNodesOf/{taxonUuid}"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodesOfTaxon(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -213,7 +213,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/portal/taxontree/{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"}, 
+			value = {"/portal/taxonTree/{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathFromTaxonToRank(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -247,7 +247,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/portal/taxontree/{treeUuid}/pathFrom/{taxonUuid}"}, 
+			value = {"/portal/taxonTree/{treeUuid}/pathFrom/{taxonUuid}"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathFromTaxon(
 			@PathVariable("treeUuid") UUID treeUuid,

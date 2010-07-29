@@ -2762,7 +2762,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonNam
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonNodeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonNodeDaoBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonRelationshipBeanProcessor.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonomyNodeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TermBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TextDataBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TypeDesignationBaseBeanProcessor.java -text

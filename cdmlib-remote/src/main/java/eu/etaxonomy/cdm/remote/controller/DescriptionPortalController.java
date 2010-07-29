@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  */
 
 @Controller
-@RequestMapping(value = {"/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionelement/{descriptionelement_uuid}", "/portal/featuretree/{featuretree_uuid}"})
+@RequestMapping(value = {"/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionElement/{descriptionelement_uuid}", "/portal/featureTree/{featuretree_uuid}"})
 public class DescriptionPortalController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
@@ -118,7 +118,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 	 * @throws IOException
 	 */
 	
-	@RequestMapping(value = {"/portal/featuretree/{featuretree_uuid}"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/portal/featureTree/{featuretree_uuid}"}, method = RequestMethod.GET)
 	public FeatureTree doGetFeatureTree(
 			@PathVariable("featuretree_uuid") UUID featureUuid,
 			HttpServletRequest request, 
@@ -131,7 +131,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		return featureTree;
 	}
 	
-	@RequestMapping(value = "/portal/descriptionelement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
+	@RequestMapping(value = "/portal/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
 			@PathVariable("descriptionelement_uuid") UUID uuid,
 			HttpServletRequest request,

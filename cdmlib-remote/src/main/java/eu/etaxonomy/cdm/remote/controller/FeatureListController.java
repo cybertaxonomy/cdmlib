@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 
 @Controller
-@RequestMapping(value = {"/feature/", "/feature/{uuid}"}) //FIXME refactor type mappings
+@RequestMapping(value = {"/feature", "/feature/{uuid}"}) //FIXME refactor type mappings
 public class FeatureListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 	@Autowired

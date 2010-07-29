@@ -18,16 +18,16 @@ import net.sf.json.JsonConfig;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author n.hoffmann
  * @created Apr 9, 2010
  * @version 1.0
  */
-public class TaxonNodeBeanProcessor extends AbstractCdmBeanProcessor {
-	private static final Logger logger = Logger
-			.getLogger(TaxonNodeBeanProcessor.class);
+public class TaxonNodeBeanProcessor extends AbstractCdmBeanProcessor<TaxonNode> {
+	
+	private static final Logger logger = Logger.getLogger(TaxonNodeBeanProcessor.class);
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
@@ -43,7 +43,7 @@ public class TaxonNodeBeanProcessor extends AbstractCdmBeanProcessor {
 	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
 	 */
 	@Override
-	public JSONObject processBeanSecondStep(CdmBase bean, JSONObject json,
+	public JSONObject processBeanSecondStep(TaxonNode bean, JSONObject json,
 			JsonConfig jsonConfig) {
 		return json;
 	}
