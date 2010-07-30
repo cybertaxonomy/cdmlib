@@ -101,11 +101,12 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		
 		logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getServletPath());
 		
-		T instance = getCdmBaseInstance(uuid, response, Arrays.asList(new String[]{baseName + ".titleCache"}));
+		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);
 		
 		//Class<?> propertyClass = propertyClass(instance, baseName);
 		
 		Object objectFromProperty = invokeProperty(instance, baseName, response);
+		
 		if(objectFromProperty != null){
 
 			if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
