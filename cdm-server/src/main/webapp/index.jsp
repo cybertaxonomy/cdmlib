@@ -79,7 +79,7 @@
                                                    // OAI-PMH Status will be requested using javascript
                                                    out.append("<td class=\"oai-pmh\">requesting status ...</td>");
                                                    out.append("</tr>");
-                                                   if(props.getStatus().equals(CdmInstanceProperties.Status.error)){
+                                                   if(props.getStatus().equals(CdmInstanceProperties.Status.error) || !props.isEnabled()){
                                                 	   out.append("<tr class=\"error-log " + oddOrEven + "\">");
                                                 	   out.append("<td></td><td  class=\"error\" colspan=\"3\">");
                                                 			   for( String problem : props.getProblems()){

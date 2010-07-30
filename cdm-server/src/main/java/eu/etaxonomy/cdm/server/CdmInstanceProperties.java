@@ -94,12 +94,20 @@ public class CdmInstanceProperties {
 		return status;
 	}
 
+	/**
+	 * @return the enabled
+	 */
+	public boolean isEnabled() {
+		return !status.equals(Status.disabled);
+	}
+
 	public enum Status{
 		uninitialized,
 		initializing,
 		starting,
 		started,
 		stopped,
-		error
+		error,
+		disabled
 	}
 }

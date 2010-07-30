@@ -23,10 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryPoolMXBean;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 import javax.naming.NamingException;
@@ -48,6 +51,8 @@ import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
+
+import eu.etaxonomy.cdm.server.CdmInstanceProperties.Status;
 
 
 /**
@@ -87,6 +92,11 @@ public final class Bootloader {
     
     private static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
     private static final String CDM_LOGFILE = "cdm.logfile";
+    
+    // memory requirements
+    private static final long MB = 1024 * 1024;
+    private static final long PERM_GEN_SPACE_PER_INSTANCE = 64 * MB;
+    private static final long HEAP_PER_INSTANCE = 300 * MB;
     
     private static final int KB = 1024;
     
@@ -303,7 +313,8 @@ public final class Bootloader {
     	
     	loadDataSources();
     	
-    	//System.setProperty("DEBUG", "true");
+    	verifyMemoryRequirements();
+    	
     	
 		server = new Server(httpPort);
 		
@@ -377,7 +388,46 @@ public final class Bootloader {
 	}
 
 	/**
-	 * Configueres and adds a {@link RollingFileAppender} to the root logger
+	 * 
+	 */
+	private void verifyMemoryRequirements() {
+		
+		verifyMemoryRequirement("PermGenSpace", PERM_GEN_SPACE_PER_INSTANCE, JvmManager.getPermGenSpaceUsage().getMax());
+		verifyMemoryRequirement("HeapSpace", HEAP_PER_INSTANCE, JvmManager.getHeapMemoryUsage().getMax());
+		
+	}
+
+	private void verifyMemoryRequirement(String memoryName, long requiredSpacePerIntance, long availableSpace) {
+		
+
+		long requiredSpace = configAndStatus.size() * requiredSpacePerIntance;
+		
+		if(requiredSpace > availableSpace){
+			
+			String message = memoryName + " (" 
+				+ (availableSpace / MB)  
+				+ "MB) insufficient for " 
+				+ configAndStatus.size()
+				+ " instances. Increase " + memoryName + " by " 
+				+ ((requiredSpace - availableSpace)/MB) 
+				+ "MB";
+				;
+			logger.error(message + " => disabling some instances!!!");
+			
+			// disabling some instances 
+			int i=0;
+			for(CdmInstanceProperties instanceProps : configAndStatus){
+				i++;
+				if(i * requiredSpacePerIntance > availableSpace){
+					instanceProps.setStatus(Status.disabled);
+					instanceProps.getProblems().add("Disbled due to: " + message);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Configures and adds a {@link RollingFileAppender} to the root logger
 	 * 
 	 * The log files of the cdm-remote instances are configured by the 
 	 * {@link eu.etaxonomy.cdm.remote.config.LoggingConfigurer}
@@ -400,6 +450,11 @@ public final class Bootloader {
 	private void addCdmServerContexts(boolean austostart) throws IOException {
 		
 		for(CdmInstanceProperties conf : configAndStatus){
+			
+			if(!conf.isEnabled()){
+				logger.info(conf.getDataSourceName() + " is disabled => skipping");
+				continue;
+			}
 			conf.setStatus(CdmInstanceProperties.Status.initializing);
         	logger.info("preparing WebAppContext for '"+ conf.getDataSourceName() + "'");
         	WebAppContext cdmWebappContext = new WebAppContext();

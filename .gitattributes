@@ -1188,6 +1188,7 @@ cdm-server/src/main/java/eu/etaxonomy/cdm/server/Bootloader.java -text
 cdm-server/src/main/java/eu/etaxonomy/cdm/server/CdmInstanceProperties.java -text
 cdm-server/src/main/java/eu/etaxonomy/cdm/server/CommandOptions.java -text
 cdm-server/src/main/java/eu/etaxonomy/cdm/server/DataSourcePropertyParser.java -text
+cdm-server/src/main/java/eu/etaxonomy/cdm/server/JvmManager.java -text
 cdm-server/src/main/resources/c3p0.properties -text
 cdm-server/src/main/resources/log4j.properties -text
 cdm-server/src/main/webapp/WEB-INF/web.xml -text
