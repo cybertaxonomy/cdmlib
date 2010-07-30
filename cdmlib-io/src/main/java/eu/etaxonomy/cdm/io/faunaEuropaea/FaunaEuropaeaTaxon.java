@@ -58,7 +58,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param authorName the authorName to set
 	 */
 	public void setAuthorName(String authorName) {
-		this.authorName = authorName;
+		this.authorName = NullToEmpty(authorName);
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param name the name to set
 	 */
 	public void setLocalName(String scientificName) {
-		this.localName = scientificName;
+		this.localName = NullToEmpty(scientificName);
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param author the author to set
 	 */
 	public void setAuthor(String author) {
-		this.authorName = author;
+		this.authorName = NullToEmpty(author);
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param originalGenusName the originalGenusName to set
 	 */
 	public void setOriginalGenusName(String originalGenusName) {
-		this.originalGenusName = originalGenusName;
+		this.originalGenusName = NullToEmpty(originalGenusName);
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param parentName the parentName to set
 	 */
 	public void setParentName(String parentName) {
-		this.parentName = parentName;
+		this.parentName = NullToEmpty(parentName);
 	}
 
 	/**
@@ -317,7 +317,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param grandParentName the grandParentName to set
 	 */
 	public void setGrandParentName(String grandParentName) {
-		this.grandParentName = grandParentName;
+		this.grandParentName = NullToEmpty(grandParentName);
 	}
 
 	/**
@@ -331,7 +331,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param greatGrandParentName the greatGrandParentName to set
 	 */
 	public void setGreatGrandParentName(String greatGrandParentName) {
-		this.greatGrandParentName = greatGrandParentName;
+		this.greatGrandParentName = NullToEmpty(greatGrandParentName);
 	}
 
 	/**
@@ -402,7 +402,7 @@ public class FaunaEuropaeaTaxon {
 	 * @param greatGreatGrandParentName the greatGreatGrandParentName to set
 	 */
 	public void setGreatGreatGrandParentName(String greatGreatGrandParentName) {
-		this.greatGreatGrandParentName = greatGreatGrandParentName;
+		this.greatGreatGrandParentName = NullToEmpty(greatGreatGrandParentName);
 	}
 
 	/**
@@ -461,6 +461,19 @@ public class FaunaEuropaeaTaxon {
 		this.parentUuid = parentUuid;
 	}
 
+	/**
+	 * Returns an empty string in case of a null string.
+	 * This avoids having the string "null" when using StringBuilder.append(null);
+	 * @param string
+	 * @return
+	 */
+	private String NullToEmpty(String string) {
+		if (string == null) {
+			return "";
+		} else {
+			return string;
+		}
+	}
 //	/**
 //	 * @return the authorId
 //	 */
