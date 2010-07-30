@@ -65,12 +65,14 @@ public class TextDataBeanProcessor extends AbstractCdmBeanProcessor<TextData> {
 		LanguageString languageString;
 		List<Language> languages = LocaleContext.getLanguages();
 		//textdata.getSources().iterator().next()
-		languageString = MultilanguageTextHelper.getPreferredLanguageString(textdata.getMultilanguageText(), languages);
-		if(languageString != null){
-			json.element("multilanguageText_L10n", languageString, jsonConfig);
-		}
-		if(!replaceMultilanguageText){
-			json.element("multilanguageText", textdata.getMultilanguageText(), jsonConfig);
+		if(Hibernate.isInitialized(textdata.getMultilanguageText())){
+			languageString = MultilanguageTextHelper.getPreferredLanguageString(textdata.getMultilanguageText(), languages);
+			if(languageString != null){
+				json.element("multilanguageText_L10n", languageString, jsonConfig);
+			}
+			if(!replaceMultilanguageText){
+				json.element("multilanguageText", textdata.getMultilanguageText(), jsonConfig);
+			}
 		}
 		return json;
 	}
