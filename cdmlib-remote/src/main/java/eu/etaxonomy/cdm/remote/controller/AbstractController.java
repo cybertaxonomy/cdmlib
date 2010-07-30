@@ -11,11 +11,6 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 

@@ -18,7 +18,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
 
 /**
- * OK !!! but should extend AbstractCDMBeanProcessor
+ * @author a.kohlbecker
+ * @date 29.07.2010
+ *
  */
 public class TaxonNodeDaoBeanProcessor extends AbstractCdmBeanProcessor<TaxonNode> {
 

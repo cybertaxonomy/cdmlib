@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 
