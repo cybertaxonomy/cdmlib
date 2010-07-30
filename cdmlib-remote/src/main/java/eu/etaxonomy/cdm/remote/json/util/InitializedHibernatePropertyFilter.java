@@ -19,10 +19,14 @@ public class InitializedHibernatePropertyFilter implements PropertyFilter {
 
 	private static final Logger logger = Logger.getLogger(InitializedHibernatePropertyFilter.class);
 
+	/* (non-Javadoc)
+	 * @see net.sf.json.util.PropertyFilter#apply(java.lang.Object, java.lang.String, java.lang.Object)
+	 */
 	public boolean apply(Object source, String name, Object value) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Property " + name + " : Hibernate.isInitialized? " + Hibernate.isInitialized(value));
 		}
-		return (!Hibernate.isInitialized(value) || name.equals("hibernateLazyInitializer"));
+		boolean skipProperty = !Hibernate.isInitialized(value) || name.equals("hibernateLazyInitializer");
+		return skipProperty;
 	}
 }
