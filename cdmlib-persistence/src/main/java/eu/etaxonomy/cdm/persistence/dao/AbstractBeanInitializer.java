@@ -38,6 +38,22 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	@Autowired
 	IMethodCache methodCache;
 	
+	private Map<Class<? extends CdmBase>, AutoInitializer<CdmBase>> beanAutoInitializers = null;
+	
+	/**
+	 * @param beanAutoInitializers the beanAutoInitializers to set
+	 */
+	public void setBeanAutoInitializers(Map<Class<? extends CdmBase>, AutoInitializer<CdmBase>> beanAutoInitializers) {
+		this.beanAutoInitializers = beanAutoInitializers;
+	}
+
+	/**
+	 * @return the beanAutoInitializers
+	 */
+	public Map<Class<? extends CdmBase>, AutoInitializer<CdmBase>> getBeanAutoInitializers() {
+		return beanAutoInitializers;
+	}
+
 	/**
 	 * Initialize the the proxy, unwrap the target object and return it.
 	 * 
@@ -100,7 +116,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 				}
 				
 				// >>> finally initialize the bean
-				initializeInstance(proxy);
+				invokeInitialization(proxy);
 				
 			} catch (IllegalAccessException e) {
 				logger.error("Illegal access on property " + prop.getName());
@@ -163,6 +179,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		if(logger.isDebugEnabled()){
 			logger.debug("processing " + propPath);
 		}
+	
 		
 		// [1]
 		// if propPath only contains a wildcard (* or $)
@@ -211,7 +228,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 				
 				// [2.a] initialize the bean named by property
 				Object proxy = PropertyUtils.getProperty(bean, property);
-				Object unwrappedBean = initializeInstance(proxy);
+				Object unwrappedBean = invokeInitialization(proxy);
 				
 				// [2.b]
 				// recurse into nested properties
@@ -255,6 +272,41 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 				logger.info("Property " + property + " not found");
 			}
 		}
+	}
+
+	private Object invokeInitialization(Object proxy) {
+		
+		Object bean = initializeInstance(proxy);
+
+		if(bean != null){
+			// auto initialialization of properties
+			if(CdmBase.class.isAssignableFrom(bean.getClass())){
+				CdmBase cdmBaseBean = (CdmBase)bean;
+				AutoInitializer<CdmBase> autoInitializer = findBeanAutoInitializer(cdmBaseBean.getClass());
+				if(autoInitializer != null){
+					autoInitializer.initialize(cdmBaseBean);
+				}
+			}
+		}
+		
+		return bean;
+	}
+
+	/**
+	 * @param beanClass
+	 * @return
+	 */
+	private AutoInitializer<CdmBase> findBeanAutoInitializer(Class<? extends CdmBase> beanClass) {
+		
+		if(beanAutoInitializers == null){
+			return null;
+		}
+		for(Class<? extends CdmBase> superClass : beanAutoInitializers.keySet()){
+			if(superClass.isAssignableFrom(beanClass)){
+				return beanAutoInitializers.get(superClass);
+			}
+		}
+		return null;
 	}
 
 	private void setProperty(Object object, String property, Object value){

@@ -2200,11 +2200,13 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2000Da
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IMethodCache.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/QueryParseException.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/TitleCacheAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/agent/IAgentDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/AuditEventSort.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IAnnotatableDao.java -text

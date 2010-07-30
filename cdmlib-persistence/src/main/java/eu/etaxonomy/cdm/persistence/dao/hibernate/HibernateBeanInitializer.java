@@ -24,11 +24,15 @@ import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
  * @date 25.03.2009
  *
  */
-@Component("defaultBeanInitializer")
+//@Component("defaultBeanInitializer")
 public class HibernateBeanInitializer extends AbstractBeanInitializer{
 	
 	public static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer#initializeInstance(java.lang.Object)
+	 */
+	@Override
 	protected Object initializeInstance(Object bean) {
 		initialize(bean);
 		return HibernateProxyHelperExtended.getProxyTarget(bean);

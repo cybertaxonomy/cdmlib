@@ -34,4 +34,18 @@
 	    <property name="dataSource" ref="dataSource"/>
 	    <property name="hibernateProperties" ref="hibernateProperties"/>
 	</bean>
+	
+	<!-- 
+	   Configuration for the BeanInitialization
+	 -->
+	<bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
+	<bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer">
+	   <property name="beanAutoInitializers">
+	       <map>
+	           <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleCacheAutoInitializer" />
+	       </map>
+	   </property>
+	</bean>
+	
+	
 </beans>
