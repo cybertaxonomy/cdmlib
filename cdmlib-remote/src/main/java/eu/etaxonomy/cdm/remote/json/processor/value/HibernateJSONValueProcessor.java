@@ -10,19 +10,16 @@
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONNull;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.remote.json.processor.matcher.HibernateJSONValueProcessorMatcher;
 
 /**
- * Used in conjunction with the HibernateJSONValueProcessorMatcher to unwrap
+ * Used in conjunction with the {@link HibernateJSONValueProcessorMatcher} to unwrap
  * beans from hibernate proxies. Using this Value processor is essential for
  * properly detecting @Transient annotations which are not inherited by subclasses
  * like the proxies
