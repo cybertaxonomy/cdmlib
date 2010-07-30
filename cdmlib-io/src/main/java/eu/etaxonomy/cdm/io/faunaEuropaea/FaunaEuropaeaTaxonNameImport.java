@@ -405,9 +405,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			TaxonNameBase<?,?> taxonName = taxonBase.getName();
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
 			boolean useOriginalGenus = false;
-//			if (taxonBase instanceof Synonym){
-//				useOriginalGenus = true;
-//			}
+			if (taxonBase instanceof Synonym){
+				useOriginalGenus = true;
+			}
 			
 			String nameString = 
 				buildTaxonName(fauEuTaxon, taxonBase, taxonName, useOriginalGenus, fauEuConfig);
@@ -427,7 +427,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
 				}
 				
-				if (fauEuTaxon.isParenthesis() && actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) { 
+				if (actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) { 
 					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
 				} else if (fauEuTaxon.isParenthesis()){
 					//the authorteam should be set in parenthesis because there should be a basionym, but we do not know it?
@@ -868,7 +868,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	
 	
 	/**
-	 * Determines the original genus name by searching the taxon with rank R_GENUS.
+	 * Determines the original genus name by searching the taxon with rank Genus.
 	 * @param fauEuTaxon
 	 * @return
 	 */
