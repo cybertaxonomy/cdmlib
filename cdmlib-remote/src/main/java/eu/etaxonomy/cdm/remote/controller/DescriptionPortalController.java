@@ -98,6 +98,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
 		binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
+		super.initBinder(binder);
 	}
 	
 	/* (non-Javadoc)
