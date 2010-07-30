@@ -148,12 +148,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"*",
 			// taxon relations 
-			"relationsToThisName.fromTaxon.name.taggedName",
+			"relationsToThisName.fromTaxon.name",
 			// the name
 			"name.$",
-			"name.taggedName",
 			"name.rank.representations",
 			"name.status.type.representations",
+			"name.nomenclaturalReference",
 			
 //			"name.combinationAuthorTeam.titleCache",
 //			"name.basionymAuthorTeam.titleCache",
@@ -167,24 +167,24 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.synonym.$",
 			"synonymRelations.synonym.name.status.type",
 			"synonymRelations.synonym.name.status.type.representation",
-			"synonymRelations.synonym.name.taggedName",
+//			"synonymRelations.synonym.name.taggedName",
 			"synonymRelations.synonym.name.nomenclaturalReference.inBook",
 			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",
 			"synonymRelations.synonym.name.nomenclaturalReference.inProceedings",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
-			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.name.taggedName",
+//			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.name.taggedName",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
-			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
-			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName",
+//			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
+//			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName",
 			"synonymRelations.synonym.name.combinationAuthorTeam.$",
 			
 			"name.homotypicalGroup.$",
 			"name.homotypicalGroup.typifiedNames.$",
-			"name.homotypicalGroup.typifiedNames.name.taggedName",
+//			"name.homotypicalGroup.typifiedNames.name.taggedName",
 			
 			"name.homotypicalGroup.typifiedNames.taxonBases.$",
-			"name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
-			"name.homotypicalGroup.typifiedNames.taxonBases.titleCache",
+//			"name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
+//			"name.homotypicalGroup.typifiedNames.taxonBases.titleCache",
 			//"name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName"
 			
 	});
