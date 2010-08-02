@@ -138,16 +138,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
-	 * 
-	 * @param taxonDescriptions
-	 * @param omitLevels
-	 * @return
-	 */
-	public NamedAreaTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, 
-												 Set<NamedAreaLevel> omitLevels);
-		
-	
-	/**
 	 * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
 	 * 
 	 * @param description The description which these description elements belong to (can be null to count all description elements)
@@ -242,7 +232,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     
     public List<DescriptionElementBase> getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-	public DistributionTree getOrderedDistributionsB(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels, List<String> propertyPaths);
+	public DistributionTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels, List<String> propertyPaths);
 
 	/**
 	  * Generate a string representation of the structured <code>description</code> supplied in natural language

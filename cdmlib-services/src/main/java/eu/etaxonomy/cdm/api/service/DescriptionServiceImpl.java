@@ -195,27 +195,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	public NamedAreaTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> omitLevels){
-		List<NamedArea> areaList = new ArrayList<NamedArea>();
-		NamedAreaTree tree = new NamedAreaTree();
-		//getting all the areas
-		for (TaxonDescription taxonDescription : taxonDescriptions) {
-			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid());
-			Set<DescriptionElementBase> elements = taxonDescription.getElements();
-			for (DescriptionElementBase element : elements) {
-				if(element.isInstanceOf(Distribution.class)){
-					Distribution distribution = (Distribution) element;
-					areaList.add(distribution.getArea());
-				}
-			}
-		}
-		//ordering the areas
-		tree.merge(areaList, omitLevels);
-		tree.sortChildren();
-		return tree;	
-	}
-	
-	public DistributionTree getOrderedDistributionsB(
+	public DistributionTree getOrderedDistributions(
 			Set<TaxonDescription> taxonDescriptions,
 			Set<NamedAreaLevel> omitLevels,
 			List<String> propertyPaths){
