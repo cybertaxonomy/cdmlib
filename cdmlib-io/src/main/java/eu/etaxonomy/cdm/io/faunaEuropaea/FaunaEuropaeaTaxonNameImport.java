@@ -745,8 +745,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		/* Concatenated taxon name string */
 		String completeString = "";
 
-		StringBuilder originalGenus = null;
-		
+		StringBuilder originalGenus = new StringBuilder("");
 		
 		StringBuilder genusOrUninomial = new StringBuilder();
 		StringBuilder infraGenericEpithet = new StringBuilder(); 
