@@ -52,15 +52,15 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	
 	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
 			"typeStatus.representations",
-			"typifiedNames.titleCache",
-			"typeSpecimen.titleCache",
-			"typeName.titleCache",
+			"typifiedNames",
+			"typeSpecimen",
+			"typeName",
 			"citation",
 			"citation.authorTeam.$",
 	});
 	
 	private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
-			"titleCache"
+			
 	});
 	
 	public NameController(){

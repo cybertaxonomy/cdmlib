@@ -43,8 +43,7 @@ public class TaxonNodeListController extends BaseListController<TaxonNode, ITaxo
 
 	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
 			"taxon.sec", 
-			"taxon.name.taggedName",
-			"taxon.name.titleCache"
+			"taxon.name"
 	});
 	
 	

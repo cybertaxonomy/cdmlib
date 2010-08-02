@@ -69,12 +69,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	private List<String> NODE_INIT_STRATEGY(){
 		return Arrays.asList(new String[]{
 			"taxon.sec", 
-			"taxon.name.taggedName",
-//			"taxon.name.combinationAuthorTeam.*",
-//			"taxon.name.exCombinationAuthorTeam.*",
-//			"taxon.name.basionymAuthorTeam.*",
-//			"taxon.name.exBasionymAuthorTeam.*",
-			"taxon.name.titleCache",
+			"taxon.name",
 			"taxonomicTree"
 	});}
 	

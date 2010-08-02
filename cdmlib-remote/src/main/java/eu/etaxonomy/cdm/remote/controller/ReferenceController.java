@@ -46,15 +46,13 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 {
 	
 	private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{
-			"$.authorTeam.titleCache",
-			"inBook.authorTeam.titleCache",
-			"inJournal.authorTeam.titleCache",
-			"inProceedings.authorTeam.titleCache",
+			"$",
+			"authorTeam", // TODO obsolete??
+			"inReference.authorTeam"
 	});
 	
 	private static final List<String> CITATION_WITH_AUTHORTEAM_INIT_STRATEGY = Arrays.asList(new String []{
-			"authorTeam.$",
-			"authorTeam.titleCache",
+			"authorTeam.$"  // TODO obsolete??
 	});
 	
 	@InitBinder

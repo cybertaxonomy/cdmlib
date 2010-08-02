@@ -55,13 +55,12 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	
 	
 	private static final List<String> TAXONTREE_INIT_STRATEGY = Arrays.asList(new String[]{
-			"reference.authorTeam.titleCache"
+			"reference.authorTeam"
 	});
 	
 	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
 			"taxon.sec", 
-			"taxon.name.taggedName",
-			"taxon.name.titleCache"
+			"taxon.name"
 			});
 	
 

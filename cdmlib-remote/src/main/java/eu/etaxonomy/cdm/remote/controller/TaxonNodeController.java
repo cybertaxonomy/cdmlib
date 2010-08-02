@@ -34,8 +34,7 @@ public class TaxonNodeController extends AnnotatableController<TaxonNode, ITaxon
 	
 	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
 			"taxon.sec", 
-			"taxon.name.taggedName",
-			"taxon.name.titleCache"
+			"taxon.name"
 	});
 	
 	public TaxonNodeController(){

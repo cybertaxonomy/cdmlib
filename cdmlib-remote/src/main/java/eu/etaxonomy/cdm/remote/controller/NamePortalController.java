@@ -61,12 +61,9 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 	
 	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{			
 			"typeName.$",
-			"typeName.titleCache",
-			"typeSpecimen.titleCache",
+			"typeSpecimen",
 			"typeStatus.representations",
-			"typeStatus.representations",
-			"typifiedNames.titleCache",
-			"citation",
+			"typifiedNames",
 			"citation.authorTeam.$",
 			"typeSpecimen.media.representations.parts"
 	});

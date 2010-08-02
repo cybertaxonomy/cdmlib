@@ -35,7 +35,7 @@ public class ClassificationListController extends BaseListController<TaxonomicTr
 
 
 	protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
-			"reference.authorTeam.titleCache"
+			"reference.authorTeam"
 	});
 	
 		

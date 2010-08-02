@@ -44,7 +44,7 @@ public class TaxonomicTreePortalController extends AnnotatableController<Taxonom
 	
 	
 	private static final List<String> TAXONTREE_INIT_STRATEGY = Arrays.asList(new String[]{
-			"reference.authorTeam.titleCache"
+			"reference.authorTeam"
 	});
 
 	public static final Logger logger = Logger.getLogger(TaxonomicTreePortalController.class);

@@ -71,25 +71,14 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 				"root.children.feature.representations",
 			});
 	private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
-			// taxon descriptions
-			//"$",
-			//"elements.$",
-			"elements.sources.citation",
 			"elements.sources.citation.$",
-			"elements.area",
 			"elements.area.$",
-			//"elements.area.level",
 			});
 	protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
 			"$",
 			"elements.$",
-			"elements.sources.citation.",
-			"elements.sources.citation.authorTeam.$",		
-//			"elements.sources.citation.authorTeam.titleCache",
-//			"elements.sources.citation.authorTeam.nomenclaturalTitleCache",
-			"elements.sources.nameUsedInSource.titleCache",
+			"elements.sources.citation.authorTeam.$",
 			"elements.sources.nameUsedInSource.originalNameString",
-//			"elements.area",
 			"elements.area.level",
 			"elements.modifyingText",
 	});
@@ -142,7 +131,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
-		
+	
 	@RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
 	public DistributionTree doGetOrderedDistributionsB(
 			@PathVariable("uuid_list") UuidList descriptionUuidList,

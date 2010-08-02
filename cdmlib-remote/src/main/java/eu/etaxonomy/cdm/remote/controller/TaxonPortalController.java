@@ -110,32 +110,17 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"*",
 			// taxon relations 
-			"relationsToThisName.fromTaxon.name.taggedName",
+			"relationsToThisName.fromTaxon.name",
 			// the name
 			"name.$",
-			"name.taggedName",
 			"name.rank.representations",
 			"name.status.type.representations",
 			
-//			"name.combinationAuthorTeam.titleCache",
-//			"name.basionymAuthorTeam.titleCache",
-//			"name.exCombinationAuthorTeam.titleCache",
-//			"name.exBasionymAuthorTeam.titleCache",
-			
 			// taxon descriptions
-			"descriptions.elements.$",
-			"descriptions.elements.area",
 			"descriptions.elements.area.$",
 			"descriptions.elements.multilanguageText",
 			"descriptions.elements.media.representations.parts",
 			"descriptions.elements.media.title",
-						
-//			// typeDesignations
-//			"name.typeDesignations.$",
-//			"name.typeDesignations.citation.authorTeam",
-//			"name.typeDesignations.typeName.$",
-//			"name.typeDesignations.typeStatus.representations",
-//			"name.typeDesignations.typeSpecimen.media.representations.parts"
 			
 			});
 	
@@ -153,53 +138,36 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.$",
 			"name.rank.representations",
 			"name.status.type.representations",
-			"name.nomenclaturalReference",
-			
-//			"name.combinationAuthorTeam.titleCache",
-//			"name.basionymAuthorTeam.titleCache",
-//			"name.exCombinationAuthorTeam.titleCache",
-//			"name.exBasionymAuthorTeam.titleCache",
+			"name.nomenclaturalReference"
 			});
 	
 	private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
 			// initialize homotypical and heterotypical groups; needs synonyms
 			"synonymRelations.$",
 			"synonymRelations.synonym.$",
-			"synonymRelations.synonym.name.status.type",
 			"synonymRelations.synonym.name.status.type.representation",
-//			"synonymRelations.synonym.name.taggedName",
-			"synonymRelations.synonym.name.nomenclaturalReference.inBook",
-			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",
-			"synonymRelations.synonym.name.nomenclaturalReference.inProceedings",
+			"synonymRelations.synonym.name.nomenclaturalReference.inReference",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
-//			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.name.taggedName",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
-//			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
-//			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName",
 			"synonymRelations.synonym.name.combinationAuthorTeam.$",
 			
 			"name.homotypicalGroup.$",
 			"name.homotypicalGroup.typifiedNames.$",
-//			"name.homotypicalGroup.typifiedNames.name.taggedName",
 			
-			"name.homotypicalGroup.typifiedNames.taxonBases.$",
-//			"name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
-//			"name.homotypicalGroup.typifiedNames.taxonBases.titleCache",
-			//"name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName"
-			
+			"name.homotypicalGroup.typifiedNames.taxonBases.$"
 	});
 	
 	private static final List<String> TAXONRELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
 			"$",
 			"type.inverseRepresentations",
 			"fromTaxon.sec",
-			"fromTaxon.name.taggedName"
+			"fromTaxon.name"
 	});
 	
 	private static final List<String> NAMERELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
 			"$",
 			"type.inverseRepresentations",
-			"fromName.taggedName",
+			"fromName",
 			"toName.$",
 	});
 	
@@ -208,10 +176,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"$",
 			"elements.$",
 			"elements.sources.citation.",
-//			"elements.sources.citation.authorTeam.$",		
-//			"elements.sources.citation.authorTeam.titleCache",
-//			"elements.sources.citation.authorTeam.nomenclaturalTitleCache",
-			"elements.sources.nameUsedInSource.titleCache",
 			"elements.sources.nameUsedInSource.originalNameString",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
@@ -237,9 +201,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
 			//"$",
 			"typeSpecimen.$",
-			"typeStatus.representations",
 			"citation",			
-			"typeName.taggedName",
+			"typeName",
 	});
 	
 	protected static final List<String> TAXONNODE_WITHTAXON_INIT_STRATEGY = Arrays.asList(new String []{
