@@ -602,65 +602,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		actualGenusId = ranks.get(R_GENUS);
 
 		return actualGenusId;
-
-/*		int actualGenusId = -1;
-		int rank = fauEuTaxon.getRankId();
-		int parentRankId = fauEuTaxon.getParentRankId();
-		int grandParentRankId = fauEuTaxon.getGrandParentRankId();
-		int greatGrandParentRankId = fauEuTaxon.getGreatGrandParentRankId();
-		
-		if (fauEuTaxon.isValid()) { // Taxon
-			
-			if (rank == R_SPECIES) {
-
-				if(parentRankId == R_SUBGENUS) {
-
-					actualGenusId = fauEuTaxon.getGrandParentId();
-	
-				} else if(parentRankId == R_GENUS) {
-
-					actualGenusId = fauEuTaxon.getParentId();
-				}
-
-			} else if (rank == R_SUBSPECIES) {
-
-				if(grandParentRankId == R_SUBGENUS) {
-
-					actualGenusId = fauEuTaxon.getGreatGrandParentId();
-					
-				} else if (grandParentRankId == R_GENUS) {
-
-					actualGenusId = fauEuTaxon.getGrandParentId();
-
-				}
-			}
-		} else { // Synonym
-			
-			if (rank == R_SPECIES) {
-
-				if(grandParentRankId == R_SUBGENUS) {
-					
-					actualGenusId = fauEuTaxon.getGreatGrandParentId();
-					
-				} else if (grandParentRankId == R_GENUS) {
-					
-					actualGenusId = fauEuTaxon.getGrandParentId();
-
-				}
-
-			} else if (rank == R_SUBSPECIES) {
-				
-				if(greatGrandParentRankId == R_SUBGENUS) {
-					
-					actualGenusId = fauEuTaxon.getGreatGreatGrandParentId();
-					
-				} else if (greatGrandParentRankId == R_GENUS) {
-					
-					actualGenusId = fauEuTaxon.getGreatGrandParentId();
-				}
-			}
-		}
-		return actualGenusId;*/
 	}
 	
 	
@@ -815,13 +756,13 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		
 		// determine genus: this also works for cases of synonyms since the accepted taxon is its parent
 		String originalGenusString = null;
-		if (useOriginalGenus) {
-			originalGenusString  = fauEuTaxon.getOriginalGenusName();
-		} else {
+//		if (useOriginalGenus) {
+//			originalGenusString  = fauEuTaxon.getOriginalGenusName();
+//		} else {
 			originalGenusString = determineOriginalGenus(fauEuTaxon);
-		}
+//		}
 
-		if (originalGenusString != null) {
+		if (useOriginalGenus && originalGenusString != null) {
 			originalGenus = new StringBuilder(originalGenusString);
 		}
 		
