@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.persistence.dao;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,19 +41,19 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	@Autowired
 	IMethodCache methodCache;
 	
-	private Map<Class<? extends CdmBase>, AutoInitializer<CdmBase>> beanAutoInitializers = null;
+	private Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers = null;
 	
 	/**
 	 * @param beanAutoInitializers the beanAutoInitializers to set
 	 */
-	public void setBeanAutoInitializers(Map<Class<? extends CdmBase>, AutoInitializer<CdmBase>> beanAutoInitializers) {
+	public void setBeanAutoInitializers(Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers) {
 		this.beanAutoInitializers = beanAutoInitializers;
 	}
 
 	/**
 	 * @return the beanAutoInitializers
 	 */
-	public Map<Class<? extends CdmBase>, AutoInitializer<CdmBase>> getBeanAutoInitializers() {
+	public Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> getBeanAutoInitializers() {
 		return beanAutoInitializers;
 	}
 
@@ -102,28 +105,17 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			restrictions.add(Collections.class);
 		} 
 		Set<PropertyDescriptor> props = getProperties(bean, restrictions); 
-		for(PropertyDescriptor prop : props){
+		for(PropertyDescriptor propertyDescriptor : props){
 			try {
-				Object proxy = PropertyUtils.getProperty( bean, prop.getName());
-				if(proxy == null){
-					if(logger.isDebugEnabled()){
-						logger.debug("is null: " + prop.getName());
-					}
-					continue;
-				}
-				if(logger.isDebugEnabled()){
-					logger.debug("initializing: " + prop.getName());
-				}
 				
-				// >>> finally initialize the bean
-				invokeInitialization(proxy);
+				invokeInitialization(bean, propertyDescriptor);
 				
 			} catch (IllegalAccessException e) {
-				logger.error("Illegal access on property " + prop.getName());
+				logger.error("Illegal access on property " + propertyDescriptor.getName());
 			} catch (InvocationTargetException e) {
-				logger.info("Cannot invoke property " + prop.getName() + " not found");
+				logger.info("Cannot invoke property " + propertyDescriptor.getName() + " not found");
 			} catch (NoSuchMethodException e) {
-				logger.info("Property " + prop.getName() + " not found");
+				logger.info("Property " + propertyDescriptor.getName() + " not found");
 			}
 		}
 		if(logger.isDebugEnabled()){
@@ -227,16 +219,17 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 				//Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
 				
 				// [2.a] initialize the bean named by property
-				Object proxy = PropertyUtils.getProperty(bean, property);
-				Object unwrappedBean = invokeInitialization(proxy);
+
+				PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
+				Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
 				
 				// [2.b]
 				// recurse into nested properties
-				if(proxy != null && nestedPath != null){
-					if (Collection.class.isAssignableFrom(proxy.getClass())) {
+				if(unwrappedPropertyBean != null && nestedPath != null){
+					if (Collection.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
 						// nested collection
 						int i = 0;
-						for (Object entrybean : (Collection) proxy) {
+						for (Object entrybean : (Collection) unwrappedPropertyBean) {
 							if(index == null){
 								initializePropertyPath(entrybean, nestedPath);
 							} else if(index.equals(i)){
@@ -245,10 +238,10 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 							}
 							i++;
 						}
-					} else if(Map.class.isAssignableFrom(proxy.getClass())) {
+					} else if(Map.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
 						// nested map
 						int i = 0;
-						for (Object entrybean : ((Map) proxy).values()) {
+						for (Object entrybean : ((Map) unwrappedPropertyBean).values()) {
 							if(index == null){
 								initializePropertyPath(entrybean, nestedPath);
 							} else if(index.equals(i)){
@@ -259,8 +252,8 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 						}
 					}else {
 						// nested bean
-						initializePropertyPath(unwrappedBean, nestedPath);
-						setProperty(bean, property, unwrappedBean);
+						initializePropertyPath(unwrappedPropertyBean, nestedPath);
+						setProperty(bean, property, unwrappedPropertyBean);
 					}
 				}
 				
@@ -274,39 +267,75 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		}
 	}
 
-	private Object invokeInitialization(Object proxy) {
+	private Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		
-		Object bean = initializeInstance(proxy);
+		if(propertyDescriptor == null || bean == null){
+			return null;	
+		}
+		
+		// 
+		// initialialization of the bean
+		//		
+		Object propertyProxy = PropertyUtils.getProperty( bean, propertyDescriptor.getName());		
+		Object propertyBean = initializeInstance(propertyProxy);
 
-		if(bean != null){
-			// auto initialialization of properties
-			if(CdmBase.class.isAssignableFrom(bean.getClass())){
-				CdmBase cdmBaseBean = (CdmBase)bean;
-				AutoInitializer<CdmBase> autoInitializer = findBeanAutoInitializer(cdmBaseBean.getClass());
-				if(autoInitializer != null){
-					autoInitializer.initialize(cdmBaseBean);
+		if(propertyBean != null){
+			// 
+			// auto initialialization of sub properties
+			//
+			if(CdmBase.class.isAssignableFrom(propertyBean.getClass())){
+				
+				// initialization of a single bean
+				CdmBase cdmBaseBean = (CdmBase)propertyBean;
+				invokePropertyAutoInitializers(cdmBaseBean.getClass(), cdmBaseBean);
+				
+			} else {
+				
+				// it is a collection or map
+				Method readMethod = propertyDescriptor.getReadMethod();
+				Type genericReturnType = readMethod.getGenericReturnType();
+				
+				if(genericReturnType instanceof ParameterizedType){
+					ParameterizedType type = (ParameterizedType) genericReturnType;
+					Type[] typeArguments = type.getActualTypeArguments();
+					
+					if(typeArguments.length > 0 
+							&& typeArguments[0] instanceof Class<?>
+							&& CdmBase.class.isAssignableFrom((Class<?>) typeArguments[0])){
+						
+						if(Collection.class.isAssignableFrom((Class<?>) type.getRawType())){
+							for(CdmBase entry : ((Collection<CdmBase>)propertyBean)){
+								invokePropertyAutoInitializers((Class<CdmBase>) typeArguments[0], entry);								
+							}
+						}
+					}
+					
 				}
 			}
 		}
 		
-		return bean;
+		return propertyBean;
 	}
 
 	/**
 	 * @param beanClass
+	 * @param bean 
 	 * @return
 	 */
-	private AutoInitializer<CdmBase> findBeanAutoInitializer(Class<? extends CdmBase> beanClass) {
+	private void invokePropertyAutoInitializers(Class<? extends CdmBase> beanClass, Object bean) {
 		
 		if(beanAutoInitializers == null){
-			return null;
+			return;
 		}
+		if(!CdmBase.class.isAssignableFrom(bean.getClass())){
+			return;
+		}
+		CdmBase cdmBaseBean = (CdmBase)bean;
 		for(Class<? extends CdmBase> superClass : beanAutoInitializers.keySet()){
 			if(superClass.isAssignableFrom(beanClass)){
-				return beanAutoInitializers.get(superClass);
+				beanAutoInitializers.get(superClass).initialize(cdmBaseBean);
 			}
 		}
-		return null;
 	}
 
 	private void setProperty(Object object, String property, Object value){

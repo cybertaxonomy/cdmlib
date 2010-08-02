@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @date 30.07.2010
  *
  */
-public class TitleCacheAutoInitializer extends AutoInitializer<IdentifiableEntity<?>> {
+public class TitleCacheAutoInitializer extends AutoPropertyInitializer<IdentifiableEntity<?>> {
 
 
 	/* (non-Javadoc)

@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 30.07.2010
  *
  */
-public abstract class AutoInitializer<T extends CdmBase> {
+public abstract class AutoPropertyInitializer<T extends CdmBase> {
 	
 	public abstract void initialize(T bean); 
 
