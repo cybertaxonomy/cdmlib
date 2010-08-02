@@ -142,24 +142,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
-	
-	@RequestMapping(value = "/portal/description/{uuid_list}/namedAreaTree", method = RequestMethod.GET)
-	public NamedAreaTree doGetOrderedDistributions(
-			@PathVariable("uuid_list") UuidList descriptionUuidList,
-			@RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
-			//@ModelAttribute("omitLevels") HashSet<NamedAreaLevel> levels,
-			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("getOrderedDistributions(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
-		Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
-		TaxonDescription description;
-		for (UUID descriptionUuid : descriptionUuidList) {
-			description = (TaxonDescription) service.load(descriptionUuid);
-			taxonDescriptions.add(description);
-		}
-		NamedAreaTree areaTree = service.getOrderedDistributions(taxonDescriptions, levels);
-		return areaTree;
-	}
-	
+		
 	@RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
 	public DistributionTree doGetOrderedDistributionsB(
 			@PathVariable("uuid_list") UuidList descriptionUuidList,
@@ -172,7 +155,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 			description = (TaxonDescription) service.load(descriptionUuid, TAXONDESCRIPTION_INIT_STRATEGY);
 			taxonDescriptions.add(description);
 		}
-		DistributionTree distTree = service.getOrderedDistributionsB(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
+		DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
 		return distTree;
 	}
 	
