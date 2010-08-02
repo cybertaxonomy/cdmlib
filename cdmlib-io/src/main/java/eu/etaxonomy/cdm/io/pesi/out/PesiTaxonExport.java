@@ -286,9 +286,6 @@ public class PesiTaxonExport extends PesiExportBase {
 					commitTransaction(txStatus);
 					logger.error("Committed transaction.");
 
-//					int elementCount = 0;
-//					int halfCount = rankSpecificRootNodes.size() / 2;
-
 					for (TaxonNode rootNode : rankSpecificRootNodes) {
 						txStatus = startTransaction(false);
 						Rank endRank = rankMap.get(rank);
@@ -339,16 +336,12 @@ public class PesiTaxonExport extends PesiExportBase {
 						commitTransaction(txStatus);
 						logger.error("Committed transaction.");
 
-//						elementCount++;
-//						if (elementCount == halfCount) {
-//							logger.error("50% of " + rank.getLabel() + " RootNodes processed...");
-//						}
 					}
 				}
 			}
 
 			logger.error("PHASE 3...");
-			// Be sure to add rank information to any taxonName
+			// Be sure to add rank information, KingdomFk and TypeNameFk to any taxonName
 			
 			// Start transaction
 			txStatus = startTransaction(true);
@@ -600,8 +593,8 @@ public class PesiTaxonExport extends PesiExportBase {
 				rankDataSqlStmt.setObject(2, null);
 			}
 			
-			if (taxonFk != null) {
-				rankDataSqlStmt.setInt(3, taxonFk);
+			if (typeNameFk != null) {
+				rankDataSqlStmt.setInt(3, typeNameFk);
 			} else {
 				rankDataSqlStmt.setObject(3, null);
 			}
@@ -612,8 +605,8 @@ public class PesiTaxonExport extends PesiExportBase {
 				rankDataSqlStmt.setObject(4, null);
 			}
 			
-			if (typeNameFk != null) {
-				rankDataSqlStmt.setInt(5, typeNameFk);
+			if (taxonFk != null) {
+				rankDataSqlStmt.setInt(5, taxonFk);
 			} else {
 				rankDataSqlStmt.setObject(5, null);
 			}
