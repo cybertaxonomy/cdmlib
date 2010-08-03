@@ -126,7 +126,9 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 				return 1;
 			}
 		}else{//if taxonbase1.getName().getStatus = NULL  
-			if (taxonBase2.getName().getStatus() == null){ // both are null, continue checking				
+			iterator = taxonBase2.getName().getStatus().iterator();
+			if (!iterator.hasNext()){
+			//if (taxonBase2.getName().getStatus() == null){ // both are null, continue checking				
 			}else{
 				return -1;
 			}
