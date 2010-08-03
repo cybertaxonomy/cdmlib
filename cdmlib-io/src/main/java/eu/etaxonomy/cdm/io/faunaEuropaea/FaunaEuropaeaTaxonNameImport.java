@@ -765,7 +765,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			originalGenusString = determineOriginalGenus(fauEuTaxon);
 		}
 
-		if (useOriginalGenus && originalGenusString != null) {
+		if (originalGenusString != null) {
 			originalGenus = new StringBuilder(originalGenusString);
 		}
 
