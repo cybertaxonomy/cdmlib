@@ -427,7 +427,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
 				}
 				
-				if (actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) { 
+				if (fauEuTaxon.isParenthesis() && actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) { 
 					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
 				} else if (fauEuTaxon.isParenthesis()){
 					//the authorteam should be set in parenthesis because there should be a basionym, but we do not know it?
@@ -464,6 +464,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			String originalGenusIdString = "" + fauEuTaxon.getId();
 			IdentifiableSource basionymSource = IdentifiableSource.NewInstance(originalGenusIdString, "originalGenusId");
 			basionym.addSource(basionymSource);
+			
+			// add original database reference
+			ImportHelper.setOriginalSource(basionym, fauEuConfig.getSourceReference(), fauEuTaxon.getId(), "TaxonName");
 			
 			zooName.addBasionym(basionym, fauEuConfig.getSourceReference(), null, null);
 			zooName.setBasionymAuthorTeam(zooName.getCombinationAuthorTeam());
