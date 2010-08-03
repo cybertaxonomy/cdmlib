@@ -25,7 +25,7 @@ public class BacterialNameDefaultCacheStrategy<NAME extends BacterialName> exten
 	
 	final static UUID uuid = UUID.fromString("b97cf0af-2f97-487e-8d06-cbe924f3222a");
 	
-	private static String warning = {
+	static {
 		logger.warn("BacterialNameDefaultCacheStrategy not yet really implemented. Its just a copy from BotanicalNameDefaultCacheStrategy right now !!");
 	};
 	
