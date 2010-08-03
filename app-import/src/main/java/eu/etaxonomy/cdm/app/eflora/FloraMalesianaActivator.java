@@ -34,6 +34,7 @@ public class FloraMalesianaActivator {
 	static final String fmSource1 = EfloraSources.fm_sapindaceae_local();
 	static final String fmSource2 = EfloraSources.fm_sapindaceae2_local();
 	static final String fmSource13_1 = EfloraSources.fm_13_1_local();
+	static final String fmSource13_2 = EfloraSources.fm_13_2_local();
 	
 	
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
@@ -51,7 +52,8 @@ public class FloraMalesianaActivator {
 
 	private boolean includeSapindaceae1 = true;
 	private boolean includeSapindaceae2 = true;
-	private boolean includeVol13_1 = true;
+	private boolean includeVol13_1 = false;
+	private boolean includeVol13_2 = false;
 
 	
 	private void doImport(ICdmDataSource cdmDestination){
@@ -76,7 +78,7 @@ public class FloraMalesianaActivator {
 		
 		//Sapindaceae2
 		if (includeSapindaceae2){
-			System.out.println("Start import from ("+ fmSource2.toString() + ") ...");
+			System.out.println("\nStart import from ("+ fmSource2.toString() + ") ...");
 			source = fmSource2;
 			floraMalesianaConfig.setSource(source);
 			myImport.invoke(floraMalesianaConfig);
@@ -85,11 +87,20 @@ public class FloraMalesianaActivator {
 		
 		//Vol13_1
 		if (includeVol13_1){
-			System.out.println("Start import from ("+ fmSource13_1.toString() + ") ...");
+			System.out.println("\nStart import from ("+ fmSource13_1.toString() + ") ...");
 			source = fmSource13_1;
 			floraMalesianaConfig.setSource(source);
 			myImport.invoke(floraMalesianaConfig);
 			System.out.println("End import from ("+ fmSource13_1.toString() + ")...");
+		}
+
+		//Vol13_2
+		if (includeVol13_2){
+			System.out.println("\nStart import from ("+ fmSource13_2.toString() + ") ...");
+			source = fmSource13_2;
+			floraMalesianaConfig.setSource(source);
+			myImport.invoke(floraMalesianaConfig);
+			System.out.println("End import from ("+ fmSource13_2.toString() + ")...");
 		}
 		
 //		IReferenceService refService = myImport.getCdmAppController().getReferenceService();

@@ -23,23 +23,31 @@ public class EfloraSources {
 	
 	//Sapindaceae
 	public static String fm_sapindaceae_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-01.xml";
+		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-01v24.xml";
 		return sourceUrl;
 	}
 	
 	//Sapindaceae2
 	public static String fm_sapindaceae2_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-02final.xml";
+		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-02final2.xml";
 //		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
 //		String sourceUrl = url.toString();
 		return sourceUrl;
 	}
 	
-	//Sapindaceae2
+	//Flora Malesiana Vol 13-1
 	public static String fm_13_1_local(){
 		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/fm13_1_v8 final.xml";
 //		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
 //		String sourceUrl = url.toString();
 		return sourceUrl;
 	}
+
+	//Flora Malesiana Vol 13-2
+	public static String fm_13_2_local(){
+		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/fm13_2_v8 final.xml";
+		return sourceUrl;
+	}
+
+
 }

@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class UnmatchedLeads {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(UnmatchedLeads.class);
 
 	
@@ -35,18 +34,25 @@ public class UnmatchedLeads {
 			return result;
 		}
 		
-		protected static UnmatchedLeadsKey NewInstance(Taxon taxon, String num){
+		protected static UnmatchedLeadsKey NewInstance(String num, String taxon){
+			num = (num == null ? "" : num + " " );
+			return NewInstance(num + taxon);
+		}
+		
+		protected static UnmatchedLeadsKey NewInstance(String numAndTaxon){
 			UnmatchedLeadsKey result = new UnmatchedLeadsKey();
-			result.taxon = taxon;
-			result.num = num;
+			result.numAndTaxon = numAndTaxon;
 			return result;
 		}
+		
 		//firstPart
 		PolytomousKey key;
-		Taxon taxon;
-		
 		//secondPart
 		String num;
+		
+		//taxonKey
+		String numAndTaxon;
+		
 		
 		@Override
 		public boolean equals(Object object){
@@ -57,20 +63,27 @@ public class UnmatchedLeads {
 			if (! CdmUtils.nullSafeEqual(this.num, unmatchedLeadsKey.num)){
 				return false;
 			}
-			//all null
-			if (this.key == null && unmatchedLeadsKey.key == null && this.taxon == null && unmatchedLeadsKey.taxon == null){
-				return true;
+			if (! CdmUtils.nullSafeEqual(this.numAndTaxon, unmatchedLeadsKey.numAndTaxon)){
+				return false;
 			}
-			//key != null && taxon == null
-			if (this.key != null && unmatchedLeadsKey.key != null && this.taxon == null && unmatchedLeadsKey.taxon == null){
-				return this.key.equals(unmatchedLeadsKey.key);
+			if (! CdmUtils.nullSafeEqual(this.key, unmatchedLeadsKey.key)){
+				return false;
 			}
-			//key == null && taxon != null
-			if (this.key == null && unmatchedLeadsKey.key == null && this.taxon != null && unmatchedLeadsKey.taxon != null){
-				return this.taxon.equals(unmatchedLeadsKey.taxon);
-			}
+			
+//			//all null
+//			if (this.key == null && unmatchedLeadsKey.key == null && this.taxon == null && unmatchedLeadsKey.taxon == null){
+//				return true;
+//			}
+//			//key != null && taxon == null
+//			if (this.key != null && unmatchedLeadsKey.key != null && this.taxon == null && unmatchedLeadsKey.taxon == null){
+//				return this.key.equals(unmatchedLeadsKey.key);
+//			}
+//			//key == null && taxon != null
+//			if (this.key == null && unmatchedLeadsKey.key == null && this.taxon != null && unmatchedLeadsKey.taxon != null){
+//				return this.taxon.equals(unmatchedLeadsKey.taxon);
+//			}
 			//else false
-			return false;
+			return true;
 		}
 		
 		@Override
@@ -79,8 +92,8 @@ public class UnmatchedLeads {
 			   if(this.key != null && this.key.getUuid() != null) {
 				   hashCode = hashCode + this.key.getUuid().hashCode();
 			   }
-			   if(this.taxon != null && this.taxon.getUuid() != null) {
-				   hashCode = hashCode + this.taxon.getUuid().hashCode();
+			   if(this.numAndTaxon != null ) {
+				   hashCode = hashCode + this.numAndTaxon.hashCode();
 			   }
 			   if(this.num != null) {
 				   hashCode = hashCode + this.num.hashCode();
@@ -91,12 +104,14 @@ public class UnmatchedLeads {
 		@Override
 		public String toString(){
 			String result = "";
-			result += num;
+			if (this.num != null){
+				result += num;
+			}
 			if (this.key != null){
 				result += ":" + this.key.getUuid();
 			}
-			if (this.taxon != null){
-				result += ":" + this.taxon.getUuid();
+			if (this.numAndTaxon != null){
+				result += this.numAndTaxon;
 			}
 			return result;
 		}
@@ -117,6 +132,8 @@ public class UnmatchedLeads {
 		if (nodes == null){
 			nodes = new HashSet<FeatureNode>();
 			map.put(key, nodes);
+		}else{
+			logger.info("A Feature node for this key does already exist: " + key.toString());
 		}
 		nodes.add(node);
 	}
@@ -140,6 +157,17 @@ public class UnmatchedLeads {
 			return result;
 		}
 		return false;
+	}
+	
+//********************** toString()******************************/
+	
+	@Override
+	public String toString(){
+		String result = "[";
+		for (UnmatchedLeadsKey key : map.keySet()){
+			result += (result.equals("[")? "":"; ") + key.toString();
+		}
+		return result + "]";
 	}
 	
 	

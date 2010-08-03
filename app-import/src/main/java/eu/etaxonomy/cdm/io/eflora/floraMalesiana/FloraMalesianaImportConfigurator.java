@@ -32,7 +32,7 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
-	private static String classificationTitle = "Sapindaceae";
+	private static String classificationTitle = "Flora Malesiana";
 	
 	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
 	//from the first sapindaceae import to the second sapindacea import

@@ -28,6 +28,8 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FloraMalesianaTransformer.class);
 	
+	
+	
 	//feature uuids
 
 	public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
@@ -75,6 +77,10 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	public static final UUID uuidStaminodes = UUID.fromString("4c135e5d-805b-4591-b21f-bbc34e275ef6");
 	public static final UUID uuidFilaments = UUID.fromString("5d61bc65-4621-488a-8ea9-11f6e4cd2c66");
 
+	//key
+	public static final UUID uuidPseudoStipules = UUID.fromString("a8e3002a-5a3a-4098-9439-90dff56deeed");
+	public static final UUID uuidWallOfFruitInside = UUID.fromString("c9424f3a-91fd-4696-8207-c07b2cdd5902");
+
 	public static final UUID uuidBuds = UUID.fromString("a2f1861d-50ba-4216-80f6-7889e4785cd5");
 	public static final UUID uuidStems = UUID.fromString("80b542d6-c2ec-4bc9-95c1-a1b9429691a7");
 	public static final UUID uuidTrees = UUID.fromString("03a2f775-e7c7-4487-a725-51b290084e14");
@@ -111,9 +117,16 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	public static final UUID uuidAndroecium = UUID.fromString("ad600c18-b04c-4c61-b71e-ce6e48de508e");
 	public static final UUID uuidGynoecium = UUID.fromString("02c81ac2-3fd7-4daa-9f62-ffb2d6776f44");
 	public static final UUID uuidFlowerTube = UUID.fromString("4328c13c-f80c-4f16-8c53-b0b3d8ec3cb7");
+	public static final UUID uuidAnther = UUID.fromString("4c7cf621-11f7-4102-b49a-caa493364707");
+	public static final UUID uuidFlowerBearingStems = UUID.fromString("86ee899f-af71-4b51-aa1a-2666bab79cf0");
+	public static final UUID uuidFloweringBranchlets = UUID.fromString("e0364345-764c-4b39-943a-fad1eac0fe9e");
 	
-
+	
+	
 	//extension type uuids
+	public static final UUID uuidTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
+	
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
@@ -216,6 +229,13 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("fruiting axes")){return uuidFruitingAxes;
 		}else if (key.equalsIgnoreCase("androecium")){return uuidAndroecium;
 		}else if (key.equalsIgnoreCase("gynoecium")){return uuidGynoecium;
+		
+		}else if (key.equalsIgnoreCase("anther")){return uuidAnther;
+		}else if (key.equalsIgnoreCase("flower-bearing stems")){return uuidFlowerBearingStems;
+		}else if (key.equalsIgnoreCase("Flowering branchlets")){return uuidFloweringBranchlets;
+		
+		}else if (key.equalsIgnoreCase("Pseudo-stipules")){return uuidPseudoStipules;
+		}else if (key.equalsIgnoreCase("Wall of fruit inside")){return uuidWallOfFruitInside;
 				
 		
 		}else{
