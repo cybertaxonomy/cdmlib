@@ -14,6 +14,9 @@ del cdmlib-services-2.4.jar
 del cdmlib-io-2.4src.zip
 del cdmlib-io-2.4.jar
 
+del cdmlib-remote-2.4src.zip
+del cdmlib-remote-2.4.jar
+
 del cdmlib-ext-2.4src.zip
 del cdmlib-ext-2.4.jar
 
@@ -31,6 +34,9 @@ copy "C:\Dokumente und Einstellungen\e.-m.lee\.m2\repository\eu\etaxonomy\cdmlib
 
 copy "C:\Dokumente und Einstellungen\e.-m.lee\.m2\repository\eu\etaxonomy\cdmlib-io\2.4\cdmlib-io-2.4.jar" cdmlib-io-2.4.jar
 copy "C:\Dokumente und Einstellungen\e.-m.lee\.m2\repository\eu\etaxonomy\cdmlib-io\2.4\cdmlib-io-2.4-sources.jar" cdmlib-io-2.4src.zip
+
+copy "C:\Dokumente und Einstellungen\e.-m.lee\.m2\repository\eu\etaxonomy\cdmlib-remote\2.4\cdmlib-remote-2.4.jar" cdmlib-remote-2.4.jar
+copy "C:\Dokumente und Einstellungen\e.-m.lee\.m2\repository\eu\etaxonomy\cdmlib-remote\2.4\cdmlib-remote-2.4-sources.jar" cdmlib-remote-2.4src.zip
 
 copy "C:\Dokumente und Einstellungen\e.-m.lee\.m2\repository\eu\etaxonomy\cdmlib-ext\2.4\cdmlib-ext-2.4.jar" cdmlib-ext-2.4.jar
 copy "C:\Dokumente und Einstellungen\e.-m.lee\.m2\repository\eu\etaxonomy\cdmlib-ext\2.4\cdmlib-ext-2.4-sources.jar" cdmlib-ext-2.4src.zip

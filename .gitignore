@@ -106,6 +106,10 @@ cdmlib-plugin/cdmlib-services-2.0src.zip
 cdmlib-plugin/dist
 cdmlib-plugin/log4j-1.2.14src.zip
 cdmlib-plugin/target
+cdmlib-remote-webapp/.classpath
+cdmlib-remote-webapp/.project
+cdmlib-remote-webapp/.settings
+cdmlib-remote-webapp/target
 cdmlib-remote/.classpath
 cdmlib-remote/.project
 cdmlib-remote/.settings

@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.remote.view;
 
+import java.io.PrintWriter;
 import java.util.Map;
 
 public abstract class BaseView {
@@ -21,4 +22,14 @@ public abstract class BaseView {
 		}
 		return data;
 	}
+	
+	/**
+	 * Basic render method that may be used to render content with the cdmlib-remote api but without beeing in
+	 * a webapplication context.
+	 * 
+	 * @param model
+	 * @param writer
+	 * @throws Exception
+	 */
+	public abstract void render (Object entity, PrintWriter writer) throws Exception;
 }

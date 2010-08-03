@@ -110,6 +110,8 @@
 				<value>metaClass</value><!-- DefaultExclude -->
 				<value>id</value>
 				<value>cacheStrategy</value>
+				<value>createdBy</value>
+				<value>updatedBy</value>
 			</list>
 		</property>
 	</bean>
@@ -178,6 +180,8 @@
 				<value>metaClass</value><!-- DefaultExclude -->
 				<value>id</value>
 				<value>cacheStrategy</value>
+				<value>createdBy</value>
+				<value>updatedBy</value>
 			</list>
 		</property>
 	</bean>
@@ -304,7 +308,8 @@
 				<value>annotations</value>
 				<value>cacheStrategy</value>
 				<value>markers</value>
-				
+				<value>createdBy</value>
+				<value>updatedBy</value>
 				<value>inDescription</value>
 			</list>
 		</property>

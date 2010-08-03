@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
-	<id>cdmserver-standalone</id>
+	<id>cdmlib-remote</id>
 	<formats>
 		<format>jar</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>target/classes</directory>
+			<directory>${project.basedir}/../cdmlib-remote/target/classes</directory>
 			<outputDirectory />
 		</fileSet>
-		<fileSet>
+		<!--fileSet>
 			<directory>${project.build.directory}</directory>
 			<includes>
 				<include>*.war</include>
 			</includes>
 			<outputDirectory />
-		</fileSet>
-		<fileSet>
+		</fileSet-->
+		<!--fileSet>
 			<includes>
-				<include>${project.basedir}/LICENSE*</include>
+				<include>${project.basedir}/../cdmlib-remote/LICENSE*</include>
 			</includes>
 			<outputDirectory />
-		</fileSet>
+		</fileSet-->
 	</fileSets>
 	<dependencySets>
 		<dependencySet>
@@ -32,9 +32,9 @@
 		</dependencySet>
 		<dependencySet>
 			<outputDirectory />
-			<outputFileNameMapping>cdmserver.war</outputFileNameMapping>
+			<outputFileNameMapping>cdmlib-remote.jar</outputFileNameMapping>
 			<includes>
-				<include>eu.etaxonomy:cdmlib-remote-webapp</include>
+				<include>eu.etaxonomy:cdmlib-remote</include>
 			</includes>
 		</dependencySet>
 	</dependencySets>

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry exported="true" kind="lib" path="xom-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="ezmorph-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="xstream-1.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="org.springframework.context.support-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="spring-modules-cache-0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="dozer-4.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="json-lib-2.2.3-jdk15.jar" sourcepath="json-lib-2.2.3-jdk15src.zip"/>
+	<classpathentry exported="true" kind="lib" path="servlet-api-2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="org.springframework.web-3.0.0.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="org.springframework.web.servlet-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
@@ -81,6 +91,7 @@
 	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.4.jar" sourcepath="cdmlib-model-2.4src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.4.jar" sourcepath="cdmlib-persistence-2.4src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.4.jar" sourcepath="cdmlib-services-2.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-remote-2.4.jar" sourcepath="cdmlib-remote-2.4src.zip"/>
 	<classpathentry exported="true" kind="lib" path="c3p0-0.9.1.jar" sourcepath="c3p0-0.9.1src.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

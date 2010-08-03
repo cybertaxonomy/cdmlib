@@ -28,19 +28,23 @@ import org.springframework.web.servlet.View;
 
 public class JsonView extends BaseView implements View{
 	
-	/**
-	 * 
-	 */
-	private static final String CONTENTTYPE_JSON = "application/json";
-	
-	private static final String CONTENTTYPE_XML = "text/xml";
-
 	public static final Logger logger = Logger.getLogger(JsonView.class);
 
 	private JsonConfig jsonConfig;
 	
 	public enum Type{
-		JSON, XML
+		JSON("application/json"),
+		XML("text/xml");
+		
+		private String contentType;
+		
+		Type(String contentType){
+			this.contentType = contentType;
+		}
+		
+		public String getContentType(){
+			return contentType;
+		}
 	}
 
 	private Type type = Type.JSON;
@@ -64,26 +68,20 @@ public class JsonView extends BaseView implements View{
 	}
 
 	public void setJsonConfig(JsonConfig jsonConfig) {
-			this.jsonConfig = jsonConfig;
+		this.jsonConfig = jsonConfig;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.web.servlet.View#getContentType()
+	 */
 	public String getContentType() {
-		return "application/json";
+		return Type.JSON.getContentType();
 	}
 	
-	
-	public void render(Map model, HttpServletRequest req, HttpServletResponse resp) throws Exception {
+	public void render(Object entity, PrintWriter writer) throws Exception {
 		
-		// Retrieve data from model
-		Object entity = getResponseData(model);
 		
-		// set content type 
-		resp.setContentType(getContentType());
-		
-		// prepare writer
-		// TODO determine preferred charset from HTTP Accept-Charset header
-		//Writer out = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(),  "UTF-8"));
-		PrintWriter out =  resp.getWriter();
 		// create JSON Object
 		boolean isCollectionType = false;
 		JSON jsonObj;
@@ -119,13 +117,28 @@ public class JsonView extends BaseView implements View{
 				String xslInclude = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"human.xsl\"?>\r\n";
 				xml = xml.replaceFirst("\r\n", xslInclude);
 			}
-			resp.setContentType(CONTENTTYPE_XML);
-			out.append(xml);
+			writer.append(xml);
 		} else {
 			// assuming json
-			resp.setContentType(CONTENTTYPE_JSON);
-			out.append(jsonObj.toString());
+			writer.append(jsonObj.toString());
 		}
-		out.flush();
+		writer.flush();
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.web.servlet.View#render(java.util.Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+				
+		// Retrieve data from model
+		Object entity = getResponseData(model);
+		
+		// set content type 
+		response.setContentType(type.getContentType());
+		
+		// render
+		render(entity, response.getWriter());
+		
+	}	
 }

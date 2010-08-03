@@ -24,7 +24,7 @@
   <dependencies>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-remote</artifactId>
+      <artifactId>cdmlib-remote-webapp</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
@@ -137,7 +137,7 @@
 		      <overlays>
 		          <overlay>
 			           <groupId>eu.etaxonomy</groupId>
-					   <artifactId>cdmlib-remote</artifactId>
+					   <artifactId>cdmlib-remote-webapp</artifactId>
 					   <skip>true</skip><!-- Do Not overlay  --> 
 			      </overlay>
 		      </overlays>

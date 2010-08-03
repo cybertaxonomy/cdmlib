@@ -101,11 +101,14 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		
 		logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getServletPath());
 		
-		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);
+		// <CUT
+//		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);
 		
 		//Class<?> propertyClass = propertyClass(instance, baseName);
 		
-		Object objectFromProperty = invokeProperty(instance, baseName, response);
+		Object objectFromProperty = doGetProperty(uuid, baseName, response);//   invokeProperty(instance, baseName, response);
+		
+		// CUT>
 		
 		if(objectFromProperty != null){
 
@@ -142,6 +145,14 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		}
 	}
 
+	public Object doGetProperty(UUID uuid, String property, HttpServletResponse response) throws IOException{
+		T instance = getCdmBaseInstance(uuid, response, (List<String>) null);
+		
+		Object objectFromProperty = invokeProperty(instance, property, response);
+		
+		return objectFromProperty;
+	}
+	
 	private Class<?> propertyClass(T instance, String baseName) {
 		PropertyDescriptor propertyDescriptor = null;
 		Class<?> c = null;

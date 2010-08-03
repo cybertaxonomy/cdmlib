@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-		<version>2.1</version>
+		<version>2.4</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>eu.etaxonomy.cdmLibrary</artifactId>
+	<artifactId>cdmlib-plugin</artifactId>
 	<description>cdmLibrary as a plugin</description>
 
 	<build>
@@ -20,7 +20,34 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+
+
+			<!-- INSTALL -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>src/main/assembly/assembly.xml</descriptor>
+					</descriptors>
+					<archive>
+						<!--manifest>
+							<mainClass>eu.etaxonomy.cdm.server.Bootloader</mainClass>
+						</manifest-->
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>install</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		
 	</build>
 	<dependencies>
   	 <dependency>
