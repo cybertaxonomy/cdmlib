@@ -49,7 +49,7 @@
       <artifactId>org.osgi.core</artifactId>
       <version>1.0.0</version>
     </dependency>    
-  	 <dependency>
+  	<dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-persistence</artifactId>
   	</dependency>
