@@ -358,7 +358,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	public ModelAndView doGetSynonymy(@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		
-		logger.info("doGetSynonymy() " + request.getServletPath());
+		if(request != null){
+			logger.info("doGetSynonymy() " + request.getServletPath());
+		}
 		ModelAndView mv = new ModelAndView();
 		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 		Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
@@ -385,7 +387,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	public Set<TaxonBase> getAccepted(@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		logger.info("getAccepted() " + request.getServletPath());
+		if(request != null){
+			logger.info("getAccepted() " + request.getServletPath());
+		}
 		
 		TaxonBase tb = service.load(uuid, SYNONYMY_INIT_STRATEGY);
 		if(tb == null){
@@ -544,7 +548,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			method = RequestMethod.GET)
 	public List<TaxonDescription> doGetDescriptions(@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, HttpServletResponse response)throws IOException {
-		logger.info("doGetDescriptions()" + request.getServletPath());
+		if(request != null){
+			logger.info("doGetDescriptions()" + request.getServletPath());
+		}
 		Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 		return p.getRecords();
