@@ -759,7 +759,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		
 		// determine genus: this also works for cases of synonyms since the accepted taxon is its parent
 		String originalGenusString = null;
-		if (useOriginalGenus) {
+		if (useOriginalGenus && fauEuTaxon.getOriginalGenusName() != null) {
 			originalGenusString  = fauEuTaxon.getOriginalGenusName();
 		} else {
 			originalGenusString = determineOriginalGenus(fauEuTaxon);
