@@ -230,15 +230,15 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
-	public <TYPE extends OriginalSourceBase> Pager<TYPE> list(Class<TYPE> type,
-			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-		logger.warn("Not yet implemented");
-		return null;
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+//	 */
+//	public <TYPE extends OriginalSourceBase> Pager<TYPE> list(Class<TYPE> type,
+//			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+//			List<String> propertyPaths) {
+//		logger.warn("Not yet implemented");
+//		return null;
+//	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#saveAll(java.util.Collection)
