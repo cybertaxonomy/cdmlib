@@ -137,10 +137,22 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public ConversationHolder NewConversation();
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ICollectionService getCollectionService();
 
+	/**
+	 * 
+	 * @return
+	 */
 	public IFeatureTreeService getFeatureTreeService();
 
+	/**
+	 * 
+	 * @return
+	 */
 	public IVocabularyService getVocabularyService();
-	
+		
 }
