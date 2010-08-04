@@ -416,12 +416,13 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.info("Name of Synonym: " + nameString);
 			}
 			
+			Integer originalGenusId = fauEuTaxon.getOriginalGenusId();
+			Integer actualGenusId = getActualGenusId(fauEuTaxon);
+
 			if (fauEuConfig.isDoBasionyms() 
 					&& fauEuTaxon.getRankId() > R_SUBGENUS
-					&& (fauEuTaxon.getOriginalGenusId() != 0)) {
-				
-				Integer originalGenusId = fauEuTaxon.getOriginalGenusId();
-				Integer actualGenusId = getActualGenusId(fauEuTaxon);
+					&& originalGenusId != 0
+					&& actualGenusId != 0) {
 				
 				if (logger.isDebugEnabled()) {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
