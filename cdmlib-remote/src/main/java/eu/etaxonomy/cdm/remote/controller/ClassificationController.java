@@ -63,6 +63,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	@InitBinder
 	@Override
     public void initBinder(WebDataBinder binder) {
+		super.initBinder(binder);
 		binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
 	}
 	
@@ -80,7 +81,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"childNodes/"},
+			value = {"childNodes"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodes(
 			@PathVariable("uuid") UUID classificationUuid,
@@ -91,7 +92,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	}
 	
 	@RequestMapping(
-			value = {"childNodesAt/{rankUuid}/"},
+			value = {"childNodesAt/{rankUuid}"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodesAtRank(
 			@PathVariable("uuid") UUID classificationUuid,
