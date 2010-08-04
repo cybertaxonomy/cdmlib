@@ -2638,6 +2638,8 @@ cdmlib-plugin/xstream-1.3.1src.zip -text
 cdmlib-plugin/yjp-controller-api-redist-8.0.1.jar -text
 cdmlib-remote-webapp/LICENSE.TXT -text
 cdmlib-remote-webapp/README.TXT -text
+cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug.launch -text
+cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApplicationConfigurer.java -text
