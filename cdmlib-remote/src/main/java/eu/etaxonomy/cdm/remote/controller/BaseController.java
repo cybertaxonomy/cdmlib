@@ -14,6 +14,9 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.unitils.hibernate.HibernateUnitils;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -59,6 +61,21 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	protected Class<T> baseClass;
 	
 	public abstract void setService(SERVICE service);
+	
+	public BaseController (){
+		
+		Type superClass = this.getClass().getGenericSuperclass();
+		if(superClass instanceof ParameterizedType){
+			ParameterizedType parametrizedSuperClass = (ParameterizedType) superClass;
+			Type[] typeArguments = parametrizedSuperClass.getActualTypeArguments();
+			
+			if(typeArguments.length > 1 && typeArguments[0] instanceof Class<?>){
+				baseClass = (Class<T>) typeArguments[0];
+			} else {
+				logger.error("unable to find baseClass");
+			}
+		}
+	}
 
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -108,7 +125,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		
 		//Class<?> propertyClass = propertyClass(instance, baseName);
 		
-		Object objectFromProperty = doGetProperty(uuid, baseName, response);//   invokeProperty(instance, baseName, response);
+		Object objectFromProperty = getCdmBaseProperty(uuid, baseName, response);//   invokeProperty(instance, baseName, response);
 		
 		// CUT>
 		
@@ -147,7 +164,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		}
 	}
 
-	public Object doGetProperty(UUID uuid, String property, HttpServletResponse response) throws IOException{
+	public Object getCdmBaseProperty(UUID uuid, String property, HttpServletResponse response) throws IOException{
 		
 		T instance = getCdmBaseInstance(uuid, response, property);
 		
@@ -191,10 +208,9 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	throws IOException {
 
 		CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperties);
-//		FIXME clazz is always null !!!! use intanceof instead
-//		if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
-//			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-//		}
+		if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+		}
 		return (SUB_T) cdmBaseObject;
 	}
 	
@@ -212,10 +228,9 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	throws IOException {
 		
 		CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperty);
-//		FIXME clazz is always null !!!! use intanceof instead
-//		if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
-//			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-//		}
+		if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+		}
 		return (SUB_T) cdmBaseObject;
 	}
 	
