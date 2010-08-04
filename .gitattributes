@@ -2645,6 +2645,7 @@ cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApplicationConfigurer.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
+cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
@@ -2659,6 +2660,7 @@ cdmlib-remote-webapp/src/main/webapp/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/oai2.xsl -text
 cdmlib-remote-webapp/src/site/site.xml -text
 cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
+cdmlib-remote-webapp/src/test/resources/log4j.properties -text
 cdmlib-remote/LICENSE.TXT -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/pom.xml -text
