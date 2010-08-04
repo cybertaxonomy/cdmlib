@@ -146,7 +146,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	}
 
 	public Object doGetProperty(UUID uuid, String property, HttpServletResponse response) throws IOException{
-		T instance = getCdmBaseInstance(uuid, response, (List<String>) null);
+		
+		T instance = getCdmBaseInstance(uuid, response, property);
 		
 		Object objectFromProperty = invokeProperty(instance, property, response);
 		
