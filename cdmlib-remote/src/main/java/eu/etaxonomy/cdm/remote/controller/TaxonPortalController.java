@@ -175,7 +175,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
 			"$",
 			"elements.$",
-			"elements.sources.citation.",
+			"elements.sources.citation.authorTeam",
 			"elements.sources.nameUsedInSource.originalNameString",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
@@ -183,14 +183,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	});
 	
 	
-	private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
-			"uuid",
-			"feature",
-			"elements.$",
-			"elements.multilanguageText",
-			"elements.media.representations.parts",
-			"elements.media.title",
-	});
+//	private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+//			"uuid",
+//			"feature",
+//			"elements.$",
+//			"elements.multilanguageText",
+//			"elements.media.representations.parts",
+//			"elements.media.title",
+//	});
 	
 	protected static final List<String> TAXONDESCRIPTION_MEDIA_INIT_STRATEGY = Arrays.asList(new String []{
 			"elements.media.representations.parts",
