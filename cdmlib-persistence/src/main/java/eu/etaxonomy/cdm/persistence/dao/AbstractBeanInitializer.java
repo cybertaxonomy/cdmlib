@@ -273,23 +273,24 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			return null;	
 		}
 		
-		// 
+		// (1)
 		// initialialization of the bean
 		//		
 		Object propertyProxy = PropertyUtils.getProperty( bean, propertyDescriptor.getName());		
 		Object propertyBean = initializeInstance(propertyProxy);
 
 		if(propertyBean != null){
-			// 
+			// (2)
 			// auto initialialization of sub properties
 			//
 			if(CdmBase.class.isAssignableFrom(propertyBean.getClass())){
 				
 				// initialization of a single bean
 				CdmBase cdmBaseBean = (CdmBase)propertyBean;
-				invokePropertyAutoInitializers(cdmBaseBean.getClass(), cdmBaseBean);
+				invokePropertyAutoInitializers(cdmBaseBean);
 				
-			} else {
+			} else if(Collection.class.isAssignableFrom(propertyBean.getClass()) || 
+					Map.class.isAssignableFrom(propertyBean.getClass()) ) {
 				
 				// it is a collection or map
 				Method readMethod = propertyDescriptor.getReadMethod();
@@ -305,7 +306,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 						
 						if(Collection.class.isAssignableFrom((Class<?>) type.getRawType())){
 							for(CdmBase entry : ((Collection<CdmBase>)propertyBean)){
-								invokePropertyAutoInitializers((Class<CdmBase>) typeArguments[0], entry);								
+								invokePropertyAutoInitializers(entry);								
 							}
 						}
 					}
@@ -322,9 +323,9 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	 * @param bean 
 	 * @return
 	 */
-	private void invokePropertyAutoInitializers(Class<? extends CdmBase> beanClass, Object bean) {
+	private void invokePropertyAutoInitializers(Object bean) {
 		
-		if(beanAutoInitializers == null){
+		if(beanAutoInitializers == null || bean == null){
 			return;
 		}
 		if(!CdmBase.class.isAssignableFrom(bean.getClass())){
@@ -332,7 +333,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		}
 		CdmBase cdmBaseBean = (CdmBase)bean;
 		for(Class<? extends CdmBase> superClass : beanAutoInitializers.keySet()){
-			if(superClass.isAssignableFrom(beanClass)){
+			if(superClass.isAssignableFrom(bean.getClass())){
 				beanAutoInitializers.get(superClass).initialize(cdmBaseBean);
 			}
 		}
