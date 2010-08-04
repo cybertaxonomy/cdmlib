@@ -99,13 +99,6 @@ public class PesiSourceExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<ReferenceBase> list = null;
 
-			// Create the Source AUCT: Specific to Fauna Europaea data
-//			txStatus = startTransaction(true);
-//			ReferenceBase<?> auctReference = pesiExportConfigurator.getAuctReference();
-//			success &= mapping.invoke(auctReference);
-//			commitTransaction(txStatus);
-//			logger.error("Created Reference for Misapplied Names (auct.)");
-			
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
