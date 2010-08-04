@@ -1358,7 +1358,6 @@ public class PesiTaxonExport extends PesiExportBase {
 						result = "TAX_ID: " + source.getIdInSource();
 					}
 				} else if (sources.size() > 1) {
-					logger.warn("Taxon has multiple IdentifiableSources: " + singleEntity.getUuid() + " (" + singleEntity.getTitleCache() + ")");
 					int count = 1;
 					result = "TAX_ID: ";
 					for (IdentifiableSource source : sources) {
@@ -1449,14 +1448,16 @@ public class PesiTaxonExport extends PesiExportBase {
 					}
 				}
 			} else if (sources.size() > 1) {
-				logger.warn("Taxon has multiple IdentifiableSources: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
 				int count = 1;
 				for (IdentifiableSource source : sources) {
-					result += PesiTransformer.databaseString2Abbreviation(source.getCitation().getTitleCache());
-					if (count < sources.size()) {
-						result += "; ";
+					ReferenceBase citation = source.getCitation();
+					if (citation != null) {
+						if (count > 1) {
+							result += "; ";
+						}
+						result += PesiTransformer.databaseString2Abbreviation(citation.getTitleCache());
+						count++;
 					}
-					count++;
 				}
 			} else {
 				result = null;
