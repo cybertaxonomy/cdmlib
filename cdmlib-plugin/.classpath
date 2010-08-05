@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="xom-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="ezmorph-1.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="xstream-1.3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="org.springframework.context.support-3.0.0.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-modules-cache-0.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="dozer-4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="json-lib-2.2.3-jdk15.jar" sourcepath="json-lib-2.2.3-jdk15src.zip"/>
-	<classpathentry exported="true" kind="lib" path="servlet-api-2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="org.springframework.web-3.0.0.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="org.springframework.web.servlet-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
@@ -76,12 +66,14 @@
 	<classpathentry exported="true" kind="lib" path="org.springframework.aspects-3.0.0.RELEASE.jar" sourcepath="org.springframework.aspects-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.beans-3.0.0.RELEASE.jar" sourcepath="org.springframework.beans-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.context-3.0.0.RELEASE.jar" sourcepath="org.springframework.context-3.0.0.RELEASEsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="org.springframework.context.support-3.0.0.RELEASE.jar" sourcepath="org.springframework.context.support-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.core-3.0.0.RELEASE.jar" sourcepath="org.springframework.core-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.expression-3.0.0.RELEASE.jar" sourcepath="org.springframework.expression-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.jdbc-3.0.0.RELEASE.jar" sourcepath="org.springframework.jdbc-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.orm-3.0.0.RELEASE.jar" sourcepath="org.springframework.orm-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.oxm-3.0.0.RELEASE.jar" sourcepath="org.springframework.oxm-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.transaction-3.0.0.RELEASE.jar" sourcepath="org.springframework.transaction-3.0.0.RELEASEsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="org.springframework.web.servlet-3.0.0.RELEASE.jar" sourcepath="org.springframework.web.servlet-3.0.0.RELEASEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="commons-pool-1.3.jar" sourcepath="commons-pool-1.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="hibernate-validator-4.0.0.CR1.jar" sourcepath="hibernate-validator-4.0.0.CR1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="xml-resolver-1.2.jar" sourcepath="xml-resolver-1.2src.zip"/>
@@ -93,5 +85,13 @@
 	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.4.jar" sourcepath="cdmlib-services-2.4src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-remote-2.4.jar" sourcepath="cdmlib-remote-2.4src.zip"/>
 	<classpathentry exported="true" kind="lib" path="c3p0-0.9.1.jar" sourcepath="c3p0-0.9.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="org.springframework.web-3.0.0.RELEASE.jar" sourcepath="org.springframework.web-3.0.0.RELEASEsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="servlet-api-2.5.jar" sourcepath="servlet-api-2.5src.zip"/>
+	<classpathentry exported="true" kind="lib" path="json-lib-2.2.3-jdk15.jar" sourcepath="json-lib-2.2.3-jdk15src.zip"/>
+	<classpathentry exported="true" kind="lib" path="dozer-4.4.jar" sourcepath="dozer-4.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-modules-cache-0.7.jar" sourcepath="spring-modules-cache-0.7src.zip"/>
+	<classpathentry exported="true" kind="lib" path="xstream-1.3.1.jar" sourcepath="xstream-1.3.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="ezmorph-1.0.4.jar" sourcepath="ezmorph-1.0.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="xom-1.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

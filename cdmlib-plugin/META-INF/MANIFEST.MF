@@ -523,6 +523,7 @@ Export-Package: eu.etaxonomy.cdm,
    org.apache.log4j.config",
  org.apache.sanselan,
  org.jdom,
+ org.jdom.input,
  org.joda.time;
   uses:="org.joda.time.chrono,
    org.joda.time.format,
@@ -634,7 +635,8 @@ Export-Package: eu.etaxonomy.cdm,
    org.springframework.core,
    org.apache.commons.logging,
    new org.springframework.transaction.support,
-   org.springframework.beans.factory"
+   org.springframework.beans.factory",
+ org.springframework.web.servlet
 Bundle-Vendor: EDIT
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.osgi;bundle-version="3.5.2"
