@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * @date 23.06.2009
  *
  */
-public class AbstractController {
+public abstract class AbstractController {
 	
 	protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
 			"$"

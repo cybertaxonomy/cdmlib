@@ -87,7 +87,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	public T doGet(@PathVariable("uuid") UUID uuid,
 				HttpServletRequest request, 
 				HttpServletResponse response) throws IOException {
-		logger.info("doGet() " + request.getServletPath());
+		if(request != null)
+			logger.info("doGet() " + request.getServletPath());
 		T obj = (T) getCdmBaseInstance(uuid, response, initializationStrategy);
 		return obj;
 	}
@@ -118,7 +119,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		String servletPath = request.getServletPath();
 		String baseName = FilenameUtils.getBaseName(servletPath);
 		
-		logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getServletPath());
+		if(request != null)
+			logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getServletPath());
 		
 		// <CUT
 //		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);
