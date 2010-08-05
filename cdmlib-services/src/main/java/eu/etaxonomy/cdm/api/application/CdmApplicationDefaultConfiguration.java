@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
@@ -100,6 +101,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ICollectionService collectionService;
 	@Autowired
 	private IFeatureTreeService featureTreeService;
+	@Autowired
+	private IFeatureNodeService featureNodeService;
 	@Autowired
 	private IVocabularyService vocabularyService;
 	@Autowired
@@ -243,14 +246,34 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCollectionService()
+	 */
 	public ICollectionService getCollectionService() {
 		return collectionService;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureTreeService()
+	 */
 	public IFeatureTreeService getFeatureTreeService() {
 		return featureTreeService;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureNodeService()
+	 */
+	public IFeatureNodeService getFeatureNodeService(){
+		return featureNodeService;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getVocabularyService()
+	 */
 	public IVocabularyService getVocabularyService() {
 		return vocabularyService;
 	}	

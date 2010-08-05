@@ -2905,6 +2905,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionTree.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAnnotatableService.java -text
@@ -2914,6 +2915,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICollectionService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICommonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDescriptionService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureTreeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IIdentifiableEntityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IIdentificationKeyService.java -text

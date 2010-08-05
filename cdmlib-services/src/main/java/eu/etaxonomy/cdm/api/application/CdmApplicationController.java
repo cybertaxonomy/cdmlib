@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
@@ -370,6 +371,10 @@ public class CdmApplicationController {
 	
 	public final IFeatureTreeService getFeatureTreeService(){
 		return configuration.getFeatureTreeService();
+	}
+	
+	public final IFeatureNodeService getFeatureNodeService(){
+		return configuration.getFeatureNodeService();
 	}
 	
 	public final IVocabularyService getVocabularyService(){

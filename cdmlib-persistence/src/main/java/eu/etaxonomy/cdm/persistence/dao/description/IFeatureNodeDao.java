@@ -9,13 +9,13 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 /**
  * @author a.babadshanjan
  * @created 09.09.2008
  */
-public interface IFeatureNodeDao extends ICdmEntityDao<FeatureNode> {
+public interface IFeatureNodeDao extends IVersionableDao<FeatureNode> {
 
 	public List<FeatureNode> list();
 
