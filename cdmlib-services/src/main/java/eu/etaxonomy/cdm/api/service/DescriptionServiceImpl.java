@@ -207,10 +207,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 			taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid(), propertyPaths);
 			Set<DescriptionElementBase> elements = taxonDescription.getElements();
 			for (DescriptionElementBase element : elements) {
-				if(element.isInstanceOf(Distribution.class)){
-					Distribution distribution = (Distribution) element;
-					distList.add(distribution);
-				}
+					if (element.isInstanceOf(Distribution.class)) {
+						Distribution distribution = (Distribution) element;
+						if(distribution.getArea() != null){
+							distList.add(distribution);							
+						}
+					}
 			}
 		}
 		
