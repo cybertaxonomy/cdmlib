@@ -416,13 +416,12 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.info("Name of Synonym: " + nameString);
 			}
 			
-			Integer originalGenusId = fauEuTaxon.getOriginalGenusId();
-			Integer actualGenusId = getActualGenusId(fauEuTaxon);
-
 			if (fauEuConfig.isDoBasionyms() 
 					&& fauEuTaxon.getRankId() > R_SUBGENUS
-					&& originalGenusId != 0
-					&& actualGenusId != 0) {
+					&& (fauEuTaxon.getOriginalGenusId() != 0)) {
+				
+				Integer originalGenusId = fauEuTaxon.getOriginalGenusId();
+				Integer actualGenusId = getActualGenusId(fauEuTaxon);
 				
 				if (logger.isDebugEnabled()) {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
@@ -574,13 +573,18 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	
 	private String genusSubGenusPart(StringBuilder originalGenusName, boolean useOriginalGenus, 
 			StringBuilder genusOrUninomial,
-			StringBuilder infraGenericEpithet) {
+			StringBuilder infraGenericEpithet,
+			FaunaEuropaeaTaxon fauEuTaxon) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		
 		stringBuilder.append(genusPart(originalGenusName, useOriginalGenus, genusOrUninomial));
 
-		if (useOriginalGenus) {
+		/*
+		 *  If the original genus should be used we are dealing with Synonyms or Basionyms.
+		 *  The infraGenericEpithet needs to be empty for Basionym creation and needs to be kept for Synonym creation.
+		 */
+		if (useOriginalGenus && fauEuTaxon.isValid()) {
 			infraGenericEpithet.delete(0, infraGenericEpithet.length());
 			stringBuilder.append(" ");
 			return stringBuilder.toString();
@@ -650,7 +654,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					//differ between isParanthesis= true and false
 					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
 							genusOrUninomial.append(grandParentName), 
-							infraGenericEpithet.append(parentName));
+							infraGenericEpithet.append(parentName),
+							fauEuTaxon);
 						nameCacheStringBuilder.append(genusSubGenusPart);
 					
 
@@ -669,7 +674,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
 							genusOrUninomial.append(greatGrandParentName), 
-							infraGenericEpithet.append(grandParentName));
+							infraGenericEpithet.append(grandParentName),
+							fauEuTaxon);
 					nameCacheStringBuilder.append(genusSubGenusPart);
 
 				} else if (grandParentRankId == R_GENUS) {
@@ -693,7 +699,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					
 					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
 							genusOrUninomial.append(greatGrandParentName), 
-							infraGenericEpithet.append(grandParentName));
+							infraGenericEpithet.append(grandParentName),
+							fauEuTaxon);
 					nameCacheStringBuilder.append(genusSubGenusPart);
 
 				} else if (grandParentRankId == R_GENUS) {
@@ -714,7 +721,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					
 					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
 							genusOrUninomial.append(greatGreatGrandParentName), 
-							infraGenericEpithet.append(greatGrandParentName));
+							infraGenericEpithet.append(greatGrandParentName),
+							fauEuTaxon);
 					nameCacheStringBuilder.append(genusSubGenusPart);
 					
 				} else if (greatGrandParentRankId == R_GENUS) {
