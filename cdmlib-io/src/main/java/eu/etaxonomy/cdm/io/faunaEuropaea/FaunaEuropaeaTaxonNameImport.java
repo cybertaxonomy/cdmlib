@@ -580,11 +580,13 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		
 		stringBuilder.append(genusPart(originalGenusName, useOriginalGenus, genusOrUninomial));
 
-		/*
-		 *  If the original genus should be used we are dealing with Synonyms or Basionyms.
-		 *  The infraGenericEpithet needs to be empty for Basionym creation and needs to be kept for Synonym creation.
-		 */
-		if (useOriginalGenus && fauEuTaxon.isValid()) {
+		// The infraGenericEpithet is set to empty only if the original genus should be used and
+		// the actualGenusId is not the originalGenusId.
+		// This differentiation is relevant for synonyms and for basionyms.
+		// InfraGenericEpithets of accepted taxa are not touched at all.
+		Integer originalGenusId = fauEuTaxon.getOriginalGenusId();
+		Integer actualGenusId = getActualGenusId(fauEuTaxon);
+		if (useOriginalGenus && originalGenusId != actualGenusId) {
 			infraGenericEpithet.delete(0, infraGenericEpithet.length());
 			stringBuilder.append(" ");
 			return stringBuilder.toString();
