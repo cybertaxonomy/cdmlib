@@ -153,6 +153,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			
 			"name.homotypicalGroup.$",
 			"name.homotypicalGroup.typifiedNames.$",
+			"name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
 			
 			"name.homotypicalGroup.typifiedNames.taxonBases.$"
 	});
