@@ -10,42 +10,31 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
  * @author n.hoffmann
- * @created Apr 8, 2010
+ * @created Aug 6, 2010
  * @version 1.0
  */
 @Controller
-@RequestMapping(value = {"/classifications"})
-public class ClassificationListController extends BaseListController<TaxonomicTree,ITaxonTreeService> {
-	
+@RequestMapping(value = {"/featurenode/{uuid}"})
+public class FeatureNodeController extends BaseController<FeatureNode, IFeatureNodeService> {
 	private static final Logger logger = Logger
-			.getLogger(ClassificationListController.class);
-
-
-	protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
-			"reference.authorTeam"
-	});
+			.getLogger(FeatureNodeController.class);
 	
-		
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.AbstractListController#setService(eu.etaxonomy.cdm.api.service.IService)
+	 * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
 	 */
 	@Override
 	@Autowired
-	public void setService(ITaxonTreeService service) {
+	public void setService(IFeatureNodeService service) {
 		this.service = service;
 	}
-		
 }

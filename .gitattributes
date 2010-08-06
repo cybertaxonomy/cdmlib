@@ -2685,6 +2685,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionListCo
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionPortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ExternalGeoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureNodeController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/HttpStatusMessage.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/IdDoesNotExistException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ManagementController.java -text
