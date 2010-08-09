@@ -56,6 +56,9 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 		super.updateTitleCache(clazz, null, null);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#getFeatureNodesAll()
+	 */
 	public List<FeatureNode> getFeatureNodesAll() {
 		return featureNodeDao.list();
 	}
@@ -64,11 +67,20 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#saveFeatureNodesAll(java.util.Collection)
 	 */
-	public Map<UUID, FeatureNode> saveFeatureNodesAll(
-			Collection<FeatureNode> featureNodeCollection) {
+	public Map<UUID, FeatureNode> saveFeatureNodesAll(Collection<FeatureNode> featureNodeCollection) {
 		return featureNodeDao.saveAll(featureNodeCollection);
-	} 
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#saveOrUpdateFeatureNodesAll(java.util.Collection)
+	 */
+	public Map<UUID, FeatureNode> saveOrUpdateFeatureNodesAll(Collection<FeatureNode> featureNodeCollection) {
+		return featureNodeDao.saveOrUpdateAll(featureNodeCollection);
+	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#loadWithNodes(java.util.UUID, java.util.List, java.util.List)
+	 */
 	public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 		nodePaths.add("children");
 		
