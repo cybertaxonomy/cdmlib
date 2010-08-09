@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -186,6 +187,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (feature == null){
 				feature = Feature.NewInstance(text, label, labelAbbrev);
 				feature.setUuid(uuid);
+				//set vocabulary ; FIXME use another user-defined vocabulary
+				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 
+				TermVocabulary<Feature> voc = getVocabularyService().find(uuidFeatureVoc);
+				voc.addTerm(feature);
 				getTermService().save(feature);
 			}
 			state.putFeature(feature);
