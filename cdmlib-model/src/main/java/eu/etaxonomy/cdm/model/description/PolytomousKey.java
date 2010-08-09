@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +34,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -271,4 +276,47 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	public void removeScopeRestriction(Scope scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
+	
+//******************** toString *****************************************/
+	
+	private class IntegerObject{
+		int number = 0;
+		int inc(){return number++;};
+		@Override public String toString(){ return String.valueOf(number);}
+	}
+	
+	public String print(PrintStream stream){
+		String title = this.getTitleCache() + "\n";
+		String strPrint = title;
+		stream.print(title);
+		
+		FeatureNode root = this.getRoot();
+		IntegerObject no = new IntegerObject();
+		no.inc();
+		strPrint += printNode(root, "  ", no, "Root", stream);
+		return strPrint;
+	}
+
+	private String printNode(FeatureNode node, String identation, IntegerObject no, String myNumber, PrintStream stream) {
+		int myInt = no.number;
+		String result = identation + myNumber + ". ";
+		if (node != null){
+			result += node.getFeature() == null ? "" : (node.getFeature().getTitleCache() + " - ");
+			Representation question = node.getQuestion(Language.DEFAULT());
+			result +=  ( question == null ? "" : (question.getText()))  ;
+			result +=  ( node.getTaxon() == null ? "" : ": " + node.getTaxon().getName().getTitleCache())  ;
+			result += "\n";
+			stream.print(result);
+			char nextCounter = 'a';
+			if (! node.getChildren().isEmpty()){
+				no.inc();
+			}
+			for (FeatureNode child : node.getChildren()){
+				String nextNumber = myInt + String.valueOf(nextCounter++);
+				result += printNode(child, identation + "  ", no, nextNumber, stream);
+			}
+		}
+		return result;
+	}
+	
 }
