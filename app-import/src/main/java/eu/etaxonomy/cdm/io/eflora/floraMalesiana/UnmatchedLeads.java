@@ -13,12 +13,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class UnmatchedLeads {
 	private static final Logger logger = Logger.getLogger(UnmatchedLeads.class);
@@ -35,7 +36,7 @@ public class UnmatchedLeads {
 		}
 		
 		protected static UnmatchedLeadsKey NewInstance(String num, String taxon){
-			num = (num == null ? "" : num + " " );
+			num = (StringUtils.isBlank(num) ? "" : num + " " );
 			return NewInstance(num + taxon);
 		}
 		
@@ -52,7 +53,14 @@ public class UnmatchedLeads {
 		
 		//taxonKey
 		String numAndTaxon;
+
+		public boolean isInnerLead(){
+			return (key != null);
+		}
 		
+		public boolean isTaxonLead(){
+			return (numAndTaxon != null);
+		}
 		
 		@Override
 		public boolean equals(Object object){
@@ -69,20 +77,6 @@ public class UnmatchedLeads {
 			if (! CdmUtils.nullSafeEqual(this.key, unmatchedLeadsKey.key)){
 				return false;
 			}
-			
-//			//all null
-//			if (this.key == null && unmatchedLeadsKey.key == null && this.taxon == null && unmatchedLeadsKey.taxon == null){
-//				return true;
-//			}
-//			//key != null && taxon == null
-//			if (this.key != null && unmatchedLeadsKey.key != null && this.taxon == null && unmatchedLeadsKey.taxon == null){
-//				return this.key.equals(unmatchedLeadsKey.key);
-//			}
-//			//key == null && taxon != null
-//			if (this.key == null && unmatchedLeadsKey.key == null && this.taxon != null && unmatchedLeadsKey.taxon != null){
-//				return this.taxon.equals(unmatchedLeadsKey.taxon);
-//			}
-			//else false
 			return true;
 		}
 		
@@ -157,6 +151,14 @@ public class UnmatchedLeads {
 			return result;
 		}
 		return false;
+	}
+	
+	public void saveToSession(IFeatureTreeService service){
+		Set<FeatureNode> allNodes = new HashSet<FeatureNode>();
+		for (Set<FeatureNode> set :map.values()){
+			allNodes.addAll(set);
+		}
+		service.saveOrUpdateFeatureNodesAll(allNodes);
 	}
 	
 //********************** toString()******************************/

@@ -10,11 +10,13 @@
 
 package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
 
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
  * @author a.mueller
@@ -25,21 +27,34 @@ public class FloraMalesianaImportState extends ImportStateBase<FloraMalesianaImp
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FloraMalesianaImportState.class);
 	
-	private UnmatchedLeads openKeys;
 
+	private UnmatchedLeads unmatchedLeads;
 
-
+	private Set<FeatureNode> featureNodesToSave = new HashSet<FeatureNode>();
+	
+//**************************** CONSTRUCTOR ******************************************/
+	
 	public FloraMalesianaImportState(FloraMalesianaImportConfigurator config) {
 		super(config);
 		setTransformer(new FloraMalesianaTransformer());
 	}
 
-	public UnmatchedLeads getOpenKeys() {
-		return openKeys;
+// ********************************** GETTER / SETTER *************************************/	
+	
+	public UnmatchedLeads getUnmatchedLeads() {
+		return unmatchedLeads;
 	}
 
-	public void setOpenKeys(UnmatchedLeads openKeys) {
-		this.openKeys = openKeys;
+	public void setUnmatchedLeads(UnmatchedLeads unmatchedKeys) {
+		this.unmatchedLeads = unmatchedKeys;
+	}
+
+	public void setFeatureNodesToSave(Set<FeatureNode> featureNodesToSave) {
+		this.featureNodesToSave = featureNodesToSave;
+	}
+
+	public Set<FeatureNode> getFeatureNodesToSave() {
+		return featureNodesToSave;
 	}
 
 

@@ -37,6 +37,9 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
 	//from the first sapindaceae import to the second sapindacea import
 	private UUID lastTaxonUuid;
+	
+	//if true, the keys will be printed after they have been created	
+	private boolean doPrintKeys = false;
 
 	
 	protected void makeIoClassList(){
@@ -161,6 +164,14 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	
 	public void setLastTaxonUuid(UUID lastTaxonUuid) {
 		this.lastTaxonUuid = lastTaxonUuid;
+	}
+
+	public void setDoPrintKeys(boolean doPrintKeys) {
+		this.doPrintKeys = doPrintKeys;
+	}
+
+	public boolean isDoPrintKeys() {
+		return doPrintKeys;
 	}
 	
 

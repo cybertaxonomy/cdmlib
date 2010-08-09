@@ -9,16 +9,26 @@
 
 package eu.etaxonomy.cdm.app.eflora;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaImportConfigurator;
+import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaTransformer;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 
 /**
  * @author a.mueller
@@ -26,7 +36,6 @@ import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaImportConfigurato
  * @version 1.0
  */
 public class FloraMalesianaActivator {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FloraMalesianaActivator.class);
 	
 	//database validation status (create, update, validate ...)
@@ -42,18 +51,24 @@ public class FloraMalesianaActivator {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_malesiana_production();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
-	static final UUID treeUuid = UUID.fromString("ca4e4bcb-a1d1-4124-a358-a3d3c41dd450");
+	//feature tree uuid
+	public static final UUID featureTreeUuid = UUID.fromString("168df0c6-6429-484c-b26f-ded1f7e44bd9");
+	
+	//classification
+	static final UUID classificationUuid = UUID.fromString("ca4e4bcb-a1d1-4124-a358-a3d3c41dd450");
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
+	
+	static boolean doPrintKeys = false;
 	
 	//taxa
 	static final boolean doTaxa = true;
 
 	private boolean includeSapindaceae1 = true;
 	private boolean includeSapindaceae2 = true;
-	private boolean includeVol13_1 = false;
-	private boolean includeVol13_2 = false;
+	private boolean includeVol13_1 = true;
+	private boolean includeVol13_2 = true;
 
 	
 	private void doImport(ICdmDataSource cdmDestination){
@@ -61,9 +76,10 @@ public class FloraMalesianaActivator {
 		//make BerlinModel Source
 		String source = fmSource1;
 		FloraMalesianaImportConfigurator floraMalesianaConfig= FloraMalesianaImportConfigurator.NewInstance(source, cdmDestination);
-		floraMalesianaConfig.setTaxonomicTreeUuid(treeUuid);
+		floraMalesianaConfig.setTaxonomicTreeUuid(classificationUuid);
 		floraMalesianaConfig.setDoTaxa(doTaxa);
 		floraMalesianaConfig.setCheck(check);
+		floraMalesianaConfig.setDoPrintKeys(doPrintKeys);
 		floraMalesianaConfig.setDbSchemaValidation(hbm2dll);
 		
 		CdmDefaultImport<FloraMalesianaImportConfigurator> myImport = new CdmDefaultImport<FloraMalesianaImportConfigurator>();
@@ -103,16 +119,151 @@ public class FloraMalesianaActivator {
 			System.out.println("End import from ("+ fmSource13_2.toString() + ")...");
 		}
 		
-//		IReferenceService refService = myImport.getCdmAppController().getReferenceService();
-//		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-//		IBook book = refFactory.newBook();
-//		//book.setDatePublished(TimePeriod.NewInstance(1945));
-//		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
-//		refService.saveOrUpdate((ReferenceBase)book);
-//		myImport.getCdmAppController().close();
-//		logger.info("End");
-
+		FeatureTree tree = makeFeatureNode(myImport.getCdmAppController().getTermService());
+		myImport.getCdmAppController().getFeatureTreeService().saveOrUpdate(tree);
+		
+		//check keys
+		if (doPrintKeys){
+			TransactionStatus tx = myImport.getCdmAppController().startTransaction();
+			List<FeatureTree> keys = myImport.getCdmAppController().getFeatureTreeService().list(PolytomousKey.class, null, null, null, null);
+			for(FeatureTree key : keys){
+				((PolytomousKey)key).print(System.out);
+				System.out.println();
+			}
+			myImport.getCdmAppController().commitTransaction(tx);
+		}
+		
 	}
+	
+	private FeatureTree makeFeatureNode(ITermService service){
+		
+		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
+		FeatureNode root = result.getRoot();
+		FeatureNode newNode;
+		
+		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
+		root.addChild(newNode);
+		FloraMalesianaTransformer transformer = new FloraMalesianaTransformer();
+		addFeataureNodesByStringList(descriptionFeatureList, newNode, transformer, service);
+		
+		newNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
+		root.addChild(newNode);
+		newNode = FeatureNode.NewInstance(Feature.ECOLOGY());
+		root.addChild(newNode);
+		newNode = FeatureNode.NewInstance(Feature.USES());
+		root.addChild(newNode);
+		
+		newNode = FeatureNode.NewInstance(Feature.ANATOMY());
+		root.addChild(newNode);	
+
+
+
+		return result;
+	}
+
+	private static String [] descriptionFeatureList = new String[]{
+		"Leaflets",  
+		"Leaves",  
+		"Branchlets",  
+		"lifeform",  
+		"Inflorescences",  
+		"Flowers",  
+		"Sepals",  
+		"Outer Sepals",  
+		"Anthers",  
+		"Petals",  
+		"Petal",  
+		"Disc",  
+		"Stamens",  
+		"Fruits",  
+		"Indumentum",  
+		"figure",  
+		"fig",  
+		"figs",  
+		"Seeds",  
+		"Flowering",  
+		"Bracts",  
+		"Pedicels",  
+		"Pistil",  
+		"Ovary",  
+		"Twigs",  
+		"Pedicels",  
+		"Infructescences",  
+		"Branches",  
+		"Flower",  
+		"Ovules",  
+		"Female",  
+		"Style",  
+		"Arillode",  
+		"Fruit",  
+		"Branch",  
+		"Inflorescence",  
+		"Calyx",  
+		"Seedling",  
+		"Staminodes",  
+		"Filaments",  
+		"Pistillode",  
+		"Stigma",  
+		"Petiole",  
+		"Buds",  
+		"Stems",  
+		"Trees",  
+		"Chromosomes",  
+		"Axillary",  
+		"Petiolules",  
+		"Male flowers",  
+		"Young inflorescences",  
+		"Sepal",  
+		"Thyrses",  
+		"Thyrsus",  
+		"Bark",  
+		"endophytic body",  
+		"flowering buds",  
+		"flower buds",  
+		"perianth",  
+		"scales",  
+		"perigone tube",  
+		"corolla",  
+		"annulus",  
+		"female flowers",  
+		"cymes",  
+		"nutlets",  
+		"stem",  
+		"pollen",  
+		"secondary xylem",  
+		"chromosome number",  
+		"stem leaves",  
+		"flower tube",  
+	
+		"seed",  
+		"drupes",  
+		"fruiting axes",  
+		"androecium",  
+		"gynoecium",  
+	
+		"anther",  
+		"flower-bearing stems",  
+		"Flowering branchlets",  
+	
+	};
+	
+	public void addFeataureNodesByStringList(String[] featureStringList, FeatureNode root, IInputTransformer transformer, ITermService termService){
+		try {
+			for (String featureString : featureStringList){
+			UUID featureUuid;
+			featureUuid = transformer.getFeatureUuid(featureString);
+			Feature feature = (Feature)termService.find(featureUuid);
+			if (feature != null){
+				FeatureNode child = FeatureNode.NewInstance(feature);
+				root.addChild(child);	
+			}
+		}
+		} catch (UndefinedTransformerMethodException e) {
+			logger.error("getFeatureUuid is not implemented in transformer. Features could not be added");
+		}
+	}
+	
+
 
 	/**
 	 * @param args
