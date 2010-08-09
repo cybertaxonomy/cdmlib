@@ -193,7 +193,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 					}
 				}
 			}
-			saveOrUpdateAll(entitiesToUpdate);
+			saveOrUpdate(entitiesToUpdate);
 			
 		}
 	}

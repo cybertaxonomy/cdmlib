@@ -155,7 +155,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, T> saveOrUpdateAll(Collection<T> transientInstances) {
+	public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
 		return dao.saveOrUpdateAll(transientInstances);
 	}
 
