@@ -862,8 +862,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		}
 		
 		//if ((!infraGenericEpithet.equals("") && fauEuTaxon.isParenthesis()) || (!infraGenericEpithet.equals("") && fauEuTaxon.)) {
-		if (fauEuTaxon.getParentRankId() == R_SUBGENUS || (fauEuTaxon.getRankId() == R_SUBGENUS) ||
-				fauEuTaxon.getGrandParentRankId() == R_SUBGENUS){
+		if (fauEuTaxon.getParentRankId() == R_SUBGENUS || fauEuTaxon.getRankId() == R_SUBGENUS ||
+				fauEuTaxon.getGrandParentRankId() == R_SUBGENUS || fauEuTaxon.getGreatGrandParentRankId() == R_SUBGENUS) {
 			zooName.setInfraGenericEpithet(emptyToNull(infraGenericEpithet));
 			if (logger.isDebugEnabled()) { 
 				logger.debug("infraGenericEpithet: " + infraGenericEpithet); 
