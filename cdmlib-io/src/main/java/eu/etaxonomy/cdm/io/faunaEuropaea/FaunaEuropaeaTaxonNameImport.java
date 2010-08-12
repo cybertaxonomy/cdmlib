@@ -586,7 +586,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		// InfraGenericEpithets of accepted taxa are not touched at all.
 		Integer originalGenusId = fauEuTaxon.getOriginalGenusId();
 		Integer actualGenusId = getActualGenusId(fauEuTaxon);
-		if (useOriginalGenus && originalGenusId != actualGenusId && originalGenusId.intValue() != 0) {
+		if (useOriginalGenus && originalGenusId != actualGenusId && 
+				originalGenusId.intValue() > 0 &&
+				actualGenusId.intValue() > 0) {
 			infraGenericEpithet.delete(0, infraGenericEpithet.length());
 			stringBuilder.append(" ");
 			return stringBuilder.toString();
