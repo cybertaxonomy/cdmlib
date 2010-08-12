@@ -163,9 +163,8 @@ public class PesiTaxonExport extends PesiExportBase {
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<TaxonNameBase> list = null;
-
-			// 1st Round: Make Taxa
-			logger.error("PHASE 1...");
+			
+			logger.error("PHASE 1: Export Taxa...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -250,8 +249,8 @@ public class PesiTaxonExport extends PesiExportBase {
 			count = 0;
 			pastCount = 0;
 			List<TaxonomicTree> taxonomicTreeList = null;
-			// 2nd Round: Add ParentTaxonFk, TreeIndex, Rank and KingdomFk to each Taxon
-			logger.error("PHASE 2...");
+			// 2nd Round: Add ParentTaxonFk, TreeIndex to each Taxon
+			logger.error("PHASE 2: Add ParenTaxonFk and TreeIndex...");
 			
 			// Specify starting ranks for tree traversing
 			rankList.add(Rank.KINGDOM());
@@ -340,8 +339,8 @@ public class PesiTaxonExport extends PesiExportBase {
 				}
 			}
 
-			logger.error("PHASE 3...");
-			// Be sure to add rank information, KingdomFk and TypeNameFk to any taxonName
+			logger.error("PHASE 3: Add Rank data, KingdomFk and TypeNameFk...");
+			// Be sure to add rank information, KingdomFk and TypeNameFk to every taxonName
 			
 			// Start transaction
 			txStatus = startTransaction(true);
@@ -372,6 +371,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			// Commit transaction
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
+			
 			
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
