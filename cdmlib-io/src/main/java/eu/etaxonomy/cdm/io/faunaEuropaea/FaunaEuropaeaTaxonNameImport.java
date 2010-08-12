@@ -427,9 +427,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
 				}
 				
-				if (fauEuTaxon.isParenthesis() && actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) { 
+				if (fauEuTaxon.isParenthesis() && actualGenusId.intValue() != originalGenusId.intValue() && taxonBase.isInstanceOf(Taxon.class)) {
 					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
-				} else if (fauEuTaxon.isParenthesis()){
+				} else if (fauEuTaxon.isParenthesis()) {
 					//the authorteam should be set in parenthesis because there should be a basionym, but we do not know it?
 					ZoologicalName zooName = taxonName.deproxy(taxonName, ZoologicalName.class);
 					zooName.setBasionymAuthorTeam(zooName.getCombinationAuthorTeam());
@@ -586,7 +586,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		// InfraGenericEpithets of accepted taxa are not touched at all.
 		Integer originalGenusId = fauEuTaxon.getOriginalGenusId();
 		Integer actualGenusId = getActualGenusId(fauEuTaxon);
-		if (useOriginalGenus && originalGenusId != actualGenusId && 
+		if (useOriginalGenus && originalGenusId.intValue() != actualGenusId.intValue() && 
 				originalGenusId.intValue() > 0 &&
 				actualGenusId.intValue() > 0) {
 			infraGenericEpithet.delete(0, infraGenericEpithet.length());
