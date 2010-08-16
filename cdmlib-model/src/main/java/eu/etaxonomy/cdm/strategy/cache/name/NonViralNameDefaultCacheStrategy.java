@@ -168,7 +168,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		String result = "";
 		//Autonym
-		if (isAutonym(nonViralName)){
+		if (nonViralName.isAutonym()){
 			result = handleAutonym(nonViralName);
 		}else{ //not Autonym
 			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
@@ -541,20 +541,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			return result;
 		}
 
-		
-		
-		/**
-		 * @param name
-		 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet, else false
-		 */
-		protected boolean isAutonym(NonViralName nonViralName){
-			if (nonViralName != null && nonViralName.getRank() != null && nonViralName.getSpecificEpithet() != null && nonViralName.getInfraSpecificEpithet() != null && 
-					nonViralName.getRank().isInfraSpecific() && nonViralName.getSpecificEpithet().trim().equals(nonViralName.getInfraSpecificEpithet().trim())){
-				return true;
-			}else{
-				return false;
-			}
-		}
 		
 		protected String addAppendedPhrase(String resultString, NonViralName nonViralName){
 			String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
