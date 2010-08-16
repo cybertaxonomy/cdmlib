@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 
@@ -78,6 +79,22 @@ public class InputTransformerBase implements IInputTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getMarkerTypeByKey(java.lang.String)
+	 */
+	public MarkerType getMarkerTypeByKey(String key) throws UndefinedTransformerMethodException {
+		String warning = "getMarkerTypeByKey is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getMarkerTypeUuid(java.lang.String)
+	 */
+	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getMarkerTypeUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNameTypeDesignationStatusByKey(java.lang.String)
 	 */

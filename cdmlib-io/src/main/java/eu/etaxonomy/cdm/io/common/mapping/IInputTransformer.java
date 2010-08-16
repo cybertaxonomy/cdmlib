@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 
@@ -25,18 +26,27 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
  */
 public interface IInputTransformer {
 	
+	//Feature
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException;
 	
 	public UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException;
 	
+	//Language
 	public Language getLanguageByKey(String key) throws UndefinedTransformerMethodException;
 	
 	public UUID getLanguageUuid(String key) throws UndefinedTransformerMethodException;
 
+	//Extension Type
 	public ExtensionType getExtensionTypeByKey(String key) throws UndefinedTransformerMethodException;
 	
 	public UUID getExtensionTypeUuid(String key) throws UndefinedTransformerMethodException;
 
+	//MarkerType
+	public MarkerType getMarkerTypeByKey(String key) throws UndefinedTransformerMethodException;
+	
+	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException;
+
+	//NameTypeDesignationStatus
 	public NameTypeDesignationStatus getNameTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException;
 	
 	public UUID getNameTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException;
