@@ -1255,5 +1255,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		}
 	}
 	
-	
+	/**
+	  * Needs to be implemented by those classes that handle autonyms (e.g. botanical names).
+	  **/
+	public boolean isAutonym(){
+		return false;
+	}
 }

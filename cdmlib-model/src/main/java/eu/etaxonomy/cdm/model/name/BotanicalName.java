@@ -319,7 +319,22 @@ public class BotanicalName extends NonViralName<BotanicalName> /*implements IMer
 	 * @return
 	 */
 	public static BotanicalName valueOf(TaxonNameBase taxonNameBase){
-		logger.error("Not implemented yet.");
+		logger.error("valueOf not implemented yet.");
 		return null;
 	}
+	
+	/**
+	 * @param name
+	 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet, else false
+	 */
+	@Override
+	public boolean isAutonym(){
+		if (this.getRank() != null && this.getSpecificEpithet() != null && this.getInfraSpecificEpithet() != null && 
+				this.getRank().isInfraSpecific() && this.getSpecificEpithet().trim().equals(this.getInfraSpecificEpithet().trim())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 }
