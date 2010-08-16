@@ -89,9 +89,12 @@ public class Source {
     private boolean isCursor;
     private boolean connExist = false; //does a Connection exist?
     private String mUserName; 
-    private String mPwd; 
-    
-    private static String userNameDefault = "sa"; //default user
+    private String mPwd;
+
+	private boolean doLog = false; 
+
+
+	private static String userNameDefault = "sa"; //default user
     private static String pwdDefault = "sa"; //default PWD
     
     
@@ -250,18 +253,34 @@ public class Source {
      * @throws SourceConnectionException
      */
     private boolean makeConnection()throws SourceConnectionException {
+    	if (doLog ){
+    		DriverManager.setLogWriter(new PrintWriter(System.out));
+    	}
     	try {
 			if (makeConnectionString() == false){
 				throw new SourceConnectionException ("Error in Connection String");
 			}
-			mConn = DriverManager.getConnection(mUrl, mUserName, mPwd);
+			if (mDbms.equalsIgnoreCase(ODDBC) ){
+				//not necessarily limited to ODBC
+				java.util.Properties prop = new java.util.Properties();
+//			    prop.put("charSet", "Big5");
+			    prop.put("user", mUserName);
+			    prop.put("password", mPwd);
+//			    DriverManager.setLogWriter(new PrintWriter(System.out));
+			    mConn = DriverManager.getConnection(mUrl, prop);
+			}else{
+				mConn = DriverManager.getConnection(mUrl, mUserName, mPwd);				
+			}
+
+			
+			
 			mConn.setCatalog(mDb);  //
 			logger.info("Connected to " + mConn.getCatalog());
 			mStmt = mConn.createStatement();
 			this.connExist = true;
 			return true;
 		}catch (SQLException e){
-            logger.error("Probleme beim �ffnen der Datenbank !!!\n" + 
+            logger.error("Problems when trying to open the database !!!\n" + 
                     "URL: " + mUrl  + "\n" +
                     "Exception: " + e);
             throw new SourceConnectionException ();
@@ -298,16 +317,21 @@ public class Source {
 	            mUrl = urlSQLServer2008 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod; 
 	        }
 	        else if (mDbms.equalsIgnoreCase(ACCESS)) {
-	            Class.forName(clsODBC);
-	            mUrl = urlODBC + mDb ; 
+	        	Class.forName(clsODBC);
+	            
+	        	//mDb must be the file path
+	        	mUrl = urlODBC + "Driver={Microsoft Access Driver (*.mdb)};DBQ=";
+	        	mUrl += mDb.trim() + ";DriverID=22;READONLY=false}";  
 	        }
 	        else if (mDbms.equalsIgnoreCase(EXCEL)) {
 	            Class.forName(clsODBC);
-	            mUrl = urlODBC + mDb ; 
+	            mUrl = urlODBC + "jdbc:odbc:Driver={Microsoft Excel Driver (*.xls)};DBQ=";
+	            mUrl += mDb.trim() + ";DriverID=22;READONLY=false";
 	        }
 	        else if (mDbms.equalsIgnoreCase(ODDBC)) {
-	            Class.forName(clsODBC);
-	            mUrl = urlODBC + mServer ; 
+	            //mDb must be the System DNS name
+	        	Class.forName(clsODBC);
+	            mUrl = urlODBC + mDb ; 
 	        }
 	        else if (mDbms.equalsIgnoreCase(ORACLE)) {
 	            Class.forName(clsOracle);
@@ -401,6 +425,15 @@ public class Source {
     public String getServer(){
     	return mServer;
     }
+    
+    
+    public boolean isDoLog() {
+		return doLog;
+	}
+
+	public void setDoLog(boolean doLog) {
+		this.doLog = doLog;
+	}
     
     /**
      * Checks if an attribute exists in the database schema. At the moment only supported
