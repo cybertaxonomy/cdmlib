@@ -116,14 +116,18 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 			if (hasBook && bookSection.getInBook().getDatePublished() != null){
 				TimePeriod bookDate = bookSection.getInBook().getDatePublished();
 				String bookDateString = bookDate.getYear();
-				int pos = StringUtils.lastIndexOf(result, bookDateString);
-				if (pos > -1 ){
-					result = result.substring(0, pos) + bookSectionDate + result.substring(pos + bookDateString.length());
+				if (CdmUtils.isNotEmpty(bookDateString)){
+					int pos = StringUtils.lastIndexOf(result, bookDateString);
+					if (pos > -1 ){
+						result = result.substring(0, pos) + bookSectionDate + result.substring(pos + bookDateString.length());
+					}else{
+						logger.warn("BookDateString (" + bookDateString + ") could not be found in result (" + result +")");
+					}
 				}else{
-					logger.warn("BookDateString (" + bookDateString + ") could not be found in result (" + result +")");
+					result = result + beforeYear + bookSectionDate + afterYear;
 				}
 			}else{
-				result = result + beforeYear + bookSectionDate;
+				result = result + beforeYear + bookSectionDate + afterYear;
 			}
 		}
 		return result;
