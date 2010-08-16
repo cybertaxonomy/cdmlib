@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsTaxonImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -370,6 +369,11 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 		Rank rank = null;
 		if (kingdomId != null){
 			rank = state.getRank(intRank, kingdomId);
+		}else{
+			logger.warn("KingdomId is null");
+		}
+		if (rank == null){
+			logger.warn("Rank is null. KingdomId: " + kingdomId + ", rankId: " +  intRank);
 		}
 		if (nc != null){
 			result = (NonViralName)nc.getNewTaxonNameInstance(rank);

@@ -64,7 +64,11 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 				
 				Map<Integer, Rank> kingdomMap = makeKingdomMap(rankMap, rankId);			
 				try {
+					rankName = rankName.replace("Forma", "Form").replace("Subforma", "Subform");
 					Rank rank = Rank.getRankByEnglishName(rankName, nc, false);
+					if (rank == null){
+						logger.warn("Rank is null: " + rankName);
+					}
 					kingdomMap.put(kingdomId, rank);	
 				} catch (UnknownCdmTypeException e) {
 					String errorMessage = "Rank '" + rankName + "' is not well mapped for code " + nc + ", kingdom_id = " + kingdomId + ". Rank is ignored!";
