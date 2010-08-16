@@ -43,6 +43,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 		}else{
 			title = taxonBase.toString();
 		}
+		if (taxonBase.isDoubtful()){
+			title = "?" + title;
+		}
 		return title;
 	}
 
