@@ -100,9 +100,13 @@ public class ErmsImportState extends DbImportStateBase<ErmsImportConfigurator, E
 		if (this.rankMap == null){
 			throw new RuntimeException("rank map not initialized");
 		}
-		Map<Integer, Rank> kingdomMap = rankMap.get(rankId);
-		if (kingdomMap != null){
-			result = kingdomMap.get(kingdomId);
+		if (kingdomId == 147415 && rankId == 10){
+			result = Rank.KINGDOM();
+		}else{
+			Map<Integer, Rank> kingdomMap = rankMap.get(rankId);
+			if (kingdomMap != null){
+				result = kingdomMap.get(kingdomId);
+			}
 		}
 		return result;
 	}
