@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
@@ -109,6 +111,27 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putExtensionType(extensionType);
 		}
 		return extensionType;
+	}
+	
+	
+	protected MarkerType getMarkerType(STATE state, String keyString) {
+		IInputTransformer transformer = state.getTransformer();
+		MarkerType markerType = null;
+		try {
+			markerType = transformer.getMarkerTypeByKey(keyString);
+		} catch (UndefinedTransformerMethodException e) {
+			logger.info("getMarkerTypeByKey not yet implemented for this import");
+		}
+		if (markerType == null ){
+			UUID uuid;
+			try {
+				uuid = transformer.getMarkerTypeUuid(keyString);
+				return getMarkerType(state, uuid, keyString, keyString, keyString);
+			} catch (UndefinedTransformerMethodException e) {
+				logger.warn("getMarkerTypeUuid not yet implemented for this import");
+			}
+		}
+		return null;
 	}
 	
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
@@ -234,6 +257,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	/**
 	 * If the child taxon is missing genus or species epithet information and the rank is below <i>genus</i>
 	 * or <i>species</i> respectively the according epithets are taken from the parent taxon.
+	 * If the name is an autonym and has no combination author/basionym author the authors are taken from
+	 * the parent.
 	 * @param parentTaxon
 	 * @param childTaxon
 	 */
@@ -246,6 +271,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	/**
 	 * If the child name is missing genus or species epithet information and the rank is below <i>genus</i>
 	 * or <i>species</i> respectively the according epithets are taken from the parent name.
+	 * If the name is an autonym and has no combination author/basionym author the authors are taken from
+	 * the parent.
 	 * @param parentTaxon
 	 * @param childTaxon
 	 */
@@ -253,9 +280,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (CdmUtils.isEmpty(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}
+		
 		if (CdmUtils.isEmpty(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
 			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
+		if (childName.isAutonym() && childName.getCombinationAuthorTeam() == null && childName.getBasionymAuthorTeam() == null ){
+			childName.setCombinationAuthorTeam(parentName.getCombinationAuthorTeam());
+			childName.setBasionymAuthorTeam(parentName.getBasionymAuthorTeam());
+		}	
 	}
 	
 }
