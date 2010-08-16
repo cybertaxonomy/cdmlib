@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -54,8 +55,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
 		result = addYear(result, nomenclaturalReference);
 		TeamOrPersonBase<?> team = nomenclaturalReference.getAuthorTeam();
-		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
-			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
+		if (team != null &&  StringUtils.isNotEmpty(team.getTitleCache()) ){
 			result = team.getTitleCache() + afterAuthor + result;
 		}
 		return result;
