@@ -22,11 +22,13 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -480,7 +482,31 @@ public final class PesiTransformer {
 	public static int Bacteria_Subspecies = 230;
 	public static int Bacteria_Variety = 240;
 	public static int Bacteria_Forma	= 260;
-	
+
+	public static String Bacteria_STR_Kingdom = "Kingdom";
+	public static String Bacteria_STR_Subkingdom = "Subkingdom";
+	public static String Bacteria_STR_Phylum = "Phylum";
+	public static String Bacteria_STR_Subphylum = "Subphylum";
+	public static String Bacteria_STR_Superclass = "Superclass";
+	public static String Bacteria_STR_Class = "Class";
+	public static String Bacteria_STR_Subclass = "Subclass";
+	public static String Bacteria_STR_Infraclass = "Infraclass";
+	public static String Bacteria_STR_Superorder = "Superorder";
+	public static String Bacteria_STR_Order = "Order";
+	public static String Bacteria_STR_Suborder = "Suborder";
+	public static String Bacteria_STR_Infraorder = "Infraorder";
+	public static String Bacteria_STR_Superfamily = "Superfamily";
+	public static String Bacteria_STR_Family = "Family";
+	public static String Bacteria_STR_Subfamily = "Subfamily";
+	public static String Bacteria_STR_Tribe = "Tribe";
+	public static String Bacteria_STR_Subtribe = "Subtribe";
+	public static String Bacteria_STR_Genus = "Genus";
+	public static String Bacteria_STR_Subgenus = "Subgenus";
+	public static String Bacteria_STR_Species = "Species";
+	public static String Bacteria_STR_Subspecies = "Subspecies";
+	public static String Bacteria_STR_Variety = "Variety";
+	public static String Bacteria_STR_Forma = "Forma";
+
 	// Chromista Ranks
 	public static int Chromista_Kingdom = 10;
 	public static int Chromista_Subkingdom = 20;
@@ -2477,6 +2503,30 @@ public final class PesiTransformer {
 				logger.warn("Rank for Kingdom Plantae not yet supported in CDM: "+ rank.getLabel());
 				return null;
 			}
+		} else if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_BACTERIA) {
+			if (rank.equals(Rank.KINGDOM())) { result = Bacteria_STR_Kingdom; }
+			else if (rank.equals(Rank.SUBKINGDOM())) { result = Bacteria_STR_Subkingdom; }
+			else if (rank.equals(Rank.PHYLUM())) { result = Bacteria_STR_Phylum; }
+			else if (rank.equals(Rank.SUBPHYLUM())) { result = Bacteria_STR_Subphylum; }
+			else if (rank.equals(Rank.SUPERCLASS())) { result = Bacteria_STR_Superclass; }
+			else if (rank.equals(Rank.CLASS())) { result = Bacteria_STR_Class; }
+			else if (rank.equals(Rank.SUBCLASS())) { result = Bacteria_STR_Subclass; }
+			else if (rank.equals(Rank.INFRACLASS())) { result = Bacteria_STR_Infraclass; }
+			else if (rank.equals(Rank.SUPERORDER())) { result = Bacteria_STR_Superorder; }
+			else if (rank.equals(Rank.ORDER())) { result = Bacteria_STR_Order; }
+			else if (rank.equals(Rank.SUBORDER())) { result = Bacteria_STR_Suborder; }
+			else if (rank.equals(Rank.INFRAORDER())) { result = Bacteria_STR_Infraorder; }
+			else if (rank.equals(Rank.SUPERFAMILY())) { result = Bacteria_STR_Superfamily; }
+			else if (rank.equals(Rank.FAMILY())) { result = Bacteria_STR_Family; }
+			else if (rank.equals(Rank.SUBFAMILY())) { result = Bacteria_STR_Subfamily; }
+			else if (rank.equals(Rank.TRIBE())) { result = Bacteria_STR_Tribe; }
+			else if (rank.equals(Rank.SUBTRIBE())) { result = Bacteria_STR_Subtribe; }
+			else if (rank.equals(Rank.GENUS())) { result = Bacteria_STR_Genus; }
+			else if (rank.equals(Rank.SUBGENUS())) { result = Bacteria_STR_Subgenus; }
+			else if (rank.equals(Rank.SPECIES())) { result = Bacteria_STR_Species; }
+			else if (rank.equals(Rank.SUBSPECIES())) { result = Bacteria_STR_Subspecies; }
+			else if (rank.equals(Rank.VARIETY())) { result = Bacteria_STR_Variety; }
+			else if (rank.equals(Rank.FORM())) { result = Bacteria_STR_Forma; }
 		} else {
 			//TODO Exception
 			logger.warn("Kingdom not yet supported in CDM: "+ pesiKingdomId);
@@ -2608,6 +2658,12 @@ public final class PesiTransformer {
 			result = KINGDOM_ANIMALIA;
 		} else if (nomenclaturalCode.equals(NomenclaturalCode.ICBN)) {
 			result = KINGDOM_PLANTAE;
+		} else if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)) {
+			result = KINGDOM_BACTERIA;
+//		} else if (nomenclaturalCode.equals(NomenclaturalCode.)) { // Biota
+//			result = 
+		} else {
+			logger.error("NomenclaturalCode not yet considered: " + nomenclaturalCode.getUuid() + " (" +  nomenclaturalCode.getTitleCache() + ")");
 		}
 		return result;
 	}
@@ -2623,8 +2679,13 @@ public final class PesiTransformer {
 			code = NomenclaturalCode.ICZN;
 		} else if (taxonName.isInstanceOf(BotanicalName.class)) {
 			code = NomenclaturalCode.ICBN;
+		} else if (taxonName.isInstanceOf(BacterialName.class)) {
+			code = NomenclaturalCode.ICNB;
+//		} else if (taxonName.isInstanceOf(NonViralName.class)) { // Biota
+//			code = NomenclaturalCode.
 		} else {
 			logger.error("NomenclaturalCode could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			logger.error("");
 		}
 		return code;
 	}
@@ -2775,6 +2836,30 @@ public final class PesiTransformer {
 				logger.warn("Rank for Kingdom Plantae not yet supported in CDM: "+ rank.getLabel());
 				return null;
 			}
+		} else if (pesiKingdomId != null && pesiKingdomId.intValue() == KINGDOM_BACTERIA) {
+			if (rank.equals(Rank.KINGDOM())) { result = Bacteria_Kingdom; }
+			else if (rank.equals(Rank.SUBKINGDOM())) { result = Bacteria_Subkingdom; }
+			else if (rank.equals(Rank.PHYLUM())) { result = Bacteria_Phylum; }
+			else if (rank.equals(Rank.SUBPHYLUM())) { result = Bacteria_Subphylum; }
+			else if (rank.equals(Rank.SUPERCLASS())) { result = Bacteria_Superclass; }
+			else if (rank.equals(Rank.CLASS())) { result = Bacteria_Class; }
+			else if (rank.equals(Rank.SUBCLASS())) { result = Bacteria_Subclass; }
+			else if (rank.equals(Rank.INFRACLASS())) { result = Bacteria_Infraclass; }
+			else if (rank.equals(Rank.SUPERORDER())) { result = Bacteria_Superorder; }
+			else if (rank.equals(Rank.ORDER())) { result = Bacteria_Order; }
+			else if (rank.equals(Rank.SUBORDER())) { result = Bacteria_Suborder; }
+			else if (rank.equals(Rank.INFRAORDER())) { result = Bacteria_Infraorder; }
+			else if (rank.equals(Rank.SUPERFAMILY())) { result = Bacteria_Superfamily; }
+			else if (rank.equals(Rank.FAMILY())) { result = Bacteria_Family; }
+			else if (rank.equals(Rank.SUBFAMILY())) { result = Bacteria_Subfamily; }
+			else if (rank.equals(Rank.TRIBE())) { result = Bacteria_Tribe; }
+			else if (rank.equals(Rank.SUBTRIBE())) { result = Bacteria_Subtribe; }
+			else if (rank.equals(Rank.GENUS())) { result = Bacteria_Genus; }
+			else if (rank.equals(Rank.SUBGENUS())) { result = Bacteria_Subgenus; }
+			else if (rank.equals(Rank.SPECIES())) { result = Bacteria_Species; }
+			else if (rank.equals(Rank.SUBSPECIES())) { result = Bacteria_Subspecies; }
+			else if (rank.equals(Rank.VARIETY())) { result = Bacteria_Variety; }
+			else if (rank.equals(Rank.FORM())) { result = Bacteria_Forma; }
 		} else {
 			//TODO Exception
 			logger.warn("Kingdom not yet supported in CDM: "+ pesiKingdomId);

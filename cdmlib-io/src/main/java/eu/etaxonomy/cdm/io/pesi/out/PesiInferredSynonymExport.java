@@ -10,37 +10,26 @@
 package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -52,6 +41,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -60,50 +50,23 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 /**
  * @author a.mueller
  * @author e.-m.lee
- * @date 23.02.2010
+ * @date 04.08.2010
  *
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiTaxonExport extends PesiExportBase {
-	private static final Logger logger = Logger.getLogger(PesiTaxonExport.class);
+public class PesiInferredSynonymExport extends PesiExportBase {
+	private static final Logger logger = Logger.getLogger(PesiInferredSynonymExport.class);
 	private static final Class<? extends CdmBase> standardMethodParameter = TaxonNameBase.class;
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "Taxon";
 	private static final String pluralString = "Taxa";
-	private PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt;
-	private PreparedStatement rankDataSqlStmt;
-	private NomenclaturalCode nomenclaturalCode;
-	private Integer kingdomFk;
-	private HashMap<Rank, Rank> rankMap = new HashMap<Rank, Rank>();
-	private List<Rank> rankList = new ArrayList<Rank>();
-	private static final UUID uuidTreeIndex = UUID.fromString("28f4e205-1d02-4d3a-8288-775ea8413009");
-	private AnnotationType treeIndexAnnotationType;
+	private static Integer kingdomFk;
+	private static NomenclaturalCode nomenclaturalCode = null;
+	private static int taxonId = 700000;
 	
-	/**
-	 * @return the treeIndexAnnotationType
-	 */
-	protected AnnotationType getTreeIndexAnnotationType() {
-		return treeIndexAnnotationType;
-	}
-
-	/**
-	 * @param treeIndexAnnotationType the treeIndexAnnotationType to set
-	 */
-	protected void setTreeIndexAnnotationType(AnnotationType treeIndexAnnotationType) {
-		this.treeIndexAnnotationType = treeIndexAnnotationType;
-	}
-
-	enum NamePosition {
-		beginning,
-		end,
-		between,
-		alone,
-		nowhere
-	}
-
-	public PesiTaxonExport() {
+	public PesiInferredSynonymExport() {
 		super();
 	}
 
@@ -134,12 +97,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 			// Prepare TreeIndex-And-KingdomFk-Statement
 			Connection connection = state.getConfig().getDestination().getConnection();
-			String parentTaxonFk_TreeIndex_KingdomFkSql = "UPDATE Taxon SET ParentTaxonFk = ?, TreeIndex = ? WHERE TaxonId = ?"; 
-			parentTaxonFk_TreeIndex_KingdomFkStmt = connection.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
 			
-			String rankDataSql = "UPDATE Taxon SET RankFk = ?, RankCache = ?, TypeNameFk = ?, KingdomFk = ? WHERE TaxonId = ?";
-			rankDataSqlStmt = connection.prepareStatement(rankDataSql);
-
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
 
@@ -158,220 +116,79 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 			// Initialize the db mapper
 			mapping.initialize(state);
-	
+
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
-			List<TaxonNameBase> list = null;
+
+			logger.error("Creating Inferred Synonyms...");
+			// Create inferred synonyms for all accepted taxa
 			
-			logger.error("PHASE 1: Export Taxa...");
 			// Start transaction
+			String inferredSynonymsString = "Inferred Synonyms";
+			TaxonomicTree taxonTree = null;
+			Taxon acceptedTaxon = null;
 			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getNameService().list(null, limit, count, null, null)).size() > 0) {
+			logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
+			List<TaxonBase> taxonList = null;
+			List<Synonym> inferredSynonyms = null;
+			while ((taxonList  = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
 
-				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (TaxonNameBase taxonName : list) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(taxonName);
-					
-					// Check whether some rules are violated
-					nomenclaturalCode = PesiTransformer.getNomenclaturalCode(taxonName);
-					String genusOrUninomial = getGenusOrUninomial(taxonName);
-					String specificEpithet = getSpecificEpithet(taxonName);
-					String infraSpecificEpithet = getInfraSpecificEpithet(taxonName);
-					String infraGenericEpithet = getInfraGenericEpithet(taxonName);
-					Integer rank = getRankFk(taxonName, nomenclaturalCode);
-					
-					if (rank == null) {
-						logger.error("Rank was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-					} else {
-						
-						// Check whether infraGenericEpithet is set correctly
-						// 1. Childs of an accepted taxon of rank subgenus that are accepted taxa of rank species have to have an infraGenericEpithet
-						// 2. Grandchilds of an accepted taxon of rank subgenus that are accepted taxa of rank subspecies have to have an infraGenericEpithet
-						
-						int ancestorLevel = 0;
-						if (taxonName.getRank().equals(Rank.SUBSPECIES())) {
-							// The accepted taxon two rank levels above should be of rank subgenus
-							ancestorLevel  = 2;
-						}
-						if (taxonName.getRank().equals(Rank.SPECIES())) {
-							// The accepted taxon one rank level above should be of rank subgenus
-							ancestorLevel = 1;
-						}
-						if (ancestorLevel > 0) {
-							if (ancestorOfSpecificRank(taxonName, ancestorLevel, Rank.SUBGENUS())) {
-								// The child (species or subspecies) of this parent (subgenus) has to have an infraGenericEpithet
-								if (infraGenericEpithet == null) {
-									logger.error("InfraGenericEpithet does not exist even though it should for: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-									// maybe the taxon could be named here
-								}
-							}
-						}
-						
-						if (infraGenericEpithet == null && rank.intValue() == 190) {
-							logger.error("InfraGenericEpithet was not determined although it should exist for rank 190: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-						}
-						if (specificEpithet != null && rank.intValue() < 220) {
-							logger.error("SpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 220: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-						}
-						if (infraSpecificEpithet != null && rank.intValue() < 230) {
-							logger.error("InfraSpecificEpithet was determined for rank " + rank + " although it should only exist for ranks higher or equal to 230: "  + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-						}
-					}
-					if (infraSpecificEpithet != null && specificEpithet == null) {
-						logger.error("An infraSpecificEpithet was determined, but a specificEpithet was not determined: "  + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-					}
-					if (genusOrUninomial == null) {
-						logger.error("GenusOrUninomial was not determined: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-					}
-					
-				}
+				logger.error("Fetched " + taxonList.size() + " " + pluralString + ". Exporting...");
+				for (TaxonBase taxonBase : taxonList) {
+					doCount(count++, modCount, inferredSynonymsString);
 
-				// Commit transaction
-				commitTransaction(txStatus);
-				logger.error("Committed transaction.");
-				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
-				pastCount = count;
-
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			}
-			if (list.size() == 0) {
-				logger.error("No " + pluralString + " left to fetch.");
-			}
-			// Commit transaction
-			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
-
-			count = 0;
-			pastCount = 0;
-			List<TaxonomicTree> taxonomicTreeList = null;
-			// 2nd Round: Add ParentTaxonFk, TreeIndex to each Taxon
-			logger.error("PHASE 2: Add ParenTaxonFk and TreeIndex...");
-			
-			// Specify starting ranks for tree traversing
-			rankList.add(Rank.KINGDOM());
-			rankList.add(Rank.GENUS());
-
-			// Specify where to stop traversing (value) when starting at a specific Rank (key)
-			rankMap.put(Rank.GENUS(), null); // Since NULL does not match an existing Rank, traverse all the way down to the leaves
-			rankMap.put(Rank.KINGDOM(), Rank.GENUS()); // excludes rank genus
-			
-			StringBuffer treeIndex = new StringBuffer();
-			
-			// Retrieve list of Taxonomic Trees
-			txStatus = startTransaction(true);
-			logger.error("Started transaction. Fetching all Taxonomic Trees...");
-			taxonomicTreeList = getTaxonTreeService().listTaxonomicTrees(null, 0, null, null);
-			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
-
-			logger.error("Fetched " + taxonomicTreeList.size() + " Taxonomic Tree.");
-
-			setTreeIndexAnnotationType(getAnnotationType(uuidTreeIndex, "TreeIndex", "", "TI"));
-			
-			for (TaxonomicTree taxonomicTree : taxonomicTreeList) {
-				for (Rank rank : rankList) {
-					
-					txStatus = startTransaction(true);
-					logger.error("Started transaction to fetch all rootNodes specific to Rank " + rank.getLabel() + " ...");
-
-					List<TaxonNode> rankSpecificRootNodes = getTaxonTreeService().loadRankSpecificRootNodes(taxonomicTree, rank, null);
-					logger.error("Fetched " + rankSpecificRootNodes.size() + " RootNodes for Rank " + rank.getLabel());
-
-					commitTransaction(txStatus);
-					logger.error("Committed transaction.");
-
-					for (TaxonNode rootNode : rankSpecificRootNodes) {
-						txStatus = startTransaction(false);
-						Rank endRank = rankMap.get(rank);
-						if (endRank != null) {
-							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till Rank " + endRank.getLabel() + " ...");
-						} else {
-							logger.error("Started transaction to traverse childNodes of rootNode (" + rootNode.getUuid() + ") till leaves are reached ...");
-						}
-
-						TaxonNode newNode = getTaxonNodeService().load(rootNode.getUuid());
-
-						TaxonNode parentNode = newNode.getParent();
-						if (rank.equals(Rank.KINGDOM())) {
-							treeIndex = new StringBuffer();
-							treeIndex.append("#");
-						} else {
-							// Get treeIndex from parentNode
-							if (parentNode != null) {
-								boolean annotationFound = false;
-								Set<Annotation> annotations = parentNode.getAnnotations();
-								for (Annotation annotation : annotations) {
-									AnnotationType annotationType = annotation.getAnnotationType();
-									if (annotationType != null && annotationType.equals(getTreeIndexAnnotationType())) {
-										treeIndex = new StringBuffer(CdmUtils.Nz(annotation.getText()));
-										annotationFound = true;
-//										logger.error("treeIndex: " + treeIndex);
-										break;
-									}
-								}
-								if (!annotationFound) {
-									// This should not happen because it means that the treeIndex was not set correctly as an annotation to parentNode
-									logger.error("TreeIndex could not be read from annotation of this TaxonNode: " + parentNode.getUuid());
-									treeIndex = new StringBuffer();
-									treeIndex.append("#");
-								}
-							} else {
-								// TreeIndex could not be determined, but it's unclear how to proceed to generate a correct treeIndex if the parentNode is NULL
-								logger.error("ParentNode for RootNode is NULL. TreeIndex could not be determined: " + newNode.getUuid());
-								treeIndex = new StringBuffer(); // This just prevents growing of the treeIndex in a wrong manner
-								treeIndex.append("#");
-							}
-						}
-						
-						nomenclaturalCode = PesiTransformer.getNomenclaturalCode(newNode.getTaxon().getName());
+					if (taxonBase.isInstanceOf(Taxon.class)) {
+						acceptedTaxon = CdmBase.deproxy(taxonBase, Taxon.class);
+						nomenclaturalCode  = PesiTransformer.getNomenclaturalCode(acceptedTaxon.getName());
 						kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
-						traverseTree(newNode, parentNode, treeIndex, rankMap.get(rank), state);
+
+						Set<TaxonNode> taxonNodes = acceptedTaxon.getTaxonNodes();
+						if (taxonNodes.size() > 0) {
+							// Determine the taxonomicTree of the current Taxon
+							TaxonNode singleNode = taxonNodes.iterator().next();
+							if (singleNode != null) {
+								taxonTree = singleNode.getTaxonomicTree();
+							}
+						} else {
+							// TaxonomicTree could not be determined directly from this Taxon
+							// The stored taxonomicTree from another Taxon is used. It's a simple, but not a failsafe fallback solution.
+							logger.error("TaxonomicTree could not be determined directly from this Taxon. " +
+									"This taxonomicTree stored from another Taxon is used: " + taxonTree.getTitleCache());
+						}
 						
-						commitTransaction(txStatus);
-						logger.error("Committed transaction.");
+						if (taxonTree != null) {
+//							inferredSynonyms  = getTaxonService().createAllInferredSynonyms(taxonTree, acceptedTaxon);
 
+							inferredSynonyms = getTaxonService().createInferredSynonyms(taxonTree, acceptedTaxon, SynonymRelationshipType.INFERRED_GENUS_OF());
+							if (inferredSynonyms != null) {
+								for (Synonym synonym : inferredSynonyms) {
+									success &= mapping.invoke(synonym.getName());
+								}
+							}
+						} else {
+							logger.error("TaxonomicTree is NULL. Inferred Synonyms could not be created for this Taxon: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() + ")");
+						}
 					}
-				}
-			}
-
-			logger.error("PHASE 3: Add Rank data, KingdomFk and TypeNameFk...");
-			// Be sure to add rank information, KingdomFk and TypeNameFk to every taxonName
-			
-			// Start transaction
-			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getNameService().list(null, limit, count, null, null)).size() > 0) {
-
-				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (TaxonNameBase taxonName : list) {
-					doCount(count++, modCount, pluralString);
-
-					Integer typeNameFk = getTypeNameFk(taxonName, state);
-					invokeRankDataAndTypeNameFkAndKingdomFk(taxonName, nomenclaturalCode, state.getDbId(taxonName), typeNameFk, kingdomFk);
 				}
 
 				// Commit transaction
 				commitTransaction(txStatus);
 				logger.error("Committed transaction.");
-				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				logger.error("Exported " + (count - pastCount) + " " + inferredSynonyms + ". Total: " + count);
 				pastCount = count;
 
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+				logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
 			}
-			if (list.size() == 0) {
+			if (taxonList.size() == 0) {
 				logger.error("No " + pluralString + " left to fetch.");
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
-			
+
 			
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
@@ -379,242 +196,6 @@ public class PesiTaxonExport extends PesiExportBase {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
-			return false;
-		}
-	}
-
-	/**
-	 * Checks whether a parent at specific level has a specific Rank.
-	 * @param taxonName
-	 * @param i
-	 * @param subgenus
-	 * @return
-	 */
-	private boolean ancestorOfSpecificRank(TaxonNameBase taxonName, int level,
-			Rank ancestorRank) {
-		boolean result = false;
-		Set<Taxon> taxa = taxonName.getTaxa();
-		TaxonNode parentNode = null;
-		if (taxa != null && taxa.size() > 0) {
-			if (taxa.size() == 1) {
-				Taxon taxon = taxa.iterator().next();
-				if (taxon != null) {
-					// Get ancestor Taxon via TaxonNode
-					
-					Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
-					if (taxonNodes.size() == 1) {
-						TaxonNode taxonNode = taxonNodes.iterator().next();
-						if (taxonNode != null) {
-							for (int i = 0; i < level; i++) {
-								if (taxonNode != null) {
-									taxonNode  = taxonNode.getParent();
-								}
-							}
-							parentNode = taxonNode;
-						}
-					} else if (taxonNodes.size() > 1) {
-						logger.error("This taxon has " + taxonNodes.size() + " taxonNodes: " + taxon.getUuid() + " (" + taxon.getTitleCache() + ")");
-					}
-				}
-			} else {
-				logger.error("This taxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-			}
-		}
-		if (parentNode != null) {
-			TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
-			Taxon parentTaxon = node.getTaxon();
-			if (parentTaxon != null) {
-				TaxonNameBase parentTaxonName = parentTaxon.getName();
-				if (parentTaxonName != null && parentTaxonName.getRank().equals(ancestorRank)) {
-					result = true;
-				}
-			} else {
-				logger.error("This TaxonNode has no Taxon: " + node.getUuid());
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Returns the AnnotationType for a given UUID.
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
-	 */
-	protected AnnotationType getAnnotationType(UUID uuid, String label, String text, String labelAbbrev){
-		AnnotationType annotationType = (AnnotationType)getTermService().find(uuid);
-		if (annotationType == null) {
-			annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
-			annotationType.setUuid(uuid);
-//			annotationType.setVocabulary(AnnotationType.EDITORIAL().getVocabulary());
-			getTermService().save(annotationType);
-		}
-		return annotationType;
-	}
-
-	/**
-	 * Traverses the TaxonTree recursively and stores determined values for every Taxon.
-	 * @param childNode
-	 * @param parentNode
-	 * @param treeIndex
-	 * @param fetchLevel
-	 * @param state
-	 */
-	private void traverseTree(TaxonNode childNode, TaxonNode parentNode, StringBuffer treeIndex, Rank fetchLevel, PesiExportState state) {
-		// Traverse all branches from this childNode until specified fetchLevel is reached.
-		StringBuffer localTreeIndex = new StringBuffer(treeIndex);
-		if (childNode.getTaxon() != null) {
-			TaxonNameBase taxonName = childNode.getTaxon().getName();
-			Integer taxonNameId = state.getDbId(taxonName);
-			if (taxonNameId != null) {
-				Rank childTaxonNameRank = taxonName.getRank();
-				if (childTaxonNameRank != null) {
-					if (! childTaxonNameRank.equals(fetchLevel)) {
-
-						localTreeIndex.append(taxonNameId);
-						localTreeIndex.append("#");
-
-						saveData(childNode, parentNode, localTreeIndex, state, taxonNameId);
-
-						// Store treeIndex as annotation for further use
-						Annotation annotation = Annotation.NewInstance(localTreeIndex.toString(), getTreeIndexAnnotationType(), Language.DEFAULT());
-						childNode.addAnnotation(annotation);
-
-						for (TaxonNode newNode : childNode.getChildNodes()) {
-							traverseTree(newNode, childNode, localTreeIndex, fetchLevel, state);
-						}
-						
-					} else {
-//						logger.error("Target Rank " + fetchLevel.getLabel() + " reached");
-						return;
-					}
-				} else {
-					logger.error("Rank is NULL. FetchLevel can not be checked: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-				}
-			} else {
-				logger.error("TaxonName can not be found in State: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-			}
-
-		} else {
-			logger.error("Taxon is NULL for TaxonNode: " + childNode.getUuid());
-		}
-	}
-
-	/**
-	 * Stores values in database for every recursive round.
-	 * @param childNode
-	 * @param parentNode
-	 * @param treeIndex
-	 * @param state
-	 * @param currentTaxonFk
-	 */
-	private void saveData(TaxonNode childNode, TaxonNode parentNode, StringBuffer treeIndex, PesiExportState state, Integer currentTaxonFk) {
-		// We are differentiating kingdoms by the nomenclatural code for now.
-		// This needs to be handled in a better way as soon as we know how to differentiate between more kingdoms.
-		Taxon childNodeTaxon = childNode.getTaxon();
-		TaxonNameBase childNodeTaxonName = childNode.getTaxon().getName();
-		if (childNodeTaxon != null && childNodeTaxonName != null) {
-			TaxonNameBase parentNodeTaxonName = null;
-			if (parentNode != null) {
-				Taxon parentNodeTaxon = parentNode.getTaxon();
-				if (parentNodeTaxon != null) {
-					parentNodeTaxonName  = parentNodeTaxon.getName();
-				}
-			}
-
-			invokeParentTaxonFkAndTreeIndex(
-					state.getDbId(parentNodeTaxonName), 
-					currentTaxonFk, 
-					treeIndex);
-		}
-		
-	}
-
-	/**
-	 * Inserts values into the Taxon database table.
-	 * @param taxonNameBase
-	 * @param state
-	 * @param stmt
-	 * @return
-	 */
-	protected boolean invokeParentTaxonFkAndTreeIndex(Integer parentTaxonFk, Integer currentTaxonFk, StringBuffer treeIndex) {
-		try {
-			if (parentTaxonFk != null) {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(1, parentTaxonFk);
-			} else {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(1, null);
-			}
-
-			if (treeIndex != null) {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setString(2, treeIndex.toString());
-			} else {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(2, null);
-			}
-
-			if (currentTaxonFk != null) {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setInt(3, currentTaxonFk);
-			} else {
-				parentTaxonFk_TreeIndex_KingdomFkStmt.setObject(3, null);
-			}
-			
-			parentTaxonFk_TreeIndex_KingdomFkStmt.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-//			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * Insert Rank data, TypeNameFk and KingdomFk into the Taxon database table.
-	 * @param taxonName
-	 * @param nomenclaturalCode
-	 * @param taxonFk
-	 * @param typeNameFk
-	 * @param kindomFk
-	 * @return
-	 */
-	private boolean invokeRankDataAndTypeNameFkAndKingdomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, Integer taxonFk, Integer typeNameFk, Integer kindomFk) {
-		try {
-			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
-			if (rankFk != null) {
-				rankDataSqlStmt.setInt(1, rankFk);
-			} else {
-				rankDataSqlStmt.setObject(1, null);
-			}
-	
-			String rankCache = getRankCache(taxonName, nomenclaturalCode);
-			if (rankCache != null) {
-				rankDataSqlStmt.setString(2, rankCache);
-			} else {
-				rankDataSqlStmt.setObject(2, null);
-			}
-			
-			if (typeNameFk != null) {
-				rankDataSqlStmt.setInt(3, typeNameFk);
-			} else {
-				rankDataSqlStmt.setObject(3, null);
-			}
-			
-			if (kingdomFk != null) {
-				rankDataSqlStmt.setInt(4, kingdomFk);
-			} else {
-				rankDataSqlStmt.setObject(4, null);
-			}
-			
-			if (taxonFk != null) {
-				rankDataSqlStmt.setInt(5, taxonFk);
-			} else {
-				rankDataSqlStmt.setObject(5, null);
-			}
-			
-			rankDataSqlStmt.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-	//		e.printStackTrace();
 			return false;
 		}
 	}
@@ -646,12 +227,22 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
+	 * Returns the KingdomFk.
+	 * @param taxonName
+	 * @return
+	 */
+	public static Integer getKingdomFk(TaxonNameBase taxonName) {
+		return kingdomFk;
+	}
+	
+	/**
 	 * Returns the <code>RankFk</code> attribute.
 	 * @param taxon The {@link TaxonBase Taxon}.
 	 * @return The <code>RankFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	private static Integer getRankFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode) {
+	@SuppressWarnings("unused")
+	private static Integer getRankFk(TaxonNameBase taxonName) {
 		Integer result = null;
 		if (nomenclaturalCode != null) {
 			if (taxonName != null) {
@@ -674,7 +265,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>RankCache</code> attribute.
 	 * @see MethodMapper
 	 */
-	private static String getRankCache(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode) {
+	@SuppressWarnings("unused")
+	private static String getRankCache(TaxonNameBase taxonName) {
 		String result = null;
 		if (nomenclaturalCode != null) {
 			result = PesiTransformer.rank2RankCache(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
@@ -688,6 +280,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return Whether it's genus or uninomial.
 	 * @see MethodMapper
 	 */
+	@SuppressWarnings("unused")
 	private static String getGenusOrUninomial(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
@@ -703,6 +296,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>InfraGenericEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
+	@SuppressWarnings("unused")
 	private static String getInfraGenericEpithet(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
@@ -718,6 +312,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>SpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
+	@SuppressWarnings("unused")
 	private static String getSpecificEpithet(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
@@ -733,6 +328,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>InfraSpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
+	@SuppressWarnings("unused")
 	private static String getInfraSpecificEpithet(TaxonNameBase taxonName) {
 		String result = null;
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
@@ -834,104 +430,6 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 
 		return result;
-	}
-
-	/**
-	 * 
-	 * @param searchString
-	 * @param searchedString
-	 * @return
-	 */
-	private static Integer countPattern(String searchString, String searchedString) {
-		Integer count = 0;
-		if (searchString != null && searchedString != null) {
-			Integer index = 0;
-			while ((index = searchedString.indexOf(searchString, index)) != -1) {
-				count++;
-				index++;
-			}
-		} else {
-//			logger.error("Either searchString or searchedString is NULL");
-		}
-		return count;
-	}
-	
-	/**
-	 * @param namePosition
-	 * @return
-	 */
-	private static boolean nameExists(List<NamePosition> namePosition) {
-		boolean result = false;
-		if (namePosition != null) {
-			if (namePosition.contains(NamePosition.nowhere)) {
-				result = false;
-			} else {
-				result = true;
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @param targetString
-	 * @return
-	 */
-	private static List<NamePosition> getPosition(String name, String targetString) {
-		List<NamePosition> result = new ArrayList<NamePosition>();
-		boolean touched = false;
-		if (name != null && targetString != null) {
-			if ("".equals(name.trim())) {
-				result.add(NamePosition.nowhere);
-			} else {
-				String beginningAnchor = "^";
-				String endAnchor = "$";
-				String anyNumberOfCharacters = ".*";
-				
-				String beginningRegEx = beginningAnchor + name;
-				String endRegEx = name + endAnchor;
-				String middleRegEx = anyNumberOfCharacters + name + anyNumberOfCharacters;
-				if (stringExists(beginningRegEx, targetString)) {
-					result.add(NamePosition.beginning);
-					touched = true;
-				}
-				if (stringExists(endRegEx, targetString)) {
-					result.add(NamePosition.end);
-					touched = true;
-				}
-				if (stringExists(middleRegEx, targetString)) {
-					if (result.contains(NamePosition.beginning) && result.contains(NamePosition.end)) {
-						result.add(NamePosition.alone);
-					} else {
-						result.add(NamePosition.between);
-					}
-					touched = true;
-				}
-				if (!touched) {
-					result.add(NamePosition.nowhere);
-				}
-			}
-		} else {
-//			logger.error("Either name or targetString is NULL");
-			result = null;
-		}
-		return result;
-	}
-	
-
-	/**
-	 * @param beginningRegEx
-	 * @param targetString
-	 */
-	private static boolean stringExists(String regEx, String targetString) {
-		Pattern pattern = Pattern.compile(regEx);
-		Matcher matcher = pattern.matcher(targetString);
-		if (matcher.find()) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**
@@ -1149,6 +647,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>TypeNameFk</code> attribute.
 	 * @see MethodMapper
 	 */
+	@SuppressWarnings("unused")
 	private static Integer getTypeNameFk(TaxonNameBase taxonNameBase, PesiExportState state) {
 		Integer result = null;
 		if (taxonNameBase != null) {
@@ -1550,7 +1049,13 @@ public class PesiTaxonExport extends PesiExportBase {
 		// TODO
 		return null;
 	}
-	
+
+	/**
+	 * Returns the SourceFk.
+	 * @param taxonName
+	 * @param state
+	 * @return
+	 */
 	@SuppressWarnings("unused")
 	private static Integer getSourceFk(TaxonNameBase taxonName, PesiExportState state) {
 		Integer result = null;
@@ -1579,6 +1084,16 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 		return result;
 	}
+
+	/**
+	 * Return the TaxonId.
+	 * @param taxonName
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private static Integer getTaxonId(TaxonNameBase taxonName) {
+		return taxonId++;
+	}
 	
 	/**
 	 * Returns the CDM to PESI specific export mappings.
@@ -1588,7 +1103,10 @@ public class PesiTaxonExport extends PesiExportBase {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		ExtensionType extensionType = null;
 		
-		mapping.addMapper(IdMapper.NewInstance("TaxonId"));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonId", this));
+		mapping.addMapper(MethodMapper.NewInstance("KingdomFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("RankCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFK", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("GenusOrUninomial", this));
 		mapping.addMapper(MethodMapper.NewInstance("InfraGenericEpithet", this));

@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -49,7 +49,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	private static boolean sourceUse_AdditionalSource = false;
 	private static boolean sourceUse_NomenclaturalReference = false;
 	private static boolean sourceUse_SourceOfSynonymy = false;
-	private static TaxonBase currentTaxon = null;
+	private static TaxonNameBase currentTaxonName = null;
 	private static String citationMicroReference = null;
 	
 	public PesiAdditionalTaxonSourceExport() {
@@ -139,7 +139,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 				for (TaxonBase taxonBase : list) {
 					
 					// Set the current Taxon
-					currentTaxon = taxonBase;
+					currentTaxonName = taxonBase.getName();
 
 					if (taxonBase.isInstanceOf(Taxon.class)) {
 						
@@ -152,23 +152,33 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 						for (TaxonDescription taxonDescription : taxonDescriptions) {
 							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
 							
-							// According to FaEu Import those DescriptionElementBase elements are of instance TextData
 							for (DescriptionElementBase descriptionElement : descriptionElements) {
-								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
-								
-								for (DescriptionElementSource elementSource : elementSources) {
+								// According to FaEu Import those DescriptionElementBase elements are of instance TextData
+								// There are no other indicators
+								if (descriptionElement.isInstanceOf(TextData.class)) {
+									Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
 									
-									// Set the CitationMicroReference so it is accessible later in getSourceDetail()
-									setCitationMicroReference(elementSource.getCitationMicroReference());
-
-									// Get the citation
-									ReferenceBase reference = elementSource.getCitation();
-									
-									// Citations can be empty (null): Is it wrong data or just a normal case?
-									if (reference != null) {
-										if (neededValuesNotNull(reference, state)) {
-											doCount(count++, modCount, pluralString);
-											success &= mapping.invoke(reference);
+									for (DescriptionElementSource elementSource : elementSources) {
+										
+										// Set the CitationMicroReference so it is accessible later in getSourceDetail()
+										setCitationMicroReference(elementSource.getCitationMicroReference());
+	
+										// Get the citation
+										ReferenceBase reference = elementSource.getCitation();
+										
+										// Check whether it was a synonym originally
+										TaxonNameBase nameUsedInSource = elementSource.getNameUsedInSource();
+										if (nameUsedInSource != null) {
+											// It was a synonym originally: Set currentTaxonName to synonym's taxonName
+											currentTaxonName = nameUsedInSource;
+										}
+										
+										// Citations can be empty (null): Is it wrong data or just a normal case?
+										if (reference != null) {
+											if (neededValuesNotNull(reference, state)) {
+												doCount(count++, modCount, pluralString);
+												success &= mapping.invoke(reference);
+											}
 										}
 									}
 								}
@@ -287,8 +297,8 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 		// ReferenceBase parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
 		Integer result = null;
-		if (state != null && currentTaxon != null) {
-			result = state.getDbId(currentTaxon.getName());
+		if (state != null && currentTaxonName != null) {
+			result = state.getDbId(currentTaxonName);
 		}
 		return result;
 	}
