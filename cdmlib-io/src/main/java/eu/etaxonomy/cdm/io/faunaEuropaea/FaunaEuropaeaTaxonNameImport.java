@@ -427,7 +427,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
 				}
 				
-				if (fauEuTaxon.isParenthesis() && actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) {
+				if (actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) {
 					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
 				} else if (fauEuTaxon.isParenthesis()) {
 					//the authorteam should be set in parenthesis because there should be a basionym, but we do not know it?
