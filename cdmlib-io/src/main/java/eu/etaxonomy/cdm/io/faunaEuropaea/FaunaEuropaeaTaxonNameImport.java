@@ -20,11 +20,9 @@ import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATU
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -38,9 +36,15 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.pesi.out.PesiTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -64,7 +68,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 	/* Max number of taxa to retrieve (for test purposes) */
 	private int maxTaxa = 0;
-	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -115,7 +118,39 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		return success;
 	}
 
-	
+	/**
+	 * Returns the ExtensionType for a given UUID.
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected ExtensionType getExtensionType(UUID uuid, String label, String text, String labelAbbrev){
+		ExtensionType extensionType = (ExtensionType)getTermService().find(uuid);
+		if (extensionType == null) {
+			extensionType = ExtensionType.NewInstance(label, text, labelAbbrev);
+			extensionType.setUuid(uuid);
+//			annotationType.setVocabulary(AnnotationType.EDITORIAL().getVocabulary());
+			getTermService().save(extensionType);
+		}
+		return extensionType;
+	}
+
+	/**
+	 * Returns an empty string in case of a null string.
+	 * This avoids having the string "null" when using StringBuilder.append(null);
+	 * @param string
+	 * @return
+	 */
+	private String NullToEmpty(String string) {
+		if (string == null) {
+			return "";
+		} else {
+			return string;
+		}
+	}
+
 	/** Retrieve taxa from FauEu DB, process in blocks */
 	private boolean processTaxa(FaunaEuropaeaImportState state) {
 
@@ -148,6 +183,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			" GreatGreatGrandParent.TAX_ID AS GGGP5Id, GreatGreatGrandParent.TAX_NAME AS GGGP5Name, GreatGreatGrandParent.TAX_RNK_ID AS GGGP5RankId, " +
 			" OriginalGenusTaxon.TAX_NAME AS OGenusName, " +
 			" GreatGreatGreatGrandParent.TAX_ID AS GGGGP6Id, GreatGreatGreatGrandParent.TAX_NAME AS GGGGP6Name, GreatGreatGreatGrandParent.TAX_RNK_ID AS GGGGP6RankId," +
+			" expertUsers.usr_id AS expertUserId, expertUsers.usr_title AS ExpertUsrTitle, expertUsers.usr_firstname AS ExpertUsrFirstname, expertUsers.usr_lastname AS ExpertUsrLastname," +
+			" speciesExpertUsers.usr_id AS speciesExpertUserId, speciesExpertUsers.usr_title AS SpeciesUsrTitle, speciesExpertUsers.usr_firstname AS SpeciesUsrFirstname, speciesExpertUsers.usr_lastname AS SpeciesUsrLastname," +
 			" Taxon.*, rank.*, author.* ";
 		
 		String fromClause = 
@@ -159,6 +196,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			" Taxon AS GreatGreatGreatGrandParent ON GreatGreatGrandParent.TAX_TAX_IDPARENT = GreatGreatGreatGrandParent.TAX_ID LEFT OUTER JOIN " +
 			" Taxon AS OriginalGenusTaxon ON Taxon.TAX_TAX_IDGENUS = OriginalGenusTaxon.TAX_ID LEFT OUTER JOIN " +
 			" author ON Taxon.TAX_AUT_ID = author.aut_id LEFT OUTER JOIN " +
+			" users AS expertUsers ON Taxon.TAX_USR_IDGC = expertUsers.usr_id LEFT OUTER JOIN " +
+			" users AS speciesExpertUsers ON Taxon.TAX_USR_IDSP = speciesExpertUsers.usr_id LEFT OUTER JOIN " +
 			" rank ON Taxon.TAX_RNK_ID = rank.rnk_id ";
 
 		String countQuery = 
@@ -218,7 +257,52 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				int originalGenusId = rs.getInt("TAX_TAX_IDGENUS");
 				int autId = rs.getInt("TAX_AUT_ID");
 				int status = rs.getInt("TAX_VALID");
+
+				// user related
+				String expertUsrTitle = rs.getString("ExpertUsrTitle");
+				String expertUsrFirstname = rs.getString("ExpertUsrFirstname");
+				String expertUsrLastname = rs.getString("ExpertUsrLastname");
+				String speciesUsrTitle = rs.getString("SpeciesUsrTitle");
+				String speciesUsrFirstname = rs.getString("SpeciesUsrFirstname");
+				String speciesUsrLastname = rs.getString("SpeciesUsrLastname");
+				String expertUserId = "" + rs.getInt("expertUserId");
+				String speciesExpertUserId = "" + rs.getInt("speciesExpertUserId");
+
+				String expertName = "";
+				if (expertUsrTitle != null) {
+					expertName = expertUsrTitle;
+					if (! expertUsrTitle.endsWith(".")) {
+						expertName += ".";
+					}
+				}
+				expertName += expertUsrTitle == null ? NullToEmpty(expertUsrFirstname) : " " + NullToEmpty(expertUsrFirstname);
+				if ((expertUsrTitle != null || expertUsrFirstname != null) && expertUsrLastname != null) {
+					expertName += " " + expertUsrLastname;
+				}
 				
+				String speciesExpertName = speciesUsrTitle == null ? "" : speciesUsrTitle + ".";
+				if (speciesUsrTitle != null) {
+					speciesExpertName = speciesUsrTitle;
+					if (! speciesUsrTitle.endsWith(".")) {
+						speciesExpertName += ".";
+					}
+				}
+				speciesExpertName += speciesUsrTitle == null ? NullToEmpty(speciesUsrFirstname) : " " + NullToEmpty(speciesUsrFirstname);
+				if ((speciesUsrTitle != null || speciesUsrFirstname != null) && speciesUsrLastname != null) {
+					speciesExpertName += " " + speciesUsrLastname;
+				}
+				
+				// date related
+				String createdDate = rs.getString("TAX_CREATEDAT");
+				String modifiedDate = rs.getString("TAX_MODIFIEDAT");
+				String lastAction = createdDate.equals(modifiedDate) ? "created" : "modified";
+				String lastActionDate = createdDate.equals(modifiedDate) ? createdDate : modifiedDate;
+				
+				// note related
+				String taxComment = rs.getString("TAX_TAXCOMMENT");
+				String fauComment = rs.getString("TAX_FAUCOMMENT");
+				String fauExtraCodes = rs.getString("TAX_FAUEXTRACODES");
+
 				// Avoid publication year 0 for NULL values in database.
 				Integer year = rs.getInt("TAX_YEAR");
 				if (year != null && year.intValue() == 0) {
@@ -297,26 +381,47 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				zooName.setCombinationAuthorTeam(author);
 				zooName.setPublicationYear(year);
 				
+				// Add UserId extensions to this zooName
+				Extension.NewInstance(zooName, expertUserId, getExtensionType(PesiTransformer.expertUserIdUuid, "expertUserId", "expertUserId", "UID"));
+				Extension.NewInstance(zooName, speciesExpertUserId, getExtensionType(PesiTransformer.speciesExpertUserIdUuid, "speciesExpertUserId", "speciesExpertUserId", "UID"));
+				
+				// Add Expert extensions to this zooName
+				Extension.NewInstance(zooName, expertName, getExtensionType(PesiTransformer.expertNameUuid, "ExpertName", "ExpertName", "EN"));
+				Extension.NewInstance(zooName, speciesExpertName, getExtensionType(PesiTransformer.speciesExpertNameUuid, "SpeciesExpertName", "SpeciesExpertName", "SEN"));
+
+				// Add Date extensions to this zooName
+				Extension.NewInstance(zooName, lastAction, getExtensionType(PesiTransformer.lastActionUuid, "LastAction", "LastAction", "LA"));
+				Extension.NewInstance(zooName, lastActionDate, getExtensionType(PesiTransformer.lastActionDateUuid, "LastActionDate", "LastActionDate", "LAD"));
+
+				// Add Note extensions to this zooName
+				Extension.NewInstance(zooName, taxComment, getExtensionType(PesiTransformer.taxCommentUuid, "TaxComment", "TaxComment", "TC"));
+				Extension.NewInstance(zooName, fauComment, getExtensionType(PesiTransformer.fauCommentUuid, "FauComment", "FauComment", "FC"));
+				Extension.NewInstance(zooName, fauExtraCodes, getExtensionType(PesiTransformer.fauExtraCodesUuid, "FauExtraCodes", "FauExtraCodes", "FEC"));
+				
 				TaxonBase<?> taxonBase;
 
-				Synonym synonym;
+				Synonym synonym = null;
 				Taxon taxon;
 				try {
 					if ((status == T_STATUS_ACCEPTED) || (autId == A_AUCT)) { // taxon
 						if (autId == A_AUCT) { // misapplied name
 							zooName.setCombinationAuthorTeam(null);
 							zooName.setPublicationYear(null);
-							taxon = Taxon.NewInstance(zooName, auctReference);
+							
+							// create a synonym for a misapplied name
+							synonym = Synonym.NewInstance(zooName, auctReference);
+							
 							if (logger.isDebugEnabled()) {
 								logger.debug("Misapplied name created (" + taxonId + ")");
 							}
+							taxonBase = synonym;
 						} else { // accepted taxon
 							taxon = Taxon.NewInstance(zooName, sourceReference);
 							if (logger.isDebugEnabled()) {
 								logger.debug("Taxon created (" + taxonId + ")");
 							}
+							taxonBase = taxon;
 						}
-						taxonBase = taxon;
 					} else if ((status == T_STATUS_NOT_ACCEPTED) && (autId != A_AUCT)) { // synonym
 						synonym = Synonym.NewInstance(zooName, sourceReference);
 						//logger.info("Synonym created: " + synonym.getTitleCache() + " taxonName: " + zooName.getTitleCache());
@@ -333,7 +438,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 					ImportHelper.setOriginalSource(taxonBase, fauEuConfig.getSourceReference(), taxonId, OS_NAMESPACE_TAXON);
 					ImportHelper.setOriginalSource(zooName, fauEuConfig.getSourceReference(), taxonId, "TaxonName");
-
 
 					if (!taxonMap.containsKey(taxonId)) {
 						if (taxonBase == null) {
@@ -427,7 +531,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					logger.debug("actual genus id = " + actualGenusId + ", original genus id = " + originalGenusId);
 				}
 				
-				if (actualGenusId != originalGenusId && taxonBase.isInstanceOf(Taxon.class)) {
+				if (actualGenusId.intValue() != originalGenusId.intValue() && taxonBase.isInstanceOf(Taxon.class)) {
 					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
 				} else if (fauEuTaxon.isParenthesis()) {
 					//the authorteam should be set in parenthesis because there should be a basionym, but we do not know it?
