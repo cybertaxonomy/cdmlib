@@ -153,7 +153,6 @@ public class PesiSourceExport extends PesiExportBase {
 					ExtensionType expertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertNameUuid);
 					ExtensionType speciesExpertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.speciesExpertNameUuid);
 					
-					
 					Set<Extension> extensions = taxonName.getExtensions();
 					String expertUserId = null;
 					String speciesExpertUserId = null;
