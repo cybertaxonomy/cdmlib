@@ -60,6 +60,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	private PesiExportMapping mapping;
 	private int count = 0;
 	private boolean success = true;
+	private static NomenclaturalCode nomenclaturalCode;
 	
 	public PesiRelTaxonExport() {
 		super();
@@ -232,6 +233,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 		Taxon childNodeTaxon = childNode.getTaxon();
 		if (childNodeTaxon != null) {
 			TaxonNameBase childNodeTaxonName = childNodeTaxon.getName();
+			nomenclaturalCode = PesiTransformer.getNomenclaturalCode(childNodeTaxonName);
 
 			if (childNodeTaxonName != null) {
 
@@ -316,7 +318,6 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 */
 	private static void invokeSynonyms(PesiExportState state, TaxonNameBase synonymTaxonName) {
 		// Store KingdomFk and Rank information in Taxon table
-		NomenclaturalCode nomenclaturalCode = synonymTaxonName.getNomenclaturalCode();
 		Integer kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
 		Integer synonymFk = state.getDbId(synonymTaxonName);
 
@@ -447,7 +448,17 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getRelQualifierCache(RelationshipBase<?, ?, ?> relationship) {
-		return PesiTransformer.taxonRelation2RelTaxonQualifierCache(relationship);
+		String result = null;
+		if (nomenclaturalCode != null) {
+			if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)) {
+				result = PesiTransformer.zoologicalTaxonRelation2RelTaxonQualifierCache(relationship);
+			} else {
+				result = PesiTransformer.taxonRelation2RelTaxonQualifierCache(relationship);
+			}
+		} else {
+			logger.error("NomenclaturalCode is NULL while creating the following relationship: " + relationship.getUuid());
+		}
+		return result;
 	}
 	
 	/**

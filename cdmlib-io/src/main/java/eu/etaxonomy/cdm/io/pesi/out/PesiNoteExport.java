@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.io.pesi.out;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +27,8 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -36,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -52,6 +57,7 @@ public class PesiNoteExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "Note";
 	private static final String pluralString = "Notes";
+	private static final String parentPluralString = "Taxa";
 
 	public PesiNoteExport() {
 		super();
@@ -83,7 +89,7 @@ public class PesiNoteExport extends PesiExportBase {
 			logger.error("*** Started Making " + pluralString + " ...");
 
 			// Get the limit for objects to save within a single transaction.
-//			int pageSize = state.getConfig().getLimitSave();
+			int limit = state.getConfig().getLimitSave();
 			int pageSize = 1000;
 
 			// Calculate the pageNumber
@@ -108,6 +114,7 @@ public class PesiNoteExport extends PesiExportBase {
 			List<DescriptionElementBase> list = null;
 			
 			// Start transaction
+			logger.error("PHASE 1...");
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + pageSize + ") ...");
 			while ((list = getDescriptionService().listDescriptionElements(null, null, null, pageSize, pageNumber, null)).size() > 0) {
@@ -141,6 +148,67 @@ public class PesiNoteExport extends PesiExportBase {
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
 
+			
+			logger.error("PHASE 2...");
+			txStatus = startTransaction(true);
+			List<TaxonNameBase> taxonNameList = null;
+			ExtensionType taxCommentExtensionType = (ExtensionType)getTermService().find(PesiTransformer.taxCommentUuid);
+			ExtensionType fauCommentExtensionType = (ExtensionType)getTermService().find(PesiTransformer.fauCommentUuid);
+			ExtensionType fauExtraCodesExtensionType = (ExtensionType)getTermService().find(PesiTransformer.fauExtraCodesUuid);
+			String taxComment = null;
+			String fauComment = null;
+			String fauExtraCodes = null;
+			
+			Connection connection = state.getConfig().getDestination().getConnection();
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+			while ((taxonNameList = getNameService().list(null, limit, count, null, null)).size() > 0) {
+
+				logger.error("Fetched " + list.size() + " " + parentPluralString + ". Exporting...");
+				for (TaxonNameBase taxonName : taxonNameList) {
+					Set<Extension> extensions = taxonName.getExtensions();
+					for (Extension extension : extensions) {
+						if (extension.getType().equals(taxCommentExtensionType)) {
+							taxComment = extension.getValue();
+							invokeNotes(taxComment, 
+									PesiTransformer.getNoteCategoryFk(PesiTransformer.taxCommentUuid), 
+									PesiTransformer.getNoteCategoryCache(PesiTransformer.taxCommentUuid),
+									null, null, getTaxonFk(taxonName, state),connection);
+						} else if (extension.getType().equals(fauCommentExtensionType)) {
+							fauComment = extension.getValue();
+							invokeNotes(fauComment, 
+									PesiTransformer.getNoteCategoryFk(PesiTransformer.fauCommentUuid), 
+									PesiTransformer.getNoteCategoryCache(PesiTransformer.fauCommentUuid),
+									null, null, getTaxonFk(taxonName, state),connection);
+						} else if (extension.getType().equals(fauExtraCodesExtensionType)) {
+							fauExtraCodes = extension.getValue();
+							invokeNotes(fauExtraCodes, 
+									PesiTransformer.getNoteCategoryFk(PesiTransformer.fauExtraCodesUuid), 
+									PesiTransformer.getNoteCategoryCache(PesiTransformer.fauExtraCodesUuid),
+									null, null, getTaxonFk(taxonName, state),connection);
+						}
+					}
+					
+					doCount(count++, modCount, pluralString);
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + parentPluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+
+
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 			
 			return success;
@@ -149,6 +217,65 @@ public class PesiNoteExport extends PesiExportBase {
 			logger.error(e.getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * @param taxComment
+	 * @param noteCategoryFk
+	 * @param noteCategoryCache
+	 * @param object
+	 * @param object2
+	 */
+	private void invokeNotes(String note, Integer noteCategoryFk,
+			String noteCategoryCache, Integer languageFk, String languageCache, 
+			Integer taxonFk, Connection connection) {
+		String notesSql = "UPDATE Note SET Note_1 = ?, NoteCategoryFk = ?, NoteCategoryCache = ?, LanguageFk = ?, LanguageCache = ? WHERE TaxonId = ?"; 
+		try {
+			PreparedStatement notesStmt = connection.prepareStatement(notesSql);
+			
+			if (note != null) {
+				notesStmt.setString(1, note);
+			} else {
+				notesStmt.setObject(1, null);
+			}
+			
+			if (noteCategoryFk != null) {
+				notesStmt.setInt(2, noteCategoryFk);
+			} else {
+				notesStmt.setObject(2, null);
+			}
+			
+			if (noteCategoryCache != null) {
+				notesStmt.setString(3, noteCategoryCache);
+			} else {
+				notesStmt.setObject(3, null);
+			}
+			
+			if (languageFk != null) {
+				notesStmt.setInt(4, languageFk);
+			} else {
+				notesStmt.setObject(4, null);
+			}
+			
+			if (languageCache != null) {
+				notesStmt.setString(5, languageCache);
+			} else {
+				notesStmt.setObject(5, null);
+			}
+			
+			if (taxonFk != null) {
+				notesStmt.setInt(6, taxonFk);
+			} else {
+				notesStmt.setObject(6, null);
+			}
+			
+			notesStmt.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Note could not be created: " + note);
+			e.printStackTrace();
+		}
+
+
 	}
 
 	/**
@@ -226,7 +353,7 @@ public class PesiNoteExport extends PesiExportBase {
 
 		return result;
 	}
-
+	
 	/**
 	 * Returns the <code>NoteCategoryCache</code> attribute.
 	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
@@ -365,6 +492,16 @@ public class PesiNoteExport extends PesiExportBase {
 			result = state.getDbId(taxon.getName());
 		}
 		return result;
+	}
+	
+	/**
+	 * Returns the TaxonFk for a given TaxonName.
+	 * @param taxonName
+	 * @param state
+	 * @return
+	 */
+	private static Integer getTaxonFk(TaxonNameBase taxonName, DbExportStateBase<?> state) {
+		return state.getDbId(taxonName);
 	}
 	
 	/**

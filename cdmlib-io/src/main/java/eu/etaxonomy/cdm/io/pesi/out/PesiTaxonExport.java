@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -1004,17 +1005,17 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 	}
 	
-	/**
-	 * Returns the <code>FuzzyName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
-	 * @return The <code>FuzzyName</code> attribute.
-	 * @see MethodMapper
-	 */
-	@SuppressWarnings("unused")
-	private static String getFuzzyName(TaxonNameBase taxonName) {
-		// TODO: extension
-		return null;
-	}
+//	/**
+//	 * Returns the <code>FuzzyName</code> attribute.
+//	 * @param taxon The {@link TaxonBase Taxon}.
+//	 * @return The <code>FuzzyName</code> attribute.
+//	 * @see MethodMapper
+//	 */
+//	@SuppressWarnings("unused")
+//	private static String getFuzzyName(TaxonNameBase taxonName) {
+//		// TODO: extension
+//		return null;
+//	}
 
 	/**
 	 * Returns the <code>NameStatusFk</code> attribute.
@@ -1386,8 +1387,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getGUID(TaxonNameBase taxonName) {
-		// TODO
 		String result = null;
+		String idInSource = getIdInSource(taxonName);
+		if (idInSource != null) {
+			result = "urn:lsid:faunaeur.org:taxname:" + 
+			idInSource.substring(idInSource.indexOf(":") + 1, idInSource.length());
+		}
 		return result;
 	}
 	
@@ -1399,8 +1404,43 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getDerivedFromGuid(TaxonNameBase taxonName) {
-		// TODO
 		String result = null;
+		result = getGUID(taxonName);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param taxonName
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private String getCacheCitation(TaxonNameBase taxonName) {
+		String result = "";
+		String expertName = getExpertName(taxonName);
+		String webShowName = getWebShowName(taxonName);
+		
+		// idInSource without text
+		String idInSource = getGUID(taxonName);
+		
+		// build the cacheCitation
+		if (expertName != null) {
+			result += expertName + ". ";
+		} else {
+			logger.error("ExpertName could be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
+		if (webShowName != null) {
+			result += webShowName + ". ";
+		} else {
+			logger.error("WebShowName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
+		result += "Accessed through: Fauna Europaea at http://faunaeur.org/full_results.php?id=";
+		
+		if (idInSource != null) {
+			result += getGUID(taxonName);
+		} else {
+			logger.error("IdInSource could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
 		return result;
 	}
 	
@@ -1480,9 +1520,16 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getLastAction(TaxonNameBase taxonName) {
-		// TODO
-		return null;
+	private String getLastAction(TaxonNameBase taxonName) {
+		String result = null;
+		ExtensionType lastActionExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionUuid);
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(lastActionExtensionType)) {
+				result = extension.getValue();
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -1492,36 +1539,14 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static DateTime getLastActionDate(TaxonNameBase taxonNameBase) {
+	private DateTime getLastActionDate(TaxonNameBase taxonName) {
 		DateTime result = null;
-		
-		try {
-		if (taxonNameBase != null) {
-			VersionableEntity taxonBase = null;
-			Set taxa = taxonNameBase.getTaxa();
-			if (taxa.size() == 1) {
-				taxonBase  = (VersionableEntity) taxa.iterator().next();
-			} else if (taxa.size() > 1) {
-				logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
+		ExtensionType lastActionDateExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionDateUuid);
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(lastActionDateExtensionType)) {
+				result = new DateTime(extension.getValue());
 			}
-			Set synonyms = taxonNameBase.getSynonyms();
-			if (synonyms.size() == 1) {
-				taxonBase  = (VersionableEntity) synonyms.iterator().next();
-			} else if (synonyms.size() > 1) {
-				logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-			}
-			
-			if (taxonBase != null) {
-				DateTime updated = taxonBase.getUpdated();
-				if (updated != null) {
-	//				logger.error("Taxon Updated: " + updated);
-					result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
-				}
-			}
-		}
-		
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1533,9 +1558,16 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getExpertName(TaxonNameBase taxonName) {
-		// TODO
-		return null;
+	private String getExpertName(TaxonNameBase taxonName) {
+		String result = null;
+		ExtensionType expertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertNameUuid);
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(expertNameExtensionType)) {
+				result = extension.getValue();
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -1545,12 +1577,48 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getExpertFk(TaxonNameBase taxonName) {
-		// TODO
-		return null;
+	private Integer getExpertFk(TaxonNameBase taxonName, PesiExportState state) {
+		Integer result = getSourceFk(taxonName, state);
+		return result;
 	}
 	
+	/**
+	 * Returns the <code>SpeciesExpertName</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>SpeciesExpertName</code> attribute.
+	 * @see MethodMapper
+	 */
 	@SuppressWarnings("unused")
+	private String getSpeciesExpertName(TaxonNameBase taxonName) {
+		String result = null;
+		ExtensionType expertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertNameUuid);
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(expertNameExtensionType)) {
+				result = extension.getValue();
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the <code>SpeciesExpertFk</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>SpeciesExpertFk</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private Integer getSpeciesExpertFk(TaxonNameBase taxonName, PesiExportState state) {
+		Integer result = getSourceFk(taxonName, state);
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param taxonName
+	 * @param state
+	 * @return
+	 */
 	private static Integer getSourceFk(TaxonNameBase taxonName, PesiExportState state) {
 		Integer result = null;
 		
@@ -1608,12 +1676,12 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 
 		// FuzzyName
-		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidFuzzyName);
-		if (extensionType != null) {
-			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "FuzzyName"));
-		} else {
-			mapping.addMapper(MethodMapper.NewInstance("FuzzyName", this));
-		}
+//		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidFuzzyName);
+//		if (extensionType != null) {
+//			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "FuzzyName"));
+//		} else {
+//			mapping.addMapper(MethodMapper.NewInstance("FuzzyName", this));
+//		}
 		
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
@@ -1644,13 +1712,16 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("FossilStatusFk", this)); // PesiTransformer.FossilStatusCache2FossilStatusFk?
 
 		mapping.addMapper(MethodMapper.NewInstance("IdInSource", this));
-		mapping.addMapper(MethodMapper.NewInstance("GUID", this)); // TODO
-		mapping.addMapper(MethodMapper.NewInstance("DerivedFromGuid", this)); // TODO
+		mapping.addMapper(MethodMapper.NewInstance("GUID", this));
+		mapping.addMapper(MethodMapper.NewInstance("DerivedFromGuid", this));
+		mapping.addMapper(MethodMapper.NewInstance("CacheCitation", this));
 		mapping.addMapper(MethodMapper.NewInstance("OriginalDB", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastActionDate", this));
-		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this)); // TODO
-		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this)); // TODO
+		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this));
+		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this.getClass(), "getExpertFk", standardMethodParameter, PesiExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("SpeciesExpertName", this));
+		mapping.addMapper(MethodMapper.NewInstance("SpeciesExpertFk", this.getClass(), "getSpeciesExpertFk", standardMethodParameter, PesiExportState.class));
 
 		return mapping;
 	}

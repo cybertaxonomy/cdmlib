@@ -9,10 +9,13 @@
 */
 package eu.etaxonomy.cdm.io.pesi.out;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -28,7 +31,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -50,6 +52,16 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 public final class PesiTransformer {
 	private static final Logger logger = Logger.getLogger(PesiTransformer.class);
+
+	public static final UUID expertUserIdUuid = UUID.fromString("e25813d3-c67c-4585-9aa0-970fafde50b4");
+	public static final UUID speciesExpertUserIdUuid = UUID.fromString("6d42abd8-8894-4980-ae07-e918affd4172");
+	public static final UUID expertNameUuid = UUID.fromString("24becb79-a90c-47d3-be35-efc87bb48fd3");
+	public static final UUID speciesExpertNameUuid = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
+	public static final UUID lastActionDateUuid = UUID.fromString("8d0a7d81-bb83-4576-84c3-8c906ef039b2");
+	public static final UUID lastActionUuid = UUID.fromString("bc20d5bc-6161-4279-9499-89ea26ce5f6a");
+	public static final UUID taxCommentUuid = UUID.fromString("8041a752-0479-4626-ab1b-b266b751f816");
+	public static final UUID fauCommentUuid = UUID.fromString("054f773a-41c8-4ad5-83e3-981320c1c126");
+	public static final UUID fauExtraCodesUuid = UUID.fromString("b8c7e77d-9869-4787-bed6-b4b302dbc5f5");
 
 	// References
 	public static int REF_ARTICLE_IN_PERIODICAL = 1;
@@ -3209,6 +3221,74 @@ public final class PesiTransformer {
 	}
 	
 	/**
+	 * Returns the RelTaxonQualifierCache for a given zoological taxonRelation.
+	 * @param relation
+	 * @return
+	 */
+	public static String zoologicalTaxonRelation2RelTaxonQualifierCache(RelationshipBase<?,?,?> relation){
+		if (relation == null) {
+			return null;
+		}
+		RelationshipTermBase<?> type = relation.getType();
+		if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
+			return STR_IS_MISAPPLIED_NAME_FOR;
+		} else if (type.equals(SynonymRelationshipType.SYNONYM_OF())) {
+			return STR_IS_SYNONYM_OF;
+		} else if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+			return "is objective synonym of";
+		} else if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())) {
+			return "is subjective synonym of";
+		} else if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())) {
+			return STR_IS_INFERRED_EPITHET_FOR;
+		} else if (type.equals(SynonymRelationshipType.INFERRED_GENUS_OF())) {
+			return STR_IS_INFERRED_GENUS_FOR;
+		} else if (type.equals(SynonymRelationshipType.POTENTIAL_COMBINATION_OF())) {
+			return STR_IS_POTENTIAL_COMBINATION_FOR;
+		} else if (type.equals(NameRelationshipType.BASIONYM())) {
+			return "is original combination for";
+		} else if (type.equals(NameRelationshipType.LATER_HOMONYM())) {
+			return STR_IS_LATER_HOMONYM_OF;
+		} else if (type.equals(NameRelationshipType.REPLACED_SYNONYM())) {
+			return STR_IS_REPLACED_SYNONYM_FOR;
+		} else if (type.equals(NameRelationshipType.VALIDATED_BY_NAME())) {
+			return STR_IS_VALIDATION_OF;
+		} else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {
+			return STR_IS_LATER_VALIDATION_OF;
+		} else if (type.equals(NameRelationshipType.CONSERVED_AGAINST())) {
+			return STR_IS_CONSERVED_AGAINST;
+		} else if (type.equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())) {
+			return STR_IS_TREATED_AS_LATER_HOMONYM_OF;
+		} else if (type.equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())) {
+			return STR_IS_ORTHOGRAPHIC_VARIANT_OF;
+		} else if (type.equals(NameRelationshipType.ALTERNATIVE_NAME())) {
+			return STR_IS_ALTERNATIVE_NAME_FOR;
+		} else {
+			logger.warn("No equivalent RelationshipType found in datawarehouse for: " + type.getTitleCache());
+		}
+			
+		// The following have no equivalent attribute in CDM
+//		IS_TYPE_OF
+//		IS_CONSERVED_TYPE_OF
+//		IS_REJECTED_TYPE_OF
+//		IS_FIRST_PARENT_OF
+//		IS_SECOND_PARENT_OF
+//		IS_FEMALE_PARENT_OF
+//		IS_MALE_PARENT_OF
+//		IS_REJECTED_IN_FAVOUR_OF
+//		HAS_SAME_TYPE_AS
+//		IS_LECTOTYPE_OF
+//		TYPE_NOT_DESIGNATED
+//		IS_PRO_PARTE_SYNONYM_OF
+//		IS_PARTIAL_SYNONYM_OF
+//		IS_PRO_PARTE_AND_HOMOTYPIC_SYNONYM_OF
+//		IS_PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF
+//		IS_PARTIAL_AND_HOMOTYPIC_SYNONYM_OF
+//		IS_PARTIAL_AND_HETEROTYPIC_SYNONYM_OF
+
+		return null;
+	}
+	
+	/**
 	 * Returns the RelTaxonQualifierFk for a TaxonRelation.
 	 * @param relation
 	 * @return
@@ -3318,4 +3398,38 @@ public final class PesiTransformer {
 		return result;
 	}
 
+	/**
+	 * Returns the NoteCategoryFk for a given UUID representing an ExtensionType.
+	 * @param uuid
+	 * @return
+	 */
+	public static Integer getNoteCategoryFk(UUID uuid) {
+		Integer result = null;
+		if (uuid.equals(taxCommentUuid)) {
+			result = 270;
+		} else if (uuid.equals(fauCommentUuid)) {
+			result = 281;
+		} else if (uuid.equals(fauExtraCodesUuid)) {
+			result = 278;
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the NoteCategoryCache for a given UUID representing an ExtensionType.
+	 * @param uuid
+	 * @return
+	 */
+	public static String getNoteCategoryCache(UUID uuid) {
+		String result = null;
+		if (uuid.equals(taxCommentUuid)) {
+			result = "Taxonomy";
+		} else if (uuid.equals(fauCommentUuid)) {
+			result = "Biology";
+		} else if (uuid.equals(fauExtraCodesUuid)) {
+			result = "Distribution";
+		}
+		return result;
+	}
+	
 }

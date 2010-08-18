@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.io.pesi.out;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -27,8 +29,11 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -46,6 +51,7 @@ public class PesiSourceExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "Source";
 	private static final String pluralString = "Sources";
+	private static final String parentPluralString = "TaxonNames";
 
 	public PesiSourceExport() {
 		super();
@@ -99,6 +105,7 @@ public class PesiSourceExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<ReferenceBase> list = null;
 
+			logger.error("PHASE 1...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -127,6 +134,72 @@ public class PesiSourceExport extends PesiExportBase {
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
 
+			
+			logger.error("PHASE 2...");
+			Connection connection = state.getConfig().getDestination().getConnection();
+			// Start transaction
+			txStatus = startTransaction(true);
+			List<TaxonNameBase> taxonNameList = null;
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+			while ((taxonNameList = getNameService().list(null, limit, count, null, null)).size() > 0) {
+
+				logger.error("Fetched " + list.size() + " " + parentPluralString + ". Exporting...");
+				for (TaxonNameBase taxonName : taxonNameList) {
+					doCount(count++, modCount, pluralString);
+
+					Integer taxonId = state.getDbId(taxonName);
+					ExtensionType expertUserIdExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertUserIdUuid);
+					ExtensionType speciesExpertUserIdExtensionType = (ExtensionType)getTermService().find(PesiTransformer.speciesExpertUserIdUuid);
+					ExtensionType expertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertNameUuid);
+					ExtensionType speciesExpertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.speciesExpertNameUuid);
+					
+					
+					Set<Extension> extensions = taxonName.getExtensions();
+					String expertUserId = null;
+					String speciesExpertUserId = null;
+					String expertName = null;
+					String speciesExpertName = null;
+					for (Extension extension : extensions) {
+						if (extension.getType().equals(expertUserIdExtensionType)) {
+							expertUserId = extension.getValue();
+						}
+						if (extension.getType().equals(speciesExpertUserIdExtensionType)) {
+							speciesExpertUserId = extension.getValue();
+						}
+						if (extension.getType().equals(expertNameExtensionType)) {
+							expertName = extension.getValue();
+						}
+						if (extension.getType().equals(speciesExpertNameExtensionType)) {
+							speciesExpertName = extension.getValue();
+						}
+					}
+
+					if (expertUserId != null && expertName != null) {
+						// expertName
+						invokeUsers(expertName, expertUserId, connection);
+					}
+					if (speciesExpertUserId != null && speciesExpertName != null) {
+						invokeUsers(speciesExpertName, speciesExpertUserId, connection);
+					}
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + parentPluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+			
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
 			return success;
@@ -135,6 +208,40 @@ public class PesiSourceExport extends PesiExportBase {
 			logger.error(e.getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * Inserts user data into Source database table.
+	 * @param expertName
+	 * @param userId
+	 * @param taxonId
+	 * @param connection
+	 */
+	private void invokeUsers(String expertName, String userId, Connection connection) {
+		String usersSql = "INSERT INTO Source (SourceCategoryFk, SourceCategoryCache, AuthorString, OriginalDB, RefIdInSource) VALUES" +
+				" (5, 'informal reference', ?, 'FaEu', ?)"; 
+		try {
+			PreparedStatement usersStmt = connection.prepareStatement(usersSql);
+			
+			if (expertName != null) {
+				usersStmt.setString(1, expertName);
+			} else {
+				usersStmt.setObject(1, null);
+			}
+			
+			if (userId != null) {
+				usersStmt.setString(2, userId);
+			} else {
+				usersStmt.setObject(2, null);
+			}
+
+			usersStmt.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("User could not be created. UserId: " + userId + ", ExpertName: " + expertName);
+			e.printStackTrace();
+		}
+
+
 	}
 
 	/**
