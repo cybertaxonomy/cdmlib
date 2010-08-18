@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -1555,6 +1556,19 @@ public class DerivedUnitFacade {
 	 */
 	public void setCollection(Collection collection) {
 		derivedUnit.setCollection(collection);
+	}
+	
+	//annotation	
+	public void addAnnotation(Annotation annotation){
+		this.derivedUnit.addAnnotation(annotation);
+	}
+
+	public void getAnnotations(){
+		this.derivedUnit.getAnnotations();
+	}
+	
+	public void removeAnnotation(Annotation annotation){
+		this.derivedUnit.removeAnnotation(annotation);
 	}
 	
 	
