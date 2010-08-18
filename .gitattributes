@@ -1238,6 +1238,8 @@ cdmlib-ext/pom.xml -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/EditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/EditGeoServiceUtilities.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/IEditGeoService.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/IIpniService.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/IpniService.java -text
 cdmlib-ext/src/site/site.xml -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
