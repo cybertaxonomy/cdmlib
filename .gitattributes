@@ -1490,6 +1490,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaRelTaxonI
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaTaxon.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaTaxonNameImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaUsersImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmIDResolver.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmMarshallerListener.java -text
