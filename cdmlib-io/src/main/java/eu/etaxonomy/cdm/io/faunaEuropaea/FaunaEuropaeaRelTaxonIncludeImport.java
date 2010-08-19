@@ -49,7 +49,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	
 	public static final String OS_NAMESPACE_TAXON = "Taxon";
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRelTaxonIncludeImport.class);
-	private static final String acceptedTaxonUUID = "EC765B43-E909-4D32-8822-34DA186424E8"; // any accepted taxon uuid, taken from original fauna europaea database
+	private static final String acceptedTaxonUUID = "A9C24E42-69F5-4681-9399-041E652CF338"; // any accepted taxon uuid, taken from original fauna europaea database
 	
 	private ReferenceBase<?> sourceRef;
 	private static String ALL_SYNONYM_FROM_CLAUSE = " FROM Taxon INNER JOIN Taxon AS Parent " +
