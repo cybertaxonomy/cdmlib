@@ -26,8 +26,8 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 @Controller
 @RequestMapping(value = {"/featurenode/{uuid}"})
 public class FeatureNodeController extends BaseController<FeatureNode, IFeatureNodeService> {
-	private static final Logger logger = Logger
-			.getLogger(FeatureNodeController.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FeatureNodeController.class);
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
