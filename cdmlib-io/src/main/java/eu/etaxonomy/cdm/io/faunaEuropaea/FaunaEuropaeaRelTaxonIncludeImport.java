@@ -520,7 +520,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 					
 				} catch (Exception e) {
 					logger.error("Error creating taxonomically included relationship parent-child (" + 
-						mappedParentUuid + "-" + childUuid + ")", e);
+						mappedParentUuid + " <----> " + childUuid + ")", e);
 				}
 
 			}
