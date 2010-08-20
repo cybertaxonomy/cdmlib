@@ -135,6 +135,17 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
+	public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+			
+		 List<T> results = new ArrayList<T>();
+		 if(numberOfResults > 0) { // no point checking again
+				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
+		 }
+		 return results;
+	}
+
+	@Transactional(readOnly = true)
 	public T find(LSID lsid) {
 		return dao.find(lsid);
 	}
