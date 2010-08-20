@@ -153,7 +153,7 @@ public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {
 				TeamOrPersonBase<Team> author = null;
 				reference = ReferenceFactory.newGeneric();
 
-				reference.setTitle(null);
+				reference.setTitle(refAuthor);
 				reference.setDatePublished(ImportHelper.getDatePublished(year));
 				
 				if (!authors.containsKey(refAuthor)) {
@@ -224,7 +224,7 @@ public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {
 			success = false;
 		}
 
-		if(logger.isInfoEnabled()) { logger.info("End making references ..."); }
+		if(logger.isInfoEnabled()) { logger.info("End making References (Users) ..."); }
 		
 		return success;
 	}

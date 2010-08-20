@@ -382,8 +382,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				zooName.setPublicationYear(year);
 				
 				// Add UserId extensions to this zooName
-				Extension.NewInstance(zooName, expertUserId, getExtensionType(PesiTransformer.expertUserIdUuid, "expertUserId", "expertUserId", "UID"));
-				Extension.NewInstance(zooName, speciesExpertUserId, getExtensionType(PesiTransformer.speciesExpertUserIdUuid, "speciesExpertUserId", "speciesExpertUserId", "UID"));
+				Extension.NewInstance(zooName, expertUserId, getExtensionType(PesiTransformer.expertUserIdUuid, "expertUserId", "expertUserId", "EUID"));
+				Extension.NewInstance(zooName, speciesExpertUserId, getExtensionType(PesiTransformer.speciesExpertUserIdUuid, "speciesExpertUserId", "speciesExpertUserId", "SEUID"));
 				
 				// Add Expert extensions to this zooName
 				Extension.NewInstance(zooName, expertName, getExtensionType(PesiTransformer.expertNameUuid, "ExpertName", "ExpertName", "EN"));
