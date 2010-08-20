@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -52,6 +52,8 @@ public class PesiSourceExport extends PesiExportBase {
 	private static final String dbTableName = "Source";
 	private static final String pluralString = "Sources";
 	private static final String parentPluralString = "TaxonNames";
+	private static final Integer sourceFkOffSet = 100000;
+	List<Integer> storedSourceIds = new ArrayList<Integer>();
 
 	public PesiSourceExport() {
 		super();
@@ -72,6 +74,29 @@ public class PesiSourceExport extends PesiExportBase {
 	protected boolean doCheck(PesiExportState state) {
 		boolean result = true;
 		return result;
+	}
+
+	/**
+	 * Checks whether a sourceId was stored already.
+	 * @param sourceId
+	 * @return
+	 */
+	protected boolean isStoredSourceId(Integer sourceId) {
+		if (storedSourceIds.contains(sourceId)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Adds a sourceId to the list of storedSourceIds.
+	 * @param sourceId
+	 */
+	protected void addToStoredSourceIds(Integer sourceId) {
+		if (! storedSourceIds.contains(sourceId)) {
+			this.storedSourceIds.add(sourceId);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -105,7 +130,7 @@ public class PesiSourceExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<ReferenceBase> list = null;
 
-			logger.error("PHASE 1...");
+//			logger.error("PHASE 1...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -133,71 +158,6 @@ public class PesiSourceExport extends PesiExportBase {
 			// Commit transaction
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
-
-			
-			logger.error("PHASE 2...");
-			Connection connection = state.getConfig().getDestination().getConnection();
-			// Start transaction
-			txStatus = startTransaction(true);
-			List<TaxonNameBase> taxonNameList = null;
-			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
-			while ((taxonNameList = getNameService().list(null, limit, count, null, null)).size() > 0) {
-
-				logger.error("Fetched " + list.size() + " " + parentPluralString + ". Exporting...");
-				for (TaxonNameBase taxonName : taxonNameList) {
-					doCount(count++, modCount, pluralString);
-
-					Integer taxonId = state.getDbId(taxonName);
-					ExtensionType expertUserIdExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertUserIdUuid);
-					ExtensionType speciesExpertUserIdExtensionType = (ExtensionType)getTermService().find(PesiTransformer.speciesExpertUserIdUuid);
-					ExtensionType expertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertNameUuid);
-					ExtensionType speciesExpertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.speciesExpertNameUuid);
-					
-					Set<Extension> extensions = taxonName.getExtensions();
-					String expertUserId = null;
-					String speciesExpertUserId = null;
-					String expertName = null;
-					String speciesExpertName = null;
-					for (Extension extension : extensions) {
-						if (extension.getType().equals(expertUserIdExtensionType)) {
-							expertUserId = extension.getValue();
-						}
-						if (extension.getType().equals(speciesExpertUserIdExtensionType)) {
-							speciesExpertUserId = extension.getValue();
-						}
-						if (extension.getType().equals(expertNameExtensionType)) {
-							expertName = extension.getValue();
-						}
-						if (extension.getType().equals(speciesExpertNameExtensionType)) {
-							speciesExpertName = extension.getValue();
-						}
-					}
-
-					if (expertUserId != null && expertName != null) {
-						// expertName
-						invokeUsers(expertName, expertUserId, connection);
-					}
-					if (speciesExpertUserId != null && speciesExpertName != null) {
-						invokeUsers(speciesExpertName, speciesExpertUserId, connection);
-					}
-				}
-
-				// Commit transaction
-				commitTransaction(txStatus);
-				logger.error("Committed transaction.");
-				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
-				pastCount = count;
-
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
-			}
-			if (list.size() == 0) {
-				logger.error("No " + parentPluralString + " left to fetch.");
-			}
-			// Commit transaction
-			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
 			
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
@@ -216,22 +176,24 @@ public class PesiSourceExport extends PesiExportBase {
 	 * @param taxonId
 	 * @param connection
 	 */
-	private void invokeUsers(String expertName, String userId, Connection connection) {
-		String usersSql = "INSERT INTO Source (SourceCategoryFk, SourceCategoryCache, AuthorString, OriginalDB, RefIdInSource) VALUES" +
-				" (5, 'informal reference', ?, 'FaEu', ?)"; 
+	private void invokeUsers(String expertName, String userId, Integer sourceId, Connection connection) {
+		String usersSql = "INSERT INTO Source (SourceId, SourceCategoryFk, SourceCategoryCache, AuthorString, OriginalDB, RefIdInSource) VALUES" +
+				" (?, 5, 'informal reference', ?, 'FaEu', ?)"; 
 		try {
 			PreparedStatement usersStmt = connection.prepareStatement(usersSql);
 			
+			usersStmt.setInt(1, sourceId);
+			
 			if (expertName != null) {
-				usersStmt.setString(1, expertName);
+				usersStmt.setString(2, expertName);
 			} else {
-				usersStmt.setObject(1, null);
+				usersStmt.setObject(2, null);
 			}
 			
 			if (userId != null) {
-				usersStmt.setString(2, userId);
+				usersStmt.setString(3, userId);
 			} else {
-				usersStmt.setObject(2, null);
+				usersStmt.setObject(3, null);
 			}
 
 			usersStmt.executeUpdate();
@@ -241,6 +203,17 @@ public class PesiSourceExport extends PesiExportBase {
 		}
 
 
+	}
+
+	/**
+	 * Returns a self created sourceId.
+	 * @return
+	 */
+	private Integer generateNewSourceId(Integer userId) {
+		if (userId == null) {
+			return null;
+		}
+		return sourceFkOffSet + userId;
 	}
 
 	/**
