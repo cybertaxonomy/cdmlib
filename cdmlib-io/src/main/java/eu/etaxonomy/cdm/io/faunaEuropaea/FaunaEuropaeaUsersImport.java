@@ -133,7 +133,10 @@ public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {
 				}
 
 				// build year
-				String year = createdDate.substring(0, createdDate.indexOf("-"));
+				String year = null;
+				if (createdDate != null) {
+					year = createdDate.substring(0, createdDate.indexOf("-"));
+				}
 				
 				if ((i++ % limit) == 0) {
 
@@ -212,6 +215,7 @@ public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {
 					getAgentService().save((Collection)authors.values());
 					
 					authors = null;
+					commitTransaction(txStatus);
 				}
 	        	
 	        }
