@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="avalon-framework-4.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="batik-all-1.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-io-1.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="fop.jar"/>
+	<classpathentry exported="true" kind="lib" path="jaxen-1.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="odfdom-0.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="saxon9he.jar"/>
+	<classpathentry exported="true" kind="lib" path="serializer-2.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="xalan-2.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="xercesImpl-2.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="xml-apis-1.3.04.jar"/>
+	<classpathentry exported="true" kind="lib" path="xml-apis-ext-1.3.04.jar"/>
+	<classpathentry exported="true" kind="lib" path="xmlgraphics-commons-1.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="xsltc.jar"/>
+	<classpathentry exported="true" kind="lib" path="msbase-2000.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="mssqlserver-2000.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="msutil-2000.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
@@ -33,7 +50,6 @@
 	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdbc-1.2.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jdbc2_0-stdext.jar" sourcepath="eclipse-pluginsrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="joda-time-1.5.jar" sourcepath="joda-time-1.5src.zip"/>
 	<classpathentry exported="true" kind="lib" path="joda-time-hibernate-1.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jsr250-api-1.0.jar" sourcepath="jsr250-api-1.0src.zip"/>
@@ -93,5 +109,6 @@
 	<classpathentry exported="true" kind="lib" path="xstream-1.3.1.jar" sourcepath="xstream-1.3.1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="ezmorph-1.0.4.jar" sourcepath="ezmorph-1.0.4src.zip"/>
 	<classpathentry exported="true" kind="lib" path="xom-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="jdom.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
