@@ -593,6 +593,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		return descriptionBase;
 	}
 
+	@Deprecated // this method resultst in a org.hibernate.QueryException because "inDescription.taxon" will not work 
+	// for DescriptionBase objects. Who uses this method? Can we remove this? -- nho
 	public List<DescriptionElementBase> getDescriptionElementForTaxon(
 			Taxon taxon, Set<Feature> features,
 			Class<? extends DescriptionElementBase> type, Integer pageSize,

@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -185,6 +187,17 @@ public class FeatureTree extends TermBase {
 		List<FeatureNode> result = new ArrayList<FeatureNode>();
 		result.addAll(root.getChildren());
 		return result;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Transient
+	public Set<Feature> getDistinctFeatures(){
+		Set<Feature> features = new HashSet<Feature>();
+		
+		return root.getDistinctFeaturesRecursive(features);
 	}
 	
 }

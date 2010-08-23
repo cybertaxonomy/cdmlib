@@ -450,6 +450,28 @@ public class FeatureNode extends VersionableEntity {
 		return null;
 	}
 	
+	/**
+	 * Returns all features that are contained in this node or a child node
+	 * 
+	 * @param featureNode
+	 * @param features
+	 * @return
+	 */
+	@Transient
+	public Set<Feature> getDistinctFeaturesRecursive(Set<Feature> features){
+		Feature feature = this.getFeature();
+		
+		if(! features.contains(feature)){
+			features.add(feature);
+		}
+		
+		for(FeatureNode childNode : this.getChildren()){
+			features.addAll(childNode.getDistinctFeaturesRecursive(features));
+		}
+		
+		return features;
+	}
+	
 	//** ********************** TAXON ******************************/
 	
 	/** 
