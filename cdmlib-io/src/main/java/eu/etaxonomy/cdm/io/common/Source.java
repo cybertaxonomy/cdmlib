@@ -466,6 +466,17 @@ public class Source {
     		throw new MethodNotSupportedException("Check column exist is not supported by the database system");
     	}
     }
+
+    @Override
+    public String toString(){
+    	if (mDb != null){
+    		return mDb;
+    	}else if (mUrl == null){
+    		return super.toString();
+    	}else{
+        	return mUrl;
+    	}
+    }
     
 
 }
