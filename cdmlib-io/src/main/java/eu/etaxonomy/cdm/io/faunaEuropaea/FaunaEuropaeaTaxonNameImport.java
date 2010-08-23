@@ -407,21 +407,17 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 						if (autId == A_AUCT) { // misapplied name
 							zooName.setCombinationAuthorTeam(null);
 							zooName.setPublicationYear(null);
-							
-							// create a synonym for a misapplied name
-							synonym = Synonym.NewInstance(zooName, auctReference);
-							
+							taxon = Taxon.NewInstance(zooName, auctReference);
 							if (logger.isDebugEnabled()) {
 								logger.debug("Misapplied name created (" + taxonId + ")");
 							}
-							taxonBase = synonym;
 						} else { // accepted taxon
 							taxon = Taxon.NewInstance(zooName, sourceReference);
 							if (logger.isDebugEnabled()) {
 								logger.debug("Taxon created (" + taxonId + ")");
 							}
-							taxonBase = taxon;
 						}
+						taxonBase = taxon;
 					} else if ((status == T_STATUS_NOT_ACCEPTED) && (autId != A_AUCT)) { // synonym
 						synonym = Synonym.NewInstance(zooName, sourceReference);
 						//logger.info("Synonym created: " + synonym.getTitleCache() + " taxonName: " + zooName.getTitleCache());
