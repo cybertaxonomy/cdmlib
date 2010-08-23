@@ -95,7 +95,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 				}
 			}
 			if (objectToSave != null){
-			objectsToSave.add(objectToSave);
+				objectsToSave.add(objectToSave);
 			}else{
 				logger.warn("The objectToSave was (null). Please check that your mappers work correctly.");
 			}
