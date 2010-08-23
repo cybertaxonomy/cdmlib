@@ -167,7 +167,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 
 	public Object getCdmBaseProperty(UUID uuid, String property, HttpServletResponse response) throws IOException{
 		
-		T instance = getCdmBaseInstance(uuid, response, property);
+		T instance = (T) HibernateProxyHelper.deproxy(getCdmBaseInstance(uuid, response, property));
 		
 		Object objectFromProperty = invokeProperty(instance, property, response);
 		

@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -47,6 +48,8 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -106,6 +109,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	@Autowired
 	private ITaxonService taxonService;
+	
+	@Autowired
+	private IFeatureTreeService featureTreeService;
 	
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"*",
