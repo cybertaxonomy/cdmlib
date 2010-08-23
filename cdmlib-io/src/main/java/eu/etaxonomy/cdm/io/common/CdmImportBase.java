@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
 	private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
-	protected TaxonomicTree makeTree(STATE state, ReferenceBase ref){
+	protected TaxonomicTree makeTree(STATE state, ReferenceBase reference){
+		ReferenceBase ref = CdmBase.deproxy(reference, ReferenceBase.class);
 		String treeName = "TaxonTree (Import)";
 		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
@@ -221,7 +222,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 
-	
 	/**
 	 * Adds an orginal source to a sourceable objects (implemented for Identifiable entity and description element.
 	 * If cdmBase is not sourceable nothing happens.
@@ -234,11 +234,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, ReferenceBase citation) throws SQLException {
+	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, ReferenceBase citation) throws SQLException {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable)cdmBase;
-			Object id = rs.getObject(dbIdAttribute);
+			Object id = idAttributeValue;
 			String strId = String.valueOf(id);
 			String microCitation = null;
 			if (cdmBase instanceof IdentifiableEntity){
@@ -251,6 +251,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}
 			sourceable.addSource(source);
 		}
+	}
+	
+	/**
+	 * @see #addOriginalSource(CdmBase, Object, String, ReferenceBase)
+	 * @param rs
+	 * @param cdmBase
+	 * @param dbIdAttribute
+	 * @param namespace
+	 * @param citation
+	 * @throws SQLException
+	 */
+	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, ReferenceBase citation) throws SQLException {
+		Object id = rs.getObject(dbIdAttribute);
+		addOriginalSource(cdmBase, id, namespace, citation);
 	}
 	
 
