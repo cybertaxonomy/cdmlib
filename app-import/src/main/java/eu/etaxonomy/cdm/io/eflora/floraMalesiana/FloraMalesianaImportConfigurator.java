@@ -129,8 +129,7 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			sourceReference = refFactory.newDatabase();
+			sourceReference = ReferenceFactory.newDatabase();
 			sourceReference.setTitleCache("Flora Melesiana", true);
 		}
 		return sourceReference;

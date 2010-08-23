@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
@@ -37,6 +39,26 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	
 	public static final UUID uuidChromosomes = UUID.fromString("c4a60319-4978-4692-9545-58d60cf8379e");
 	
+	public static final UUID uuidNote = UUID.fromString("b9af1489-6b68-497f-8d4b-260a9f886827");
+	public static final UUID uuidNotes = UUID.fromString("e31bb420-f39e-493d-b452-dd5e63dda443");
+	public static final UUID uuidTaxonomy = UUID.fromString("0c80c395-038b-4bd6-9ff4-48f4511754b6");
+	public static final UUID uuidMorphology = UUID.fromString("1b5bfe4a-d075-4e38-ab63-3c6b6bb5846a");
+	public static final UUID uuidPalynology = UUID.fromString("50ddb15e-aa25-4933-8449-c321dccad4e7");
+	public static final UUID uuidWoodAnatomy = UUID.fromString("b2ff70bc-f7b9-4aa8-8a4c-8f41ad6f8ada");
+	public static final UUID uuidLeafAnatomy = UUID.fromString("3633debe-1c00-4f43-98f7-38b950b3880d");
+	public static final UUID uuidChromosomeNumbers = UUID.fromString("6f677e98-d8d5-4bc5-80bf-affdb7e3945a");
+	public static final UUID uuidPhytochemistryAndChemotaxonomy = UUID.fromString("ea76e235-a845-4f25-af07-1eee91547ef5");
+	public static final UUID uuidPollenMorphology = UUID.fromString("4a00d8b2-60d7-4891-b5e7-3244278d849d");
+	public static final UUID uuidVegetativeMorphologyAndAnatomy = UUID.fromString("282d1d8e-47cf-4c34-86ff-772e78b71058");
+	public static final UUID uuidFlowerMorphology = UUID.fromString("cbe3ca08-0407-4a67-bf35-665e6fb3efdb");
+	public static final UUID uuidPollination = UUID.fromString("0d601a3d-c444-4a7c-940b-be0a9902673f");
+	public static final UUID uuidLifeCycle = UUID.fromString("fcb5d9a7-ad56-401c-b179-5f017342f3b3");
+	public static final UUID uuidFruitsAndEmbryology = UUID.fromString("f22ff5ff-8cf6-4fcc-8fd2-bfdc07cb7952");
+	public static final UUID uuidDispersal = UUID.fromString("1349d543-929a-4048-89dd-5006880a4cb2");
+	public static final UUID uuidPhytochemistry = UUID.fromString("3466fdb9-360f-467e-9bd2-be8d997d1361");
+	public static final UUID uuidFossils = UUID.fromString("ccbf72ff-ab72-4f41-8c60-77100e14b6b0");
+	public static final UUID uuidMorphologyAndAnatomy = UUID.fromString("e18a82c2-8961-409f-8b8e-0502225ea43f");
+
 	public static final UUID uuidLeaflets = UUID.fromString("0efcfbb5-7f7a-454f-985e-50cea6523fef");
 	public static final UUID uuidLeaves = UUID.fromString("378c6d5f-4f8a-4769-b054-50ddaff6f080");
 	public static final UUID uuidBranchlets = UUID.fromString("e63af3b4-aaff-4b4d-a8fe-3b13b79974c8");
@@ -66,7 +88,8 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	public static final UUID uuidPistillode = UUID.fromString("7c91c9ae-ad30-4aca-96b8-249c154fb296");
 	public static final UUID uuidFlower = UUID.fromString("27a04dae-3a46-41ec-a36f-866561a0f8db");
 	public static final UUID uuidOvules = UUID.fromString("e118915a-0d6c-41b9-9385-9f18d852e0bc");
-	public static final UUID uuidFemale = UUID.fromString("fe708a69-150d-41fb-b391-dc8d9c1b8d1a");
+	//= female Flowers
+	//	public static final UUID uuidFemale = UUID.fromString("fe708a69-150d-41fb-b391-dc8d9c1b8d1a");
 	public static final UUID uuidStyle = UUID.fromString("6b5ae8fb-72e4-4c60-9bbe-0abc9edb09c3");
 	public static final UUID uuidArillode = UUID.fromString("d113362e-06cb-42c8-96c7-4df6bef9cb29");
 	public static final UUID uuidFruit = UUID.fromString("05442d43-045d-4632-9a1e-d2eada227490");
@@ -126,6 +149,10 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	//extension type uuids
 	public static final UUID uuidTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
 	
+	//marker type uuid
+	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
+	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
+	
 	
 
 	/* (non-Javadoc)
@@ -145,9 +172,11 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureUuid(java.lang.String)
 	 */
 	@Override
-	public UUID getFeatureUuid(String key)
-			throws UndefinedTransformerMethodException {
+	public UUID getFeatureUuid(String key) 	throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
+
+		}else if (key.equalsIgnoreCase("Chromosomes")){return uuidChromosomes;
+
 		}else if (key.equalsIgnoreCase("Habitat")){return uuidHabitat;
 		}else if (key.equalsIgnoreCase("Habitat & Ecology")){return uuidHabitatEcology;
 		}else if (key.equalsIgnoreCase("Leaflets")){return uuidLeaflets;
@@ -180,7 +209,7 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Branches")){return uuidBranches;
 		}else if (key.equalsIgnoreCase("Flower")){return uuidFlower;
 		}else if (key.equalsIgnoreCase("Ovules")){return uuidOvules;
-		}else if (key.equalsIgnoreCase("Female")){return uuidFemale;
+		}else if (key.equalsIgnoreCase("Female")){return uuidFemaleFlowers;
 		}else if (key.equalsIgnoreCase("Style")){return uuidStyle;
 		}else if (key.equalsIgnoreCase("Arillode")){return uuidArillode;
 		}else if (key.equalsIgnoreCase("Fruit")){return uuidFruit;
@@ -196,7 +225,6 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Buds")){return uuidBuds;
 		}else if (key.equalsIgnoreCase("Stems")){return uuidStems;
 		}else if (key.equalsIgnoreCase("Trees")){return uuidTrees;
-		}else if (key.equalsIgnoreCase("Chromosomes")){return uuidChromosomes;
 		}else if (key.equalsIgnoreCase("Axillary")){return uuidAxillary;
 		}else if (key.equalsIgnoreCase("Petiolules")){return uuidPetiolules;
 		}else if (key.equalsIgnoreCase("Male flowers")){return uuidMaleFlowers;
@@ -238,11 +266,71 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Wall of fruit inside")){return uuidWallOfFruitInside;
 				
 		
+		}else if (key.equalsIgnoreCase("Note")){return uuidNote;
+		}else if (key.equalsIgnoreCase("Notes")){return uuidNotes;
+		}else if (key.equalsIgnoreCase("Taxonomy")){return uuidTaxonomy;
+		}else if (key.equalsIgnoreCase("Morphology")){return uuidMorphology;
+		}else if (key.equalsIgnoreCase("Palynology")){return uuidPalynology;
+		}else if (key.equalsIgnoreCase("Wood anatomy")){return uuidWoodAnatomy;
+		}else if (key.equalsIgnoreCase("Leaf anatomy")){return uuidLeafAnatomy;
+		}else if (key.equalsIgnoreCase("Chromosome numbers")){return uuidChromosomeNumbers;
+		}else if (key.equalsIgnoreCase("Phytochemistry and Chemotaxonomy")){return uuidPhytochemistryAndChemotaxonomy;
+		}else if (key.equalsIgnoreCase("Pollen morphology")){return uuidPollenMorphology;
+		}else if (key.equalsIgnoreCase("Vegetative morphology and anatomy")){return uuidVegetativeMorphologyAndAnatomy;
+		}else if (key.equalsIgnoreCase("Flower morphology")){return uuidFlowerMorphology;
+		}else if (key.equalsIgnoreCase("Pollination")){return uuidPollination;
+		}else if (key.equalsIgnoreCase("Life cycle")){return uuidLifeCycle;
+		}else if (key.equalsIgnoreCase("Fruits and embryology")){return uuidFruitsAndEmbryology;
+		}else if (key.equalsIgnoreCase("Dispersal")){return uuidDispersal;
+		}else if (key.equalsIgnoreCase("Phytochemistry")){return uuidPhytochemistry;
+		}else if (key.equalsIgnoreCase("Fossils")){return uuidFossils;
+		}else if (key.equalsIgnoreCase("Morphology and anatomy")){return uuidMorphologyAndAnatomy;
+//		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;
+
+		
+		
 		}else{
 			return null;
 		}
 		
 	}
+
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getMarkerTypeByKey(java.lang.String)
+	 */
+	@Override
+	public MarkerType getMarkerTypeByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+//		}else if (key.equalsIgnoreCase("distribution")){return MarkerType.;
+//		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("excluded")){return uuidExcludedTaxon;
+		}else if (key.equalsIgnoreCase("EXCLUDED SPECIES, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
+		}else if (key.equalsIgnoreCase("EXCLUDED GENUS, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
+		}else if (key.equalsIgnoreCase("INCOMPLETELY KNOWN SPECIES")){return uuidIncompleteTaxon;
+		}else if (key.equalsIgnoreCase("INSUFICIENTLY KNOWN")){return uuidIncompleteTaxon;
+		}else if (key.equalsIgnoreCase("INSUFFICIENTLY KNOWN")){return uuidIncompleteTaxon;
+		}else if (key.equalsIgnoreCase("IMPERFECTLY KNOWN SPECIES")){return uuidIncompleteTaxon;
+		}else{
+			return null;
+		}
+		
+//		<xs:enumeration value="DOUBTFUL OR ERRONEOUS RECORDS"/>
+//		<xs:enumeration value="DOUBTFUL SPECIES, PROBABLY TO BE EXCLUDED"/>
+//		<xs:enumeration value="EXCLUDED OR DOUBTFUL NAMES"/>
+//		<xs:enumeration value="CULTIVATED, EXOTIC SAPINDACEAE"/>
+	}
+	
+	
 	
 	
 	

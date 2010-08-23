@@ -23,6 +23,18 @@ public class CdmImportSources {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmImportSources.class);
 	
+
+	
+	public static Source AFRICA_FERNS_ODBC(){
+		//	
+		String dbms = Source.ACCESS;
+		String strServer = null;
+		//String strDB = "fernsTest";
+		String strDB = "C:\\localCopy\\Data\\eflora\\africa\\Mail_2010_05_05\\test.mdb";
+		int port = 1433;
+		String userName = "";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
 	
 	public static Source GLOBIS(){
 		//	BerlinModel - Pesi-ERMS
@@ -33,7 +45,7 @@ public class CdmImportSources {
 		String userName = "adam";
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
-	
+
 	public static Source GLOBIS_ODBC(){
 		//	BerlinModel - Pesi-ERMS
 		String dbms = Source.ODDBC;

@@ -29,6 +29,8 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -46,10 +48,10 @@ public class FloraMalesianaActivator {
 	static final String fmSource13_2 = EfloraSources.fm_13_2_local();
 	
 	
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_malesiana_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_malesiana_production();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//feature tree uuid
 	public static final UUID featureTreeUuid = UUID.fromString("168df0c6-6429-484c-b26f-ded1f7e44bd9");
@@ -67,8 +69,8 @@ public class FloraMalesianaActivator {
 
 	private boolean includeSapindaceae1 = true;
 	private boolean includeSapindaceae2 = true;
-	private boolean includeVol13_1 = true;
-	private boolean includeVol13_2 = true;
+	private boolean includeVol13_1 = false;
+	private boolean includeVol13_2 = false;
 
 	
 	private void doImport(ICdmDataSource cdmDestination){
@@ -88,6 +90,7 @@ public class FloraMalesianaActivator {
 		//Sapindaceae1
 		if (includeSapindaceae1){
 			System.out.println("Start import from ("+ fmSource1.toString() + ") ...");
+			floraMalesianaConfig.setSourceReference(getSourceReference("Flora Malesiana - Sapindaceae I"));
 			myImport.invoke(floraMalesianaConfig);
 			System.out.println("End import from ("+ fmSource1.toString() + ")...");
 		}
@@ -97,10 +100,12 @@ public class FloraMalesianaActivator {
 			System.out.println("\nStart import from ("+ fmSource2.toString() + ") ...");
 			source = fmSource2;
 			floraMalesianaConfig.setSource(source);
+			floraMalesianaConfig.setSourceReference(getSourceReference("Flora Malesiana - Sapindaceae II"));
 			myImport.invoke(floraMalesianaConfig);
 			System.out.println("End import from ("+ fmSource2.toString() + ")...");
 		}
 		
+		floraMalesianaConfig.setSourceReference(getSourceReference("Flora Malesiana - Vol. 13"));
 		//Vol13_1
 		if (includeVol13_1){
 			System.out.println("\nStart import from ("+ fmSource13_1.toString() + ") ...");
@@ -135,116 +140,161 @@ public class FloraMalesianaActivator {
 		
 	}
 	
-	private FeatureTree makeFeatureNode(ITermService service){
-		
-		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
-		FeatureNode root = result.getRoot();
-		FeatureNode newNode;
-		
-		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
-		root.addChild(newNode);
-		FloraMalesianaTransformer transformer = new FloraMalesianaTransformer();
-		addFeataureNodesByStringList(descriptionFeatureList, newNode, transformer, service);
-		
-		newNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
-		root.addChild(newNode);
-		newNode = FeatureNode.NewInstance(Feature.ECOLOGY());
-		root.addChild(newNode);
-		newNode = FeatureNode.NewInstance(Feature.USES());
-		root.addChild(newNode);
-		
-		newNode = FeatureNode.NewInstance(Feature.ANATOMY());
-		root.addChild(newNode);	
-
-
-
+	private ReferenceBase getSourceReference(String string) {
+		ReferenceBase result = ReferenceFactory.newGeneric();
+		result.setTitleCache(string);
 		return result;
 	}
 
+	private FeatureTree makeFeatureNode(ITermService service){
+		FloraMalesianaTransformer transformer = new FloraMalesianaTransformer();
+		
+		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
+		result.setTitleCache("Flora Malesiana Presentation Feature Tree");
+		FeatureNode root = result.getRoot();
+		FeatureNode newNode;
+		
+		newNode = FeatureNode.NewInstance(Feature.CITATION());
+		root.addChild(newNode);
+		
+		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
+		root.addChild(newNode);
+		
+		addFeataureNodesByStringList(descriptionFeatureList, newNode, transformer, service);
+
+		addFeataureNodesByStringList(generellDescriptionsList, root, transformer, service);
+
+		
+		newNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
+		root.addChild(newNode);
+
+		newNode = FeatureNode.NewInstance(Feature.ECOLOGY());
+		root.addChild(newNode);
+		addFeataureNodesByStringList(habitatEcologyList, root, transformer, service);
+		
+		newNode = FeatureNode.NewInstance(Feature.USES());
+		root.addChild(newNode);
+		
+		addFeataureNodesByStringList(chomosomesList, root, transformer, service);
+		
+		return result;
+	}
+	
+	private static String [] chomosomesList = new String[]{
+		"Chromosomes", 
+	};
+
+	
+	private static String [] habitatEcologyList = new String[]{
+		"Habitat",
+		"Habitat & Ecology"
+	};
+	
+	
+	private static String [] generellDescriptionsList = new String[]{
+		"Fossils",
+		"Morphology and anatomy",
+		"Morphology", 
+		"Vegetative morphology and anatomy",
+		"Flower morphology",
+		"Palynology",  
+		"Pollination",  
+		"Pollen morphology",
+		"Life cycle",
+		"Fruits and embryology",
+		"Dispersal",
+		"Wood anatomy",  
+		"Leaf anatomy",  
+		"Chromosome numbers", 
+		"Phytochemistry and Chemotaxonomy",
+		"Phytochemistry",
+		"Taxonomy",	
+	};
+
 	private static String [] descriptionFeatureList = new String[]{
-		"Leaflets",  
-		"Leaves",  
-		"Branchlets",  
-		"lifeform",  
-		"Inflorescences",  
-		"Flowers",  
-		"Sepals",  
-		"Outer Sepals",  
-		"Anthers",  
-		"Petals",  
-		"Petal",  
-		"Disc",  
-		"Stamens",  
-		"Fruits",  
-		"Indumentum",  
-		"figure",  
-		"fig",  
-		"figs",  
-		"Seeds",  
-		"Flowering",  
-		"Bracts",  
-		"Pedicels",  
-		"Pistil",  
-		"Ovary",  
-		"Twigs",  
-		"Pedicels",  
-		"Infructescences",  
-		"Branches",  
-		"Flower",  
-		"Ovules",  
-		"Female",  
-		"Style",  
-		"Arillode",  
-		"Fruit",  
-		"Branch",  
-		"Inflorescence",  
-		"Calyx",  
-		"Seedling",  
-		"Staminodes",  
-		"Filaments",  
-		"Pistillode",  
-		"Stigma",  
-		"Petiole",  
-		"Buds",  
-		"Stems",  
-		"Trees",  
-		"Chromosomes",  
-		"Axillary",  
-		"Petiolules",  
-		"Male flowers",  
-		"Young inflorescences",  
-		"Sepal",  
-		"Thyrses",  
-		"Thyrsus",  
+		"lifeform", 
 		"Bark",  
+		"Indumentum",  
 		"endophytic body",  
 		"flowering buds",  
-		"flower buds",  
-		"perianth",  
+		"Branchlets",  
+		"Branches",  
+		"Branch",  
+		"Flowering branchlets",
+		"Trees",  
+		"Twigs",  
+		"stem",  
+		"Stems",  
+		"stem leaves", 
+		"Leaves",
+		"flower-bearing stems",  
+		"Petiole",  
+		"Petiolules",  
+		"Leaflets", 
+		"Thyrsus",  
+		"Thyrses",  
+		"Inflorescences",  
+		"Inflorescence",
+		"Young inflorescences", 
+		"Bracts",  
+		"Pedicels",  
+		"flowering buds",  
 		"scales",  
-		"perigone tube",  
+		"Buds",  
+		"Flowers",  
+		"Flower",  
+		"Flowering",
+		"Stigma",  
+		"perianth",  
+		"Sepals",  
+		"Sepal",  
+		"Outer Sepals",  
+		"Axillary",  
+		"cymes",  
+		"Calyx",  
+		"Petal",  
+		"Petals",  
+		"perigone tube",
+		"Disc",  
 		"corolla",  
+		"Stamens",  
+		"Staminodes",  
+		"Ovary",  
+		"Anthers",
+		"anther",  
+		"Pistil",  
+		"Pistillode",  
+		"Ovules",  
+		"androecium",  
+		"gynoecium",  
+		"Filaments",  		
+		"Style",  
 		"annulus",  
 		"female flowers",  
-		"cymes",  
+		"Male flowers",  
+		"Female",  
+		"Infructescences",    //order not consistent (sometimes before "Flowers")  
+		"Fruit",  
+		"Fruits",  
+		"fruiting axes",  
+		"drupes",  
+		"Arillode",  
+		"seed",  
+		"Seeds",  
+		"Seedling",  
+		"flower tube", 
 		"nutlets",  
-		"stem",  
 		"pollen",  
 		"secondary xylem",  
 		"chromosome number",  
-		"stem leaves",  
-		"flower tube",  
 	
-		"seed",  
-		"drupes",  
-		"fruiting axes",  
-		"androecium",  
-		"gynoecium",  
-	
-		"anther",  
-		"flower-bearing stems",  
-		"Flowering branchlets",  
-	
+		"figure",  
+		"fig",  
+		"figs",  
+
+
+
+		
 	};
 	
 	public void addFeataureNodesByStringList(String[] featureStringList, FeatureNode root, IInputTransformer transformer, ITermService termService){

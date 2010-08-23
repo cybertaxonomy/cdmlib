@@ -27,14 +27,12 @@ import org.jdom.Element;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.eflora.floraMalesiana.UnmatchedLeads.UnmatchedLeadsKey;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -42,11 +40,18 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
@@ -64,8 +69,11 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -84,7 +92,8 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	private static final Logger logger = Logger.getLogger(FloraMalesianaTaxonImport.class);
 
 	private static int modCount = 30000;
-	
+	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
+
 	public FloraMalesianaTaxonImport(){
 		super();
 	}
@@ -140,15 +149,15 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 				if (! elTaxon.getName().equalsIgnoreCase("taxon")){
 					logger.warn("body has element other than 'taxon'");
 				}
-				verifyNoAttribute(elTaxon);
-
+				
 				BotanicalName botanicalName = BotanicalName.NewInstance(Rank.SPECIES());
 				Taxon taxon = Taxon.NewInstance(botanicalName, state.getConfig().getSourceReference());
 				
+				handleTaxonAttributes(elTaxon, taxon, state);
+
+				
 				List<Element> children = elTaxon.getChildren();
-				for (Element element : children){
-					handleTaxonElement(state, unhandledTitleClassess, unhandledNomeclatureChildren,	unhandledDescriptionChildren, taxon, element);
-				}
+				handleTaxonElement(state, unhandledTitleClassess, unhandledNomeclatureChildren,	unhandledDescriptionChildren, taxon, children);
 				handleTaxonRelation(state, taxon, lastTaxon);
 				lastTaxon = taxon;
 				taxaToSave.add(taxon);
@@ -183,6 +192,32 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 		logger.info("end makeKey ...");
 		
 		return success.getValue();
+	}
+
+
+	private void handleTaxonAttributes(Element elTaxon, Taxon taxon, FloraMalesianaImportState state) {
+		List<Attribute> attrList = elTaxon.getAttributes();
+		for (Attribute attr : attrList){
+			String attrName = attr.getName();
+			String attrValue = attr.getValue();
+			if ("class".equals(attrName)){
+				if (attrValue.equalsIgnoreCase("dubious") || attrValue.equalsIgnoreCase("DUBIOUS GENUS") || attrValue.equalsIgnoreCase("DOUBTFUL SPECIES")  ){
+					taxon.setDoubtful(true);
+				}else{
+					MarkerType markerType = getMarkerType(state, attrValue);
+					if (markerType == null){
+						logger.warn("Class attribute value for taxon not yet supported: " + attrValue);
+					}else{
+						taxon.addMarker(Marker.NewInstance(markerType, true));
+					}
+				}
+			}else if ("num".equals(attrName)){
+				logger.warn("num not yet supported");
+			}else{
+				logger.warn("Attribute " + attrName + " not yet supported for element taxon");
+			}
+		}
+
 	}
 
 
@@ -226,37 +261,42 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 
 
 	// body/taxon/*
-	private void handleTaxonElement(FloraMalesianaImportState state, Set<String> unhandledTitleClassess, Set<String> unhandledNomeclatureChildren, Set<String> unhandledDescriptionChildren, Taxon taxon, Element element) {
-		String elName = element.getName();
+	private void handleTaxonElement(FloraMalesianaImportState state, Set<String> unhandledTitleClassess, Set<String> unhandledNomeclatureChildren, Set<String> unhandledDescriptionChildren, Taxon taxon, List<Element> children) {
 		AnnotatableEntity lastEntity = null;
-		
-		
-		if (elName.equalsIgnoreCase("title")){
-			handleTitle(state, element, taxon, unhandledTitleClassess);
-		}else if(elName.equalsIgnoreCase("nomenclature")){
-			handleNomenclature(state, element, taxon, unhandledNomeclatureChildren);
-		}else if(elName.equalsIgnoreCase("description")){
-			handleDescription(state, element, taxon, unhandledDescriptionChildren);
-		}else if(elName.equalsIgnoreCase("habitatecology")){
-			handleEcology(state, element, taxon);
-		}else if(elName.equalsIgnoreCase("distribution")){
-			handleDistribution(state, element, taxon);
-		}else if(elName.equalsIgnoreCase("uses")){
-			lastEntity = handleUses(state, element, taxon);
-		}else if(elName.equalsIgnoreCase("notes")){
-			lastEntity = handleNotes(state, element, taxon);
-		}else if(elName.equalsIgnoreCase("chromosomes")){
-			handleChromosomes(state, element, taxon);
-		}else if(elName.equalsIgnoreCase("key")){
-			handleKeys(state, element, taxon);
-		}else if(elName.equalsIgnoreCase("references")){
-			handleReferences(state, element, taxon, lastEntity);
-		}else if(elName.equalsIgnoreCase("taxon")){
-			logger.warn("A taxon should not be part of a taxon");
-		}else if(elName.equalsIgnoreCase("homotypes")){
-			logger.warn("Homotypes should be included in the nomenclature flag but is child of taxon [XPath: body/taxon/homotypes]");
-		}else{
-			logger.warn("Unexpected child for taxon: " + elName);
+		for (Element element : children){
+			String elName = element.getName();
+			
+			if (elName.equalsIgnoreCase("title")){
+				handleTitle(state, element, taxon, unhandledTitleClassess);
+				lastEntity = null;
+			}else if(elName.equalsIgnoreCase("nomenclature")){
+				handleNomenclature(state, element, taxon, unhandledNomeclatureChildren);
+				lastEntity = null;
+			}else if(elName.equalsIgnoreCase("description")){
+				handleDescription(state, element, taxon, unhandledDescriptionChildren);
+				lastEntity = null;
+			}else if(elName.equalsIgnoreCase("habitatecology")){
+				lastEntity = handleEcology(state, element, taxon);
+			}else if(elName.equalsIgnoreCase("distribution")){
+				lastEntity = handleDistribution(state, element, taxon);
+			}else if(elName.equalsIgnoreCase("uses")){
+				lastEntity = handleUses(state, element, taxon);
+			}else if(elName.equalsIgnoreCase("notes")){
+				lastEntity = handleTaxonNotes(state, element, taxon);
+			}else if(elName.equalsIgnoreCase("chromosomes")){
+				lastEntity = handleChromosomes(state, element, taxon);
+			}else if(elName.equalsIgnoreCase("key")){
+				lastEntity = handleKeys(state, element, taxon);
+			}else if(elName.equalsIgnoreCase("references")){
+				handleReferences(state, element, taxon, lastEntity);
+				lastEntity = null;
+			}else if(elName.equalsIgnoreCase("taxon")){
+				logger.warn("A taxon should not be part of a taxon");
+			}else if(elName.equalsIgnoreCase("homotypes")){
+				logger.warn("Homotypes should be included in the nomenclature flag but is child of taxon [XPath: body/taxon/homotypes]");
+			}else{
+				logger.warn("Unexpected child for taxon: " + elName);
+			}
 		}
 	}
 	
@@ -264,26 +304,42 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	private void handleReferences(FloraMalesianaImportState state, Element elReferences, Taxon taxon, AnnotatableEntity lastEntity) {
 		verifyNoAttribute(elReferences);
 		verifyNoChildren(elReferences, true);
+		String refString = elReferences.getTextNormalize(); 
+//		refString = replaceStart(replaceStart(refString, "References:"), "Sources:");
+		if (lastEntity == null){
+			logger.warn("No last entity defined: " + refString);
+			return;
+		}
+		
+		Annotation annotation = Annotation.NewInstance(refString, AnnotationType.EDITORIAL(), Language.DEFAULT());
+		lastEntity.addAnnotation(annotation);
+
+//		ReferenceBase ref = ReferenceFactory.newGeneric();
+//		ref.setTitleCache(refString, true);
+//		if (lastEntity instanceof DescriptionElementBase){
+//			DescriptionElementSource source = DescriptionElementSource.NewInstance(ref, null);
+//			CdmBase.deproxy(lastEntity, DescriptionElementBase.class).addSource(source);
+//		}else if (lastEntity instanceof IdentifiableEntity){
+//			IdentifiableSource source = IdentifiableSource.NewInstance(ref, null);
+//			CdmBase.deproxy(lastEntity, IdentifiableEntity.class).addSource(source);
+//		}
+//		else{
+//			logger.warn("lastEntity type not supported: " + lastEntity.getClass().getName());
+//		}
+		
 		logger.info("References need to be moved to their parent");
+
 	}
 
 
-	private void handleKeys(FloraMalesianaImportState state, Element elKey, Taxon taxon) {
+	private PolytomousKey handleKeys(FloraMalesianaImportState state, Element elKey, Taxon taxon) {
 		UnmatchedLeads openKeys = state.getUnmatchedLeads();
 		
 		//title
 		String title = makeKeyTitle(elKey);
 		
-//		//for testing only
-//		if (! title.equalsIgnoreCase("KEY TO THE SPECIES")){
-//			return;
-//		}else{
-//			logger.warn("Only species keys handled at the moment");
-//		}
-		
 		//key
 		PolytomousKey key = PolytomousKey.NewTitledInstance(title);
-		
 		
 		//TODO add covered taxa etc.
 		verifyNoAttribute(elKey);
@@ -311,6 +367,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 			key.print(System.err);
 		}
 		getFeatureTreeService().save(key);
+		return key;
 	}
 
 
@@ -577,7 +634,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private void handleChromosomes(FloraMalesianaImportState state, Element element, Taxon taxon) {
+	private TextData handleChromosomes(FloraMalesianaImportState state, Element element, Taxon taxon) {
 		Feature chromosomeFeature = getFeature("chromosomes", state);
 		verifyNoAttribute(element);
 		verifyNoChildren(element);
@@ -586,7 +643,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 		String chromosomesPart = getChromosomesPart(value);
 		String references = value.replace(chromosomesPart, "").trim();
 		chromosomesPart = chromosomesPart.replace(":", "").trim();
-		addDescriptionElement(taxon, chromosomesPart, chromosomeFeature, references);	
+		return addDescriptionElement(taxon, chromosomesPart, chromosomeFeature, references);	
 	}
 
 
@@ -638,16 +695,51 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private Annotation handleNotes(FloraMalesianaImportState state, Element element, Taxon taxon) {
-		verifyNoAttribute(element);
-		//removeBr(element);
+	private TextData handleTaxonNotes(FloraMalesianaImportState state, Element element, Taxon taxon) {
+		TextData result = null;
 		verifyNoChildren(element, true);
-		String value = element.getTextNormalize();
-		value = replaceStart(value, "Notes");
-		value = replaceStart(value, "Note");
-		Annotation annotation = Annotation.NewInstance(value, AnnotationType.EDITORIAL(), Language.ENGLISH());
-		taxon.addAnnotation(annotation);
-		return annotation;
+		//verifyNoAttribute(element);
+		List<Attribute> attributes = element.getAttributes();
+		for (Attribute attribute : attributes){
+			if (! attribute.getName().equalsIgnoreCase("class")){
+				logger.warn("Char has unhandled attribute " +  attribute.getName());
+			}else{
+				String classValue = attribute.getValue();
+				result = handleDescriptiveElement(state, element, taxon, classValue);
+			}
+		}
+		//if no class attribute exists, handle as note
+		if (attributes.isEmpty()){
+			result = handleDescriptiveElement(state, element, taxon, "Note");
+		}
+
+		//Annotation annotation = Annotation.NewInstance(value, AnnotationType.EDITORIAL(), Language.ENGLISH());
+		//taxon.addAnnotation(annotation);
+		return result; //annotation;
+	}
+
+
+	/**
+	 * @param state
+	 * @param element
+	 * @param taxon
+	 * @param result
+	 * @param attribute
+	 * @return
+	 */
+	private TextData handleDescriptiveElement(FloraMalesianaImportState state,
+			Element element, Taxon taxon, String classValue) {
+		TextData result = null;
+		Feature feature = getFeature(classValue, state);
+		if (feature == null){
+			logger.warn("Unhandled feature: " + classValue);
+		}else{
+			String value = element.getValue();
+			value = replaceStart(value, "Notes");
+			value = replaceStart(value, "Note");
+			result = addDescriptionElement(taxon, value, feature, null);
+		}
+		return result;
 	}
 
 
@@ -680,14 +772,14 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param unhandledDescriptionChildren
 	 */
-	private void handleDistribution(FloraMalesianaImportState state, Element element, Taxon taxon) {
+	private DescriptionElementBase handleDistribution(FloraMalesianaImportState state, Element element, Taxon taxon) {
 		verifyNoAttribute(element);
 		verifyNoChildren(element, true);
 		String value = element.getTextNormalize();
 		value = replaceStart(value, "Distribution");
 		Feature feature = Feature.DISTRIBUTION();
 		//distribution parsing almost impossible as there is lots of freetext in the distribution tag
-		addDescriptionElement(taxon, value, feature, null);
+		return addDescriptionElement(taxon, value, feature, null);
 	}
 
 
@@ -697,7 +789,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param unhandledDescriptionChildren
 	 */
-	private void handleEcology(FloraMalesianaImportState state, Element elEcology, Taxon taxon) {
+	private TextData handleEcology(FloraMalesianaImportState state, Element elEcology, Taxon taxon) {
 		verifyNoAttribute(elEcology);
 		verifyNoChildren(elEcology, true);
 		String value = elEcology.getTextNormalize();
@@ -709,7 +801,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 			value = replaceStart(value, "Habitat");
 			feature = getFeature("Habitat", state);
 		}
-		addDescriptionElement(taxon, value, feature, null);
+		return addDescriptionElement(taxon, value, feature, null);
 	}
 
 
@@ -808,7 +900,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 					homotypicalGroup = handleNomTaxon(state, elNom, taxon, homotypicalGroup, true);
 					taxonBaseClassType = true;
 				}else if (classValue.equalsIgnoreCase("typeref")){
-					handleTypeRef(state, elNom, taxon);
+					handleTypeRef(state, elNom, taxon, homotypicalGroup);
 				}else{
 					logger.warn("Unhandled class value for nom: " + classValue);
 				}
@@ -835,8 +927,9 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param state
 	 * @param elNom
 	 * @param taxon
+	 * @param homotypicalGroup 
 	 */
-	private void handleTypeRef(FloraMalesianaImportState state, Element elNom, Taxon taxon) {
+	private void handleTypeRef(FloraMalesianaImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
 		verifyNoChildren(elNom);
 		String typeRef = elNom.getTextNormalize();
 		typeRef = replaceStart(typeRef, "-");
@@ -856,7 +949,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 			
 			//Name Type Desitnations
 			if (typeDesignation instanceof NameTypeDesignation){
-				makeNameTypeDesignations(typeType, typeText, typeDesignation);	
+				makeNameTypeDesignations(typeType, typeText, typeDesignation);
 			}
 			//SpecimenTypeDesignations
 			else if (typeDesignation instanceof SpecimenTypeDesignation){
@@ -864,9 +957,11 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 			}else{
 				logger.error("Unhandled type designation class" + typeDesignation.getClass().getName());
 			}
+			for (TaxonNameBase name : homotypicalGroup.getTypifiedNames()){
+				name.addTypeDesignation(typeDesignation, true);
+			}
 		}
 	}
-
 
 	/**
 	 * @param typeType
@@ -883,10 +978,20 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 		}else{
 			logger.warn("Unhandled type string: " + typeType + "(" + CharUtils.unicodeEscaped(typeType.charAt(0)) + ")");
 		}
-		BotanicalName nameType = BotanicalName.NewInstance(null);
-		nameType.setTitleCache(typeText);
+		//clean
+		typeText = cleanNameType(typeText);
+		//create name
+		BotanicalName nameType = (BotanicalName)parser.parseFullName(typeText, NomenclaturalCode.ICBN, Rank.SPECIES());
 		((NameTypeDesignation) typeDesignation).setTypeName(nameType);
-		//TODO wie können NameTypes den Namen zugeordnet werden?
+		//TODO wie können NameTypes den Namen zugeordnet werden? -  wird aber vom Portal via NameCache matching gemacht
+	}
+
+
+	private String cleanNameType(String typeText) {
+		String result;
+		String[] split = typeText.split("\\[.*\\].?");
+		result = split[0];
+		return result;
 	}
 
 
@@ -895,8 +1000,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param typeText
 	 * @param typeDesignation
 	 */
-	private void makeSpecimenTypeDesignation(StringBuffer typeType,
-			String typeText, TypeDesignationBase typeDesignation) {
+	private void makeSpecimenTypeDesignation(StringBuffer typeType, String typeText, TypeDesignationBase typeDesignation) {
 		if (typeType.toString().trim().equalsIgnoreCase("Type")){
 			//do nothing
 		}else if (typeType.toString().trim().equalsIgnoreCase("Neotype") || typeType.toString().trim().equalsIgnoreCase("Neotypes")){
@@ -911,7 +1015,12 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 			logger.warn("Unhandled type string: " + typeType);
 		}
 		Specimen specimen = Specimen.NewInstance();
-		specimen.setTitleCache(typeText);
+		if (typeText.length() > 255){
+			specimen.setTitleCache(typeText.substring(0, 252) + "...", true);
+		}else{
+			specimen.setTitleCache(typeText, true);
+		}
+		specimen.addDefinition(typeText, Language.ENGLISH());
 		((SpecimenTypeDesignation) typeDesignation).setTypeSpecimen(specimen);
 	}
 
@@ -1059,12 +1168,26 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 		//test nom element has no text
 		if (StringUtils.isNotBlank(elNom.getTextNormalize().replace("—", "").replace("\u002d","").replace("\u2013", ""))){
 			String strElNom = elNom.getTextNormalize();
-			Character c = strElNom.charAt(0);
-			System.out.println(CharUtils.unicodeEscaped(c));
+			if ("?".equals(strElNom)){
+				handleQuestionMark(name, taxon);
+			}
+//			Character c = strElNom.charAt(0);
+			//System.out.println(CharUtils.unicodeEscaped(c));
 			logger.warn("Nom tag has text: " + strElNom);
 		}
 		
 		return name.getHomotypicalGroup();
+	}
+
+
+	private void handleQuestionMark(NonViralName name, Taxon taxon) {
+		int count = name.getTaxonBases().size();
+		if (count != 1){
+			logger.warn("Name has " + count + " taxa. This is not handled for question mark");
+		}else{
+			TaxonBase taxonBase = (TaxonBase)name.getTaxonBases().iterator().next();
+			taxonBase.setDoubtful(true);
+		}
 	}
 
 
@@ -1147,11 +1270,14 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param name
 	 * @param value
 	 */
-	private TeamOrPersonBase handleNameUsage(Taxon taxon, NonViralName name, String value, TeamOrPersonBase lastTeam) {
+	private TeamOrPersonBase handleNameUsage(Taxon taxon, NonViralName name, String referenceTitle, TeamOrPersonBase lastTeam) {
 		ReferenceBase ref = ReferenceFactory.newGeneric();
-		ref.setTitleCache(value, true);
+		referenceTitle = removeStartingSymbols(referenceTitle, ref);
+		
+		ref.setTitleCache(referenceTitle, true);
 		String microReference = parseReferenceYearAndDetail(ref);
 		TeamOrPersonBase team = getReferenceAuthor(ref);
+		parseReferenceType(ref);
 		if (team == null){
 			team = lastTeam;
 		}
@@ -1165,31 +1291,104 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 
 
+	/**
+	 * @param referenceTitle
+	 * @param ref
+	 * @return
+	 */
+	private String removeStartingSymbols(String referenceTitle,	ReferenceBase ref) {
+		if (referenceTitle.startsWith(";") || referenceTitle.startsWith(",") || referenceTitle.startsWith(":")){
+			referenceTitle = referenceTitle.substring(1).trim();
+			ref.setTitleCache(referenceTitle);
+		}
+		return referenceTitle;
+	}
+
+
+	private void parseReferenceType(ReferenceBase ref) {
+		String title = ref.getTitle();
+		if (title == null){
+			return;
+		}
+		title = title.trim();
+		//no in reference
+		if (! title.startsWith("in ")){
+			ref.setType(ReferenceType.Book);
+			return;
+		}
+		
+		title = title.substring(3);
+		//in reference
+		//no ,
+		if (title.indexOf(",") == -1){
+			ref.setType(ReferenceType.Article);
+			IJournal journal = ReferenceFactory.newJournal();
+			journal.setTitle(title);
+			ref.setTitle(null);
+			ref.setInJournal(journal);
+			//return;
+		}else{
+			//,-references
+			ref.setType(ReferenceType.BookSection);
+			String[] split = (title).split(",\\s*[A-Z]");
+			if (split.length <= 1){
+				logger.warn("Can not fully decide what reference type. Guess it is a book section: " + title );
+			}
+			IBook book = ReferenceFactory.newBook();
+			Team bookTeam = Team.NewTitledInstance(split[0].trim(), split[0].trim());
+			try {
+				title = title.substring(split[0].length() + 1).trim();
+			} catch (Exception e) {
+				logger.error("ERROR occurred when trying to split title: " +  title + "; split[0]: + " + split[0]);
+			}
+			book.setTitle(title);
+			book.setAuthorTeam(bookTeam);
+			book.setDatePublished(ref.getDatePublished());
+			ref.setTitle(null);
+			ref.setInBook(book);
+		}		
+	}
+
+
 	private Team getReferenceAuthor (ReferenceBase ref) {
-		String referenceTitle = ref.getTitleCache();
+		boolean isCache = false;
+		String referenceTitle = ref.getTitle();
+		if (referenceTitle == null){
+			isCache = true;
+			referenceTitle = ref.getTitleCache();
+		}
 		//in references
 		String[] split = (" " + referenceTitle).split(" in ");
 		if (split.length > 1){
 			if (StringUtils.isNotBlank(split[0])){
+				//' in ' is within the reference string, take the preceding string as the team
 				Team team = Team.NewTitledInstance(split[0].trim(), split[0].trim());
-				ref.setTitleCache("in " + split[1], true);
+				if (! isCache){
+					ref.setTitle("in " + split[1]);
+				}
 				return team;
+			}else{
+				//string starts with in therefore no author is given
+				return null;
 			}
 		}
-		//no , reference
+		//no ,-reference
 		split = referenceTitle.split(",");
 		if (split.length < 2){
+			//no author is given
 			return null;
 		}
 		
-		//in references
-		split = (referenceTitle).split(",\\s*[A-Z].*");
+		//,-references
+		split = (referenceTitle).split(",\\s*[A-Z]");
 		if (split.length > 1){
 			Team team = Team.NewTitledInstance(split[0].trim(), split[0].trim());
-			ref.setTitleCache(referenceTitle.substring(split[0].length()+1).trim(), true);
+			if (! isCache){
+				ref.setTitle(referenceTitle.substring(split[0].length()+1).trim());
+			}
 			return team;
 		}else{
-			logger.warn("Can't decide if a usage has an author: " +referenceTitle );
+			logger.warn("Can't decide if a usage has an author: " + referenceTitle );
 			return null;
 		}
 	}
@@ -1716,7 +1915,6 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 		if (lastTaxon.getTaxonNodes().size() > 0){
 			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
 			if (thisRank.isLower(lastRank )  ){
-				//FIXME
 				lastNode.addChildTaxon(taxon, null, null, null);
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			}else if (thisRank.equals(lastRank)){
@@ -1826,7 +2024,6 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	
 	
 
-	static NonViralNameParserImpl parser = new NonViralNameParserImpl();
 	private void parseNomStatus(ReferenceBase ref, NonViralName nonViralName) {
 		String titleToParse = ref.getTitleCache();
 		
@@ -1846,10 +2043,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	private String parseReferenceYearAndDetail(ReferenceBase ref){
 		String detailResult = null;
 		String titleToParse = ref.getTitleCache();
-		if (titleToParse.startsWith(";") || titleToParse.startsWith(",") || titleToParse.startsWith(":")){
-			titleToParse = titleToParse.substring(1).trim();
-			ref.setTitleCache(titleToParse);
-		}
+		titleToParse = removeStartingSymbols(titleToParse, ref);
 		String reReference = "^\\.{1,}";
 //		String reYear = "\\([1-2]{1}[0-9]{3}\\)";
 		String oneMonth = "(Feb.|Dec.|March|June|July)";
@@ -1891,7 +2085,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 			ref.setDatePublished(datePublished);
 			ref.setTitle(title);
 			detailResult = CdmUtils.removeTrailingDot(detail);
-			if (detailResult.endsWith(".")){
+			if (detailResult.endsWith(".") || detailResult.endsWith(";") || detailResult.endsWith(",")  ){
 				detailResult = detailResult.substring(0, detailResult.length() -1);
 			}
 			ref.setProtectedTitleCache(false);
