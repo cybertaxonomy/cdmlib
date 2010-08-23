@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.strategy.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
@@ -846,29 +847,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");
 		    }
 			//authors
-		    if (nameToBeFilled != null && authorString != null && authorString.trim().length() > 0 ){ 
-				TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
-				Integer[] years = new Integer[4];
-				try {
-					Class<? extends NonViralName> clazz = nameToBeFilled.getClass();
-					fullAuthors(authorString, authors, years, clazz);
-				} catch (StringNotParsableException e) {
-					nameToBeFilled.addParsingProblem(ParserProblem.UnparsableAuthorPart);
-					nameToBeFilled.setTitleCache(fullNameString,true);
-					// FIXME Quick fix, otherwise search would not deilver results for unparsable names
-					nameToBeFilled.setNameCache(fullNameString,true);
-					// END
-					logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");;
-				}
-				nameToBeFilled.setCombinationAuthorTeam(authors[0]);
-				nameToBeFilled.setExCombinationAuthorTeam(authors[1]);
-				nameToBeFilled.setBasionymAuthorTeam(authors[2]);
-				nameToBeFilled.setExBasionymAuthorTeam(authors[3]);
-				if (nameToBeFilled instanceof ZoologicalName){
-					ZoologicalName zooName = (ZoologicalName)nameToBeFilled;
-					zooName.setPublicationYear(years[0]);
-					zooName.setOriginalPublicationYear(years[2]);
-				}
+		    if (nameToBeFilled != null && StringUtils.isNotBlank(authorString) ){ 
+				handleAuthors(nameToBeFilled, fullNameString, authorString);
 			}	
 			//return
 			if (nameToBeFilled != null){
@@ -884,6 +864,36 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			logger.info("unknown rank (" + (rank == null? "null":rank) + ") or abbreviation in string " +  fullNameString);
 			//return result;
 			return;
+		}
+	}
+
+	/**
+	 * @param nameToBeFilled
+	 * @param fullNameString
+	 * @param authorString
+	 */
+	public void handleAuthors(NonViralName nameToBeFilled, String fullNameString, String authorString) {
+		TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
+		Integer[] years = new Integer[4];
+		try {
+			Class<? extends NonViralName> clazz = nameToBeFilled.getClass();
+			fullAuthors(authorString, authors, years, clazz);
+		} catch (StringNotParsableException e) {
+			nameToBeFilled.addParsingProblem(ParserProblem.UnparsableAuthorPart);
+			nameToBeFilled.setTitleCache(fullNameString,true);
+			// FIXME Quick fix, otherwise search would not deliver results for unparsable names
+			nameToBeFilled.setNameCache(fullNameString,true);
+			// END
+			logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");;
+		}
+		nameToBeFilled.setCombinationAuthorTeam(authors[0]);
+		nameToBeFilled.setExCombinationAuthorTeam(authors[1]);
+		nameToBeFilled.setBasionymAuthorTeam(authors[2]);
+		nameToBeFilled.setExBasionymAuthorTeam(authors[3]);
+		if (nameToBeFilled instanceof ZoologicalName){
+			ZoologicalName zooName = (ZoologicalName)nameToBeFilled;
+			zooName.setPublicationYear(years[0]);
+			zooName.setOriginalPublicationYear(years[2]);
 		}
 	}
 
