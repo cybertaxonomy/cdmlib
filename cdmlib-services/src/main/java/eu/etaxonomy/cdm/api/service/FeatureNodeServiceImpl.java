@@ -28,10 +28,6 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, IFeatureNodeDao> implements IFeatureNodeService {
 	private static final Logger logger = Logger.getLogger(FeatureNodeServiceImpl.class);
-
-	public FeatureNodeServiceImpl(){
-		logger.warn("Instantiation of this service does not work through component scan. Investigate!");
-	}
 	
 	@Autowired
 	protected void setDao(IFeatureNodeDao dao) {

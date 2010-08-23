@@ -175,6 +175,19 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public Pager<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
+	 * @see {@link #getTaxonDescriptions(Taxon, Set, Set, Integer, Integer, List)}
+	 * 
+	 * @param taxon
+	 * @param scopes
+	 * @param geographicalScope
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	
+	/**
 	 * Returns a List of TaxonNameDescription instances, optionally filtered by the name which they refer to
 	 * 
 	 * @param name Restrict the results to those descriptions that refer to a specific name (can be null for all TaxonNameDescription instances)

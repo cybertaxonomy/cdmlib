@@ -195,6 +195,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
+	public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		List<TaxonDescription> results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
+		return results;
+	}
+	
 	public DistributionTree getOrderedDistributions(
 			Set<TaxonDescription> taxonDescriptions,
 			Set<NamedAreaLevel> omitLevels,
@@ -326,6 +331,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 			Class<? extends DescriptionElementBase> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
 		 return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+	}
+	
+	public List<DescriptionElementBase> getDescriptionElementsForTaxon(
+			Taxon taxon, FeatureTree featureTree,
+			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths) {
+		 return dao.getDescriptionElementForTaxon(taxon, featureTree.getDistinctFeatures(), type, pageSize, pageNumber, propertyPaths);
 	}
 
 	/* (non-Javadoc)
