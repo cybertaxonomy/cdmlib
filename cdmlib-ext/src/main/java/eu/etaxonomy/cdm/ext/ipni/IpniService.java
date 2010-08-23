@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ext.ipni.IIpniService.DelimitedFormat;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -37,6 +40,8 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.Point.Sexagesimal;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -55,6 +60,38 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class IpniService implements IIpniService{
+	private static final String EAST_OR_WEST = "East or west";
+
+	private static final String NORTH_OR_SOUTH = "North or south";
+
+	private static final String LATITUDE_SECONDS = "Latitude seconds";
+
+	private static final String LATITUDE_MINUTES = "Latitude minutes";
+
+	private static final String LATITUDE_DEGREES = "Latitude degrees";
+
+	private static final String COLLECTION_DATE_AS_TEXT = "Collection date as text";
+
+	private static final String COLLECTION_DAY1 = "Collection day1";
+
+	private static final String COLLECTION_MONTH1 = "Collection month1";
+
+	private static final String COLLECTION_YEAR1 = "Collection year1";
+
+	private static final String COLLECTION_DAY2 = "Collection day2";
+
+	private static final String COLLECTION_MONTH2 = "Collection month2";
+
+	private static final String COLLECTION_YEAR2 = "Collection year2";
+
+	private static final String COLLECTION_NUMBER = "Collection number";
+
+	private static final String COLLECTOR_TEAM_AS_TEXT = "Collector team as text";
+
+	private static final String LOCALITY = "Locality";
+
+	private static final String TYPE_REMARKS = "Type remarks";
+
 	private static final Logger logger = Logger.getLogger(IpniService.class);
 	
 	// GENERAL
@@ -166,17 +203,6 @@ public class IpniService implements IIpniService{
 //	private URL serviceUrl;
 	 
 // ******************************** CONSTRUCTOR **************************************
-	   
-	   
-//	/**
-//	 * Creates new instance of this factory and connects it to the given
-//	 * CDM Community Stores access point.
-//	 *
-//	 * Typically, there is no need to instantiate this class.
-//	 */
-//	protected IpniService(URL webserviceUrl){
-//		this.serviceUrl = webserviceUrl;
-//	}
 
 // ****************************** METHODS ****************************************************/	
 	
@@ -427,16 +453,137 @@ public class IpniService implements IIpniService{
 		replacedSynoynm.setTitleCache(valueMap.get(REPLACED_SYNONYM), true);
 		name.addReplacedSynonym(replacedSynoynm, null, null, null);
 
+		//type information
+		DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		
+		
+		//gathering period
+		String collectionDateAsText = valueMap.get(COLLECTION_DATE_AS_TEXT);
+		TimePeriod gatheringPeriod = TimePeriod.parseString(collectionDateAsText);
+		
+		try {
+			gatheringPeriod.setStartDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY1));
+			gatheringPeriod.setStartMonth(getIntegerDateValueOrNull(valueMap, COLLECTION_MONTH1));
+			gatheringPeriod.setStartYear(getIntegerDateValueOrNull(valueMap, COLLECTION_YEAR1));
+			gatheringPeriod.setEndDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY2));
+			gatheringPeriod.setEndMonth(getIntegerDateValueOrNull(valueMap, COLLECTION_MONTH2));
+			gatheringPeriod.setEndYear(getIntegerDateValueOrNull(valueMap, COLLECTION_YEAR2));
+		} catch (IndexOutOfBoundsException e) {
+			logger.info("Exception occurred when trying to fill gathering period");
+		}
+		specimen.setGatheringPeriod(gatheringPeriod);
+
+		specimen.setFieldNumber(valueMap.get(COLLECTION_NUMBER));
+		
+		//collector team
+		String team = valueMap.get(COLLECTOR_TEAM_AS_TEXT);
+		Team collectorTeam = Team.NewTitledInstance(team, team);
+		specimen.setCollector(collectorTeam);  
+	    
+		specimen.setLocality(valueMap.get(LOCALITY));
+		
+		try {
+			String latDegrees = CdmUtils.Nz(valueMap.get(LATITUDE_DEGREES));
+			String latMinutes = CdmUtils.Nz(valueMap.get(LATITUDE_MINUTES));
+			String latSeconds = CdmUtils.Nz(valueMap.get(LATITUDE_SECONDS));
+			String direction = CdmUtils.Nz(valueMap.get(NORTH_OR_SOUTH));
+			String latitude = latDegrees + "°" + latMinutes + "'" + latSeconds + "\"" + direction;
+			
+			String lonDegrees = CdmUtils.Nz(valueMap.get(LATITUDE_DEGREES));
+			String lonMinutes = CdmUtils.Nz(valueMap.get(LATITUDE_MINUTES));
+			String lonSeconds = CdmUtils.Nz(valueMap.get(LATITUDE_SECONDS));
+			direction = CdmUtils.Nz(valueMap.get(EAST_OR_WEST));
+			String longitude = lonDegrees + "°" + lonMinutes + "'" + lonSeconds + "\"" + direction;
+
+			
+			specimen.setExactLocationByParsing(longitude, latitude, null, null);
+		} catch (ParseException e) {
+			logger.info("Parsing exception occurred when trying to parse type exact location."  + e.getMessage());
+		} catch (Exception e) {
+			logger.info("Exception occurred when trying to read type exact location."  + e.getMessage());
+		}
+		
+		
+		//type annotation
+		Annotation typeAnnotation = Annotation.NewInstance(TYPE_REMARKS, AnnotationType.EDITORIAL(), Language.DEFAULT());
+		specimen.addAnnotation(typeAnnotation);
+		
+		
+		//TODO  Type name
+		//TODO "Type locations"  , eg. holotype   CAT  ,isotype   CAT  ,isotype   FI  
+
+		//TODO Geographic unit as text
+	      
+
+		
+		
 		
 		//source
 		ReferenceBase citation = getIpniCitation(appConfig);
 		name.addSource(valueMap.get(ID), "Name", citation, valueMap.get(VERSION));
 		
 		
-//		//TODO Family, Infra family, Hybrid genus, Hybrid, Collation, Nomenclatural synonym, Distribution, Citation type
+//		//TODO
+		//SHORT Family, Infra family, Hybrid genus, Hybrid, Collation, Nomenclatural synonym, Distribution, Citation type
+/*		EXTENDED 
+ *      Species author,
+ *       Standardised basionym author flag, 
+ *       Standardised publishing author flag
+	      Full name
+	      Full name without family
+	      Full name without authors
 
-		
+	      Reference
+	      Standardised publication flag
+	      Publication year
+	      publication year note
+	      Publication year text
+	      Volume
+	      Start page
+	      End page
+	      Primary pagination
+	      Secondary pagination
+	      Reference remarks
+	      Hybrid parents
+	      Replaced synonym Author team
+	      Other links
+	      Same citation as
+	      Bibliographic reference
+	      Bibliographic type info
+
+	      Original taxon name
+	      Original taxon name author team
+	      Original replaced synonym
+	      Original replaced synonym author team
+	      Original basionym
+	      Original basionym author team
+	      Original parent citation taxon name author team
+	      Original taxon distribution
+	      Original hybrid parentage
+	      Original cited type
+	      Original remarks
+
+		*/
 		return name;
+	}
+
+	/**
+	 * @param valueMap
+	 * @return
+	 */
+	private Integer getIntegerDateValueOrNull(Map<String, String> valueMap, String key) {
+		try {
+			Integer result = Integer.valueOf(valueMap.get(key));
+			if (result == 0){
+				result = null;
+			}
+			return result;
+		} catch (NumberFormatException e) {
+			if (logger.isDebugEnabled()){
+				logger.debug("Number Format exception for " + valueMap.get(key));
+			}
+			return null;
+		}
 	}
 
 
