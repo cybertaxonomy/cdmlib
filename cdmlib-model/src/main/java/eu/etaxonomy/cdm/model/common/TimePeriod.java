@@ -437,7 +437,7 @@ public class TimePeriod implements Cloneable, Serializable {
 	//case fl. 1806 or c. 1806 or fl. 1806?
 	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*-\\s*\\d{4})?\\??");
 	//standard
-	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-\\s*\\d{2,4})?");
+	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-(\\s*\\d{2,4})?)?");
 	
 	
 	public static TimePeriod parseString(TimePeriod timePeriod, String periodString){
