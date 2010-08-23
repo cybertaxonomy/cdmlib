@@ -557,20 +557,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		//saving of all imported data into the CDM db
 		ITermService termService = getTermService();
 		
-//		Modifier odif = new Modifier("zoub","zab","zib");
-//		Modifier odif2 = new Modifier("zouba","zaba","ziba");
-//		modifiers.put("yy", odif);
-//		State st = State.NewInstance();
-//		StateData stat = StateData.NewInstance();
-		//StateData stat2 = StateData.NewInstance();
-		//termService.save(stat2);
-//		stat2.setState(st);
-//		stat.setState(st);
-//		stateDatas.put("yy", stat);
-//		stateDatas.put("yy", stat2);
-//		stat.addModifier(odif);
-//		stat.addModifier(odif2);
-//		stat2.addModifier(odif);
 		
 		for (Iterator<Modifier> k = modifiers.values().iterator() ; k.hasNext() ;){
 			Modifier modifier = k.next();
@@ -1050,7 +1036,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 						NonViralName taxonNameBase = taxonNameBases.get(ref);
 						taxon = Taxon.NewInstance(taxonNameBase, sec);
 					}
-					else {//XIM what is it ?
+					else {//in case no taxon is linked to the description, a new one is created
 						NonViralName tnb = NonViralName.NewInstance(null);
 						String id = new String(""+taxonNamesCount);
 						IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
