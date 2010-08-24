@@ -34,21 +34,28 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
     </dependency>
+    
+	<dependency>
+	   <groupId>commons-lang</groupId>
+	   <artifactId>commons-lang</artifactId>
+	</dependency>
 
 
     <!--  ImageMetadata  -->
+    
+    <!-- deprecated -->
+    <!--
     <dependency>
-      <!-- deprecated -->
     <groupId>org.devlib.schmidt</groupId>
     <artifactId>imageinfo</artifactId>
     <version>1.7</version>
     </dependency>
+    -->
     
     <dependency>
       <groupId>org.apache.sanselan</groupId>
       <artifactId>sanselan</artifactId>
     </dependency>
-    
-
+   
   </dependencies>
 </project>
