@@ -371,6 +371,10 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 				logger.warn("Child or parent taxon is null.");
 				return null;
 			}
+			if (parent == child){
+				logger.warn("A taxon should never be its own child. Chilc not added");
+				return null;
+			}
 			TaxonNode parentNode = this.getNode(parent);
 			TaxonNode childNode = this.getNode(child);
 			
