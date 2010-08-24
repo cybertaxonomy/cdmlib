@@ -45,6 +45,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		ioClassList = new Class[] {
 				FaunaEuropaeaAuthorImport.class,
 				FaunaEuropaeaTaxonNameImport.class,
+//				FaunaEuropaeaAdditionalTaxonDataImport.class,
 				FaunaEuropaeaRelTaxonIncludeImport.class,
 				FaunaEuropaeaRefImport.class,
 				FaunaEuropaeaUsersImport.class,

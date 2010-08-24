@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.babadshanjan
- * @created 12.05.2009
+ * @created 23.08.2010
  * @version 1.0
  */
 @Component
