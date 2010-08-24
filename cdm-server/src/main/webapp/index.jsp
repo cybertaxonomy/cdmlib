@@ -72,7 +72,7 @@
                                                    String noBottomBorder = props.getStatus().equals(CdmInstanceProperties.Status.error) ? " style=\"border-bottom:none;\"" : "";
                                                    
 	                                        	   out.append("<tr class=\"entry " + oddOrEven + "\" " +noBottomBorder+ ">");
-	                                        	   out.append("<td class=\"base-url\"><a href=\"" + fullURL + "/portal/taxontree/\">" + basePath + "</a></td>");
+	                                        	   out.append("<td class=\"base-url\"><a href=\"" + fullURL + "/portal/taxonTree\">" + basePath + "</a></td>");
                                                    out.append("<td class=\"db-url\">" + props.getUrl() + "</td>");
                                                    out.append("<td class=\"status " + props.getStatus() + "\">" + props.getStatus() + "</td>");
                                                    
