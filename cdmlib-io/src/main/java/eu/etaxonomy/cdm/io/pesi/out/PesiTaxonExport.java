@@ -21,10 +21,11 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
@@ -1321,7 +1322,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getIdInSource(TaxonNameBase taxonName) {
 		String result = null;
-		String defaultResult = null;
 		
 		try {
 			
@@ -1333,6 +1333,37 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 		}
 		
+		// Get idInSource
+		if (result == null) {
+			String originalTaxId = getIdInSourceOnly(taxonName);
+			if (originalTaxId != null) {
+				result = "TAX_ID: " + originalTaxId;
+			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Returns the idInSource for a given taxonName.
+	 * @param taxonName
+	 * @return
+	 */
+	private static String getIdInSourceOnly(TaxonNameBase taxonName) {
+		String result = null;
+		
+		Set<IdentifiableSource> nameSources = taxonName.getSources();
+		for (IdentifiableSource nameSource : nameSources) {
+			String sourceIdNameSpace = nameSource.getIdNamespace();
+			if (sourceIdNameSpace != null && sourceIdNameSpace.equals("originalGenusId")) {
+				result = nameSource.getIdInSource();
+			}
+		}
+
 		// Get idInSource from its Taxa or Synonyms
 		if (result == null) {
 			Set<Taxon> taxa = taxonName.getTaxa();
@@ -1354,11 +1385,11 @@ public class PesiTaxonExport extends PesiExportBase {
 				if (sources.size() == 1) {
 					IdentifiableSource source = sources.iterator().next();
 					if (source != null) {
-						result = "TAX_ID: " + source.getIdInSource();
+						result = source.getIdInSource();
 					}
 				} else if (sources.size() > 1) {
 					int count = 1;
-					result = "TAX_ID: ";
+					result = "";
 					for (IdentifiableSource source : sources) {
 						result += source.getIdInSource();
 						if (count < sources.size()) {
@@ -1371,10 +1402,6 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 		}
 		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		return result;
 	}
 	
@@ -1387,12 +1414,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static String getGUID(TaxonNameBase taxonName) {
 		String result = null;
 		try {
-		String idInSource = getIdInSource(taxonName);
-		if (idInSource != null) {
-			result = "urn:lsid:faunaeur.org:taxname:" + 
-			idInSource.substring(idInSource.indexOf(":") + 1, idInSource.length());
-		}
+			result = "urn:lsid:faunaeur.org:taxname:" + getIdInSourceOnly(taxonName);
 		} catch (Exception e) {
+			logger.error("Text could not be excluded from idInSource for taxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 			e.printStackTrace();
 		}
 		return result;
@@ -1438,19 +1462,19 @@ public class PesiTaxonExport extends PesiExportBase {
 			String expertName = getExpertName(taxonName);
 			String webShowName = getWebShowName(taxonName);
 			
-			// idInSource without text
-			String idInSource = getGUID(taxonName);
+			// idInSource only
+			String idInSource = getIdInSourceOnly(taxonName);
 			
 			// build the cacheCitation
 			if (expertName != null) {
 				result += expertName + ". ";
 			} else {
-				logger.error("ExpertName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//				logger.error("ExpertName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
 			if (webShowName != null) {
 				result += webShowName + ". ";
 			} else {
-				logger.error("WebShowName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//				logger.error("WebShowName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
 			
 			if (getOriginalDB(taxonName).equals("FaEu")) {
@@ -1460,9 +1484,9 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 			
 			if (idInSource != null) {
-				result += getGUID(taxonName);
+				result += idInSource;
 			} else {
-				logger.error("IdInSource could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+//				logger.error("IdInSource could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
 		}
 		} catch (Exception e) {
@@ -1567,7 +1591,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>LastActionDate</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused" })
 	private static DateTime getLastActionDate(TaxonNameBase taxonName) {
 		DateTime result = null;
 		try {
@@ -1576,8 +1600,8 @@ public class PesiTaxonExport extends PesiExportBase {
 			if (extension.getType().equals(lastActionDateExtensionType)) {
 				String dateTime = extension.getValue();
 				if (dateTime != null) {
-					String date = dateTime.substring(0, dateTime.indexOf(" ") -1 );
-					result = new DateTime(date);
+					DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S");
+					result = formatter.parseDateTime(dateTime);
 				}
 			}
 		}

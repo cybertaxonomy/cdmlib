@@ -229,7 +229,7 @@ public class PesiNoteExport extends PesiExportBase {
 	private void invokeNotes(String note, Integer noteCategoryFk,
 			String noteCategoryCache, Integer languageFk, String languageCache, 
 			Integer taxonFk, Connection connection) {
-		String notesSql = "UPDATE Note SET Note_1 = ?, NoteCategoryFk = ?, NoteCategoryCache = ?, LanguageFk = ?, LanguageCache = ? WHERE TaxonId = ?"; 
+		String notesSql = "UPDATE Note SET Note_1 = ?, NoteCategoryFk = ?, NoteCategoryCache = ?, LanguageFk = ?, LanguageCache = ? WHERE TaxonFk = ?"; 
 		try {
 			PreparedStatement notesStmt = connection.prepareStatement(notesSql);
 			

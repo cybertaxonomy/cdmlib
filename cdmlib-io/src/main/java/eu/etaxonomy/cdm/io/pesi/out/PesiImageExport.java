@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -74,119 +75,109 @@ public class PesiImageExport extends PesiExportBase {
 	 */
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
-		try {
-			logger.error("*** Started Making " + pluralString + " ...");
 
-			// Get the limit for objects to save within a single transaction.
+		logger.error("*** Started Making " + pluralString + " ...");
+
+		// Get the limit for objects to save within a single transaction.
 //			int limit = state.getConfig().getLimitSave();
-			int limit = 1000;
+		int limit = 1000;
 
-			// Stores whether this invoke was successful or not.
-			boolean success = true;
-	
-			// PESI: Clear the database table Image.
-			doDelete(state);
-	
-			PesiExportMapping mapping = getMapping();
-	
-			// Initialize the db mapper
-			mapping.initialize(state);
-	
-			// PESI: Create the Notes
-			int count = 0;
-			int taxonCount = 0;
-			int pastCount = 0;
-			TransactionStatus txStatus = null;
-			List<TaxonBase> list = null;
+		// Stores whether this invoke was successful or not.
+		boolean success = true;
 
-			Connection connection = state.getConfig().getDestination().getConnection();
-			// Start transaction
-			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
-			while ((list = getTaxonService().list(null, limit, taxonCount, null, null)).size() > 0) {
+		// PESI: Clear the database table Image.
+		doDelete(state);
 
-				taxonCount += list.size();
-				logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
+		// PESI: Create the Images
+		int count = 0;
+		int taxonCount = 0;
+		int pastCount = 0;
+		TransactionStatus txStatus = null;
+		List<TaxonBase> list = null;
+
+		Connection connection = state.getConfig().getDestination().getConnection();
+		// Start transaction
+		txStatus = startTransaction(true);
+		logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+		while ((list = getTaxonService().list(null, limit, taxonCount, null, null)).size() > 0) {
+
+			taxonCount += list.size();
+			logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
+			
+			logger.error("Check for Images...");
+			for (TaxonBase taxonBase : list) {
 				
-				logger.error("Check for Images...");
-				for (TaxonBase taxonBase : list) {
+				if (taxonBase.isInstanceOf(Taxon.class)) {
 					
-					if (taxonBase.isInstanceOf(Taxon.class)) {
+					Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+
+					// Determine the TaxonDescriptions
+					Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
+
+					// Determine the DescriptionElements (Citations) for the current Taxon
+					for (TaxonDescription taxonDescription : taxonDescriptions) {
 						
-						Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-
-						// Determine the TaxonDescriptions
-						Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
-
-						// Determine the DescriptionElements (Citations) for the current Taxon
-						for (TaxonDescription taxonDescription : taxonDescriptions) {
+						// Check whether this TaxonDescription contains images
+						if (taxonDescription.isImageGallery()) {
 							
-							// Check whether this TaxonDescription contains images
-							if (taxonDescription.isImageGallery()) {
-								
-								Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
-								
-								for (DescriptionElementBase descriptionElement : descriptionElements) {
-									if (descriptionElement.isInstanceOf(TextData.class)) {
-										List<Media> media = descriptionElement.getMedia();
+							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
+							
+							for (DescriptionElementBase descriptionElement : descriptionElements) {
+								if (descriptionElement.isInstanceOf(TextData.class)) {
+									List<Media> media = descriptionElement.getMedia();
+									
+									for (Media image : media) {
+										Set<MediaRepresentation> representations = image.getRepresentations();
 										
-										for (Media image : media) {
-											Set<MediaRepresentation> representations = image.getRepresentations();
+										for (MediaRepresentation representation : representations) {
+											List<MediaRepresentationPart> representationParts = representation.getParts();
 											
-											for (MediaRepresentation representation : representations) {
-												List<MediaRepresentationPart> representationParts = representation.getParts();
+											for (MediaRepresentationPart representationPart : representationParts) {
+												String mediaUri = representationPart.getUri();
 												
-												for (MediaRepresentationPart representationPart : representationParts) {
-													String mediaUri = representationPart.getUri();
-													
-													// Add image data
-													String thumb = null;
-													Integer taxonFk = state.getDbId(taxonBase.getName());
-													
-													if (taxonFk != null && mediaUri != null) {
-														doCount(count++, modCount, pluralString);
-														invokeImages(thumb, mediaUri, taxonFk, connection);
-													}
+												// Add image data
+												String thumb = null;
+												Integer taxonFk = state.getDbId(taxonBase.getName());
+												
+												if (taxonFk != null && mediaUri != null) {
+													doCount(count++, modCount, pluralString);
+													invokeImages(thumb, mediaUri, taxonFk, connection);
 												}
 											}
-											
 										}
+										
 									}
 								}
-							
 							}
-							
+						
 						}
+						
 					}
-					
 				}
-				logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
-
-				// Commit transaction
-				commitTransaction(txStatus);
-				logger.error("Committed transaction.");
-				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
-				pastCount = count;
-
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+				
 			}
-			if (list.size() == 0) {
-				logger.error("No " + pluralString + " left to fetch.");
-			}
+			logger.error("Exported " + (count - pastCount) + " " + pluralString + ".");
+
 			// Commit transaction
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
-	
-			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
-			
-			return success;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error(e.getMessage());
-			return false;
+			logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+			pastCount = count;
+
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
 		}
+		if (list.size() == 0) {
+			logger.error("No " + pluralString + " left to fetch.");
+		}
+		// Commit transaction
+		commitTransaction(txStatus);
+		logger.error("Committed transaction.");
+
+		logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
+		
+		return success;
 	}
 
 	/**
@@ -254,16 +245,6 @@ public class PesiImageExport extends PesiExportBase {
 		// TODO
 //		return state.getConfig().isDoAdditionalTaxonSource()
 		return false;
-	}
-
-	/**
-	 * Returns the CDM to PESI specific export mappings.
-	 * @return The {@link PesiExportMapping PesiExportMapping}.
-	 */
-	private PesiExportMapping getMapping() {
-		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
-		
-		return mapping;
 	}
 
 }

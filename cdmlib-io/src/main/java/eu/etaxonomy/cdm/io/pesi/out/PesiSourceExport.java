@@ -51,8 +51,6 @@ public class PesiSourceExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "Source";
 	private static final String pluralString = "Sources";
-	private static final String parentPluralString = "TaxonNames";
-	private static final Integer sourceFkOffSet = 100000;
 	List<Integer> storedSourceIds = new ArrayList<Integer>();
 
 	public PesiSourceExport() {
@@ -170,53 +168,6 @@ public class PesiSourceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Inserts user data into Source database table.
-	 * @param expertName
-	 * @param userId
-	 * @param taxonId
-	 * @param connection
-	 */
-	private void invokeUsers(String expertName, String userId, Integer sourceId, Connection connection) {
-		String usersSql = "INSERT INTO Source (SourceId, SourceCategoryFk, SourceCategoryCache, AuthorString, OriginalDB, RefIdInSource) VALUES" +
-				" (?, 5, 'informal reference', ?, 'FaEu', ?)"; 
-		try {
-			PreparedStatement usersStmt = connection.prepareStatement(usersSql);
-			
-			usersStmt.setInt(1, sourceId);
-			
-			if (expertName != null) {
-				usersStmt.setString(2, expertName);
-			} else {
-				usersStmt.setObject(2, null);
-			}
-			
-			if (userId != null) {
-				usersStmt.setString(3, userId);
-			} else {
-				usersStmt.setObject(3, null);
-			}
-
-			usersStmt.executeUpdate();
-		} catch (SQLException e) {
-			logger.error("User could not be created. UserId: " + userId + ", ExpertName: " + expertName);
-			e.printStackTrace();
-		}
-
-
-	}
-
-	/**
-	 * Returns a self created sourceId.
-	 * @return
-	 */
-	private Integer generateNewSourceId(Integer userId) {
-		if (userId == null) {
-			return null;
-		}
-		return sourceFkOffSet + userId;
-	}
-
-	/**
 	 * Deletes all entries of database tables related to <code>Source</code>.
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return Whether the delete operation was successful or not.
@@ -264,7 +215,13 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getSourceCategoryFK(ReferenceBase<?> reference) {
-		return PesiTransformer.reference2SourceCategoryFK(reference);
+		Integer result = null;
+		try {
+		result = PesiTransformer.reference2SourceCategoryFK(reference);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	/**
@@ -275,7 +232,13 @@ public class PesiSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceCategoryCache(ReferenceBase<?> reference) {
-		return PesiTransformer.getSourceCategoryCache(reference);
+		String result = null;
+		try {
+		result = PesiTransformer.getSourceCategoryCache(reference);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	/**
@@ -312,6 +275,7 @@ public class PesiSourceExport extends PesiExportBase {
 	private static String getAuthorString(ReferenceBase<?> reference) {
 		String result = null;
 
+		try {
 		if (reference != null) {
 			TeamOrPersonBase team = reference.getAuthorTeam();
 			if (team != null) {
@@ -320,6 +284,9 @@ public class PesiSourceExport extends PesiExportBase {
 			} else {
 				result = null;
 			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return result;
@@ -363,6 +330,7 @@ public class PesiSourceExport extends PesiExportBase {
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
 
+		try {
 		if (reference != null) {
 			Set<IdentifiableSource> sources = reference.getSources();
 			if (sources.size() == 1) {
@@ -379,6 +347,9 @@ public class PesiSourceExport extends PesiExportBase {
 				}
 			}
 		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return result;
 	}
@@ -393,6 +364,7 @@ public class PesiSourceExport extends PesiExportBase {
 	private static String getOriginalDB(ReferenceBase<?> reference) {
 		String result = "";
 
+		try {
 		if (reference != null) {
 			Set<IdentifiableSource> sources = reference.getSources();
 			if (sources.size() == 1) {
@@ -418,6 +390,9 @@ public class PesiSourceExport extends PesiExportBase {
 			} else {
 				result = null;
 			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return result;

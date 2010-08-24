@@ -45,7 +45,8 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 				PesiNoteSourceExport.class, // NoteId's could be deleted from state hashmap
 				PesiAdditionalTaxonSourceExport.class,
 				PesiOccurrenceExport.class,
-				PesiOccurrenceSourceExport.class
+				PesiOccurrenceSourceExport.class,
+//				PesiImageExport.class,
 //				PesiInferredSynonymExport.class
 		};
 
