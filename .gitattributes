@@ -1406,6 +1406,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/PartitionerProfiler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/RelatedObjectsHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ResultSetPartitioner.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ResultSetProxy.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportConfiguratorBase.java -text
