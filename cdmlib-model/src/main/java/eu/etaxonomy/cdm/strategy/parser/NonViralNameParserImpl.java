@@ -964,10 +964,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 */
 	protected void fullAuthors (String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends NonViralName> clazz)
 			throws StringNotParsableException{
-		fullAuthorString = fullAuthorString.trim();
 		if (fullAuthorString == null || clazz == null){
 			return;
 		}
+		fullAuthorString = fullAuthorString.trim();
+		
 		//Botanic
 		if ( BotanicalName.class.isAssignableFrom(clazz) ){
 			if (! fullBotanicAuthorStringPattern.matcher(fullAuthorString).matches() ){
