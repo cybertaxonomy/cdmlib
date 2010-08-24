@@ -165,7 +165,7 @@ public class CentralAfricaChecklistSynonymImport  extends CentralAfricaChecklist
 		
 		String genusString = rs.getString("synonym genus");
 		String speciesString = rs.getString("synonym species");
-		String authorityString = rs.getString("authority");
+		String authorityString = rs.getString("synonym authority");
 		
 		Synonym synonym = Synonym.NewInstance(speciesName, sec);
 

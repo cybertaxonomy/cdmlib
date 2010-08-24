@@ -17,18 +17,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.app.eflora.CentralAfricaChecklistActivator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.validation.CentralAfricaChecklistTaxonImportValidator;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -57,6 +60,9 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 	
 	private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 	
+	private Map<UUID, Taxon> higherTaxonMap;
+	
+	private Integer TREE_ID = null;
 	
 	private DbImportMapping mapping;
 	
@@ -99,10 +105,23 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation", "citation cache not needed in PESI"));
 			
 			//not yet implemented or ignore
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_hidden", "Needs DbImportMarkerMapper implemented"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source", "Still unclear"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source_id", "Still unclear"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("accepted kew", "Needs ResultSetWrapper implementation"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("accepted geneva", "Needs ResultSetWrapper implementation"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("accepted itis", "Needs ResultSetWrapper implementation"));
 			
-			
+//			UUID uuidKew = CentralAfricaChecklistTransformer.uuidAcceptedKew;
+//			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted kew", uuidKew, "Accepted Kew", "Accepted Kew", "Kew"));
+//			
+//			UUID uuidGeneva = CentralAfricaChecklistTransformer.uuidAcceptedGeneva;
+//			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted geneva", uuidGeneva, "Accepted Geneva", "Accepted Geneva", "Geneva"));
+//
+//			UUID uuidItis = CentralAfricaChecklistTransformer.uuidAcceptedItis;
+//			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted itis", uuidItis, "Accepted ITIS", "Accepted ITIS", "ITIS"));
+		
 		}
+		
 		return mapping;
 	}
 
@@ -124,9 +143,10 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 	 */
 	@Override
 	protected boolean doInvoke(CentralAfricaChecklistImportState state) {
+		higherTaxonMap = new HashMap<UUID, Taxon>();
 		//first path
 		boolean success = super.doInvoke(state);
-		
+		higherTaxonMap = new HashMap<UUID, Taxon>();
 		return success;
 
 	}
@@ -143,19 +163,26 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
 		try{
-				Set<String> nameIdSet = new HashSet<String>();
-				Set<String> referenceIdSet = new HashSet<String>();
+				Set<String> treeIdSet = new HashSet<String>();
 				while (rs.next()){
-	//				handleForeignKey(rs, nameIdSet, "PTNameFk");
+//					handleForeignKey(rs, treeIdSet, "acc_id");
 	//				handleForeignKey(rs, referenceIdSet, "PTRefFk");
 				}
 
-			//reference map
-//			nameSpace = "Reference";
-//			cdmClass = ReferenceBase.class;
-//			Map<String, Person> referenceMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(Person.class, teamIdSet, nameSpace);
-//			result.put(ReferenceBase.class, referenceMap);
+			//tree map
+//			nameSpace = DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE;
+//			cdmClass = TaxonomicTree.class;
+//			idSet = treeIdSet;
+//			Map<String, TaxonomicTree> treeMap = (Map<String, TaxonomicTree>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+//			result.put(cdmClass, treeMap);
 
+			//TODO uuid from state
+			UUID treeUuid = CentralAfricaChecklistActivator.classificationUuid;
+			TaxonomicTree tree = getTaxonTreeService().find(treeUuid);
+			Map<String, TaxonomicTree> treeMap = new HashMap<String, TaxonomicTree>();
+			treeMap.put("1", tree);
+			result.put(DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE, treeMap);
+			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -177,7 +204,9 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		String genusString = rs.getString("genus");
 		String speciesString = rs.getString("species");
 		String authorityString = rs.getString("authority");
-		System.out.println(familyString + " " + genusString + " " + speciesString);
+		if (logger.isDebugEnabled()){
+			System.out.println(familyString + " " + genusString + " " + speciesString);
+		}
 		
 		Boolean acceptedKew = rs.getBoolean("accepted kew");
 		Boolean acceptedGeneva = rs.getBoolean("accepted geneva");
@@ -199,18 +228,19 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 			genusTaxon = Taxon.NewInstance(genusName, sec);
 			saveHigherTaxon(state, genusTaxon, familyString, genusString);
 		}
-		makeTaxonomicallyIncluded(state, genusTaxon, speciesTaxon, null, null);
+		makeTaxonomicallyIncluded(state, TREE_ID, speciesTaxon, genusTaxon, null, null);
 		
 		//family
-		Taxon familyTaxon = getHigherTaxon(state, familyString, null);
-		if (familyTaxon == null){
-			BotanicalName familyName = BotanicalName.NewInstance(Rank.FAMILY());
-			familyName.setGenusOrUninomial(familyString);
-			familyTaxon = Taxon.NewInstance(familyName, sec);
-			saveHigherTaxon(state, familyTaxon, familyString, null);
+		if (StringUtils.isNotBlank(familyString)){
+			Taxon familyTaxon = getHigherTaxon(state, familyString, null);
+			if (familyTaxon == null){
+				BotanicalName familyName = BotanicalName.NewInstance(Rank.FAMILY());
+				familyName.setGenusOrUninomial(familyString);
+				familyTaxon = Taxon.NewInstance(familyName, sec);
+				saveHigherTaxon(state, familyTaxon, familyString, null);
+			}
+			makeTaxonomicallyIncluded(state, TREE_ID, genusTaxon, familyTaxon, null, null);
 		}
-		makeTaxonomicallyIncluded(state, familyTaxon, genusTaxon, null, null);
-		
 		handleDistribution(rs, speciesTaxon);
 		
 		return speciesTaxon;
@@ -224,7 +254,7 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		Boolean isBurundi = rs.getBoolean("burundi");
 		Boolean isRwanda = rs.getBoolean("rwanda");
 
-		addDistribution(description, isCongo, "CON");
+		addDistribution(description, isCongo, "ZAI");
 		addDistribution(description, isBurundi, "BUR");
 		addDistribution(description, isRwanda, "RWA");
 
@@ -246,10 +276,11 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 
 
 
-	private void saveHigherTaxon(CentralAfricaChecklistImportState state, Taxon genusTaxon, String family, String genus) {
+	private void saveHigherTaxon(CentralAfricaChecklistImportState state, Taxon higherTaxon, String family, String genus) {
 		String higherName = normalizeHigherTaxonName(family, genus);
-		UUID uuid = genusTaxon.getUuid();
+		UUID uuid = higherTaxon.getUuid();
 		state.putHigherTaxon(higherName, uuid);
+		higherTaxonMap.put(uuid, higherTaxon);
 	}
 
 
@@ -260,7 +291,10 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		
 		Taxon taxon = null;
 		if (uuid != null){
-			taxon = CdmBase.deproxy(getTaxonService().find(uuid), Taxon.class);
+			taxon = higherTaxonMap.get(uuid);
+			if (taxon == null){
+				taxon = CdmBase.deproxy(getTaxonService().find(uuid), Taxon.class);
+			}
 		}
 		return taxon;
 	}
@@ -278,18 +312,51 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 
 
 
-	private boolean makeTaxonomicallyIncluded(CentralAfricaChecklistImportState state, Taxon parent, Taxon child, ReferenceBase citation, String microCitation){
-		ReferenceBase sec = child.getSec();
-		TaxonomicTree tree = state.getTree(sec);
-		if (tree == null){
-			tree = makeTreeMemSave(state, sec);
-		}
-		TaxonNode childNode;
-		if (parent != null){
-			childNode = tree.addParentChild(parent, child, citation, microCitation);
+//	private boolean makeTaxonomicallyIncluded(CentralAfricaChecklistImportState state, Taxon parent, Taxon child, ReferenceBase citation, String microCitation){
+//		ReferenceBase sec = child.getSec();
+//		UUID uuid = state.getTreeUuid(sec);
+//		TaxonomicTree tree;
+//		tree = state.getTree(sec);
+//		
+//		if (tree == null){
+//			tree = makeTreeMemSave(state, sec);
+//		}
+//		TaxonNode childNode;
+//		if (parent != null){
+//			childNode = tree.addParentChild(parent, child, citation, microCitation);
+//		}else{
+//			childNode = tree.addChildTaxon(child, citation, microCitation, null);
+//		}
+//		return (childNode != null);
+//	}
+	
+	//TODO use Mapper
+	private boolean makeTaxonomicallyIncluded(CentralAfricaChecklistImportState state, Integer treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
+		String treeKey;
+		UUID treeUuid;
+		if (treeRefFk == null){
+			treeKey = "1";  // there is only one tree and it gets the key '1'
+			treeUuid = state.getConfig().getTaxonomicTreeUuid();
 		}else{
-			childNode = tree.addChildTaxon(child, citation, microCitation, null);
+			treeKey =String.valueOf(treeRefFk);
+			treeUuid = state.getTreeUuidByTreeKey(treeKey);
 		}
+		TaxonomicTree tree = (TaxonomicTree)state.getRelatedObject(DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE, treeKey);
+		if (tree == null){
+			ITaxonTreeService service = state.getCurrentIO().getTaxonTreeService();
+			tree = service.getTaxonomicTreeByUuid(treeUuid);
+			if (tree == null){
+				String treeName = state.getConfig().getTaxonomicTreeName();
+				tree = TaxonomicTree.NewInstance(treeName);
+				tree.setUuid(treeUuid);
+				//FIXME tree reference
+				//tree.setReference(ref);
+				service.save(tree);
+			}
+			state.addRelatedObject(DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE, treeKey, tree);
+		}
+		
+		TaxonNode childNode = tree.addParentChild(parent, child, citation, microCitation);
 		return (childNode != null);
 	}
 

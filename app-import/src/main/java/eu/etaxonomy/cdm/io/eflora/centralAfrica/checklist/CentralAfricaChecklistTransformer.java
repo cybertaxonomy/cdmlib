@@ -30,39 +30,9 @@ public final class CentralAfricaChecklistTransformer extends InputTransformerBas
 	private static final Logger logger = Logger.getLogger(CentralAfricaChecklistTransformer.class);
 	
 
-	
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
-	 */
-	@Override
-	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
-//		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
-//		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
-		}else{
-			return null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureUuid(java.lang.String)
-	 */
-	@Override
-	public UUID getFeatureUuid(String key) 	throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
-//		}else if (key.equalsIgnoreCase("Chromosomes")){return uuidChromosomes;
-//		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;
-
-		
-		
-		}else{
-			return null;
-		}
-		
-	}
-
+	public static final UUID uuidAcceptedKew = UUID.fromString("c980102c-2e57-4ed3-b608-51a5d9091d89");
+	public static final UUID uuidAcceptedGeneva = UUID.fromString("8c7a0544-c71b-4809-9a2d-0583ff32f833");
+	public static final UUID uuidAcceptedItis = UUID.fromString("0738c566-0219-4e3d-a8fd-8f3d82e2d20f");
 	
 
 	/* (non-Javadoc)

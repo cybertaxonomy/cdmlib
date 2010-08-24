@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.CentralAfricaChecklistImportConfigurator;
-import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.CentralAfricaFernsImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -43,23 +42,23 @@ public class CentralAfricaChecklistActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source mySource = CdmImportSources.AFRICA_CHECKLIST_ACCESS();
 	
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
+	int recordsPerTransaction = 10000;
+	
 	//feature tree uuid
 	public static final UUID featureTreeUuid = UUID.fromString("ebe558b5-d04d-41d5-83d9-b61c56e6e34a");
 	
-	public static final String sourceReference = "Flora of Central Africa";
+	public static final String sourceReference = "Flora of Central Africa - Checklist";
 	
 	//classification
-	static final UUID classificationUuid = UUID.fromString("ce1d035a-79a9-4a3a-95bf-26641ecb4fbe");
+	public static final UUID classificationUuid = UUID.fromString("ce1d035a-79a9-4a3a-95bf-26641ecb4fbe");
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
-	
-//	static boolean doPrintKeys = false;
 	
 	//taxa
 	static final boolean doTaxa = true;
@@ -74,6 +73,7 @@ public class CentralAfricaChecklistActivator {
 		config.setDoTaxa(doTaxa);
 		config.setCheck(check);
 		config.setDbSchemaValidation(hbm2dll);
+		config.setRecordsPerTransaction(recordsPerTransaction);
 		
 		CdmDefaultImport<CentralAfricaChecklistImportConfigurator> myImport = new CdmDefaultImport<CentralAfricaChecklistImportConfigurator>();
 
@@ -86,17 +86,6 @@ public class CentralAfricaChecklistActivator {
 		
 		FeatureTree tree = makeFeatureNode(myImport.getCdmAppController().getTermService());
 		myImport.getCdmAppController().getFeatureTreeService().saveOrUpdate(tree);
-		
-		//check keys
-//		if (doPrintKeys){
-//			TransactionStatus tx = myImport.getCdmAppController().startTransaction();
-//			List<FeatureTree> keys = myImport.getCdmAppController().getFeatureTreeService().list(PolytomousKey.class, null, null, null, null);
-//			for(FeatureTree key : keys){
-//				((PolytomousKey)key).print(System.out);
-//				System.out.println();
-//			}
-//			myImport.getCdmAppController().commitTransaction(tx);
-//		}
 		
 	}
 	
