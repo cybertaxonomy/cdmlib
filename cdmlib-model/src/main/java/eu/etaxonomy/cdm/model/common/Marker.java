@@ -85,6 +85,14 @@ public class Marker extends VersionableEntity implements Cloneable{
 		return new Marker(markerType, flag);
 	}
 	
+	public static Marker NewInstance(AnnotatableEntity annotatedObject, boolean flag, MarkerType markerType){
+		Marker marker = new Marker();
+		marker.setFlag(flag);
+		marker.setMarkerType(markerType);
+		annotatedObject.addMarker(marker);
+		return marker;
+	}
+	
 	/**
 	 * Default Constructor
 	 */
