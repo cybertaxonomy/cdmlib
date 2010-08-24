@@ -177,10 +177,9 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
 	 */
-	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation,
-			String microCitation, Synonym synonymToBeUsed) {
+	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed) {
 		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
-			throw new IllegalArgumentException("Taxon may not be in a taxonomic view twice");
+ 			throw new IllegalArgumentException("Taxon may not be in a taxonomic view twice: " + taxon == null? "(null)" : taxon.getTitleCache());
 		}
 		
 		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
