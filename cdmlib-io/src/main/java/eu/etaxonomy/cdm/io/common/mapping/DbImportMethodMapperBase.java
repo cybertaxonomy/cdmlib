@@ -65,8 +65,8 @@ public class DbImportMethodMapperBase<CDMBASE extends VersionableEntity, STATE e
 		return result;
 	}
 	
-	public static <T extends DbImportStateBase> DbImportMethodMapperBase NewInstance(Class<?> clazz, Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
-		DbImportMethodMapperBase result = new DbImportMethodMapperBase(clazz, objectToInvoke, methodName, parameterType1,parameterType2);
+	public static <T extends DbImportStateBase> DbImportMethodMapperBase NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
+		DbImportMethodMapperBase result = new DbImportMethodMapperBase(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
 		return result;
 	}
 	
