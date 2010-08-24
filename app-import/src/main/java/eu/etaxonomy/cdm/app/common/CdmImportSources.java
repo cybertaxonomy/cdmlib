@@ -24,8 +24,19 @@ public class CdmImportSources {
 	private static final Logger logger = Logger.getLogger(CdmImportSources.class);
 	
 
+	public static Source AFRICA_CHECKLIST_ACCESS(){
+		//	
+		String dbms = Source.ACCESS;
+		String strServer = null;
+		//String strDB = "fernsTest";
+		String strDB = "C:\\localCopy\\Data\\eflora\\africa\\NFAC_checklist.mdb";
+		int port = 1433;
+		String userName = "";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+
 	
-	public static Source AFRICA_FERNS_ODBC(){
+	public static Source AFRICA_FERNS_ACCESS(){
 		//	
 		String dbms = Source.ACCESS;
 		String strServer = null;

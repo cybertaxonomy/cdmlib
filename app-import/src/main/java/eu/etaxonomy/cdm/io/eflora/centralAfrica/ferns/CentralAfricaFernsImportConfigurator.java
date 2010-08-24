@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns;
 
 import java.lang.reflect.Method;
 
@@ -48,7 +48,7 @@ public class CentralAfricaFernsImportConfigurator extends ImportConfiguratorBase
 	private boolean doNotes = true;
 	private boolean doImages = true;
 	
-	private static IInputTransformer defaultTransformer = new GlobisTransformer();
+	private static IInputTransformer defaultTransformer = new CentralAfricaFernsTransformer();
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{

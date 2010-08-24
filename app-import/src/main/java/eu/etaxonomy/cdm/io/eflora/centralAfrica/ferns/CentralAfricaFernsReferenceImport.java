@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
-import eu.etaxonomy.cdm.io.eflora.centralAfrica.validation.CentralAfricaFernsReferenceImportValidator;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation.CentralAfricaFernsReferenceImportValidator;
 import eu.etaxonomy.cdm.io.globis.validation.GlobisReferenceImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -100,13 +100,8 @@ public class CentralAfricaFernsReferenceImport  extends CentralAfricaFernsImport
 			//mapping.addMapper(DbImportTimePeriodMapper.NewInstance("RefDatePublished", "datePublished", false));
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("RefDatePublished"));
 //			mapping.addMapper(DbImportExtensionTypeCreationMapper.NewInstance(dbIdAttribute, extensionTypeNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute)
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("RefEdition", GlobisTransformer.uuidEdition, "Edition", "Edition", "Ed."));
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("RefEdition", GlobisTransformer.uuidEditor, "Editor", "Editor", "Editor"));
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("GeneralKeywords", GlobisTransformer.uuidGeneralKeywords, "General Keywords", "General Keywords", "gen. keyw."));
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("GeneralKeywords", GlobisTransformer.uuidGeoKeywords, "Geographic Keywords", "Geo Keywords", "geo. keyw."));
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("RefIll only"));
 			mapping.addMapper(DbImportStringMapper.NewInstance("ISSN", "issn", false));
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("RefLibrary", GlobisTransformer.uuidLibrary, "Library", "Library", "Libr."));
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("RefMarker"));
 			mapping.addMapper(DbImportStringMapper.NewInstance("RefPages", "pages"));
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("RefPages only"));

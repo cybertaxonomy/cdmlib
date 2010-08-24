@@ -8,31 +8,27 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica.validation;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.validation;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.eflora.centralAfrica.CentralAfricaFernsImportConfigurator;
-import eu.etaxonomy.cdm.io.eflora.centralAfrica.CentralAfricaFernsImportState;
-import eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator;
-import eu.etaxonomy.cdm.io.erms.ErmsImportState;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.CentralAfricaChecklistImportConfigurator;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.CentralAfricaChecklistImportState;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.CentralAfricaFernsImportConfigurator;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.CentralAfricaFernsImportState;
 
 /**
  * @author a.mueller
  * @created 17.02.2010
  * @version 1.0
  */
-public class CentralAfricaFernsTaxonImportValidator implements IOValidator<CentralAfricaFernsImportState>{
-	private static final Logger logger = Logger.getLogger(CentralAfricaFernsTaxonImportValidator.class);
+public class CentralAfricaChecklistTaxonImportValidator implements IOValidator<CentralAfricaChecklistImportState>{
+	private static final Logger logger = Logger.getLogger(CentralAfricaChecklistTaxonImportValidator.class);
 
-	public boolean validate(CentralAfricaFernsImportState state){
+	public boolean validate(CentralAfricaChecklistImportState state){
 		boolean result = true;
-		CentralAfricaFernsImportConfigurator config = state.getConfig();
+		CentralAfricaChecklistImportConfigurator config = state.getConfig();
 		logger.warn("Checking for Taxa not yet fully implemented");
 //		result &= checkParentTaxonStatus(config);
 //		result &= checkAccParentTaxonStatus(config);
@@ -95,7 +91,7 @@ public class CentralAfricaFernsTaxonImportValidator implements IOValidator<Centr
 //		}
 //	}
 	
-	private boolean checkSynonymsAcceptedTaxonStatus(CentralAfricaFernsImportConfigurator bmiConfig){
+	private boolean checkSynonymsAcceptedTaxonStatus(CentralAfricaChecklistImportConfigurator bmiConfig){
 //		try {
 //			boolean result = true;
 ////			Source source = bmiConfig.getSource();

@@ -8,13 +8,13 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica.validation;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.eflora.centralAfrica.CentralAfricaFernsImportConfigurator;
-import eu.etaxonomy.cdm.io.eflora.centralAfrica.CentralAfricaFernsImportState;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.CentralAfricaFernsImportConfigurator;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.CentralAfricaFernsImportState;
 
 /**
  * @author a.mueller

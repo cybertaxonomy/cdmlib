@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.CentralAfricaChecklistImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.CentralAfricaFernsImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -34,13 +35,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.06.2008
  * @version 1.0
  */
-public class CentralAfricaFernsActivator {
+public class CentralAfricaChecklistActivator {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CentralAfricaFernsActivator.class);
+	private static final Logger logger = Logger.getLogger(CentralAfricaChecklistActivator.class);
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source mySource = CdmImportSources.AFRICA_FERNS_ACCESS();
+	static final Source mySource = CdmImportSources.AFRICA_CHECKLIST_ACCESS();
 	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
@@ -48,12 +49,12 @@ public class CentralAfricaFernsActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//feature tree uuid
-	public static final UUID featureTreeUuid = UUID.fromString("62d930cb-aabb-461c-ad16-0fdbd2bae592");
+	public static final UUID featureTreeUuid = UUID.fromString("ebe558b5-d04d-41d5-83d9-b61c56e6e34a");
 	
 	public static final String sourceReference = "Flora of Central Africa";
 	
 	//classification
-	static final UUID classificationUuid = UUID.fromString("a90fa160-8f33-4a19-9c5a-ab05a1553017");
+	static final UUID classificationUuid = UUID.fromString("ce1d035a-79a9-4a3a-95bf-26641ecb4fbe");
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -63,33 +64,23 @@ public class CentralAfricaFernsActivator {
 	//taxa
 	static final boolean doTaxa = true;
 
-//	private boolean includeSapindaceae1 = true;
-
-
-	
 	private void doImport(ICdmDataSource cdmDestination){
-		
 		
 		//make Source
 		Source source = mySource;
 		
-//		mySource.getResultSet("SELECT * FROM tmp");
-		CentralAfricaFernsImportConfigurator config= CentralAfricaFernsImportConfigurator.NewInstance(source, cdmDestination);
+		CentralAfricaChecklistImportConfigurator config= CentralAfricaChecklistImportConfigurator.NewInstance(source, cdmDestination);
 		config.setTaxonomicTreeUuid(classificationUuid);
 		config.setDoTaxa(doTaxa);
 		config.setCheck(check);
-//		configsetDoPrintKeys(doPrintKeys);
 		config.setDbSchemaValidation(hbm2dll);
 		
-		CdmDefaultImport<CentralAfricaFernsImportConfigurator> myImport = new CdmDefaultImport<CentralAfricaFernsImportConfigurator>();
+		CdmDefaultImport<CentralAfricaChecklistImportConfigurator> myImport = new CdmDefaultImport<CentralAfricaChecklistImportConfigurator>();
 
-		
-//		if (includeSapindaceae1){
-			System.out.println("Start import from ("+ source.toString() + ") ...");
-			config.setSourceReference(getSourceReference(sourceReference));
-			myImport.invoke(config);
-			System.out.println("End import from ("+ source.toString() + ")...");
-//		}
+		System.out.println("Start import from ("+ source.toString() + ") ...");
+		config.setSourceReference(getSourceReference(sourceReference));
+		myImport.invoke(config);
+		System.out.println("End import from ("+ source.toString() + ")...");
 		
 
 		
@@ -138,7 +129,7 @@ public class CentralAfricaFernsActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		CentralAfricaFernsActivator me = new CentralAfricaFernsActivator();
+		CentralAfricaChecklistActivator me = new CentralAfricaChecklistActivator();
 		me.doImport(cdmDestination);
 	}
 	

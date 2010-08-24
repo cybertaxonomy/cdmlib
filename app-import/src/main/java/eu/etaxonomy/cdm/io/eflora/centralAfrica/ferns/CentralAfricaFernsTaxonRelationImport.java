@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMethodMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
-import eu.etaxonomy.cdm.io.eflora.centralAfrica.validation.CentralAfricaFernsTaxonImportValidator;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation.CentralAfricaFernsTaxonImportValidator;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -87,7 +87,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			mapping.addMapper(DbImportMethodMapperBase.NewInstance(this.getClass(), this, "createObject", ResultSet.class, CentralAfricaFernsImportState.class));
+			mapping.addMapper(DbImportMethodMapperBase.NewInstance(this, "createObject", ResultSet.class, CentralAfricaFernsImportState.class));
 //					NewInstance(this, "Taxon number", TAXON_NAMESPACE)); //id + tu_status
 
 //funktioniert nicht wegen doppeltem Abfragen von Attributen
@@ -307,7 +307,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 
 
 
-	private Map<String, UUID> taxonMap = new HashMap();
+	private Map<String, UUID> taxonMap = new HashMap<String, UUID>();
 
 	private Taxon getExistingTaxon(BotanicalName higherName) {
 		higherName.getNameCache();

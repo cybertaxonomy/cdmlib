@@ -7,9 +7,8 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist;
 
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -47,13 +46,13 @@ import eu.etaxonomy.cdm.model.common.User;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> extends CdmImportBase<CentralAfricaFernsImportConfigurator, CentralAfricaFernsImportState> implements ICdmIO<CentralAfricaFernsImportState>, IPartitionedIO<CentralAfricaFernsImportState> {
-	private static final Logger logger = Logger.getLogger(CentralAfricaFernsImportBase.class);
+public abstract class CentralAfricaChecklistImportBase<CDM_BASE extends CdmBase> extends CdmImportBase<CentralAfricaChecklistImportConfigurator, CentralAfricaChecklistImportState> implements ICdmIO<CentralAfricaChecklistImportState>, IPartitionedIO<CentralAfricaChecklistImportState> {
+	private static final Logger logger = Logger.getLogger(CentralAfricaChecklistImportBase.class);
 	
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
 	
-	protected static final String TAXON_NAMESPACE = "African_pteridophytes_Taxon";
-	protected static final String NAME_NAMESPACE = "African_pteridophytes_Name";
+	protected static final String SYNONYM_NAMESPACE = "synonyms";
+	protected static final String TAXON_NAMESPACE = "checklist";
 	
 
 	private String pluralString;
@@ -68,16 +67,16 @@ public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> ext
 	 * @param dbTableName
 	 * @param dbTableName2 
 	 */
-	public CentralAfricaFernsImportBase(String pluralString, String dbTableName, Class cdmTargetClass) {
+	public CentralAfricaChecklistImportBase(String pluralString, String dbTableName, Class cdmTargetClass) {
 		this.pluralString = pluralString;
 		this.dbTableName = dbTableName;
 		this.cdmTargetClass = cdmTargetClass;
 	}
 
-	protected boolean doInvoke(CentralAfricaFernsImportState state){
+	protected boolean doInvoke(CentralAfricaChecklistImportState state){
 		logger.info("start make " + getPluralString() + " ...");
 		boolean success = true ;
-		CentralAfricaFernsImportConfigurator config = state.getConfig();
+		CentralAfricaChecklistImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 			
 		String strIdQuery = getIdQuery();
@@ -98,7 +97,7 @@ public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> ext
 		return success;
 	}
 	
-	public boolean doPartition(ResultSetPartitioner partitioner, CentralAfricaFernsImportState state) {
+	public boolean doPartition(ResultSetPartitioner partitioner, CentralAfricaChecklistImportState state) {
 		boolean success = true ;
 		Set objectsToSave = new HashSet();
 		
@@ -130,7 +129,7 @@ public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> ext
 	/**
 	 * @return
 	 */
-	protected abstract String getRecordQuery(CentralAfricaFernsImportConfigurator config);
+	protected abstract String getRecordQuery(CentralAfricaChecklistImportConfigurator config);
 
 	/**
 	 * @return
@@ -154,7 +153,7 @@ public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> ext
 		return this.dbTableName;
 	}
 	
-	protected boolean doIdCreatedUpdatedNotes(CentralAfricaFernsImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
+	protected boolean doIdCreatedUpdatedNotes(CentralAfricaChecklistImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
 		boolean success = true;
 		//id
@@ -165,10 +164,10 @@ public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> ext
 	}
 	
 	
-	protected boolean doCreatedUpdatedNotes(CentralAfricaFernsImportState state, AnnotatableEntity annotatableEntity, ResultSet rs, String namespace)
+	protected boolean doCreatedUpdatedNotes(CentralAfricaChecklistImportState state, AnnotatableEntity annotatableEntity, ResultSet rs, String namespace)
 			throws SQLException{
 
-		CentralAfricaFernsImportConfigurator config = state.getConfig();
+		CentralAfricaChecklistImportConfigurator config = state.getConfig();
 		Object createdWhen = rs.getObject("Created_When");
 		String createdWho = rs.getString("Created_Who");
 		Object updatedWhen = null;
@@ -223,49 +222,13 @@ public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> ext
 		}
 		return success;
 	}
+
 	
-	private User getUser(String userString, CentralAfricaFernsImportState state){
-		if (CdmUtils.isEmpty(userString)){
-			return null;
-		}
-		userString = userString.trim();
-		
-		User user = state.getUser(userString);
-		if (user == null){
-			user = getTransformedUser(userString,state);
-		}
-		if (user == null){
-			user = makeNewUser(userString, state);
-		}
-		if (user == null){
-			logger.warn("User is null");
-		}
-		return user;
-	}
-	
-	private User getTransformedUser(String userString, CentralAfricaFernsImportState state){
-		Method method = state.getConfig().getUserTransformationMethod();
-		if (method == null){
-			return null;
-		}
-		try {
-			userString = (String)state.getConfig().getUserTransformationMethod().invoke(null, userString);
-		} catch (Exception e) {
-			logger.warn("Error when trying to transform userString " +  userString + ". No transformation done.");
-		}
-		User user = state.getUser(userString);
-		return user;
+	private User getUser(String createdWho, CentralAfricaChecklistImportState state) {
+		//not relevant here, for users see ERMS import
+		return null;
 	}
 
-	private User makeNewUser(String userString, CentralAfricaFernsImportState state){
-		String pwd = getPassword(); 
-		User user = User.NewInstance(userString, pwd);
-		state.putUser(userString, user);
-		getUserService().save(user);
-		logger.info("Added new user: " + userString);
-		return user;
-	}
-	
 	private String getPassword(){
 		String result = UUID.randomUUID().toString();
 		return result;

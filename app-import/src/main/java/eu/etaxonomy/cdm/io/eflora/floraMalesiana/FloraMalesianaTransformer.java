@@ -320,6 +320,9 @@ public final class FloraMalesianaTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("INSUFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("IMPERFECTLY KNOWN SPECIES")){return uuidIncompleteTaxon;
+		
+//		}else if (key.equalsIgnoreCase("CULTIVATED, EXOTIC SAPINDACEAE")){return uuidIncompleteTaxon;
+		
 		}else{
 			return null;
 		}
