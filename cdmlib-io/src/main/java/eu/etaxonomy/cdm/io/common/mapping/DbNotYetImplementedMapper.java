@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase, CdmBase> {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbNotYetImplementedMapper.class);
 	
 	public static DbNotYetImplementedMapper NewInstance(String dbAttributeToIgnore){
