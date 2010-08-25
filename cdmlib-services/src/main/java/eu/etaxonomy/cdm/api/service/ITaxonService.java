@@ -315,6 +315,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
 
 	/**
+	 * Returns a list of TaxonBase instances where the
+	 * taxon.name properties match the parameters passed.
+	 * 
+	 * @param clazz optionally filter by class 
+	 * @param uninomial 
+	 * @param infragenericEpithet
+	 * @param specificEpithet
+	 * @param infraspecificEpithet
+	 * @param rank
+	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of TaxonBase instances
+	 */
+	public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
+
+	/**
 	 * Returns a list of IdentifiableEntity instances (in particular, TaxonNameBase and TaxonBase instances)
 	 * that match the properties specified in the configurator.
 	 * @param configurator
