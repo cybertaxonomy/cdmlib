@@ -609,9 +609,15 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 		
 		List<? extends TaxonNameBase<?,?>> results = criteria.list();
-		defaultBeanInitializer.initializeAll(results, null);
-		
-		return (ZoologicalName) results.iterator().next();
+		if (results.size() == 1) {
+			defaultBeanInitializer.initializeAll(results, null);
+			return (ZoologicalName) results.iterator().next();
+		} else if (results.size() > 1) {
+			logger.warn("Multiple results for UUID: " + uuid);
+		} else if (results.size() == 0) {
+			logger.warn("No results for UUID: " + uuid);
+		}
+		return null;
 
 		
 //		List<ZoologicalName> zooNames = getAllZoologicalNames(null, 0);
