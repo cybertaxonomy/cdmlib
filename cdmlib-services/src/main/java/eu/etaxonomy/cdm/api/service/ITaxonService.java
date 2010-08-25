@@ -316,7 +316,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
 	/**
 	 * Returns a list of TaxonBase instances where the
-	 * taxon.name properties match the parameters passed.
+	 * taxon.name properties match the parameters passed. In order to search for any string value, pass '*', passing the string value of 
+	 * <i>null</i> will search for those taxa with a value of null in that field
 	 * 
 	 * @param clazz optionally filter by class 
 	 * @param uninomial 
