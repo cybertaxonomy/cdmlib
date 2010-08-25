@@ -108,6 +108,24 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 */
 	public List<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
+	 /**
+	 * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+	 * 
+	 * @param clazz filter by class - can be null to include all instances of type T
+	 * @param queryString the query string to filter by
+	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+	 * @param criteria extra restrictions to apply
+	 * @param pageSize The maximum number of rights returned (can be null for all rights)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @return a List of instances of type T matching the queryString
+	 */
+	public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
 	/**
 	 * Return a count of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
 	 * 
