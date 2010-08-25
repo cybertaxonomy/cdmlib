@@ -351,7 +351,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				}
 			}
 
-			logger.error("PHASE 3: Add Rank data, KingdomFk and TypeNameFk...");
+			logger.error("PHASE 3: Add Rank data, KingdomFk, TypeNameFk, expertFk and speciesExpertFk...");
 			// Be sure to add rank information, KingdomFk, TypeNameFk, expertFk and speciesExpertFk to every taxonName
 			
 			// Start transaction
@@ -366,34 +366,44 @@ public class PesiTaxonExport extends PesiExportBase {
 				for (TaxonNameBase taxonName : list) {
 
 					// Determine expertFk
-					String expertName = getExpertName(taxonName);
-					referenceList = getReferenceService().listByTitle(null, expertName, null, null, pageSize, pageNumber, null, null);
 					Integer expertFk = null;
-					if (referenceList.size() == 1) {
-						expertFk  = getExpertFk(referenceList.iterator().next(), state);
-					} else if (referenceList.size() > 1) {
-						logger.error("Found more than one match using listByTitle() searching for a Reference with this expertName as title: " + expertName);
-					} else if (referenceList.size() == 0) {
-						logger.error("Found no match using listByTitle() searching for a Reference with this expertName as title: " + expertName);
+					String expertName = getExpertName(taxonName);
+					if (expertName != null) {
+						referenceList = getReferenceService().listByReferenceTitle(null, expertName, null, null, pageSize, pageNumber, null, null);
+						if (referenceList.size() == 1) {
+							expertFk  = getExpertFk(referenceList.iterator().next(), state);
+						} else if (referenceList.size() > 1) {
+							logger.error("Found more than one match using listByReferenceTitle() searching for a Reference with this expertName as title: " + expertName);
+						} else if (referenceList.size() == 0) {
+							logger.error("Found no match using listByReferenceTitle() searching for a Reference with this expertName as title: " + expertName);
+						}
+					} else {
+						logger.error("ExpertName is NULL for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 					}
 
 					// Determine speciesExpertFk
-					String speciesExpertName = getSpeciesExpertName(taxonName);
-					referenceList = getReferenceService().listByTitle(null, speciesExpertName, null, null, pageSize, pageNumber, null, null);
 					Integer speciesExpertFk = null;
-					if (referenceList.size() == 1) {
-						speciesExpertFk  = getSpeciesExpertFk(referenceList.iterator().next(), state);
-					} else if (referenceList.size() > 1) {
-						logger.error("Found more than one match using listByTitle() searching for a Reference with this speciesExpertName as title: " + speciesExpertName);
-					} else if (referenceList.size() == 0) {
-						logger.error("Found no match using listByTitle() searching for a Reference with this speciesExpertName as title: " + speciesExpertName);
+					String speciesExpertName = getSpeciesExpertName(taxonName);
+					if (speciesExpertName != null) {
+						referenceList = getReferenceService().listByReferenceTitle(null, speciesExpertName, null, null, pageSize, pageNumber, null, null);
+						if (referenceList.size() == 1) {
+							speciesExpertFk  = getSpeciesExpertFk(referenceList.iterator().next(), state);
+						} else if (referenceList.size() > 1) {
+							logger.error("Found more than one match using listByTitle() searching for a Reference with this speciesExpertName as title: " + speciesExpertName);
+						} else if (referenceList.size() == 0) {
+							logger.error("Found no match using listByTitle() searching for a Reference with this speciesExpertName as title: " + speciesExpertName);
+						}
+					} else {
+						logger.error("SpeciesExpertName is NULL for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 					}
 
 
 					doCount(count++, modCount, pluralString);
 					Integer typeNameFk = getTypeNameFk(taxonName, state);
-					invokeRankDataAndTypeNameFkAndKingdomFk(taxonName, nomenclaturalCode, state.getDbId(taxonName), typeNameFk, kingdomFk,
-							expertFk, speciesExpertFk);
+					if (expertFk != null || speciesExpertFk != null) {
+						invokeRankDataAndTypeNameFkAndKingdomFk(taxonName, nomenclaturalCode, state.getDbId(taxonName), typeNameFk, kingdomFk,
+								expertFk, speciesExpertFk);
+					}
 				}
 
 				// Commit transaction
@@ -1602,6 +1612,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				if (dateTime != null) {
 					DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S");
 					result = formatter.parseDateTime(dateTime);
+					logger.error("Joda DateTime: " + result);
 				}
 			}
 		}

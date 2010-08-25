@@ -54,7 +54,6 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	private static final String dbTableName = "RelTaxon";
 	private static final String pluralString = "Relationships";
 	private static PreparedStatement synonymsStmt;
-	private PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt;
 	private HashMap<Rank, Rank> rankMap = new HashMap<Rank, Rank>();
 	private List<Rank> rankList = new ArrayList<Rank>();
 	private PesiExportMapping mapping;
@@ -95,10 +94,6 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			String synonymsSql = "UPDATE Taxon SET KingdomFk = ?, RankFk = ?, RankCache = ? WHERE TaxonId = ?"; 
 			synonymsStmt = connection.prepareStatement(synonymsSql);
 			
-			String parentTaxonFk_TreeIndex_KingdomFkSql = "INSERT INTO RelTaxon (TaxonFk1, TaxonFk2, RelTaxonQualifierFk, RelQualifierCache)" +
-					"VALUES (?, ?, ?, ?)";
-			parentTaxonFk_TreeIndex_KingdomFkStmt = connection.prepareStatement(parentTaxonFk_TreeIndex_KingdomFkSql);
-
 			// Get the limit for objects to save within a single transaction.
 			int pageSize = 1000;
 
