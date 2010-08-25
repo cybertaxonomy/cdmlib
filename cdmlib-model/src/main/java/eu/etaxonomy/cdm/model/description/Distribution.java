@@ -91,7 +91,7 @@ public class Distribution extends DescriptionElementBase {
 	 */
 	public static Distribution NewInstance(){
 		Distribution result = new Distribution();
-		result.setType(Feature.DISTRIBUTION());
+		result.setFeature(Feature.DISTRIBUTION());
 		return result;
 	}
 
