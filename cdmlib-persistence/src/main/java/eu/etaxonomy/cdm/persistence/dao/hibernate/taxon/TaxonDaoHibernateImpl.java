@@ -873,22 +873,31 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
-		if(genusOrUninomial != null) {
+		if(genusOrUninomial == null) {
+			criteria.add(Restrictions.isNull("name.genusOrUninomial"));
+		} else if(!genusOrUninomial.equals("*")) {
 			criteria.add(Restrictions.eq("name.genusOrUninomial", genusOrUninomial));
 		}
 		
-		if(infraGenericEpithet != null) {
+		if(infraGenericEpithet == null) {
+			criteria.add(Restrictions.isNull("name.infraGenericEpithet"));
+		} else if(!infraGenericEpithet.equals("*")) {
 			criteria.add(Restrictions.eq("name.infraGenericEpithet", infraGenericEpithet));
-		}
+		} 
 		
-		if(specificEpithet != null) {
+		if(specificEpithet == null) {
+			criteria.add(Restrictions.isNull("name.specificEpithet"));
+		} else if(!specificEpithet.equals("*")) {
 			criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
+			
 		}
 		
-		if(infraSpecificEpithet != null) {
+		if(infraSpecificEpithet == null) {
+			criteria.add(Restrictions.isNull("name.infraSpecificEpithet"));
+		} else if(!infraSpecificEpithet.equals("*")) {
 			criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
 		}
-		
+
 		if(rank != null) {
 			criteria.add(Restrictions.eq("name.rank", rank));
 		}
