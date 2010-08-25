@@ -37,8 +37,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportBase  {
 	
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaAdditionalTaxonDataImport.class);
-	private static final String parentPluralString = "TaxonBases";
-	private static final String pluralString = "InfraGenericEpithet";
+	private static final String parentPluralString = "Synonyms";
+	private static final String pluralString = "InfraGenericEpithets";
 	private static final String acceptedTaxonUUID = "A9C24E42-69F5-4681-9399-041E652CF338"; // any accepted taxon uuid, taken from original fauna europaea database
 
 	/* (non-Javadoc)
@@ -99,44 +99,40 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 	private boolean processAdditionalInfraGenericEpithets(FaunaEuropaeaImportState state) {
 		boolean success = true;
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
-		Source source = fauEuConfig.getSource();
 		int count = 0;
 		int pastCount = 0;
-		int limit = 1000;
+		int pageSize = 1000;
+		int pageNumber = 1;
+		
 		TransactionStatus txStatus = null;
 		List<TaxonBase> list = null;
 		
-		txStatus = startTransaction(true);
-		TaxonBase singleTaxon = getTaxonService().find(UUID.fromString(acceptedTaxonUUID));
-		ReferenceBase<?> sourceRef = singleTaxon.getSec();
-		commitTransaction(txStatus);
-		
 		txStatus = startTransaction(false);
-		logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+		logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + pageSize + ") ...");
 		
-		// Optimum: Fetch all synonyms without infraGenericEpithet
-		Synonym synonym = Synonym.NewInstance(null, sourceRef);
-		while ((list = getTaxonService().list(synonym, null, limit, count, null, null)).size() > 0) {
+		// Fetch all synonyms
+		while ((list = getTaxonService().listTaxaByName(Synonym.class, "*", null, "*", "*", null, pageSize, pageNumber)).size() > 0) {
 			
 			logger.error("Fetched " + list.size() + " " + parentPluralString + ". Processing...");
 			for (TaxonBase taxonBase : list) {
 				
-				if (!taxonBase.isInstanceOf(Synonym.class)) {
-					logger.error("This taxonBase is not of instance Synonym: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache());
+				if (! taxonBase.isInstanceOf(Synonym.class)) {
+					logger.error("This TaxonBase is not a Synonym even though it should be: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
 				}
 				
 				TaxonNameBase taxonName = taxonBase.getName();
-
+				
+				// Check whether its taxonName has an infraGenericEpithet
 				if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 					NonViralName targetNonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 					String infraGenericEpithet = targetNonViralName.getInfraGenericEpithet();
 					if (infraGenericEpithet == null) {
 						String genusOrUninomial = targetNonViralName.getGenusOrUninomial();
 						String specificEpithet = targetNonViralName.getSpecificEpithet();
-						List<TaxonBase> foundTaxa = getTaxonService().listTaxaByName(Taxon.class, genusOrUninomial, null, specificEpithet, 
-								null, Rank.SPECIES(), 10, 1);
+						List<TaxonBase> foundTaxa = getTaxonService().listTaxaByName(Taxon.class, genusOrUninomial, "*", specificEpithet, 
+								"*", null, pageSize, 1);
 						if (foundTaxa.size() == 1) {
-							// one matching taxon found
+							// one matching Taxon found
 							TaxonBase taxon = foundTaxa.iterator().next();
 							if (taxon != null) {
 								TaxonNameBase name = taxon.getName();
@@ -146,13 +142,14 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 									
 									// set infraGenericEpithet
 //									targetNonViralName.setInfraGenericEpithet(infraGenericEpithet);
+									logger.error("Added an InfraGenericEpithet to this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 									count++;
 								}
 							}
 						} else if (foundTaxa.size() > 1) {
 							logger.error("Multiple taxa match search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-							for (TaxonBase foundTaxonBase : foundTaxa) {
-								logger.error(foundTaxonBase.getUuid() + ", " + foundTaxonBase.getTitleCache());
+							for (TaxonBase foundTaxon : foundTaxa) {
+								logger.error(foundTaxon.getUuid() + ", " + foundTaxon.getTitleCache());
 							}
 						} else if (foundTaxa.size() == 0) {
 //							logger.error("No matches for search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
@@ -171,7 +168,10 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 
 			// Start transaction
 			txStatus = startTransaction(false);
-			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + pageSize + ") ...");
+			
+			// Increment pageNumber
+			pageNumber++;
 		}
 		if (list.size() == 0) {
 			logger.error("No " + parentPluralString + " left to fetch.");
