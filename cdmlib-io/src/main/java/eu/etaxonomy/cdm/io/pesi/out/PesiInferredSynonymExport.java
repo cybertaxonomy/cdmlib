@@ -61,7 +61,8 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "Taxon";
-	private static final String pluralString = "Taxa";
+	private static final String pluralString = "Inferred Synonyms";
+	private static final String parentPluralString = "Taxa";
 	private static Integer kingdomFk;
 	private static NomenclaturalCode nomenclaturalCode = null;
 	private static int taxonId = 700000;
@@ -119,24 +120,24 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 
 			int count = 0;
 			int pastCount = 0;
+			int pageSize = limit;
+			int pageNumber = 1;
 			TransactionStatus txStatus = null;
 
 			logger.error("Creating Inferred Synonyms...");
 			// Create inferred synonyms for all accepted taxa
 			
 			// Start transaction
-			String inferredSynonymsString = "Inferred Synonyms";
 			TaxonomicTree taxonTree = null;
 			Taxon acceptedTaxon = null;
 			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
 			List<TaxonBase> taxonList = null;
 			List<Synonym> inferredSynonyms = null;
-			while ((taxonList  = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+			while ((taxonList  = getTaxonService().listTaxaByName(Taxon.class, "*", "*", "*", "*", null, pageSize, pageNumber)).size() > 0) {
 
-				logger.error("Fetched " + taxonList.size() + " " + pluralString + ". Exporting...");
+				logger.error("Fetched " + taxonList.size() + " " + parentPluralString + ". Exporting...");
 				for (TaxonBase taxonBase : taxonList) {
-					doCount(count++, modCount, inferredSynonymsString);
 
 					if (taxonBase.isInstanceOf(Taxon.class)) {
 						acceptedTaxon = CdmBase.deproxy(taxonBase, Taxon.class);
@@ -163,27 +164,33 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 							inferredSynonyms = getTaxonService().createInferredSynonyms(taxonTree, acceptedTaxon, SynonymRelationshipType.INFERRED_GENUS_OF());
 							if (inferredSynonyms != null) {
 								for (Synonym synonym : inferredSynonyms) {
+									doCount(count++, modCount, pluralString);
 									success &= mapping.invoke(synonym.getName());
 								}
 							}
 						} else {
 							logger.error("TaxonomicTree is NULL. Inferred Synonyms could not be created for this Taxon: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() + ")");
 						}
+					} else {
+						logger.error("This TaxonBase is not a Taxon even though it should be: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
 					}
 				}
 
 				// Commit transaction
 				commitTransaction(txStatus);
 				logger.error("Committed transaction.");
-				logger.error("Exported " + (count - pastCount) + " " + inferredSynonyms + ". Total: " + count);
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
 				pastCount = count;
 
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
+				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+				
+				// Increment pageNumber
+				pageNumber++;
 			}
 			if (taxonList.size() == 0) {
-				logger.error("No " + pluralString + " left to fetch.");
+				logger.error("No " + parentPluralString + " left to fetch.");
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
