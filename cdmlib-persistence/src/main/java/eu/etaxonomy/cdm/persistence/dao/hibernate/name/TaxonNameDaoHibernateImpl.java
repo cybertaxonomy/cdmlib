@@ -600,14 +600,28 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 	
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid){
-		List<ZoologicalName> zooNames = getAllZoologicalNames(null, 0);
-		for (ZoologicalName name: zooNames){
-			if (name.getUuid().equals(uuid)) return name;
+		Criteria criteria = getSession().createCriteria(type);
+		if (uuid != null) {
+			criteria.add(Restrictions.eq("uuid", uuid));
+		} else {
+			logger.error("UUID is NULL");
+			return null;
 		}
 		
-		return null;
-		//super.findByParam(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths)
+		List<? extends TaxonNameBase<?,?>> results = criteria.list();
+		defaultBeanInitializer.initializeAll(results, null);
+		
+		return (ZoologicalName) results.iterator().next();
+
+		
+//		List<ZoologicalName> zooNames = getAllZoologicalNames(null, 0);
+//		for (ZoologicalName name: zooNames){
+//			if (name.getUuid().equals(uuid)) return name;
+//		}
+//		
+//		return null;
+		
+//		super.findByParam(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths)
 	}
 
-	
 }
