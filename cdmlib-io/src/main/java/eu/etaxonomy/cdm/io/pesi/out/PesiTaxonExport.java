@@ -1612,7 +1612,6 @@ public class PesiTaxonExport extends PesiExportBase {
 				if (dateTime != null) {
 					DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S");
 					result = formatter.parseDateTime(dateTime);
-					logger.error("Joda DateTime: " + result);
 				}
 			}
 		}
