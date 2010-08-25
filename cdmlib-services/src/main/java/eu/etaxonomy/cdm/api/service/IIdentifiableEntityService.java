@@ -125,7 +125,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	 *            Supports path like <code>orderHints.propertyNames</code> which
 	 *            include *-to-one properties like createdBy.username or
 	 *            authorTeam.persistentTitleCache
-	 * @return a paged list of instances of type T matching the queryString
+	 * @return a list of instances of type T matching the queryString
 	 */
     public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
     
