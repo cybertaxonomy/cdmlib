@@ -9,18 +9,22 @@
 
 package eu.etaxonomy.cdm.io.faunaEuropaea;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -81,15 +85,14 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 		
 		boolean success = true;
 		if(logger.isInfoEnabled()) {
-			logger.info("Start making " + pluralString + "...");
+			logger.info("Started creating " + pluralString + "...");
 		}
 		
 		success = processAdditionalInfraGenericEpithets(state);
 		
-		logger.info("End making " + pluralString + "...");
+		logger.info("The End is Nigh... " + pluralString + "...");
 		return success;
 	}
-
 
 	/**
 	 * 
@@ -98,84 +101,75 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 	 */
 	private boolean processAdditionalInfraGenericEpithets(FaunaEuropaeaImportState state) {
 		boolean success = true;
-		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		int count = 0;
-		int pastCount = 0;
 		int pageSize = 1000;
-		int pageNumber = 1;
+		Set<UUID> uuidSet = new HashSet<UUID>();
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
+		ICdmDataSource destination = fauEuConfig.getDestination();
+
+		String selectQuery = "SELECT t.uuid from TaxonNameBase t INNER JOIN " +
+				"TaxonNameBase t2 ON t.GenusOrUninomial = t2.GenusOrUninomial AND t.SpecificEpithet = t2.SpecificEpithet " +
+				"WHERE t.InfraGenericEpithet IS NULL AND t.rank_id = 764 AND t2.rank_id = 766 AND t2.InfraGenericEpithet IS NOT NULL";
 		
+		logger.error("Retrieving TaxonNames...");
+		ResultSet resultSet = destination.executeQuery(selectQuery);
+
 		TransactionStatus txStatus = null;
-		List<TaxonBase> list = null;
-		
+		List<TaxonNameBase> taxonNames = null;
 		txStatus = startTransaction(false);
-		logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + pageSize + ") ...");
 		
-		// Fetch all synonyms
-		while ((list = getTaxonService().listTaxaByName(Synonym.class, "*", null, "*", "*", null, pageSize, pageNumber)).size() > 0) {
+		// Collect UUIDs
+		try {
+			while (resultSet.next()) {
+				uuidSet.add(UUID.fromString(resultSet.getString("UUID")));
+			}
+		} catch (SQLException e) {
+			logger.error("An error occured: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Fetch TaxonName objects for UUIDs
+		taxonNames = getNameService().find(uuidSet);
+		
+		for (TaxonNameBase taxonName : taxonNames) {
 			
-			logger.error("Fetched " + list.size() + " " + parentPluralString + ". Processing...");
-			for (TaxonBase taxonBase : list) {
-				
-				if (! taxonBase.isInstanceOf(Synonym.class)) {
-					logger.error("This TaxonBase is not a Synonym even though it should be: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
-				}
-				
-				TaxonNameBase taxonName = taxonBase.getName();
-				
-				// Check whether its taxonName has an infraGenericEpithet
-				if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
-					NonViralName targetNonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
-					String infraGenericEpithet = targetNonViralName.getInfraGenericEpithet();
-					if (infraGenericEpithet == null) {
-						String genusOrUninomial = targetNonViralName.getGenusOrUninomial();
-						String specificEpithet = targetNonViralName.getSpecificEpithet();
-						List<TaxonBase> foundTaxa = getTaxonService().listTaxaByName(Taxon.class, genusOrUninomial, "*", specificEpithet, 
-								"*", null, pageSize, 1);
-						if (foundTaxa.size() == 1) {
-							// one matching Taxon found
-							TaxonBase taxon = foundTaxa.iterator().next();
-							if (taxon != null) {
-								TaxonNameBase name = taxon.getName();
-								if (name != null && name.isInstanceOf(NonViralName.class)) {
-									NonViralName nonViralName = CdmBase.deproxy(name, NonViralName.class);
-									infraGenericEpithet = nonViralName.getInfraGenericEpithet();
-									
-									// set infraGenericEpithet
+			// Check whether its taxonName has an infraGenericEpithet
+			if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
+				NonViralName targetNonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
+				String infraGenericEpithet = targetNonViralName.getInfraGenericEpithet();
+				if (infraGenericEpithet == null) {
+					String genusOrUninomial = targetNonViralName.getGenusOrUninomial();
+					String specificEpithet = targetNonViralName.getSpecificEpithet();
+					List<TaxonBase> foundTaxa = getTaxonService().listTaxaByName(Taxon.class, genusOrUninomial, "*", specificEpithet, 
+							"*", null, pageSize, 1);
+					if (foundTaxa.size() == 1) {
+						// one matching Taxon found
+						TaxonBase taxon = foundTaxa.iterator().next();
+						if (taxon != null) {
+							TaxonNameBase name = taxon.getName();
+							if (name != null && name.isInstanceOf(NonViralName.class)) {
+								NonViralName nonViralName = CdmBase.deproxy(name, NonViralName.class);
+								infraGenericEpithet = nonViralName.getInfraGenericEpithet();
+								
+								// set infraGenericEpithet
 //									targetNonViralName.setInfraGenericEpithet(infraGenericEpithet);
-									logger.error("Added an InfraGenericEpithet to this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-									count++;
-								}
+								logger.error("Added an InfraGenericEpithet to this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+								count++;
 							}
-						} else if (foundTaxa.size() > 1) {
-							logger.error("Multiple taxa match search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-							for (TaxonBase foundTaxon : foundTaxa) {
-								logger.error(foundTaxon.getUuid() + ", " + foundTaxon.getTitleCache());
-							}
-						} else if (foundTaxa.size() == 0) {
-//							logger.error("No matches for search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 						}
+					} else if (foundTaxa.size() > 1) {
+						logger.error("Multiple taxa match search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+						for (TaxonBase foundTaxon : foundTaxa) {
+							logger.error(foundTaxon.getUuid() + ", " + foundTaxon.getTitleCache());
+						}
+					} else if (foundTaxa.size() == 0) {
+//							logger.error("No matches for search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 					}
-					
 				}
 				
 			}
-
-			// Commit transaction
-			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
-			logger.error("Added " + (count - pastCount) + " " + pluralString + ". Total: " + count);
-			pastCount = count;
-
-			// Start transaction
-			txStatus = startTransaction(false);
-			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + pageSize + ") ...");
-			
-			// Increment pageNumber
-			pageNumber++;
 		}
-		if (list.size() == 0) {
-			logger.error("No " + parentPluralString + " left to fetch.");
-		}
+
 		// Commit transaction
 		commitTransaction(txStatus);
 		logger.error("Committed transaction.");
