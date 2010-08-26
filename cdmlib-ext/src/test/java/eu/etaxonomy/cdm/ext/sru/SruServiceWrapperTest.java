@@ -1,0 +1,52 @@
+/**
+ * 
+ */
+package eu.etaxonomy.cdm.ext.sru;
+
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import eu.etaxonomy.cdm.ext.schema.DublinCoreSchemaAdapter;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
+/**
+ * @author a.mueller
+ *
+ */
+public class SruServiceWrapperTest {
+	
+	static String baseUrl = "http://gso.gbv.de/sru/DB=2.1/";
+
+	private SruServiceWrapper sruServiceWrapper;
+	
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		sruServiceWrapper = new SruServiceWrapper();
+		sruServiceWrapper.setBaseUrl(baseUrl);
+		sruServiceWrapper.addSchemaAdapter(new DublinCoreSchemaAdapter());
+	}
+
+// ******************************* TESTS ******************************************************/
+
+	@Test
+	public void testDoSearchRetrieve(){
+		
+		List<ReferenceBase> refList = sruServiceWrapper.doSearchRetrieve("Linnaei Species Plantarum Europae", "dc");
+		// -> http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.tit%3D%22Species+Plantarum%22&recordSchema=dc
+			
+		Assert.assertEquals("There should be exactly 2 result for 'Linnaei Species Plantarum Europae'", 2, refList.size());
+		ReferenceBase reference = refList.get(0);
+		System.out.println(reference.toString());
+		//title cache
+		Assert.assertEquals("Title Cache for Abies albertiana should be 'Linnaei Species Plantarum Europae Pars 2. Supplementum Plantarum Europaearum ...'", "Linnaei Species Plantarum Europae Pars 2. Supplementum Plantarum Europaearum ...", reference.getTitleCache());
+
+	}	
+
+
+}

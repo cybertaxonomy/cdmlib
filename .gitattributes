@@ -1246,6 +1246,7 @@ cdmlib-commons/src/test/resources/images/Thumbs.db -text
 cdmlib-ext/LICENSE.TXT -text
 cdmlib-ext/README.TXT -text
 cdmlib-ext/pom.xml -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/BaseServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/EditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/EditGeoServiceUtilities.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/IEditGeoService.java -text
@@ -1258,10 +1259,14 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceAuthorConfigurator
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceConfiguratorBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceNamesConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServicePublicationConfigurator.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/schema/DublinCoreSchemaAdapter.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/schema/SchemaAdapter.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/site/site.xml -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm.datasources.xml -text
