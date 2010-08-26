@@ -1271,7 +1271,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		// TODO Auto-generated method stub
 		return null;
 	}
-public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree){
+	
+	
+	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree){
 		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
 		
 		inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF()));
@@ -1282,6 +1284,13 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 	}
 	
 
+	/**
+	 * Returns an existing ZoologicalName or extends an internal hashmap if it does not exist.
+	 * Very likely only useful for createInferredSynonyms().
+	 * @param uuid
+	 * @param zooHashMap
+	 * @return
+	 */
 	private ZoologicalName getZoologicalName(UUID uuid, HashMap <UUID, ZoologicalName> zooHashMap) {
 		ZoologicalName taxonName = this.taxonNameDao.findZoologicalNameByUUID(uuid);
 		if (taxonName == null) {
@@ -1293,23 +1302,10 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 	public List<Synonym> createInferredSynonyms(Taxon taxon, TaxonomicTree tree, SynonymRelationshipType type){
 		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
 		
-//		int limit = 1000;
-//		int start = 0;
-//		List<ZoologicalName> zooNames = null;
 		HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
 		UUID uuid;
-//		while ((zooNames = this.taxonNameDao.getAllZoologicalNames(limit, start)).size() > 0) {
-//			//create HashMap
-//			for (ZoologicalName zooName: zooNames) {
-//				uuid = zooName.getUuid();
-//				zooHashMap.put(uuid, zooName);
-//			}
-//			
-//			start += limit;
-//		}
 		
 		uuid= taxon.getName().getUuid();
-//		ZoologicalName taxonName = zooHashMap.get(uuid);
 		ZoologicalName taxonName = getZoologicalName(uuid, zooHashMap);
 		String epithetOfTaxon = taxonName.getSpecificEpithet();
 		String genusOfTaxon = taxonName.getGenusOrUninomial();
@@ -1351,7 +1347,6 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 							HibernateProxyHelper.deproxy(syn);
 							
 							synName = syn.getName();
-//							ZoologicalName zooName = zooHashMap.get(synName.getUuid());
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String synGenusName = zooName.getGenusOrUninomial();
 							if (!synonymsGenus.contains(synGenusName)){
@@ -1372,7 +1367,6 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 						ZoologicalName name;
 						if (!synNotInCDM.isEmpty()){
 							for (Synonym syn :inferredSynonyms){
-//								name =zooHashMap.get(syn.getName().getUuid());
 								name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 								if (!synNotInCDM.contains(name.getNameCache())){
 									inferredSynonyms.remove(syn);
@@ -1394,7 +1388,6 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 							HibernateProxyHelper.deproxy(syn);
 							
 							synName = syn.getName();
-//							ZoologicalName zooName = zooHashMap.get(synName.getUuid());
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String speciesEpithetName = zooName.getSpecificEpithet();
 							if (!synonymsEpithet.contains(speciesEpithetName)){
@@ -1415,7 +1408,6 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 							ZoologicalName name;
 							if (!synNotInCDM.isEmpty()){
 								for (Synonym syn :inferredSynonyms){
-//									name =zooHashMap.get(syn.getName().getUuid());
 									name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 									if (!synNotInCDM.contains(name.getNameCache())){
 										inferredSynonyms.remove(syn);
@@ -1434,7 +1426,6 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 							
 							HibernateProxyHelper.deproxy(syn);
 							
-//							ZoologicalName zooName = zooHashMap.get(synName.getUuid());
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String synGenusName = zooName.getGenusOrUninomial();
 							if (!synonymsGenus.contains(synGenusName)){
@@ -1448,7 +1439,6 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 							Synonym syn = synonymRelationOfTaxon.getSynonym();
 							HibernateProxyHelper.deproxy(syn);
 							
-//							ZoologicalName zooName = zooHashMap.get(syn.getName().getUuid());
 							ZoologicalName zooName = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 							String epithetName = zooName.getSpecificEpithet();
 							if (!synonymsEpithet.contains(epithetName)){
@@ -1475,7 +1465,6 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 										try{
 											name = (ZoologicalName) syn.getName();
 										}catch (ClassCastException e){
-//											name =zooHashMap.get(syn.getName().getUuid());
 											name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 										}
 										if (!synNotInCDM.contains(name.getNameCache())){
