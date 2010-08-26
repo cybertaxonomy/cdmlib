@@ -153,7 +153,7 @@ public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {
 				TeamOrPersonBase<Team> author = null;
 				reference = ReferenceFactory.newGeneric();
 
-				reference.setTitle(refAuthor);
+				reference.setTitle("" + refId); // This unique key is needed to get a hand on this Reference in PesiTaxonExport
 				reference.setDatePublished(ImportHelper.getDatePublished(year));
 				
 				if (!authors.containsKey(refAuthor)) {
