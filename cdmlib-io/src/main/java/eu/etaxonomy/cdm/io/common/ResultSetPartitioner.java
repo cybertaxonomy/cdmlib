@@ -226,7 +226,8 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 			strRecordQuery = strRecordQuery.replaceFirst(IPartitionedIO.ID_LIST_TOKEN, strIdLists[col]);
 		}
 		
-		ResultSet resultSet = source.getResultSet(strRecordQuery);
+		ResultSet resultSet = ResultSetProxy.NewInstance(source.getResultSet(strRecordQuery));
+		
 		return resultSet;
 	}
 	
