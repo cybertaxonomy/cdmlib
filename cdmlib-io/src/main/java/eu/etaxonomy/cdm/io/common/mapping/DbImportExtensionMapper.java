@@ -20,6 +20,7 @@ import javax.mail.MethodNotSupportedException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * This class maps a database attribute to CDM extension added to the target class
@@ -103,12 +105,11 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		if (currentImport == null){
 			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !"); 
 		}
-		ITermService service = currentImport.getTermService();
 		
 		try {
 			if (  checkDbColumnExists()){
 				if (this.extensionType == null){
-					this.extensionType = getExtensionType(service, uuid, label, text, labelAbbrev);
+					this.extensionType = getExtensionType(currentImport, uuid, label, text, labelAbbrev);
 				}
 			}else{
 				ignore = true;
@@ -181,12 +182,23 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected ExtensionType getExtensionType(ITermService service, UUID uuid, String label, String text, String labelAbbrev){
-		ExtensionType extensionType = (ExtensionType)service.find(uuid);
+	protected ExtensionType getExtensionType(CdmImportBase<?, ?> currentImport, UUID uuid, String label, String text, String labelAbbrev){
+		ITermService termService = currentImport.getTermService();
+		ExtensionType extensionType = (ExtensionType)termService.find(uuid);
 		if (extensionType == null){
 			extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 			extensionType.setUuid(uuid);
-			service.save(extensionType);
+			//set vocabulary //TODO allow user defined vocabularies
+			UUID uuidExtensionTypeVocabulary = UUID.fromString("117cc307-5bd4-4b10-9b2f-2e14051b3b20");
+			IVocabularyService vocService = currentImport.getVocabularyService();
+			TermVocabulary voc = vocService.find(uuidExtensionTypeVocabulary);
+			if (voc != null){
+				voc.addTerm(extensionType);
+			}else{
+				logger.warn("Could not find default extensionType vocabulary. Vocabulary not set for new extension type.");
+			}
+			//save
+			termService.save(extensionType);
 		}
 		return extensionType;
 	}

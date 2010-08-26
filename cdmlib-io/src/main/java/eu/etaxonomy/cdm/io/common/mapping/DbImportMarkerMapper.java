@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.mail.MethodNotSupportedException;
@@ -20,16 +19,14 @@ import javax.mail.MethodNotSupportedException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * This class maps a database attribute to CDM extension added to the target class
@@ -39,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
+public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportMarkerMapper.class);
 	
@@ -106,12 +103,11 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		if (currentImport == null){
 			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !"); 
 		}
-		ITermService service = currentImport.getTermService();
 		
 		try {
 			if (  checkDbColumnExists()){
 				if (this.markerType == null){
-					this.markerType = getMarkerType(service, uuid, label, text, labelAbbrev);
+					this.markerType = getMarkerType(currentImport, uuid, label, text, labelAbbrev);
 				}
 			}else{
 				ignore = true;
@@ -121,24 +117,13 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		}
 	}
 	
-
-	/**
-	 * @param valueMap
-	 * @param cdmBase
-	 * @return
-	 */
-	public boolean invoke(Map<String, Object> valueMap, CdmBase cdmBase){
-		Object dbValueObject = valueMap.get(this.getSourceAttribute().toLowerCase());
-		String dbValue = dbValueObject == null? null: dbValueObject.toString();
-		return invoke(dbValue, cdmBase);
-	}
 	
 	/**
 	 * @param dbValue
 	 * @param cdmBase
 	 * @return
 	 */
-	private boolean invoke(String dbValue, CdmBase cdmBase){
+	private boolean invoke(Boolean dbValue, CdmBase cdmBase){
 		if (ignore){
 			return true;
 		}
@@ -177,19 +162,31 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 	
 	
 	/**
-	 * @param service
+	 * @param currentImport
 	 * @param uuid
 	 * @param label
 	 * @param text
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected MarkerType getMarkerType(ITermService service, UUID uuid, String label, String text, String labelAbbrev){
-		MarkerType markerType = (MarkerType)service.find(uuid);
+	protected MarkerType getMarkerType(CdmImportBase<?, ?> currentImport, UUID uuid, String label, String text, String labelAbbrev){
+		ITermService termService = currentImport.getTermService();
+		MarkerType markerType = (MarkerType)termService.find(uuid);
 		if (markerType == null){
+			//create object
 			markerType = MarkerType.NewInstance(text, label, labelAbbrev);
 			markerType.setUuid(uuid);
-			service.save(markerType);
+			//set vocabulary //TODO allow user defined vocabularies
+			UUID uuidMarkerTypeVocabulary = UUID.fromString("19dffff7-e142-429c-a420-5d28e4ebe305");
+			IVocabularyService vocService = currentImport.getVocabularyService();
+			TermVocabulary voc = vocService.find(uuidMarkerTypeVocabulary);
+			if (voc != null){
+				voc.addTerm(markerType);
+			}else{
+				logger.warn("Could not find default markerType vocabulary. Vocabulary not set for new marker type.");
+			}
+			//save
+			termService.save(markerType);
 		}
 		return markerType;
 	}

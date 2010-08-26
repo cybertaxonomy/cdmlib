@@ -14,19 +14,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * This class maps a database attribute to CDM annotation added to the target class
@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @version 1.0
  */
 public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportAnnotationMapper.class);
 	
 	/**
@@ -186,12 +185,22 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected AnnotationType getAnnotationType(ITermService service, UUID uuid, String label, String text, String labelAbbrev){
-		AnnotationType annotationType = (AnnotationType)service.find(uuid);
+	protected AnnotationType getAnnotationType(CdmImportBase<?, ?> currentImport, UUID uuid, String label, String text, String labelAbbrev){
+		ITermService termService = currentImport.getTermService();
+		AnnotationType annotationType = (AnnotationType)termService.find(uuid);
 		if (annotationType == null){
 			annotationType = AnnotationType.NewInstance(text, label, labelAbbrev);
 			annotationType.setUuid(uuid);
-			service.save(annotationType);
+			//set vocabulary //TODO allow user defined vocabularies
+			UUID uuidAnnotationTypeVocabulary = UUID.fromString("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d");
+			IVocabularyService vocService = currentImport.getVocabularyService();
+			TermVocabulary voc = vocService.find(uuidAnnotationTypeVocabulary);
+			if (voc != null){
+				voc.addTerm(annotationType);
+			}else{
+				logger.warn("Could not find default annotation type vocabulary. Vocabulary not set for new annotation type.");
+			}
+			//savetermService.save(annotationType);
 		}
 		return annotationType;
 	}
