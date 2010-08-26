@@ -127,7 +127,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
-	 * Return a count of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+	 * Return a count of objects matching the given query string in the titleCache, optionally filtered by class, optionally with a particular MatchMode
 	 * 
 	 * @param clazz filter by class - can be null to include all instances of type T
 	 * @param queryString the query string to filter by
@@ -136,4 +136,16 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @return a count of instances of type T matching the queryString
 	 */
 	public int countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	
+	/**
+	 * Return a count of objects matching the given query string in the title, optionally filtered by class, optionally with a particular MatchMode
+	 * 
+	 * @param clazz filter by class - can be null to include all instances of type T
+	 * @param queryString the query string to filter by
+	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+	 * @param criteria extra restrictions to apply
+	 * @return a count of instances of type T matching the queryString
+	 */
+	public int countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+
 }
