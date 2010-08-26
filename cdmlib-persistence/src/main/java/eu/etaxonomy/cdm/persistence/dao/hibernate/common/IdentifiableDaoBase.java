@@ -278,6 +278,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
 	}
 	
+	public int countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+		return countByParam(clazz, "title",queryString,matchmode,criterion);
+	}
+	
 	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
     	Criteria criteria = null;
