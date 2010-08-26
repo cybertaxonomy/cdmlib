@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 
+@Ignore //FIXME Remove @Ignore once maximes code is completely comitted
 public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 	
 	private static final Logger logger = Logger.getLogger(NaturalLanguageGeneratorTest.class);

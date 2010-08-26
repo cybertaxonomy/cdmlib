@@ -32,7 +32,7 @@ public class CichorieaeActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	//static final String sddSource = SDDSources.viola_local();
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
-	static final ICdmDataSource cdmDestination = CdmDestinations.local_cdm_edit_cichorieae_a();
+	static final ICdmDataSource cdmDestination = CdmDestinations.local_cdm_edit_cichorieae_b();
 	static final String sddSource = SDDSources.Crepis_test_local();
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 
