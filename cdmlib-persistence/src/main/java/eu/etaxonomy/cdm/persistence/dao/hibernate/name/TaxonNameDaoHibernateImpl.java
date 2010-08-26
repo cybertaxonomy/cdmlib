@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -611,7 +612,13 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		List<? extends TaxonNameBase<?,?>> results = criteria.list();
 		if (results.size() == 1) {
 			defaultBeanInitializer.initializeAll(results, null);
-			return (ZoologicalName) results.iterator().next();
+			TaxonNameBase<?, ?> taxonName = results.iterator().next();
+			if (taxonName.isInstanceOf(ZoologicalName.class)) {
+				ZoologicalName zoologicalName = CdmBase.deproxy(taxonName, ZoologicalName.class);
+				return zoologicalName;
+			} else {
+				logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			}
 		} else if (results.size() > 1) {
 			logger.warn("Multiple results for UUID: " + uuid);
 		} else if (results.size() == 0) {
