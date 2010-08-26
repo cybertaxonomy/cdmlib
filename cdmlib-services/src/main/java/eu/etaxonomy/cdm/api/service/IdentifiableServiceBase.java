@@ -147,7 +147,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 
 	@Transactional(readOnly = true)
 	public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+		 Integer numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
 			
 		 List<T> results = new ArrayList<T>();
 		 if(numberOfResults > 0) { // no point checking again
