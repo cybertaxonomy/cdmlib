@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 23.02.2010
  *

@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 23.02.2010
  *

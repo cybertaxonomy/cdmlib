@@ -17,6 +17,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -26,11 +28,12 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -39,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -48,7 +52,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 04.08.2010
  *
@@ -65,7 +68,15 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	private static final String parentPluralString = "Taxa";
 	private static Integer kingdomFk;
 	private static NomenclaturalCode nomenclaturalCode = null;
-	private static int taxonId = 700000;
+	private AnnotationType treeIndexAnnotationType;
+	private static ExtensionType lastActionExtensionType;
+	private static ExtensionType lastActionDateExtensionType;
+	private static ExtensionType expertNameExtensionType;
+	private static ExtensionType speciesExpertNameExtensionType;
+	private static ExtensionType cacheCitationExtensionType;
+	private static ExtensionType expertUserIdExtensionType;
+	private static ExtensionType speciesExpertUserIdExtensionType;
+	private static String auctString = "auct.";
 	
 	public PesiInferredSynonymExport() {
 		super();
@@ -118,6 +129,15 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 			// Initialize the db mapper
 			mapping.initialize(state);
 
+			// Find extensionTypes
+			lastActionExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionUuid);
+			lastActionDateExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionDateUuid);
+			expertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertNameUuid);
+			speciesExpertNameExtensionType = (ExtensionType)getTermService().find(PesiTransformer.speciesExpertNameUuid);
+			cacheCitationExtensionType = (ExtensionType)getTermService().find(PesiTransformer.cacheCitationUuid);
+			expertUserIdExtensionType = (ExtensionType)getTermService().find(PesiTransformer.expertUserIdUuid);
+			speciesExpertUserIdExtensionType = (ExtensionType)getTermService().find(PesiTransformer.speciesExpertUserIdUuid);
+
 			int count = 0;
 			int pastCount = 0;
 			int pageSize = limit;
@@ -139,37 +159,43 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 				logger.error("Fetched " + taxonList.size() + " " + parentPluralString + ". Exporting...");
 				for (TaxonBase taxonBase : taxonList) {
 
-					if (taxonBase.isInstanceOf(Taxon.class)) {
+					if (taxonBase.isInstanceOf(Taxon.class)) { // this should always be the case since we should have fetched accepted taxon only, but you never know...
 						acceptedTaxon = CdmBase.deproxy(taxonBase, Taxon.class);
-						nomenclaturalCode  = PesiTransformer.getNomenclaturalCode(acceptedTaxon.getName());
-						kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
-
-						Set<TaxonNode> taxonNodes = acceptedTaxon.getTaxonNodes();
-						if (taxonNodes.size() > 0) {
-							// Determine the taxonomicTree of the current Taxon
-							TaxonNode singleNode = taxonNodes.iterator().next();
-							if (singleNode != null) {
-								taxonTree = singleNode.getTaxonomicTree();
-							}
-						} else {
-							// TaxonomicTree could not be determined directly from this Taxon
-							// The stored taxonomicTree from another Taxon is used. It's a simple, but not a failsafe fallback solution.
-							logger.error("TaxonomicTree could not be determined directly from this Taxon. " +
-									"This taxonomicTree stored from another Taxon is used: " + taxonTree.getTitleCache());
-						}
+						TaxonNameBase taxonName = acceptedTaxon.getName();
 						
-						if (taxonTree != null) {
-//							inferredSynonyms  = getTaxonService().createAllInferredSynonyms(taxonTree, acceptedTaxon);
-
-							inferredSynonyms = getTaxonService().createInferredSynonyms(taxonTree, acceptedTaxon, SynonymRelationshipType.INFERRED_GENUS_OF());
-							if (inferredSynonyms != null) {
-								for (Synonym synonym : inferredSynonyms) {
-									doCount(count++, modCount, pluralString);
-									success &= mapping.invoke(synonym.getName());
+						if (taxonName.isInstanceOf(ZoologicalName.class)) {
+							nomenclaturalCode  = PesiTransformer.getNomenclaturalCode(taxonName);
+							kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
+	
+							Set<TaxonNode> taxonNodes = acceptedTaxon.getTaxonNodes();
+							if (taxonNodes.size() > 0) {
+								// Determine the taxonomicTree of the current Taxon
+								TaxonNode singleNode = taxonNodes.iterator().next();
+								if (singleNode != null) {
+									taxonTree = singleNode.getTaxonomicTree();
 								}
+							} else {
+								// TaxonomicTree could not be determined directly from this Taxon
+								// The stored taxonomicTree from another Taxon is used. It's a simple, but not a failsafe fallback solution.
+								logger.error("TaxonomicTree could not be determined directly from this Taxon. " +
+										"This taxonomicTree stored from another Taxon is used: " + taxonTree.getTitleCache());
+							}
+							
+							if (taxonTree != null) {
+	//							inferredSynonyms  = getTaxonService().createAllInferredSynonyms(taxonTree, acceptedTaxon);
+	
+								inferredSynonyms = getTaxonService().createInferredSynonyms(taxonTree, acceptedTaxon, SynonymRelationshipType.INFERRED_GENUS_OF());
+								if (inferredSynonyms != null) {
+									for (Synonym synonym : inferredSynonyms) {
+										doCount(count++, modCount, pluralString);
+										success &= mapping.invoke(synonym.getName());
+									}
+								}
+							} else {
+								logger.error("TaxonomicTree is NULL. Inferred Synonyms could not be created for this Taxon: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() + ")");
 							}
 						} else {
-							logger.error("TaxonomicTree is NULL. Inferred Synonyms could not be created for this Taxon: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() + ")");
+//							logger.error("TaxonName is not a ZoologicalName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 						}
 					} else {
 						logger.error("This TaxonBase is not a Taxon even though it should be: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
@@ -234,23 +260,14 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the KingdomFk.
-	 * @param taxonName
-	 * @return
-	 */
-	public static Integer getKingdomFk(TaxonNameBase taxonName) {
-		return kingdomFk;
-	}
-	
-	/**
 	 * Returns the <code>RankFk</code> attribute.
 	 * @param taxon The {@link TaxonBase Taxon}.
 	 * @return The <code>RankFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static Integer getRankFk(TaxonNameBase taxonName) {
+	private static Integer getRankFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode) {
 		Integer result = null;
+		try {
 		if (nomenclaturalCode != null) {
 			if (taxonName != null) {
 				if (taxonName.getRank() == null) {
@@ -263,6 +280,9 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 				}
 			}
 		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 
@@ -272,11 +292,14 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>RankCache</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static String getRankCache(TaxonNameBase taxonName) {
+	private static String getRankCache(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode) {
 		String result = null;
+		try {
 		if (nomenclaturalCode != null) {
 			result = PesiTransformer.rank2RankCache(taxonName.getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -287,12 +310,15 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return Whether it's genus or uninomial.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getGenusOrUninomial(TaxonNameBase taxonName) {
 		String result = null;
+		try {
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getGenusOrUninomial();
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -303,12 +329,15 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>InfraGenericEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getInfraGenericEpithet(TaxonNameBase taxonName) {
 		String result = null;
+		try {
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getInfraGenericEpithet();
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -319,12 +348,15 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>SpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getSpecificEpithet(TaxonNameBase taxonName) {
 		String result = null;
+		try {
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getSpecificEpithet();
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -335,12 +367,15 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>InfraSpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getInfraSpecificEpithet(TaxonNameBase taxonName) {
 		String result = null;
+		try {
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getInfraSpecificEpithet();
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -354,9 +389,13 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getWebSearchName(TaxonNameBase taxonName) {
 		String result = null;
+		try {
 		if (taxonName != null && (taxonName.isInstanceOf(NonViralName.class))) {
 			NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
 			result = nonViralName.getNameCache();
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -371,6 +410,7 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	private static String getWebShowName(TaxonNameBase taxonName) {
 		String result = "";
 		
+		try {
 		List taggedName = taxonName.getTaggedName();
 		boolean openTag = false;
 		boolean start = true;
@@ -435,6 +475,9 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 		if (openTag) {
 			result += "</i>";
 		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return result;
 	}
@@ -448,6 +491,7 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getAuthorString(TaxonNameBase taxonName) {
 		String result = null;
+		try {
 		if (taxonName != null && taxonName != null) {
 			if (taxonName.isInstanceOf(NonViralName.class)) {
 				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
@@ -455,6 +499,9 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 			} else {
 				logger.warn("TaxonName is not of instance NonViralName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -483,6 +530,7 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNomRefString(TaxonNameBase taxonName) {
 		String result = null;
+		try {
 		if (taxonName != null) {
 			try {
 				result = taxonName.getNomenclaturalMicroReference();
@@ -490,6 +538,9 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 				logger.error("While getting NomRefString");
 				e.printStackTrace();
 			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -510,17 +561,17 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 		}
 	}
 	
-	/**
-	 * Returns the <code>FuzzyName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
-	 * @return The <code>FuzzyName</code> attribute.
-	 * @see MethodMapper
-	 */
-	@SuppressWarnings("unused")
-	private static String getFuzzyName(TaxonNameBase taxonName) {
-		// TODO: extension
-		return null;
-	}
+//	/**
+//	 * Returns the <code>FuzzyName</code> attribute.
+//	 * @param taxon The {@link TaxonBase Taxon}.
+//	 * @return The <code>FuzzyName</code> attribute.
+//	 * @see MethodMapper
+//	 */
+//	@SuppressWarnings("unused")
+//	private static String getFuzzyName(TaxonNameBase taxonName) {
+//		// TODO: extension
+//		return null;
+//	}
 
 	/**
 	 * Returns the <code>NameStatusFk</code> attribute.
@@ -593,23 +644,30 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getTaxonStatusFk(TaxonNameBase taxonName) {
+	private static Integer getTaxonStatusFk(TaxonNameBase taxonName, PesiExportState state) {
 		Integer result = null;
 		
 		try {
-		Set taxa = taxonName.getTaxa();
-		if (taxa.size() == 1) {
-			result = PesiTransformer.taxonBase2statusFk((TaxonBase<?>) taxa.iterator().next());
-		} else if (taxa.size() > 1) {
-			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-		}
-		
-		Set synonyms = taxonName.getSynonyms();
-		if (synonyms.size() == 1) {
-			result = PesiTransformer.taxonBase2statusFk((TaxonBase<?>) synonyms.iterator().next());
-		} else if (synonyms.size() > 1) {
-			logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-		}
+			if (isAuctReference(taxonName, state)) {
+				Synonym synonym = Synonym.NewInstance(null, null);
+				
+				// This works as long as only the instance is important to differentiate between TaxonStatus.
+				result = PesiTransformer.taxonBase2statusFk(synonym); // Auct References are treated as Synonyms in Datawarehouse now.
+			} else {
+				Set taxa = taxonName.getTaxa();
+				if (taxa.size() == 1) {
+					result = PesiTransformer.taxonBase2statusFk((TaxonBase<?>) taxa.iterator().next());
+				} else if (taxa.size() > 1) {
+					logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
+				
+				Set synonyms = taxonName.getSynonyms();
+				if (synonyms.size() == 1) {
+					result = PesiTransformer.taxonBase2statusFk((TaxonBase<?>) synonyms.iterator().next());
+				} else if (synonyms.size() > 1) {
+					logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
+			}
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -624,23 +682,30 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getTaxonStatusCache(TaxonNameBase taxonName) {
+	private static String getTaxonStatusCache(TaxonNameBase taxonName, PesiExportState state) {
 		String result = null;
 		
 		try {
-		Set taxa = taxonName.getTaxa();
-		if (taxa.size() == 1) {
-			result = PesiTransformer.taxonBase2statusCache((TaxonBase<?>) taxa.iterator().next());
-		} else if (taxa.size() > 1) {
-			logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-		}
-		
-		Set synonyms = taxonName.getSynonyms();
-		if (synonyms.size() == 1) {
-			result = PesiTransformer.taxonBase2statusCache((TaxonBase<?>) synonyms.iterator().next());
-		} else if (synonyms.size() > 1) {
-			logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-		}
+			if (isAuctReference(taxonName, state)) {
+				Synonym synonym = Synonym.NewInstance(null, null);
+				
+				// This works as long as only the instance is important to differentiate between TaxonStatus.
+				result = PesiTransformer.taxonBase2statusCache(synonym); // Auct References are treated as Synonyms in Datawarehouse now.
+			} else {
+				Set taxa = taxonName.getTaxa();
+				if (taxa.size() == 1) {
+					result = PesiTransformer.taxonBase2statusCache((TaxonBase<?>) taxa.iterator().next());
+				} else if (taxa.size() > 1) {
+					logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
+				
+				Set synonyms = taxonName.getSynonyms();
+				if (synonyms.size() == 1) {
+					result = PesiTransformer.taxonBase2statusCache((TaxonBase<?>) synonyms.iterator().next());
+				} else if (synonyms.size() > 1) {
+					logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
+			}
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -654,7 +719,6 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>TypeNameFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getTypeNameFk(TaxonNameBase taxonNameBase, PesiExportState state) {
 		Integer result = null;
 		if (taxonNameBase != null) {
@@ -828,7 +892,6 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getIdInSource(TaxonNameBase taxonName) {
 		String result = null;
-		String defaultResult = null;
 		
 		try {
 			
@@ -840,6 +903,37 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 			}
 		}
 		
+		// Get idInSource
+		if (result == null) {
+			String originalTaxId = getIdInSourceOnly(taxonName);
+			if (originalTaxId != null) {
+				result = "TAX_ID: " + originalTaxId;
+			}
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Returns the idInSource for a given taxonName.
+	 * @param taxonName
+	 * @return
+	 */
+	private static String getIdInSourceOnly(TaxonNameBase taxonName) {
+		String result = null;
+		
+		Set<IdentifiableSource> nameSources = taxonName.getSources();
+		for (IdentifiableSource nameSource : nameSources) {
+			String sourceIdNameSpace = nameSource.getIdNamespace();
+			if (sourceIdNameSpace != null && sourceIdNameSpace.equals("originalGenusId")) {
+				result = nameSource.getIdInSource();
+			}
+		}
+
 		// Get idInSource from its Taxa or Synonyms
 		if (result == null) {
 			Set<Taxon> taxa = taxonName.getTaxa();
@@ -861,11 +955,11 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 				if (sources.size() == 1) {
 					IdentifiableSource source = sources.iterator().next();
 					if (source != null) {
-						result = "TAX_ID: " + source.getIdInSource();
+						result = source.getIdInSource();
 					}
 				} else if (sources.size() > 1) {
 					int count = 1;
-					result = "TAX_ID: ";
+					result = "";
 					for (IdentifiableSource source : sources) {
 						result += source.getIdInSource();
 						if (count < sources.size()) {
@@ -878,10 +972,6 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 			}
 		}
 		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		return result;
 	}
 	
@@ -891,10 +981,14 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>GUID</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getGUID(TaxonNameBase taxonName) {
-		// TODO
 		String result = null;
+		try {
+			result = "urn:lsid:faunaeur.org:taxname:" + getIdInSourceOnly(taxonName);
+		} catch (Exception e) {
+			logger.error("Text could not be excluded from idInSource for taxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+			e.printStackTrace();
+		}
 		return result;
 	}
 	
@@ -906,8 +1000,68 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getDerivedFromGuid(TaxonNameBase taxonName) {
-		// TODO
 		String result = null;
+		try {
+		// The same as GUID for now
+		result = getGUID(taxonName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param taxonName
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private static String getCacheCitation(TaxonNameBase taxonName) {
+		String result = "";
+		try {
+		if (getOriginalDB(taxonName).equals("ERMS")) {
+			// TODO: 19.08.2010: An import of CacheCitation does not exist in the ERMS import yet or it will be imported in a different way...
+			// 		 So the following code is some kind of harmless assumption.
+			Set<Extension> extensions = taxonName.getExtensions();
+			for (Extension extension : extensions) {
+				if (extension.getType().equals(cacheCitationExtensionType)) {
+					result = extension.getValue();
+				}
+			}
+		} else {
+			String expertName = getExpertName(taxonName);
+			String webShowName = getWebShowName(taxonName);
+			
+			// idInSource only
+			String idInSource = getIdInSourceOnly(taxonName);
+			
+			// build the cacheCitation
+			if (expertName != null) {
+				result += expertName + ". ";
+			} else {
+//				logger.error("ExpertName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			}
+			if (webShowName != null) {
+				result += webShowName + ". ";
+			} else {
+//				logger.error("WebShowName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			}
+			
+			if (getOriginalDB(taxonName).equals("FaEu")) {
+				result += "Accessed through: Fauna Europaea at http://faunaeur.org/full_results.php?id=";
+			} else if (getOriginalDB(taxonName).equals("EM")) {
+				result += "Accessed through: Euro+Med PlantBase at http://ww2.bgbm.org/euroPlusMed/PTaxonDetail.asp?UUID=";
+			}
+			
+			if (idInSource != null) {
+				result += idInSource;
+			} else {
+//				logger.error("IdInSource could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 	
@@ -917,7 +1071,6 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>OriginalDB</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getOriginalDB(TaxonNameBase taxonName) {
 		String result = "";
 		try {
@@ -988,8 +1141,18 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getLastAction(TaxonNameBase taxonName) {
-		// TODO
-		return null;
+		String result = null;
+		try {
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(lastActionExtensionType)) {
+				result = extension.getValue();
+			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	/**
@@ -998,35 +1161,20 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>LastActionDate</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static DateTime getLastActionDate(TaxonNameBase taxonNameBase) {
+	@SuppressWarnings({ "unused" })
+	private static DateTime getLastActionDate(TaxonNameBase taxonName) {
 		DateTime result = null;
-		
 		try {
-		if (taxonNameBase != null) {
-			VersionableEntity taxonBase = null;
-			Set taxa = taxonNameBase.getTaxa();
-			if (taxa.size() == 1) {
-				taxonBase  = (VersionableEntity) taxa.iterator().next();
-			} else if (taxa.size() > 1) {
-				logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-			}
-			Set synonyms = taxonNameBase.getSynonyms();
-			if (synonyms.size() == 1) {
-				taxonBase  = (VersionableEntity) synonyms.iterator().next();
-			} else if (synonyms.size() > 1) {
-				logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonNameBase.getUuid() + " (" + taxonNameBase.getTitleCache() + ")");
-			}
-			
-			if (taxonBase != null) {
-				DateTime updated = taxonBase.getUpdated();
-				if (updated != null) {
-	//				logger.error("Taxon Updated: " + updated);
-					result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(lastActionDateExtensionType)) {
+				String dateTime = extension.getValue();
+				if (dateTime != null) {
+					DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S");
+					result = formatter.parseDateTime(dateTime);
 				}
 			}
 		}
-		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1039,10 +1187,19 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>ExpertName</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getExpertName(TaxonNameBase taxonName) {
-		// TODO
-		return null;
+		String result = null;
+		try {
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(expertNameExtensionType)) {
+				result = extension.getValue();
+			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	/**
@@ -1051,14 +1208,46 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 	 * @return The <code>ExpertFk</code> attribute.
 	 * @see MethodMapper
 	 */
+	private static Integer getExpertFk(ReferenceBase reference, PesiExportState state) {
+		Integer result = state.getDbId(reference);
+		return result;
+	}
+	
+	/**
+	 * Returns the <code>SpeciesExpertName</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>SpeciesExpertName</code> attribute.
+	 * @see MethodMapper
+	 */
 	@SuppressWarnings("unused")
-	private static String getExpertFk(TaxonNameBase taxonName) {
-		// TODO
-		return null;
+	private static String getSpeciesExpertName(TaxonNameBase taxonName) {
+		String result = null;
+		try {
+		Set<Extension> extensions = taxonName.getExtensions();
+		for (Extension extension : extensions) {
+			if (extension.getType().equals(speciesExpertNameExtensionType)) {
+				result = extension.getValue();
+			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the <code>SpeciesExpertFk</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>SpeciesExpertFk</code> attribute.
+	 * @see MethodMapper
+	 */
+	private static Integer getSpeciesExpertFk(ReferenceBase reference, PesiExportState state) {
+		Integer result = state.getDbId(reference);
+		return result;
 	}
 
 	/**
-	 * Returns the SourceFk.
+	 * 
 	 * @param taxonName
 	 * @param state
 	 * @return
@@ -1068,6 +1257,48 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 		Integer result = null;
 		
 		try {
+		TaxonBase taxonBase = getSourceTaxonBase(taxonName);
+
+		if (taxonBase != null) {
+			result = state.getDbId(taxonBase.getSec());
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * Checks whether a Reference of a TaxonName's TaxonBase is an Auct Reference.
+	 * @param taxonName
+	 * @param state
+	 * @return
+	 */
+	private static boolean isAuctReference(TaxonNameBase taxonName, PesiExportState state) {
+		boolean result = false;
+		
+		try {
+		TaxonBase taxonBase = getSourceTaxonBase(taxonName);
+
+		if (taxonBase != null) {
+			if (auctString.equals(taxonBase.getTitleCache())) {
+				result = true;
+			}
+		} else {
+			logger.error("A TaxonBase could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * Determines the TaxonBase of a TaxonName.
+	 * @param taxonName
+	 * @return
+	 */
+	private static TaxonBase getSourceTaxonBase(TaxonNameBase taxonName) {
 		TaxonBase taxonBase = null;
 		Set taxa = taxonName.getTaxa();
 		if (taxa.size() == 1) {
@@ -1082,24 +1313,7 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 		} else if (synonyms.size() > 1) {
 			logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 		}
-
-		if (taxonBase != null) {
-			result = state.getDbId(taxonBase.getSec());
-		}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	/**
-	 * Return the TaxonId.
-	 * @param taxonName
-	 * @return
-	 */
-	@SuppressWarnings("unused")
-	private static Integer getTaxonId(TaxonNameBase taxonName) {
-		return taxonId++;
+		return taxonBase;
 	}
 	
 	/**
@@ -1110,10 +1324,7 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		ExtensionType extensionType = null;
 		
-		mapping.addMapper(MethodMapper.NewInstance("TaxonId", this));
-		mapping.addMapper(MethodMapper.NewInstance("KingdomFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("RankCache", this));
+		mapping.addMapper(IdMapper.NewInstance("TaxonId"));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFK", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("GenusOrUninomial", this));
 		mapping.addMapper(MethodMapper.NewInstance("InfraGenericEpithet", this));
@@ -1134,17 +1345,17 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 		}
 
 		// FuzzyName
-		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidFuzzyName);
-		if (extensionType != null) {
-			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "FuzzyName"));
-		} else {
-			mapping.addMapper(MethodMapper.NewInstance("FuzzyName", this));
-		}
+//		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidFuzzyName);
+//		if (extensionType != null) {
+//			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "FuzzyName"));
+//		} else {
+//			mapping.addMapper(MethodMapper.NewInstance("FuzzyName", this));
+//		}
 		
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this.getClass(), "getTaxonStatusFk", standardMethodParameter, PesiExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this.getClass(), "getTaxonStatusCache", standardMethodParameter, PesiExportState.class));
 //		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this.getClass(), "getTypeNameFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
 
@@ -1170,13 +1381,16 @@ public class PesiInferredSynonymExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("FossilStatusFk", this)); // PesiTransformer.FossilStatusCache2FossilStatusFk?
 
 		mapping.addMapper(MethodMapper.NewInstance("IdInSource", this));
-		mapping.addMapper(MethodMapper.NewInstance("GUID", this)); // TODO
-		mapping.addMapper(MethodMapper.NewInstance("DerivedFromGuid", this)); // TODO
+		mapping.addMapper(MethodMapper.NewInstance("GUID", this));
+		mapping.addMapper(MethodMapper.NewInstance("DerivedFromGuid", this));
+		mapping.addMapper(MethodMapper.NewInstance("CacheCitation", this));
 		mapping.addMapper(MethodMapper.NewInstance("OriginalDB", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastActionDate", this));
-		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this)); // TODO
-		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this)); // TODO
+		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this));
+//		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this.getClass(), "getExpertFk", standardMethodParameter, PesiExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("SpeciesExpertName", this));
+//		mapping.addMapper(MethodMapper.NewInstance("SpeciesExpertFk", this.getClass(), "getSpeciesExpertFk", standardMethodParameter, PesiExportState.class));
 
 		return mapping;
 	}

@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 12.02.2010
  *

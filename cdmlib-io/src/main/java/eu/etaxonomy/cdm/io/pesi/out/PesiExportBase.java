@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbExportBase;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 12.02.2010
  *

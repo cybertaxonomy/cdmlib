@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 12.02.2010
  *
@@ -46,7 +45,7 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 				PesiAdditionalTaxonSourceExport.class,
 				PesiOccurrenceExport.class,
 				PesiOccurrenceSourceExport.class,
-//				PesiImageExport.class,
+				PesiImageExport.class,
 //				PesiInferredSynonymExport.class
 		};
 

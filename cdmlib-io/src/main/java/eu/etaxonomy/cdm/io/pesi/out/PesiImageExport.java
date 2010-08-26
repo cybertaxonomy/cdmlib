@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 18.08.2010
  *

@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
  * @date 02.03.2010
  *
