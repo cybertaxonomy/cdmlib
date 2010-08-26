@@ -314,7 +314,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		return this.vocabulary;
 	}
 
-	//for bedirectional use only
+	//for bedirectional use only, use vocabulary.addTerm instead
 	/**
 	 * @param newVocabulary
 	 */
