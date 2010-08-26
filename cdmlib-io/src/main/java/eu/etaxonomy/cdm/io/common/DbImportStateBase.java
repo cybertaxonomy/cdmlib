@@ -55,6 +55,15 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	}
 
 	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IPartitionedState#getRelatedObject(java.lang.Object, java.lang.String)
+	 */
+	public<T extends CdmBase> T getRelatedObject(Object namespace, String id, Class<T> clazz) {
+		CdmBase cdmBase = relatedObjectsHelper.getRelatedObject(namespace, id);
+		T result = CdmBase.deproxy(cdmBase, clazz);
+		return result;
+	}
+	
+	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IPartitionedState#setRelatedObjects(java.util.Map)
 	 */
 	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects) {
