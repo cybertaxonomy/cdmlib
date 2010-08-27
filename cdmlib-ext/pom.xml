@@ -25,7 +25,11 @@
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-services</artifactId>
   	</dependency>
- 
+    <dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient</artifactId>
+	    <version>4.0.1</version>
+	</dependency>
 
   </dependencies>
 </project>

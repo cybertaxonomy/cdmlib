@@ -7,7 +7,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.remote.controller;
+package eu.etaxonomy.cdm.remote.controller.ext;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.remote.controller.BaseController;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
