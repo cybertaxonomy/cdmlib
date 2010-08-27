@@ -46,7 +46,6 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 				PesiOccurrenceExport.class,
 				PesiOccurrenceSourceExport.class,
 				PesiImageExport.class,
-//				PesiInferredSynonymExport.class
 		};
 
 	}

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,8 +50,10 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -71,6 +74,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "Taxon";
 	private static final String pluralString = "Taxa";
+	private static final String parentPluralString = "Taxa";
 	private PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt;
 	private PreparedStatement sqlStmt;
 	private NomenclaturalCode nomenclaturalCode;
@@ -167,6 +171,10 @@ public class PesiTaxonExport extends PesiExportBase {
 			// Initialize the db mapper
 			mapping.initialize(state);
 
+			// Determine the count of elements in datawarehouse database table Taxon
+			Integer currentTaxonId = determineTaxonCount(state);
+			currentTaxonId++;
+			
 			// Find extensionTypes
 			lastActionExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionUuid);
 			lastActionDateExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionDateUuid);
@@ -430,6 +438,98 @@ public class PesiTaxonExport extends PesiExportBase {
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
 			
+			
+			// Create inferred synonyms for accepted taxa
+			logger.error("PHASE 4: Creating Inferred Synonyms...");
+			count = 0;
+			pastCount = 0;
+			int pageSize = limit;
+			int pageNumber = 1;
+			String inferredSynonymPluralString = "Inferred Synonyms";
+			
+			// Start transaction
+			TaxonomicTree taxonTree = null;
+			Taxon acceptedTaxon = null;
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+			List<TaxonBase> taxonList = null;
+			List<Synonym> inferredSynonyms = null;
+			while ((taxonList  = getTaxonService().listTaxaByName(Taxon.class, "*", "*", "*", "*", null, pageSize, pageNumber)).size() > 0) {
+
+				logger.error("Fetched " + taxonList.size() + " " + parentPluralString + ". Exporting...");
+				for (TaxonBase taxonBase : taxonList) {
+
+					if (taxonBase.isInstanceOf(Taxon.class)) { // this should always be the case since we should have fetched accepted taxon only, but you never know...
+						acceptedTaxon = CdmBase.deproxy(taxonBase, Taxon.class);
+						TaxonNameBase taxonName = acceptedTaxon.getName();
+						
+						if (taxonName.isInstanceOf(ZoologicalName.class)) {
+							nomenclaturalCode  = PesiTransformer.getNomenclaturalCode(taxonName);
+							kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
+	
+							Set<TaxonNode> taxonNodes = acceptedTaxon.getTaxonNodes();
+							if (taxonNodes.size() > 0) {
+								// Determine the taxonomicTree of the current TaxonNode
+								TaxonNode singleNode = taxonNodes.iterator().next();
+								if (singleNode != null) {
+									taxonTree = singleNode.getTaxonomicTree();
+								}
+							} else {
+								// TaxonomicTree could not be determined directly from this TaxonNode
+								// The stored taxonomicTree from another TaxonNode is used. It's a simple, but not a failsafe fallback solution.
+								logger.error("TaxonomicTree could not be determined directly from this TaxonNode. " +
+										"This taxonomicTree stored from another TaxonNode is used: " + taxonTree.getTitleCache());
+							}
+							
+							if (taxonTree != null) {
+								inferredSynonyms  = getTaxonService().createAllInferredSynonyms(taxonTree, acceptedTaxon);
+	
+//								inferredSynonyms = getTaxonService().createInferredSynonyms(taxonTree, acceptedTaxon, SynonymRelationshipType.INFERRED_GENUS_OF());
+								if (inferredSynonyms != null) {
+									for (Synonym synonym : inferredSynonyms) {
+										TaxonNameBase synonymName = synonym.getName();
+										if (synonymName != null) {
+											synonymName.setId(currentTaxonId++);
+											
+											doCount(count++, modCount, inferredSynonymPluralString);
+											success &= mapping.invoke(synonymName);
+										} else {
+											logger.error("TaxonName of this Synonym is NULL: " + synonym.getUuid() + " (" + synonym.getTitleCache() + ")");
+										}
+									}
+								}
+							} else {
+								logger.error("TaxonomicTree is NULL. Inferred Synonyms could not be created for this Taxon: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() + ")");
+							}
+						} else {
+//							logger.error("TaxonName is not a ZoologicalName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+						}
+					} else {
+						logger.error("This TaxonBase is not a Taxon even though it should be: " + taxonBase.getUuid() + " (" + taxonBase.getTitleCache() + ")");
+					}
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + inferredSynonymPluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
+				
+				// Increment pageNumber
+				pageNumber++;
+			}
+			if (taxonList.size() == 0) {
+				logger.error("No " + parentPluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+
+			
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
 			return success;
@@ -438,6 +538,29 @@ public class PesiTaxonExport extends PesiExportBase {
 			logger.error(e.getMessage());
 			return false;
 		}
+	}
+
+	/**
+	 * Determines the number of entries in the datawarehouse database table Taxon.
+	 * @return
+	 */
+	private Integer determineTaxonCount(PesiExportState state) {
+		Integer result = null;
+		PesiExportConfigurator pesiConfig = (PesiExportConfigurator) state.getConfig();
+		
+		String sql;
+		Source destination =  pesiConfig.getDestination();
+		sql = "SELECT COUNT(*) FROM Taxon";
+		destination.setQuery(sql);
+		ResultSet resultSet = destination.getResultSet();
+		try {
+			resultSet.next();
+			result = resultSet.getInt(1);
+		} catch (SQLException e) {
+			logger.error("TaxonCount could not be determined: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	/**
@@ -970,7 +1093,11 @@ public class PesiTaxonExport extends PesiExportBase {
 				}
 				result += object;
 			} else {
-				logger.error("Instance unknown: " + object.getClass());
+				if (object == null) {
+					logger.error("One part of TaggedName is NULL for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+				} else {
+					logger.error("Instance of this part of TaggedName is unknown. Object: " + object.getClass().getSimpleName() + ", TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
 			}
 		}
 		if (openTag) {
@@ -1520,46 +1647,49 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static String getCacheCitation(TaxonNameBase taxonName) {
 		String result = "";
 		try {
-		if (getOriginalDB(taxonName).equals("ERMS")) {
-			// TODO: 19.08.2010: An import of CacheCitation does not exist in the ERMS import yet or it will be imported in a different way...
-			// 		 So the following code is some kind of harmless assumption.
-			Set<Extension> extensions = taxonName.getExtensions();
-			for (Extension extension : extensions) {
-				if (extension.getType().equals(cacheCitationExtensionType)) {
-					result = extension.getValue();
+			String originalDb = getOriginalDB(taxonName);
+			if (originalDb == null) {
+//				logger.error("OriginalDB is NULL for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+			} else if (originalDb.equals("ERMS")) {
+				// TODO: 19.08.2010: An import of CacheCitation does not exist in the ERMS import yet or it will be imported in a different way...
+				// 		 So the following code is some kind of harmless assumption.
+				Set<Extension> extensions = taxonName.getExtensions();
+				for (Extension extension : extensions) {
+					if (extension.getType().equals(cacheCitationExtensionType)) {
+						result = extension.getValue();
+					}
+				}
+			} else {
+				String expertName = getExpertName(taxonName);
+				String webShowName = getWebShowName(taxonName);
+				
+				// idInSource only
+				String idInSource = getIdInSourceOnly(taxonName);
+				
+				// build the cacheCitation
+				if (expertName != null) {
+					result += expertName + ". ";
+				} else {
+	//				logger.error("ExpertName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
+				if (webShowName != null) {
+					result += webShowName + ". ";
+				} else {
+	//				logger.error("WebShowName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+				}
+				
+				if (getOriginalDB(taxonName).equals("FaEu")) {
+					result += "Accessed through: Fauna Europaea at http://faunaeur.org/full_results.php?id=";
+				} else if (getOriginalDB(taxonName).equals("EM")) {
+					result += "Accessed through: Euro+Med PlantBase at http://ww2.bgbm.org/euroPlusMed/PTaxonDetail.asp?UUID=";
+				}
+				
+				if (idInSource != null) {
+					result += idInSource;
+				} else {
+	//				logger.error("IdInSource could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 				}
 			}
-		} else {
-			String expertName = getExpertName(taxonName);
-			String webShowName = getWebShowName(taxonName);
-			
-			// idInSource only
-			String idInSource = getIdInSourceOnly(taxonName);
-			
-			// build the cacheCitation
-			if (expertName != null) {
-				result += expertName + ". ";
-			} else {
-//				logger.error("ExpertName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-			}
-			if (webShowName != null) {
-				result += webShowName + ". ";
-			} else {
-//				logger.error("WebShowName could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-			}
-			
-			if (getOriginalDB(taxonName).equals("FaEu")) {
-				result += "Accessed through: Fauna Europaea at http://faunaeur.org/full_results.php?id=";
-			} else if (getOriginalDB(taxonName).equals("EM")) {
-				result += "Accessed through: Euro+Med PlantBase at http://ww2.bgbm.org/euroPlusMed/PTaxonDetail.asp?UUID=";
-			}
-			
-			if (idInSource != null) {
-				result += idInSource;
-			} else {
-//				logger.error("IdInSource could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-			}
-		}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
