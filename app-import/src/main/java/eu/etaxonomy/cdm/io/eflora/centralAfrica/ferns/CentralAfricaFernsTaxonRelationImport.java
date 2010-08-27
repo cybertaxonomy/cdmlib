@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportMethodMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMethodMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation.CentralAfricaFernsTaxonImportValidator;
@@ -87,7 +87,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			mapping.addMapper(DbImportMethodMapperBase.NewInstance(this, "createObject", ResultSet.class, CentralAfricaFernsImportState.class));
+			mapping.addMapper(DbImportMethodMapper.NewInstance(this, "createObject", ResultSet.class, CentralAfricaFernsImportState.class));
 //					NewInstance(this, "Taxon number", TAXON_NAMESPACE)); //id + tu_status
 
 //funktioniert nicht wegen doppeltem Abfragen von Attributen

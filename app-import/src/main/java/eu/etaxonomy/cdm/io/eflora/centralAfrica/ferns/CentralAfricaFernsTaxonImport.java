@@ -98,10 +98,10 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 			
 			
 			//ignore
-			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation", "citation cache not needed in PESI"));
+//			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation", "citation cache not needed in PESI"));
 			
 			//not yet implemented or ignore
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_hidden", "Needs DbImportMarkerMapper implemented"));
+//			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_hidden", "Needs DbImportMarkerMapper implemented"));
 			
 //			//second path / implemented in ErmsTaxonRelationImport
 //			DbImportMapping secondPathMapping = new DbImportMapping();
