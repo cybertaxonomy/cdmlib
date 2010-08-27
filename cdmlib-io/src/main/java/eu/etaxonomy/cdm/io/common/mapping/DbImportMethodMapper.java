@@ -38,8 +38,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial
-public class DbImportMethodMapperBase<CDMBASE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CDMBASE, STATE>  {
-	private static final Logger logger = Logger.getLogger(DbImportMethodMapperBase.class);
+public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CDMBASE, STATE>  {
+	private static final Logger logger = Logger.getLogger(DbImportMethodMapper.class);
 	
 	//******************************* ATTRIBUTES ***************************************/
 	
@@ -60,13 +60,13 @@ public class DbImportMethodMapperBase<CDMBASE extends VersionableEntity, STATE e
 //		return result;
 //	}
 
-	public static <T extends DbImportStateBase> DbImportMethodMapperBase NewInstance(Class<?> clazz, String methodName, Class parameterTypes){
-		DbImportMethodMapperBase result = new DbImportMethodMapperBase(clazz, null, methodName, parameterTypes);
+	public static <T extends DbImportStateBase> DbImportMethodMapper NewInstance(Class<?> clazz, String methodName, Class parameterTypes){
+		DbImportMethodMapper result = new DbImportMethodMapper(clazz, null, methodName, parameterTypes);
 		return result;
 	}
 	
-	public static <T extends DbImportStateBase> DbImportMethodMapperBase NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
-		DbImportMethodMapperBase result = new DbImportMethodMapperBase(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
+	public static <T extends DbImportStateBase> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
+		DbImportMethodMapper result = new DbImportMethodMapper(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
 		return result;
 	}
 	
@@ -77,7 +77,7 @@ public class DbImportMethodMapperBase<CDMBASE extends VersionableEntity, STATE e
 	 * @param methodName
 	 * @param parameterTypes
 	 */
-	protected DbImportMethodMapperBase(Class<?> clazz, Object objectToInoke, String methodName, Class<?>... parameterTypes) {
+	protected DbImportMethodMapper(Class<?> clazz, Object objectToInoke, String methodName, Class<?>... parameterTypes) {
 		super();
 		this.objectToInvoke = objectToInoke;
 		try {
