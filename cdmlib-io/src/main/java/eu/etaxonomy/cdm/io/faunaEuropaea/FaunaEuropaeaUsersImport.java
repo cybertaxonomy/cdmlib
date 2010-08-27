@@ -93,7 +93,7 @@ public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {
 			" SELECT count(*) FROM Users";
 
 		String selectColumnsUsers = 
-			" SELECT * FROM Users";
+			" SELECT usr_id, usr_title, usr_firstname, usr_lastname, usr_createdat FROM Users";
 
 		int count;
 		if(logger.isInfoEnabled()) { logger.info("Start making References (Users)..."); }
