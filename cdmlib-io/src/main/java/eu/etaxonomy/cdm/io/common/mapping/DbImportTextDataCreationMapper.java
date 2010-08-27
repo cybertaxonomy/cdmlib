@@ -36,7 +36,7 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 
 	
 	/**
-	 * Creates a Distribution and adds it to the description of a taxon. 
+	 * Creates a TextData and adds it to the description of a taxon. 
 	 * @param dbIdAttribute
 	 * @param objectToCreateNamespace
 	 * @param dbTaxonFkAttribute
