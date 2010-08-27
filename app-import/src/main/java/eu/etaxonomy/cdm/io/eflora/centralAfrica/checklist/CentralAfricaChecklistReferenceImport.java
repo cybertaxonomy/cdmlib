@@ -15,24 +15,37 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMarkerMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.validation.CentralAfricaChecklistTaxonImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
@@ -42,24 +55,20 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class CentralAfricaChecklistSynonymImport  extends CentralAfricaChecklistImportBase<TaxonBase> implements IMappingImport<TaxonBase, CentralAfricaChecklistImportState>{
-	private static final Logger logger = Logger.getLogger(CentralAfricaChecklistSynonymImport.class);
+public class CentralAfricaChecklistReferenceImport  extends CentralAfricaChecklistImportBase<ReferenceBase> implements IMappingImport<ReferenceBase, CentralAfricaChecklistImportState>{
+	private static final Logger logger = Logger.getLogger(CentralAfricaChecklistReferenceImport.class);
 	
-	private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-	
+	private Map<UUID, Taxon> higherTaxonMap;
 	
 	private DbImportMapping mapping;
 	
-	//second path is not used anymore, there is now an ErmsTaxonRelationImport class instead
-	private boolean isSecondPath = false;
-	
 	private int modCount = 10000;
-	private static final String pluralString = "synonyms";
-	private static final String dbTableName = "synonyms";
+	private static final String pluralString = "references";
+	private static final String dbTableName = "checklist";
 	private static final Class cdmTargetClass = TaxonBase.class;
-	private static final String strOrderBy = "";
+	private static final String strOrderBy = " ORDER BY source ";
 
-	public CentralAfricaChecklistSynonymImport(){
+	public CentralAfricaChecklistReferenceImport(){
 		super(pluralString, dbTableName, cdmTargetClass);
 	}
 	
@@ -70,7 +79,8 @@ public class CentralAfricaChecklistSynonymImport  extends CentralAfricaChecklist
 	 */
 	@Override
 	protected String getIdQuery() {
-		String strQuery = " SELECT syn_id FROM " + dbTableName + strOrderBy;
+		String strQuery = " SELECT DISTINCT source FROM " + dbTableName +
+						strOrderBy;
 		return strQuery;
 	}
 
@@ -81,11 +91,9 @@ public class CentralAfricaChecklistSynonymImport  extends CentralAfricaChecklist
 	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
-			
-			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "syn_id", SYNONYM_NAMESPACE));
-			//TODO Synonym mapper gibts es auch
-			
+				mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "source", REFERENCE_NAMESPACE)); 
 		}
+		
 		return mapping;
 	}
 
@@ -94,39 +102,18 @@ public class CentralAfricaChecklistSynonymImport  extends CentralAfricaChecklist
 	 */
 	@Override
 	protected String getRecordQuery(CentralAfricaChecklistImportConfigurator config) {
-		String strSelect = " SELECT * ";
-		String strFrom = " FROM " + dbTableName;
-		String strWhere = " WHERE ( syn_id IN (" + ID_LIST_TOKEN + ") )";
+		String strSelect = " SELECT DISTINCT source ";
+		String strFrom = " FROM checklist";
+		String strWhere = " WHERE ( source IN (" + ID_LIST_TOKEN + ") )";
 		String strRecordQuery = strSelect + strFrom + strWhere + strOrderBy;
 		return strRecordQuery;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
 	 */
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
-		String nameSpace;
-		Class cdmClass;
-		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
-		
-		try{
-				Set<String> taxonIdSet = new HashSet<String>();
-				while (rs.next()){
-					handleForeignKey(rs, taxonIdSet, "acc_id");
-				}
-
-			//taxon map
-			nameSpace = TAXON_NAMESPACE;
-			cdmClass = Taxon.class;
-			idSet = taxonIdSet;
-			Map<String, Taxon> taxonMap = (Map<String, Taxon>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, taxonMap);
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
 		return result;
 	}
 	
@@ -134,31 +121,11 @@ public class CentralAfricaChecklistSynonymImport  extends CentralAfricaChecklist
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet)
 	 */
-	public TaxonBase createObject(ResultSet rs, CentralAfricaChecklistImportState state) throws SQLException {
-		BotanicalName speciesName = BotanicalName.NewInstance(Rank.SPECIES());
-		
-		
-		Integer accId = rs.getInt("acc_id");
-		Taxon taxon = CdmBase.deproxy(state.getRelatedObject(TAXON_NAMESPACE, String.valueOf(accId)), Taxon.class);
-		
-		ReferenceBase sec = taxon.getSec();
-		
-		String genusString = rs.getString("synonym genus");
-		String speciesString = rs.getString("synonym species");
-		String authorityString = rs.getString("synonym authority");
-		
-		Synonym synonym = Synonym.NewInstance(speciesName, sec);
-
-		speciesName.setGenusOrUninomial(genusString);
-		speciesName.setSpecificEpithet(speciesString);
-		parser.handleAuthors(speciesName, CdmUtils.concat(" ", new String[] {"", genusString, speciesString, authorityString}), authorityString);
-		
-		if (taxon != null){
-			taxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
-		}else{
-			logger.warn("Taxon (" + accId + ") not available for Synonym " + synonym.getTitleCache());
-		}
-		return synonym;
+	public ReferenceBase createObject(ResultSet rs, CentralAfricaChecklistImportState state) throws SQLException {
+		ReferenceBase ref = ReferenceFactory.newGeneric();
+		String sourceString = rs.getString("source");
+		ref.setTitle(sourceString);
+		return ref;
 	}
 
 

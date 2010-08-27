@@ -53,6 +53,7 @@ public abstract class CentralAfricaChecklistImportBase<CDM_BASE extends CdmBase>
 	
 	protected static final String SYNONYM_NAMESPACE = "synonyms";
 	protected static final String TAXON_NAMESPACE = "checklist";
+	protected static final String REFERENCE_NAMESPACE = "checklist_source";
 	
 
 	private String pluralString;
@@ -228,11 +229,6 @@ public abstract class CentralAfricaChecklistImportBase<CDM_BASE extends CdmBase>
 		//not relevant here, for users see ERMS import
 		return null;
 	}
-
-	private String getPassword(){
-		String result = UUID.randomUUID().toString();
-		return result;
-	}
 	
 	private DateTime getDateTime(Object timeString){
 		if (timeString == null){
@@ -249,40 +245,6 @@ public abstract class CentralAfricaChecklistImportBase<CDM_BASE extends CdmBase>
 		return dateTime;
 	}
 	
-	protected boolean resultSetHasColumn(ResultSet rs, String columnName){
-		try {
-			ResultSetMetaData metaData = rs.getMetaData();
-			for (int i = 0; i < metaData.getColumnCount(); i++){
-				if (metaData.getColumnName(i + 1).equalsIgnoreCase(columnName)){
-					return true;
-				}
-			}
-			return false;
-		} catch (SQLException e) {
-            logger.warn("Exception in resultSetHasColumn");
-            return false;
-		}
-	}
-	
-	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
-		String strQuery = "SELECT  Count(t.id) as n " +
-				" FROM sysobjects AS t " +
-				" INNER JOIN syscolumns AS c ON t.id = c.id " +
-				" WHERE (t.xtype = 'U') AND " + 
-				" (t.name = '" + tableName + "') AND " + 
-				" (c.name = '" + columnName + "')";
-		ResultSet rs = source.getResultSet(strQuery) ;		
-		int n;
-		try {
-			rs.next();
-			n = rs.getInt("n");
-			return n>0;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
 	
 	/**
 	 * Returns a map that holds all values of a ResultSet. This is needed if a value needs to

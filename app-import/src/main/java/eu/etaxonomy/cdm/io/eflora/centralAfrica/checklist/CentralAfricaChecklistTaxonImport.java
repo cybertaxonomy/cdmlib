@@ -22,11 +22,11 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
-import eu.etaxonomy.cdm.app.eflora.CentralAfricaChecklistActivator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
+import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMarkerMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.validation.CentralAfricaChecklistTaxonImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -65,9 +64,6 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 	private Integer TREE_ID = null;
 	
 	private DbImportMapping mapping;
-	
-	//second path is not used anymore, there is now an ErmsTaxonRelationImport class instead
-	private boolean isSecondPath = false;
 	
 	private int modCount = 10000;
 	private static final String pluralString = "taxa";
@@ -100,26 +96,15 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 			mapping = new DbImportMapping();
 			
  			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "pk", TAXON_NAMESPACE)); //id + tu_status
-			
-			//ignore
-			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation", "citation cache not needed in PESI"));
-			
-			//not yet implemented or ignore
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source", "Still unclear"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source_id", "Still unclear"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("accepted kew", "Needs ResultSetWrapper implementation"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("accepted geneva", "Needs ResultSetWrapper implementation"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("accepted itis", "Needs ResultSetWrapper implementation"));
-			
-//			UUID uuidKew = CentralAfricaChecklistTransformer.uuidAcceptedKew;
-//			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted kew", uuidKew, "Accepted Kew", "Accepted Kew", "Kew"));
-//			
-//			UUID uuidGeneva = CentralAfricaChecklistTransformer.uuidAcceptedGeneva;
-//			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted geneva", uuidGeneva, "Accepted Geneva", "Accepted Geneva", "Geneva"));
-//
-//			UUID uuidItis = CentralAfricaChecklistTransformer.uuidAcceptedItis;
-//			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted itis", uuidItis, "Accepted ITIS", "Accepted ITIS", "ITIS"));
 		
+			UUID uuidKew = CentralAfricaChecklistTransformer.uuidAcceptedKew;
+			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted kew", uuidKew, "Accepted Kew", "Accepted Kew", "Kew"));
+			
+			UUID uuidGeneva = CentralAfricaChecklistTransformer.uuidAcceptedGeneva;
+			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted geneva", uuidGeneva, "Accepted Geneva", "Accepted Geneva", "Geneva"));
+
+			UUID uuidItis = CentralAfricaChecklistTransformer.uuidAcceptedItis;
+			mapping.addMapper(DbImportMarkerMapper.NewInstance("accepted itis", uuidItis, "Accepted ITIS", "Accepted ITIS", "ITIS"));
 		}
 		
 		return mapping;
@@ -136,22 +121,14 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		String strRecordQuery = strSelect + strFrom + strWhere + strOrderBy;
 		return strRecordQuery;
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#doInvoke(eu.etaxonomy.cdm.io.erms.ErmsImportState)
-	 */
 	@Override
-	protected boolean doInvoke(CentralAfricaChecklistImportState state) {
+	public boolean doPartition(ResultSetPartitioner partitioner, CentralAfricaChecklistImportState state) {
 		higherTaxonMap = new HashMap<UUID, Taxon>();
-		//first path
-		boolean success = super.doInvoke(state);
+		boolean success = super.doPartition(partitioner, state);
 		higherTaxonMap = new HashMap<UUID, Taxon>();
 		return success;
-
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
@@ -160,29 +137,22 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		String nameSpace;
 		Class cdmClass;
 		Set<String> idSet;
+		Set<String> referenceIdSet = new HashSet<String>();
+		
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
 		try{
-				Set<String> treeIdSet = new HashSet<String>();
 				while (rs.next()){
-//					handleForeignKey(rs, treeIdSet, "acc_id");
-	//				handleForeignKey(rs, referenceIdSet, "PTRefFk");
+					handleForeignKey(rs, referenceIdSet, "source");
 				}
 
-			//tree map
-//			nameSpace = DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE;
-//			cdmClass = TaxonomicTree.class;
-//			idSet = treeIdSet;
-//			Map<String, TaxonomicTree> treeMap = (Map<String, TaxonomicTree>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-//			result.put(cdmClass, treeMap);
+			//reference map
+			nameSpace = REFERENCE_NAMESPACE;
+			cdmClass = ReferenceBase.class;
+			idSet = referenceIdSet;
+			Map<String, ReferenceBase> referenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, referenceIdSet, nameSpace);
+			result.put(REFERENCE_NAMESPACE, referenceMap);
 
-			//TODO uuid from state
-			UUID treeUuid = CentralAfricaChecklistActivator.classificationUuid;
-			TaxonomicTree tree = getTaxonTreeService().find(treeUuid);
-			Map<String, TaxonomicTree> treeMap = new HashMap<String, TaxonomicTree>();
-			treeMap.put("1", tree);
-			result.put(DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE, treeMap);
-			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -197,8 +167,7 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		BotanicalName speciesName = BotanicalName.NewInstance(Rank.SPECIES());
 		
 		ReferenceBase sec = state.getConfig().getSourceReference();
-		
-		
+		getReferenceService().saveOrUpdate(sec);
 		
 		String familyString = rs.getString("family");
 		String genusString = rs.getString("genus");
@@ -208,17 +177,24 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 			System.out.println(familyString + " " + genusString + " " + speciesString);
 		}
 		
-		Boolean acceptedKew = rs.getBoolean("accepted kew");
-		Boolean acceptedGeneva = rs.getBoolean("accepted geneva");
-		Boolean acceptedItis = rs.getBoolean("accepted itis");
-		
-		
-		String source = rs.getString("source");
-		
 		Taxon speciesTaxon = Taxon.NewInstance(speciesName, sec);;
 		speciesName.setGenusOrUninomial(genusString);
 		speciesName.setSpecificEpithet(speciesString);
 		parser.handleAuthors(speciesName, CdmUtils.concat(" ", new String[] {"", genusString, speciesString, authorityString}), authorityString);
+		
+		//family
+		Taxon familyTaxon = null;
+		if (StringUtils.isNotBlank(familyString)){
+			familyTaxon = getHigherTaxon(state, familyString, null);
+			if (familyTaxon == null){
+				BotanicalName familyName = BotanicalName.NewInstance(Rank.FAMILY());
+				familyName.setGenusOrUninomial(familyString);
+				familyTaxon = Taxon.NewInstance(familyName, sec);
+				saveHigherTaxon(state, familyTaxon, familyString, null);
+			}
+			getTaxonService().saveOrUpdate(familyTaxon);	
+		}
+		
 		
 		//genus
 		Taxon genusTaxon = getHigherTaxon(state, familyString, genusString);
@@ -227,27 +203,26 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 			genusName.setGenusOrUninomial(genusString);
 			genusTaxon = Taxon.NewInstance(genusName, sec);
 			saveHigherTaxon(state, genusTaxon, familyString, genusString);
+			if (familyTaxon != null){
+				makeTaxonomicallyIncluded(state, TREE_ID, genusTaxon, familyTaxon, null, null);
+			}
 		}
 		makeTaxonomicallyIncluded(state, TREE_ID, speciesTaxon, genusTaxon, null, null);
+		getTaxonService().saveOrUpdate(genusTaxon);
+
+		String sourceString = rs.getString("source");
+		String sourceId = rs.getString("source_id");
 		
-		//family
-		if (StringUtils.isNotBlank(familyString)){
-			Taxon familyTaxon = getHigherTaxon(state, familyString, null);
-			if (familyTaxon == null){
-				BotanicalName familyName = BotanicalName.NewInstance(Rank.FAMILY());
-				familyName.setGenusOrUninomial(familyString);
-				familyTaxon = Taxon.NewInstance(familyName, sec);
-				saveHigherTaxon(state, familyTaxon, familyString, null);
-			}
-			makeTaxonomicallyIncluded(state, TREE_ID, genusTaxon, familyTaxon, null, null);
-		}
+		ReferenceBase sourceRef = state.getRelatedObject(REFERENCE_NAMESPACE, sourceString, ReferenceBase.class);
+		speciesTaxon.addSource(sourceId, REFERENCE_NAMESPACE, sourceRef, null);
+		
+		//distribution
 		handleDistribution(rs, speciesTaxon);
 		
 		return speciesTaxon;
 	}
 	
 	private void handleDistribution(ResultSet rs, Taxon speciesTaxon) throws SQLException {
-		Feature feature = Feature.DISTRIBUTION();
 		TaxonDescription description = TaxonDescription.NewInstance(speciesTaxon);
 		
 		Boolean isCongo = rs.getBoolean("drc");
@@ -335,7 +310,7 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		String treeKey;
 		UUID treeUuid;
 		if (treeRefFk == null){
-			treeKey = "1";  // there is only one tree and it gets the key '1'
+			treeKey = "1";  // there is only one tree and it gets the map key '1'
 			treeUuid = state.getConfig().getTaxonomicTreeUuid();
 		}else{
 			treeKey =String.valueOf(treeRefFk);

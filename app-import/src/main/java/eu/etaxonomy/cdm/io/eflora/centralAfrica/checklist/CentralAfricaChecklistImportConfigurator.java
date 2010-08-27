@@ -53,7 +53,7 @@ public class CentralAfricaChecklistImportConfigurator extends ImportConfigurator
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				//ErmsGeneralImportValidator.class
-//				 CentralAfricaFernsReferenceImport.class ,
+				 CentralAfricaChecklistReferenceImport.class ,
 				 CentralAfricaChecklistTaxonImport.class,
 				 CentralAfricaChecklistSynonymImport.class
 		};	

@@ -88,6 +88,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/io/ProtologueImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistImportBase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistImportConfigurator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistImportState.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistReferenceImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistSynonymImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistTaxonImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistTransformer.java -text
