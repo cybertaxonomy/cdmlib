@@ -29,7 +29,7 @@ public class CdmImportSources {
 		String dbms = Source.ACCESS;
 		String strServer = null;
 		//String strDB = "fernsTest";
-		String strDB = "C:\\localCopy\\Data\\eflora\\africa\\NFAC_checklist.mdb";
+		String strDB = "C:\\localCopy\\Data\\eflora\\africa\\checklist_flore_afrique_centrale_corr.mdb";
 		int port = 1433;
 		String userName = "";
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
