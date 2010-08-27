@@ -41,6 +41,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -1301,7 +1302,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	public List<Synonym> createInferredSynonyms(Taxon taxon, TaxonomicTree tree, SynonymRelationshipType type){
 		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
-		
+		List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<Synonym>();
+
 		HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
 		UUID uuid;
 		
@@ -1342,7 +1344,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 												
 						for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
 							TaxonNameBase synName;
-							NonViralName inferredSynName;
+							ZoologicalName inferredSynName;
 							Synonym syn = synonymRelationOfGenus.getSynonym();
 							HibernateProxyHelper.deproxy(syn);
 							
@@ -1352,13 +1354,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							if (!synonymsGenus.contains(synGenusName)){
 								synonymsGenus.add(synGenusName);
 							}
-							inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+							inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
 							inferredSynName.setSpecificEpithet(epithetOfTaxon);
 							inferredSynName.setGenusOrUninomial(synGenusName);
 							inferredEpithet = Synonym.NewInstance(inferredSynName, null);
 							taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
 							inferredSynonyms.add(inferredEpithet);
 							inferredSynName.generateTitle();
+							zooHashMap.put(inferredSynName.getUuid(), inferredSynName); // I guess this needs to be added here?
 							taxonNames.add(inferredSynName.getNameCache());
 						}
 						
@@ -1366,11 +1369,18 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 						List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
 						ZoologicalName name;
 						if (!synNotInCDM.isEmpty()){
+							inferredSynonymsToBeRemoved.clear();
+							
 							for (Synonym syn :inferredSynonyms){
 								name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 								if (!synNotInCDM.contains(name.getNameCache())){
-									inferredSynonyms.remove(syn);
+									inferredSynonymsToBeRemoved.add(syn);
 								}
+							}
+							
+							// Remove identified Synonyms from inferredSynonyms
+							for (Synonym synonym : inferredSynonymsToBeRemoved) {
+								inferredSynonyms.remove(synonym);
 							}
 						}
 						}
@@ -1380,7 +1390,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 						
 						for (SynonymRelationship synonymRelationOfTaxon:synonymRelationshipsOfTaxon){
 							TaxonNameBase synName;
-							NonViralName inferredSynName;
+							ZoologicalName inferredSynName;
 							
 							Synonym syn = synonymRelationOfTaxon.getSynonym();
 							synName =syn.getName();
@@ -1393,13 +1403,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							if (!synonymsEpithet.contains(speciesEpithetName)){
 								synonymsEpithet.add(speciesEpithetName);
 							}
-							inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+							inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
 							inferredSynName.setSpecificEpithet(speciesEpithetName);
 							inferredSynName.setGenusOrUninomial(genusOfTaxon);
 							inferredGenus = Synonym.NewInstance(inferredSynName, null);
 							taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_EPITHET_OF());
 							inferredSynonyms.add(inferredGenus);
 							inferredSynName.generateTitle();
+							zooHashMap.put(inferredSynName.getUuid(), inferredSynName); // I guess this needs to be added here?
 							taxonNames.add(inferredSynName.getNameCache());
 						}
 						
@@ -1407,11 +1418,18 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
 							ZoologicalName name;
 							if (!synNotInCDM.isEmpty()){
+								inferredSynonymsToBeRemoved.clear();
+								
 								for (Synonym syn :inferredSynonyms){
 									name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 									if (!synNotInCDM.contains(name.getNameCache())){
-										inferredSynonyms.remove(syn);
+										inferredSynonymsToBeRemoved.add(syn);
 									}
+								}
+								
+								// Remove identified Synonyms from inferredSynonyms
+								for (Synonym synonym : inferredSynonymsToBeRemoved) {
+									inferredSynonyms.remove(synonym);
 								}
 							}
 						}
@@ -1461,6 +1479,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 								List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
 								ZoologicalName name;
 								if (!synNotInCDM.isEmpty()){
+									inferredSynonymsToBeRemoved.clear();
+									
 									for (Synonym syn :inferredSynonyms){
 										try{
 											name = (ZoologicalName) syn.getName();
@@ -1468,8 +1488,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 											name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 										}
 										if (!synNotInCDM.contains(name.getNameCache())){
-											inferredSynonyms.remove(syn);
+											inferredSynonymsToBeRemoved.add(syn);
 										}
+									}
+									
+									// Remove identified Synonyms from inferredSynonyms
+									for (Synonym synonym : inferredSynonymsToBeRemoved) {
+										inferredSynonyms.remove(synonym);
 									}
 								}
 							}
@@ -1748,12 +1773,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		//get all taxa, already in db
 		Query query = getSession().createQuery("from TaxonNameBase t where t.nameCache IN (:taxonList)");
 		query.setParameterList("taxonList", taxonNames);
-		List<ZoologicalName> taxaInDB = query.list();
+		List<TaxonNameBase> taxaInDB = query.list();
 		//compare the original list with the result of the query
-		for (NonViralName taxonName: taxaInDB){
-			String nameCache =taxonName.getNameCache();
-			if (taxonNames.contains(nameCache)){
-				taxonNames.remove(nameCache);
+		for (TaxonNameBase taxonName: taxaInDB){
+			if (taxonName.isInstanceOf(NonViralName.class)) {
+				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
+				String nameCache = nonViralName.getNameCache();
+				if (taxonNames.contains(nameCache)){
+					taxonNames.remove(nameCache);
+				}
 			}
 		}
 				
