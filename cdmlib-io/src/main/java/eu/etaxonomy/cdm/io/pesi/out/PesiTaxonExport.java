@@ -171,10 +171,6 @@ public class PesiTaxonExport extends PesiExportBase {
 			// Initialize the db mapper
 			mapping.initialize(state);
 
-			// Determine the count of elements in datawarehouse database table Taxon
-			Integer currentTaxonId = determineTaxonCount(state);
-			currentTaxonId++;
-			
 			// Find extensionTypes
 			lastActionExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionUuid);
 			lastActionDateExtensionType = (ExtensionType)getTermService().find(PesiTransformer.lastActionDateUuid);
@@ -441,6 +437,11 @@ public class PesiTaxonExport extends PesiExportBase {
 			
 			// Create inferred synonyms for accepted taxa
 			logger.error("PHASE 4: Creating Inferred Synonyms...");
+
+			// Determine the count of elements in datawarehouse database table Taxon
+			Integer currentTaxonId = determineTaxonCount(state);
+			currentTaxonId++;
+
 			count = 0;
 			pastCount = 0;
 			int pageSize = limit;
@@ -1550,6 +1551,9 @@ public class PesiTaxonExport extends PesiExportBase {
 			e.printStackTrace();
 		}
 
+		if (result == null) {
+			logger.error("IdInSource is NULL for this taxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+		}
 		return result;
 	}
 	
@@ -1596,9 +1600,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 		// Sources from TaxonName
 		Set<IdentifiableSource> nameSources = taxonName.getSources();
-		if (nameSources.size() == 1) {
-			sources = nameSources;
-		} else {
+		sources = nameSources;
+		if (nameSources.size() > 1) {
 			logger.warn("This TaxonName has more than one Source: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 		}
 
@@ -1606,10 +1609,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (sources == null) {
 			Set<Taxon> taxa = taxonName.getTaxa();
 			Set<Synonym> synonyms = taxonName.getSynonyms();
-			IdentifiableEntity singleEntity = null;
 			if (taxa.size() == 1) {
 				Taxon taxon = taxa.iterator().next();
-				
+
 				if (taxon != null) {
 					sources = taxon.getSources();
 				}
@@ -1627,6 +1629,9 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 		}
 		
+		if (sources == null) {
+			logger.error("This TaxonName has no Sources: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
+		}
 		return sources;
 	}
 	
