@@ -20,6 +20,11 @@ public class EfloraSources {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EfloraSources.class);
 
+	//Ericaceae
+	public static String ericacea_local(){
+		String sourceUrl = "file:C:/localCopy/Data/eflora/africa/ericaceae.xml";
+		return sourceUrl;
+	}
 	
 	//Sapindaceae
 	public static String fm_sapindaceae_local(){

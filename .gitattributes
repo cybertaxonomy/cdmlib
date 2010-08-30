@@ -17,6 +17,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmImportSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/ImportUtils.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/TestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/CentralAfricaChecklistActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/CentralAfricaEricaceaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/CentralAfricaFernsActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/EfloraSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/FloraMalesianaActivator.java -text
@@ -93,7 +94,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/Cent
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistTaxonImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/CentralAfricaChecklistTransformer.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/checklist/validation/CentralAfricaChecklistTaxonImportValidator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ericaceae/CentralAfricaEricaceaeImportBase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ericaceae/CentralAfricaEricaceaeImportConfigurator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ericaceae/CentralAfricaEricaceaeImportState.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ericaceae/CentralAfricaEricaceaeTaxonImport.java -text
@@ -107,6 +107,9 @@ app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ferns/CentralA
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ferns/CentralAfricaFernsTransformer.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ferns/validation/CentralAfricaFernsReferenceImportValidator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/centralAfrica/ferns/validation/CentralAfricaFernsTaxonImportValidator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaImportConfigurator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaImportState.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaTaxonImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/eflora/floraMalesiana/FloraMalesianaTransformer.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportBase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportConfigurator.java -text

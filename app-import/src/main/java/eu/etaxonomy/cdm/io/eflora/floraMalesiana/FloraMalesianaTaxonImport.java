@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */ 
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
+package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -20,8 +20,8 @@ import eu.etaxonomy.cdm.io.eflora.EfloraTaxonImport;
  *
  */
 @Component
-public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
-	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeTaxonImport.class);
+public class FloraMalesianaTaxonImport  extends EfloraTaxonImport  {
+	private static final Logger logger = Logger.getLogger(FloraMalesianaTaxonImport.class);
 
 
 }

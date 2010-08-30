@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */ 
 
-package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
+package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
 
 import org.apache.log4j.Logger;
 
@@ -17,12 +17,12 @@ import eu.etaxonomy.cdm.io.eflora.EfloraImportState;
  * @author a.mueller
  *
  */
-public class CentralAfricaEricaceaeImportState extends EfloraImportState{
-	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeImportState.class);
+public class FloraMalesianaImportState extends EfloraImportState{
+	private static final Logger logger = Logger.getLogger(FloraMalesianaImportState.class);
 
 // ******************************* CONSTRUCTOR **********************************************
 	
-	public CentralAfricaEricaceaeImportState(CentralAfricaEricaceaeImportConfigurator config) {
+	public FloraMalesianaImportState(FloraMalesianaImportConfigurator config) {
 		super(config);
 	}
 	

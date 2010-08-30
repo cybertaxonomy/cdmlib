@@ -9,70 +9,47 @@
 
 package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
-import org.jdom.Element;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.io.eflora.EfloraImportConfigurator;
 
 @Component
-public class CentralAfricaEricaceaeImportConfigurator extends ImportConfiguratorBase<CentralAfricaEricaceaeImportState> implements IImportConfigurator {
+public class CentralAfricaEricaceaeImportConfigurator extends EfloraImportConfigurator  {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeImportConfigurator.class);
 	
-	//TODO
-	private static IInputTransformer defaultTransformer = null;
-	private static String classificationTitle = "Flora Malesiana";
+	public static CentralAfricaEricaceaeImportConfigurator NewInstance(String url, ICdmDataSource destination){
+		return new CentralAfricaEricaceaeImportConfigurator(url, destination);
+	}
 	
-	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
-	//from the first sapindaceae import to the second sapindacea import
-	private UUID lastTaxonUuid;
+	private String classificationTitle = "Flore d'Afrique Centrale - Ericaceae";
+	private String sourceReferenceTitle = "Flore d'Afrique Centrale - Ericaceae";
 	
-	//if true, the keys will be printed after they have been created	
-	private boolean doPrintKeys = false;
-
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#makeIoClassList()
+	 */
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			CentralAfricaEricaceaeTaxonImport.class
 		};
 	};
 	
-	public static CentralAfricaEricaceaeImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new CentralAfricaEricaceaeImportConfigurator(url, destination);
-	}
-	
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
+
 	private CentralAfricaEricaceaeImportConfigurator() {
-		super(defaultTransformer);
-//		setSource(url);
-//		setDestination(destination);
+		super();
 	}
 	
 	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
+	 * @param url
 	 * @param destination
 	 */
 	private CentralAfricaEricaceaeImportConfigurator(String url, ICdmDataSource destination) {
-		super(defaultTransformer);
-		setSource(url);
-		setDestination(destination);
+		super(url, destination);
+		this.setClassificationTitle(classificationTitle);
+		this.setSourceReferenceTitle(sourceReferenceTitle);
 	}
 	
 	
@@ -84,97 +61,6 @@ public class CentralAfricaEricaceaeImportConfigurator extends ImportConfigurator
 		return new CentralAfricaEricaceaeImportState(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
 	
-	/**
-	 * @param file
-	 */
-	public void setSource(String file) {
-		super.setSource(file);
-	}
-	
-	/**
-	 * @return
-	 */
-	public Element getSourceRoot(){
-		String source = getSource();
-		try {
-			URL url;
-			url = new URL(source);
-			Object o = url.getContent();
-			InputStream is = (InputStream)o;
-			Element root = XmlHelp.getRoot(is);
-//			makeNamespaces(root);
-			return root;
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
-	@Override
-	public ReferenceBase getSourceReference() {
-		//TODO
-		if (this.sourceReference == null){
-			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = ReferenceFactory.newDatabase();
-			sourceReference.setTitleCache("Flora Melesiana", true);
-		}
-		return sourceReference;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
-		if (this.getSource() == null){
-			return null;
-		}else{
-			return this.getSource();
-		}
-	}
-
-	public static void setClassificationTitle(String classificationTitle) {
-		CentralAfricaEricaceaeImportConfigurator.classificationTitle = classificationTitle;
-	}
-
-	public static String getClassificationTitle() {
-		return classificationTitle;
-	}
-	
-	
-
-	public UUID getLastTaxonUuid() {
-		return lastTaxonUuid;
-	}
-	
-	public void setLastTaxonUuid(UUID lastTaxonUuid) {
-		this.lastTaxonUuid = lastTaxonUuid;
-	}
-
-	public void setDoPrintKeys(boolean doPrintKeys) {
-		this.doPrintKeys = doPrintKeys;
-	}
-
-	public boolean isDoPrintKeys() {
-		return doPrintKeys;
-	}
-	
-
-
-
 	
 }
