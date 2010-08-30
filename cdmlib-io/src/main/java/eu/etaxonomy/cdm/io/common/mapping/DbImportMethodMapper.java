@@ -17,20 +17,9 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.DbExportBase;
-import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.common.IOriginalSource;
-import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.mueller
@@ -67,6 +56,11 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 	
 	public static <T extends DbImportStateBase> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
 		DbImportMethodMapper result = new DbImportMethodMapper(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
+		return result;
+	}
+	
+	public static <T extends DbImportStateBase> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?>... parameterTypes){
+		DbImportMethodMapper result = new DbImportMethodMapper(objectToInvoke.getClass(), objectToInvoke, methodName, parameterTypes);
 		return result;
 	}
 	
