@@ -189,7 +189,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<TaxonNameBase> list = null;
 			
-			logger.error("PHASE 1: Export Taxa...");
+/*			logger.error("PHASE 1: Export Taxa...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -436,7 +436,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
+			logger.error("Committed transaction.");*/
 			
 			
 			// Create inferred synonyms for accepted taxa
@@ -489,6 +489,9 @@ public class PesiTaxonExport extends PesiExportBase {
 									for (Synonym synonym : inferredSynonyms) {
 										TaxonNameBase synonymName = synonym.getName();
 										if (synonymName != null) {
+											
+											// Both Synonym and its TaxonName have no valid Id yet
+											synonym.setId(currentTaxonId++);
 											synonymName.setId(currentTaxonId++);
 											
 											doCount(count++, modCount, inferredSynonymPluralString);
@@ -1030,7 +1033,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>WebShowName</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getWebShowName(TaxonNameBase taxonName) {
 		String result = "";
 		
@@ -1522,23 +1524,23 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		
 		try {
-			
-		Set<IdentifiableSource> nameSources = taxonName.getSources();
-		for (IdentifiableSource nameSource : nameSources) {
-			String sourceIdNameSpace = nameSource.getIdNamespace();
-			if (sourceIdNameSpace != null && sourceIdNameSpace.equals("originalGenusId")) {
-				result = "Nominal Taxon from TAX_ID: " + nameSource.getIdInSource();
+			Set<IdentifiableSource> sources = getSources(taxonName);
+			for (IdentifiableSource source : sources) {
+				String sourceIdNameSpace = source.getIdNamespace();
+				if (sourceIdNameSpace != null) {
+					if (sourceIdNameSpace.equals("originalGenusId")) {
+						result = "Nominal Taxon from TAX_ID: " + source.getIdInSource();
+					} else if (sourceIdNameSpace.equals("InferredEpithetOf")) {
+						result = "Inferred epithet from TAX_ID: " + source.getIdInSource();
+					} else if (sourceIdNameSpace.equals("InferredGenusOf")) {
+						result = "Inferred genus from TAX_ID: " + source.getIdInSource();
+					} else if (sourceIdNameSpace.equals("PotentialCombinationOf")) {
+						result = "Potential combination from TAX_ID: " + source.getIdInSource();
+					} else {
+						result = "TAX_ID: " + source.getIdInSource();
+					}
+				}
 			}
-		}
-		
-		// Get idInSource
-		if (result == null) {
-			String originalTaxId = getIdInSourceOnly(taxonName);
-			if (originalTaxId != null) {
-				result = "TAX_ID: " + originalTaxId;
-			}
-		}
-		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1554,53 +1556,68 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static String getIdInSourceOnly(TaxonNameBase taxonName) {
 		String result = null;
 		
-		Set<IdentifiableSource> nameSources = taxonName.getSources();
-		for (IdentifiableSource nameSource : nameSources) {
-			String sourceIdNameSpace = nameSource.getIdNamespace();
-			if (sourceIdNameSpace != null && sourceIdNameSpace.equals("originalGenusId")) {
-				result = nameSource.getIdInSource();
+		// Get the sources first
+		Set<IdentifiableSource> sources = getSources(taxonName);
+
+		// Determine the idInSource
+		if (sources.size() == 1) {
+			IdentifiableSource source = sources.iterator().next();
+			if (source != null) {
+				result = source.getIdInSource();
 			}
+		} else if (sources.size() > 1) {
+			int count = 1;
+			result = "";
+			for (IdentifiableSource source : sources) {
+				result += source.getIdInSource();
+				if (count < sources.size()) {
+					result += "; ";
+				}
+				count++;
+			}
+
+		}
+		
+		return result;
+	}
+	
+	private static Set<IdentifiableSource> getSources(TaxonNameBase taxonName) {
+		Set<IdentifiableSource> sources = null;
+
+		// Sources from TaxonName
+		Set<IdentifiableSource> nameSources = taxonName.getSources();
+		if (nameSources.size() == 1) {
+			sources = nameSources;
+		} else {
+			logger.warn("This TaxonName has more than one Source: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 		}
 
-		// Get idInSource from its Taxa or Synonyms
-		if (result == null) {
+		// Sources from TaxonBase
+		if (sources == null) {
 			Set<Taxon> taxa = taxonName.getTaxa();
 			Set<Synonym> synonyms = taxonName.getSynonyms();
 			IdentifiableEntity singleEntity = null;
 			if (taxa.size() == 1) {
-				singleEntity = (IdentifiableEntity) taxa.iterator().next();
+				Taxon taxon = taxa.iterator().next();
+				
+				if (taxon != null) {
+					sources = taxon.getSources();
+				}
 			} else if (taxa.size() > 1) {
 				logger.warn("This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 			}
 			if (synonyms.size() == 1) {
-				singleEntity = (IdentifiableEntity) synonyms.iterator().next();
+				Synonym synonym = synonyms.iterator().next();
+				
+				if (synonym != null) {
+					sources = synonym.getSources();
+				}
 			} else if (synonyms.size() > 1) {
 				logger.warn("This TaxonName has " + synonyms.size() + " Synonyms: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 			}
-			
-			if (singleEntity != null) {
-				Set<IdentifiableSource> sources = singleEntity.getSources();
-				if (sources.size() == 1) {
-					IdentifiableSource source = sources.iterator().next();
-					if (source != null) {
-						result = source.getIdInSource();
-					}
-				} else if (sources.size() > 1) {
-					int count = 1;
-					result = "";
-					for (IdentifiableSource source : sources) {
-						result += source.getIdInSource();
-						if (count < sources.size()) {
-							result += "; ";
-						}
-						count++;
-					}
-	
-				}
-			}
 		}
 		
-		return result;
+		return sources;
 	}
 	
 	/**
@@ -1693,7 +1710,12 @@ public class PesiTaxonExport extends PesiExportBase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		
+		if ("".equals(result)) {
+			return null;
+		} else {
+			return result;
+		}
 	}
 	
 	/**
@@ -1710,7 +1732,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		Set<IdentifiableSource> sources = taxonName.getSources();
 
 		IdentifiableEntity taxonBase = null;
-		if (sources == null) {
+		if (sources != null && sources.isEmpty()) {
 			// Sources from Taxa or Synonyms
 			Set taxa = taxonName.getTaxa();
 			if (taxa.size() == 1) {
@@ -1728,7 +1750,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 		}
 
-		if (sources != null) {
+		if (sources != null && ! sources.isEmpty()) {
 			if (sources.size() == 1) {
 				IdentifiableSource source = sources.iterator().next();
 				if (source != null) {
