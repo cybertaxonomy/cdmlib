@@ -189,7 +189,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<TaxonNameBase> list = null;
 			
-/*			logger.error("PHASE 1: Export Taxa...");
+			logger.error("PHASE 1: Export Taxa...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -436,7 +436,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.error("Committed transaction.");*/
+			logger.error("Committed transaction.");
 			
 			
 			// Create inferred synonyms for accepted taxa
@@ -468,17 +468,22 @@ public class PesiTaxonExport extends PesiExportBase {
 							kingdomFk = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
 	
 							Set<TaxonNode> taxonNodes = acceptedTaxon.getTaxonNodes();
+							TaxonNode singleNode = null;
 							if (taxonNodes.size() > 0) {
 								// Determine the taxonomicTree of the current TaxonNode
-								TaxonNode singleNode = taxonNodes.iterator().next();
+								singleNode = taxonNodes.iterator().next();
 								if (singleNode != null) {
 									taxonTree = singleNode.getTaxonomicTree();
 								}
 							} else {
 								// TaxonomicTree could not be determined directly from this TaxonNode
 								// The stored taxonomicTree from another TaxonNode is used. It's a simple, but not a failsafe fallback solution.
-								logger.error("TaxonomicTree could not be determined directly from this TaxonNode. " +
-										"This taxonomicTree stored from another TaxonNode is used: " + taxonTree.getTitleCache());
+								if (singleNode == null) {
+									logger.error("A TaxonNode belonging to this accepted Taxon is NULL: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() +")");
+								} else {
+									logger.error("TaxonomicTree could not be determined directly from this TaxonNode: " + singleNode.getUuid() + "). " +
+											"This taxonomicTree stored from another TaxonNode is used: " + taxonTree.getTitleCache());
+								}
 							}
 							
 							if (taxonTree != null) {
@@ -1549,7 +1554,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 	
 	/**
-	 * Returns the idInSource for a given taxonName.
+	 * Returns the idInSource only.
 	 * @param taxonName
 	 * @return
 	 */
@@ -1581,6 +1586,11 @@ public class PesiTaxonExport extends PesiExportBase {
 		return result;
 	}
 	
+	/**
+	 * Returns the Sources only.
+	 * @param taxonName
+	 * @return
+	 */
 	private static Set<IdentifiableSource> getSources(TaxonNameBase taxonName) {
 		Set<IdentifiableSource> sources = null;
 
