@@ -42,15 +42,17 @@ public class CentralAfricaFernsActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source mySource = CdmImportSources.AFRICA_FERNS_ACCESS();
 	
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//feature tree uuid
 	public static final UUID featureTreeUuid = UUID.fromString("62d930cb-aabb-461c-ad16-0fdbd2bae592");
 	
 	public static final String sourceReference = "Flora of Central Africa";
+
+	public static final String taxonomicTreeName = "Flora of Central Africa - Ferns"; 
 	
 	//classification
 	static final UUID classificationUuid = UUID.fromString("a90fa160-8f33-4a19-9c5a-ab05a1553017");
@@ -76,6 +78,7 @@ public class CentralAfricaFernsActivator {
 //		mySource.getResultSet("SELECT * FROM tmp");
 		CentralAfricaFernsImportConfigurator config= CentralAfricaFernsImportConfigurator.NewInstance(source, cdmDestination);
 		config.setTaxonomicTreeUuid(classificationUuid);
+		config.setTaxonomicTreeName(taxonomicTreeName);
 		config.setDoTaxa(doTaxa);
 		config.setCheck(check);
 //		configsetDoPrintKeys(doPrintKeys);

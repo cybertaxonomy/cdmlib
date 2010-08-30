@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.app.common.CdmImportSources;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -22,10 +21,6 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.CentralAfricaChecklistImportConfigurator;
-import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaTransformer;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -47,12 +42,16 @@ public class CentralAfricaChecklistActivator {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
-	int recordsPerTransaction = 10000;
+	int recordsPerTransaction = 1000;
 	
 	//feature tree uuid
 	public static final UUID featureTreeUuid = UUID.fromString("ebe558b5-d04d-41d5-83d9-b61c56e6e34a");
 	
 	public static final String sourceReference = "Flora of Central Africa - Checklist";
+	
+	private UUID uuidGenevaReference = UUID.fromString("cf3fd13d-6cad-430c-ab70-7ea841b7159f");
+	
+	private String genevaReferenceTitle = "Geneva Database";
 	
 	//classification
 	public static final UUID classificationUuid = UUID.fromString("ce1d035a-79a9-4a3a-95bf-26641ecb4fbe");
@@ -74,6 +73,8 @@ public class CentralAfricaChecklistActivator {
 		config.setCheck(check);
 		config.setDbSchemaValidation(hbm2dll);
 		config.setRecordsPerTransaction(recordsPerTransaction);
+		config.setGenevaReferenceTitle(genevaReferenceTitle);
+		config.setUuidGenevaReference(uuidGenevaReference);
 		
 		CdmDefaultImport<CentralAfricaChecklistImportConfigurator> myImport = new CdmDefaultImport<CentralAfricaChecklistImportConfigurator>();
 
@@ -84,8 +85,8 @@ public class CentralAfricaChecklistActivator {
 		
 
 		
-		FeatureTree tree = makeFeatureNode(myImport.getCdmAppController().getTermService());
-		myImport.getCdmAppController().getFeatureTreeService().saveOrUpdate(tree);
+//		FeatureTree tree = makeFeatureNode(myImport.getCdmAppController().getTermService());
+//		myImport.getCdmAppController().getFeatureTreeService().saveOrUpdate(tree);
 		
 	}
 	
@@ -95,22 +96,22 @@ public class CentralAfricaChecklistActivator {
 		return result;
 	}
 
-	private FeatureTree makeFeatureNode(ITermService service){
-		FloraMalesianaTransformer transformer = new FloraMalesianaTransformer();
-		
-		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
-		result.setTitleCache("Flora Malesiana Presentation Feature Tree");
-		FeatureNode root = result.getRoot();
-		FeatureNode newNode;
-		
-		newNode = FeatureNode.NewInstance(Feature.CITATION());
-		root.addChild(newNode);
-		
-		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
-		root.addChild(newNode);
-		
-		return result;
-	}
+//	private FeatureTree makeFeatureNode(ITermService service){
+//		FloraMalesianaTransformer transformer = new FloraMalesianaTransformer();
+//		
+//		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
+//		result.setTitleCache("Flora Malesiana Presentation Feature Tree");
+//		FeatureNode root = result.getRoot();
+//		FeatureNode newNode;
+//		
+//		newNode = FeatureNode.NewInstance(Feature.CITATION());
+//		root.addChild(newNode);
+//		
+//		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
+//		root.addChild(newNode);
+//		
+//		return result;
+//	}
 	
 
 

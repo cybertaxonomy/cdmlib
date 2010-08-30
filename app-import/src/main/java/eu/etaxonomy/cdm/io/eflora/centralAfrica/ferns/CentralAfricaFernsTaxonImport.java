@@ -16,21 +16,35 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMethodMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportTextDataCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation.CentralAfricaFernsTaxonImportValidator;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -85,28 +99,62 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 			mapping = new DbImportMapping();
 			
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "Taxon number", TAXON_NAMESPACE)); //id + tu_status
-//			
-//			UUID displayNameUuid = ErmsTransformer.uuidDisplayName;
-//			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_displayname", displayNameUuid, "display name", "display name", "display name"));
-//			mapping.addMapper(DbImportStringMapper.NewInstance("tu_authority", "(NonViralName)name.authorshipCache"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Types XXX", "Method Mapper does not work yet. Needs implementation for all 5 types. FIXMEs in implementation"));
+
+//			mapping.addMapper(DbImportMethodMapper.NewInstance(this, "makeTypes", ResultSet.class, TaxonBase.class, CentralAfricaFernsImportState.class));
+			mapping.addMapper(DbImportAnnotationMapper.NewInstance("Notes", AnnotationType.EDITORIAL()));
+
+			//not yet implemented or ignore
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Basionym of", "Needs better understanding"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Synonym of", "Needs better understanding. Strange values like "));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Common names", "Very view values. Needs parsing for author"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Author/s - full", "Difference to Author/s abbreviated needs to be clarified. Do authors belong to reference? Sometimes authors are not equal to name authors"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Author/s abbreviated" , "Difference to Author/s - full needs to be clarified. Do authors belong to reference? Sometimes authors are not equal to name authors"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Reference abbreviated" , "Clarify relationship to reference tables, authors and to Reference full"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Chromosome number" , "Wrong data. Seems to be 'reference full'"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Book / Journal volume" , "no comment"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Book / Journal part" , "no comment"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Book / Journal fascicle" , "What is this?"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Book / Journal pages" , "What is this?"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Illustrations/s" , "What is this?"));
+
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Date published" , "Needs implementation for parsing"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Book / Paper title" , "Needs implementation. Inreferences?"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Book Publisher & Place" , "How to access the reference via String mapper?"));
+				
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Nom remarks" , "Needs parsing for status, homonyms etc., the rest goes to a name annotation"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Distribution - Country" , "Needs mapping to TDWG or ISO"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Distribution - Province" , "Very few. By hand. Mapping to TDWG4?"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Distribution - detailed" , "Few. Textdata. Sometimes similar to Distribution - Province entries"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Reprint no" , "What's this?"));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Date verified" , "Needed?"));
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Ecology" , "Needs implementation"));
+//			mapping.addMapper(DbImportTextDataCreationMapper.NewInstance(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, dbTextAttribute, Language.ENGLISH(), Feature.ECOLOGY(), null));
+			
+			
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("Illustrations - non-original" , "What's this?"));
+			
 //			
 //			UUID credibilityUuid = ErmsTransformer.uuidCredibility;
 //			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_credibility", credibilityUuid, "credibility", "credibility", "credibility")); //Werte: null, unknown, marked for deletion
 //			
-////			UUID hiddenUuid = ErmsTransformer.uuidHidden;
-//			mapping.addMapper(DbImportMarkerCreationMapper.Mapper.NewInstance("qualitystatus_name", qualityUuid, "quality status", "quality status", "quality status")); //checked by Tax Editor ERMS1.1, Added by db management team (2x), checked by Tax Editor
-			
-			
 			//ignore
 //			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation", "citation cache not needed in PESI"));
 			
 			//not yet implemented or ignore
 //			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_hidden", "Needs DbImportMarkerMapper implemented"));
-			
-//			//second path / implemented in ErmsTaxonRelationImport
-//			DbImportMapping secondPathMapping = new DbImportMapping();
-//			secondPathMapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "tu_parent", TAXON_NAMESPACE, null)); //there is only one tree
-//			mapping.setSecondPathMapping(secondPathMapping);
 			
 		}
 		return mapping;
@@ -123,20 +171,6 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		String strRecordQuery = strSelect + strFrom + strWhere;
 		return strRecordQuery;
 	}
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#doInvoke(eu.etaxonomy.cdm.io.erms.ErmsImportState)
-	 */
-	@Override
-	protected boolean doInvoke(CentralAfricaFernsImportState state) {
-		//first path
-		boolean success = super.doInvoke(state);
-		
-		return success;
-
-	}
-
 
 
 	/* (non-Javadoc)
@@ -168,6 +202,50 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		return result;
 	}
 	
+	private TaxonBase makeTypes(ResultSet rs, TaxonBase taxonBase, CentralAfricaFernsImportState state) throws SQLException{
+		TaxonNameBase name = taxonBase.getName();
+		String typeString = rs.getString("Type");
+		String typeCollectorString = rs.getString("Type collector and number");
+		String typeLocationString = rs.getString("Type location");
+		makeSingleType(name, typeString, typeCollectorString, typeLocationString);
+		return taxonBase;
+	}
+	
+	
+	private void makeSingleType(TaxonNameBase name, String typeString, String typeCollectorString, String typeLocationString) {
+		DerivedUnitFacade type = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		makeTypeCollectorInfo(type, typeCollectorString);
+		type.setLocality(typeString);
+		//TODO
+//		type.addDuplicate(duplicateSpecimen);
+		//FIXME handle also NameTypeDesignations
+		SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
+		designation.setTypeSpecimen(type.getDerivedUnit());
+		name.addTypeDesignation(designation, false);
+	}
+
+
+
+	private void makeTypeCollectorInfo(DerivedUnitFacade type, String collectorAndNumberString) {
+		String reNumber = "(s\\.n\\.|\\d.*)";
+		Pattern reNumberPattern = Pattern.compile(reNumber);
+		Matcher matcher = reNumberPattern.matcher(collectorAndNumberString);
+		
+		if ( matcher.find()){
+			int numberStart = matcher.start();
+			String number = collectorAndNumberString.substring(numberStart).trim();
+			String collectorString = collectorAndNumberString.substring(0, numberStart -1).trim();
+			type.setCollectorsNumber(number);
+			Team team = Team.NewTitledInstance(collectorString, collectorString);
+			type.setCollector(team);
+			
+		}else{
+			logger.warn("collector string did not match number pattern: " + collectorAndNumberString);
+			
+		}
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet)

@@ -54,6 +54,7 @@ public abstract class CentralAfricaFernsImportBase<CDM_BASE extends CdmBase> ext
 	
 	protected static final String TAXON_NAMESPACE = "African_pteridophytes_Taxon";
 	protected static final String NAME_NAMESPACE = "African_pteridophytes_Name";
+	protected static final String HIGHER_TAXON_NAMESPACE = "African_pteridophytes_Higher_Taxon";
 	
 
 	private String pluralString;

@@ -23,11 +23,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMethodMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.CentralAfricaChecklistImportState;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation.CentralAfricaFernsTaxonImportValidator;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -52,18 +55,17 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsImportBase<TaxonBase> implements IMappingImport<TaxonBase, CentralAfricaFernsImportState>{
 	private static final Logger logger = Logger.getLogger(CentralAfricaFernsTaxonRelationImport.class);
 	
-	public static final UUID TNS_EXT_UUID = UUID.fromString("41cb0450-ac84-4d73-905e-9c7773c23b05");
-	
 	private DbImportMapping mapping;
 	
-	//second path is not used anymore, there is now an ErmsTaxonRelationImport class instead
-	private boolean isSecondPath = false;
 	
 	private int modCount = 10000;
 	private static final String pluralString = "taxa";
 	private static final String dbTableName = "[African pteridophytes]";
 	private static final Class cdmTargetClass = TaxonBase.class;
 
+	private Map<String, UUID> taxonMap = new HashMap<String, UUID>();
+
+	
 	public CentralAfricaFernsTaxonRelationImport(){
 		super(pluralString, dbTableName, cdmTargetClass);
 	}
@@ -135,6 +137,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 			UUID uuid = taxon.getName().getUuid();
 			String name = nvn.getNameCache();
 			taxonMap.put(name, uuid);
+			
 		}
 	}
 
@@ -250,38 +253,137 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		String specificEpihet = rs.getString("Specific epihet");
 		String subspeciesName = rs.getString("Subspecies name");
 		String varietyName = rs.getString("Variety name");
-		String subFormaName = rs.getString("Subforma");
 		String subVariety = rs.getString("Subvariery");
 		String formaName = rs.getString("Forma name");
+		String subFormaName = rs.getString("Subforma");
 		
-		
-		Taxon higherTaxon = getNextHigherTaxon(child, orderName, subOrderName, familyName, subFamilyName, tribusName, subTribusName, sectionName, subsectionName, genusName, subGenusName, seriesName, specificEpihet, subspeciesName, varietyName, subVariety, formaName, subFormaName);
-		
-//		TaxonomicTree tree = makeTreeMemSave(state, null);
-		
-		ReferenceBase citation = null;
-		makeTaxonomicallyIncluded(state, higherTaxon, child, citation, null);
-		
+		makeNextHigherTaxon(state, child, orderName, subOrderName, familyName, subFamilyName, tribusName, subTribusName, sectionName,
+				subsectionName, genusName, subGenusName, seriesName, specificEpihet, subspeciesName, varietyName, subVariety, formaName, subFormaName);
 		return child;
 	}
 
-	private boolean makeTaxonomicallyIncluded(CentralAfricaFernsImportState state, Taxon parent, Taxon child, ReferenceBase citation, String microCitation){
-		ReferenceBase sec = child.getSec();
-		TaxonomicTree tree = state.getTree(sec);
-		if (tree == null){
-			tree = makeTreeMemSave(state, sec);
+
+
+	/**
+	 * @param state
+	 * @param child
+	 * @param orderName
+	 * @param subOrderName
+	 * @param familyName
+	 * @param subFamilyName
+	 * @param tribusName
+	 * @param subTribusName
+	 * @param sectionName
+	 * @param subsectionName
+	 * @param genusName
+	 * @param subGenusName
+	 * @param seriesName
+	 * @param specificEpihet
+	 * @param subspeciesName
+	 * @param varietyName
+	 * @param subVariety
+	 * @param formaName
+	 * @param subFormaName
+	 */
+	private void makeNextHigherTaxon(CentralAfricaFernsImportState state, Taxon child, String orderName, String subOrderName,
+			String familyName, String subFamilyName, String tribusName, String subTribusName, String sectionName, String subsectionName,
+			String genusName, String subGenusName, String seriesName, String specificEpihet, String subspeciesName, String varietyName,
+			String subVariety, String formaName, String subFormaName) {
+
+		Taxon higherTaxon = getNextHigherTaxon(state, child, orderName, subOrderName, familyName, subFamilyName, tribusName, subTribusName, sectionName, subsectionName, genusName, subGenusName, seriesName, specificEpihet, subspeciesName, varietyName, subVariety, formaName, subFormaName);
+		
+		ReferenceBase citation = null;
+		if (higherTaxon != null){
+			if (! includedRelationshipExists(child, higherTaxon)){
+				makeTaxonomicallyIncluded(state, null, child, higherTaxon, citation, null);
+			}else{
+				logger.info("Included exists");
+			}
+			makeNextHigherTaxon(state, higherTaxon, orderName, subOrderName, familyName, subFamilyName, tribusName, subTribusName, sectionName, subsectionName, genusName, subGenusName, seriesName, specificEpihet, subspeciesName, varietyName, subVariety, formaName, subFormaName);
 		}
-		TaxonNode childNode;
-		if (parent != null){
-			childNode = tree.addParentChild(parent, child, citation, microCitation);
+	}
+
+	/**
+	 * Tests if this the child taxon already is a child of the higher taxon.
+	 * @param child
+	 * @param higherTaxon
+	 * @return
+	 */
+	private boolean includedRelationshipExists(Taxon child, Taxon higherTaxon) {
+		int countNodes = higherTaxon.getTaxonNodes().size();
+		if (countNodes < 1){
+			return false;
+		}else if (countNodes > 1){
+			throw new IllegalStateException("Multiple nodes exist for higher taxon. This is an invalid state.");
 		}else{
-			childNode = tree.addChildTaxon(child, citation, microCitation, null);
+			TaxonNode higherNode = higherTaxon.getTaxonNodes().iterator().next();
+			return childExists(child, higherNode);
 		}
+	}
+
+
+
+	private boolean childExists(Taxon child, TaxonNode higherNode) {
+		for (TaxonNode childNode : higherNode.getChildNodes()){
+			String existingChildTitle = childNode.getTaxon().getName().getTitleCache();
+			String newChildTitle = child.getName().getTitleCache();
+			if (existingChildTitle.equals(newChildTitle)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
+//	private boolean makeTaxonomicallyIncluded(CentralAfricaFernsImportState state, Taxon parent, Taxon child, ReferenceBase citation, String microCitation){
+//		ReferenceBase sec = child.getSec();
+//		TaxonomicTree tree = state.getTree(sec);
+//		if (tree == null){
+//			tree = makeTreeMemSave(state, sec);
+//		}
+//		TaxonNode childNode;
+//		if (parent != null){
+//			childNode = tree.addParentChild(parent, child, citation, microCitation);
+//		}else{
+//			childNode = tree.addChildTaxon(child, citation, microCitation, null);
+//		}
+//		return (childNode != null);
+//	}
+	
+	//TODO use Mapper
+	private boolean makeTaxonomicallyIncluded(CentralAfricaFernsImportState state, Integer treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
+		String treeKey;
+		UUID treeUuid;
+		if (treeRefFk == null){
+			treeKey = "1";  // there is only one tree and it gets the map key '1'
+			treeUuid = state.getConfig().getTaxonomicTreeUuid();
+		}else{
+			treeKey =String.valueOf(treeRefFk);
+			treeUuid = state.getTreeUuidByTreeKey(treeKey);
+		}
+		TaxonomicTree tree = (TaxonomicTree)state.getRelatedObject(DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE, treeKey);
+		if (tree == null){
+			ITaxonTreeService service = state.getCurrentIO().getTaxonTreeService();
+			tree = service.getTaxonomicTreeByUuid(treeUuid);
+			if (tree == null){
+				String treeName = state.getConfig().getTaxonomicTreeName();
+				tree = TaxonomicTree.NewInstance(treeName);
+				tree.setUuid(treeUuid);
+				//FIXME tree reference
+				tree.setReference(citation);
+				service.save(tree);
+			}
+			state.addRelatedObject(DbImportTaxIncludedInMapper.TAXONOMIC_TREE_NAMESPACE, treeKey, tree);
+		}
+		
+		TaxonNode childNode = tree.addParentChild(parent, child, citation, microCitation);
 		return (childNode != null);
 	}
 
 
-	private Taxon getNextHigherTaxon(Taxon childTaxon, String orderName, String subOrderName, String familyName, String subFamilyName,
+
+	private Taxon getNextHigherTaxon(CentralAfricaFernsImportState state, Taxon childTaxon, String orderName, String subOrderName, String familyName, String subFamilyName,
 			String tribusName, String subTribusName, String sectionName, String subsectionName, String genusName, String subGenusName, String seriesName, String speciesName, String subspeciesName, String varietyName, String subVariety, String formaName, String subFormaName) {
 		
 		Taxon result = null;
@@ -301,17 +403,19 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		//if higher taxon must exist, create it if it was not yet created
 		if (higherName.getRank() != null && getExistingTaxon(higherName) == null ){
 			result = Taxon.NewInstance(higherName, childTaxon.getSec());
+			UUID uuid = higherName.getUuid();
+			String name = higherName.getNameCache();
+			taxonMap.put(name, uuid);
+			state.addRelatedObject(HIGHER_TAXON_NAMESPACE, higherName.getNameCache(), result);
 		}
 		return result;
 	}
 
 
 
-	private Map<String, UUID> taxonMap = new HashMap<String, UUID>();
-
 	private Taxon getExistingTaxon(BotanicalName higherName) {
-		higherName.getNameCache();
-		UUID uuid = taxonMap.get(higherName);
+		String nameCache = higherName.getNameCache();
+		UUID uuid = taxonMap.get(nameCache);
 		
 		Taxon taxon = null;
 		if (uuid != null){
@@ -327,19 +431,19 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		BotanicalName taxonName = BotanicalName.NewInstance(null);
 		Rank newRank = null;
 		
-		if (StringUtils.isNotBlank(subFormaName)   && ! lowerTaxonRank.equals(Rank.SUBFORM())){
+		if (StringUtils.isNotBlank(subFormaName)   && lowerTaxonRank.isLower(Rank.SUBFORM())){
 			taxonName.setInfraSpecificEpithet(subFormaName);
 			newRank =  Rank.SUBFORM();
-		}else if (StringUtils.isNotBlank(formaName)  && ! lowerTaxonRank.equals(Rank.FORM())){
+		}else if (StringUtils.isNotBlank(formaName)  && lowerTaxonRank.isLower(Rank.FORM())){
 			taxonName.setInfraSpecificEpithet(formaName);
 			newRank =  Rank.FORM();
-		}else if (StringUtils.isNotBlank(subVariety)  && ! lowerTaxonRank.equals(Rank.SUBVARIETY())){
+		}else if (StringUtils.isNotBlank(subVariety)  && lowerTaxonRank.isLower(Rank.SUBVARIETY())){
 			taxonName.setInfraSpecificEpithet(subVariety);
 			newRank =  Rank.SUBVARIETY();
-		}else if (StringUtils.isNotBlank(varietyName)  && ! lowerTaxonRank.equals(Rank.VARIETY())){
+		}else if (StringUtils.isNotBlank(varietyName)  && lowerTaxonRank.isLower(Rank.VARIETY())){
 			taxonName.setInfraSpecificEpithet(varietyName);
 			newRank =  Rank.VARIETY();
-		}else if (StringUtils.isNotBlank(subspeciesName)  && ! lowerTaxonRank.equals(Rank.SUBSPECIES())){
+		}else if (StringUtils.isNotBlank(subspeciesName)  && lowerTaxonRank.isLower(Rank.SUBSPECIES())){
 			taxonName.setInfraSpecificEpithet(subspeciesName);
 			newRank = Rank.SUBSPECIES();
 		}
@@ -356,7 +460,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 	private BotanicalName handleSpecies(Rank lowerTaxonRank, BotanicalName taxonName, String genusName, String speciesEpithet) {
 		Rank newRank = null;
 		
-		if (StringUtils.isNotBlank(speciesEpithet)  && ! lowerTaxonRank.equals(Rank.SPECIES())){
+		if (StringUtils.isNotBlank(speciesEpithet)  && lowerTaxonRank.isLower(Rank.SPECIES())){
 			taxonName.setSpecificEpithet(speciesEpithet);
 			newRank = Rank.SPECIES();
 		}
@@ -370,10 +474,10 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 	private BotanicalName handleInfraGeneric(Rank lowerTaxonRank, BotanicalName taxonName, String genusName, String subGenusName, String seriesName) {
 		Rank newRank = null;
 		
-		if (StringUtils.isNotBlank(seriesName)  && ! lowerTaxonRank.equals(Rank.SERIES())){
+		if (StringUtils.isNotBlank(seriesName)  && lowerTaxonRank.isLower(Rank.SERIES())){
 			taxonName.setInfraGenericEpithet(seriesName);
 			newRank = Rank.SERIES();
-		}else if (StringUtils.isNotBlank(subGenusName) && ! lowerTaxonRank.equals(Rank.SUBGENUS())){
+		}else if (StringUtils.isNotBlank(subGenusName) && lowerTaxonRank.isLower(Rank.SUBGENUS())){
 			taxonName.setInfraGenericEpithet(subGenusName);
 			newRank = Rank.SUBGENUS();
 		}
@@ -390,31 +494,31 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 				String tribusName, String subTribusName, String sectionName, String subsectionName, String genusName) {
 		
 		Rank newRank = null;
-		if (StringUtils.isNotBlank(genusName) && ! lowerTaxonRank.equals(Rank.GENUS())){
+		if (StringUtils.isNotBlank(genusName) && lowerTaxonRank.isLower(Rank.GENUS())){
 			taxonName.setGenusOrUninomial(genusName);
 			newRank =  Rank.GENUS();
-		}else if (StringUtils.isNotBlank(subsectionName)  && ! lowerTaxonRank.equals(Rank.SUBSECTION_BOTANY())){
+		}else if (StringUtils.isNotBlank(subsectionName)  && lowerTaxonRank.isLower(Rank.SUBSECTION_BOTANY())){
 			taxonName.setGenusOrUninomial(subsectionName);
 			newRank =  Rank.SUBSECTION_BOTANY();
-		}else if (StringUtils.isNotBlank(sectionName)  && ! lowerTaxonRank.equals(Rank.SECTION_BOTANY())){
+		}else if (StringUtils.isNotBlank(sectionName)  && lowerTaxonRank.isLower(Rank.SECTION_BOTANY())){
 			taxonName.setGenusOrUninomial(sectionName);
 			newRank =  Rank.SECTION_BOTANY();
-		}else if (StringUtils.isNotBlank(subTribusName) && ! lowerTaxonRank.equals(Rank.SUBTRIBE())){
+		}else if (StringUtils.isNotBlank(subTribusName) && lowerTaxonRank.isLower(Rank.SUBTRIBE())){
 			taxonName.setGenusOrUninomial(subTribusName);
 			newRank =  Rank.SUBTRIBE();
-		}else if (StringUtils.isNotBlank(tribusName) && ! lowerTaxonRank.equals(Rank.TRIBE())){
+		}else if (StringUtils.isNotBlank(tribusName) && lowerTaxonRank.isLower(Rank.TRIBE())){
 			taxonName.setGenusOrUninomial(tribusName);
 			newRank =  Rank.TRIBE();
-		}else if (StringUtils.isNotBlank(subFamilyName) && ! lowerTaxonRank.equals(Rank.SUBFAMILY())){
+		}else if (StringUtils.isNotBlank(subFamilyName) && lowerTaxonRank.isLower(Rank.SUBFAMILY())){
 			taxonName.setGenusOrUninomial(subFamilyName);
 			newRank =  Rank.SUBFAMILY();
-		}else if (StringUtils.isNotBlank(familyName) && ! lowerTaxonRank.equals(Rank.FAMILY())){
+		}else if (StringUtils.isNotBlank(familyName) && lowerTaxonRank.isLower(Rank.FAMILY())){
 			taxonName.setGenusOrUninomial(familyName);
 			newRank =  Rank.FAMILY();
-		}else if (StringUtils.isNotBlank(subOrderName) && ! lowerTaxonRank.equals(Rank.SUBORDER())){
+		}else if (StringUtils.isNotBlank(subOrderName) && lowerTaxonRank.isLower(Rank.SUBORDER())){
 			taxonName.setGenusOrUninomial(subOrderName);
 			newRank =  Rank.SUBORDER();
-		}else if (StringUtils.isNotBlank(orderName) && ! lowerTaxonRank.equals(Rank.ORDER())){
+		}else if (StringUtils.isNotBlank(orderName) && lowerTaxonRank.isLower(Rank.ORDER())){
 			taxonName.setGenusOrUninomial(orderName);
 			newRank =  Rank.ORDER();
 		}

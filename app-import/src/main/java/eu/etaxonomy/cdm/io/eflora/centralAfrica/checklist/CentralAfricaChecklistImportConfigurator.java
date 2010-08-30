@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist;
 
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -33,6 +34,10 @@ public class CentralAfricaChecklistImportConfigurator extends ImportConfigurator
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CentralAfricaChecklistImportConfigurator.class);
 
+	private UUID uuidGenevaReference = UUID.fromString("cf3fd13d-6cad-430c-ab70-7ea841b7159f");
+	
+	private String genevaReferenceTitle = null;
+	
 	public static CentralAfricaChecklistImportConfigurator NewInstance(Source ermsSource, ICdmDataSource destination){
 			return new CentralAfricaChecklistImportConfigurator(ermsSource, destination);
 	}
@@ -88,17 +93,15 @@ public class CentralAfricaChecklistImportConfigurator extends ImportConfigurator
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
 	public ReferenceBase getSourceReference() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		if (sourceReference == null){
-			sourceReference =  refFactory.newDatabase();
+			sourceReference =  ReferenceFactory.newDatabase();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
 		}
 		return sourceReference;
 	}
-
-
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
@@ -205,6 +208,26 @@ public class CentralAfricaChecklistImportConfigurator extends ImportConfigurator
 	 */
 	public boolean isDoImages() {
 		return doImages;
+	}
+
+
+	public void setUuidGenevaReference(UUID uuidGenevaReference) {
+		this.uuidGenevaReference = uuidGenevaReference;
+	}
+
+
+	public UUID getUuidGenevaReference() {
+		return uuidGenevaReference;
+	}
+
+
+	public void setGenevaReferenceTitle(String genevaReferenceTitle) {
+		this.genevaReferenceTitle = genevaReferenceTitle;
+	}
+
+
+	public String getGenevaReferenceTitle() {
+		return genevaReferenceTitle;
 	}
 	
 	

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.validation.CentralAfricaChecklistTaxonImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -121,13 +123,22 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		return strRecordQuery;
 	}
 
+	
 	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, CentralAfricaChecklistImportState state) {
 		higherTaxonMap = new HashMap<UUID, Taxon>();
+		ReferenceBase genevaReference = getReferenceService().find(state.getConfig().getUuidGenevaReference());
+		if (genevaReference == null){
+			genevaReference = makeGenevaReference(state);
+			getReferenceService().save(genevaReference);
+		}
+		state.setGenevaReference(genevaReference);
 		boolean success = super.doPartition(partitioner, state);
 		higherTaxonMap = new HashMap<UUID, Taxon>();
+		state.setGenevaReference(null);
 		return success;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
@@ -141,9 +152,9 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
 		try{
-				while (rs.next()){
-					handleForeignKey(rs, referenceIdSet, "source");
-				}
+			while (rs.next()){
+				handleForeignKey(rs, referenceIdSet, "source");
+			}
 
 			//reference map
 			nameSpace = REFERENCE_NAMESPACE;
@@ -172,6 +183,7 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		String genusString = rs.getString("genus");
 		String speciesString = rs.getString("species");
 		String authorityString = rs.getString("authority");
+		
 		if (logger.isDebugEnabled()){
 			System.out.println(familyString + " " + genusString + " " + speciesString);
 		}
@@ -214,6 +226,12 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		
 		ReferenceBase sourceRef = state.getRelatedObject(REFERENCE_NAMESPACE, sourceString, ReferenceBase.class);
 		speciesTaxon.addSource(sourceId, REFERENCE_NAMESPACE, sourceRef, null);
+		
+		
+		//geneva id
+		ReferenceBase genevaReference = state.getGenevaReference();
+		Object genevaId = rs.getObject("geneva_ID");
+		speciesTaxon.addSource(String.valueOf(genevaId), null, genevaReference, null);
 		
 		//distribution
 		handleDistribution(rs, speciesTaxon);
@@ -334,6 +352,13 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		return (childNode != null);
 	}
 
+
+	private ReferenceBase makeGenevaReference(CentralAfricaChecklistImportState state) {
+		ReferenceBase result = ReferenceFactory.newDatabase();
+		result.setTitleCache(state.getConfig().getGenevaReferenceTitle(), true);
+		result.setUuid(state.getConfig().getUuidGenevaReference());
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)

@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.mueller
@@ -36,8 +37,9 @@ public class CentralAfricaChecklistImportState extends DbImportStateBase<Central
 	private String lastGenus;
 	private Map<String, UUID> higherTaxonUuidMap = new HashMap<String, UUID>();
 
-	
-	
+	private ReferenceBase genevaReference;
+
+
 	public boolean containsHigherTaxon(String higherName) {
 		return higherTaxonUuidMap.containsKey(higherName);
 	}
@@ -54,16 +56,6 @@ public class CentralAfricaChecklistImportState extends DbImportStateBase<Central
 		return higherTaxonUuidMap.get(higherName);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(CentralAfricaChecklistImportConfigurator config) {
-//		super(config);
-		String tableName = "WebMarkerCategory_";
-		//webMarkerCategory
-		dbCdmDefTermMap.put(tableName + 1, MarkerType.COMPLETE());
-	}
 
 	public CentralAfricaChecklistImportState(CentralAfricaChecklistImportConfigurator config) {
 		super(config);
@@ -95,6 +87,16 @@ public class CentralAfricaChecklistImportState extends DbImportStateBase<Central
 
 	public String getLastGenus() {
 		return lastGenus;
+	}
+
+
+	
+	
+	public ReferenceBase getGenevaReference() {
+		return genevaReference;
+	}
+	public void setGenevaReference(ReferenceBase genevaReference) {
+		this.genevaReference = genevaReference;
 	}
 	
     
