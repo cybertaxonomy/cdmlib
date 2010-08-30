@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
-import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaImportConfigurator;
+import eu.etaxonomy.cdm.io.eflora.EfloraImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -77,14 +77,14 @@ public class FloraMalesianaActivator {
 		
 		//make BerlinModel Source
 		String source = fmSource1;
-		FloraMalesianaImportConfigurator floraMalesianaConfig= FloraMalesianaImportConfigurator.NewInstance(source, cdmDestination);
+		EfloraImportConfigurator floraMalesianaConfig= EfloraImportConfigurator.NewInstance(source, cdmDestination);
 		floraMalesianaConfig.setTaxonomicTreeUuid(classificationUuid);
 		floraMalesianaConfig.setDoTaxa(doTaxa);
 		floraMalesianaConfig.setCheck(check);
 		floraMalesianaConfig.setDoPrintKeys(doPrintKeys);
 		floraMalesianaConfig.setDbSchemaValidation(hbm2dll);
 		
-		CdmDefaultImport<FloraMalesianaImportConfigurator> myImport = new CdmDefaultImport<FloraMalesianaImportConfigurator>();
+		CdmDefaultImport<EfloraImportConfigurator> myImport = new CdmDefaultImport<EfloraImportConfigurator>();
 
 		
 		//Sapindaceae1

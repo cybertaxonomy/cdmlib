@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.eflora.UnmatchedLeads;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
@@ -23,9 +24,9 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
  * @created 11.05.2009
  * @version 1.0
  */
-public class FloraMalesianaImportState extends ImportStateBase<FloraMalesianaImportConfigurator, FloraMalesianaImportBase>{
+public class CentralAfricaEricaceaeImportState extends ImportStateBase<CentralAfricaEricaceaeImportConfigurator, CentralAfricaEricaceaeImportBase>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FloraMalesianaImportState.class);
+	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeImportState.class);
 	
 
 	private UnmatchedLeads unmatchedLeads;
@@ -34,9 +35,9 @@ public class FloraMalesianaImportState extends ImportStateBase<FloraMalesianaImp
 	
 //**************************** CONSTRUCTOR ******************************************/
 	
-	public FloraMalesianaImportState(FloraMalesianaImportConfigurator config) {
+	public CentralAfricaEricaceaeImportState(CentralAfricaEricaceaeImportConfigurator config) {
 		super(config);
-		setTransformer(new FloraMalesianaTransformer());
+		setTransformer(new CentralAfricaEricaceaeTransformer());
 	}
 
 // ********************************** GETTER / SETTER *************************************/	

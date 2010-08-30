@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */ 
 
-package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -27,8 +27,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
-public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<FloraMalesianaImportState> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(FloraMalesianaImportConfigurator.class);
+public class CentralAfricaEricaceaeImportConfigurator extends ImportConfiguratorBase<CentralAfricaEricaceaeImportState> implements IImportConfigurator {
+	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeImportConfigurator.class);
 	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
@@ -44,13 +44,13 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-			FloraMalesianaTaxonImport.class
+			CentralAfricaEricaceaeTaxonImport.class
 		};
 	};
 	
-	public static FloraMalesianaImportConfigurator NewInstance(String url,
+	public static CentralAfricaEricaceaeImportConfigurator NewInstance(String url,
 			ICdmDataSource destination){
-		return new FloraMalesianaImportConfigurator(url, destination);
+		return new CentralAfricaEricaceaeImportConfigurator(url, destination);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private FloraMalesianaImportConfigurator() {
+	private CentralAfricaEricaceaeImportConfigurator() {
 		super(defaultTransformer);
 //		setSource(url);
 //		setDestination(destination);
@@ -69,7 +69,7 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private FloraMalesianaImportConfigurator(String url, ICdmDataSource destination) {
+	private CentralAfricaEricaceaeImportConfigurator(String url, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
@@ -80,8 +80,8 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public FloraMalesianaImportState getNewState() {
-		return new FloraMalesianaImportState(this);
+	public CentralAfricaEricaceaeImportState getNewState() {
+		return new CentralAfricaEricaceaeImportState(this);
 	}
 
 	/* (non-Javadoc)
@@ -148,7 +148,7 @@ public class FloraMalesianaImportConfigurator extends ImportConfiguratorBase<Flo
 	}
 
 	public static void setClassificationTitle(String classificationTitle) {
-		FloraMalesianaImportConfigurator.classificationTitle = classificationTitle;
+		CentralAfricaEricaceaeImportConfigurator.classificationTitle = classificationTitle;
 	}
 
 	public static String getClassificationTitle() {

@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
@@ -42,11 +42,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class FloraMalesianaImportBase  extends CdmImportBase<FloraMalesianaImportConfigurator, FloraMalesianaImportState> {
-	private static final Logger logger = Logger.getLogger(FloraMalesianaImportBase.class);
+public abstract class CentralAfricaEricaceaeImportBase  extends CdmImportBase<CentralAfricaEricaceaeImportConfigurator, CentralAfricaEricaceaeImportState> {
+	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeImportBase.class);
 
 	
-	protected abstract boolean doInvoke(FloraMalesianaImportState state);
+	protected abstract boolean doInvoke(CentralAfricaEricaceaeImportState state);
 	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 //	/* (non-Javadoc)
@@ -131,7 +131,7 @@ public abstract class FloraMalesianaImportBase  extends CdmImportBase<FloraMales
 		return (additionalContentList.size() == 0);
 	}
 	
-	protected Element getBodyElement(FloraMalesianaImportConfigurator config){
+	protected Element getBodyElement(CentralAfricaEricaceaeImportConfigurator config){
 		Element root = config.getSourceRoot();
 		
 		if (! "body".equalsIgnoreCase(root.getName())){

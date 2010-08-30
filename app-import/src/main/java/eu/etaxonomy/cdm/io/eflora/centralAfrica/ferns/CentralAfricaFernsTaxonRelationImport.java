@@ -401,7 +401,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 			handleUninomial(childRank, higherName, orderName, subOrderName, familyName, subFamilyName, tribusName, subTribusName, sectionName, subsectionName, genusName);
 		}
 		//if higher taxon must exist, create it if it was not yet created
-		if (higherName.getRank() != null && getExistingTaxon(higherName) == null ){
+		if (higherName.getRank() != null && getExistingTaxon(higherName, state) == null ){
 			result = Taxon.NewInstance(higherName, childTaxon.getSec());
 			UUID uuid = higherName.getUuid();
 			String name = higherName.getNameCache();
@@ -413,13 +413,18 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 
 
 
-	private Taxon getExistingTaxon(BotanicalName higherName) {
+	private Taxon getExistingTaxon(BotanicalName higherName, CentralAfricaFernsImportState state) {
 		String nameCache = higherName.getNameCache();
 		UUID uuid = taxonMap.get(nameCache);
 		
 		Taxon taxon = null;
 		if (uuid != null){
 			taxon = CdmBase.deproxy(getTaxonService().find(uuid), Taxon.class);
+			Taxon taxon2 = state.getRelatedObject(HIGHER_TAXON_NAMESPACE, nameCache, Taxon.class);
+			if (taxon != taxon2){
+				logger.warn("Difference in related taxa: " + nameCache);
+			}
+			
 		}
 		return taxon;
 	}

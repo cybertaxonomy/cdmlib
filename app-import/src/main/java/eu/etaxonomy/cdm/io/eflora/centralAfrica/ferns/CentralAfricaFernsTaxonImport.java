@@ -254,7 +254,8 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		BotanicalName taxonName = BotanicalName.NewInstance(null);
 		ReferenceBase sec = state.getConfig().getSourceReference();
 		
-//		Integer taxonNumber = rs.getInt("Taxon number");
+		String taxonNumber = rs.getString("Taxon number");
+		
 		
 		String orderName = rs.getString("Order name");
 		String subOrderName = rs.getString("Suborder name");
@@ -282,7 +283,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		}else if ("s".equalsIgnoreCase(status)){
 			taxon = Synonym.NewInstance(taxonName, sec);
 		}else{
-			logger.warn("Status not given for taxon " );
+			logger.warn(taxonNumber + ": Status not given for taxon " );
 			taxon = Taxon.NewUnknownStatusInstance(taxonName, sec);
 		}
 		
@@ -298,7 +299,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		lowestRank = setLowestInfraSpecific(taxonName, lowestRank, subspeciesName,  varietyName, subVariety, formaName,subFormaName);
 		
 		taxonName.setRank(lowestRank);
-		setAuthor(taxonName, rs);
+		setAuthor(taxonName, rs, taxonNumber);
 		
 		
 		
@@ -314,7 +315,8 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 
 
 
-	private void setAuthor(BotanicalName taxonName, ResultSet rs) throws SQLException {
+	private void setAuthor(BotanicalName taxonName, ResultSet rs, String taxonNumber) throws SQLException {
+		
 		String orderAuthor = rs.getString("Order name author");
 		String subOrderAuthor = rs.getString("Suborder name author");
 		String familyAuthor = rs.getString("Family name author");
@@ -383,10 +385,10 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 				}
 			}
 		}else{
-			logger.warn("Rank is null");
+			logger.warn(taxonNumber + ": Rank is null");
 			authorString = authorsAbbrev;
 			if (StringUtils.isBlank(authorString)){
-				logger.warn("Authors abbrev string could not be defined");
+				logger.warn(taxonNumber + ": Authors abbrev string could not be defined");
 				authorString = authorsFull;	
 			}
 		}
@@ -395,7 +397,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 			parser.handleAuthors(taxonName, taxonName.getNameCache().trim() + " " + authorString, authorString);
 		}
 		if (StringUtils.isNotBlank(authorsAbbrev) && ! authorsAbbrev.equalsIgnoreCase(taxonName.getCombinationAuthorTeam()==null ? "" :taxonName.getCombinationAuthorTeam().getNomenclaturalTitle())){
-			logger.warn("Rank author and abbrev author are not equal: " + authorString + "\t\t " + authorsAbbrev);
+			logger.warn(taxonNumber + ": Rank author and abbrev author are not equal: " + authorString + "\t\t " + authorsAbbrev);
 		}
 //		if (StringUtils.isNotBlank(authorsFull) && ! authorsFull.equalsIgnoreCase(authorString)){
 //			logger.warn("Rank author and full author are not equal Rankauthor: " + authorString + ", full author " + authorsFull);

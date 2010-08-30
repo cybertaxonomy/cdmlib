@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */ 
 
-package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
+package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,8 @@ import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
-import eu.etaxonomy.cdm.io.eflora.floraMalesiana.UnmatchedLeads.UnmatchedLeadsKey;
+import eu.etaxonomy.cdm.io.eflora.UnmatchedLeads;
+import eu.etaxonomy.cdm.io.eflora.UnmatchedLeads.UnmatchedLeadsKey;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -88,19 +89,19 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  *
  */
 @Component
-public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase implements ICdmIO<FloraMalesianaImportState> {
-	private static final Logger logger = Logger.getLogger(FloraMalesianaTaxonImport.class);
+public class CentralAfricaEricaceaeTaxonImport  extends CentralAfricaEricaceaeImportBase implements ICdmIO<CentralAfricaEricaceaeImportState> {
+	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeTaxonImport.class);
 
 	private static int modCount = 30000;
 	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
 
-	public FloraMalesianaTaxonImport(){
+	public CentralAfricaEricaceaeTaxonImport(){
 		super();
 	}
 	
 	
 	@Override
-	public boolean doCheck(FloraMalesianaImportState state){
+	public boolean doCheck(CentralAfricaEricaceaeImportState state){
 		boolean result = true;
 		return result;
 	}
@@ -109,7 +110,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	private UnmatchedLeads unmatchedLeads;
 	
 	@Override
-	public boolean doInvoke(FloraMalesianaImportState state){
+	public boolean doInvoke(CentralAfricaEricaceaeImportState state){
 		logger.info("start make Taxa ...");
 		
 		//FIXME reset state
@@ -195,7 +196,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 
 
-	private void handleTaxonAttributes(Element elTaxon, Taxon taxon, FloraMalesianaImportState state) {
+	private void handleTaxonAttributes(Element elTaxon, Taxon taxon, CentralAfricaEricaceaeImportState state) {
 		List<Attribute> attrList = elTaxon.getAttributes();
 		for (Attribute attr : attrList){
 			String attrName = attr.getName();
@@ -221,7 +222,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 
 
-	private Taxon getLastTaxon(FloraMalesianaImportState state) {
+	private Taxon getLastTaxon(CentralAfricaEricaceaeImportState state) {
 		if (state.getConfig().getLastTaxonUuid() == null){
 			return null;
 		}else{
@@ -261,7 +262,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 
 
 	// body/taxon/*
-	private void handleTaxonElement(FloraMalesianaImportState state, Set<String> unhandledTitleClassess, Set<String> unhandledNomeclatureChildren, Set<String> unhandledDescriptionChildren, Taxon taxon, List<Element> children) {
+	private void handleTaxonElement(CentralAfricaEricaceaeImportState state, Set<String> unhandledTitleClassess, Set<String> unhandledNomeclatureChildren, Set<String> unhandledDescriptionChildren, Taxon taxon, List<Element> children) {
 		AnnotatableEntity lastEntity = null;
 		for (Element element : children){
 			String elName = element.getName();
@@ -301,7 +302,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 	
 	
-	private void handleReferences(FloraMalesianaImportState state, Element elReferences, Taxon taxon, AnnotatableEntity lastEntity) {
+	private void handleReferences(CentralAfricaEricaceaeImportState state, Element elReferences, Taxon taxon, AnnotatableEntity lastEntity) {
 		verifyNoAttribute(elReferences);
 		verifyNoChildren(elReferences, true);
 		String refString = elReferences.getTextNormalize(); 
@@ -332,7 +333,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 
 
-	private PolytomousKey handleKeys(FloraMalesianaImportState state, Element elKey, Taxon taxon) {
+	private PolytomousKey handleKeys(CentralAfricaEricaceaeImportState state, Element elKey, Taxon taxon) {
 		UnmatchedLeads openKeys = state.getUnmatchedLeads();
 		
 		//title
@@ -379,7 +380,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param elKeychoice
 	 * @param taxon 
 	 */
-	private void handleKeyChoices(FloraMalesianaImportState state, UnmatchedLeads openKeys, PolytomousKey key, Element elKeychoice, Taxon taxon) {
+	private void handleKeyChoices(CentralAfricaEricaceaeImportState state, UnmatchedLeads openKeys, PolytomousKey key, Element elKeychoice, Taxon taxon) {
 		
 		//char Attribute
 		Feature feature = handleKeychoiceChar(state, elKeychoice);
@@ -430,7 +431,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param feature
 	 * @return
 	 */
-	private List<FeatureNode> handleKeychoiceLeads(	FloraMalesianaImportState state, PolytomousKey key,	Element elKeychoice, Taxon taxon, Feature feature) {
+	private List<FeatureNode> handleKeychoiceLeads(	CentralAfricaEricaceaeImportState state, PolytomousKey key,	Element elKeychoice, Taxon taxon, Feature feature) {
 		List<FeatureNode> childNodes = new ArrayList<FeatureNode>();
 		List<Element> leads = elKeychoice.getChildren("lead");
 		for(Element elLead : leads){
@@ -446,7 +447,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param elKeychoice
 	 * @return
 	 */
-	private Feature handleKeychoiceChar(FloraMalesianaImportState state, Element elKeychoice) {
+	private Feature handleKeychoiceChar(CentralAfricaEricaceaeImportState state, Element elKeychoice) {
 		Feature feature = null;
 		Attribute charAttr = elKeychoice.getAttribute("char");
 		if (charAttr != null){
@@ -458,7 +459,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 
 
-	private FeatureNode handleLead(FloraMalesianaImportState state, PolytomousKey key, Element elLead, Taxon taxon, Feature feature) {
+	private FeatureNode handleLead(CentralAfricaEricaceaeImportState state, PolytomousKey key, Element elLead, Taxon taxon, Feature feature) {
 		FeatureNode node = FeatureNode.NewInstance();
 		node.setFeature(feature);
 		
@@ -501,7 +502,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param node
 	 */
-	private void handleLeadGoto(FloraMalesianaImportState state, PolytomousKey key, Element elLead, Taxon taxon, FeatureNode node) {
+	private void handleLeadGoto(CentralAfricaEricaceaeImportState state, PolytomousKey key, Element elLead, Taxon taxon, FeatureNode node) {
 		Attribute gotoAttr = elLead.getAttribute("goto");
 		if (gotoAttr != null){
 			String strGoto = gotoAttr.getValue().trim();
@@ -634,7 +635,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private TextData handleChromosomes(FloraMalesianaImportState state, Element element, Taxon taxon) {
+	private TextData handleChromosomes(CentralAfricaEricaceaeImportState state, Element element, Taxon taxon) {
 		Feature chromosomeFeature = getFeature("chromosomes", state);
 		verifyNoAttribute(element);
 		verifyNoChildren(element);
@@ -695,7 +696,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private TextData handleTaxonNotes(FloraMalesianaImportState state, Element element, Taxon taxon) {
+	private TextData handleTaxonNotes(CentralAfricaEricaceaeImportState state, Element element, Taxon taxon) {
 		TextData result = null;
 		verifyNoChildren(element, true);
 		//verifyNoAttribute(element);
@@ -727,7 +728,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param attribute
 	 * @return
 	 */
-	private TextData handleDescriptiveElement(FloraMalesianaImportState state,
+	private TextData handleDescriptiveElement(CentralAfricaEricaceaeImportState state,
 			Element element, Taxon taxon, String classValue) {
 		TextData result = null;
 		Feature feature = getFeature(classValue, state);
@@ -755,7 +756,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private TextData handleUses(FloraMalesianaImportState state, Element element, Taxon taxon) {
+	private TextData handleUses(CentralAfricaEricaceaeImportState state, Element element, Taxon taxon) {
 		verifyNoAttribute(element);
 		verifyNoChildren(element, true);
 		String value = element.getTextNormalize();
@@ -772,7 +773,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param unhandledDescriptionChildren
 	 */
-	private DescriptionElementBase handleDistribution(FloraMalesianaImportState state, Element element, Taxon taxon) {
+	private DescriptionElementBase handleDistribution(CentralAfricaEricaceaeImportState state, Element element, Taxon taxon) {
 		verifyNoAttribute(element);
 		verifyNoChildren(element, true);
 		String value = element.getTextNormalize();
@@ -789,7 +790,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param unhandledDescriptionChildren
 	 */
-	private TextData handleEcology(FloraMalesianaImportState state, Element elEcology, Taxon taxon) {
+	private TextData handleEcology(CentralAfricaEricaceaeImportState state, Element elEcology, Taxon taxon) {
 		verifyNoAttribute(elEcology);
 		verifyNoChildren(elEcology, true);
 		String value = elEcology.getTextNormalize();
@@ -828,7 +829,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param unhandledNomeclatureChildren 
 	 */
-	private void handleNomenclature(FloraMalesianaImportState state, Element elNomenclature, Taxon taxon, Set<String> unhandledChildren) {
+	private void handleNomenclature(CentralAfricaEricaceaeImportState state, Element elNomenclature, Taxon taxon, Set<String> unhandledChildren) {
 		verifyNoAttribute(elNomenclature);
 		
 		List<Element> elements = elNomenclature.getChildren();
@@ -846,7 +847,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 
 
 
-	private void handleNomenclatureNotes(FloraMalesianaImportState state, Element elNotes, Taxon taxon) {
+	private void handleNomenclatureNotes(CentralAfricaEricaceaeImportState state, Element elNotes, Taxon taxon) {
 		verifyNoAttribute(elNotes);
 		verifyNoChildren(elNotes);
 		String notesText = elNotes.getTextNormalize();
@@ -862,7 +863,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private void handleHomotypes(FloraMalesianaImportState state, Element elHomotypes, Taxon taxon) {
+	private void handleHomotypes(CentralAfricaEricaceaeImportState state, Element elHomotypes, Taxon taxon) {
 		verifyNoAttribute(elHomotypes);
 		
 		List<Element> elements = elHomotypes.getChildren();
@@ -884,7 +885,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private HomotypicalGroup handleNom(FloraMalesianaImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
+	private HomotypicalGroup handleNom(CentralAfricaEricaceaeImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
 		List<Attribute> attributes = elNom.getAttributes();
 		
 		boolean taxonBaseClassType = false;
@@ -929,7 +930,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param homotypicalGroup 
 	 */
-	private void handleTypeRef(FloraMalesianaImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
+	private void handleTypeRef(CentralAfricaEricaceaeImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
 		verifyNoChildren(elNom);
 		String typeRef = elNom.getTextNormalize();
 		typeRef = replaceStart(typeRef, "-");
@@ -1069,7 +1070,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 */
 	//body/taxon/
-	private HomotypicalGroup handleNomTaxon(FloraMalesianaImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup, boolean isSynonym) {
+	private HomotypicalGroup handleNomTaxon(CentralAfricaEricaceaeImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup, boolean isSynonym) {
 		NonViralName name = makeName(taxon, homotypicalGroup, isSynonym);
 		String num = null;
 		
@@ -1247,7 +1248,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param leadsKey
 	 * @return
 	 */
-	private Set<FeatureNode> handleMatchingNodes(FloraMalesianaImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
+	private Set<FeatureNode> handleMatchingNodes(CentralAfricaEricaceaeImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
 		Set<FeatureNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
 		for (FeatureNode matchingNode : matchingNodes){
 			state.getUnmatchedLeads().removeNode(leadsKey, matchingNode);
@@ -1485,7 +1486,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 		return team;
 	}
 
-	private void handleInfrAuthor(FloraMalesianaImportState state, Element elAuthor, NonViralName name, boolean overwrite) {
+	private void handleInfrAuthor(CentralAfricaEricaceaeImportState state, Element elAuthor, NonViralName name, boolean overwrite) {
 		String strAuthor = elAuthor.getValue().trim();
 		if (strAuthor.endsWith(",")){
 			strAuthor = strAuthor.substring(0, strAuthor.length() -1);
@@ -1600,7 +1601,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param name
 	 */
-	private void handleBasionymAuthor(FloraMalesianaImportState state, Element element, NonViralName name, boolean overwrite) {
+	private void handleBasionymAuthor(CentralAfricaEricaceaeImportState state, Element element, NonViralName name, boolean overwrite) {
 		String strAuthor = element.getValue().trim();
 		Pattern reBasionymAuthor = Pattern.compile("^\\(.*\\)$");
 		if (reBasionymAuthor.matcher(strAuthor).matches()){
@@ -1686,7 +1687,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 
 
-	private void handleDescription(FloraMalesianaImportState state, Element elDescription, Taxon taxon, Set<String> unhandledChildren) {
+	private void handleDescription(CentralAfricaEricaceaeImportState state, Element elDescription, Taxon taxon, Set<String> unhandledChildren) {
 		verifyNoAttribute(elDescription);
 		
 		List<Element> elements = elDescription.getChildren();
@@ -1706,7 +1707,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param element
 	 * @param taxon
 	 */
-	private void handleChar(FloraMalesianaImportState state, Element element, Taxon taxon) {
+	private void handleChar(CentralAfricaEricaceaeImportState state, Element element, Taxon taxon) {
 		List<Attribute> attributes = element.getAttributes();
 		for (Attribute attribute : attributes){
 			if (! attribute.getName().equalsIgnoreCase("class")){
@@ -1752,7 +1753,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @return
 	 * @throws UndefinedTransformerMethodException 
 	 */
-	private Feature getFeature(String classValue, FloraMalesianaImportState state) {
+	private Feature getFeature(String classValue, CentralAfricaEricaceaeImportState state) {
 		UUID uuid;
 		try {
 			uuid = state.getTransformer().getFeatureUuid(classValue);
@@ -1778,7 +1779,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param unhandledTitleClassess 
 	 */
-	private void handleTitle(FloraMalesianaImportState state, Element element, Taxon taxon, Set<String> unhandledTitleClassess) {
+	private void handleTitle(CentralAfricaEricaceaeImportState state, Element element, Taxon taxon, Set<String> unhandledTitleClassess) {
 		// attributes
 		List<Attribute> attributes = element.getAttributes();
 		for (Attribute attribute : attributes){
@@ -1824,7 +1825,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 		if (! elements.isEmpty()){
 			logger.warn("Title has unexpected children");
 		}
-		UUID uuidTitle = FloraMalesianaTransformer.uuidTitle;
+		UUID uuidTitle = CentralAfricaEricaceaeTransformer.uuidTitle;
 		ExtensionType titleExtension = this.getExtensionType(state, uuidTitle, "title", "title", "title");
 		taxon.addExtension(element.getTextNormalize(), titleExtension);
 		
@@ -1903,7 +1904,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param taxon
 	 * @param lastTaxon
 	 */
-	private void handleTaxonRelation(FloraMalesianaImportState state, Taxon taxon, Taxon lastTaxon) {
+	private void handleTaxonRelation(CentralAfricaEricaceaeImportState state, Taxon taxon, Taxon lastTaxon) {
 		
 		TaxonomicTree tree = getTree(state);
 		if (lastTaxon == null){
@@ -1941,7 +1942,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	 * @param state
 	 * @return 
 	 */
-	private TaxonomicTree getTree(FloraMalesianaImportState state) {
+	private TaxonomicTree getTree(CentralAfricaEricaceaeImportState state) {
 		TaxonomicTree result = state.getTree(null);
 		if (result == null){
 			UUID uuid = state.getConfig().getTaxonomicTreeUuid();
@@ -1961,7 +1962,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	}
 
 
-	private TaxonomicTree getNewClassification(FloraMalesianaImportState state) {
+	private TaxonomicTree getNewClassification(CentralAfricaEricaceaeImportState state) {
 		TaxonomicTree result;
 		result = TaxonomicTree.NewInstance(state.getConfig().getClassificationTitle());
 		state.putTree(null, result);
@@ -2133,7 +2134,7 @@ public class FloraMalesianaTaxonImport  extends FloraMalesianaImportBase impleme
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(FloraMalesianaImportState state){
+	protected boolean isIgnore(CentralAfricaEricaceaeImportState state){
 		return ! state.getConfig().isDoTaxa();
 	}
 
