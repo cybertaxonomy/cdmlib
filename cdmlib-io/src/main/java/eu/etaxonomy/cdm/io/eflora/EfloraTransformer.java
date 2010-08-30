@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * @created 01.03.2010
  * @version 1.0
  */
-public final class EfloraTransformer extends InputTransformerBase {
+public class EfloraTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EfloraTransformer.class);
 	

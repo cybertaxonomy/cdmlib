@@ -37,8 +37,8 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
-	private String classificationTitle = "Flora Malesiana";
-	private String sourceReferenceTitle = "Flora Malesiana";
+	private String classificationTitle = "E-Flora Import";
+	private String sourceReferenceTitle = "E-Flora";
 	
 	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
 	//from the one import to another import in case I run 2 imports in line
@@ -57,14 +57,16 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 		};
 	};
 	
-
+	protected EfloraImportConfigurator() {
+		super(defaultTransformer);
+	}
+	
+	
 	/**
 	 * 
 	 */
-	private EfloraImportConfigurator() {
-		super(defaultTransformer);
-//		setSource(url);
-//		setDestination(destination);
+	protected EfloraImportConfigurator(IInputTransformer transformer) {
+		super(transformer);
 	}
 	
 
@@ -72,13 +74,22 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 	 * @param url
 	 * @param destination
 	 */
-	private EfloraImportConfigurator(String url, ICdmDataSource destination) {
+	protected EfloraImportConfigurator(String url, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}
 	
-	
+	/**
+	 * @param url
+	 * @param destination
+	 */
+	protected EfloraImportConfigurator(String url, ICdmDataSource destination, IInputTransformer transformer) {
+		super(transformer);
+		setSource(url);
+		setDestination(destination);
+	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
