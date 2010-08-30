@@ -42,6 +42,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -54,14 +55,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
-import eu.etaxonomy.cdm.model.taxon.TaxonComparatorSearch;
-import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -1315,8 +1314,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 	List<String> taxonNames = new ArrayList<String>();
 	 	
 		for (TaxonNode node: nodes){
-			List<String> synonymsGenus = new ArrayList<String>();
-		 	List<String> synonymsEpithet = new ArrayList<String>();
+			HashMap<String, String> synonymsGenus = new HashMap<String, String>();
+			List<String> synonymsEpithet = new ArrayList<String>();
+			
 			if (node.getTaxonomicTree().equals(tree)){
 				if (!node.isTopmostNode()){
 				TaxonNode parent = (TaxonNode)node.getParent();
@@ -1328,7 +1328,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				if (parentName.isGenus() || parentName.isSpecies() || parentName.getRank().equals(Rank.SUBGENUS())){
 					
 					Synonym inferredEpithet;
-					Synonym inferredGenus;
+					Synonym inferredGenus = null;
 					Synonym potentialCombination;
 					
 					List<String> propertyPaths = new ArrayList<String>();
@@ -1348,16 +1348,32 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							Synonym syn = synonymRelationOfGenus.getSynonym();
 							HibernateProxyHelper.deproxy(syn);
 							
+							// Determine the idInSource
+							String idInSource = getIdInSource(syn);
+							
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String synGenusName = zooName.getGenusOrUninomial();
-							if (!synonymsGenus.contains(synGenusName)){
-								synonymsGenus.add(synGenusName);
+							if (!synonymsGenus.containsKey(synGenusName)){
+								synonymsGenus.put(synGenusName, idInSource);
 							}
 							inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
 							inferredSynName.setSpecificEpithet(epithetOfTaxon);
 							inferredSynName.setGenusOrUninomial(synGenusName);
 							inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+
+							// Add the original source
+							if (idInSource != null) {
+								IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredEpithetOf", syn.getSec(), null);
+								
+								// Add the citation
+								ReferenceBase citation = getCitation(syn);
+								if (citation != null) {
+									originalSource.setCitation(citation);
+									inferredEpithet.addSource(originalSource);
+								}
+							}
+							
 							taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
 							inferredSynonyms.add(inferredEpithet);
 							inferredSynName.generateTitle();
@@ -1394,9 +1410,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							
 							Synonym syn = synonymRelationOfTaxon.getSynonym();
 							synName =syn.getName();
-							
 							HibernateProxyHelper.deproxy(syn);
 							
+							// Determine the idInSource
+							String idInSource = getIdInSource(syn);
+
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String speciesEpithetName = zooName.getSpecificEpithet();
@@ -1407,6 +1425,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							inferredSynName.setSpecificEpithet(speciesEpithetName);
 							inferredSynName.setGenusOrUninomial(genusOfTaxon);
 							inferredGenus = Synonym.NewInstance(inferredSynName, null);
+							
+							// Add the original source
+							if (idInSource != null) {
+								IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredGenusOf", syn.getSec(), null);
+								
+								// Add the citation
+								ReferenceBase citation = getCitation(syn);
+								if (citation != null) {
+									originalSource.setCitation(citation);
+									inferredGenus.addSource(originalSource);
+								}
+							}
+
 							taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_EPITHET_OF());
 							inferredSynonyms.add(inferredGenus);
 							inferredSynName.generateTitle();
@@ -1436,6 +1467,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 						
 					}else if (type.equals(SynonymRelationshipType.POTENTIAL_COMBINATION_OF())){
 						
+						ReferenceBase sourceReference = null; // TODO: Determination of sourceReference is redundant
 						
 						for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
 							TaxonNameBase synName;
@@ -1444,10 +1476,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							
 							HibernateProxyHelper.deproxy(syn);
 							
+							// Set the sourceReference
+							sourceReference = syn.getSec();
+
+							// Determine the idInSource
+							String idInSource = getIdInSource(syn);
+
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String synGenusName = zooName.getGenusOrUninomial();
-							if (!synonymsGenus.contains(synGenusName)){
-								synonymsGenus.add(synGenusName);
+							if (!synonymsGenus.containsKey(synGenusName)){
+								synonymsGenus.put(synGenusName, idInSource);
 							}
 						}
 						
@@ -1457,6 +1495,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							Synonym syn = synonymRelationOfTaxon.getSynonym();
 							HibernateProxyHelper.deproxy(syn);
 							
+							// Set sourceReference
+							sourceReference = syn.getSec();
+							
 							ZoologicalName zooName = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 							String epithetName = zooName.getSpecificEpithet();
 							if (!synonymsEpithet.contains(epithetName)){
@@ -1464,11 +1505,24 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							}
 						}
 						for (String epithetName:synonymsEpithet){
-							for (String genusName: synonymsGenus){
+							for (String genusName: synonymsGenus.keySet()){
 								inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
 								inferredSynName.setSpecificEpithet(epithetName);
 								inferredSynName.setGenusOrUninomial(genusName);
 								potentialCombination = Synonym.NewInstance(inferredSynName, null);
+								
+								// Add the original source
+								String idInSource = synonymsGenus.get(genusName);
+								if (idInSource != null) {
+									IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "PotentialCombinationOf", sourceReference, null);
+									
+									// Add the citation
+									if (sourceReference != null) {
+										originalSource.setCitation(sourceReference);
+										potentialCombination.addSource(originalSource);
+									}
+								}
+
 								inferredSynonyms.add(potentialCombination);
 								inferredSynName.generateTitle();
 								zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
@@ -1510,6 +1564,53 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			
 		
 		return inferredSynonyms;
+	}
+
+
+	/**
+	 * Returns the idInSource for a given Synonym.
+	 * @param syn
+	 */
+	private String getIdInSource(Synonym syn) {
+		String idInSource = null;
+		Set<IdentifiableSource> sources = syn.getSources();
+		if (sources.size() == 1) {
+			IdentifiableSource source = sources.iterator().next();
+			if (source != null) {
+				idInSource  = source.getIdInSource();
+			}
+		} else if (sources.size() > 1) {
+			int count = 1;
+			idInSource = "";
+			for (IdentifiableSource source : sources) {
+				idInSource += source.getIdInSource();
+				if (count < sources.size()) {
+					idInSource += "; ";
+				}
+				count++;
+			}
+		}
+		
+		return idInSource;
+	}
+	
+	/**
+	 * Returns the idInSource for a given Synonym.
+	 * @param syn
+	 */
+	private ReferenceBase getCitation(Synonym syn) {
+		ReferenceBase citation = null;
+		Set<IdentifiableSource> sources = syn.getSources();
+		if (sources.size() == 1) {
+			IdentifiableSource source = sources.iterator().next();
+			if (source != null) {
+				citation = source.getCitation();
+			}
+		} else if (sources.size() > 1) {
+			logger.warn("This Synonym has more than one source: " + syn.getUuid() + " (" + syn.getTitleCache() +")");
+		}
+		
+		return citation;
 	}
 	
 /*	private void xxx(List<SynonymRelationship> synonymRelationships, HashMap <UUID, ZoologicalName> zooHashMap, SynonymRelationshipType type, String addString){
