@@ -15,6 +15,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -45,6 +46,39 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 */
 	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle();
 	
+	/**
+	 * TODO candidate for harmonization: rename to listForPublishing
+	 * @return
+	 */
 	public List<ReferenceBase> getAllReferencesForPublishing();
+	
+	/**
+	 * TODO candidate for harmonization: rename to listNomenclaturalReferences
+	 * @return
+	 */
 	public List<ReferenceBase> getAllNomenclaturalReferences();
+
+	/**
+	 * returns
+	 * 
+	 * <ol>
+	 * <li>all taxa directly covered by this reference</li>
+	 * <li>all taxa covered by the according in references of this reference</li>
+	 * </ol>
+	 * 
+	 * searches for taxa using the following relations:
+	 * <ul>
+	 * <li>taxon.name.nomenclaturalreference</li>
+	 * <li>taxon.descriptions.descriptionElement.sources.citation</li>
+	 * <li>taxon.descriptions.descriptionSources</li>
+	 * <li>taxon.name.descriptions.descriptionElement.sources</li>
+	 * <li>taxon.name.descriptions.descriptionSources</li>
+	 * </ul>
+	 * 
+	 * @param referenceBase
+	 * @param includeSubordinateReferences TODO
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths);
 }

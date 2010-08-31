@@ -3,7 +3,6 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -142,36 +141,66 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
 
 	/**
-     *  CannotDisseminateFormatException thrown by MetadataPrefixEditor
-     * @throws IdDoesNotExistException 
-     */
-    @RequestMapping(method = RequestMethod.GET,params = "verb=GetRecord")
-    public ModelAndView getRecord(@RequestParam(value = "identifier", required = true) LSID identifier,@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix) throws IdDoesNotExistException {
- 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("metadataPrefix", metadataPrefix);
-        
-        T object = service.find(identifier);
-        Pager<AuditEventRecord<T>> results = service.pageAuditEvents(object,1,0,AuditEventSort.BACKWARDS,getPropertyPaths()); 
+	 * CannotDisseminateFormatException thrown by MetadataPrefixEditor
+	 * 
+	 * @throws IdDoesNotExistException
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "verb=GetRecord")
+	public ModelAndView getRecord(
+			@RequestParam(value = "identifier", required = true) LSID identifier,
+			@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix)
+			throws IdDoesNotExistException {
 
-        if(results.getCount() == 0) {
-	        throw new IdDoesNotExistException(identifier);
-        }
-        
-        modelAndView.addObject("object",results.getRecords().get(0));
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("metadataPrefix", metadataPrefix);
 
-        switch(metadataPrefix) {
-        case RDF:
-            modelAndView.setViewName("oai/getRecord.rdf");
-            break; 
-	    case OAI_DC:
-        default:
-		    modelAndView.setViewName("oai/getRecord.dc");        
-        }
+		finishModelAndView(identifier, metadataPrefix, modelAndView);
 
-        return modelAndView;
-    }
-    
+		return modelAndView;
+	}
+
+	/**
+	 * @param identifier
+	 * @param metadataPrefix
+	 * @param modelAndView
+	 * @throws IdDoesNotExistException
+	 */
+	protected void finishModelAndView(LSID identifier,
+			MetadataPrefix metadataPrefix, ModelAndView modelAndView)
+			throws IdDoesNotExistException {
+		
+		switch (metadataPrefix) {
+//			case DWC:
+//				modelAndView.addObject("list", obtainCdmEntityList(identifier, metadataPrefix));
+			case RDF:
+				modelAndView.addObject("object", obtainCdmEntity(identifier));
+				modelAndView.setViewName("oai/getRecord.rdf");
+				break;
+			case OAI_DC:
+			default:
+				modelAndView.addObject("object", obtainCdmEntity(identifier));
+				modelAndView.setViewName("oai/getRecord.dc");
+		}
+	}
+
+	/**
+	 * @param identifier
+	 * @return
+	 * @throws IdDoesNotExistException
+	 */
+	protected AuditEventRecord<T> obtainCdmEntity(LSID identifier)
+			throws IdDoesNotExistException {
+		T object = service.find(identifier);
+		Pager<AuditEventRecord<T>> results = service.pageAuditEvents(object, 1,
+				0, AuditEventSort.BACKWARDS, getPropertyPaths());
+
+		if (results.getCount() == 0) {
+			throw new IdDoesNotExistException(identifier);
+		}
+		return results.getRecords().get(0);
+	}
+	
+
     /**
      *  CannotDisseminateFormatException thrown by MetadataPrefixEditor
      * @throws IdDoesNotExistException 

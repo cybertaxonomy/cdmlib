@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
-import java.util.ArrayList;
+import static eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix.DWC;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -12,8 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.remote.controller.AbstractOaiPmhController;
+import eu.etaxonomy.cdm.remote.controller.IdDoesNotExistException;
+import eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
 
 @Controller
@@ -29,6 +35,11 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 				"inProceedings",
 		});
 	}
+	
+	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
+			"titleCache",
+			"$"
+			});
 
     @Override
     protected void addSets(ModelAndView modelAndView) {
@@ -41,5 +52,42 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
     @Autowired
 	public void setService(IReferenceService service) {
 		this.service = service;
+    }
+    
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.controller.AbstractOaiPmhController#finishModelAndView(eu.etaxonomy.cdm.model.common.LSID, eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix, org.springframework.web.servlet.ModelAndView)
+	 */
+	@Override
+	protected void finishModelAndView(LSID identifier,
+			MetadataPrefix metadataPrefix, ModelAndView modelAndView)
+			throws IdDoesNotExistException {
+		
+		if(metadataPrefix.equals(DWC)){
+			modelAndView.addObject("list", obtainCoveredTaxaList(identifier, metadataPrefix));
+			modelAndView.setViewName("oai/getRecord.dwc");
+		} else {
+			super.finishModelAndView(identifier, metadataPrefix, modelAndView);
+		}
 	}
+
+	/**
+	 * @param identifier
+	 * @param metadataPrefix
+	 * @return
+	 * @throws IdDoesNotExistException
+	 */
+	private  List<TaxonBase> obtainCoveredTaxaList(
+			LSID identifier, MetadataPrefix metadataPrefix)
+			throws IdDoesNotExistException {
+		
+		AuditEventRecord<ReferenceBase> auditEventRecord = obtainCdmEntity(identifier);
+		ReferenceBase referenceBase = auditEventRecord.getAuditableObject();
+		List<TaxonBase> list = service.listCoveredTaxa(referenceBase, true, TAXON_INIT_STRATEGY);
+		
+		return list;
+	}
+    
+	
+    
 }

@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
+import static org.junit.Assert.*;
+
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -17,6 +20,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -29,6 +35,10 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	private UUID firstBookUuid;
 	private UUID firstJournalUuid;
 	private UUID genericUuid;
+	private UUID proceedingsUuid;
+	private UUID bookSectionUuid;
+	private UUID nomenclaturalReferenceBookUuid;
+	
 	private String firstPublisherName ="First Publisher";
 	private String secondPublisherName ="Second Publisher";
 	private String thirdPublisherName ="Third Publisher";
@@ -40,6 +50,9 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		firstBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
 	    firstJournalUuid = UUID.fromString("ad4322b7-4b05-48af-be70-f113e46c545e");
 	    genericUuid = UUID.fromString("bd4822b7-4b05-4eaf-be70-f113446c585e");
+	    proceedingsUuid = UUID.fromString("596b1327-be50-4b0a-9aa2-3ecd610215f2");
+	    bookSectionUuid = UUID.fromString("596b1327-be51-4b0a-9aa2-3ecd610215f1");
+	    nomenclaturalReferenceBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f3");
 	}
 
 	@Test
@@ -62,6 +75,59 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 //		assertEquals("fourth publisher should come fourth",fourthPublisherName,publishers.get(3).getPublisherName());
 		
 		
+	}
+	
+	@Test
+	public void testGetSubordinateReferences() {
+		
+	    ReferenceBase book = referenceDao.findByUuid(firstBookUuid);	    
+	    ReferenceBase proceedings = referenceDao.findByUuid(proceedingsUuid);
+	    
+	    // 1.)
+		List<ReferenceBase> book_subordinateReferences = referenceDao.getSubordinateReferences(book);
+		assertEquals("expecting one subordinate reference", book_subordinateReferences.size(), 1);
+		ReferenceBase sub_1 = book_subordinateReferences.get(0);
+		assertEquals("expecting BookSection as first subordinateReferences", "Better Testing made easy", sub_1.getTitleCache());
+		assertEquals("first subordinateReferences matches uuid", bookSectionUuid, sub_1.getUuid());
+		
+		// 2.)
+		List<ReferenceBase> proceedings_subordinateReferences = referenceDao.getSubordinateReferences(proceedings);
+		assertEquals("expecting one subordinate reference",2 ,proceedings_subordinateReferences.size());
+		sub_1 = proceedings_subordinateReferences.get(0);
+		ReferenceBase sub_2 = proceedings_subordinateReferences.get(1);
+		assertEquals("expecting BookSection as first subordinateReferences", "Proceedings of Testing Vol. 1", sub_1.getTitleCache());
+		assertEquals("expecting BookSection as first subordinateReferences", "Better Testing made easy", sub_2.getTitleCache());
+		assertEquals("first subordinateReferences matches uuid", firstBookUuid, sub_1.getUuid());
+		assertEquals("second subordinateReferences matches uuid", bookSectionUuid, sub_2.getUuid());
+	}
+	
+	@Test
+	public void testListCoveredTaxa() {
+
+	    
+		ReferenceBase book = referenceDao.findByUuid(firstBookUuid);
+		List<TaxonBase> coveredTaxa = referenceDao.listCoveredTaxa(book, false, null);
+		assertEquals("expecting one Taxa covered by this book", 1, coveredTaxa.size());
+		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+		
+		coveredTaxa = referenceDao.listCoveredTaxa(book, true, null);
+		assertEquals("expecting one Taxa covered by this book", 2, coveredTaxa.size());
+		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+		
+		ReferenceBase bookSection = referenceDao.findByUuid(bookSectionUuid);
+		coveredTaxa = referenceDao.listCoveredTaxa(bookSection, false, null);
+		assertEquals("expecting two Taxa covered by this bookSection", 2, coveredTaxa.size());
+		assertEquals("1st covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+		
+		// by nomenclaturalReference
+		ReferenceBase nomRef = referenceDao.findByUuid(nomenclaturalReferenceBookUuid);
+		coveredTaxa = referenceDao.listCoveredTaxa(nomRef, false, null);
+		assertEquals("expecting two Taxa covered nomenclaturalReference", 2, coveredTaxa.size());
+		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+	
 	}
 
 

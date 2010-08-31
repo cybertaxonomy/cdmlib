@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 
 
@@ -59,6 +61,14 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 	public List<ReferenceBase> getAllNomenclaturalReferences() {
 		
 		return dao.getAllNomenclaturalReferences();
+	}
+
+	@Override
+	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths) {
+		
+		List<TaxonBase> taxonList = dao.listCoveredTaxa(referenceBase, includeSubordinateReferences, propertyPaths);
+		
+		return taxonList;
 	}
 
 }

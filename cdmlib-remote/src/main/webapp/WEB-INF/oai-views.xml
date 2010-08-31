@@ -34,6 +34,13 @@
         <property name="mapper" ref="dozerMapper"/>
     </bean>
     
+    <bean name="oai/getRecord.dwc" class="eu.etaxonomy.cdm.remote.view.oaipmh.dwc.GetRecordView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    
     <bean name="oai/listMetadataFormats" class="eu.etaxonomy.cdm.remote.view.oaipmh.ListMetadataFormatsView">
         <property name="contentType" value="text/xml; charset=UTF-8"/>
         <property name="marshaller" ref="marshaller"/>

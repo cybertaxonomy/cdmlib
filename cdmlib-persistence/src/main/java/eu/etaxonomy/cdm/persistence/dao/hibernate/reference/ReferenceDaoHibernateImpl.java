@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -46,6 +48,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.reference.Report;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 
@@ -82,7 +85,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 
 	@Override
 	public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		
 		for(ReferenceBase reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorTeam());
@@ -167,9 +170,102 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 				
 		return resultRefernces;
 	}
-public List<ReferenceBase> getAllNomenclaturalReferences(){
-		
-		List<ReferenceBase> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
+	
+	public List<ReferenceBase> getAllNomenclaturalReferences() {
+		List<ReferenceBase> references = getSession().createQuery(
+				"select t.nomenclaturalReference from TaxonNameBase t").list();
 		return references;
+	}
+
+	@Override
+	public List<ReferenceBase> getSubordinateReferences(
+			ReferenceBase referenceBase) {
+		
+		List<ReferenceBase> references = new ArrayList();
+		List<ReferenceBase> subordinateReferences = new ArrayList();
+		
+		Query query = getSession().createQuery("select r from ReferenceBase r where r.inReference = (:reference)");
+		query.setParameter("reference", referenceBase);
+		references.addAll(query.list());
+		for(ReferenceBase ref : references){
+			subordinateReferences.addAll(getSubordinateReferences(ref));
+		}
+		references.addAll(subordinateReferences);
+		return references;
+	}
+
+	@Override
+	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths) {
+		/*
+		 * <li>taxon.name.nomenclaturalreference</li>
+		 * <li>taxon.descriptions.descriptionElement.sources.citation</li>
+		 * <li>taxon.descriptions.descriptionSources</li>
+		 * <li>taxon.name.descriptions.descriptionElement.sources</li>
+		 * <li>taxon.name.descriptions.descriptionSources</li>
+		 */
+		
+		//TODO implement search in nameDescriptions
+		List<TaxonBase> taxonBaseList = new ArrayList<TaxonBase>();
+		Set<ReferenceBase> referenceSet = new HashSet<ReferenceBase>();
+		referenceSet.add(referenceBase);
+		if(includeSubordinateReferences){
+			referenceSet.addAll(getSubordinateReferences(referenceBase));
+		}
+		
+//		String nomenclaturalReferenceSql = 
+//			"select distinct t from Taxon  " +
+//			"left join t.name n " +
+//			"left join n.nomenclaturalReference r" +
+//			" r in (:referenceBase) ";
+//		
+//		Query query1 = getSession().createQuery(nomenclaturalReferenceSql);
+//		query1.setParameterList("referenceBase", referenceSet);
+//		taxonBaseList = query1.list();
+	
+		String taxonDescriptionSql = 
+			
+			"select distinct t from Taxon t " +
+			// TaxonDescription
+			"left join t.descriptions td " +
+			"left join td.descriptionSources td_s " +
+			"left join td.descriptionElements td_e " +
+			"left join td_e.sources td_e_s " +
+			// TaxonNameDescription
+			"left join t.name n " +
+			"left join n.descriptions nd " +
+			"left join nd.descriptionSources nd_s " +
+			"left join nd.descriptionElements nd_e " +
+			"left join nd_e.sources nd_e_s " +
+			
+			"where td_e_s.citation in (:referenceBase_1) " +
+			"or td_s in (:referenceBase_2) " +
+			"or nd_e_s.citation in (:referenceBase_3) " +
+			"or nd_s in (:referenceBase_4) or " +
+			"n.nomenclaturalReference in (:referenceBase_5)"
+			
+			; 
+		/*
+		 * 		"select distinct t from TaxonDescription td " +
+			"left join td.taxon t " +
+			"left join td.descriptionSources td_s " +
+			"left join td.descriptionElements td_e " +
+			"left join e.sources td_e_s " +
+			"where td_e_s.citation in (:referenceBase_1) " +
+			"or td_s in (:referenceBase_2)"
+			; 
+		 */
+		
+		Query query2 = getSession().createQuery(taxonDescriptionSql);
+		query2.setParameterList("referenceBase_1", referenceSet);
+		query2.setParameterList("referenceBase_2", referenceSet);
+		query2.setParameterList("referenceBase_3", referenceSet);
+		query2.setParameterList("referenceBase_4", referenceSet);
+		query2.setParameterList("referenceBase_5", referenceSet);
+		
+		taxonBaseList = query2.list();
+		
+		defaultBeanInitializer.initializeAll(taxonBaseList, propertyPaths);
+		
+		return taxonBaseList;
 	}
 }
