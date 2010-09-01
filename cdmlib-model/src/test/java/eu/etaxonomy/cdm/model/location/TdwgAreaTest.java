@@ -152,96 +152,96 @@ public class TdwgAreaTest {
 	
 	
 
-	@Test
-	public void getHirarchichalAreasTest(){
-		//NamedArea area0 = TdwgArea.getAreaByTdwgLabel("Spain"); 
-		//System.out.println(area0.getLabel().toString());
-		//NamedArea partof = area0.getPartOf();
-		//System.out.println(partof.getLevel().getLabel());
-//		NamedAreaLevel level = area0.getLevel();
-//		System.out.println(level.getLabel().toString());
-//		System.out.println(getAreaLabelForTDWGLevel(1, area0));
-//		System.out.println(getAreaLabelForTDWGLevel(2, area0));
-//		System.out.println(getAreaLabelForTDWGLevel(3, area0));
-
-		//creating levels to omit
-		Set<NamedAreaLevel> omitLevels = new HashSet<NamedAreaLevel>();
-		NamedAreaLevel level = NamedAreaLevel.TDWG_LEVEL2();
-		omitLevels.add(level);
-		
-		//creating and filling the list
-		List<NamedArea> areaList = new ArrayList<NamedArea>();
-		NamedArea area1 = TdwgArea.getAreaByTdwgLabel("Spain");
-		areaList.add(area1);
-		NamedArea area2 = TdwgArea.getAreaByTdwgLabel("Germany");
-		areaList.add(area2);
-		NamedArea area3 = TdwgArea.getAreaByTdwgLabel("France");
-		areaList.add(area3);
-		NamedArea area4 = TdwgArea.getAreaByTdwgLabel("Italy");
-		areaList.add(area4);
-		NamedArea area5 = TdwgArea.getAreaByTdwgLabel("Croatia");
-		areaList.add(area5);
-		NamedArea area6 = TdwgArea.getAreaByTdwgLabel("Portugal");
-		areaList.add(area6);
-		
-		//System.out.println(areaListToString(areaList));
-		
-		NamedAreaTree tree = new NamedAreaTree();
-		tree.merge(areaList, omitLevels);
-/*		
-		for (NamedArea area : areaList) {
-			List<NamedArea> levelList = area.getAllLevelList();
-			tree.merge(levelList);
-			//System.out.println(areaListToString(levelList));
-		}
-*/		
-		System.out.println(tree.toString());
-		tree.sortChildren();
-		System.out.println(tree.toString());
-		
-		List<NamedArea> areaList2 = new ArrayList<NamedArea>();
-		NamedArea area7 = TdwgArea.getAreaByTdwgLabel("Chita");
-		areaList2.add(area7);
-		NamedArea area8 = TdwgArea.getAreaByTdwgLabel("Buryatiya");
-		areaList2.add(area8);
-		NamedArea area9 = TdwgArea.getAreaByTdwgLabel("Philippines");
-		areaList2.add(area9);
-		
-		tree.merge(areaList2, omitLevels);
-		tree.sortChildren();
-		System.out.println(tree.toString());
-		
-		List<Distribution> distList = new ArrayList<Distribution>();
-		Distribution dist1 = Distribution.NewInstance(area1, null);
-		distList.add(dist1);
-		Distribution dist2 = Distribution.NewInstance(area2, null);
-		distList.add(dist2);
-		Distribution dist3 = Distribution.NewInstance(area3, null);
-		distList.add(dist3);
-		Distribution dist4 = Distribution.NewInstance(area4, null);
-		distList.add(dist4);
-		Distribution dist5 = Distribution.NewInstance(area5, null);
-		distList.add(dist5);
-		Distribution dist6 = Distribution.NewInstance(area6, null);
-		distList.add(dist6);
-		
-		DistributionTree distTree = new DistributionTree();
-		distTree.merge(distList, omitLevels);
-		
-		List<Distribution> distList2 = new ArrayList<Distribution>();
-		Distribution dist7 = Distribution.NewInstance(area7, null);
-		distList2.add(dist7);
-		Distribution dist8 = Distribution.NewInstance(area8, null);
-		distList2.add(dist8);
-		Distribution dist9 = Distribution.NewInstance(area9, null);
-		distList2.add(dist9);
-		distTree.merge(distList2, omitLevels);
-		distTree.sortChildren();
-		System.out.println("## DISTRIBUTION TREE ##");
-		System.out.println(distTree.toString());
-
-	}
-	
+//	@Test
+//	public void getHirarchichalAreasTest(){
+//		//NamedArea area0 = TdwgArea.getAreaByTdwgLabel("Spain"); 
+//		//System.out.println(area0.getLabel().toString());
+//		//NamedArea partof = area0.getPartOf();
+//		//System.out.println(partof.getLevel().getLabel());
+////		NamedAreaLevel level = area0.getLevel();
+////		System.out.println(level.getLabel().toString());
+////		System.out.println(getAreaLabelForTDWGLevel(1, area0));
+////		System.out.println(getAreaLabelForTDWGLevel(2, area0));
+////		System.out.println(getAreaLabelForTDWGLevel(3, area0));
+//
+//		//creating levels to omit
+//		Set<NamedAreaLevel> omitLevels = new HashSet<NamedAreaLevel>();
+//		NamedAreaLevel level = NamedAreaLevel.TDWG_LEVEL2();
+//		omitLevels.add(level);
+//		
+//		//creating and filling the list
+//		List<NamedArea> areaList = new ArrayList<NamedArea>();
+//		NamedArea area1 = TdwgArea.getAreaByTdwgLabel("Spain");
+//		areaList.add(area1);
+//		NamedArea area2 = TdwgArea.getAreaByTdwgLabel("Germany");
+//		areaList.add(area2);
+//		NamedArea area3 = TdwgArea.getAreaByTdwgLabel("France");
+//		areaList.add(area3);
+//		NamedArea area4 = TdwgArea.getAreaByTdwgLabel("Italy");
+//		areaList.add(area4);
+//		NamedArea area5 = TdwgArea.getAreaByTdwgLabel("Croatia");
+//		areaList.add(area5);
+//		NamedArea area6 = TdwgArea.getAreaByTdwgLabel("Portugal");
+//		areaList.add(area6);
+//		
+//		//System.out.println(areaListToString(areaList));
+//		
+//		NamedAreaTree tree = new NamedAreaTree();
+//		tree.merge(areaList, omitLevels);
+///*		
+//		for (NamedArea area : areaList) {
+//			List<NamedArea> levelList = area.getAllLevelList();
+//			tree.merge(levelList);
+//			//System.out.println(areaListToString(levelList));
+//		}
+//*/		
+//		System.out.println(tree.toString());
+//		tree.sortChildren();
+//		System.out.println(tree.toString());
+//		
+//		List<NamedArea> areaList2 = new ArrayList<NamedArea>();
+//		NamedArea area7 = TdwgArea.getAreaByTdwgLabel("Chita");
+//		areaList2.add(area7);
+//		NamedArea area8 = TdwgArea.getAreaByTdwgLabel("Buryatiya");
+//		areaList2.add(area8);
+//		NamedArea area9 = TdwgArea.getAreaByTdwgLabel("Philippines");
+//		areaList2.add(area9);
+//		
+//		tree.merge(areaList2, omitLevels);
+//		tree.sortChildren();
+//		System.out.println(tree.toString());
+//		
+//		List<Distribution> distList = new ArrayList<Distribution>();
+//		Distribution dist1 = Distribution.NewInstance(area1, null);
+//		distList.add(dist1);
+//		Distribution dist2 = Distribution.NewInstance(area2, null);
+//		distList.add(dist2);
+//		Distribution dist3 = Distribution.NewInstance(area3, null);
+//		distList.add(dist3);
+//		Distribution dist4 = Distribution.NewInstance(area4, null);
+//		distList.add(dist4);
+//		Distribution dist5 = Distribution.NewInstance(area5, null);
+//		distList.add(dist5);
+//		Distribution dist6 = Distribution.NewInstance(area6, null);
+//		distList.add(dist6);
+//		
+//		DistributionTree distTree = new DistributionTree();
+//		distTree.merge(distList, omitLevels);
+//		
+//		List<Distribution> distList2 = new ArrayList<Distribution>();
+//		Distribution dist7 = Distribution.NewInstance(area7, null);
+//		distList2.add(dist7);
+//		Distribution dist8 = Distribution.NewInstance(area8, null);
+//		distList2.add(dist8);
+//		Distribution dist9 = Distribution.NewInstance(area9, null);
+//		distList2.add(dist9);
+//		distTree.merge(distList2, omitLevels);
+//		distTree.sortChildren();
+//		System.out.println("## DISTRIBUTION TREE ##");
+//		System.out.println(distTree.toString());
+//
+//	}
+//	
 	
 	
 /*	
