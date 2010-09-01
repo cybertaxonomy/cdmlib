@@ -196,6 +196,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 
 	@Override
 	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths) {
+		
 		/*
 		 * <li>taxon.name.nomenclaturalreference</li>
 		 * <li>taxon.descriptions.descriptionElement.sources.citation</li>
@@ -211,16 +212,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		if(includeSubordinateReferences){
 			referenceSet.addAll(getSubordinateReferences(referenceBase));
 		}
-		
-//		String nomenclaturalReferenceSql = 
-//			"select distinct t from Taxon  " +
-//			"left join t.name n " +
-//			"left join n.nomenclaturalReference r" +
-//			" r in (:referenceBase) ";
-//		
-//		Query query1 = getSession().createQuery(nomenclaturalReferenceSql);
-//		query1.setParameterList("referenceBase", referenceSet);
-//		taxonBaseList = query1.list();
+
 	
 		String taxonDescriptionSql = 
 			
@@ -241,26 +233,21 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 			"or td_s in (:referenceBase_2) " +
 			"or nd_e_s.citation in (:referenceBase_3) " +
 			"or nd_s in (:referenceBase_4) or " +
-			"n.nomenclaturalReference in (:referenceBase_5)"
-			
-			; 
-		/*
-		 * 		"select distinct t from TaxonDescription td " +
-			"left join td.taxon t " +
-			"left join td.descriptionSources td_s " +
-			"left join td.descriptionElements td_e " +
-			"left join e.sources td_e_s " +
-			"where td_e_s.citation in (:referenceBase_1) " +
-			"or td_s in (:referenceBase_2)"
-			; 
-		 */
+			"n.nomenclaturalReference in (:referenceBase_5) or " +
+			"t.sec in (:referenceBase_6)"
+			;
 		
+			// TODO include:
+			// name relations
+			// taxon relations
+			
 		Query query2 = getSession().createQuery(taxonDescriptionSql);
 		query2.setParameterList("referenceBase_1", referenceSet);
 		query2.setParameterList("referenceBase_2", referenceSet);
 		query2.setParameterList("referenceBase_3", referenceSet);
 		query2.setParameterList("referenceBase_4", referenceSet);
 		query2.setParameterList("referenceBase_5", referenceSet);
+		query2.setParameterList("referenceBase_6", referenceSet);
 		
 		taxonBaseList = query2.list();
 		

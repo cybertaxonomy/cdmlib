@@ -28,7 +28,7 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 
 	@Override
 	protected List<String> getPropertyPaths() {
-		return Arrays.asList(new String []{
+		return Arrays.asList(new String []{			
 				"$",
 				"inBook.authorTeam",
 				"inJournal",
@@ -38,6 +38,7 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 	
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"titleCache",
+			"name.titleCache",
 			"$"
 			});
 
@@ -64,7 +65,7 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 			throws IdDoesNotExistException {
 		
 		if(metadataPrefix.equals(DWC)){
-			modelAndView.addObject("list", obtainCoveredTaxaList(identifier, metadataPrefix));
+			modelAndView.addObject("entitylist", obtainCoveredTaxaList(identifier, metadataPrefix));
 			modelAndView.setViewName("oai/getRecord.dwc");
 		} else {
 			super.finishModelAndView(identifier, metadataPrefix, modelAndView);

@@ -50,7 +50,8 @@ public class Metadata {
 	@XmlElements({
 	    @XmlElement(name = "dc", namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/", type = OaiDc.class),
 	    @XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#", type = TaxonConcept.class),
-	    @XmlElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#", type = SpeciesProfileModel.class)
+	    @XmlElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#", type = SpeciesProfileModel.class),
+	    @XmlElement(name = "dwc", namespace = "http://rs.tdwg.org/dwc/xsd/simpledarwincore/SimpleDarwinRecord/", type = DarwinCoreSimple.class)
 	})
     protected Object any;
 

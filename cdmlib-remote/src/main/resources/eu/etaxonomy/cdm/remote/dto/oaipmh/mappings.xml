@@ -86,8 +86,7 @@
     
      <mapping>
         <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>
-        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.DarwinCoreSimple
-</class-b>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.DarwinCoreSimple</class-b>
         <field>
             <a>updated</a>
             <b>modified</b>

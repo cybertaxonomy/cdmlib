@@ -29,7 +29,11 @@ public class TimePeriodConverter implements CustomConverter {
 			
 			//convert from TimePeriod -> DateTime
 			//FIXME .toDateTime(null) most probably not correct
-			return ((TimePeriod)source).getStart().toDateTime(null); 
+			if(((TimePeriod)source).getStart() != null){
+				return ((TimePeriod)source).getStart().toDateTime(null); 
+			} else {
+				return null;
+			}
 			
 		} else if (source instanceof DateTime) {
 			

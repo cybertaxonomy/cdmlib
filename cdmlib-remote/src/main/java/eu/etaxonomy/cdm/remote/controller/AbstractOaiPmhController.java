@@ -251,7 +251,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     }
  
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListIdentifiers", "!resumptionToken"})
-    public ModelAndView listIdentifiers(@RequestParam(value = "from", required = false) DateTime from, @RequestParam(value = "until", required = false) DateTime until,@RequestParam(value = "metadataPrefix",required = true) MetadataPrefix metadataPrefix, @RequestParam(value = "set", required = false) SetSpec set) {
+    public ModelAndView listIdentifiers(
+    		@RequestParam(value = "from", required = false) DateTime from, 
+    		@RequestParam(value = "until", required = false) DateTime until,
+    		@RequestParam(value = "metadataPrefix",required = true) MetadataPrefix metadataPrefix, 
+    		@RequestParam(value = "set", required = false) SetSpec set) {
  
         ModelAndView modelAndView = new ModelAndView("oai/listIdentifiers");
         modelAndView.addObject("metadataPrefix",metadataPrefix);

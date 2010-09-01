@@ -47,7 +47,7 @@ import org.joda.time.DateTime;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "dwc_type", namespace = "http://rs.tdwg.org/dwc/xsd/simpledarwincore/", propOrder = {
+@XmlType(name = "dwc_type", namespace = "http://rs.tdwg.org/dwc/xsd/simpledarwincore/SimpleDarwinRecord/", propOrder = {
 		"type",
 		"modified",
 		"language",

@@ -9,7 +9,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.Metadata;
-import eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc;
 import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
