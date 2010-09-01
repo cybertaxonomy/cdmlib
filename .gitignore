@@ -116,6 +116,7 @@ cdmlib-remote-webapp/target
 cdmlib-remote/.classpath
 cdmlib-remote/.project
 cdmlib-remote/.settings
+cdmlib-remote/bin
 cdmlib-remote/eu.etaxonomy.cdm.model.common.DefinedTermBase
 cdmlib-remote/eu.etaxonomy.cdm.model.common.LanguageString
 cdmlib-remote/eu.etaxonomy.cdm.model.description.DescriptionBase
