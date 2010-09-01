@@ -72,6 +72,7 @@ cdmlib-persistence/.project
 cdmlib-persistence/.settings
 cdmlib-persistence/.umlproject
 cdmlib-persistence/002_cdm.dll
+cdmlib-persistence/bin
 cdmlib-persistence/cdmlib-persistence.uml
 cdmlib-persistence/out.xml
 cdmlib-persistence/src/test/resources/Copy[!!-~]of[!!-~]test.cdm.datasource.xml
