@@ -67,6 +67,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 				"representations",
 				"root.feature.representations",
 				"root.children.feature.representations",
+				"root.children.children.feature.representations",
 			});
 	
 	@InitBinder

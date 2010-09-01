@@ -67,7 +67,10 @@ public class DerivedUnitFacadeController extends AbstractController{
 	}
 	
 // TODO	
-	@RequestMapping(method = RequestMethod.GET, value = "{uuid}/collectingareas")
+	//@RequestMapping(method = RequestMethod.GET, value = "{uuid}/collectingareas")
+		@RequestMapping(
+			value = {"collectingareas"},
+			method = RequestMethod.GET)
 	public Object doGetCollectingAreas(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request,
@@ -80,7 +83,7 @@ public class DerivedUnitFacadeController extends AbstractController{
 		return duf.getCollectingAreas();
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "{uuid}/collection")
+	@RequestMapping(method = RequestMethod.GET, value = "collection")
 	public Object doGetCollection(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request,
