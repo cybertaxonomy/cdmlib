@@ -1351,6 +1351,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							// Determine the idInSource
 							String idInSource = getIdInSource(syn);
 							
+							// Determine the sourceReference
+							ReferenceBase sourceReference = syn.getSec();
+							
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String synGenusName = zooName.getGenusOrUninomial();
@@ -1361,6 +1364,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							inferredSynName.setSpecificEpithet(epithetOfTaxon);
 							inferredSynName.setGenusOrUninomial(synGenusName);
 							inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+							
+							// Set the sourceReference
+							inferredEpithet.setSec(sourceReference);
 
 							// Add the original source
 							if (idInSource != null) {
@@ -1414,6 +1420,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							
 							// Determine the idInSource
 							String idInSource = getIdInSource(syn);
+							
+							// Determine the sourceReference
+							ReferenceBase sourceReference = syn.getSec();
 
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
@@ -1425,6 +1434,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							inferredSynName.setSpecificEpithet(speciesEpithetName);
 							inferredSynName.setGenusOrUninomial(genusOfTaxon);
 							inferredGenus = Synonym.NewInstance(inferredSynName, null);
+							
+							// Set the sourceReference
+							inferredGenus.setSec(sourceReference);
 							
 							// Add the original source
 							if (idInSource != null) {
@@ -1510,6 +1522,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 								inferredSynName.setSpecificEpithet(epithetName);
 								inferredSynName.setGenusOrUninomial(genusName);
 								potentialCombination = Synonym.NewInstance(inferredSynName, null);
+								
+								// Set the sourceReference
+								potentialCombination.setSec(sourceReference);
 								
 								// Add the original source
 								String idInSource = synonymsGenus.get(genusName);
