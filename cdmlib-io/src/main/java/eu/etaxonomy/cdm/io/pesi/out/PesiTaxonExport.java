@@ -77,6 +77,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static final String parentPluralString = "Taxa";
 	private PreparedStatement parentTaxonFk_TreeIndex_KingdomFkStmt;
 	private PreparedStatement sqlStmt;
+	private PreparedStatement rankSqlStmt;
 	private NomenclaturalCode nomenclaturalCode;
 	private Integer kingdomFk;
 	private HashMap<Rank, Rank> rankMap = new HashMap<Rank, Rank>();
@@ -152,6 +153,9 @@ public class PesiTaxonExport extends PesiExportBase {
 					"ExpertFk = ?, SpeciesExpertFk = ? WHERE TaxonId = ?";
 			sqlStmt = connection.prepareStatement(sql);
 			
+			String rankSql = "UPDATE Taxon SET RankFk = ?, RankCache = ?, KingdomFk = ? WHERE TaxonId = ?";
+			rankSqlStmt = connection.prepareStatement(rankSql);
+			
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
 
@@ -185,7 +189,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<TaxonNameBase> list = null;
 			
-			logger.error("PHASE 1: Export Taxa...");
+/*			logger.error("PHASE 1: Export Taxa...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -432,7 +436,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.error("Committed transaction.");
+			logger.error("Committed transaction.");*/
 			
 			
 			// Create inferred synonyms for accepted taxa
@@ -456,6 +460,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			List<TaxonBase> taxonList = null;
 			List<Synonym> inferredSynonyms = null;
 			while ((taxonList  = getTaxonService().listTaxaByName(Taxon.class, "*", "*", "*", "*", null, pageSize, pageNumber)).size() > 0) {
+				HashMap<Integer, TaxonNameBase> inferredSynonymsDataToBeSaved = new HashMap<Integer, TaxonNameBase>();
 
 				logger.error("Fetched " + taxonList.size() + " " + parentPluralString + ". Exporting...");
 				for (TaxonBase taxonBase : taxonList) {
@@ -475,13 +480,13 @@ public class PesiTaxonExport extends PesiExportBase {
 								singleNode = taxonNodes.iterator().next();
 								if (singleNode != null) {
 									taxonTree = singleNode.getTaxonomicTree();
+								} else {
+									logger.error("A TaxonNode belonging to this accepted Taxon is NULL: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() +")");
 								}
 							} else {
 								// TaxonomicTree could not be determined directly from this TaxonNode
 								// The stored taxonomicTree from another TaxonNode is used. It's a simple, but not a failsafe fallback solution.
-								if (singleNode == null) {
-									logger.error("A TaxonNode belonging to this accepted Taxon is NULL: " + acceptedTaxon.getUuid() + " (" + acceptedTaxon.getTitleCache() +")");
-								} else {
+								if (taxonTree == null) {
 									logger.error("TaxonomicTree could not be determined directly from this TaxonNode: " + singleNode.getUuid() + "). " +
 											"This taxonomicTree stored from another TaxonNode is used: " + taxonTree.getTitleCache());
 								}
@@ -502,6 +507,9 @@ public class PesiTaxonExport extends PesiExportBase {
 											
 											doCount(count++, modCount, inferredSynonymPluralString);
 											success &= mapping.invoke(synonymName);
+											
+											// Add Rank Data and KingdomFk to hashmap for later saving
+											inferredSynonymsDataToBeSaved.put(synonymName.getId(), synonymName);
 										} else {
 											logger.error("TaxonName of this Synonym is NULL: " + synonym.getUuid() + " (" + synonym.getTitleCache() + ")");
 										}
@@ -523,6 +531,11 @@ public class PesiTaxonExport extends PesiExportBase {
 				logger.error("Committed transaction.");
 				logger.error("Exported " + (count - pastCount) + " " + inferredSynonymPluralString + ". Total: " + count);
 				pastCount = count;
+				
+				// Save Rank Data and KingdomFk for inferred synonyms
+				for (Integer taxonFk : inferredSynonymsDataToBeSaved.keySet()) {
+					invokeRankDataAndKingdomFk(inferredSynonymsDataToBeSaved.get(taxonFk), nomenclaturalCode, taxonFk, kingdomFk);
+				}
 
 				// Start transaction
 				txStatus = startTransaction(true);
@@ -799,6 +812,52 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
+	 * Inserts Rank data and KingdomFk into the Taxon database table.
+	 * @param taxonName
+	 * @param nomenclaturalCode
+	 * @param taxonFk
+	 * @param kindomFk
+	 * @return
+	 */
+	private boolean invokeRankDataAndKingdomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, 
+			Integer taxonFk, Integer kingdomFk) {
+		try {
+			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
+			if (rankFk != null) {
+				rankSqlStmt.setInt(1, rankFk);
+			} else {
+				rankSqlStmt.setObject(1, null);
+			}
+	
+			String rankCache = getRankCache(taxonName, nomenclaturalCode);
+			if (rankCache != null) {
+				rankSqlStmt.setString(2, rankCache);
+			} else {
+				rankSqlStmt.setObject(2, null);
+			}
+			
+			if (kingdomFk != null) {
+				rankSqlStmt.setInt(3, kingdomFk);
+			} else {
+				rankSqlStmt.setObject(3, null);
+			}
+			
+			if (taxonFk != null) {
+				rankSqlStmt.setInt(4, taxonFk);
+			} else {
+				rankSqlStmt.setObject(4, null);
+			}
+			
+			rankSqlStmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			logger.error("Data (RankFk, RankCache, KingdomFk) could not be inserted into database: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
 	 * Inserts Rank data, TypeNameFk, KingdomFk, expertFk and speciesExpertFk into the Taxon database table.
 	 * @param taxonName
 	 * @param nomenclaturalCode
@@ -810,7 +869,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return
 	 */
 	private boolean invokeRankDataAndTypeNameFkAndKingdomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, 
-			Integer taxonFk, Integer typeNameFk, Integer kindomFk,
+			Integer taxonFk, Integer typeNameFk, Integer kingdomFk,
 			Integer expertFk, Integer speciesExpertFk) {
 		try {
 			Integer rankFk = getRankFk(taxonName, nomenclaturalCode);
@@ -1532,6 +1591,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		try {
 			Set<IdentifiableSource> sources = getSources(taxonName);
 			for (IdentifiableSource source : sources) {
+				result = "TAX_ID: " + source.getIdInSource();
 				String sourceIdNameSpace = source.getIdNamespace();
 				if (sourceIdNameSpace != null) {
 					if (sourceIdNameSpace.equals("originalGenusId")) {
@@ -1606,7 +1666,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 
 		// Sources from TaxonBase
-		if (sources == null) {
+		if (sources == null || sources.isEmpty()) {
 			Set<Taxon> taxa = taxonName.getTaxa();
 			Set<Synonym> synonyms = taxonName.getSynonyms();
 			if (taxa.size() == 1) {
@@ -1629,7 +1689,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 		}
 		
-		if (sources == null) {
+		if (sources == null || sources.isEmpty()) {
 			logger.error("This TaxonName has no Sources: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() +")");
 		}
 		return sources;
