@@ -203,10 +203,9 @@ public class IpniService implements IIpniService{
 
 // ****************************** METHODS ****************************************************/	
 	
-	/**
-	 *
-	 * @param restRequest
-	 * @return
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.ext.ipni.IIpniService#getAuthors(java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration, eu.etaxonomy.cdm.ext.ipni.IpniServiceAuthorConfigurator)
 	 */
 	public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmApplicationConfiguration services, IpniServiceAuthorConfigurator config){
 		//config
@@ -596,15 +595,17 @@ public class IpniService implements IIpniService{
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 		
 		String headerLine = reader.readLine();
-		Map<Integer, String> parameterMap = getParameterMap(headerLine);
-		
-		String line = reader.readLine();
-		while (StringUtils.isNotBlank(line)){
-			Person author = getAuthorFromLine(line,parameterMap, services, config);
-			result.add(author);
-			line = reader.readLine();
+		if (headerLine != null){
+			Map<Integer, String> parameterMap = getParameterMap(headerLine);
+			
+			String line = reader.readLine();
+			while (StringUtils.isNotBlank(line)){
+				Person author = getAuthorFromLine(line,parameterMap, services, config);
+				result.add(author);
+				line = reader.readLine();
+			}
 		}
-
+		
 		return result;
 	}
 
