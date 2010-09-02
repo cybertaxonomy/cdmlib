@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -222,6 +223,37 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 
+	/**
+	 * Returns a language for a given uuid by first ...
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected Language getLanguage(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		if (uuid == null){
+			return null;
+		}
+		Language language = state.getLanguage(uuid);
+		if (language == null){
+			language = (Language)getTermService().find(uuid);
+			if (language == null){
+				language = Language.NewInstance(text, label, labelAbbrev);
+				
+				language.setUuid(uuid);
+				//set vocabulary ; FIXME use another user-defined vocabulary
+				UUID uuidLanguageVoc = UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"); 
+				TermVocabulary<Language> voc = getVocabularyService().find(uuidLanguageVoc);
+				voc.addTerm(language);
+				getTermService().save(language);
+			}
+			state.putLanguage(language);
+		}
+		return language;
+	}
+	
 	/**
 	 * Adds an orginal source to a sourceable objects (implemented for Identifiable entity and description element.
 	 * If cdmBase is not sourceable nothing happens.
