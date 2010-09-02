@@ -544,6 +544,23 @@ public class Language extends DefinedTermBase<Language> {
 		return new Language(uuid);
 	}
 	
+	/** 
+	 * Creates a new language instance with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new language to be created 
+	 * @param	label  		 the string identifying the new language to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new language to be created
+	 * @see 				 #readCsvLine(List, Language)
+	 * @see 				 #NewInstance()
+	 */
+	public static Language NewInstance(String term, String label, String labelAbbrev){
+		return new Language(term, label, labelAbbrev);
+	}
+	
+	
 	@XmlAttribute(name = "iso639_1")
 	//TODO create userDefinedType ?
 	@Column(length=2)
