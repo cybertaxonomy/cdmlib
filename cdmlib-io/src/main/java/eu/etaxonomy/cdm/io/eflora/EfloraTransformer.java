@@ -196,6 +196,7 @@ public class EfloraTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("figure")){return uuidFigure;
 		}else if (key.equalsIgnoreCase("fig")){return uuidFigure;
 		}else if (key.equalsIgnoreCase("figs")){return uuidFigures;
+		}else if (key.equalsIgnoreCase("figures")){return uuidFigures;
 		}else if (key.equalsIgnoreCase("Seeds")){return uuidSeeds;
 		}else if (key.equalsIgnoreCase("Flowering")){return uuidFlowering;
 		}else if (key.equalsIgnoreCase("Bracts")){return uuidBracts;

@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.eflora.EfloraImportBase;
 import eu.etaxonomy.cdm.io.eflora.EfloraTransformer;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -38,7 +39,13 @@ public class EfloraImportState extends ImportStateBase<EfloraImportConfigurator,
 	
 	public EfloraImportState(EfloraImportConfigurator config) {
 		super(config);
-		setTransformer(new EfloraTransformer());
+		if (getTransformer() == null){
+			IInputTransformer newTransformer = config.getTransformer();
+			if (newTransformer == null){
+				newTransformer = new EfloraTransformer();
+			}
+			setTransformer(newTransformer);
+		}
 	}
 
 // ********************************** GETTER / SETTER *************************************/	
