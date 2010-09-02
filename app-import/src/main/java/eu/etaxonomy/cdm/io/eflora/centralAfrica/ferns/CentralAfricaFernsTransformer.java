@@ -29,8 +29,6 @@ public final class CentralAfricaFernsTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CentralAfricaFernsTransformer.class);
 	
-
-	
 	
 
 	/* (non-Javadoc)
@@ -87,7 +85,8 @@ public final class CentralAfricaFernsTransformer extends InputTransformerBase {
 		}
 
 	}
-	
+
+
 	
 	
 	

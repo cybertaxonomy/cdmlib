@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.io.eflora.EfloraImportState;
  *
  */
 public class CentralAfricaEricaceaeImportState extends EfloraImportState{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeImportState.class);
 
 // ******************************* CONSTRUCTOR **********************************************

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.eflora.EfloraImportConfigurator;
 
 @Component
@@ -24,6 +25,7 @@ public class CentralAfricaEricaceaeImportConfigurator extends EfloraImportConfig
 		return new CentralAfricaEricaceaeImportConfigurator(url, destination);
 	}
 	
+	private static IInputTransformer defaultTransformer = new CentralAfricaEricaceaeTransformer();
 	private String classificationTitle = "Flore d'Afrique Centrale - Ericaceae";
 	private String sourceReferenceTitle = "Flore d'Afrique Centrale - Ericaceae";
 	
@@ -47,7 +49,7 @@ public class CentralAfricaEricaceaeImportConfigurator extends EfloraImportConfig
 	 * @param destination
 	 */
 	private CentralAfricaEricaceaeImportConfigurator(String url, ICdmDataSource destination) {
-		super(url, destination);
+		super(url, destination, defaultTransformer);
 		this.setClassificationTitle(classificationTitle);
 		this.setSourceReferenceTitle(sourceReferenceTitle);
 	}

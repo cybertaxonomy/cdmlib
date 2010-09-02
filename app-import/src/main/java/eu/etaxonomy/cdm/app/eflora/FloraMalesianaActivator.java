@@ -154,9 +154,6 @@ public class FloraMalesianaActivator {
 		FeatureNode root = result.getRoot();
 		FeatureNode newNode;
 		
-		newNode = FeatureNode.NewInstance(Feature.CITATION());
-		root.addChild(newNode);
-		
 		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
 		root.addChild(newNode);
 		
@@ -176,6 +173,9 @@ public class FloraMalesianaActivator {
 		root.addChild(newNode);
 		
 		addFeataureNodesByStringList(chomosomesList, root, transformer, service);
+
+		newNode = FeatureNode.NewInstance(Feature.CITATION());
+		root.addChild(newNode);
 		
 		return result;
 	}

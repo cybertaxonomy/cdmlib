@@ -22,7 +22,7 @@ public class EfloraSources {
 
 	//Ericaceae
 	public static String ericacea_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/africa/ericaceae.xml";
+		String sourceUrl = "file:C:/localCopy/Data/eflora/africa/ericaceae_v2.xml";
 		return sourceUrl;
 	}
 	

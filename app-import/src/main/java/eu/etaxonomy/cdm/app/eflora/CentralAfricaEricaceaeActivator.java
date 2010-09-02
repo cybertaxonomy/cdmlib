@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.eflora.EfloraImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae.CentralAfricaEricaceaeImportConfigurator;
-import eu.etaxonomy.cdm.io.eflora.floraMalesiana.FloraMalesianaTransformer;
+import eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae.CentralAfricaEricaceaeTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -42,14 +42,14 @@ public class CentralAfricaEricaceaeActivator {
 	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeActivator.class);
 	
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String source = EfloraSources.ericacea_local();
 
 	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//feature tree uuid
 	public static final UUID featureTreeUuid = UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7");
@@ -65,7 +65,7 @@ public class CentralAfricaEricaceaeActivator {
 	//taxa
 	static final boolean doTaxa = true;
 
-	private boolean includeSapindaceae1 = true;
+	private boolean includeEricaceae = true;
 
 
 	
@@ -83,7 +83,7 @@ public class CentralAfricaEricaceaeActivator {
 
 		
 		//Sapindaceae1
-		if (includeSapindaceae1){
+		if (includeEricaceae){
 			System.out.println("Start import from ("+ source.toString() + ") ...");
 			config.setSourceReference(getSourceReference(config.getSourceReferenceTitle()));
 			myImport.invoke(config);
@@ -114,15 +114,12 @@ public class CentralAfricaEricaceaeActivator {
 	}
 
 	private FeatureTree makeFeatureNode(ITermService service){
-		FloraMalesianaTransformer transformer = new FloraMalesianaTransformer();
+		CentralAfricaEricaceaeTransformer transformer = new CentralAfricaEricaceaeTransformer();
 		
 		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
-		result.setTitleCache("Flora Malesiana Presentation Feature Tree");
+		result.setTitleCache("Central Africa Ericaceae Feature Tree");
 		FeatureNode root = result.getRoot();
 		FeatureNode newNode;
-		
-		newNode = FeatureNode.NewInstance(Feature.CITATION());
-		root.addChild(newNode);
 		
 		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
 		root.addChild(newNode);
@@ -143,6 +140,12 @@ public class CentralAfricaEricaceaeActivator {
 		root.addChild(newNode);
 		
 		addFeataureNodesByStringList(chomosomesList, root, transformer, service);
+
+		newNode = FeatureNode.NewInstance(Feature.COMMON_NAME());
+		root.addChild(newNode);
+		
+		newNode = FeatureNode.NewInstance(Feature.CITATION());
+		root.addChild(newNode);
 		
 		return result;
 	}
