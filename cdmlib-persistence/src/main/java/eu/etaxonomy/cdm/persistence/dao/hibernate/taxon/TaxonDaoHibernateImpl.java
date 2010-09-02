@@ -1610,7 +1610,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 	/**
-	 * Returns the idInSource for a given Synonym.
+	 * Returns the citation for a given Synonym.
 	 * @param syn
 	 */
 	private ReferenceBase getCitation(Synonym syn) {
