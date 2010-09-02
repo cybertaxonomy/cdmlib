@@ -11,12 +11,13 @@
 	<!-- 
 		- Accepts a configuration file. 
 		- The default configuration file is /WEB-INF/views.xml 
-	-->
     <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
- 		<!-- FOR DEBUGING ONLY !!!!   
+ 		<!- - 
+ 		FOR DEBUGING ONLY !!!!   
  		<property name="cache" value="false"/> 
- 		 -->
+ 		 - ->
     </bean>
+	-->
 
 	<import resource="classpath:eu/etaxonomy/cdm/remote/json/jsonConfigurations.xml"/>
 

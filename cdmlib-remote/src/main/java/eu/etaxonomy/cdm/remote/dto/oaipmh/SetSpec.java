@@ -8,6 +8,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -36,7 +37,8 @@ public enum SetSpec {
 	VIRAL_NAME("viralName","Scientific Names governed by the ICTV",ViralName.class,null),
 	TAXON_DESCRIPTION("taxonDescription","Descriptions of taxonomic concepts",TaxonDescription.class,null),
 	TAXON_NAME_DESCRIPTION("taxonNameDescription","Descriptions of scientific names",TaxonNameDescription.class,null),
-	SPECIMEN_DESCRIPTION("specimenDescription","Descriptions of specimens and occurrences",SpecimenDescription.class,null);
+	SPECIMEN_DESCRIPTION("specimenDescription","Descriptions of specimens and occurrences",SpecimenDescription.class,null),
+	REFERENCE("reference","Any kind of Reference",ReferenceBase.class,null);
 
 	private String spec;
 	private String name;
@@ -64,5 +66,14 @@ public enum SetSpec {
     
     public String getSpec() {
     	return spec;
+    }
+    
+    public static SetSpec bySpec(String spec){
+    	for(SetSpec setSpec : SetSpec.values()) {
+			if(setSpec.getSpec().equals(spec)) {
+				return setSpec;
+			}
+		}
+    	return null;
     }
 }

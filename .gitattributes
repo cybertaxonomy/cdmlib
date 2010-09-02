@@ -2724,6 +2724,7 @@ cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApp
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.out.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
@@ -2732,8 +2733,11 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/datasources-local.xml -
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/empty-default-datasource.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/views.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsonConfigurations.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/oai2.xsl -text
 cdmlib-remote-webapp/src/site/site.xml -text
@@ -2794,6 +2798,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalGeoCo
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/ContentNegociationHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/DatasourceContextHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/LocaleContextHandlerInterceptor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/ReferenceOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/TaxonOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/util/CdmAntPathMatcher.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TagEnum.java -text
@@ -2808,8 +2813,10 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/Lsid
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/PreferLsidToUriConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/RemoveHTMLReader.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/StripTagsConverter.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/TimePeriodConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dc/Relation.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/About.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/DarwinCoreSimple.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/DeletedRecord.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Description.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Error.java -text
@@ -2926,6 +2933,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/ListRecordsView.
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/ListSetsView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/dc/GetRecordView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/dc/ListRecordsView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/dwc/GetRecordView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/rdf/GetRecordView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/rdf/ListRecordsView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/remote/dto/rdf/Rdf.java -text

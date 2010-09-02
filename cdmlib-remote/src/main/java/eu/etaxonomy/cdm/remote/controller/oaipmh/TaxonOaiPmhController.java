@@ -24,7 +24,7 @@ public class TaxonOaiPmhController extends AbstractOaiPmhController<TaxonBase, I
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("createdBy");
 		propertyPaths.add("updatedBy");
-		propertyPaths.add("name");
+		propertyPaths.add("name.titleCache");
 		propertyPaths.add("sec");
 		propertyPaths.add("relationsToThisTaxon");
 		propertyPaths.add("relationsToThisTaxon.fromTaxon");

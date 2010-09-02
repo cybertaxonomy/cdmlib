@@ -31,6 +31,11 @@
             <a>lsid</a>
             <b>identifier</b>
         </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc</class-b>
         <field>
             <a>created</a>
             <b>date</b>
@@ -46,7 +51,50 @@
         <field>
             <a>titleCache</a>
             <b>title</b>
+       </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.reference.ReferenceBase</class-a>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc</class-b>
+        <field custom-converter-id="timePeriodConverter">
+            <a>datePublished</a>
+            <b>date</b>
         </field>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="titleCache" >
+            <a>authorTeam</a>
+            <b>creator</b>
+        </field>
+        <field>
+            <a>title</a>
+            <b>title</b>
+       </field>
+       <field>
+            <a>publisher</a>
+            <b>publisher</b>
+       </field>
+       <field>
+            <a>inReference.title</a>
+            <b>relation</b>
+       </field>
+       <field>
+            <a>type</a>
+            <b>type</b>
+       </field>
+       
+    </mapping>
+    
+     <mapping>
+        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.DarwinCoreSimple</class-b>
+        <field>
+            <a>updated</a>
+            <b>modified</b>
+        </field>
+        <field>
+            <a>name.titleCache</a>
+            <b>scientificName</b>
+       </field>
     </mapping>
     
 </mappings>

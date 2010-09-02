@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.remote.view.oaipmh;
 
+import java.util.List;
 import java.util.Map;
 
 import org.hibernate.envers.RevisionType;
@@ -40,24 +41,37 @@ public abstract class ListRecordsView extends OaiPmhResponseView {
         }
         
         ListRecords listRecords = new ListRecords();
+        
 
-        for(AuditEventRecord auditEventRecord : ((Pager<AuditEventRecord>)model.get("pager")).getRecords()) {
-        	Record record = new Record();
-        	Header header = (Header)mapper.map(auditEventRecord.getAuditableObject(), Header.class);
-	        record.setHeader(header);
-	        if(!auditEventRecord.getRevisionType().equals(RevisionType.DEL)) {
-	            Metadata metadata = new Metadata();
-		        constructMetadata(metadata,(IdentifiableEntity)auditEventRecord.getAuditableObject());
-	            record.setMetadata(metadata);
-	        } else {
-	        	header.setStatus(Status.DELETED);
+        if(model.containsKey("pager")){
+			for(AuditEventRecord auditEventRecord : ((Pager<AuditEventRecord>)model.get("pager")).getRecords()) {
+	        	Record record = new Record();
+	        	Header header = (Header)mapper.map(auditEventRecord.getAuditableObject(), Header.class);
+		        record.setHeader(header);
+		        if(!auditEventRecord.getRevisionType().equals(RevisionType.DEL)) {
+		            Metadata metadata = new Metadata();
+			        constructMetadata(metadata,(IdentifiableEntity)auditEventRecord.getAuditableObject());
+		            record.setMetadata(metadata);
+		        } else {
+		        	header.setStatus(Status.DELETED);
+		        }
+		        listRecords.getRecord().add(record);
 	        }
-	        listRecords.getRecord().add(record);
+
+			if(model.containsKey("resumptionToken")) {
+				listRecords.setResumptionToken((ResumptionToken)model.get("resumptionToken"));
+			}
+			
+        } else if(model.containsKey("entitylist")){
+			for( IdentifiableEntity idetifiableEntity : ((List<IdentifiableEntity>)model.get("entitylist"))) {
+	        	Record record = new Record();
+	        	Metadata metadata = new Metadata();
+		        constructMetadata(metadata, idetifiableEntity);
+	            record.setMetadata(metadata);
+		        listRecords.getRecord().add(record);
+	        }
         }
 
-        if(model.containsKey("resumptionToken")) {
-        	listRecords.setResumptionToken((ResumptionToken)model.get("resumptionToken"));
-        }
         
         oaiPmh.setListRecords(listRecords);
     }

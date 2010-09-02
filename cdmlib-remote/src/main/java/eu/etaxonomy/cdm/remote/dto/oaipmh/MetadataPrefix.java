@@ -1,7 +1,5 @@
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
@@ -10,7 +8,9 @@ public enum MetadataPrefix {
 	@XmlEnumValue("rdf")
 	RDF("rdf"), 
 	@XmlEnumValue("oai_dc")
-	OAI_DC("oai_dc");
+	OAI_DC("oai_dc"),
+	@XmlEnumValue("dwc")
+	DWC("dwc");
 	
 	private String value;
 	

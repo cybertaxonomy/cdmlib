@@ -11,10 +11,14 @@ public class MetadataPrefixEditor extends PropertyEditorSupport {
 		if(text == null) {
 			throw new IllegalArgumentException("null is not an acceptable metadata format");
 		} else {
-			if(text.equals("rdf")) {
-				setValue(MetadataPrefix.RDF);
-			} else if(text.equals("oai_dc")) {
-				setValue(MetadataPrefix.OAI_DC);
+			MetadataPrefix metadatPrefix = MetadataPrefix.value(text);
+			if(metadatPrefix  != null){
+				setValue(metadatPrefix);
+
+//			if(text.equals("rdf")) {
+//				setValue(MetadataPrefix.RDF);
+//			} else if(text.equals("oai_dc")) {
+//				setValue(MetadataPrefix.OAI_DC);
 			} else {
 				throw new CannotDisseminateFormatException(text + " is not an acceptable metadata format");
 	}

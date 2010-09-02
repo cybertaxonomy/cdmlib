@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <!-- 
+        ===============================================================
+        This is the configuaration file for a 
+        eu.etaxonomy.cdm.remote.view.XMLViewResolver
+        ===============================================================
+    -->
+    <bean name="oai/exception" class="eu.etaxonomy.cdm.remote.view.oaipmh.ExceptionView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/identify" class="eu.etaxonomy.cdm.remote.view.oaipmh.IdentifyView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/getRecord.rdf" class="eu.etaxonomy.cdm.remote.view.oaipmh.rdf.GetRecordView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/getRecord.dc" class="eu.etaxonomy.cdm.remote.view.oaipmh.dc.GetRecordView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/getRecord.dwc" class="eu.etaxonomy.cdm.remote.view.oaipmh.dwc.GetRecordView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    
+    <bean name="oai/listMetadataFormats" class="eu.etaxonomy.cdm.remote.view.oaipmh.ListMetadataFormatsView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/listSets" class="eu.etaxonomy.cdm.remote.view.oaipmh.ListSetsView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/listIdentifiers" class="eu.etaxonomy.cdm.remote.view.oaipmh.ListIdentifiersView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/listRecords.rdf" class="eu.etaxonomy.cdm.remote.view.oaipmh.rdf.ListRecordsView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+    
+    <bean name="oai/listRecords.dc" class="eu.etaxonomy.cdm.remote.view.oaipmh.dc.ListRecordsView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="mapper" ref="dozerMapper"/>
+    </bean>
+</beans>

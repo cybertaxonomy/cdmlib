@@ -10,15 +10,11 @@ public class SetSpecEditor extends PropertyEditorSupport {
 		if(text == null) {
 			throw new IllegalArgumentException("null is not an acceptable set spec");
 		} else {
-			boolean matched = false;
-			for(SetSpec setSpec : SetSpec.values()) {
-				if(setSpec.name().equals(text)) {
-					setValue(setSpec);
-					break;
-				}
-			}
-			if(!matched) {
-			    throw new IllegalArgumentException(text + " is not an acceptable set spec");
+			SetSpec setSpec = SetSpec.bySpec(text);
+			if(setSpec != null){
+				setValue(setSpec);
+			} else {				
+				throw new IllegalArgumentException(text + " is not an acceptable set spec");
 			}
 		}
 	}
@@ -27,7 +23,7 @@ public class SetSpecEditor extends PropertyEditorSupport {
 		if(getValue() == null) {
 			return null;
 		} else {
-		    return ((SetSpec)getValue()).name();
+		    return ((SetSpec)getValue()).getSpec();
 		}
 	}
 }

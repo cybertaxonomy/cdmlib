@@ -76,7 +76,7 @@ public class JsonView extends BaseView implements View{
 	 * @see org.springframework.web.servlet.View#getContentType()
 	 */
 	public String getContentType() {
-		return Type.JSON.getContentType();
+		return type.getContentType();
 	}
 	
 	public void render(Object entity, PrintWriter writer) throws Exception {
@@ -122,6 +122,7 @@ public class JsonView extends BaseView implements View{
 			// assuming json
 			writer.append(jsonObj.toString());
 		}
+		//TODO resp.setContentType(type);
 		writer.flush();
 	}
 	
