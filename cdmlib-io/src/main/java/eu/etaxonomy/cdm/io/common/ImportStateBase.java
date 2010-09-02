@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -57,6 +58,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
+	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
 	
 
 	
@@ -203,6 +205,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public void putFeature(Feature feature){
 		featureMap.put(feature.getUuid(), feature);
+	}
+
+	public Language getLanguage(UUID uuid){
+		return languageMap.get(uuid);
+	}
+	
+	public void putLanguage(Language language){
+		languageMap.put(language.getUuid(), language);
 	}
 	
 	//TODO make this abstract or find another way to force that the
