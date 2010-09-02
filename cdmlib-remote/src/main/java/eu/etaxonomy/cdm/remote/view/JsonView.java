@@ -34,7 +34,7 @@ public class JsonView extends BaseView implements View{
 	
 	public enum Type{
 		JSON("application/json"),
-		XML("text/xml");
+		XML("application/xml");
 		
 		private String contentType;
 		
