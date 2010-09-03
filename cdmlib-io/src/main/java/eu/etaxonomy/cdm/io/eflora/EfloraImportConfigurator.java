@@ -39,6 +39,7 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 	private static IInputTransformer defaultTransformer = null;
 	private String classificationTitle = "E-Flora Import";
 	private String sourceReferenceTitle = "E-Flora";
+	private UUID defaultLanguageUuid;
 	
 	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
 	//from the one import to another import in case I run 2 imports in line
@@ -185,6 +186,14 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 
 	public boolean isDoPrintKeys() {
 		return doPrintKeys;
+	}
+
+	public UUID getDefaultLanguageUuid() {
+		return this.defaultLanguageUuid;
+	}
+
+	public void setDefaultLanguageUuid(UUID defaultLanguageUuid) {
+		this.defaultLanguageUuid = defaultLanguageUuid;
 	}
 	
 
