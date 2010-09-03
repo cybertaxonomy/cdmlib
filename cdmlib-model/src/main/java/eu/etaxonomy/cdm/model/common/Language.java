@@ -184,7 +184,7 @@ public class Language extends DefinedTermBase<Language> {
 	private static final UUID uuidFinnish = UUID.fromString("4606abdf-6dbe-4bfe-b3da-a1fa08f2f1e2");
 	private static final UUID uuidFinnoUgrian_Other = UUID.fromString("e4fd3d5d-7715-4736-b4db-73ac8b129ddf");
 	private static final UUID uuidFon = UUID.fromString("61cb4280-42d1-4fa0-92bf-fe7cf02c66d3");
-	private static final UUID uuidFrench = UUID.fromString("7759a1d8-a5ea-454a-8c93-1dcfaae8cc21");
+	public static final UUID uuidFrench = UUID.fromString("7759a1d8-a5ea-454a-8c93-1dcfaae8cc21");
 	private static final UUID uuidFrenchMiddle = UUID.fromString("bc2b8d06-94f8-4ddb-a4ad-769105868b73");
 	private static final UUID uuidFrenchOld = UUID.fromString("27bd4b8b-07d0-425c-a843-61588c140f68");
 	private static final UUID uuidNorthernFrisian = UUID.fromString("f5977654-d71b-4ff1-96cb-d2130e978aef");
