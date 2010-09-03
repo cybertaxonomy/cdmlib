@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -66,20 +67,22 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 		name.setNomenclaturalReference(nomRef);
 		
 		String microReference = parseReferenceYearAndDetail(nomRef);
+		microReference = removeTrailing(microReference, ")");
 		
 		microReference = parseHomonym(microReference, name);
 		name.setNomenclaturalMicroReference(microReference);
 		
 		TeamOrPersonBase  nameTeam = CdmBase.deproxy(name.getCombinationAuthorTeam(), TeamOrPersonBase.class);
+		TeamOrPersonBase  refTeam = nomRef.getAuthorTeam();
 		if (nameTeam == null ){
 			logger.warn("Name has nom. ref. but no author team. Name: " + name.getTitleCache() + ", Nom.Ref.: " + value);
-		}else if (nomRef.getAuthorTeam() == null ){
+		}else if (refTeam == null ){
 			logger.warn("Name has nom. ref. but no nom.ref. author. Name: " + name.getTitleCache() + ", Nom.Ref.: " + value);
-		}else if (! authorTeamsMatch(nomRef.getAuthorTeam(), nameTeam)){
+		}else if (! authorTeamsMatch(refTeam, nameTeam)){
 			logger.warn("Nom.Ref. author and comb. author do not match: " + nomRef.getTitleCache() + " <-> " + nameTeam.getNomenclaturalTitle());
 		}else {
 			nomRef.setAuthorTeam(nameTeam);
-			nameTeam.setTitleCache(nomRef.getAuthorTeam().getTitleCache(), true);
+			nameTeam.setTitleCache(refTeam.getTitleCache(), true);
 		}
 		return nameTeam;
 	}
@@ -115,13 +118,30 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 			TimePeriod datePublished = TimePeriod.parseString(strPeriod);
 			ref.setDatePublished(datePublished);
 			String author = titleToParse.substring(0, start).trim();
-			Team team = Team.NewTitledInstance(author, author);
+			author = parseInRefrence(ref, author);
+			TeamOrPersonBase team = parseSingleTeam(author);
 			ref.setAuthorTeam(team);
 			ref.setProtectedTitleCache(false);
 		}else{
 			logger.warn("Could not parse reference: " +  titleToParse);
 		}
 		return detailResult;
+		
+	}
+
+	private String parseInRefrence(ReferenceBase ref, String author) {
+		int pos = author.indexOf(" in ");
+		if (pos > -1){
+			String inAuthorString = author.substring(pos + 4);
+			String myAuthorString = author.substring(0, pos);
+			ReferenceBase inReference = ReferenceFactory.newGeneric();
+			TeamOrPersonBase inAuthor = parseSingleTeam(inAuthorString);
+			inReference.setAuthorTeam(inAuthor);
+			ref.setInReference(inReference);
+			return myAuthorString;
+		}else{
+			return author;
+		}
 		
 	}
 
@@ -163,7 +183,7 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 		TaxonDescription description = getDescription(taxon);
 		for (String singleReferenceString : multipleReferences){
 			ReferenceBase singleRef = ReferenceFactory.newGeneric();
-			singleRef.setTitleCache(singleReferenceString, true);
+			singleRef.setTitleCache(singleReferenceString.trim(), true);
 			singleRef.setAuthorTeam(team);
 			
 			String microReference = parseReferenceYearAndDetailForUsage(singleRef);
@@ -171,7 +191,7 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 	//		parseReferenceType(ref);
 			
 			TextData textData = TextData.NewInstance(Feature.CITATION());
-			textData.addSource(null, null, ref, microReference, name, null);
+			textData.addSource(null, null, singleRef, microReference, name, null);
 			description.addElement(textData);
 		}
 		return team;
@@ -196,6 +216,13 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 		Matcher matcher = patReference.matcher(titleToParse);
 		if (! matcher.find()){
 			logger.warn("Could not parse year: " +  titleToParse);
+		}else{
+			if (Pattern.matches("^[1-2]{1}[0-9]{3}[a-e]$", titleToParse)){
+				String title = titleToParse.substring(4,5);
+				ref.setTitle(title);
+				titleToParse = titleToParse.substring(0, 4);
+			}
+			ref.setProtectedTitleCache(false);
 		}
 		TimePeriod datePublished = TimePeriod.parseString(titleToParse);
 		ref.setDatePublished(datePublished);
@@ -255,25 +282,63 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 			if (refAuthorTeamString.startsWith(nameTeamString)){
 				return true;
 			}else{
-				return checkIpniAuthor(nameTeamString + ".", refAuthorTeam);
+				return checkSingleAndIpniAuthor(nameTeam, refAuthorTeam);
 			}
 		}else{
 			if (nameTeamString.endsWith(refAuthorTeamString) || refAuthorTeamString.endsWith(nameTeamString)){
 				return true;
 			}else{
-				return checkIpniAuthor(nameTeamString, refAuthorTeam);
+				return checkSingleAndIpniAuthor(nameTeam, refAuthorTeam);
 			}
 		}
 	}
 	
+	private boolean checkSingleAndIpniAuthor(TeamOrPersonBase nameTeam, TeamOrPersonBase refAuthorTeam) {
+		if ( nameTeam.isInstanceOf(Team.class) && ((Team)nameTeam).getTeamMembers().size()> 1 ||
+				refAuthorTeam.isInstanceOf(Team.class) && ((Team)refAuthorTeam).getTeamMembers().size()> 1){
+			//class
+			if (! (nameTeam.isInstanceOf(Team.class) && refAuthorTeam.isInstanceOf(Team.class) ) ){
+				logger.warn("Only one author is a real team");
+				return false;
+			}
+			Team realNameTeam = (Team)nameTeam;
+			Team realRefAuthorTeam = (Team)refAuthorTeam;
+			//size
+			if (realNameTeam.getTeamMembers().size() != realRefAuthorTeam.getTeamMembers().size()){
+				logger.warn("Teams do not have the same size");
+				return false;
+			}
+			//empty teams
+			if (realNameTeam.getTeamMembers().size() == 0){
+				logger.warn("Teams are empty");
+				return false;
+			}
+			//compare each team member
+			for (int i = 0; i < realNameTeam.getTeamMembers().size(); i++){
+				Person namePerson = realNameTeam.getTeamMembers().get(i);
+				Person refPerson = realRefAuthorTeam.getTeamMembers().get(i);
+				if ( authorTeamsMatch(refPerson, namePerson) == false){
+					return false;
+				}
+			}
+			return true;
+		}
+		boolean result = checkIpniAuthor(nameTeam.getNomenclaturalTitle(), refAuthorTeam);
+		return result;
+	}
+
 	private boolean checkIpniAuthor(String nameTeamString, TeamOrPersonBase refAuthorTeam) {
 		IpniService ipniService = new IpniService();
 		List<Person> ipniAuthors = ipniService.getAuthors(nameTeamString, null, null, null, null, null);
-		for (Person ipniAuthor : ipniAuthors){
-			if (ipniAuthor.getLastname() != null && ipniAuthor.getLastname().equalsIgnoreCase(refAuthorTeam.getTitleCache())){
-				return true;
+		if (ipniAuthors != null){
+			for (Person ipniAuthor : ipniAuthors){
+				if (ipniAuthor.getLastname() != null && ipniAuthor.getLastname().equalsIgnoreCase(refAuthorTeam.getTitleCache())){
+					return true;
+				}
+				logger.warn(ipniAuthor.getTitleCache() + " <-> " + refAuthorTeam.getTitleCache());
 			}
-			System.out.println(ipniAuthor.getTitleCache() + " <-> " + refAuthorTeam.getTitleCache());
+		}else{
+			logger.warn("IPNI not available");
 		}
 		return false;
 	}
@@ -300,6 +365,10 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 	private String removeTypePrefix(String typeRef) {
 		typeRef = typeRef.trim().replace("Type: ", "").replace("Types: ", "").trim();
 		return typeRef;
+	}
+	
+	protected void handleGenus(String value, TaxonNameBase taxonName) {
+		// do nothing
 	}
 
 	

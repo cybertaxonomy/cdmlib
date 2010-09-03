@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.eflora.EfloraImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae.CentralAfricaEricaceaeImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae.CentralAfricaEricaceaeTransformer;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -54,6 +55,8 @@ public class CentralAfricaEricaceaeActivator {
 	//feature tree uuid
 	public static final UUID featureTreeUuid = UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7");
 	
+	public static UUID defaultLanguageUuid = Language.uuidEnglish;
+	
 	//classification
 	static final UUID classificationUuid = UUID.fromString("10e5efcc-6e13-4abc-ad42-e0b46e50cbe7");
 	
@@ -76,6 +79,7 @@ public class CentralAfricaEricaceaeActivator {
 		config.setTaxonomicTreeUuid(classificationUuid);
 		config.setDoTaxa(doTaxa);
 		config.setCheck(check);
+		config.setDefaultLanguageUuid(defaultLanguageUuid);
 		config.setDoPrintKeys(doPrintKeys);
 		config.setDbSchemaValidation(hbm2dll);
 		
