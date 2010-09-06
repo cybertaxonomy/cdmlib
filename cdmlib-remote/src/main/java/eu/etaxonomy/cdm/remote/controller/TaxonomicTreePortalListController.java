@@ -109,7 +109,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	@RequestMapping(value = { "/portal/taxonTree" }, method = RequestMethod.GET)
 	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		logger.info("getTaxonomicTrees()");
+		logger.info("getTaxonomicTrees() " + request.getServletPath());
 		return service.list(null, null, null,null, TAXONTREE_INIT_STRATEGY);
 	}
 	
@@ -125,10 +125,11 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodes(
 			@PathVariable("treeUuid") UUID treeUuid,
+			HttpServletRequest request,
 			HttpServletResponse response
 			) throws IOException {
 		
-		return getChildNodesAtRank(treeUuid, null, response);
+		return getChildNodesAtRank(treeUuid, null, request, response);
 	}
 	
 	
@@ -138,10 +139,11 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	public List<TaxonNode> getChildNodesAtRank(
 			@PathVariable("treeUuid") UUID treeUuid,
 			@PathVariable("rankUuid") UUID rankUuid,
+			HttpServletRequest request,
 			HttpServletResponse response
 			) throws IOException {
 		
-		logger.info("getChildNodesAtRank()");
+		logger.info("getChildNodesAtRank() " + request.getServletPath());
 		TaxonomicTree tree = null;
 		Rank rank = null;
 		if(treeUuid != null){
@@ -184,8 +186,9 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	public List<TaxonNode> getChildNodesOfTaxon(
 			@PathVariable("treeUuid") UUID treeUuid,
 			@PathVariable("taxonUuid") UUID taxonUuid,
+			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		logger.info("getChildNodesOfTaxon()");
+		logger.info("getChildNodesOfTaxon() " + request.getServletPath());
 		
 		TaxonomicTree tree = service.find(treeUuid);
 		Taxon taxon = (Taxon) taxonService.load(taxonUuid);
@@ -220,7 +223,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 			@PathVariable("rankUuid") UUID rankUuid,
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		logger.info("getPathFromTaxonToRank(): " + request.getServletPath());
+		logger.info("getPathFromTaxonToRank() " + request.getServletPath());
 		
 		TaxonomicTree tree = service.find(treeUuid);
 		Rank rank = findRank(rankUuid);
