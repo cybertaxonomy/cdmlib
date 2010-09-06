@@ -1314,7 +1314,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 	List<String> taxonNames = new ArrayList<String>();
 	 	
 		for (TaxonNode node: nodes){
-			HashMap<String, String> synonymsGenus = new HashMap<String, String>();
+			HashMap<String, String> synonymsGenus = new HashMap<String, String>(); // Changed this to be able to store the idInSource to a genusName
 			List<String> synonymsEpithet = new ArrayList<String>();
 			
 			if (node.getTaxonomicTree().equals(tree)){
@@ -1357,10 +1357,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String synGenusName = zooName.getGenusOrUninomial();
-							if (!synonymsGenus.containsKey(synGenusName)){
+							if (synGenusName != null && !synonymsGenus.containsKey(synGenusName)){
 								synonymsGenus.put(synGenusName, idInSource);
 							}
 							inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
+							
+							// DEBUG
+							if (epithetOfTaxon == null) {
+								logger.error("This specificEpithet is NULL");
+							}
+							
 							inferredSynName.setSpecificEpithet(epithetOfTaxon);
 							inferredSynName.setGenusOrUninomial(synGenusName);
 							inferredEpithet = Synonym.NewInstance(inferredSynName, null);
@@ -1383,7 +1389,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
 							inferredSynonyms.add(inferredEpithet);
 							inferredSynName.generateTitle();
-							zooHashMap.put(inferredSynName.getUuid(), inferredSynName); // I guess this needs to be added here?
+							zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
 							taxonNames.add(inferredSynName.getNameCache());
 						}
 						
@@ -1427,7 +1433,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String speciesEpithetName = zooName.getSpecificEpithet();
-							if (!synonymsEpithet.contains(speciesEpithetName)){
+							if (synonymsEpithet != null && !synonymsEpithet.contains(speciesEpithetName)){
 								synonymsEpithet.add(speciesEpithetName);
 							}
 							inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
@@ -1453,7 +1459,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_EPITHET_OF());
 							inferredSynonyms.add(inferredGenus);
 							inferredSynName.generateTitle();
-							zooHashMap.put(inferredSynName.getUuid(), inferredSynName); // I guess this needs to be added here?
+							zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
 							taxonNames.add(inferredSynName.getNameCache());
 						}
 						
@@ -1496,7 +1502,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
 							String synGenusName = zooName.getGenusOrUninomial();
-							if (!synonymsGenus.containsKey(synGenusName)){
+							if (synGenusName != null && !synonymsGenus.containsKey(synGenusName)){
 								synonymsGenus.put(synGenusName, idInSource);
 							}
 						}
@@ -1512,7 +1518,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							
 							ZoologicalName zooName = getZoologicalName(syn.getName().getUuid(), zooHashMap);
 							String epithetName = zooName.getSpecificEpithet();
-							if (!synonymsEpithet.contains(epithetName)){
+							if (epithetName != null && !synonymsEpithet.contains(epithetName)){
 								synonymsEpithet.add(epithetName);
 							}
 						}
