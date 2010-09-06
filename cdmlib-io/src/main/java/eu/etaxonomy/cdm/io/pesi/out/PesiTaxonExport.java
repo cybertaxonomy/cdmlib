@@ -42,6 +42,8 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -53,10 +55,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -91,7 +94,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static ExtensionType cacheCitationExtensionType;
 	private static ExtensionType expertUserIdExtensionType;
 	private static ExtensionType speciesExpertUserIdExtensionType;
-	private static String auctString = "auct.";
 	
 	/**
 	 * @return the treeIndexAnnotationType
@@ -189,7 +191,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<TaxonNameBase> list = null;
 			
-/*			logger.error("PHASE 1: Export Taxa...");
+			logger.error("PHASE 1: Export Taxa...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -436,7 +438,7 @@ public class PesiTaxonExport extends PesiExportBase {
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.error("Committed transaction.");*/
+			logger.error("Committed transaction.");
 			
 			
 			// Create inferred synonyms for accepted taxa
@@ -1190,7 +1192,17 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (taxonName != null && taxonName != null) {
 			if (taxonName.isInstanceOf(NonViralName.class)) {
 				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
-				result = nonViralName.getAuthorshipCache();
+				String authorshipCache = nonViralName.getAuthorshipCache();
+
+				// For a misapplied name without an authorshipCache the authorString should be set to "auct."
+				if (isMisappliedName(taxonName) && authorshipCache == null) {
+					// Set authorshipCache to "auct."
+					result = PesiTransformer.auctString;
+				} else {
+					// Return the content of the authorshipCache
+					result = authorshipCache;
+				}
+
 			} else {
 				logger.warn("TaxonName is not of instance NonViralName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
@@ -1198,9 +1210,45 @@ public class PesiTaxonExport extends PesiExportBase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		
+		if ("".equals(result)) {
+			return null;
+		} else {
+			return result;
+		}
 	}
 
+	/**
+	 * Checks whether a given TaxonName is a misapplied name.
+	 * @param taxonName
+	 * @return
+	 */
+	private static boolean isMisappliedName(TaxonNameBase taxonName) {
+		boolean result = false;
+		Set<NameRelationship> taxonNameRelations = taxonName.getRelationsFromThisName();
+		for (NameRelationship nameRelation : taxonNameRelations) {
+			NameRelationshipType relationshipType = nameRelation.getType();
+			if (relationshipType.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
+				result = true;
+			}
+		}
+		
+		Set<Taxon> taxa = taxonName.getTaxa();
+		if (taxa.size() == 1) {
+			Taxon taxon = CdmBase.deproxy(taxa.iterator().next(), Taxon.class);
+			Set<TaxonRelationship> taxonRelations = taxon.getRelationsFromThisTaxon();
+			for (TaxonRelationship taxonRelationship : taxonRelations) {
+				TaxonRelationshipType taxonRelationshipType = taxonRelationship.getType();
+				if (taxonRelationshipType.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
+					result = true;
+				}
+			}
+		} else if (taxa.size() > 1) {
+			logger.error("Could not check for misapplied name. This TaxonName has " + taxa.size() + " Taxa: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+		}
+		return result;
+	}
+	
 	/**
 	 * Returns the <code>FullName</code> attribute.
 	 * @param taxon The {@link TaxonBase Taxon}.
@@ -2005,18 +2053,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static boolean isAuctReference(TaxonNameBase taxonName, PesiExportState state) {
 		boolean result = false;
 		
-		try {
-		TaxonBase taxonBase = getSourceTaxonBase(taxonName);
-
-		if (taxonBase != null) {
-			if (auctString.equals(taxonBase.getTitleCache())) {
-				result = true;
-			}
-		} else {
-			logger.error("A TaxonBase could not be determined for this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-		}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (isMisappliedName(taxonName)) {
+			result = true;
 		}
 		return result;
 	}
