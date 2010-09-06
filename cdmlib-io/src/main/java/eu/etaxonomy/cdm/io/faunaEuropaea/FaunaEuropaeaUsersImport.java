@@ -176,6 +176,13 @@ public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {
 					}
 				}
 				
+				// set protected titleCache
+				StringBuilder referenceTitleCache = new StringBuilder(author.getTitleCache() + ".");
+				if (year != null) {
+					referenceTitleCache.append(" " + year);
+				}
+				reference.setTitleCache(referenceTitleCache.toString(), true);
+				
 				reference.setAuthorTeam(author);
 				
 				ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
