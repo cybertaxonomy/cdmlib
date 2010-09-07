@@ -22,7 +22,7 @@ import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import eu.etaxonomy.cdm.ext.common.BaseServiceWrapper;
+import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @date 24.08.2010
  *
  */
-public class SruServiceWrapper extends BaseServiceWrapper<ReferenceBase> {
+public class SruServiceWrapper extends ServiceWrapperBase<ReferenceBase> {
 	
 	//http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.tit%3D%22harry+potter%22&recordSchema=pica
 	
