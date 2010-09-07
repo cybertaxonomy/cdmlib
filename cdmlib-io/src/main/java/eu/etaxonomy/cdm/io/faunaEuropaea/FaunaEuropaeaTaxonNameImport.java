@@ -495,6 +495,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	 * @return
 	 */
 	private static boolean expressionMatches(String regEx, String targetString) {
+		if (targetString == null) {
+			return false;
+		}
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(targetString);
 		if (matcher.find()) {
