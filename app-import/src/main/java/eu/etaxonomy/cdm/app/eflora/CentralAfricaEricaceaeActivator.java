@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -26,6 +27,8 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.eflora.EfloraImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae.CentralAfricaEricaceaeImportConfigurator;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae.CentralAfricaEricaceaeTransformer;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -94,7 +97,6 @@ public class CentralAfricaEricaceaeActivator {
 			System.out.println("End import from ("+ source.toString() + ")...");
 		}
 		
-		
 		FeatureTree tree = makeFeatureNode(myImport.getCdmAppController().getTermService());
 		myImport.getCdmAppController().getFeatureTreeService().saveOrUpdate(tree);
 		
@@ -108,6 +110,15 @@ public class CentralAfricaEricaceaeActivator {
 			}
 			myImport.getCdmAppController().commitTransaction(tx);
 		}
+		
+		//deduplicate
+		CdmApplicationController app = myImport.getCdmAppController();
+		int count = app.getAgentService().deduplicate(Person.class, null, null);
+		logger.warn("Deduplicated " + count + " persons.");
+		count = app.getAgentService().deduplicate(Team.class, null, null);
+		logger.warn("Deduplicated " + count + " teams.");
+		count = app.getReferenceService().deduplicate(ReferenceBase.class, null, null);
+		logger.warn("Deduplicated " + count + " references.");
 		
 	}
 	
