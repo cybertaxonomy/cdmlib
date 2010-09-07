@@ -19,6 +19,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
@@ -251,6 +252,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#deduplicate(java.lang.Class, eu.etaxonomy.cdm.strategy.match.IMatchStrategy, eu.etaxonomy.cdm.strategy.merge.IMergeStrategy)
 	 */
 	@Override
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
 		if (clazz == null){
 			logger.warn("Deduplication clazz must not be null!");
