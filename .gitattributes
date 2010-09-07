@@ -1261,6 +1261,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/IBciService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/BaseServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/SchemaAdapterBase.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/ServiceWrapperBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/dc/DublinCoreSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/EditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/EditGeoServiceUtilities.java -text
