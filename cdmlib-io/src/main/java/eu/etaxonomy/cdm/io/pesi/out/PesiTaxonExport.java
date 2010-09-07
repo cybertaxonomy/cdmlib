@@ -1189,24 +1189,24 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static String getAuthorString(TaxonNameBase taxonName) {
 		String result = null;
 		try {
-		if (taxonName != null && taxonName != null) {
-			if (taxonName.isInstanceOf(NonViralName.class)) {
-				NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
-				String authorshipCache = nonViralName.getAuthorshipCache();
-
-				// For a misapplied name without an authorshipCache the authorString should be set to "auct."
-				if (isMisappliedName(taxonName) && authorshipCache == null) {
-					// Set authorshipCache to "auct."
-					result = PesiTransformer.auctString;
+			if (taxonName != null) {
+				if (taxonName.isInstanceOf(NonViralName.class)) {
+					NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
+					String authorshipCache = nonViralName.getAuthorshipCache();
+	
+					// For a misapplied name without an authorshipCache the authorString should be set to "auct."
+					if (isMisappliedName(taxonName) && authorshipCache == null) {
+						// Set authorshipCache to "auct."
+						result = PesiTransformer.auctString;
+					} else {
+						// Return the content of the authorshipCache
+						result = authorshipCache;
+					}
+	
 				} else {
-					// Return the content of the authorshipCache
-					result = authorshipCache;
+					logger.warn("TaxonName is not of instance NonViralName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 				}
-
-			} else {
-				logger.warn("TaxonName is not of instance NonViralName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
-		}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
