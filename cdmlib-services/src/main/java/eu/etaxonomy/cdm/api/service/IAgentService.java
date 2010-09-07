@@ -10,10 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.Address;
@@ -22,7 +19,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -99,4 +95,5 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
+	
 }

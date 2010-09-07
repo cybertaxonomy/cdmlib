@@ -27,8 +27,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 
@@ -43,8 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
-
-	/**
+ 	/**
 	 * Constructor
 	 */
 	public AgentServiceImpl(){
@@ -118,5 +115,5 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	@Override
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache() {
 		return dao.getTeamUuidAndTitleCache();
-	}	
+	}
 }

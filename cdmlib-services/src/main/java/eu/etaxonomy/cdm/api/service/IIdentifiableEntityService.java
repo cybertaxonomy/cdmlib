@@ -15,6 +15,7 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -25,6 +26,9 @@ import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.merge.IMergable;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 
 public interface IIdentifiableEntityService<T extends IdentifiableEntity> extends IAnnotatableService<T> {
 
@@ -163,4 +167,21 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	
+	/**
+	 * This method tries to deduplicate all objects of a certain class by first trying to find matchabel objects and
+	 * merging them in a second step. For performance reasons implementing classes must not guarantee that ALL 
+	 * matching object pairs are found but only a subset. But it must guarantee that only matching objects are merged.
+	 *<BR> Matching is defined by the given matching strategy or if no matching strategy is given the default matching
+	 *strategy is used.
+	 *<BR>Clazz must implement {@link IMatchable} and {@link IMergable} otherwise no deduplication is performed.
+	 *<BR>The current implementation in IdentifiableServiceBase tries to match and merge all objects with an identical non 
+	 *empty titleCache.
+	 * @param clazz
+	 * @param matchStrategy
+	 * @param mergeStrategy
+	 * @return the number of merges performed during deduplication
+	 */
+	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy);
 }

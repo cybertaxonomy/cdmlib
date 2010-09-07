@@ -11,10 +11,14 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
@@ -32,10 +36,22 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.merge.IMergable;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
+	
+    @Autowired
+    protected ICommonService commonService;
+
 	
 	protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
 	protected static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
@@ -219,6 +235,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			
 		}
 	}
+	
+	
 
 	/**
 	 * Needs override if not only the title cache should be set to null to
@@ -227,5 +245,88 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	protected void setOtherCachesNull(T entity) {
 		return;
 	}
+	
+//	@Override
+//	public int deduplicate(Class<? extends IdentifiableEntity> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy);
+
+	
+	@Override
+	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+//		if (clazz == null){
+//			clazz = this.getCT.class;
+//		}
+		if (! ( IMatchable.class.isAssignableFrom(clazz) && IMergable.class.isAssignableFrom(clazz) )  ){
+			logger.warn("Deduplication implemented only for classes implementing IMatchable and IMergeable. No deduplication performed!");
+			return 0;
+		}
+		Class matchableClass = clazz;
+		if (matchStrategy == null){
+			matchStrategy = DefaultMatchStrategy.NewInstance(matchableClass);
+		}
+
+		int result = 0;
+		double countTotal = count(clazz);
+		Integer pageSize = 1000;
+		List<T> nextGroup = new ArrayList<T>();
+		String lastTitleCache = null;
+		
+		Number countPagesN = Math.ceil(countTotal/pageSize.doubleValue()) ; 
+		int countPages = countPagesN.intValue();
+		
+		for (int i = 0; i< countPages ; i++){
+			List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", SortOrder.ASCENDING)});
+			List<T> objectList = listByTitle(clazz, null, null, null, pageSize, i, orderHints, null);
+		
+			for (T object : objectList){
+				String currentTitleCache = object.getTitleCache();
+				if (currentTitleCache != null && currentTitleCache.equals(lastTitleCache)){
+					//=titleCache
+					nextGroup.add(object);
+				}else{
+					//<> titleCache
+					result += handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
+					nextGroup = new ArrayList<T>();
+					nextGroup.add(object);
+				}
+				lastTitleCache = currentTitleCache;
+			}
+		}
+		result += handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
+		return result;
+	}
+
+	private int handleLastGroup(List<T> group, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+		int result = 0;
+		int size = group.size();
+		Set<Integer> exclude = new HashSet<Integer>();  //set to collect all objects, that have been merged already
+		for (int i = 0; i < size - 1; i++){
+			if (exclude.contains(i)){
+				continue;
+			}
+			for (int j = i + 1; j < size; j++){
+				if (exclude.contains(j)){
+					continue;
+				}
+				T firstObject = group.get(i);
+				T secondObject = group.get(j);
+				
+				try {
+					if (matchStrategy.invoke((IMatchable)firstObject, (IMatchable)secondObject)){
+						commonService.merge((IMergable)firstObject, (IMergable)secondObject, mergeStrategy);
+						exclude.add(j);
+						result++;
+					}
+				} catch (MatchException e) {
+					logger.warn("MatchException when trying to match " + firstObject.getTitleCache());
+					e.printStackTrace();
+				} catch (MergeException e) {
+					logger.warn("MergeException when trying to merge " + firstObject.getTitleCache());
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}	
+
 }
 
