@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -38,13 +40,10 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.pesi.out.PesiTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -403,7 +402,10 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				Synonym synonym = null;
 				Taxon taxon;
 				try {
-					if ((status == T_STATUS_ACCEPTED) || (autId == A_AUCT)) { // taxon
+					// check for occurrence of the auct string in auctName
+					String auctRegEx = "\bauct\\.?\b"; // A word "auct" with or without "."
+					if (expressionMatches(auctRegEx, autName)) {
+						
 						if (autId == A_AUCT) { // misapplied name
 							zooName.setCombinationAuthorTeam(null);
 							zooName.setPublicationYear(null);
@@ -483,7 +485,22 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 		return success;
 	}
-	
+
+	/**
+	 * Returns whether a regular expression is found in a given target string.
+	 * @param regEx
+	 * @param targetString
+	 * @return
+	 */
+	private static boolean expressionMatches(String regEx, String targetString) {
+		Pattern pattern = Pattern.compile(regEx);
+		Matcher matcher = pattern.matcher(targetString);
+		if (matcher.find()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	/**
 	 * Processes taxa from complete taxon store
