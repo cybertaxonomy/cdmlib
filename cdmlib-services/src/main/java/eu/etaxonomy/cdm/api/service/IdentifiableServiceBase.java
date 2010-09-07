@@ -246,15 +246,16 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return;
 	}
 	
-//	@Override
-//	public int deduplicate(Class<? extends IdentifiableEntity> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy);
 
-	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#deduplicate(java.lang.Class, eu.etaxonomy.cdm.strategy.match.IMatchStrategy, eu.etaxonomy.cdm.strategy.merge.IMergeStrategy)
+	 */
 	@Override
 	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
-//		if (clazz == null){
-//			clazz = this.getCT.class;
-//		}
+		if (clazz == null){
+			logger.warn("Deduplication clazz must not be null!");
+			return 0;
+		}
 		if (! ( IMatchable.class.isAssignableFrom(clazz) && IMergable.class.isAssignableFrom(clazz) )  ){
 			logger.warn("Deduplication implemented only for classes implementing IMatchable and IMergeable. No deduplication performed!");
 			return 0;
@@ -273,6 +274,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		Number countPagesN = Math.ceil(countTotal/pageSize.doubleValue()) ; 
 		int countPages = countPagesN.intValue();
 		
+		//TODO test paging 
 		for (int i = 0; i< countPages ; i++){
 			List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", SortOrder.ASCENDING)});
 			List<T> objectList = listByTitle(clazz, null, null, null, pageSize, i, orderHints, null);
