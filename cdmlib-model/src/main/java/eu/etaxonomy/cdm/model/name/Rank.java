@@ -421,11 +421,13 @@ public class Rank extends OrderedTermBase<Rank> {
 
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> rank is higher than the
-	 * species rank and lower than the genus rank (true) or not (false).
+	 * species rank and lower than the genus rank (true) or not (false). Species groups or
+	 * aggregates are also handled as infrageneric ranks.
 	 * Returns false if <i>this</i> rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()
+	 * @see  #isSpeciesAggregate()
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
