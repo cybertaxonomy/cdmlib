@@ -404,9 +404,11 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				try {
 					// check for occurrence of the auct string in auctName
 					String auctRegEx = "\bauct\\.?\b"; // A word "auct" with or without "."
-					if (expressionMatches(auctRegEx, autName)) {
-						
-						if (autId == A_AUCT) { // misapplied name
+					boolean auctWordFound = expressionMatches(auctRegEx, autName);
+
+					if (status == T_STATUS_ACCEPTED || auctWordFound) {
+
+						if (auctWordFound) { // misapplied name
 							zooName.setCombinationAuthorTeam(null);
 							zooName.setPublicationYear(null);
 							taxon = Taxon.NewInstance(zooName, auctReference);
