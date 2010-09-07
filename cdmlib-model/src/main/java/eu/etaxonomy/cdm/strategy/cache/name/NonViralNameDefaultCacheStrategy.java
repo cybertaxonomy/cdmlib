@@ -421,6 +421,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			// --- strategy 1 --- 
 					
 			if (nonViralName.getRank().isSpeciesAggregate()){
+				tags.add(nonViralName.getSpecificEpithet());
 				tags.add(getSpeciesAggregateEpithet(nonViralName));
 			}else{
 				tags.add(nonViralName.getRank());	
@@ -434,7 +435,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		authorTeam.setTitleCache(nonViralName.getAuthorshipCache(), true);
 		tags.add(authorTeam);
 		
-		// Name is an autonym. Rank and infraspecific eitheton follow the author
+		// Name is an autonym. Rank and infraspecific epitheton follow the author
 		if (nonViralName.isInfraSpecific() && nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
 			tags.add(nonViralName.getRank());			
 			tags.add(nonViralName.getInfraSpecificEpithet());			

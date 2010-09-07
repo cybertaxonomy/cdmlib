@@ -320,14 +320,6 @@ public class NonViralNameDefaultCacheStrategyTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.NonViralName)}.
-	 */
-	@Test
-	public void testGetTaggedName() {
-		logger.warn("testGetTaggedName yet implemented");
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#setNameAuthorSeperator(java.lang.String)}.
 	 */
 	@Test
@@ -436,13 +428,24 @@ public class NonViralNameDefaultCacheStrategyTest {
 		
 		
 	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.NonViralName)}.
+	 */
+	@Test
+	public void testGetTaggedNameSpeciesAggregate() {
+		BotanicalName speciesAggregate = BotanicalName.NewInstance(Rank.SPECIESAGGREGATE());
+		speciesAggregate.setGenusOrUninomial("Mygenus");
+		speciesAggregate.setSpecificEpithet("myspecies");
+		List<Object> taggedName = strategy.getTaggedName(speciesAggregate);
+		Assert.assertEquals("1rd tag must be genus epithet", "Mygenus", taggedName.get(0));
+		Assert.assertEquals("2rd tag must be species epithet", "myspecies", taggedName.get(1));
+		Assert.assertEquals("3rd tag must be aggregate marker", "aggr.",taggedName.get(2));
+	}
+
 	
 	@Test 
-	public void getTaggedName(){
-//		BotanicalName botName = BotanicalName.NewInstance(Rank.SUBSPECIES());
-//		botName.setGenusOrUninomial("Genus");
-//		botName.setSpecificEpithet("species");
-//		botName.setInfraSpecificEpithet("subspecies");
+	public void testGetTaggedNameSubspecies(){
 		List taggedName = strategy.getTaggedName(subSpeciesName);
 		Assert.assertEquals("First tag should be 'Abies'", "Abies", taggedName.get(0));
 		Assert.assertEquals("Second tag should be 'alba'", "alba", taggedName.get(1));
