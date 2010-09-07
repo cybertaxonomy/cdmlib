@@ -403,7 +403,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				Taxon taxon;
 				try {
 					// check for occurrence of the auct string in auctName
-					String auctRegEx = "\bauct\\.?\b"; // A word "auct" with or without "."
+					String auctRegEx = "\\bauct\\.?\\b"; // The word "auct" with or without "."
 					boolean auctWordFound = expressionMatches(auctRegEx, autName);
 
 					if (status == T_STATUS_ACCEPTED || auctWordFound) {
@@ -422,7 +422,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 							}
 						}
 						taxonBase = taxon;
-					} else if ((status == T_STATUS_NOT_ACCEPTED) && (autId != A_AUCT)) { // synonym
+					} else if ((status == T_STATUS_NOT_ACCEPTED) && ! auctWordFound) { // synonym
 						synonym = Synonym.NewInstance(zooName, sourceReference);
 						//logger.info("Synonym created: " + synonym.getTitleCache() + " taxonName: " + zooName.getTitleCache());
 						if (logger.isDebugEnabled()) {
