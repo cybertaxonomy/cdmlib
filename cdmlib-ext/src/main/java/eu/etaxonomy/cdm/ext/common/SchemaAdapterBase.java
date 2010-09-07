@@ -7,11 +7,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.schema;
+package eu.etaxonomy.cdm.ext.common;
 
 import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.URI;
 import java.util.List;
 
@@ -24,9 +22,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 24.08.2010
  *
  */
-public abstract class SchemaAdapter<T extends CdmBase> {
+public abstract class SchemaAdapterBase<T extends CdmBase> {
 	
-	public static final Logger logger = Logger.getLogger(SchemaAdapter.class);
+	public static final Logger logger = Logger.getLogger(SchemaAdapterBase.class);
 	
 	/**
 	 * @return the identifier e.g. "info:srw/schema/1/dc-v1.1" for DublinCore

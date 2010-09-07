@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.schema;
+package eu.etaxonomy.cdm.ext.dc;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,11 +24,12 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 
 
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @author a.kohlbecker
  * @date 25.08.2010
  */
-public class DublinCoreSchemaAdapter extends SchemaAdapter<ReferenceBase>{
+public class DublinCoreSchemaAdapter extends SchemaAdapterBase<ReferenceBase>{
 	
 
 
@@ -122,14 +123,14 @@ public class DublinCoreSchemaAdapter extends SchemaAdapter<ReferenceBase>{
 		
 
 		@Override
-		public void startElement(String uri, String localName,
+		public void startElement(String uri, String localName, 
 				String qName, Attributes attributes) throws SAXException {
 
 			if (uri.equals(nameSpace)) {
 				logger.debug("Start Element :" + qName + "; " + uri);
 				
 				if (qName.equals(DC_DC)) {
-					referenceBase = Book.NewInstance();
+					referenceBase = ReferenceFactory.newGeneric();
 				} else {
 					dcFieldName = qName;
 				}

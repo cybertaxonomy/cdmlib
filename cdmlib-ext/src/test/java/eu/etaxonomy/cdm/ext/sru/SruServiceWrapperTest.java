@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.ext.schema.DublinCoreSchemaAdapter;
+import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**

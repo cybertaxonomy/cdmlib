@@ -22,8 +22,8 @@ import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import eu.etaxonomy.cdm.ext.BaseServiceWrapper;
-import eu.etaxonomy.cdm.ext.schema.SchemaAdapter;
+import eu.etaxonomy.cdm.ext.common.BaseServiceWrapper;
+import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
@@ -44,7 +44,7 @@ public class SruServiceWrapper extends BaseServiceWrapper<ReferenceBase> {
 		
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		
-		SchemaAdapter<ReferenceBase> schemaAdapter = schemaAdapterMap.get(recordSchema);
+		SchemaAdapterBase<ReferenceBase> schemaAdapter = schemaAdapterMap.get(recordSchema);
 		if(schemaAdapter == null){
 			logger.error("No SchemaAdapter found for " + recordSchema);
 		}

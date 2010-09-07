@@ -1257,12 +1257,14 @@ cdmlib-commons/src/test/resources/images/Thumbs.db -text
 cdmlib-ext/LICENSE.TXT -text
 cdmlib-ext/README.TXT -text
 cdmlib-ext/pom.xml -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/BaseServiceWrapper.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/EditGeoService.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/EditGeoServiceUtilities.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/IEditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/IBciService.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/BaseServiceWrapper.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/SchemaAdapterBase.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/dc/DublinCoreSchemaAdapter.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/EditGeoService.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/EditGeoServiceUtilities.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/IEditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IIpniService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IIpniServiceConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniService.java -text
@@ -1270,8 +1272,6 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceAuthorConfigurator
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceConfiguratorBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceNamesConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServicePublicationConfigurator.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/schema/DublinCoreSchemaAdapter.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/schema/SchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/site/site.xml -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text

@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext;
+package eu.etaxonomy.cdm.ext.common;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.ext.schema.SchemaAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -46,7 +45,7 @@ public class BaseServiceWrapper<T extends CdmBase> {
 	
 	protected boolean followRedirects = true;
 
-	protected Map<String, SchemaAdapter<T>> schemaAdapterMap;
+	protected Map<String, SchemaAdapterBase<T>> schemaAdapterMap;
 
 	/**
 	 * @param baseUrl the baseUrl to set
@@ -69,13 +68,13 @@ public class BaseServiceWrapper<T extends CdmBase> {
 	/**
 	 * @param schemaAdapterMap the schemaAdapterMap to set
 	 */
-	public void setSchemaAdapterMap(Map<String, SchemaAdapter<T>> schemaAdapterMap) {
+	public void setSchemaAdapterMap(Map<String, SchemaAdapterBase<T>> schemaAdapterMap) {
 		this.schemaAdapterMap = schemaAdapterMap;
 	}
 	
-	public void addSchemaAdapter(SchemaAdapter schemaAdapter){
+	public void addSchemaAdapter(SchemaAdapterBase schemaAdapter){
 		if(schemaAdapterMap == null){
-			schemaAdapterMap = new HashMap<String, SchemaAdapter<T>>();
+			schemaAdapterMap = new HashMap<String, SchemaAdapterBase<T>>();
 		}
 		schemaAdapterMap.put(schemaAdapter.getShortName(), schemaAdapter);
 	}
@@ -84,7 +83,7 @@ public class BaseServiceWrapper<T extends CdmBase> {
 	/**
 	 * @return the schemaAdapterMap
 	 */
-	public Map<String, SchemaAdapter<T>> getSchemaAdapterMap() {
+	public Map<String, SchemaAdapterBase<T>> getSchemaAdapterMap() {
 		return schemaAdapterMap;
 	}
 	

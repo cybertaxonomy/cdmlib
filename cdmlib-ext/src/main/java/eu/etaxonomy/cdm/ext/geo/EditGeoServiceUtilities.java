@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.ext;
+package eu.etaxonomy.cdm.ext.geo;
 
 import java.awt.Color;
 import java.io.UnsupportedEncodingException;
