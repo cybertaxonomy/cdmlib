@@ -9,12 +9,10 @@
 
 package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.springframework.stereotype.Component;
@@ -23,21 +21,17 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ext.ipni.IpniService;
 import eu.etaxonomy.cdm.io.eflora.EfloraImportState;
 import eu.etaxonomy.cdm.io.eflora.EfloraTaxonImport;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -82,6 +76,7 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 			logger.warn("Nom.Ref. author and comb. author do not match: " + nomRef.getTitleCache() + " <-> " + nameTeam.getNomenclaturalTitle());
 		}else {
 			nomRef.setAuthorTeam(nameTeam);
+			nomRef.setTitle(CdmUtils.Nz(nomRef.getTitle()) + " - no title given yet -");
 			nameTeam.setTitleCache(refTeam.getTitleCache(), true);
 		}
 		return nameTeam;
@@ -188,6 +183,8 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 			
 			String microReference = parseReferenceYearAndDetailForUsage(singleRef);
 			
+			singleRef.setTitle( CdmUtils.Nz(singleRef.getTitle()) + " - no title given yet -");
+			
 	//		parseReferenceType(ref);
 			
 			TextData textData = TextData.NewInstance(Feature.CITATION());
@@ -256,7 +253,7 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 		
 //		if (nameTeam == null || ! authorTeamsMatch(authorString, nameTeamTitle)){
 //			logger.warn("Author teams do not match: " + authorString + " <-> " + nameTeamTitle);
-			Team result = Team.NewInstance();
+			TeamOrPersonBase result = parseSingleTeam(authorString);
 			result.setTitleCache(authorString, true);
 			return result;
 //		}else{
