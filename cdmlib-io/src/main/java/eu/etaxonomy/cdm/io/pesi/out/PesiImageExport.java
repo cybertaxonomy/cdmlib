@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
+ * The export class for Images.
+ * Inserts into DataWarehouse database table <code>Image</code>.
  * @author e.-m.lee
  * @date 18.08.2010
  *

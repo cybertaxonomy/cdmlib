@@ -64,6 +64,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
+ * The export class for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase TaxonNames}.<p>
+ * Inserts into DataWarehouse database table <code>Taxon</code>.
+ * It is divided into four phases:<p><ul>
+ * <li>Phase 1:	Export of all {@link eu.etaxonomy.cdm.model.name.TaxonNameBase TaxonNames} except some data exported in the following phases.
+ * <li>Phase 2:	Export of additional data: ParenTaxonFk and TreeIndex.
+ * <li>Phase 3:	Export of additional data: Rank data, KingdomFk, TypeNameFk, expertFk and speciesExpertFk.
+ * <li>Phase 4:	Export of Inferred Synonyms.</ul>
  * @author e.-m.lee
  * @date 23.02.2010
  *

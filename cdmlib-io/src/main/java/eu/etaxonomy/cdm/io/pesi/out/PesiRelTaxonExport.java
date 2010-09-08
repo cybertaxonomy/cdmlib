@@ -39,6 +39,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
+ * The export class for relations between {@link eu.etaxonomy.cdm.model.taxon.TaxonBase TaxonBases}.<p>
+ * Inserts into DataWarehouse database table <code>RelTaxon</code>.
  * @author e.-m.lee
  * @date 23.02.2010
  *

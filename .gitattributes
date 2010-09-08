@@ -1553,7 +1553,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiExportConfigurator.java
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiExportMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiImageExport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiInferredSynonymExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiNoteExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiNoteSourceExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiOccurrenceExport.java -text

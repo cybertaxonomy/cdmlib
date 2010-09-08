@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.io.pesi.out;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +28,13 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
+ * The export class for {@link eu.etaxonomy.cdm.model.reference.ReferenceBase References}.<p>
+ * Inserts into DataWarehouse database table <code>Source</code>.
  * @author e.-m.lee
  * @date 11.02.2010
  *

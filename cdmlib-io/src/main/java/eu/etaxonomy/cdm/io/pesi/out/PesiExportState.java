@@ -18,6 +18,8 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * The export state class.
+ * Holds data needed while the export classes are running.
  * @author e.-m.lee
  * @date 12.02.2010
  *

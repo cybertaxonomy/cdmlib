@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
+ * The export class for additional information linked to {@link eu.etaxonomy.cdm.model.description.Distribution Distributions} and {@link eu.etaxonomy.cdm.model.common.DescriptionElementSource DescriptionElements}.<p>
+ * Inserts into DataWarehouse database table <code>OccurrenceSource</code>.
  * @author e.-m.lee
  * @date 15.03.2010
  *
