@@ -193,10 +193,10 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 
 	/**
 	 * Inserts columns in the database table OccurrenceSource.
-	 * @param stmt
-	 * @param reference
-	 * @param sourceFk
-	 * @param occurrenceIds
+	 * @param stmt The prepared statement.
+	 * @param reference {@link ReferenceBase Reference}.
+	 * @param sourceFk The SourceFk.
+	 * @param occurrenceIds A {@link java.util.Set Set} of OccurrenceId's.
 	 */
 	private void insertColumns(PreparedStatement stmt, ReferenceBase reference,
 			Integer sourceFk, Set<Integer> occurrenceIds) {
@@ -216,8 +216,8 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 
 	/**
 	 * Returns a Set of OccurrenceId's associated to a given SourceFk.
-	 * @param state
-	 * @return
+	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @return Existing OccurrenceId's for a given SourceFk.
 	 */
 	private static Set<Integer> getOccurrenceIds(Integer sourceFk, PesiExportState state) {
 		String occurrenceSql = "Select OccurrenceId From Occurrence where SourceFk = ?";
@@ -270,7 +270,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>OccurrenceFk</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>OccurrenceFk</code> attribute.
 	 * @see MethodMapper
@@ -283,7 +283,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
@@ -299,7 +299,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceNameCache</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>SourceNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -314,7 +314,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>OldTaxonName</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>OldTaxonName</code> attribute.
 	 * @see MethodMapper
 	 */

@@ -273,7 +273,8 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
-	 * @param state The {@link DbExportStateBase DbExportState}.
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -289,7 +290,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TaxonFullNameCache</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>TaxonFullNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -302,7 +303,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>AreaFk</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>AreaFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -318,7 +319,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>AreaNameCache</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>AreaNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -363,7 +364,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>OccurrenceStatusFk</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>OccurrenceStatusFk</code> attribute.
 	 * @throws UnknownCdmTypeException 
 	 * @see MethodMapper
@@ -378,7 +379,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>OccurrenceStatusCache</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>OccurrenceStatusCache</code> attribute.
 	 * @throws UnknownCdmTypeException 
 	 * @see MethodMapper
@@ -394,7 +395,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
@@ -416,7 +417,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>SourceCache</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>SourceCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -441,7 +442,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>Notes</code> attribute.
-	 * @param entity
+	 * @param entity An {@link AnnotatableEntity AnnotatableEntity}.
 	 * @return The <code>Notes</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -467,7 +468,6 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
-//		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 
 		return mapping;
 	}

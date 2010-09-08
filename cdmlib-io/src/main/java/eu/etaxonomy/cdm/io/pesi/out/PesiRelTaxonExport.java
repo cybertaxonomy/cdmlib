@@ -308,7 +308,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * Determines synonym related data.
+	 * Determines synonym related data and saves them.
 	 * @param state
 	 * @param sr
 	 */
@@ -406,7 +406,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	/**
 	 * Returns the <code>TaxonFk1</code> attribute. It corresponds to a CDM <code>TaxonRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
-	 * @param state The {@link DbExportStateBase DbExportState}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TaxonFk1</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -417,7 +417,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	/**
 	 * Returns the <code>TaxonFk2</code> attribute. It corresponds to a CDM <code>SynonymRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
-	 * @param state The {@link DbExportStateBase DbExportState}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TaxonFk2</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -472,7 +472,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	/**
 	 * Returns the database key of an object in the given relationship.
 	 * @param relationship {@link RelationshipBase RelationshipBase}.
-	 * @param state {@link DbExportStateBase DbExportStateBase}.
+	 * @param state {@link PesiExportState PesiExportState}.
 	 * @param isFrom A boolean value indicating whether the database key of the parent or child in this relationship is searched. <code>true</code> means the child is searched. <code>false</code> means the parent is searched.
 	 * @return The database key of an object in the given relationship.
 	 */
@@ -498,7 +498,8 @@ public class PesiRelTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>RankFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param nomenclaturalCode The {@link NomenclaturalCode NomenclaturalCode}.
 	 * @return The <code>RankFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -518,7 +519,8 @@ public class PesiRelTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>RankCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param nomenclaturalCode The {@link NomenclaturalCode NomenclaturalCode}.
 	 * @return The <code>RankCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -537,13 +539,11 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-//		mapping.addMapper(IdMapper.NewInstance("RelTaxonId")); // Automagically generated on database level as primary key
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk1", this.getClass(), "getTaxonFk1", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk2", this.getClass(), "getTaxonFk2", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("RelTaxonQualifierFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RelQualifierCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
-//		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
 
 		return mapping;
 	}

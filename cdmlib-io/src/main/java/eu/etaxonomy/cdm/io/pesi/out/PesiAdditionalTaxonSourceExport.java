@@ -247,8 +247,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
-	 * @return The <code>TaxonFk</code> attribute.
+	 * @param reference The {@link ReferenceBase Reference}.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
@@ -264,7 +263,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -274,26 +273,11 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 			result = state.getDbId(reference);
 		}
 		return result;
-
-//		Set<TaxonDescription> descs = taxon.getDescriptions();
-//		//for each
-//		TaxonDescription desc = descs.iterator().next();
-//		Set<DescriptionElementBase> elements = desc.getElements();
-//		for (DescriptionElementBase element : elements){
-//			Set<DescriptionElementSource> sources = element.getSources();
-//			for (DescriptionElementSource source : sources){
-//				ReferenceBase ref = source.getCitation();
-//				result = state.getDbId(ref);
-//			}
-//		}
-//		
-//		Integer result = null;
-//		Set<DescriptionElementSource> sources = element.getSources();
 	}
 	
 	/**
 	 * Returns the <code>SourceUseFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>SourceUseFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -312,7 +296,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceUseCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>SourceUseCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -332,7 +316,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceNameCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>SourceNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -347,7 +331,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceDetail</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>SourceDetail</code> attribute.
 	 * @see MethodMapper
 	 */

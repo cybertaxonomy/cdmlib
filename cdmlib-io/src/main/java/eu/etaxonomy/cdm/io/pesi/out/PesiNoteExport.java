@@ -483,6 +483,7 @@ public class PesiNoteExport extends PesiExportBase {
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
 	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -500,8 +501,8 @@ public class PesiNoteExport extends PesiExportBase {
 	
 	/**
 	 * Returns the TaxonFk for a given TaxonName.
-	 * @param taxonName
-	 * @param state
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return
 	 */
 	private static Integer getTaxonFk(TaxonNameBase taxonName, DbExportStateBase<?> state) {
@@ -529,18 +530,6 @@ public class PesiNoteExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static DateTime getLastActionDate(DescriptionElementBase descriptionElement) {
 		DateTime result = null;
-		if (descriptionElement != null) {
-			DateTime updated = descriptionElement.getUpdated();
-			if (updated != null) {
-//				logger.error("Note Updated: " + updated);
-				Date updatedDate = updated.toDate();
-				if (updatedDate != null) {
-					result = new DateTime(updated.toDate());  // Unfortunately the time information gets lost here.
-				} else {
-					result = null;
-				}
-			}
-		}
 		return result;
 	}
 
@@ -561,7 +550,6 @@ public class PesiNoteExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("Region", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
-//		mapping.addMapper(DbTimePeriodMapper.NewInstance("updated", "LastActionDate")); // This doesn't work since org.joda.time.DateTime cannot be cast to eu.etaxonomy.cdm.model.common.TimePeriod
 		mapping.addMapper(MethodMapper.NewInstance("LastActionDate", this));
 
 		return mapping;

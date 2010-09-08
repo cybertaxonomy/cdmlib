@@ -188,9 +188,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	private static Integer getNoteCategoryFk(DescriptionElementBase descriptionElement) {
 		Integer result = null;
-
 		result = PesiTransformer.textData2NodeCategoryFk(descriptionElement.getFeature());
-
 		return result;
 	}
 
@@ -204,9 +202,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getNoteFk(DescriptionElementBase descriptionElement, PesiExportState state) {
 		Integer result = null;
-
 		result = state.getDbId(descriptionElement);
-
 		return result;
 	}
 	
@@ -219,21 +215,13 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	private static Integer getSourceFk(DescriptionElementBase descriptionElement, PesiExportState state) {
 		Integer result = null;
-
 		result = state.getDbId(descriptionElement);
-
-//		DescriptionBase description = descriptionElement.getInDescription();
-//		if (description.isInstanceOf(TaxonDescription.class)) {
-//			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-//			Taxon taxon = taxonDescription.getTaxon();
-//			result = state.getDbId(taxon.getSec());
-//		}
 		return result;
 	}
 	
 	/**
 	 * Returns the <code>SourceNameCache</code> attribute.
-	 * @param description The {@link TaxonDescription TaxonDescription}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>SourceNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -253,7 +241,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SourceDetail</code> attribute.
-	 * @param description The {@link TaxonDescription TaxonDescription}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>SourceDetail</code> attribute.
 	 * @see MethodMapper
 	 */

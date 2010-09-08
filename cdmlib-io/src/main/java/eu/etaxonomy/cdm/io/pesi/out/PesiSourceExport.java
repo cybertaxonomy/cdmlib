@@ -254,15 +254,6 @@ public class PesiSourceExport extends PesiExportBase {
 	}
 	
 	/**
-	 * 
-	 * @param reference
-	 * @return
-	 */
-	private static String getTitle(ReferenceBase<?> reference) {
-		return null;
-	}
-
-	/**
 	 * Returns the <code>AuthorString</code> attribute. The corresponding CDM attribute is the <code>titleCache</code> of an <code>authorTeam</code>.
 	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>AuthorString</code> attribute.

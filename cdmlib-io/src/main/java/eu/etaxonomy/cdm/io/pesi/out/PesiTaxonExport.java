@@ -174,10 +174,6 @@ public class PesiTaxonExport extends PesiExportBase {
 			// PESI: Clear the database table Taxon.
 			doDelete(state);
 			
-			// CDM: Get the number of all available taxa.
-//			int maxCount = getTaxonService().count(null);
-//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
-
 			// Get specific mappings: (CDM) Taxon -> (PESI) Taxon
 			PesiExportMapping mapping = getMapping();
 	
@@ -572,8 +568,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * Determines the number of entries in the datawarehouse database table Taxon.
-	 * @return
+	 * Determines the current number of entries in the DataWarehouse database table <code>Taxon</code>.
+	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @return The count.
 	 */
 	private Integer determineTaxonCount(PesiExportState state) {
 		Integer result = null;
@@ -596,8 +593,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the userId of the expert associated with the given TaxonName.
-	 * @param taxonName
-	 * @return
+	 * @param taxonName A {@link TaxonNameBase TaxonName}.
+	 * @return The userId.
 	 */
 	private String getExpertUserId(TaxonNameBase taxonName) {
 		String result = null;
@@ -616,8 +613,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the userId of the speciesExpert associated with the given TaxonName.
-	 * @param taxonName
-	 * @return
+	 * @param taxonName A {@link TaxonNameBase TaxonName}.
+	 * @return The userId.
 	 */
 	private String getSpeciesExpertUserId(TaxonNameBase taxonName) {
 		String result = null;
@@ -636,10 +633,10 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Checks whether a parent at specific level has a specific Rank.
-	 * @param taxonName
-	 * @param i
-	 * @param subgenus
-	 * @return
+	 * @param taxonName A {@link TaxonNameBase TaxonName}.
+	 * @param level The ancestor level.
+	 * @param ancestorRank The ancestor rank.
+	 * @return Whether a parent at a specific level has a specific Rank.
 	 */
 	private boolean ancestorOfSpecificRank(TaxonNameBase taxonName, int level,
 			Rank ancestorRank) {
@@ -688,12 +685,11 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the AnnotationType for a given UUID.
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
+	 * @param uuid The Annotation UUID.
+	 * @param label The Annotation label.
+	 * @param text The Annotation text.
+	 * @param labelAbbrev The Annotation label abbreviation.
+	 * @return The AnnotationType.
 	 */
 	protected AnnotationType getAnnotationType(UUID uuid, String label, String text, String labelAbbrev){
 		AnnotationType annotationType = (AnnotationType)getTermService().find(uuid);
@@ -708,11 +704,11 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Traverses the TaxonTree recursively and stores determined values for every Taxon.
-	 * @param childNode
-	 * @param parentNode
-	 * @param treeIndex
-	 * @param fetchLevel
-	 * @param state
+	 * @param childNode The {@link TaxonNode TaxonNode} to process.
+	 * @param parentNode The parent {@link TaxonNode TaxonNode} of the childNode.
+	 * @param treeIndex The TreeIndex at the current level.
+	 * @param fetchLevel Rank to stop fetching at.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 */
 	private void traverseTree(TaxonNode childNode, TaxonNode parentNode, StringBuffer treeIndex, Rank fetchLevel, PesiExportState state) {
 		// Traverse all branches from this childNode until specified fetchLevel is reached.
@@ -756,11 +752,11 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Stores values in database for every recursive round.
-	 * @param childNode
-	 * @param parentNode
-	 * @param treeIndex
-	 * @param state
-	 * @param currentTaxonFk
+	 * @param childNode The {@link TaxonNode TaxonNode} to process.
+	 * @param parentNode The parent {@link TaxonNode TaxonNode} of the childNode.
+	 * @param treeIndex The TreeIndex at the current level.
+	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @param currentTaxonFk The TaxonFk to store the values for.
 	 */
 	private void saveData(TaxonNode childNode, TaxonNode parentNode, StringBuffer treeIndex, PesiExportState state, Integer currentTaxonFk) {
 		// We are differentiating kingdoms by the nomenclatural code for now.
@@ -786,10 +782,10 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Inserts values into the Taxon database table.
-	 * @param taxonNameBase
-	 * @param state
-	 * @param stmt
-	 * @return
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @param stmt The prepared statement.
+	 * @return Whether save was successful or not.
 	 */
 	protected boolean invokeParentTaxonFkAndTreeIndex(Integer parentTaxonFk, Integer currentTaxonFk, StringBuffer treeIndex) {
 		try {
@@ -822,11 +818,11 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Inserts Rank data and KingdomFk into the Taxon database table.
-	 * @param taxonName
-	 * @param nomenclaturalCode
-	 * @param taxonFk
-	 * @param kindomFk
-	 * @return
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param nomenclaturalCode The {@link NomenclaturalCode NomenclaturalCode}.
+	 * @param taxonFk The TaxonFk to store the values for.
+	 * @param kindomFk The KingdomFk.
+	 * @return Whether save was successful or not.
 	 */
 	private boolean invokeRankDataAndKingdomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, 
 			Integer taxonFk, Integer kingdomFk) {
@@ -868,14 +864,14 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Inserts Rank data, TypeNameFk, KingdomFk, expertFk and speciesExpertFk into the Taxon database table.
-	 * @param taxonName
-	 * @param nomenclaturalCode
-	 * @param taxonFk
-	 * @param typeNameFk
-	 * @param kindomFk
-	 * @param expertFk
-	 * @param speciesExpertFk
-	 * @return
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param nomenclaturalCode The {@link NomenclaturalCode NomenclaturalCode}.
+	 * @param taxonFk The TaxonFk to store the values for.
+	 * @param typeNameFk The TypeNameFk.
+	 * @param kindomFk The KingdomFk.
+	 * @param expertFk The ExpertFk.
+	 * @param speciesExpertFk The SpeciesExpertFk.
+	 * @return Whether save was successful or not.
 	 */
 	private boolean invokeRankDataAndTypeNameFkAndKingdomFk(TaxonNameBase taxonName, NomenclaturalCode nomenclaturalCode, 
 			Integer taxonFk, Integer typeNameFk, Integer kingdomFk,
@@ -936,7 +932,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Deletes all entries of database tables related to <code>Taxon</code>.
-	 * @param state The PesiExportState
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return Whether the delete operation was successful or not.
 	 */
 	protected boolean doDelete(PesiExportState state) {
@@ -962,7 +958,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>RankFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param nomenclaturalCode The {@link NomenclaturalCode NomenclaturalCode}.
 	 * @return The <code>RankFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -989,7 +986,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>RankCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param nomenclaturalCode The {@link NomenclaturalCode NomenclaturalCode}.
 	 * @return The <code>RankCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1006,9 +1004,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * 
-	 * @param taxon The {@link TaxonBase Taxon}.
-	 * @return Whether it's genus or uninomial.
+	 * Returns the <code>GenusOrUninomial</code> attribute.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @return The <code>GenusOrUninomial</code> attribute.
 	 * @see MethodMapper
 	 */
 	private static String getGenusOrUninomial(TaxonNameBase taxonName) {
@@ -1026,7 +1024,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>InfraGenericEpithet</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>InfraGenericEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1045,7 +1043,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>SpecificEpithet</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>SpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1064,7 +1062,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>InfraSpecificEpithet</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>InfraSpecificEpithet</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1083,7 +1081,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>WebSearchName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>WebSearchName</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1103,7 +1101,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>WebShowName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>WebShowName</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1188,7 +1186,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>AuthorString</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>AuthorString</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1227,8 +1225,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Checks whether a given TaxonName is a misapplied name.
-	 * @param taxonName
-	 * @return
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @return Whether the given TaxonName is a misapplied name or not.
 	 */
 	private static boolean isMisappliedName(TaxonNameBase taxonName) {
 		boolean result = false;
@@ -1258,7 +1256,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>FullName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>FullName</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1273,7 +1271,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>NomRefString</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>NomRefString</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1297,7 +1295,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>DisplayName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>DisplayName</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1311,21 +1309,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		}
 	}
 	
-//	/**
-//	 * Returns the <code>FuzzyName</code> attribute.
-//	 * @param taxon The {@link TaxonBase Taxon}.
-//	 * @return The <code>FuzzyName</code> attribute.
-//	 * @see MethodMapper
-//	 */
-//	@SuppressWarnings("unused")
-//	private static String getFuzzyName(TaxonNameBase taxonName) {
-//		// TODO: extension
-//		return null;
-//	}
-
 	/**
 	 * Returns the <code>NameStatusFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>NameStatusFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1359,7 +1345,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>NameStatusCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>NameStatusCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1389,7 +1375,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>TaxonStatusFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TaxonStatusFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1427,7 +1414,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>TaxonStatusCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TaxonStatusCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1465,7 +1453,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>TypeNameFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TypeNameFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1490,7 +1479,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>TypeFullnameCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>TypeFullnameCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1522,7 +1511,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>QualityStatusFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>QualityStatusFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1535,7 +1524,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>QualityStatusCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>QualityStatusCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1548,7 +1537,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>TypeDesignationStatusFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>TypeDesignationStatusFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1576,7 +1565,7 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TypeDesignationStatusCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>TypeDesignationStatusCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1604,7 +1593,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>FossilStatusFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>FossilStatusFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1622,7 +1611,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>FossilStatusCache</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>FossilStatusCache</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1635,7 +1624,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>IdInSource</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>IdInSource</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1673,9 +1662,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 	
 	/**
-	 * Returns the idInSource only.
-	 * @param taxonName
-	 * @return
+	 * Returns the idInSource for a given TaxonName only.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @return The idInSource.
 	 */
 	private static String getIdInSourceOnly(TaxonNameBase taxonName) {
 		String result = null;
@@ -1706,9 +1695,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 	
 	/**
-	 * Returns the Sources only.
-	 * @param taxonName
-	 * @return
+	 * Returns the Sources for a given TaxonName only.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @return The Sources.
 	 */
 	private static Set<IdentifiableSource> getSources(TaxonNameBase taxonName) {
 		Set<IdentifiableSource> sources = null;
@@ -1752,7 +1741,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>GUID</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>GUID</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1769,7 +1758,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>DerivedFromGuid</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>DerivedFromGuid</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1786,9 +1775,10 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 	
 	/**
-	 * 
-	 * @param taxonName
-	 * @return
+	 * Returns the <code>CacheCitation</code> attribute.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @return The CacheCitation.
+	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
 	private static String getCacheCitation(TaxonNameBase taxonName) {
@@ -1850,7 +1840,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>OriginalDB</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>OriginalDB</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1918,7 +1908,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>LastAction</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>LastAction</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1940,7 +1930,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>LastActionDate</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>LastActionDate</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1966,7 +1956,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>ExpertName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>ExpertName</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1987,7 +1977,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>ExpertFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>ExpertFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -1998,7 +1989,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SpeciesExpertName</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
 	 * @return The <code>SpeciesExpertName</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -2020,7 +2011,8 @@ public class PesiTaxonExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>SpeciesExpertFk</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @param reference The {@link ReferenceBase Reference}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>SpeciesExpertFk</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -2030,10 +2022,10 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * 
-	 * @param taxonName
-	 * @param state
-	 * @return
+	 * Returns the <code>SourceFk</code> attribute.
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @return The <code>SourceFk</code> attribute.
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getSourceFk(TaxonNameBase taxonName, PesiExportState state) {
@@ -2053,9 +2045,9 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Checks whether a Reference of a TaxonName's TaxonBase is an Auct Reference.
-	 * @param taxonName
-	 * @param state
-	 * @return
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @return Whether a Reference of a TaxonName's TaxonBase is an Auct Reference.
 	 */
 	private static boolean isAuctReference(TaxonNameBase taxonName, PesiExportState state) {
 		boolean result = false;
@@ -2068,8 +2060,8 @@ public class PesiTaxonExport extends PesiExportBase {
 
 	/**
 	 * Determines the TaxonBase of a TaxonName.
-	 * @param taxonName
-	 * @return
+	 * @param taxonName The {@link TaxonNameBase TaxonName}.
+	 * @return The TaxonBase.
 	 */
 	private static TaxonBase getSourceTaxonBase(TaxonNameBase taxonName) {
 		TaxonBase taxonBase = null;
@@ -2117,19 +2109,10 @@ public class PesiTaxonExport extends PesiExportBase {
 			mapping.addMapper(MethodMapper.NewInstance("DisplayName", this));
 		}
 
-		// FuzzyName
-//		extensionType = (ExtensionType)getTermService().find(ErmsTransformer.uuidFuzzyName);
-//		if (extensionType != null) {
-//			mapping.addMapper(DbExtensionMapper.NewInstance(extensionType, "FuzzyName"));
-//		} else {
-//			mapping.addMapper(MethodMapper.NewInstance("FuzzyName", this));
-//		}
-		
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this.getClass(), "getTaxonStatusFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this.getClass(), "getTaxonStatusCache", standardMethodParameter, PesiExportState.class));
-//		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this.getClass(), "getTypeNameFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
 
 		// QualityStatus (Fk, Cache)
@@ -2161,9 +2144,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastActionDate", this));
 		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this));
-//		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this.getClass(), "getExpertFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SpeciesExpertName", this));
-//		mapping.addMapper(MethodMapper.NewInstance("SpeciesExpertFk", this.getClass(), "getSpeciesExpertFk", standardMethodParameter, PesiExportState.class));
 
 		return mapping;
 	}
