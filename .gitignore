@@ -114,13 +114,5 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/dataset.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 cdmlib-services/target
-cdmlib-updateSite/.classpath
-cdmlib-updateSite/.settings
-cdmlib-updateSite/artifacts.xml
-cdmlib-updateSite/content.xml
-cdmlib-updateSite/features/*.jar
-cdmlib-updateSite/plugins/*.jar
-cdmlib-updateSite/plugins/*.zip
-cdmlib-updateSite/src
 /target
 /testANTLR

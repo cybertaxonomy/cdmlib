@@ -3581,9 +3581,6 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xm
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
-cdmlib-updateSite/.project -text
-cdmlib-updateSite/index.html -text
-cdmlib-updateSite/site.xml -text
 pdfdocs/cdm.pdf -text
 pdfdocs/cdmlib-config.properties -text
 pdfdocs/cdmlib-doc.sh -text
