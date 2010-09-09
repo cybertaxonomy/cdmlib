@@ -1284,9 +1284,6 @@ cdmlib-ext/src/test/resources/eu/etaxonomy/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/log4j.properties -text
-cdmlib-feature-source/.project -text
-cdmlib-feature-source/build.properties -text
-cdmlib-feature-source/feature.xml -text
 cdmlib-io/LICENSE.TXT -text
 cdmlib-io/README.TXT -text
 cdmlib-io/pom.xml -text

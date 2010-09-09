@@ -41,9 +41,6 @@ cdmlib-ext/.project
 cdmlib-ext/.settings
 cdmlib-ext/bin
 cdmlib-ext/target
-cdmlib-feature-source/.classpath
-cdmlib-feature-source/.settings
-cdmlib-feature-source/src
 cdmlib-io/.classpath
 cdmlib-io/.project
 cdmlib-io/.settings
