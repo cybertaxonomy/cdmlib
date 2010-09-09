@@ -1,0 +1,133 @@
+<!-- ============================================================= -->
+<!--                    PUBLIC DOCUMENT TYPE DEFINITION            -->
+<!--                        TYPICAL INVOCATION                     -->
+<!--
+"-//TaxonX//DTD Taxonomic Treatment Publishing Elements v0 20100105//EN"
+Delivered as file "taxpubcustom-elements.ent"                       -->
+<!-- ============================================================= -->
+
+<!ELEMENT	taxon-treatment 		(treatment-meta?, nomenclature, (materials-examined | 
+                                  description | treatment-sec | taxon-treatment)*, ref-list?  ) >
+<!ATTLIST 	taxon-treatment
+					auth-code		CDATA			#IMPLIED >
+
+<!ELEMENT	treatment-meta  		%sec-meta-model;	>
+
+<!ELEMENT	nomenclature  			%nomenclature-model;	>
+
+<!ELEMENT	materials-examined  	%taxon-sec-model;	>
+<!ATTLIST   materials-examined
+					%sec-atts; >
+
+<!ELEMENT	description  			%taxon-sec-model;	>
+<!ATTLIST   description
+					%sec-atts; >
+
+<!ELEMENT	treatment-sec  		%taxon-sec-model;	>
+<!ATTLIST   treatment-sec
+					%sec-atts; >
+
+<!ELEMENT	taxon-author-group			(taxon-author*, string-name?, year? )  >
+<!ATTLIST	taxon-author-group
+					role			CDATA		#IMPLIED>
+						
+<!ELEMENT	taxon-author			(( name, object-id*) | (string-name, object-id* ) )  >
+
+<!ELEMENT	taxon-status			(#PCDATA) >
+<!ATTLIST	taxon-status
+				%might-link-atts;		>
+
+<!ELEMENT	nomenclature-citation-list			(nomenclature-citation+) >
+
+<!ELEMENT	nomenclature-citation	(taxon-name, (type-genus | type-species)?, mixed-citation?, material-citation*, taxon-status?, comment?) >
+<!ATTLIST 	nomenclature-citation
+						content-type		CDATA		#IMPLIED >
+
+<!ELEMENT	type-genus				(taxon-name, material-location?) >
+<!ELEMENT	type-species			(taxon-name, material-location?) >
+
+<!ELEMENT	type-material				(taxon-name) >
+<!ATTLIST	type-material
+						role	CDATA		#IMPLIED 
+						designation    (y|n)		'n' >
+
+<!ELEMENT	taxon-type-location	(#PCDATA  | object-id)* >
+
+
+<!-- RED ELEMENTS -->
+
+<!ELEMENT	taxon-name				(#PCDATA | taxon-name-part | object-id)* >
+<!ATTLIST 	taxon-name
+					auth-code		CDATA			#IMPLIED >
+
+<!ELEMENT	taxon-name-part		(#PCDATA  | object-id)* >
+<!ATTLIST	taxon-name-part	
+				taxon-name-part-type		CDATA		#REQUIRED >
+
+<!ELEMENT	descriptive-statement	(#PCDATA | descriptive-statement-part | object-id)* >
+<!ATTLIST	descriptive-statement
+					%might-link-atts; >
+
+<!ELEMENT 	descriptive-statement-part	(#PCDATA | object-id)* >
+<!ATTLIST	descriptive-statement-part
+					%might-link-atts; >
+																								
+<!ELEMENT	material-citation		(#PCDATA | collecting-event  | object-id | type-material | material-location)*>
+
+<!ELEMENT 	material-location (#PCDATA | object-id)* >
+
+<!ELEMENT 	collecting-event		(#PCDATA | collecting-location | date | taxon-name | object-id | named-content)* >
+
+<!ELEMENT	collecting-location		(object-id*, (geog-name | geog-name-string)?, geog-coordinates?, comment? ) >
+
+<!ELEMENT	geog-name	(object-id*, continent?, country?, province?, region?, state?, territory?, county?, city?, city-section?, locality?, area?, water-body?, island-group?, island?, extraterrestrial-area?) >
+
+<!ELEMENT 	continent	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	province	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	region		(#PCDATA %country-elements;)*  >
+	
+<!ELEMENT 	state		(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	territory	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	county		(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	city			(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	city-section	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	locality	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	area			(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	water-body	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	island-group	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	island		(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	extraterrestrial-area	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	geog-name-string (#PCDATA | object-id)* >
+
+<!ELEMENT 	geog-coordinates (latitude, longitude, elevation?, comment?) >
+
+<!ELEMENT 	latitude	(#PCDATA) >
+
+<!ELEMENT 	longitude	(#PCDATA) >
+
+<!ELEMENT 	elevation	(#PCDATA) >
+
+
+
+
+
+
+
+
+
+
+
+

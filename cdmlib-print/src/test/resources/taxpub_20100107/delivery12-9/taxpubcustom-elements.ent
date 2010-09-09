@@ -1,0 +1,109 @@
+<!-- ============================================================= -->
+<!--                    PUBLIC DOCUMENT TYPE DEFINITION            -->
+<!--                        TYPICAL INVOCATION                     -->
+<!--
+"-//TaxonX//DTD Taxonomic Treatment Publishing DTD Elements v3.0 20080926//EN"
+Delivered as file "taxpubcustom-elements.ent"                       -->
+<!-- ============================================================= -->
+
+<!ELEMENT	taxon-treatment 		(treatment-meta?, nomenclature, (materials-examined | 
+                                  description | treatment-sec)*, taxon-treatment*, ref-list?  ) >
+
+<!ELEMENT	treatment-meta  		%sec-meta-model;	>
+
+<!ELEMENT	nomenclature  			%nomenclature-model;	>
+
+<!ELEMENT	materials-examined  	%taxon-sec-model;	>
+
+<!ELEMENT	description  			%taxon-sec-model;	>
+
+<!ELEMENT	treatment-sec  		%taxon-sec-model;	>
+
+<!ELEMENT	taxon-author			( name | string-name )  >
+
+<!ELEMENT	taxon-status			(#PCDATA) >
+
+<!ELEMENT	synonymy					(treatment-citation+) >
+
+<!ELEMENT	treatment-citation	(taxon-name, mixed-citation, material-citation*, comment?) >
+
+<!ELEMENT	taxon-type				(#PCDATA) >
+
+<!ELEMENT	taxon-type-location	(#PCDATA  | object-id)* >
+
+
+<!-- RED ELEMENTS -->
+
+<!ELEMENT	taxon-name				(#PCDATA | taxon-name-part | object-id)* >
+
+<!ELEMENT	taxon-name-part		(#PCDATA  | object-id)* >
+<!ATTLIST	taxon-name-part	
+				taxon-name-part-type		CDATA		#REQUIRED >
+
+<!ELEMENT	descriptive-statement	(#PCDATA | morphological-character | object-id)* >
+
+<!ELEMENT 	morphological-character	(#PCDATA | morphological-character |
+ 												morphological-character-state | object-id)* >
+												
+<!ELEMENT 	morphological-character-state	(#PCDATA | object-id)* >
+												
+<!ELEMENT	material-citation		(#PCDATA | collecting-event  | object-id | taxon-type | 
+											 taxon-type-location | taxon-status | material-location)*>
+
+<!ELEMENT 	material-location (#PCDATA | object-id)* >
+
+<!ELEMENT 	collecting-event		(#PCDATA | collecting-location | date | taxon-name | object-id)* >
+
+<!ELEMENT	collecting-location		(object-id*, (geog-name | geog-name-string)?, geog-coordinates?, comment? ) >
+
+<!ELEMENT	geog-name	(object-id*, continent?, country?, province?, region?, state?, territory?, county?, city?, city-section?, locality?, area?, water-body?, island-group?, island?, extraterrestrial-area?) >
+
+<!ELEMENT 	continent	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	province	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	region		(#PCDATA %country-elements;)*  >
+	
+<!ELEMENT 	state		(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	territory	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	county		(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	city			(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	city-section	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	locality	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	area			(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	water-body	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	island-group	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	island		(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	extraterrestrial-area	(#PCDATA %country-elements;)*  >
+
+<!ELEMENT 	geog-name-string (#PCDATA | object-id)* >
+
+<!ELEMENT 	geog-coordinates (latitude, longitude, elevation?)* >
+
+<!ELEMENT 	latitude	(#PCDATA) >
+
+<!ELEMENT 	longitude	(#PCDATA) >
+
+<!ELEMENT 	elevation	(#PCDATA) >
+
+
+
+
+
+
+
+
+
+
+
+

@@ -109,6 +109,12 @@ cdmlib-plugin/cdmlib-services-2.0src.zip
 cdmlib-plugin/dist
 cdmlib-plugin/log4j-1.2.14src.zip
 cdmlib-plugin/target
+cdmlib-print/*odf_output.odf
+cdmlib-print/.classpath
+cdmlib-print/.project
+cdmlib-print/.settings
+cdmlib-print/target
+cdmlib-print/test
 cdmlib-remote-webapp/.classpath
 cdmlib-remote-webapp/.project
 cdmlib-remote-webapp/.settings

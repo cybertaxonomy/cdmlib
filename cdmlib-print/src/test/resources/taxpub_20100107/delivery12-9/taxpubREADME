@@ -1,0 +1,12 @@
+Files for Taxonomic Treatments based on Journal Publishing DTD 3.0 created on September 26, 2008.
+
+Put these files into your Journal Publishing DTD 3.0 directory. 
+
+	tax-treatment-publishing3.dtd
+	taxpubcustom-classes3.ent
+	taxpubcustom-elements.ent
+	taxpubcustom-mixes3.ent
+	taxpubcustom-models3.ent
+	taxpubcustom-modules3.ent
+	
+Refer to "tax-treatment-publishing3.dtd"

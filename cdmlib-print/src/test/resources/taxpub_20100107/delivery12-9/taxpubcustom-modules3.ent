@@ -1,0 +1,63 @@
+<!-- ============================================================= -->
+
+
+<!-- ============================================================= -->
+<!--                    CUSTOMIZATION MODULES DECLARED             -->
+<!-- ============================================================= -->
+<!--                    DTD-SPECIFIC ELEMENTS MODULE   -->
+<!ENTITY % taxpubcustom-elements.ent 
+                        PUBLIC  
+"-//TaxonX//DTD Taxonomic Treatment Publishing DTD Elements Module v3.0 20080926//EN"
+"taxpubcustom-elements.ent"                                      >
+
+
+
+
+<!--                    DTD-SPECIFIC CLASS CUSTOMIZATIONS MODULE   -->
+<!--                    Set up the Parameter Entities and element
+                        class definitions that will be used to
+                        over-ride some element classes in the
+                        DTD Suite.                                 -->
+<!ENTITY % taxpubcustom-classes.ent 
+                        PUBLIC  
+"-//TaxonX//DTD Taxonomic Treatment Publishing DTD Customize Classes Module v3.0 20080926//EN"
+"taxpubcustom-classes3.ent"                                      >
+
+
+<!--                    DTD-SPECIFIC MIX CUSTOMIZATIONS MODULE     -->
+<!--                    Set up the Parameter Entities and element
+                        mix definitions that will be used to
+                        over-ride some element mixes in the DTD
+                        Suite.                                     -->
+<!ENTITY % taxpubcustom-mixes.ent 
+                        PUBLIC  
+"-//TaxonX//DTD Taxonomic Treatment Publishing DTD Customize Mixes Module v3.0 20080926//EN"
+"taxpubcustom-mixes3.ent"                                        >
+
+
+<!--                    DTD-SPECIFIC MODELS/ATTRIBUTES CUSTOMIZATIONS 
+                        MODULE                                     -->
+<!--                    Set up the Parameter Entities for element-
+                        specific element groups, complete content 
+                        models, and attribute list and value over-
+                        rides. These PEs will over-ride selected
+                        content models and attribute lists for the 
+                        Journal Archiving and Interchange DTD.     -->
+<!ENTITY % taxpubcustom-models.ent 
+                        PUBLIC  
+"-//TaxonX//DTD Taxonomic Treatment Publishing DTD Customize Content and Attributes Module v3.0 20080926//EN"
+"taxpubcustom-models3.ent"                                       >
+
+
+<!--                    NLM CITATION MODULE                        -->
+<!--                    The only new element created for the 
+                        Publishing DTD, the highly structured NLM
+                        citation, to enforce a slightly loose version
+                        of an NLM-structured bibliographic reference.
+                        Sequence is enforced and interior punctuation
+                        is expected to be generated.               -->
+<!ENTITY % nlmcitation.ent 
+                        PUBLIC  
+"-//NLM//DTD NLM Citation v3.0 20080202//EN"
+"nlmcitation3.ent"                                                   >
+

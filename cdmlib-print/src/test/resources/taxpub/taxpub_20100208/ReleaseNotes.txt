@@ -1,0 +1,79 @@
+Id: ReleaseNotes.txt 19 2010-01-16 23:32:30Z ramorrismorris
+
+SVN tree Rev Rev: 19
+
+Release Notes for TaxPub DTD
+
+Release taxpub_20081209 
+
+I. This is the first alpha release for TaxPub.  No previous release was managed with Subversion. The release was distributed as a zipped tar file as a download on the TaxPub Sourceforge page (http://sourceforge.net/projects/taxpub/files/)
+
+II. This release defined by SVN tree version Rev: 19  . If any files in
+it have svn release values later than Rev: 19, then you are holding
+files that are not, in fact, part of RName.
+
+III. Compatability:
+
+This release is backward compatible with: 
+
+Not Applicable. This is the first release.
+
+This release is NOT intended to remain upward compatible.
+
+III. Changes from previous releases
+
+Not Applicable. This is the first release.
+
+===============================================
+
+Id: ReleaseNotes.txt 30 2010-01-17 00:23:24Z ramorrismorris 
+
+SVN tree Rev Rev: 30 
+
+Release Notes for TaxPub DTD
+
+Release: Not Applicable
+
+I. This revision not a sourceforge release ofTaxPub. It is an historical archive of files going forward for future releases. These file do not include namespace support. Future releases will include namespace support. 
+
+II. This release defined by SVN tree version Rev: 30  . If any files in
+it have svn release values later than Rev: 30 , then you are holding
+files that are not, in fact, part of RName.
+
+III. Compatability:
+
+This release is backward compatible with: 
+
+Not Applicable.
+
+This release is NOT intended to remain upward compatible.
+
+III. Changes from previous releases
+
+Not Applicable.
+===============================================
+
+$Id: ReleaseNotes.txt 59 2010-02-08 12:54:22Z tcatapano $
+
+SVN tree Rev $Rev: 59 $
+
+Release Notes for TaxPub DTD
+
+Release: 20100208
+
+I. This revision is the first beta release of TaxPub. The release was distributed as a zipped tar file as a download on the TaxPub Sourceforge page (http://sourceforge.net/projects/taxpub/files/)
+
+II. This release defined by SVN tree version $Rev: 59 $ . If any files in
+it have svn release values later than $Rev: 59 $, then you are holding
+files that are not, in fact, part of RName.
+
+III. Compatability:
+
+This release is backward compatible with: taxpub_20081209
+
+
+This release is NOT intended to remain upward compatible.
+
+III. Changes from previous releases
+
+There were numerous revisions in this release of TaxPub, including extensive revsion of the nomenclature-citation and material-citation elements and subelements.

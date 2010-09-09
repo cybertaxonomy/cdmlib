@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taxon-treatment SYSTEM "file:/Users/thc4/Desktop/jan2010/tax-treatment0.dtd">
+<taxon-treatment auth-code="iczn">
+    <nomenclature>
+        <taxon-name auth-code="iczn">
+            <!-- taxon-name: @add rank?-->
+            <!-- taxon-name-part: add @taxon-name-part-type-uri? -->
+            <!-- taxon-name-part: add xref attrs? -->
+            <taxon-name-part taxon-name-part-type="Genus">Aus</taxon-name-part>
+            <taxon-name-part taxon-name-part-type="Species">bus</taxon-name-part>
+        </taxon-name>
+        <!-- nomenclature-citation-list: should be optional -->
+        <taxon-author-group>
+            <taxon-author>
+                <name>
+                    <surname>James</surname>
+                </name>
+            </taxon-author>
+        </taxon-author-group>
+        <nomenclature-citation-list>
+            <nomenclature-citation content-type="[citation list type]">
+                <taxon-name>
+                    <taxon-name-part taxon-name-part-type="Genus">Bus</taxon-name-part>
+                    <taxon-name-part taxon-name-part-type="Species">aus</taxon-name-part>
+                </taxon-name>
+                <mixed-citation>
+                    <name>
+                        <surname>Jones</surname>
+                    </name>
+                    <year>1999</year>
+                </mixed-citation>
+                <material-citation>
+                    <type-material designation="y" role="holotype">
+                        <!-- type-material: taxon-name should not be part of content model? -->
+                        <taxon-name/>
+                    </type-material>
+                </material-citation>
+                <taxon-status>n. sp.</taxon-status>
+            </nomenclature-citation>
+        </nomenclature-citation-list>
+        <!-- type-species| type-genus should be optonal and mutually exclusive -->
+        <type-species>
+            <taxon-name/>
+        </type-species>
+
+    </nomenclature>
+<materials-examined>
+    <p><material-citation><type-material>
+        <taxon-name/>
+    </type-material>
+        <collecting-event><collecting-location></collecting-location></collecting-event>
+    </material-citation></p>
+</materials-examined>
+</taxon-treatment>
