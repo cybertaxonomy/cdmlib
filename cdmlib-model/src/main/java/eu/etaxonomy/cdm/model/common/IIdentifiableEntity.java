@@ -36,7 +36,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>{
 
 	public List<Credit> getCredits();
 
-	public Credit getCredits(int index);
+	public Credit getCredits(Integer index);
 	
 	public void addCredit(Credit credig);
 	
