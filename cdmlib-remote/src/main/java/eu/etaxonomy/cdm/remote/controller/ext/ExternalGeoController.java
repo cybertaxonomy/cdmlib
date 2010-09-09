@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.remote.controller.ext;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,7 +30,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
-import eu.etaxonomy.cdm.ext.IEditGeoService;
+import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;

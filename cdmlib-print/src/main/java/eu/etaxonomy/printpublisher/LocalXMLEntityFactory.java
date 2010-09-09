@@ -186,7 +186,6 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTrees()
 	 */
-	@Override
 	public List<Element> getFeatureTrees() {
 		xmlView.setJsonConfig(jsonConfig);
 		Object resultObject = featureTreeListController.doList(0, -1, null);
@@ -196,7 +195,10 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		return processElementList(result);
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureNode(java.util.UUID)
+	 */
 	public Element getFeatureNode(UUID uuid) {
 		xmlView.setJsonConfig(jsonConfig);
 		Object resultObject = null;
@@ -210,7 +212,10 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		return result;
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureForFeatureNode(java.util.UUID)
+	 */
 	public Element getFeatureForFeatureNode(UUID uuid) {
 		xmlView.setJsonConfig(jsonConfig);
 		Object resultObject = null;
@@ -229,7 +234,6 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTree()
 	 */
-	@Override
 	public Element getFeatureTree(UUID uuid) {
 		xmlView.setJsonConfig(jsonConfig);
 		
@@ -320,7 +324,6 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getTypeDesignations(org.jdom.Element)
 	 */
-	@Override
 	public List<Element> getTypeDesignations(Element nameElement) {
 		xmlView.setJsonConfig(jsonConfig);
 		

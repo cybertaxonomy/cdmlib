@@ -30,7 +30,6 @@ public class TaxPubOutputModule extends AbstractPublishOutputModule {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.out.IPublishOutputModule#getOutputFileSuffix()
 	 */
-	@Override
 	public String getOutputFileSuffix() {
 		return "taxpub.xml";
 	}

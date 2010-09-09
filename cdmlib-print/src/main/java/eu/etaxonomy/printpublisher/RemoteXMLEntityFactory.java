@@ -113,7 +113,6 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTree(java.util.UUID)
 	 */
-	@Override
 	public Element getFeatureTree(UUID featureTreeUuid) {
 		return queryService(featureTreeUuid, FEATURETREE);
 	}
@@ -127,13 +126,11 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 		return processElementList(result);
 	}
 	
-	@Override
 	public Element getFeatureNode(UUID featureNodeUuid) {
 		Element result = queryService(featureNodeUuid, FEATURENODE);
 		return result;
 	}
 
-	@Override
 	public Element getFeatureForFeatureNode(UUID featureNodeUuid) {
 		Element result = queryService(featureNodeUuid, FEATURENODE_FEATURE);
 		return result;

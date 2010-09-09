@@ -9,43 +9,24 @@
  */
 package eu.etaxonomy.cdm.remote.controller.ext;
 
-import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sun.org.apache.xml.internal.security.encryption.ReferenceList;
-
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
-import eu.etaxonomy.cdm.ext.IEditGeoService;
-import eu.etaxonomy.cdm.ext.schema.DublinCoreSchemaAdapter;
+import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
 import eu.etaxonomy.cdm.ext.sru.SruServiceWrapper;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.remote.controller.BaseController;
-import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * The ExternalGeoController class is a Spring MVC Controller.

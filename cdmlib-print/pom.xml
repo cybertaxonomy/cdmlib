@@ -10,13 +10,13 @@
 	
 	<groupId>eu.etaxonomy</groupId>
 	
-	<artifactId>printpublisher-core</artifactId>
+	<artifactId>cdmlib-print</artifactId>
 	
 	<packaging>jar</packaging>
 		
 	<version>1.0-SNAPSHOT</version>
 	
-	<name>printpublisher-core</name>
+	<name>CDM Print</name>
 	
 	<url>http://maven.apache.org</url>
 	<dependencies>
