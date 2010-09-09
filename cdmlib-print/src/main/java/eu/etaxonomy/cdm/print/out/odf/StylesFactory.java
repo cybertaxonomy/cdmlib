@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher.out.odf;
+package eu.etaxonomy.cdm.print.out.odf;
 
 import org.apache.log4j.Logger;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;

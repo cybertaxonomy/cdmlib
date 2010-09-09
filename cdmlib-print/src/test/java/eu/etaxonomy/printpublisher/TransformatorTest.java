@@ -28,7 +28,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.printpublisher.out.odf.OdfOutputModule;
+import eu.etaxonomy.cdm.print.Transformator;
+import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
 import eu.etaxonomy.printpublisher.out.odf.OdfOutputModuleTest;
 
 /**
@@ -55,7 +56,7 @@ public class TransformatorTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.printpublisher.Transformator#Transformator(java.io.InputStream)}.
+	 * Test method for {@link eu.etaxonomy.cdm.print.Transformator#Transformator(java.io.InputStream)}.
 	 * @throws XSLTransformException 
 	 * @throws IOException 
 	 */
@@ -67,7 +68,7 @@ public class TransformatorTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.printpublisher.Transformator#transform(org.jdom.Document)}.
+	 * Test method for {@link eu.etaxonomy.cdm.print.Transformator#transform(org.jdom.Document)}.
 	 * @throws JDOMException 
 	 * @throws TransformerException 
 	 * @throws IOException 

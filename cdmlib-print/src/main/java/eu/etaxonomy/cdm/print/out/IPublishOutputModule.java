@@ -8,13 +8,13 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher.out;
+package eu.etaxonomy.cdm.print.out;
 
 import java.io.File;
 
 import org.jdom.Document;
 
-import eu.etaxonomy.printpublisher.NotificationMediator;
+import eu.etaxonomy.cdm.print.NotificationMediator;
 
 
 /**

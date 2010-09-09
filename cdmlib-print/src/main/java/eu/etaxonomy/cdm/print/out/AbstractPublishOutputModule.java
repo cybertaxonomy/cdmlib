@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher.out;
+package eu.etaxonomy.cdm.print.out;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -17,7 +17,7 @@ import java.util.Calendar;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
-import eu.etaxonomy.printpublisher.NotificationMediator;
+import eu.etaxonomy.cdm.print.NotificationMediator;
 
 /**
  * This abstract implementation of the {@link IPublishOutputModule} contains convenience methods for file 

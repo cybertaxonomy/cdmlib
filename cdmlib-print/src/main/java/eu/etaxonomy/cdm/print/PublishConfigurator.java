@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher;
+package eu.etaxonomy.cdm.print;
 
 import java.io.File;
 import java.io.Serializable;
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.printpublisher.out.IPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
  * This class holds the complete configuration for the print publishing process. All aspects of the 

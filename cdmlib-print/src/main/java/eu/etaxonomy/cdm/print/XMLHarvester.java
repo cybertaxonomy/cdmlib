@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher;
+package eu.etaxonomy.cdm.print;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
 
-import eu.etaxonomy.printpublisher.out.IPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
  * Retrieves all necessary data from an {@link IXMLEntityFactory}.

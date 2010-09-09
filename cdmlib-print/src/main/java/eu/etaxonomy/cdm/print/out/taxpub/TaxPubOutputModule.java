@@ -8,15 +8,15 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher.out.taxpub;
+package eu.etaxonomy.cdm.print.out.taxpub;
 
 import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
-import eu.etaxonomy.printpublisher.NotificationMediator;
-import eu.etaxonomy.printpublisher.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 /**
  * @author n.hoffmann

@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher;
+package eu.etaxonomy.cdm.print;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.output.XMLOutputter;
 
-import eu.etaxonomy.printpublisher.XMLHelper.EntityType;
+import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 
 /**
  * Implementation of an IXMLEntityFactory that is connected to a CDM Community Server on 

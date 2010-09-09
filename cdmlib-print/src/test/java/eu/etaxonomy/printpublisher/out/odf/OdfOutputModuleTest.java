@@ -19,6 +19,8 @@ import org.jdom.input.SAXBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
+
 /**
  * @author n.hoffmann
  * @created Apr 23, 2010
@@ -44,7 +46,7 @@ public class OdfOutputModuleTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.printpublisher.out.odf.OdfOutputModule#output(org.jdom.Document, java.io.File)}.
+	 * Test method for {@link eu.etaxonomy.cdm.print.out.odf.OdfOutputModule#output(org.jdom.Document, java.io.File)}.
 	 */
 	@Test
 	public void testOutputDocumentFile() {

@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher.out.xml;
+package eu.etaxonomy.cdm.print.out.xml;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.output.XMLOutputter;
 
-import eu.etaxonomy.printpublisher.NotificationMediator;
-import eu.etaxonomy.printpublisher.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 /**
  * Simple output module that writes the harvested xml data to disk without further processing. 

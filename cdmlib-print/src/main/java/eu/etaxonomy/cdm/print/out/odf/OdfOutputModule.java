@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.printpublisher.out.odf;
+package eu.etaxonomy.cdm.print.out.odf;
 
 import java.io.File;
 import java.io.InputStream;
@@ -11,9 +11,9 @@ import org.jdom.Document;
 import org.jdom.transform.XSLTransformException;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
-import eu.etaxonomy.printpublisher.NotificationMediator;
-import eu.etaxonomy.printpublisher.Transformator;
-import eu.etaxonomy.printpublisher.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.print.Transformator;
+import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 /**
  * This output module will transform the given document into <a href="http://www.oasis-open.org/committees/office/">ODF</a> format for further editing in 

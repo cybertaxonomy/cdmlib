@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher.out.pdf;
+package eu.etaxonomy.cdm.print.out.pdf;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,8 +29,8 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.transform.JDOMSource;
 
-import eu.etaxonomy.printpublisher.NotificationMediator;
-import eu.etaxonomy.printpublisher.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 /**
  * This output module will create a <a href="http://www.adobe.com/products/acrobat/adobepdf.html">PDF</a> document 

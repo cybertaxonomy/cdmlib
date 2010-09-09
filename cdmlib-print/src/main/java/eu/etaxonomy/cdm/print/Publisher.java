@@ -1,12 +1,12 @@
 /**
  * 
  */
-package eu.etaxonomy.printpublisher;
+package eu.etaxonomy.cdm.print;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
-import eu.etaxonomy.printpublisher.out.IPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
  * The central or main class that will execute the publishing process

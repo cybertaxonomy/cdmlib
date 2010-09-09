@@ -8,17 +8,15 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher;
+package eu.etaxonomy.cdm.print.out.odf;
 
 
 /**
  * @author n.hoffmann
- * @created Apr 26, 2010
+ * @created Apr 29, 2010
  * @version 1.0
  */
-public interface IXMLElements {
-
-	public static final String ROOT = "root";
-	public static final String DESCRIPTIONS = "descriptions";
-	
+public interface IStyleNames {
+	public static String HEADING_ACCEPTED_TAXON = "heading_accepted_taxon";
+	public static String HEADING_FEATURE = "heading_feature";
 }

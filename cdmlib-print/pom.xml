@@ -14,7 +14,7 @@
 	
 	<packaging>jar</packaging>
 		
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	
 	<name>CDM Print</name>
 	
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop</artifactId>
-			<version>0.95</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

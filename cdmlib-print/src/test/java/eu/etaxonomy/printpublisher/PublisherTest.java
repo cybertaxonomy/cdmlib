@@ -18,9 +18,11 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.printpublisher.out.IPublishOutputModule;
-import eu.etaxonomy.printpublisher.out.odf.OdfOutputModule;
-import eu.etaxonomy.printpublisher.out.xml.XMLOutputModule;
+import eu.etaxonomy.cdm.print.PublishConfigurator;
+import eu.etaxonomy.cdm.print.Publisher;
+import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
+import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
 
 /**
  * @author n.hoffmann
@@ -57,7 +59,7 @@ public class PublisherTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.printpublisher.Publisher#publish()}.
+	 * Test method for {@link eu.etaxonomy.cdm.print.Publisher#publish()}.
 	 */
 	@Test
 	public void testPublishXml() {

@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher;
+package eu.etaxonomy.cdm.print;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 import eu.etaxonomy.cdm.remote.controller.ClassificationController;
 import eu.etaxonomy.cdm.remote.controller.ClassificationListController;
 import eu.etaxonomy.cdm.remote.controller.FeatureNodeController;
@@ -39,7 +40,6 @@ import eu.etaxonomy.cdm.remote.controller.TaxonNodeListController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
 import eu.etaxonomy.cdm.remote.view.JsonView;
 import eu.etaxonomy.cdm.remote.view.JsonView.Type;
-import eu.etaxonomy.printpublisher.XMLHelper.EntityType;
 
 /**
  * The local entity factory assumes that an application context is available and may be accessed
