@@ -20,8 +20,8 @@
 		<module>cdmlib-services</module>
 		<module>cdmlib-ext</module>
 		<module>cdmlib-remote</module>
-		<!--module>cdmlib-remote-webapp</module-->
-		<!--module>cdm-server</module-->
+		<module>cdmlib-remote-webapp</module>
+		<module>cdm-server</module>
 		<module>cdmlib-io</module>
 	</modules>
   
