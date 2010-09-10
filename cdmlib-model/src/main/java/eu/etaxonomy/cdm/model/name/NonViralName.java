@@ -104,7 +104,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
     "hybridFormula",
     "monomHybrid",
     "binomHybrid",
-    "trinomHybrid",
+    "trinomHybrid"
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
