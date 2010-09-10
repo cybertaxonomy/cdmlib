@@ -8,12 +8,13 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>2.4</version>
+    <version>3.0</version>
+	<relativePath>../cdmlib-parent/pom.xml</relativePath>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdm-server</artifactId>
-  <version>2.4</version>
+  <version>3.0</version>
   <packaging>jar</packaging>
   <name>CDM Community Standalone Server</name>
   

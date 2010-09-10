@@ -7,23 +7,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>2.4</version>
+	<version>3.0</version>
 
 	<name>CDM Library</name>
 	<description>The CDM Library implementation for EDIT's internet platform for cybertaxonomy</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/site/</url>
 	<packaging>pom</packaging>
 	<modules>
-		<module>cdmlib-commons</module>
-		<module>cdmlib-model</module>
-		<module>cdmlib-persistence</module>
-		<module>cdmlib-services</module>
-		<module>cdmlib-ext</module>
-		<module>cdmlib-remote</module>
-		<module>cdmlib-print</module>
-		<module>cdmlib-remote-webapp</module>
-		<module>cdm-server</module>
-		<module>cdmlib-io</module>
+		<module>../cdmlib-commons</module>
+		<module>../cdmlib-model</module>
+		<module>../cdmlib-persistence</module>
+		<module>../cdmlib-services</module>
+		<module>../cdmlib-ext</module>
+		<module>../cdmlib-remote</module>
+		<module>../cdmlib-print</module>
+		<module>../cdmlib-remote-webapp</module>
+		<module>../cdm-server</module>
+		<module>../cdmlib-io</module>
 	</modules>
   
   <properties>

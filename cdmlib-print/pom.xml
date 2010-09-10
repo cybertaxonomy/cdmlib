@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<artifactId>printpublisher-parent</artifactId>
+		<artifactId>cdmlib-parent</artifactId>
 		<groupId>eu.etaxonomy</groupId>
-		<version>1.0</version>
+		<version>3.0</version>
+		<relativePath>../cdmlib-parent/pom.xml</relativePath>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -14,7 +15,7 @@
 	
 	<packaging>jar</packaging>
 		
-	<version>1.0</version>
+	<version>3.0</version>
 	
 	<name>CDM Print</name>
 	
@@ -23,7 +24,7 @@
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
 			<artifactId>cdmlib-remote</artifactId>
-			<version>2.4</version>
+			<version>3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>

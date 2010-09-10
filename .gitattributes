@@ -2207,6 +2207,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/EntityTestBase.java -text
 cdmlib-model/src/test/resources/log4j.properties -text
+cdmlib-parent/pom.xml -text
+cdmlib-parent/settings.xml -text
 cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
 cdmlib-persistence/build.xml -text
@@ -3579,8 +3581,6 @@ pdfdocs/cdm.pdf -text
 pdfdocs/cdmlib-config.properties -text
 pdfdocs/cdmlib-doc.sh -text
 pdfdocs/pdfdoclet-1.0.2-all.jar -text
-/pom.xml -text
-/settings.xml -text
 src/docbkx/ReferenceDocumentation.xml -text
 src/docbkx/annotation-and-markers.xml -text
 src/docbkx/base-classes.xml -text
