@@ -63,6 +63,10 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ParserProblemRange.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermBaseTest.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java
 cdmlib-model/target
+cdmlib-parent/.classpath
+cdmlib-parent/.project
+cdmlib-parent/src
+cdmlib-parent/target
 cdmlib-persistence/.classpath
 cdmlib-persistence/.project
 cdmlib-persistence/.settings
