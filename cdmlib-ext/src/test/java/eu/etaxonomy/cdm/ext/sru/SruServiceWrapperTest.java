@@ -40,7 +40,7 @@ public class SruServiceWrapperTest {
 	@Test
 	public void testDoSearchRetrieve(){
 		
-		List<ReferenceBase> refList = sruServiceWrapper.doSearchRetrieve("Linnaei Species Plantarum Europae", "dc");
+		List<ReferenceBase> refList = sruServiceWrapper.doSearchRetrieve("pica.tit=\"Linnaei Species Plantarum Europae\"", "dc");
 		// -> http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.tit%3D%22Species+Plantarum%22&recordSchema=dc
 			
 		Assert.assertEquals("There should be exactly 2 result for 'Linnaei Species Plantarum Europae'", 2, refList.size());
