@@ -3234,8 +3234,10 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/Remo
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/StripTagsConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/TimePeriodConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dc/Relation.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/SimpleDarwinRecord.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/SimpleDarwinRecordSet.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/package-info.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/About.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/DarwinCoreSimple.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/DeletedRecord.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Description.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Error.java -text

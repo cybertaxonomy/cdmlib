@@ -16,7 +16,7 @@
         <value>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept</value>
         <value>eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel</value>
         <value>eu.etaxonomy.cdm.remote.dto.oaipmh.OAIPMH</value>
-                <value>eu.etaxonomy.cdm.remote.dto.oaipmh.DarwinCoreSimple</value>
+        <value>eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord</value>
       </list>
     </property>
     <property name="marshallerProperties">
