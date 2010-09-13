@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -300,9 +301,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/**
 	 * Returns a list of TaxonBase instances where the
-	 * taxon.name properties match the parameters passed.
+	 * taxon.name properties match the parameters passed. In order to search for any string value, pass '*', passing the string value of 
+	 * <i>null</i> will search for those taxa with a value of null in that field
 	 * 
-	 * @param clazz optionally filter by class 
+	 * @param clazz optionally filter by class (can be null to return all taxa)
 	 * @param uninomial 
 	 * @param infragenericEpithet
 	 * @param specificEpithet
@@ -310,7 +312,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param rank
 	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @return a Pager of TaxonBase instances
+	 * @return a list of TaxonBase instances
 	 */
 	public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
 
@@ -390,4 +392,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public List<SynonymRelationship> listSynonymRelationships(
 			TaxonBase taxonBase, SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths, Direction direction);
+
+	/**
+	 * @param tnb
+	 * @return
+	 */
+	public Taxon findBestMatchingTaxon(String taxonName);
 }

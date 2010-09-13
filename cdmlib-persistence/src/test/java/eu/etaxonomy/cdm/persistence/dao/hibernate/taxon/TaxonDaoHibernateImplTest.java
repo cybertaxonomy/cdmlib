@@ -314,6 +314,70 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, TaxonomicTree taxonomicTree, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths)}
+	 * restricting the search by a set of Areas.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	@DataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+	public void testFindByNameTitleCache() {
+		
+		Set<NamedArea> namedAreas = new HashSet<NamedArea>();
+		namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
+		//namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
+		//namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
+
+		TaxonomicTree taxonmicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
+		
+		// prepare some synonym relation ships for some tests
+		Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
+		Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
+		taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
+		logger.warn("addSynonym(..)");
+		this.taxonDao.clear();
+		Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
+		Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
+		taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
+		this.taxonDao.clear();
+		// 1. searching for a taxon (Rethera)
+		//long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
+		
+		List<TaxonBase> results = taxonDao.findByNameTitleCache(Taxon.class, "Rethera Rothschild & Jordan, 1903", null, MatchMode.EXACT, namedAreas,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+		
+		// 2. searching for a taxon (Rethera) contained in a specific taxonomicTree
+		results = taxonDao.findByNameTitleCache(Taxon.class, "Rethera Rothschild & Jordan, 1903", taxonmicTree, MatchMode.EXACT, namedAreas,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
+		
+
+		// 3. searching for Synonyms
+		results = taxonDao.findByNameTitleCache(Synonym.class, "Atropo", null, MatchMode.ANYWHERE, null,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+	
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 3);
+		
+		// 4. searching for Synonyms
+		results = taxonDao.findByNameTitleCache(Synonym.class, "Atropo", null, MatchMode.BEGINNING, null,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 3);
+		
+		
+		// 5. searching for a Synonyms and Taxa
+		//   create a synonym relationship first
+		results = taxonDao.findByNameTitleCache(TaxonBase.class, "A", null, MatchMode.BEGINNING, namedAreas,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
+	}
+
+	
 	@Test
 	@DataSet
 	public void testFindByUuid() {

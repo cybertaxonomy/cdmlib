@@ -71,7 +71,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	protected IFeatureDao featureDao;
 	protected ITermVocabularyDao vocabularyDao;
 	protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
-	private INaturalLanguageGenerator naturalLanguageGenerator;
+	private NaturalLanguageGenerator naturalLanguageGenerator;
 	
 	@Autowired
 	protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
@@ -104,7 +104,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	}
 	
 	@Autowired
-	protected void setNaturalLanguageGenerator(INaturalLanguageGenerator naturalLanguageGenerator) {
+	protected void setNaturalLanguageGenerator(NaturalLanguageGenerator naturalLanguageGenerator) {
 		this.naturalLanguageGenerator = naturalLanguageGenerator;
 	}
 	
@@ -356,17 +356,29 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		
 		if(description.hasStructuredData()){
 			
-			List<TextData> textDataList = naturalLanguageGenerator.generateNaturalLanguageDescription(
-					featureTree, 
-					((TaxonDescription)description),
-					lang);
 			
 			String lastCategory = null;
 			String categorySeparator = ". ";
 			
-			String sep = separator;
+			List<TextData> textDataList;
 			
-			boolean doItBetter = true;
+			boolean useMicroFormatQuantitativeDescriptionBuilder = true;
+			
+			
+			if(useMicroFormatQuantitativeDescriptionBuilder){
+				
+				MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
+				naturalLanguageGenerator.setQuantitativeDescriptionBuilder(micro);
+				textDataList = naturalLanguageGenerator.generateNaturalLanguageDescription(featureTree, ((TaxonDescription)description), lang);
+					
+			} else {
+				textDataList = naturalLanguageGenerator.generateNaturalLanguageDescription(
+						featureTree, 
+						((TaxonDescription)description),
+						lang);				
+			}
+
+			boolean doItBetter = false;
 
 			for (TextData textData : textDataList.toArray(new TextData[textDataList.size()])){
 				if(textData.getMultilanguageText().size() > 0){
@@ -375,35 +387,39 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 						String featureLabel = textData.getFeature().getLabel(lang);
 
 						if(doItBetter){
-						/*
-						 *  WARNING
-						 *  The code lines below are desinged to handle
-						 *  a special case where as the fealure label contains 
-						 *  hirarchical information on the features. This code 
-						 *  exist only as a base for discussion, and is not 
-						 *  intendet to be used in production.
-						 */
-						featureLabel = StringUtils.remove(featureLabel, '>');
-						
-						String[] labelTokens = StringUtils.split(featureLabel, '<');
-						if(labelTokens[0].equals(lastCategory) && labelTokens.length > 1){
+							/*
+							 *  WARNING
+							 *  The code lines below are desinged to handle
+							 *  a special case where as the feature label contains 
+							 *  hierarchical information on the features. This code 
+							 *  exist only as a base for discussion, and is not 
+							 *  intendet to be used in production.
+							 */
+							featureLabel = StringUtils.remove(featureLabel, '>');
+							
+							String[] labelTokens = StringUtils.split(featureLabel, '<');
+							if(labelTokens[0].equals(lastCategory) && labelTokens.length > 1){
+								if(naturalLanguageDescription.length() > 0){
+									naturalLanguageDescription.append(separator);
+								}
+								naturalLanguageDescription.append(labelTokens[1]);
+							} else {
+								if(naturalLanguageDescription.length() > 0){
+									naturalLanguageDescription.append(categorySeparator);
+								}
+								naturalLanguageDescription.append(StringUtils.join(labelTokens));
+							}
+							lastCategory = labelTokens[0];
+							// end of demo code
+						} else {
 							if(naturalLanguageDescription.length() > 0){
 								naturalLanguageDescription.append(separator);
-}
-							naturalLanguageDescription.append(labelTokens[1]);
-						} else {
-							if(naturalLanguageDescription.length() > 0){
-								naturalLanguageDescription.append(categorySeparator);
-							}
-							naturalLanguageDescription.append(StringUtils.join(labelTokens));
-						}
-						lastCategory = labelTokens[0];
-						// end of demo code
-						} else {
-							if(naturalLanguageDescription.length() > 0){
-								naturalLanguageDescription.append(categorySeparator);
 							}
 							naturalLanguageDescription.append(textData.getFeature().getLabel(lang));							
+						}
+					} else {
+						if(naturalLanguageDescription.length() > 0){
+							naturalLanguageDescription.append(separator);
 						}
 					}
 					String text = textData.getMultilanguageText().values().iterator().next().getText();

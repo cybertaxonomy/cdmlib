@@ -247,7 +247,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Integer pageNumber, List<String> propertyPaths) {
 				
 		boolean doCount = false;
-		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
+		Query query = prepareTaxaByName(clazz, "nameCache", queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		if (query != null){
 			List<TaxonBase> results = query.list();
 			//results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
@@ -281,6 +281,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	/**
 	 * @param clazz
+	 * @param searchField the field in TaxonNameBase to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
 	 * @param queryString
 	 * @param taxonomicTree TODO
 	 * @param matchMode
@@ -292,19 +293,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * 
 	 * FIXME implement taxontree restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
 	 */
-	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String searchField, String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
 
 		//TODO ? checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec)");
 
 		String hqlQueryString = matchMode.queryStringFrom(queryString);
-		
-		String matchOperator;
-		if (matchMode == MatchMode.EXACT) {
-			matchOperator = "=";
-		} else {
-			matchOperator = "like";
-		}
 		
 		String selectWhat = (doCount ? "count(t)": "t");
 		
@@ -339,7 +333,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" where" +
 					" e.area.uuid in (:namedAreasUuids) AND" +
 					" tn.taxonomicTree = :taxonomicTree" +
-					" AND n.nameCache " + matchOperator + " :queryString";
+					" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString";
 				
 				
 				synonymSubselect = "select s.id from" +
@@ -353,7 +347,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" where" +
 					" e.area.uuid in (:namedAreasUuids) AND" +
 					" tn.taxonomicTree = :taxonomicTree" +
-					" AND sn.nameCache " + matchOperator + " :queryString";
+					" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 				
 			} else {
 				
@@ -363,7 +357,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join t.taxonNodes as tn "+
 					" where" +
 					" tn.taxonomicTree = :taxonomicTree" +
-					" AND n.nameCache " + matchOperator + " :queryString";
+					" AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 				
 				synonymSubselect = "select s.id from" +
 					" Taxon t" + // the taxa
@@ -373,7 +367,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join s.name sn"+ 
 					" where" +
 					" tn.taxonomicTree = :taxonomicTree" +
-					" AND sn.nameCache " + matchOperator + " :queryString";
+					" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 			}	
 		} else {
 			
@@ -386,7 +380,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join t.name n "+
 					" where" +
 					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-					" n.nameCache " + matchOperator + " :queryString";
+					" n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 				
 				synonymSubselect = "select s.id from" +
 					" Distribution e" +
@@ -397,7 +391,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join s.name sn"+ 
 					" where" +
 					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-					" sn.nameCache " + matchOperator + " :queryString";
+					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 				
 			} else {
 				
@@ -405,7 +399,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" Taxon t" +
 					" join t.name n "+
 					" where" +
-					" n.nameCache " + matchOperator + " :queryString";
+					" n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 
 				synonymSubselect = "select s.id from" +
 					" Taxon t" + // the taxa
@@ -413,7 +407,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join sr.relatedFrom s" + // the synonyms
 					" join s.name sn"+ 
 					" where" +
-					" sn.nameCache " + matchOperator + " :queryString";
+					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 			}
 			
 		
@@ -539,19 +533,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	private Query prepareTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount){
-		
-		String matchOperator;
-		if (matchMode == MatchMode.EXACT) {
-			matchOperator = "=";
-		} else {
-			matchOperator = "like";
-		}
-		
+				
 		String hql= "from Taxon t " +
 		"join t.descriptions d "+
 		"join d.descriptionElements e " +
 		"join e.feature f " +
-		"where f.supportsCommonTaxonName = true and e.name "+matchOperator+" :queryString";//and ls.text like 'common%'";
+		"where f.supportsCommonTaxonName = true and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
 		
 		Query query = getSession().createQuery(hql);
 		
@@ -573,7 +560,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		MatchMode matchMode, Set<NamedArea> namedAreas) {
 		
 		boolean doCount = true;
-		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
+		Query query = prepareTaxaByName(clazz, "nameCache", queryString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
 		if (query != null) {
 			return (Long)query.uniqueResult();
 		}
@@ -729,11 +716,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 
-	// TODO add generic return type !!
-	public List findByName(String queryString, MatchMode matchMode, int page, int pagesize, boolean onlyAcccepted) {
-		ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-		//TODO ... Restrictions.eq(propertyName, value)
-		return super.findByTitle(queryString, matchMode, page, pagesize, criteria);
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, int, int, boolean)
+	 */
+	public List<TaxonBase> findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, TaxonomicTree taxonomicTree, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
+	
+		boolean doCount = false;
+		Query query = prepareTaxaByName(clazz, "titleCache", queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
+		if (query != null){
+			List<TaxonBase> results = query.list();
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;
+		}
+		return new ArrayList<TaxonBase>();
 
 	}
 

@@ -128,6 +128,67 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 //	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode);
 
 	/**
+	 * Returns a count of TaxonBase instances where the
+	 * taxon.name properties match the parameters passed.
+	 * 
+	 * @param clazz 
+	 * @param uninomial
+	 * @param infragenericEpithet
+	 * @param specificEpithet
+	 * @param infraspecificEpithet
+	 * @param rank
+	 * @return a count of TaxonBase instances
+	 */
+	public int countTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+
+	/**
+	 * Returns a list of TaxonBase instances where the
+	 * taxon.name properties match the parameters passed. In order to search for any string value, pass '*', passing the string value of 
+	 * <i>null</i> will search for those taxa with a value of null in that field
+	 * <p>
+	 * Compare with
+	 * {@link #findByName(String, MatchMode, int, int, boolean)}
+	 * which searches for {@link TaxonNameBase}<strong><code>.titleCache</code>
+	 * </strong>
+	 * 
+	 * @param clazz optionally filter by class (can be null to return all taxa)
+	 * @param uninomial 
+	 * @param infragenericEpithet
+	 * @param specificEpithet
+	 * @param infraspecificEpithet
+	 * @param rank
+	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a list of TaxonBase instances
+	 */
+	public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
+
+	/**
+	 * Find taxa by searching for Taxa and Synonyms where the
+	 * {@link TaxonNameBase}<strong><code>.titleCache</code></strong> matches
+	 * the name specified as queryString <code>taxonName</code>
+	 * <P>
+	 * Compare with
+	 * {@link #findTaxaByName(Class, String, String, String, String, Rank, Integer, Integer)}
+	 * which searches for {@link TaxonNameBase}<strong><code>.nameCache</code>
+	 * </strong>
+	 * @param queryString
+	 *            the taqxon Name to search for
+	 * @param taxonomicTree TODO
+	 * @param matchMode
+	 * @param namedAreas TODO
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param onlyAcccepted
+	 * @return
+	 */
+	public List<TaxonBase> findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, TaxonomicTree taxonomicTree, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
+
+	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
+	MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
+	Integer pageNumber, List<String> propertyPaths);
+
+	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @return The List<Taxon> of root taxa.
 	 * @deprecated obsolete when using taxonomicTree
@@ -200,17 +261,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 
 	public int countAllRelationships();
-	
-	/**
-	 * Find taxa by searching for @{link NameBase}
-	 * @param queryString
-	 * @param matchMode
-	 * @param page
-	 * @param pagesize
-	 * @param onlyAcccepted
-	 * @return
-	 */
-	public List<Taxon> findByName(String queryString, MatchMode matchMode, int page, int pagesize, boolean onlyAcccepted);
 	
 	/**
 	 * @param queryString
@@ -326,51 +376,18 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<SynonymRelationship> getSynonyms(Synonym synoynm, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
-	 * Returns a count of TaxonBase instances where the
-	 * taxon.name properties match the parameters passed.
-	 * 
-	 * @param clazz 
-	 * @param uninomial
-	 * @param infragenericEpithet
-	 * @param specificEpithet
-	 * @param infraspecificEpithet
-	 * @param rank
-	 * @return a count of TaxonBase instances
-	 */
-	public int countTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
-	
-	/**
-	 * Returns a list of TaxonBase instances where the
-	 * taxon.name properties match the parameters passed. In order to search for any string value, pass '*', passing the string value of 
-	 * <i>null</i> will search for those taxa with a value of null in that field
-	 * 
-	 * @param clazz optionally filter by class (can be null to return all taxa)
-	 * @param uninomial 
-	 * @param infragenericEpithet
-	 * @param specificEpithet
-	 * @param infraspecificEpithet
-	 * @param rank
-	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @return a list of TaxonBase instances
-	 */
-	public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
-	
-	/**
 	 * 
 	 * @return
 	 */
 	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
 
-	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
-			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
-			Integer pageNumber, List<String> propertyPaths);
 	/**
 	 * creates all inferred synonyms for the species in the tree and insert it to the database
 	 * @param tree
 	 * @return List of inferred synonyms
 	 */
 	//public List<Synonym> insertAllInferredSynonymy(TaxonomicTree tree);
+	
 	/**
 	 * creates all inferred synonyms for the taxon in the taxonomic tree, but do not insert it to the database
 	 * @param taxon

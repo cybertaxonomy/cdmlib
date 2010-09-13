@@ -22,7 +22,7 @@ public class IdentifiableServiceConfiguratorBase {
 	private String titleSearchString = null;
 	protected MatchMode matchMode = MatchMode.EXACT;
 	private Integer pageSize = null;
-	private Integer pageNumber = null;
+	private Integer pageNumber = 0;
 	
 	public static IdentifiableServiceConfiguratorBase NewInstance() {
 		return new IdentifiableServiceConfiguratorBase();
