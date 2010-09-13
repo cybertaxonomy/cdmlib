@@ -1231,6 +1231,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DoubleResult.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ExcelUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/FileCopy.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/IProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/Tree.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/TreeNode.java -text
