@@ -38,6 +38,8 @@ public class SDDImportConfigurator extends ImportConfiguratorBase implements IIm
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 	
+	private boolean doMatchTaxa = false;
+	
 	//xml xmlNamespace
 	Namespace sddNamespace;
 
@@ -148,5 +150,19 @@ public class SDDImportConfigurator extends ImportConfiguratorBase implements IIm
 
 	public void setSddNamespace(Namespace xmlNamespace) {
 		this.sddNamespace = xmlNamespace;
+	}
+
+	/**
+	 * @param doMatchTaxa the doMatchTaxa to set
+	 */
+	public void setDoMatchTaxa(boolean doMatchTaxa) {
+		this.doMatchTaxa = doMatchTaxa;
+	}
+
+	/**
+	 * @return the doMatchTaxa
+	 */
+	public boolean isDoMatchTaxa() {
+		return doMatchTaxa;
 	}
 }

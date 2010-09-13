@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.sdd;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,26 +23,27 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.spi.Configurator;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.IVersionableService;//rajout
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.model.agent.Contact;
-import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Address;//rajout
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -58,13 +58,13 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -72,26 +72,25 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.description.Modifier;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author h.fradin
@@ -477,6 +476,25 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		importDescriptiveConcepts(elDataset, sddNamespace, sddConfig);
 		importCharacters(elDataset, sddNamespace, sddConfig, success);
 		importCharacterTrees(elDataset, sddNamespace, sddConfig, success);
+		
+		//FIXME (a.mueller) 
+		MarkerType editorMarkerType = MarkerType.NewInstance("Editor", "editor", "edt") ;
+		MarkerType geographicAreaMarkerType = MarkerType.NewInstance("", "SDDGeographicArea", "ga");
+		MarkerType descriptiveConceptMarkerType = MarkerType.NewInstance("Descriptive Concept", "DescriptiveConcept", "DC");
+		markerTypes.add(editorMarkerType);
+		markerTypes.add(geographicAreaMarkerType);
+		markerTypes.add(descriptiveConceptMarkerType);
+
+		//saving of all imported data into the CDM db
+		saveFeatures();
+		saveModifiers();
+		saveStates();
+		saveMarkerType();
+		saveAreas(geographicAreaMarkerType);		
+		saveUnits();
+		saveStatisticalMeasure();		
+		saveAnnotationType();
+		
 		importCodedDescriptions(elDataset, sddNamespace, sddConfig, success);
 		importAgents(elDataset, sddNamespace, sddConfig, success);
 		importPublications(elDataset, sddNamespace, sddConfig, success);
@@ -485,12 +503,6 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		importGeographicAreas(elDataset, sddNamespace, sddConfig);
 		importSpecimens(elDataset,sddNamespace, sddConfig);
 			
-		MarkerType editorMarkerType = MarkerType.NewInstance("Editor", "editor", "edt") ;
-		MarkerType geographicAreaMarkerType = MarkerType.NewInstance("", "SDDGeographicArea", "ga");
-		MarkerType descriptiveConceptMarkerType = MarkerType.NewInstance("Descriptive Concept", "DescriptiveConcept", "DC");
-		markerTypes.add(editorMarkerType);
-		markerTypes.add(geographicAreaMarkerType);
-		markerTypes.add(descriptiveConceptMarkerType);
 		
 		
 		if ((authors != null)||(editors != null)) {
@@ -527,6 +539,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			descriptionService.save(taxonDescription);
 		}
 
+
 		
 		for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
 			String ref = refCD.next();
@@ -554,16 +567,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 		//sddConfig.setSourceReference(sourceReference);
 
-		//saving of all imported data into the CDM db
-		ITermService termService = getTermService();
-		
-		
-		for (Iterator<Modifier> k = modifiers.values().iterator() ; k.hasNext() ;){
-			Modifier modifier = k.next();
-			termService.save(modifier);
-		}
-		
-		//termService.save(descriptiveConceptMarkerType);
+
 		if (descriptiveConcepts != null) {
 			for (Iterator<Feature> feat = descriptiveConcepts.iterator() ; feat.hasNext() ;) {
 				Marker marker = Marker.NewInstance();
@@ -572,11 +576,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				feature.addMarker(marker);
 			}
 		}
-		
-		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
-			State state = k.next();
-			termService.save(state);
-		}
+		saveFeatures();
 		
 		/*Marker markerd = Marker.NewInstance();
 		markerd.setMarkerType(descriptiveConceptMarker);
@@ -589,45 +589,10 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		fiture.addRecommendedModifierEnumeration(termVocabularyState);
 		termService.save(modif);
 		termService.save(fiture);*/
-		
-		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
-			Feature feature = k.next();
-			termService.save(feature); 
-		}
-		
-		for(Iterator<MarkerType> k = markerTypes.iterator() ; k.hasNext() ;){
-			MarkerType markerType = k.next();
-			termService.save(markerType);
-		}
-		
+	
 		//XIMtermService.save(editorMarkerType);
 		
 		//XIMtermService.save(geographicAreaMarkerType);
-		for (Iterator<NamedArea> k = namedAreas.values().iterator() ; k.hasNext() ;) {
-			Marker marker = Marker.NewInstance();
-			marker.setMarkerType(geographicAreaMarkerType);
-			NamedArea area = k.next();
-			area.addMarker(marker);
-			//getTermService().save(area);
-			termService.save(area);
-		}		
-		
-		if (units != null) {
-			for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
-				MeasurementUnit unit = k.next();
-				if (unit != null) {
-					termService.save(unit); 
-				}
-			}
-		}
-		for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
-			StatisticalMeasure sm = k.next();
-			termService.save(sm); 
-		}
-		for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
-			AnnotationType annotationType = at.next();
-			termService.save(annotationType); 
-		}
 
 		IReferenceService referenceService = getReferenceService();
 		// referenceService.saveReference(sourceReference); 
@@ -650,6 +615,74 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		}
 		logger.info("end of persistence ...");
 		
+		
+	}
+
+	private void saveAnnotationType() {
+		for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
+			AnnotationType annotationType = at.next();
+			getTermService().save(annotationType); 
+		}
+	}
+
+	private void saveStatisticalMeasure() {
+		for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
+			StatisticalMeasure sm = k.next();
+			getTermService().save(sm); 
+		}
+	}
+
+	private void saveUnits() {
+		if (units != null) {
+			for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
+				MeasurementUnit unit = k.next();
+				if (unit != null) {
+					getTermService().save(unit); 
+				}
+			}
+		}
+	}
+
+	private void saveAreas(MarkerType geographicAreaMarkerType) {
+		for (Iterator<NamedArea> k = namedAreas.values().iterator() ; k.hasNext() ;) {
+			Marker marker = Marker.NewInstance();
+			marker.setMarkerType(geographicAreaMarkerType);
+			NamedArea area = k.next();
+			area.addMarker(marker);
+			//getTermService().save(area);
+			getTermService().save(area);
+		}
+	}
+
+	private void saveStates() {
+		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
+			State state = k.next();
+			getTermService().save(state);
+		}
+	}
+
+	private void saveMarkerType() {
+		for(Iterator<MarkerType> k = markerTypes.iterator() ; k.hasNext() ;){
+			MarkerType markerType = k.next();
+			getTermService().save(markerType);
+		}
+	}
+
+	private void saveModifiers() {
+
+		for (Iterator<Modifier> k = modifiers.values().iterator() ; k.hasNext() ;){
+			Modifier modifier = k.next();
+			getTermService().save(modifier);
+		}
+	}
+
+	private void saveFeatures() {
+		ITermService termService = getTermService();
+		
+		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
+			Feature feature = k.next();
+			termService.save(feature); 
+		}
 	}
 
 	// imports the default language of the dataset
@@ -1004,6 +1037,9 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		logger.info("start CodedDescriptions ...");
 		Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
 		// <CodedDescription id="D101">
+		
+
+		ITaxonService taxonService = getTaxonService();
 
 		if (elCodedDescriptions != null) {
 			List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
@@ -1032,19 +1068,46 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					if (elScope != null) {
 						Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
 						ref = elTaxonName.getAttributeValue("ref");
-
 						NonViralName taxonNameBase = taxonNameBases.get(ref);
-						taxon = Taxon.NewInstance(taxonNameBase, sec);
+						
+						if(sddConfig.isDoMatchTaxa()){
+							taxon = getTaxonService().findBestMatchingTaxon(taxonNameBase.getTitleCache());
+						}
+						
+						if(taxon != null){
+							logger.info("using existing Taxon" + taxon.getTitleCache());
+							if(!taxonNameBase.getUuid().equals(taxon.getName().getUuid())){
+								logger.warn("TaxonNameBase entity of existing taxon does not match Name in list -> replacing Name in list");
+								taxonNameBase = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
+							}				
+						} else {							
+							logger.info("creating new Taxon from TaxonName" + taxonNameBase.getTitleCache());
+							taxon = Taxon.NewInstance(taxonNameBase, sec);
+						}
 					}
+					
 					else {//in case no taxon is linked to the description, a new one is created
 						NonViralName tnb = NonViralName.NewInstance(null);
 						String id = new String(""+taxonNamesCount);
 						IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
 						importRepresentation(elCodedDescription, sddNamespace, tnb, id, sddConfig);
-						tnb.addSource(source);
-						taxonNameBases.put(id ,tnb);
-						taxonNamesCount++;
-						taxon = Taxon.NewInstance(tnb, sec);
+						
+						if(sddConfig.isDoMatchTaxa()){
+							taxon = getTaxonService().findBestMatchingTaxon(tnb.getTitleCache());
+						}
+						
+						if(taxon != null){
+							tnb = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
+//							taxonNameBases.put(id ,tnb);
+//							taxonNamesCount++;
+							logger.info("using existing Taxon" + taxon.getTitleCache());
+						} else {
+							tnb.addSource(source);
+							taxonNameBases.put(id ,tnb);
+							taxonNamesCount++;						
+							logger.info("creating new Taxon from TaxonName" + tnb.getTitleCache());
+							taxon = Taxon.NewInstance(tnb, sec);
+						}
 					}
 
 					String refCitation = "";
@@ -1202,7 +1265,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 				} catch (Exception e) {
 					//FIXME
-					logger.warn("Import of CodedDescription " + j + " failed.");
+					logger.warn("Import of CodedDescription " + j + " failed.", e);
 					success = false;
 				}
 				if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + j);}
