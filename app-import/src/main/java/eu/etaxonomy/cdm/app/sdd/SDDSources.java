@@ -82,8 +82,13 @@ public class SDDSources {
 	public static String Crepis_test_local(){
 		URL url = new SDDSources().getClass().getResource("/sdd/Crepis-test.sdd");
 		String sourceUrl = url.toString();
-		return sourceUrl;
-		
-}
+		return sourceUrl;	
+	}
+	
+	public static String Cichorieae_DA_export_sdd(){
+		URL url = new SDDSources().getClass().getResource("/sdd/Cichorieae-DA-export-sdd.xml");
+		String sourceUrl = url.toString();
+		return sourceUrl;	
+	}
 	
 }

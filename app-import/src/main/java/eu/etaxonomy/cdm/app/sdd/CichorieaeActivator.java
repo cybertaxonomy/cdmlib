@@ -30,10 +30,18 @@ public class CichorieaeActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
-	//static final String sddSource = SDDSources.viola_local();
-	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+	
+	/********************************************************************************
+	 * IMPORTANT:
+	 * 
+	 * execute the following sql statements before runniung the import
+	 * 
+	 * ALTER TABLE `statedata_definedtermbase`  DROP INDEX `modifiers_id`;
+	 * ALTER TABLE `statisticalmeasurementvalue_definedtermbase`  DROP INDEX `modifiers_id`;
+	 * 
+	 ********************************************************************************/
 	static final ICdmDataSource cdmDestination = CdmDestinations.local_cdm_edit_cichorieae_b();
-	static final String sddSource = SDDSources.Crepis_test_local();
+	static final String sddSource = SDDSources.Cichorieae_DA_export_sdd();
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 
 	static final String sourceSecId = "cichorieae-crepis-sdd-import";
@@ -54,15 +62,15 @@ public class CichorieaeActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 
+	static final boolean doMatchTaxa = true;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//System.out.println("Jobi joba"); 
-		logger.info("Start import from SDDDD("+ sddSource.toString() + ") ...");
 
-		//make BerlinModel Source
+		logger.info("Start import from SDD ("+ sddSource.toString() + ") ...");
+
 		String source = sddSource;
 		ICdmDataSource destination = cdmDestination;
 
@@ -82,6 +90,8 @@ public class CichorieaeActivator {
 
 		sddImportConfigurator.setCheck(check);
 		sddImportConfigurator.setDbSchemaValidation(hbm2dll);
+		
+		sddImportConfigurator.setDoMatchTaxa(doMatchTaxa);
 		
 
 		// invoke import
