@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.common;
 
-import java.sql.SQLException;
 
 
 /**
