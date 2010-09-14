@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 public class SruServiceWrapper extends ServiceWrapperBase<ReferenceBase> {
 	
-	private String SruVersion = "1.1";
+	private String sruVersion = "1.1";
 	
 	/**
 	 * @param cqlQuery an <b>URL encoded</b> CQL Query string see {@link http://www.loc.gov/standards/sru/specs/cql.html} for documentation
@@ -53,7 +53,7 @@ public class SruServiceWrapper extends ServiceWrapperBase<ReferenceBase> {
 		String sruOperation = "searchRetrieve";
 		
 		pairs.add(new BasicNameValuePair("operation", sruOperation));
-		pairs.add(new BasicNameValuePair("version", SruVersion));
+		pairs.add(new BasicNameValuePair("version", sruVersion));
 		pairs.add(new BasicNameValuePair("query", cqlQuery));
 		pairs.add(new BasicNameValuePair("recordSchema", recordSchema));
 		
