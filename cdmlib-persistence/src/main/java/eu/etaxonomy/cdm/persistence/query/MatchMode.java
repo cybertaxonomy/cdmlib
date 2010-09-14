@@ -16,10 +16,16 @@ package eu.etaxonomy.cdm.persistence.query;
  * @version 1.0
  */
 public enum MatchMode {
-	EXACT,
-	BEGINNING,
-	ANYWHERE,
-	END;
+	EXACT("="),
+	BEGINNING("LIKE"),
+	ANYWHERE("LIKE"),
+	END("LIKE");
+	
+	private String matchOperator;
+	
+	MatchMode(String matchOperator){
+		this.matchOperator = matchOperator;
+	}
 	
 	public String queryStringFrom(String queryString){
 		if(queryString == null){
@@ -36,5 +42,9 @@ public enum MatchMode {
 			default:
 				return queryString;
 		}
+	}
+	
+	public String getMatchOperator(){
+		return matchOperator;
 	}
 }
