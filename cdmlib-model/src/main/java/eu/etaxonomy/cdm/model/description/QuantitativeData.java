@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -85,13 +86,8 @@ public class QuantitativeData extends DescriptionElementBase {
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
 	@NotEmpty(groups = Level2.class)
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
-	
-	/** 
-	 * Class constructor: creates a new empty quantitative data instance.
-	 */
-	protected QuantitativeData(){
-		super(null);
-	}
+
+// ******************************** FACTORY METHOD *******************************/
 	
 	/** 
 	 * Creates a new empty quantitative data instance.
@@ -99,6 +95,36 @@ public class QuantitativeData extends DescriptionElementBase {
 	public static QuantitativeData NewInstance(){
 		return new QuantitativeData();
 	}
+
+// ******************************** FACTORY METHOD *******************************/
+	
+	/** 
+	 * Creates a new empty quantitative data instance.
+	 */
+	public static QuantitativeData NewInstance(Feature feature){
+		return new QuantitativeData(feature);
+	}
+
+	
+// ******************************** CONSTRUCTOR *******************************/
+
+	/** 
+	 * Class constructor: creates a new empty quantitative data instance.
+	 */
+	protected QuantitativeData(){
+		super(null);
+	}
+
+	/** 
+	 * Class constructor: creates a new empty quantitative data instance.
+	 */
+	protected QuantitativeData(Feature feature){
+		super(feature);
+	}
+
+	
+// ******************************** GETTER /SETTER *******************************/
+	
 	
 	/** 
 	 * Returns the set of {@link StatisticalMeasurementValue statistical measurement values} describing
@@ -120,8 +146,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * 							<i>this</i> quantitative data
 	 * @see    	   				#getStatisticalValues()
 	 */
-	public void addStatisticalValue(
-			StatisticalMeasurementValue statisticalValue) {
+	public void addStatisticalValue(StatisticalMeasurementValue statisticalValue) {
 		this.statisticalValues.add(statisticalValue);
 	}
 	/** 
@@ -132,8 +157,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * @see     				#getStatisticalValues()
 	 * @see     				#addStatisticalValue(StatisticalMeasurementValue)
 	 */
-	public void removeStatisticalValue(
-			StatisticalMeasurementValue statisticalValue) {
+	public void removeStatisticalValue(StatisticalMeasurementValue statisticalValue) {
 		this.statisticalValues.remove(statisticalValue);
 	}
 
@@ -152,44 +176,68 @@ public class QuantitativeData extends DescriptionElementBase {
 		this.unit = unit;
 	}
 
+// ******************************** TRANSIENT METHODS *******************************/
+	
+	
 	/** 
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
 	 * with the corresponding {@link StatisticalMeasure statistical measure} "minimum" and
-	 * belonging to <i>this</i> quantitative data. Returns "0" if no such
+	 * belonging to <i>this</i> quantitative data. Returns <code>null</code> if no such
 	 * statistical measurement value instance exists. 
 	 */
-	public float getMin(){
-		return 0;
+	@Transient
+	public Float getMin(){
+		return getSpecificStatisticalValue(StatisticalMeasure.MIN());
 	}
 
 	/** 
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
 	 * with the corresponding {@link StatisticalMeasure statistical measure} "maximum" and
-	 * belonging to <i>this</i> quantitative data. Returns "0" if no such
+	 * belonging to <i>this</i> quantitative data. Returns <code>null</code> if no such
 	 * statistical measurement value instance exists. 
 	 */
-	public float getMax(){
-		return 0;
+	@Transient
+	public Float getMax(){
+		return getSpecificStatisticalValue(StatisticalMeasure.MAX());
 	}
 
 	/** 
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
 	 * with the corresponding {@link StatisticalMeasure statistical measure}
 	 * "typical lower boundary" and belonging to <i>this</i> quantitative data.
-	 * Returns "0" if no such statistical measurement value instance exists. 
+	 * Returns <code>null</code> if no such statistical measurement value instance exists. 
 	 */
-	public float getTypicalLowerBoundary(){
-		return 0;
+	@Transient
+	public Float getTypicalLowerBoundary(){
+		return getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
 	}
 
 	/** 
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
 	 * with the corresponding {@link StatisticalMeasure statistical measure}
 	 * "typical upper boundary" and belonging to <i>this</i> quantitative data.
-	 * Returns "0" if no such statistical measurement value instance exists. 
+	 * Returns <code>null</code> if no such statistical measurement value instance exists. 
 	 */
-	public float getTypicalUpperBoundary(){
-		return 0;
+	@Transient
+	public Float getTypicalUpperBoundary(){
+		return getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
 	}
 
+	/**
+	 * Returns the statistical value of type <code>type</code>.
+	 * If no such value exists <code>null</code> is returned. If multiple such
+	 * values exist an arbitrary one is returned.
+	 * @param type
+	 * @return the value
+	 */
+	public Float getSpecificStatisticalValue(StatisticalMeasure type){
+		Float result = null;
+		for (StatisticalMeasurementValue value : statisticalValues){
+			if (type.equals(value.getType())){
+				result = value.getValue();
+				break;
+			}
+		}
+		return result;
+	}
 }
