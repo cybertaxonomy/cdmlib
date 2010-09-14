@@ -80,7 +80,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			logger.warn("More than one column selected in query" +  strQuery);
 			return null;
 		}
-		Object object = rs.getObject(0);
+		Object object = rs.getObject(1);
 		if (rs.next()){
 			logger.warn("Multiple results for query " +  strQuery);
 			return null;
