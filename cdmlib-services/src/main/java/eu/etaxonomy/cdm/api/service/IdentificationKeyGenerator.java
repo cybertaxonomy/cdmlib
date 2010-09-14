@@ -1,29 +1,12 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.bind.Marshaller;
-
-import org.apache.log4j.Logger;
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xerces.dom.ElementImpl;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-import org.xml.sax.SAXException;
-
-import org.apache.xerces.impl.xpath.regex.ParseException;
-import org.apache.xml.serialize.DOMSerializer;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -35,7 +18,6 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class IdentificationKeyGenerator {
 	
