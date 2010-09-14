@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 * @created Aug 18, 2010
 * @version 1.0
  */
-public interface IBciService {
+public interface IBciServiceWrapper {
 
 
 	/**
