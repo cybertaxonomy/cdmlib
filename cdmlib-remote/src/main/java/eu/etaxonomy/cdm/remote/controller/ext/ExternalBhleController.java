@@ -63,15 +63,15 @@ public class ExternalBhleController {
 
 	@RequestMapping(value = { "grib/sru" }, method = RequestMethod.GET)
 	public ModelAndView doSearchRetrieve(
-			@RequestParam(value = "query", required = true) String query,
+			@RequestParam(value = "query", required = true) String cqlQuery,
 			HttpServletRequest request, 
 			HttpServletResponse response)
 			throws IOException {
 		
-		logger.info("doSearchRetrieve( " + "query=\"" + ObjectUtils.toString(query) + "\")");
+		logger.info("doSearchRetrieve( " + "query=\"" + ObjectUtils.toString(cqlQuery) + "\")");
 		ModelAndView mv = new ModelAndView();
 		
-		List<ReferenceBase> referenceList = sruServiceWrapper.doSearchRetrieve(query, "dc");
+		List<ReferenceBase> referenceList = sruServiceWrapper.doSearchRetrieve(cqlQuery, "dc");
 		
 		mv.addObject(referenceList);
 		return mv;
