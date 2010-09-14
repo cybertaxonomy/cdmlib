@@ -21,20 +21,20 @@ public class BciServiceTest {
 	
 	static String strUrl1;
 
-	private IBciService service1;
+	private IBciServiceWrapper service1;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		service1 = new BciService();
+		service1 = new BciServiceWrapper_Old();
 	}
 
 // ******************************* TESTS ******************************************************/
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.bci.BciService#BciService(java.net.URL)}.
+	 * Test method for {@link eu.etaxonomy.cdm.ext.bci.BciServiceWrapper_Old#BciService(java.net.URL)}.
 	 */
 	@Test
 	public void testBciService() {
@@ -67,7 +67,7 @@ public class BciServiceTest {
 	@Test
 	public void testGetServiceUrl() {
 		Assert.assertNotNull("Service should not be null", service1);
-		Assert.assertNotNull("URL1 should not be null", service1.getServiceUrl(IBciService.LOOKUP_CODE_REST));
+		Assert.assertNotNull("URL1 should not be null", service1.getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST));
 	}
 
 
