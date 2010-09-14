@@ -145,7 +145,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		taxon = (Taxon) taxonDao.load(taxon.getUuid());
 		TaxonNode node = tree.getNode(taxon);
 		if(node == null){
-			logger.warn("The specified tacon is not found in the given tree.");
+			logger.warn("The specified taxon is not found in the given tree.");
 			return null;
 		}
 		return loadTreeBranch(node, baseRank, propertyPaths);

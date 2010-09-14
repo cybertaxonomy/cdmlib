@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -59,9 +61,15 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
+/**
+ * @author a.kohlbecker
+ * @date 10.09.2010
+ *
+ */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
@@ -421,6 +429,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return heterotypicSynonymyGroups;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)
+	 */
 	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator) {
 		
 		List<IdentifiableEntity> results = new ArrayList<IdentifiableEntity>();
@@ -432,7 +443,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		Class<? extends TaxonBase> clazz = null;
 		List<String> propertyPath = new ArrayList<String>();
+		if(configurator.getTaxonNamePropertyPath() != null){
 		propertyPath.addAll(configurator.getTaxonPropertyPath());
+		}
 		if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
 			clazz = TaxonBase.class;
 			//propertyPath.addAll(configurator.getTaxonPropertyPath());
@@ -446,11 +459,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		if(clazz != null){
+			if(configurator.getPageSize() != null){ // no point counting if we need all anyway
 			numberTaxaResults = 
 				dao.countTaxaByName(clazz, 
 					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
 					configurator.getNamedAreas());
-			if(numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
+			}
+			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
 				taxa = dao.getTaxaByName(clazz, 
 					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
@@ -491,8 +506,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (configurator.isDoTaxaByCommonNames()) {
 			taxa = null;
 			numberTaxaResults = 0;
+			if(configurator.getPageSize() != null){// no point counting if we need all anyway
 			numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas());
-			if(numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
+			}
+			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
 				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			}
 			if(taxa != null){
@@ -587,5 +604,32 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			results = dao.getSynonymRelationships(taxonBase, type, pageSize, pageNumber, orderHints, propertyPaths, direction); 
 		}
 		return results;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#matchToTaxon(eu.etaxonomy.cdm.model.name.NonViralName)
+	 */
+	@Override
+	public Taxon findBestMatchingTaxon(String taxonName) {
+		
+		Taxon matchedTaxon = null;
+		try{
+			List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
+			for(IdentifiableEntity taxonBaseCandidate : taxonList){
+				if(taxonBaseCandidate instanceof Taxon){
+					matchedTaxon = (Taxon)taxonBaseCandidate;
+					if(taxonList.size() > 1){
+						logger.info(taxonList.size() + " TaxonBases found, using first accepted Taxon: " + matchedTaxon.getTitleCache());
+					} else {
+						logger.info("using accepted Taxon: " + matchedTaxon.getTitleCache());									
+					}
+					//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found 
+				}
+			}
+		} catch (Exception e){
+			logger.error(e);
+		}
+		
+		return matchedTaxon;
 	}
 }

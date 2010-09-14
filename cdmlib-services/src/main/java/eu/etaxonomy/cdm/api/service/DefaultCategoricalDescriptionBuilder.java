@@ -4,7 +4,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -25,6 +28,7 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 				CategoricalDescription.append(" " + modifier.getPreferredRepresentation(languages).getLabel());
 			}
 			CategoricalDescription.append(" " + s.getPreferredRepresentation(languages).getLabel());
+			if (sd.hasNext()) CategoricalDescription.append(',');
 			if (language==null) {
 				language = s.getPreferredRepresentation(languages).getLanguage(); // TODO What if there are different languages ?
 			}
@@ -37,4 +41,14 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 		return textData;
 	}
 
+	protected String buildFeature(Feature feature, boolean doItBetter){
+		if (feature==null || feature.getLabel()==null) return "";
+		else {
+			if (doItBetter) {
+				String betterString = StringUtils.substringBefore(feature.getLabel(), "<");
+				return StringUtils.removeEnd(betterString, " ");
+			}
+			else	return feature.getLabel();
+		}
+	}
 }

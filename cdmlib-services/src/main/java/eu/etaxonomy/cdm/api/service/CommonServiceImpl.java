@@ -294,8 +294,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	 * @param databaseSchemaVersion
 	 * @throws DatabaseSchemaMismatchException
 	 */
-	private boolean areStringsEqual(String first,
-			String second) {
+	private boolean areStringsEqual(String first, String second) {
 		return first.equals(second);
 	}
 

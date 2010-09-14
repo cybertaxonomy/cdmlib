@@ -3,7 +3,10 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -114,6 +117,17 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 		textData.setFormat(TextFormat.NewInstance(null, "HTML",null )); // the data format is set (not yet real HTML)
 		
 		return textData;
+	}
+	
+	protected String buildFeature(Feature feature, boolean doItBetter){
+		if (feature==null || feature.getLabel()==null) return "";
+		else {
+			if (doItBetter) {
+				String betterString = StringUtils.substringBefore(feature.getLabel(), "<");
+				return StringUtils.removeEnd(betterString, " ");
+			}
+			else	return feature.getLabel();
+		}
 	}
 	
 	private String spanClass(String classString){
