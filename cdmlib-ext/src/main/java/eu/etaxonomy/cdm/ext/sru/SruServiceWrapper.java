@@ -34,14 +34,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 public class SruServiceWrapper extends ServiceWrapperBase<ReferenceBase> {
 	
-	//http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.tit%3D%22harry+potter%22&recordSchema=pica
-	
 	private String SruVersion = "1.1";
 	
+	/**
+	 * @param cqlQuery an <b>URL encoded</b> CQL Query string see {@link http://www.loc.gov/standards/sru/specs/cql.html} for documentation
+	 * @param recordSchema
+	 * @return
+	 */
+	public List<ReferenceBase> doSearchRetrieve(String cqlQuery, String recordSchema){
 	
-	
-	public List<ReferenceBase> doSearchRetrieve(String query, String recordSchema){
-		
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		
 		SchemaAdapterBase<ReferenceBase> schemaAdapter = schemaAdapterMap.get(recordSchema);
@@ -49,11 +50,11 @@ public class SruServiceWrapper extends ServiceWrapperBase<ReferenceBase> {
 			logger.error("No SchemaAdapter found for " + recordSchema);
 		}
 		
-		String SruOperation = "searchRetrieve";
+		String sruOperation = "searchRetrieve";
 		
-		pairs.add(new BasicNameValuePair("operation", SruOperation));
+		pairs.add(new BasicNameValuePair("operation", sruOperation));
 		pairs.add(new BasicNameValuePair("version", SruVersion));
-		pairs.add(new BasicNameValuePair("query", query));
+		pairs.add(new BasicNameValuePair("query", cqlQuery));
 		pairs.add(new BasicNameValuePair("recordSchema", recordSchema));
 		
 		Map<String, String> requestHeaders = new HashMap<String, String>();
