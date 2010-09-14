@@ -12,11 +12,11 @@ package eu.etaxonomy.cdm.io.sdd;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,20 +27,21 @@ import javax.xml.bind.Marshaller;
 import org.apache.log4j.Logger;
 import org.apache.xerces.dom.DocumentImpl;
 import org.apache.xerces.dom.ElementImpl;
+import org.apache.xerces.impl.xpath.regex.ParseException;
+import org.apache.xml.serialize.DOMSerializer;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.xml.sax.SAXException;
 
-import org.apache.xerces.impl.xpath.regex.ParseException;
-import org.apache.xml.serialize.DOMSerializer;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-
+import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator;
+import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -49,34 +50,33 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.description.Modifier;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -84,11 +84,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator;
-import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 
 /**
  * Writes the SDD XML file. 
@@ -263,7 +258,7 @@ public class SDDDocumentBuilder {
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
 		if (natlang) {
-			buildNaturalLanguageDescription2(baselement);
+			buildIdentificationKey(baselement);
 		}
 		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -302,94 +297,51 @@ public class SDDDocumentBuilder {
 			VersionableEntity featu = cdmSource.getFeatureData().get(i);
 			if (featu instanceof FeatureTree){
 				FeatureTree ft = (FeatureTree) featu;
-				if (ft.getLabel().contains("natural language")) {
+				if (ft.getLabel().contains("Main")) {
 					featureTree = ft;
 				}
 			}
 		}
+		System.out.println(featureTree==null);
+		System.out.println(description==null);
 		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
-		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, description);
-		for (Iterator<TextData> td = listTextData.iterator() ; td.hasNext();) {
-			TextData textD = td.next();
-			System.out.println(textD.getText(Language.DEFAULT()));
+//		MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
+//		natlgen.setQuantitativeDescriptionBuilder(micro);
+//		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, description);
+//		for (Iterator<TextData> td = listTextData.iterator() ; td.hasNext();) {
+//			TextData textD = td.next();
+//			System.out.println(textD.getText(Language.DEFAULT()));
+//		}
+		String descriptionString = natlgen.generateStringNaturalLanguageDescription(featureTree, description, Language.DEFAULT());
+		System.out.println(descriptionString);
 		}
 
-	}
-	
 	// TO BE DELETED SOON
-	public void buildNaturalLanguageDescription2(ElementImpl dataset) {
+	public void buildIdentificationKey(ElementImpl dataset) {
 		IdentificationKeyGenerator idkgen = new IdentificationKeyGenerator();
-		Set<TaxonDescription> descriptions = null;
-		Map<Integer,String> characters = new HashMap<Integer,String>();
+		Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
+		List<Feature> featureList = new ArrayList<Feature>();
 		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
 			Taxon taxon = (Taxon) tb.next();
-			descriptions = taxon.getDescriptions();
-			int i = 0;
-			for (TaxonDescription td : descriptions){
+			for (TaxonDescription td : taxon.getDescriptions()){
+				descriptions.add(td);
 				for(DescriptionElementBase deb : td.getElements()){
 					if (deb.isInstanceOf(CategoricalData.class)){
 						CategoricalData catdat = (CategoricalData)deb;
-						Feature feature = catdat.getFeature();
-						if (feature!=null){
-							String label = feature.getLabel();
-							if (label!=null){
-								if (!characters.containsKey(label)){
-									characters.put((Integer)(i++), label);
+					Feature feat = catdat.getFeature();
+					if (feat!=null && feat.getLabel()!=null && !featureList.contains(feat)){
+						featureList.add(catdat.getFeature());
 								}
 							}
 						}
 					}
 				}
-			}
-		}
-		List<List<List<String>>> taxonMatrix = new ArrayList<List<List<String>>>();
-		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
-			Taxon taxon = (Taxon) tb.next();
-			descriptions = taxon.getDescriptions();
-			for (TaxonDescription td : descriptions){
-				List<List<String>> taxonlist = new ArrayList<List<String>>();
-				for (String feature : characters.values()) {//element de la map) chercher si dedans sinon rentrer null
-					List<String> states = new ArrayList<String>();
-					taxonlist.add(states);
-					for(DescriptionElementBase deb : td.getElements()){
-						if (deb.isInstanceOf(CategoricalData.class)){
-							CategoricalData catdat = (CategoricalData)deb;
-							if (catdat.getFeature()!=null && catdat.getFeature().getLabel()!=null){
-								if (catdat.getFeature().getLabel().equals(feature)) {
-									for (StateData statedata : catdat.getStates()){
-										State state = statedata.getState();
-										if (state!=null){
-											String label = state.getLabel();
-											if (label!=null) {
-												states.add(label);
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				taxonMatrix.add(taxonlist);
-			}
-		}
-		List<Integer> featureList = new ArrayList<Integer>();
-		List<Integer> taxaList = new ArrayList<Integer>();
-		int i;
-		for (i=0;i<taxonMatrix.size();i++) {
-			Integer integ = new Integer(i);
-			taxaList.add(integ);
-		}
-		for (i=0;i<taxonMatrix.get(0).size();i++) {
-			Integer integ = new Integer(i);
-			featureList.add(integ);
-		}
 		idkgen.setFeatures(featureList);
-		idkgen.setTaxa(taxaList);
+		idkgen.setTaxa(descriptions);
 		logger.error("Start keys");
-		idkgen.makeandprint(taxonMatrix);
-	}
 	
+		idkgen.makeandprint();
+	}
 	//	#############
 	//	# BUILD DOM	#
 	//	#############	
