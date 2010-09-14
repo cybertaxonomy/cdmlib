@@ -17,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator;
+import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator2;
+import eu.etaxonomy.cdm.api.service.MicroFormatQuantitativeDescriptionBuilder;
 import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 
 /**
@@ -263,7 +266,7 @@ public class SDDDocumentBuilder {
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
 		if (natlang) {
-			buildNaturalLanguageDescription2(baselement);
+			buildIdentificationKey(baselement);
 		}
 		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -302,94 +305,51 @@ public class SDDDocumentBuilder {
 			VersionableEntity featu = cdmSource.getFeatureData().get(i);
 			if (featu instanceof FeatureTree){
 				FeatureTree ft = (FeatureTree) featu;
-				if (ft.getLabel().contains("natural language")) {
+				if (ft.getLabel().contains("Main")) {
 					featureTree = ft;
 				}
 			}
 		}
+		System.out.println(featureTree==null);
+		System.out.println(description==null);
 		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
-		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, description);
-		for (Iterator<TextData> td = listTextData.iterator() ; td.hasNext();) {
-			TextData textD = td.next();
-			System.out.println(textD.getText(Language.DEFAULT()));
-		}
-
+//		MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
+//		natlgen.setQuantitativeDescriptionBuilder(micro);
+//		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, description);
+//		for (Iterator<TextData> td = listTextData.iterator() ; td.hasNext();) {
+//			TextData textD = td.next();
+//			System.out.println(textD.getText(Language.DEFAULT()));
+//		}
+		String descriptionString = natlgen.generateStringNaturalLanguageDescription(featureTree, description, Language.DEFAULT());
+		System.out.println(descriptionString);
 	}
-	
+
 	// TO BE DELETED SOON
-	public void buildNaturalLanguageDescription2(ElementImpl dataset) {
+	public void buildIdentificationKey(ElementImpl dataset) {
 		IdentificationKeyGenerator idkgen = new IdentificationKeyGenerator();
-		Set<TaxonDescription> descriptions = null;
-		Map<Integer,String> characters = new HashMap<Integer,String>();
+		Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
+		List<Feature> featureList = new ArrayList<Feature>();
 		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
 			Taxon taxon = (Taxon) tb.next();
-			descriptions = taxon.getDescriptions();
-			int i = 0;
-			for (TaxonDescription td : descriptions){
+			for (TaxonDescription td : taxon.getDescriptions()){
+				descriptions.add(td);
 				for(DescriptionElementBase deb : td.getElements()){
-					if (deb.isInstanceOf(CategoricalData.class)){
-						CategoricalData catdat = (CategoricalData)deb;
-						Feature feature = catdat.getFeature();
-						if (feature!=null){
-							String label = feature.getLabel();
-							if (label!=null){
-								if (!characters.containsKey(label)){
-									characters.put((Integer)(i++), label);
-								}
-							}
-						}
+				if (deb.isInstanceOf(CategoricalData.class)){
+					CategoricalData catdat = (CategoricalData)deb;
+					Feature feat = catdat.getFeature();
+					if (feat!=null && feat.getLabel()!=null && !featureList.contains(feat)){
+						featureList.add(catdat.getFeature());
 					}
 				}
-			}
-		}
-		List<List<List<String>>> taxonMatrix = new ArrayList<List<List<String>>>();
-		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
-			Taxon taxon = (Taxon) tb.next();
-			descriptions = taxon.getDescriptions();
-			for (TaxonDescription td : descriptions){
-				List<List<String>> taxonlist = new ArrayList<List<String>>();
-				for (String feature : characters.values()) {//element de la map) chercher si dedans sinon rentrer null
-					List<String> states = new ArrayList<String>();
-					taxonlist.add(states);
-					for(DescriptionElementBase deb : td.getElements()){
-						if (deb.isInstanceOf(CategoricalData.class)){
-							CategoricalData catdat = (CategoricalData)deb;
-							if (catdat.getFeature()!=null && catdat.getFeature().getLabel()!=null){
-								if (catdat.getFeature().getLabel().equals(feature)) {
-									for (StateData statedata : catdat.getStates()){
-										State state = statedata.getState();
-										if (state!=null){
-											String label = state.getLabel();
-											if (label!=null) {
-												states.add(label);
-											}
-										}
-									}
-								}
-							}
-						}
-					}
 				}
-				taxonMatrix.add(taxonlist);
 			}
-		}
-		List<Integer> featureList = new ArrayList<Integer>();
-		List<Integer> taxaList = new ArrayList<Integer>();
-		int i;
-		for (i=0;i<taxonMatrix.size();i++) {
-			Integer integ = new Integer(i);
-			taxaList.add(integ);
-		}
-		for (i=0;i<taxonMatrix.get(0).size();i++) {
-			Integer integ = new Integer(i);
-			featureList.add(integ);
 		}
 		idkgen.setFeatures(featureList);
-		idkgen.setTaxa(taxaList);
+		idkgen.setTaxa(descriptions);
 		logger.error("Start keys");
-		idkgen.makeandprint(taxonMatrix);
+		
+		idkgen.makeandprint();
 	}
-	
 	//	#############
 	//	# BUILD DOM	#
 	//	#############	
