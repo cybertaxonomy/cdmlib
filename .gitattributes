@@ -133,6 +133,7 @@ app-import/src/main/resources/images/protologue_links_palmae.xls -text
 app-import/src/main/resources/log4j.properties -text
 app-import/src/main/resources/sdd/Cicad.sdd11.xml -text
 app-import/src/main/resources/sdd/Cicad2.sdd11.xml -text
+app-import/src/main/resources/sdd/Cichorieae-DA-export-sdd.xml -text
 app-import/src/main/resources/sdd/Crepis-test.sdd -text
 app-import/src/main/resources/sdd/Erythroneura.sdd11.xml -text
 app-import/src/main/resources/sdd/LIAS_Main.sdd11.xml -text
