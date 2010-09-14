@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.database;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.hibernate.cache.CacheProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -98,7 +99,9 @@ public interface ICdmDataSource {
      */
 	public int executeUpdate (String sqlUpdate);
 
-	public NomenclaturalCode getNomenclaturalCode();	
+	public NomenclaturalCode getNomenclaturalCode();
+
+	public Object getSingleValue(String query) throws SQLException;	
 	
 //
 //	public void setFilePath(String filePath);

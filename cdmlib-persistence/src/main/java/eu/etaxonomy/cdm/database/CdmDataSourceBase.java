@@ -68,11 +68,32 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		return false;
 	}
 
+	@Override
+	public Object getSingleValue(String query) throws SQLException{
+		String strQuery = query == null? "(null)": query;  
+		ResultSet rs = executeQuery(query);
+		if (rs == null || rs.next() == false){
+			logger.warn("No record returned for query " +  strQuery);
+			return null;
+		}
+		if (rs.getMetaData().getColumnCount() != 1){
+			logger.warn("More than one column selected in query" +  strQuery);
+			return null;
+		}
+		Object object = rs.getObject(0);
+		if (rs.next()){
+			logger.warn("Multiple results for query " +  strQuery);
+			return null;
+		}
+		return object;
+	}
+	
 	
     /**
      * Executes a query and returns the ResultSet.
      * @return ResultSet for the query.
      */
+	@Override
 	public ResultSet executeQuery (String query) {
 
 		ResultSet rs;
@@ -94,6 +115,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
      * Executes an update
      * @return return code
      */
+	@Override
 	public int executeUpdate (String sqlUpdate) {
 		
 		int result;

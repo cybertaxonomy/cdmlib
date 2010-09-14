@@ -11,15 +11,16 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 
 /**
  * @author a.mueller
@@ -143,6 +144,61 @@ public class CdmMetaData extends CdmBase{
 	public void setValue(String value) {
 		this.value = value;
 	}
+
+//******************** Version comparator **********************************/
+	
+	public static class VersionComparator implements Comparator<String>{
+		Integer depth;
+		IProgressMonitor monitor;
+		
+		public VersionComparator(Integer depth, IProgressMonitor monitor){
+			this.depth = depth;
+			this.monitor = monitor;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		public int compare(String version1, String version2) {
+			int result = 0;
+			String[] version1Split = version1.split("\\.");
+			String[] version2Split = version2.split("\\.");
+			if (version1Split.length != version2Split.length){
+				String warning = "Versionstrings are not compatible: " + version1 + "<->" + version2;
+				RuntimeException exception =  new RuntimeException(warning);
+				if (monitor != null){
+					monitor.warning(warning, exception);
+				}
+				throw exception;
+			}
+			int length = (depth == null ||version1Split.length < depth) ? version1Split.length : depth;
+			for (int i = 0; i < length; i++){
+				Long version1Part = Long.valueOf(version1Split[i]);
+				Long version2Part = Long.valueOf(version2Split[i]);
+				int partCompare = version1Part.compareTo(version2Part);
+				if (partCompare != 0){
+					return partCompare;
+				}
+			}
+			return result;
+		}
+		
+	}
+
+	/**
+	 * Compares two version string. If version1 is higher than version2 a positive result is returned.
+	 * If both are equal 0 is returned, otherwise -1 is returned.
+	 * @see Comparator#compare(Object, Object)
+	 * @param version1
+	 * @param version2
+	 * @param depth
+	 * @param monitor
+	 * @return
+	 */
+	public static int compareVersion(String version1, String version2, Integer depth, IProgressMonitor monitor){
+		VersionComparator versionComparator = new VersionComparator(depth, monitor);
+		return versionComparator.compare(version1, version2);
+	}
 	
 //************************ STATIC SCHEMA VERSION METHODS ************************/
 	
@@ -172,6 +228,17 @@ public class CdmMetaData extends CdmBase{
 		return getVersion(schemaVersion, i);
 	}
 	
+	
+	public static boolean isVersionEqual(String databaseSchemaVersion, int index){
+		String currentSchemaVersionPrefix = getCurrentSchemaVersion(index);
+		String databaseSchemaVersionPrefix = getVersion(databaseSchemaVersion, index);
+		if (currentSchemaVersionPrefix.equals( databaseSchemaVersionPrefix)) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 //************************ STATIC TERMS VERSION METHODS ************************/
 	public static String getCurrentTermsVersion() {
 		return dbSchemaVersion;
@@ -199,6 +266,8 @@ public class CdmMetaData extends CdmBase{
 		return getVersion(termsVersion, i);
 	}
 	
+	
+
 	
 //************************ helping methods ************************/
 

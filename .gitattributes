@@ -2246,6 +2246,16 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatab
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2000DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CdmUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdaterStep.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_3_0.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdater_3_0.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoPropertyInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.java -text
