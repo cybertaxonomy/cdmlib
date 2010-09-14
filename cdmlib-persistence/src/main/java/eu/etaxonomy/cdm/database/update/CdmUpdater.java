@@ -46,7 +46,7 @@ public class CdmUpdater {
 	}
 	
 	private ITermUpdater getCurrentTermUpdater() {
-		return new TermUpdater_3_0();
+		return TermUpdater_3_0.NewInstance();
 	}
 
 	/**
@@ -64,6 +64,8 @@ public class CdmUpdater {
 	 */
 	public static void main(String[] args) {
 		logger.warn("main method not yet implemented");
+		CdmUpdater myUpdater = new CdmUpdater();
+//		myUpdater.updateToCurrentVersion(datasource, monitor);
 	}
 
 }

@@ -23,12 +23,12 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 10.09.2010
  *
  */
-public class SingleTermUpdater {
+public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	
-	public static final SingleTermUpdater NewInstance(UUID uuidTerm, String description,  String label, String abbrev, String dtype, Integer orderIndex, UUID uuidVocabulary){
-		return new SingleTermUpdater(uuidTerm, description, label, abbrev, dtype, orderIndex, uuidVocabulary);
+	public static final SingleTermUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, Integer orderIndex, UUID uuidVocabulary){
+		return new SingleTermUpdater(stepName, uuidTerm, description, label, abbrev, dtype, orderIndex, uuidVocabulary);
 		
 	}
 	
@@ -44,9 +44,8 @@ public class SingleTermUpdater {
 	
 	
 
-	private SingleTermUpdater(UUID uuidTerm, String description,  
-			String label, String abbrev, String dtype, Integer orderIndex, UUID uuidVocabulary) {
-		super();
+	private SingleTermUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, String dtype, Integer orderIndex, UUID uuidVocabulary) {
+		super(stepName);
 		this.abbrev = abbrev;
 //		this.datasource = datasource;
 //		this.monitor = monitor;
@@ -60,7 +59,7 @@ public class SingleTermUpdater {
 
 
 
-	public boolean insertNewTerm(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
 		
 		//vocabulary id
 		int vocId;

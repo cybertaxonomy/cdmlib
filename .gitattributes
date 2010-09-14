@@ -2255,6 +2255,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterS
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_3_0.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdater_3_0.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoPropertyInitializer.java -text
