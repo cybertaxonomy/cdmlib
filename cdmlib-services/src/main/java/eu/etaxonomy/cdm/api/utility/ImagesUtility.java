@@ -45,6 +45,7 @@ public class ImagesUtility {
 	 * 
 	 * @param element
 	 * @return
+	 * @deprecated not used by EDITor anymore
 	 */
 	@Deprecated
 	public static ImageFile getImage(DescriptionElementBase element) {
@@ -65,6 +66,10 @@ public class ImagesUtility {
 		}
 		return null;
 	}
+	
+	/**
+	 * @deprecated not used by EDITor anymore
+	 */
 	@Deprecated
 	public static List<ImageFile> getOrderedImages(DescriptionElementBase element){
 		List<ImageFile> imageList = new ArrayList<ImageFile>();
@@ -85,6 +90,7 @@ public class ImagesUtility {
 	 * Returns the first Representation with images. If none is found, a
 	 * Representation for storing images is created and returned.
 	 * 
+	 * @deprecated not used by EDITor anymore
 	 * @param element
 	 * @return
 	 */
@@ -111,6 +117,7 @@ public class ImagesUtility {
 	}
 	
 	/**
+	 * @deprecated not used by EDITor anymore
 	 * @param description
 	 * @return
 	 */
@@ -145,6 +152,7 @@ public class ImagesUtility {
 	}
 
 	/**
+	 * @deprecated not used by EDITor anymore
 	 * @param taxon
 	 * @param imageFile
 	 */
@@ -154,6 +162,12 @@ public class ImagesUtility {
 		imageGallery.addElement(createImageElement(imageFile));
 		
 	}
+	
+	/**
+	 * @deprecated not used by EDITor anymore
+	 * @param imageFile
+	 * @return
+	 */
 	@Deprecated
 	public static DescriptionElementBase createImageElement(ImageFile imageFile) {
 		
@@ -176,6 +190,7 @@ public class ImagesUtility {
 	 * Adds a new, empty image file to the end of a description element's
 	 * ordered list of images.
 	 * 
+	 * @deprecated not used by EDITor anymore
 	 * @param element
 	 * @return 
 	 */
@@ -187,6 +202,7 @@ public class ImagesUtility {
 	}
 	
 	/**
+	 * @deprecated not used by EDITor anymore
 	 * @param taxon
 	 * @param imageFile
 	 */
@@ -233,6 +249,7 @@ public class ImagesUtility {
 	public static final int DOWN = -1;
 	
 	/**
+	 * @deprecated not used by EDITor anymore
 	 * @param input
 	 * @param selectedImage
 	 * @param direction
@@ -255,6 +272,7 @@ public class ImagesUtility {
 	}
 
 	/**
+	 * @deprecated not used by EDITor anymore
 	 * @param input
 	 * @param selectedImage
 	 */
@@ -267,6 +285,7 @@ public class ImagesUtility {
 	 * Iterate through all taxon's image galleries until the descriptive element containing
 	 * the ImageFile is found.
 	 * 
+	 * @deprecated not used by EDITor anymore
 	 * @param image
 	 * @param taxon 
 	 * @return 
