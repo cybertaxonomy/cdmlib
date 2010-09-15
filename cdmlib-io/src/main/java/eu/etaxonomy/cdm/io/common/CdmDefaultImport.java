@@ -52,15 +52,4 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 		return startApplicationController(config, destination, omitTermLoading, createNew);
 	}
 	
-	
-	/**
-	 * For downwards compatibility only.
-	 * @return
-	 */
-	@Deprecated
-	public CdmApplicationController getCdmApp(){
-		return getCdmAppController();
-	}
-	
-	
 }
