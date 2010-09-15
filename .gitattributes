@@ -134,11 +134,11 @@ app-import/src/main/resources/log4j.properties -text
 app-import/src/main/resources/sdd/Cicad.sdd11.xml -text
 app-import/src/main/resources/sdd/Cicad2.sdd11.xml -text
 app-import/src/main/resources/sdd/Cichorieae-DA-export-sdd.xml -text
-app-import/src/main/resources/sdd/Crepis-test.sdd -text
 app-import/src/main/resources/sdd/Erythroneura.sdd11.xml -text
 app-import/src/main/resources/sdd/LIAS_Main.sdd11.xml -text
 app-import/src/main/resources/sdd/SDD-Test-Simple.xml -text
 app-import/src/main/resources/sdd/Val-Rosandra-FRIDA-Key.sdd11.xml -text
+app-import/src/main/resources/sdd/cichorieae-Xper2.xml -text
 app-import/src/main/resources/specimenABCD/CDMtabular9c04a474e2_23_09_08.xls -text
 app-import/src/main/resources/specimenABCD/multiABCD.xml -text
 app-import/src/main/resources/taxonX/palm_tc_100446.xml -text
