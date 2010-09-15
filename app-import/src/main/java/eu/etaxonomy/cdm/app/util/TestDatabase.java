@@ -318,14 +318,14 @@ public class TestDatabase {
 		//TODO: Adapt to taxonomic tree
 		taxTree = TaxonomicTree.NewInstance("TestTree");
 		
-		root1TNode = taxTree.addRoot(root1T, null, sec);
+		root1TNode = taxTree.addChildTaxon(root1T, sec, null, null);
 		child1Node = root1TNode.addChildTaxon(child1, null, null, null);
 		child2Node = root1TNode.addChildTaxon(child2, null, null, null);
 		child21Node = child2Node.addChildTaxon(child21, null, null, null);
 		
 		taxTree2 = TaxonomicTree.NewInstance("TestTree2");
 		
-		root2TNode = taxTree2.addRoot(root2T, null, sec);
+		root2TNode = taxTree2.addChildTaxon(root2T, sec, null, null);
 		root2TNode.addChildTaxon(child1, sec, "p.1010", syn11);
 		root2TNode.addChildTaxon(child2, null, null, null);
 		

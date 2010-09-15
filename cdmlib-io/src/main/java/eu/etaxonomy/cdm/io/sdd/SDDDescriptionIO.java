@@ -1684,7 +1684,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 						TaxonomicTree taxonomicTree =  TaxonomicTree.NewInstance(label);
 						importRepresentation(elTaxonHierarchy, sddNamespace, taxonomicTree, "", sddConfig);
 					
-						Set<TaxonNode> root = taxonomicTree.getRootNodes();
+						Set<TaxonNode> root = taxonomicTree.getChildNodes();
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 						
