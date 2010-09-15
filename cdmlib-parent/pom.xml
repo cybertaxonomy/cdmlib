@@ -19,11 +19,11 @@
 		<module>../cdmlib-persistence</module>
 		<module>../cdmlib-services</module>
 		<module>../cdmlib-ext</module>
+		<module>../cdmlib-io</module>
 		<module>../cdmlib-remote</module>
 		<module>../cdmlib-print</module>
 		<module>../cdmlib-remote-webapp</module>
 		<module>../cdm-server</module>
-		<module>../cdmlib-io</module>
 	</modules>
   
   <properties>
