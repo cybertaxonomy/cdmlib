@@ -388,9 +388,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 		return nodeSet;
 	}
 	
-//	protected void setChildNodes(List<TaxonNode> childNodes) {
-//		this.childNodes = childNodes;
-//	}
 	/**
 	 * The reference for the parent child relationship
 	 * 
@@ -414,6 +411,13 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 */
 	public String getMicroReference() {
 		return microReferenceForParentChildRelation;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setMicroReference(java.lang.String)
+	 */
+	public void setMicroReference(String microReference) {
+		this.microReferenceForParentChildRelation = microReference;
 	}
 	
 	/**
