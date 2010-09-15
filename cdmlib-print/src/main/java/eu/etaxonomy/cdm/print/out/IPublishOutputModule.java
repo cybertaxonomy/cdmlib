@@ -14,7 +14,7 @@ import java.io.File;
 
 import org.jdom.Document;
 
-import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 
 
 /**
@@ -43,6 +43,6 @@ public interface IPublishOutputModule {
 	 * @param notificationMediator the {@link NotificationMediator} to propagate progress of the publish process. Implementors
 	 * should allow this to be <code>null</code>.
 	 */
-	public void output(Document document, File targetFolder, NotificationMediator notificationMediator);
+	public void output(Document document, File targetFolder, IProgressMonitor progressMonitor);
 	
 }

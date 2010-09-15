@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.output.XMLOutputter;
 
-import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 /**
@@ -36,9 +36,9 @@ public class XMLOutputModule extends AbstractPublishOutputModule{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IPublishOutputModule#output(org.jdom.Document)
 	 */
-	public void output(Document document, File exportFolder, NotificationMediator notificationMediator) {
+	public void output(Document document, File exportFolder, IProgressMonitor progressMonitor) {
 		
-		super.output(document, exportFolder, notificationMediator);
+		super.output(document, exportFolder, progressMonitor);
 		
 		try {
 			String filePath = getFilePath(exportFolder);

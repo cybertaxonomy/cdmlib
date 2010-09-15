@@ -2536,11 +2536,9 @@ cdmlib-persistence/src/test/resources/unitils.properties -text
 cdmlib-print/build.properties -text
 cdmlib-print/pom.xml -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/AbstractXmlEntityFactory.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/IHarvestObserver.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/IXMLElements.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/IXMLEntityFactory.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/LocalXMLEntityFactory.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/NotificationMediator.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/PublishConfigurator.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/Publisher.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/RemoteXMLEntityFactory.java -text

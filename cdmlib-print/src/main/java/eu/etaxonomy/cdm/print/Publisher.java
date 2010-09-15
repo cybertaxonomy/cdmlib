@@ -37,7 +37,7 @@ public class Publisher {
 		}
 		
 		for(IPublishOutputModule outputModule : configurator.getOutputModules()){
-			outputModule.output(document, configurator.getExportFolder(), configurator.getNotificationMediator());
+			outputModule.output(document, configurator.getExportFolder(), configurator.getProgressMonitor());
 		}
 		
 	}

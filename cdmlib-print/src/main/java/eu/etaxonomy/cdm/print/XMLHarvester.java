@@ -21,6 +21,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
 
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
@@ -39,13 +40,16 @@ public class XMLHarvester {
 	
 	private List<SimplifiedFeatureNode> simplifiedFeatureTree;
 	
+	private IProgressMonitor progressMonitor;
+	
 	/**
 	 * 
 	 * @param configurator
 	 */
 	public XMLHarvester(PublishConfigurator configurator){
 		this.configurator = configurator;
-		factory = configurator.getFactory();
+		this.factory = configurator.getFactory();
+		this.progressMonitor = configurator.getProgressMonitor();
 		
 		Element featureTreeElement = factory.getFeatureTree(configurator.getFeatureTreeUuid());
 		createSimplifiedFeatureTree(featureTreeElement);
@@ -56,7 +60,7 @@ public class XMLHarvester {
 		
 		Element realRoot = factory.getFeatureNode(XMLHelper.getUuid(root));
 		
-		configurator.notifyObserver("Generating simplified Feature Tree.");
+		progressMonitor.subTask("Generating simplified Feature Tree.");
 		simplifiedFeatureTree = featureTreeRecursive(realRoot);
 		
 		logger.info("Simplified FeeatureTree created");
@@ -175,7 +179,7 @@ public class XMLHarvester {
 		// get the taxon from the generic service to have the uuid for further processing
 		Element taxonElement = factory.getTaxonForTaxonNode(taxonNodeElement);
 		
-		configurator.notifyObserver("Gathering data for taxon: " + XMLHelper.getTitleCache(taxonElement));
+		progressMonitor.subTask("Gathering data for taxon: " + XMLHelper.getTitleCache(taxonElement));
 		
 		// get initialized accepted taxon
 		// TODO right now we are getting that from the portal service but should consider to use the generic service
