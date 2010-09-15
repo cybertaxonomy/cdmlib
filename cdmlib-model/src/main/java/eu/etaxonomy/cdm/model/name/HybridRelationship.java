@@ -85,8 +85,10 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
     @ManyToOne(fetch=FetchType.LAZY)
 	private HybridRelationshipType type;
 
-	//for hibernate use only, don't use
-	@Deprecated
+	/**
+	 * @deprecated for hibernate use only, don't use
+	 */
+	@Deprecated 
 	private HybridRelationship(){
 		super();
 	}
