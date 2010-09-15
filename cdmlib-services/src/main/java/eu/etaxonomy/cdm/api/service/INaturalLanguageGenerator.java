@@ -26,5 +26,5 @@ public interface INaturalLanguageGenerator {
 	
 	public List<TextData> generatePreferredNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description, List<Language> languages);
 
-
+	public String generateStringNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description,	Language language);
 }

@@ -79,8 +79,8 @@ public class SDDSources {
 		return sourceUrl;
 	}
 	
-	public static String Crepis_test_local(){
-		URL url = new SDDSources().getClass().getResource("/sdd/Crepis-test.sdd");
+	public static String cichorieae_Xper2_local(){
+		URL url = new SDDSources().getClass().getResource("/sdd/cichorieae-Xper2.xml");
 		String sourceUrl = url.toString();
 		return sourceUrl;	
 	}

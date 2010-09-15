@@ -19,7 +19,6 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit, List<Language> languages){
 		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
 		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
-
 		// booleans indicating whether a kind of value is present or not and the float that will eventually hold the value
 		boolean average = false;
 		float averagevalue = new Float(0);
@@ -58,19 +57,24 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			if (measures.containsKey(StatisticalMeasure.AVERAGE())) {
 				average = true;
 				averagevalue = measures.get(StatisticalMeasure.AVERAGE());
-			} else if(measures.containsKey(StatisticalMeasure.STANDARD_DEVIATION())) {
+			}
+			if(measures.containsKey(StatisticalMeasure.STANDARD_DEVIATION())) {
 				sd = true;
 				sdvalue = measures.get(StatisticalMeasure.STANDARD_DEVIATION());
-			} else if (measures.containsKey(StatisticalMeasure.MIN())) {
+			}
+			if (measures.containsKey(StatisticalMeasure.MIN())) {
 				min = true;
 				minvalue = measures.get(StatisticalMeasure.MIN());
-			} else if (measures.containsKey(StatisticalMeasure.MAX())) {
+			}
+			if (measures.containsKey(StatisticalMeasure.MAX())) {
 				max = true;
 				maxvalue = measures.get(StatisticalMeasure.MAX());
-			} else if (measures.containsKey(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY())) {
+			}
+			if (measures.containsKey(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY())) {
 				lowerb = true;
 				lowerbvalue = measures.get(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
-			} else if (measures.containsKey(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY())) {
+			}
+			if (measures.containsKey(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY())) {
 				upperb = true;
 				upperbvalue = measures.get(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
 			}
@@ -90,7 +94,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			QuantitativeDescription.append(","); // merge with below ?
 		}
 		if ((lowerb||upperb)&&(min||max)) {
-			QuantitativeDescription.append(space + most_Frequently + space);
+			QuantitativeDescription.append(space + most_Frequently);
 		}
 		if (upperb && lowerb) {
 			QuantitativeDescription.append(space + from + space + lowerbvalue + space + to + space + upperbvalue + space + unit);
@@ -119,11 +123,19 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 	protected String buildFeature(Feature feature, boolean doItBetter){
 		if (feature==null || feature.getLabel()==null) return "";
 		else {
-			if (doItBetter) {
-				String betterString = StringUtils.substringBefore(feature.getLabel(), "<");
-				return StringUtils.removeEnd(betterString, " ");
+			if (doItBetter) { // remove the text between brackets
+				String str= feature.getLabel();
+				StringBuilder strbuilder = new StringBuilder();
+				do	{
+					strbuilder.append(StringUtils.substringBefore(str, "<"));
+				}
+				while (!(str=StringUtils.substringAfter(str, ">")).equals(""));
+				return StringUtils.substringBeforeLast(strbuilder.toString()," ");
 			}
-			else	return feature.getLabel();
+			else{
+				String betterString = StringUtils.replaceChars(feature.getLabel(), "<>",""); // only remove the brackets
+				return StringUtils.substringBeforeLast(betterString," ");
+			}
 		}
 	}
 

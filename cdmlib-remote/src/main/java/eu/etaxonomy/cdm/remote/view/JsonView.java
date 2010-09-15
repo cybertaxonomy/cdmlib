@@ -91,10 +91,11 @@ public class JsonView extends BaseView implements View{
 			isCollectionType = true;
 			jsonObj = JSONArray.fromObject(entity, jsonConfig);
 		}else if(entity instanceof String){
-			
 			jsonObj = JSONObject.fromObject("{\"String\":\""+entity.toString().replace("\"", "\\\"")+"\"}");
 		} else if(entity instanceof Integer){
-			jsonObj = JSONObject.fromObject("{\"Integer\":\""+((Integer)entity).intValue()+"\"}");
+			jsonObj = JSONObject.fromObject("{\"Integer\":"+((Integer)entity).intValue()+"}");
+		} else if(entity instanceof Boolean){
+			jsonObj = JSONObject.fromObject("{\"Boolean\":"+((Boolean)entity).toString()+"}");
 		} else {
 			jsonObj = JSONObject.fromObject(entity, jsonConfig);
 		}

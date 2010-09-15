@@ -66,6 +66,18 @@
                             <value>FeatureNode.children</value>
                             <value>FeatureNode.feature</value>
                             <value>TreeNode.data</value>
+                            
+                            <!-- CardinalityPropertyFilter should allow defining acceptions for abstract super classes : -->
+                            <!-- < value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> --> 
+                            
+                            <value>TextData.feature</value>
+                            <value>CategoricalData.feature</value>
+                            <value>CommonTaxonName.feature</value>
+                            <value>Distribution.feature</value>
+                            <value>IndividualsAssociation.feature</value>
+                            <value>QuantitativeData.feature</value>
+                            <value>TaxonInteraction.feature</value>
+                            <value>TextData.feature</value>
                         </set>
                       </property>
                     </bean>
@@ -223,7 +235,7 @@
 					<bean
 						class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
 						<property name="replaceRepresentations" value="true" />
-						<property name="excludes">
+							<property name="excludes">
                             <set value-type="java.lang.String">
                                 <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
                                 <value>partOf</value><!-- DefinedTermBase -->

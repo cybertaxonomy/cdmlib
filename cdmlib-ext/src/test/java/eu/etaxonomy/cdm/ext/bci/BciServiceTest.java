@@ -28,13 +28,13 @@ public class BciServiceTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		service1 = new BciServiceWrapper_Old();
+		service1 = new BciServiceWrapper();
 	}
 
 // ******************************* TESTS ******************************************************/
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.bci.BciServiceWrapper_Old#BciService(java.net.URL)}.
+	 * Test method for {@link eu.etaxonomy.cdm.ext.bci.BciServiceWrapper#BciService(java.net.URL)}.
 	 */
 	@Test
 	public void testBciService() {

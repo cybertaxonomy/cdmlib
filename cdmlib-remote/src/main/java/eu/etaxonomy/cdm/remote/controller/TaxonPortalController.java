@@ -462,8 +462,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	public List<NameRelationship> doGetToNameRelations(@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameRelations()" + request.getServletPath());
-		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-		List<NameRelationship> list = nameService.listToNameRelationships(taxon.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
+		List<NameRelationship> list = nameService.listToNameRelationships(taxonBase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;
 	}
 	

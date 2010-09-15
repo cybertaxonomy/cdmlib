@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.description;
 
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -22,6 +23,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
  */
 public interface IFeatureTreeDao extends IIdentifiableDao<FeatureTree> {
 	public List<FeatureTree> list();
+	
+	public UUID DefaultFeatureTreeUuid = UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c");
 
 	public void loadNodes(FeatureNode root, List<String> nodePaths);
 }

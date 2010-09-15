@@ -71,7 +71,7 @@ public class TextDataBeanProcessor extends AbstractCdmBeanProcessor<TextData> {
 				json.element("multilanguageText_L10n", languageString, jsonConfig);
 			}
 			if(!replaceMultilanguageText){
-				json.element("multilanguageText", textdata.getMultilanguageText(), jsonConfig);
+				json.element("multilanguageText", textdata.getMultilanguageText().values(), jsonConfig);
 			}
 		}
 		return json;

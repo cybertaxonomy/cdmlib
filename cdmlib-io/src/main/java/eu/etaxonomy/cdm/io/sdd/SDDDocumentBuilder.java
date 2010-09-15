@@ -258,7 +258,7 @@ public class SDDDocumentBuilder {
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
 		if (natlang) {
-			buildIdentificationKey(baselement);
+			buildNaturalLanguageDescription(baselement);
 		}
 		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -302,8 +302,6 @@ public class SDDDocumentBuilder {
 				}
 			}
 		}
-		System.out.println(featureTree==null);
-		System.out.println(description==null);
 		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
 //		MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
 //		natlgen.setQuantitativeDescriptionBuilder(micro);

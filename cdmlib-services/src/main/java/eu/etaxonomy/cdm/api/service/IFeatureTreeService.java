@@ -19,8 +19,6 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureTree> {
 	
-	public UUID DefaultFeatureTreeUuid = UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c");
-	
 	public List<FeatureNode> getFeatureNodesAll();
 	
 	/**
