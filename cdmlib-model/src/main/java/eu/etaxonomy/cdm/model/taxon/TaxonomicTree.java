@@ -172,7 +172,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		newRoot.setParent(null);
 		newRoot.setTaxonomicTree(this);
 		newRoot.setTaxon(taxon);
-		newRoot.setReferenceForParentChildRelation(reference);
+		newRoot.setReference(reference);
 		newRoot.setSynonymToBeUsed(synonymUsed);
 		return newRoot;
 	}

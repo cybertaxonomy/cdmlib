@@ -143,37 +143,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	
 	
 //************************ METHODS **************************/
-	/**
-	 * @deprecated developers should be forced to pass in null values if they choose so.
-	 */
-	@Deprecated
-	public TaxonNode addChild(Taxon taxon){
-		return addChild(taxon, null, null, null);
-	}
 	
-	/**
-	 * @deprecated developers should be forced to pass in null values if they choose so.
-	 */
-	@Deprecated
-	public TaxonNode addChild(Taxon taxon, ReferenceBase ref, String microReference){
-		return addChild(taxon, ref, microReference, null);
-	}	
-	
-	/**
-	 * 
-	 * @param taxon
-	 * @param ref
-	 * @param microReference
-	 * @param synonymUsed
-	 * @return
-	 * @deprecated use addChildTaxon() instead
-	 */
-	@Deprecated
-	public TaxonNode addChild(Taxon taxon, ReferenceBase ref, String microReference, Synonym synonymUsed){
-		return addChildTaxon(taxon, ref, microReference, synonymUsed);
-	}
-	
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
 	 */
@@ -183,28 +153,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 		}
 		
 		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
-	}
-	
-	/**
-	 * 
-	 * @param childNode
-	 * @param ref
-	 * @param microReference
-	 * @param synonymUsed
-	 * 
-	 * @deprecated use addChildNode instead
-	 */
-	@Deprecated 
-	protected void addChildNote(TaxonNode childNode, ReferenceBase ref, String microReference, Synonym synonymUsed){
-		if (! childNode.getTaxonomicTree().equals(this.getTaxonomicTree())){
-			throw new IllegalArgumentException("addChildNote(): both nodes must be part of the same view");
-		}
-		childNode.setParent(this);
-		childNodes.add(childNode);
-		this.countChildren++;
-		childNode.setReferenceForParentChildRelation(ref);
-		childNode.setMicroReferenceForParentChildRelation(microReference);
-		childNode.setSynonymToBeUsed(synonymUsed);
 	}
 	
 	/**
@@ -245,19 +193,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 			}
 		}
 	}
-
-	/**
-	 * This removes recursively all child nodes from this node and from this taxonomic view.
-	 * TODO remove orphan nodes completely 
-	 * 
-	 * @param node
-	 * @return
-	 * @deprecated use deleteChildNode() instead
-	 */
-	@Deprecated
-	public boolean removeChild(TaxonNode node){
-		return deleteChildNode(node);
-	}	
 	
 
 	/* (non-Javadoc)
@@ -473,19 +408,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	}
 	
 	/**
-	 * @return
-	 * @deprecated use getReference instead
-	 */
-	@Deprecated 
-	public ReferenceBase getReferenceForParentChildRelation() {
-		return getReference();
-	}
-	@Deprecated
-	public void setReferenceForParentChildRelation(ReferenceBase referenceForParentChildRelation) {
-		setReference(referenceForParentChildRelation);
-	}
-	
-	/**
 	 * 
 	 * 
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getMicroReference()
@@ -493,25 +415,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	public String getMicroReference() {
 		return microReferenceForParentChildRelation;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setMicroReference(java.lang.String)
-	 */
-	public void setMicroReference(String microReference) {
-		this.microReferenceForParentChildRelation = microReference;
-	}
-	
-	@Deprecated
-	public String getMicroReferenceForParentChildRelation() {
-		return getMicroReference();
-	}
-	
-	@Deprecated
-	public void setMicroReferenceForParentChildRelation(
-			String microReferenceForParentChildRelation) {
-		setMicroReference(microReferenceForParentChildRelation);
-	}
-
 	
 	/**
 	 * @return the count of children this taxon node has
@@ -537,16 +440,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	}
 	public void setSynonymToBeUsed(Synonym synonymToBeUsed) {
 		this.synonymToBeUsed = synonymToBeUsed;
-	}
-	
-	/**
-	 * Whether this TaxonNode is a root node
-	 * @return
-	 * @deprecated use isTopmostNode() instead
-	 */
-	@Transient
-	public boolean isRootNode(){
-		return parent == null;
 	}
 	
 	/**
