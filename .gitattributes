@@ -2410,6 +2410,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatab
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2000DatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseTypeTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/update/CdmUpdaterTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImplTest.java -text
