@@ -88,7 +88,7 @@ public class FeatureNode extends VersionableEntity {
     
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
-//    @IndexColumn(name="sortIndex", base = 0)
+    @IndexColumn(name="sortIndex", base = 0)
 	@OneToMany(fetch = FetchType.LAZY,mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
