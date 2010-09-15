@@ -51,15 +51,6 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IOValidator#validate(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
-	@Deprecated  //use validate(state, import) instead
-	public boolean validate(BerlinModelImportState state) {
-		logger.warn("BerlinModelReferenceImport uses wrong validation method");
-		return false;
-	}
-	
 	
 	//******************************** CHECK *************************************************
 		
@@ -502,6 +493,16 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 				result = false;
 			}
 			return result;
+		}
+
+
+		/* (non-Javadoc)
+		 * @see eu.etaxonomy.cdm.io.common.IOValidator#validate(eu.etaxonomy.cdm.io.common.IoStateBase)
+		 */
+		@Deprecated  //use validate(state, import) instead
+		public boolean validate(BerlinModelImportState state) {
+			logger.warn("BerlinModelReferenceImport uses wrong validation method");
+			return false;
 		}
 
 
