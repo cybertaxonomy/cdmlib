@@ -11,7 +11,7 @@ import org.jdom.Document;
 import org.jdom.transform.XSLTransformException;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
-import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.print.Transformator;
 import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
@@ -49,9 +49,9 @@ public class OdfOutputModule extends AbstractPublishOutputModule {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.out.IPublishOutputModule#output(org.jdom.Document, java.io.File)
 	 */
-	public void output(Document document, File exportFolder, NotificationMediator notificationMediator) {
+	public void output(Document document, File exportFolder, IProgressMonitor progressMonitor) {
 		
-		super.output(document, exportFolder, notificationMediator);
+		super.output(document, exportFolder, progressMonitor);
 		
 		Document transformedDocument;
 		String filePath = getFilePath(exportFolder);

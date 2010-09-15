@@ -44,6 +44,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 			logger.warn("No invoke for " + ioName + " (ignored)");
 			return true;
 		}else{
+			state.getConfig().updateProgress("Invoking " + ioName);
 			return doInvoke(state);
 		}
 	}

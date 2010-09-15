@@ -73,7 +73,8 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 //		Map<String, MapWrapper<? extends CdmBase>> stores) {
 	
 		SDDExportConfigurator sddExpConfig = state.getConfig();
-		String dbname = sddExpConfig.getSource().getName();
+		
+		String dbname = sddExpConfig.getSource() != null ? sddExpConfig.getSource().getName() : "unknown";
     	String fileName = sddExpConfig.getDestinationNameString();
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		logger.debug("DbSchemaValidation = " + sddExpConfig.getDbSchemaValidation());

@@ -7,6 +7,7 @@
 package eu.etaxonomy.cdm.io.common;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 
@@ -61,5 +62,21 @@ public interface IIoConfigurator {
 	 */
 	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation);
 
+	/**
+	 * 
+	 * @param monitor
+	 */
+	public void setProgressMonitor(IProgressMonitor monitor);
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public IProgressMonitor getProgressMonitor();
+	
+	/**
+	 * 
+	 * @param message
+	 */
+	public void updateProgress(String message);
 }

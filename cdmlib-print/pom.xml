@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>cdmlib-parent</artifactId>
 		<groupId>eu.etaxonomy</groupId>
-		<version>1.0</version>
+		<version>2.4</version>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
 	
 	<packaging>jar</packaging>
 		
-	<version>1.0</version>
+	<version>2.4</version>
 	
 	<name>CDM Print</name>
 	
@@ -45,6 +45,11 @@
 			<groupId>org.odftoolkit</groupId>
 			<artifactId>odfdom</artifactId>
 			<version>0.8.6</version>
+		</dependency>
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
@@ -61,7 +62,7 @@ public class PublishConfigurator implements Serializable{
 
 	private boolean remote;
 
-	private NotificationMediator notificationMediator;
+	private IProgressMonitor progressMonitor;
 
 	/**
 	 * Hidden default constructor
@@ -292,29 +293,6 @@ public class PublishConfigurator implements Serializable{
 		return count;
 	}
 	
-	/**
-	 * Adds an {@link IHarvestObserver} to the configurators list of <code>IHarvestObservers</code>.
-	 * 
-	 * @see {@link IHarvestObserver}
-	 * @param observer
-	 */
-	public void addObserver(IHarvestObserver observer) {
-		getNotificationMediator().addObserver(observer);
-	}
-	
-	/**
-	 * Removes an {@link IHarvestObserver} from the configurators list of <code>IHarvestObservers</code>.
-	 * 
-	 * @see {@link IHarvestObserver}
-	 * @param observer
-	 */
-	public void removeObserver(IHarvestObserver observer) {
-		getNotificationMediator().removeObserver(observer);
-	}
-	
-	public void notifyObserver(String message){
-		getNotificationMediator().notifyObserver(message);
-	}
 
 	/**
 	 * Whether taxonomically included taxa for the {@linkplain #getSelectedTaxonNodeElements() selected taxon nodes}
@@ -370,23 +348,6 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	/**
-	 * @return the notificationMediator
-	 */
-	public NotificationMediator getNotificationMediator() {
-		if(notificationMediator == null){
-			notificationMediator = new NotificationMediator();
-		}
-		return notificationMediator;
-	}
-	
-	/**
-	 * @param notificationMediator the notificationMediator to set
-	 */
-	public void setNotificationMediator(NotificationMediator notificationMediator) {
-		this.notificationMediator = notificationMediator;
-	}
-
-	/**
 	 * The feature tree configures which features and in which order and nesting will be exported 
 	 * by the application
 	 * 
@@ -402,6 +363,14 @@ public class PublishConfigurator implements Serializable{
 	 */
 	public void setFeatureTree(UUID featureTreeUuid) {
 		this.featureTreeUuid = featureTreeUuid;
+	}
+
+	public void setProgressMonitor(IProgressMonitor progressMonitor) {
+		this.progressMonitor = progressMonitor;
+	}
+
+	public IProgressMonitor getProgressMonitor() {
+		return progressMonitor;
 	}
 
 

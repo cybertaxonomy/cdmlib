@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.transform.JDOMSource;
 
-import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 /**
@@ -50,9 +50,9 @@ public class PdfOutputModule extends AbstractPublishOutputModule {
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.out.IPublishOutputModule#output(org.jdom.Document, java.io.File, eu.etaxonomy.printpublisher.NotificationMediator)
 	 */
-	public void output(Document document, File exportFolder, NotificationMediator notificationMediator) {
+	public void output(Document document, File exportFolder, IProgressMonitor progressMonitor) {
 		
-		super.output(document, exportFolder, notificationMediator);
+		super.output(document, exportFolder, progressMonitor);
 		
 		try{
 		

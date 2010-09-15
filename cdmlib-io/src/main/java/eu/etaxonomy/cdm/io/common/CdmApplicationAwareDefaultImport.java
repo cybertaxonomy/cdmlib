@@ -19,7 +19,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -145,7 +144,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		}
 				
 		ReferenceBase sourceReference = config.getSourceReference();
-		logger.info("Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'");
+		String message = "Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'";
+		logger.info(message);
+		config.updateProgress(message);
 		
 		ImportStateBase state = config.getNewState();
 		state.initialize(config);
@@ -189,10 +190,11 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 //			
 //		}
 		
-		
-		logger.info("End import from source '" + config.getSourceNameString() 
-				+ "' to destination '" + config.getDestinationNameString() + "'"+
-				(result? "(successful)":"(with errors)")) ;
+		message = "End import from source '" + config.getSourceNameString() 
+								+ "' to destination '" + config.getDestinationNameString() + "'"+
+								(result? "(successful)":"(with errors)");
+		logger.info(message) ;
+		config.updateProgress(message);
 		return result;
 	}
 	

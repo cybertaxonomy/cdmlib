@@ -15,7 +15,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
-import eu.etaxonomy.cdm.print.NotificationMediator;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 /**
@@ -36,9 +36,9 @@ public class TaxPubOutputModule extends AbstractPublishOutputModule {
 	
 	@Override
 	public void output(Document document, File exportFolder,
-			NotificationMediator notificationMediator) {
-		super.output(document, exportFolder, notificationMediator);
+			IProgressMonitor progressMonitor) {
+		super.output(document, exportFolder, progressMonitor);
 		
-		notificationMediator.notifyObserver("Not implemented yet");
+		progressMonitor.subTask("Not implemented yet");
 	}
 }
