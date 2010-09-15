@@ -60,10 +60,16 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 
 
 	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
+ 		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
+		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
+		if (n != 0){
+			monitor.warning("Term already exists: " + label + "(" + uuidTerm + ")");
+			return true;
+		}
 		
 		//vocabulary id
 		int vocId;
-		String sqlVocId = " SELECT id FROM TermVocabulary WHERE uuid = " + uuidVocabulary;
+		String sqlVocId = " SELECT id FROM TermVocabulary WHERE uuid = '" + uuidVocabulary + "'";
 		ResultSet rs = datasource.executeQuery(sqlVocId);
 		if (rs.next()){
 			vocId = rs.getInt("id");
@@ -85,13 +91,13 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		}
 		
 		String id = Integer.toString(termId);
-		String created = "'2010-09-01 10:15:00'";
+		String created = "2010-09-01 10:15:00";
 		String defaultColor = "null";
 		String protectedTitleCache = "b'0'";
 		String titleCache = label != null ? label : (abbrev != null ? abbrev : description );
 		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
 				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
-		datasource.executeQuery(sqlInsertTerm);
+		datasource.executeUpdate(sqlInsertTerm);
 		
 //
 //		INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id) 
@@ -127,7 +133,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, abbreviatedlabel, label, language_id) " +
 				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "',  '" + abbrev +  "', " + langId + ")"; 
 		
-		datasource.executeQuery(sqlInsertRepresentation);
+		datasource.executeUpdate(sqlInsertRepresentation);
 		
 		
 //		-- representation

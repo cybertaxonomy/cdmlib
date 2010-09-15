@@ -53,7 +53,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
 	 */
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor){
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
 		boolean result = true;
 		
 		String datasourceSchemaVersion;
@@ -92,7 +92,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				monitor.warning("Exception occurred while updating schema", e);
-				result = false;
+				throw e;
 			}
 		}
 		return result;

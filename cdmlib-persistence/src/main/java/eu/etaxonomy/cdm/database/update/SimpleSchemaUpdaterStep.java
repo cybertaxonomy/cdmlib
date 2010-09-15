@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -27,8 +28,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SimpleSchemaUpdaterStep.class);
 	
-	private String stepName;
-	private Map<DatabaseTypeEnum, String> queryMap;
+	private Map<DatabaseTypeEnum, String> queryMap = new HashMap<DatabaseTypeEnum, String>();
 	
 	
 // *************************** FACTORY ********************************/
@@ -38,7 +38,6 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase{
 	}
 	
 //************************ CONSTRUCTOR ***********************************/
-	
 	private SimpleSchemaUpdaterStep(String stepName, String defaultQuery){
 		super(stepName);
 		queryMap.put(null, defaultQuery);
@@ -57,5 +56,13 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase{
 		datasource.executeUpdate(query);
 		return true;
 	}
+
+//********************************* DELEGATES *********************************/
+	
+	public String put(DatabaseTypeEnum key, String value) {
+		return queryMap.put(key, value);
+	}
+
+
 	
 }

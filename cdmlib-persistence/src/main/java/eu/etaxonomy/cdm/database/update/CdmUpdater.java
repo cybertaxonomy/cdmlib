@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -28,6 +29,10 @@ public class CdmUpdater {
 	 */
 	public boolean updateToCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor){
 		boolean result = true;
+		if (monitor == null){
+			monitor = new DefaultProgressMonitor();
+		}
+		
 		ISchemaUpdater currentSchemaUpdater = getCurrentSchemaUpdater();
 		ITermUpdater currentTermUpdater = getCurrentTermUpdater();
 		
@@ -37,10 +42,12 @@ public class CdmUpdater {
 		String taskName = "Update to schema version ... and to term version ... "; //+ currentSchemaUpdater.getVersion();
 		monitor.beginTask(taskName, steps);
 		
-		result &= currentSchemaUpdater.invoke(datasource, monitor);
-		
-		result &= currentTermUpdater.invoke(datasource, monitor);
-		
+		try {
+			result &= currentSchemaUpdater.invoke(datasource, monitor);
+			result &= currentTermUpdater.invoke(datasource, monitor);
+		} catch (Exception e) {
+				monitor.warning("Stopped schema updater");
+		}
 		
 		return result;
 	}

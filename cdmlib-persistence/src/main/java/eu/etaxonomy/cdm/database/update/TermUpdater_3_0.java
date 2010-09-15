@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
  *
  */
 public class TermUpdater_3_0 extends TermUpdaterBase implements ITermUpdater {
-
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdater_3_0.class);
 	

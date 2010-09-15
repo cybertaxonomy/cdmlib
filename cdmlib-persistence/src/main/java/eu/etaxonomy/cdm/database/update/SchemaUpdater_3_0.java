@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+
 /**
  * @author a.mueller
  * @date 10.09.2010
@@ -60,9 +62,30 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 	@Override
 	protected List<SimpleSchemaUpdaterStep> getUpdaterList() {
 		List<SimpleSchemaUpdaterStep> stepList = new ArrayList<SimpleSchemaUpdaterStep>();
+		String updateQuery;
+		String stepName;
 		
-		String updateQuery = "UPDATE TaxonNameBase SET titleCache = 'XXX' WHERE titleCache = 'SDFSFSDF'";
-		stepList.add(SimpleSchemaUpdaterStep.NewInstance("Update title cache", updateQuery));
+		//sortIndex on children in FeatureNode
+		stepName = "Add sort index on FeatureNode children";
+		updateQuery = "ALTER TABLE featurenode ADD COLUMN sortindex int";
+		SimpleSchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE featurenode ADD sortindex int");
+		stepList.add(step);
+
+		//sortIndex on children in FeatureNode
+		stepName = "Add sort index on FeatureNode children";
+		updateQuery = "ALTER TABLE featurenode_aud ADD COLUMN sortindex int";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE featurenode_aud ADD sortindex int");
+		stepList.add(step);
+		
+		//update sortindex on FeatureNode children
+		stepName = "Update sort index on FeatureNode children";
+		updateQuery = "UPDATE featurenode SET sortindex = id WHERE sortindex is null";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+		stepList.add(step);
+		
+		
 		
 		return stepList;
 	}

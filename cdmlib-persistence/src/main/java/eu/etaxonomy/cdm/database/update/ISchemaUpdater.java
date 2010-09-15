@@ -10,8 +10,9 @@ public interface ISchemaUpdater {
 	 * @param datasource the datasource
 	 * @param monitor the progress monitor and event listener
 	 * @return
+	 * @throws Exception 
 	 */
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor);
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;
 	
 	/**
 	 * Returns the previous CDM schema updater
