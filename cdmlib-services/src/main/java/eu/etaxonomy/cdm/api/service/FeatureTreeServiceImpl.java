@@ -110,23 +110,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 	 */
 	@Override
 	public FeatureTree load(UUID uuid, List<String> propertyPaths) {
-		if (uuid.equals(DefaultFeatureTreeUuid) || dao.count() == 0){
-			return createDefaultFeatureTree();
-		}
 		return super.load(uuid, propertyPaths);
 	}
 	
-	/**
-	 * 
-	 */
-	private FeatureTree createDefaultFeatureTree() {
-		
-		TermVocabulary featureVocabulary = vocabularyService.getVocabulary(VocabularyEnum.Feature);
-		
-		List<Feature> featureList = new ArrayList<Feature>(featureVocabulary.getTerms());
-				
-		FeatureTree featureTree = FeatureTree.NewInstance(featureList);
-		featureTree.setUuid(DefaultFeatureTreeUuid);
-		return featureTree;
-	}
 }

@@ -32,10 +32,13 @@ import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -109,6 +112,10 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 			HttpServletResponse response) throws IOException {
 		logger.info("getAnnotations() - " + request.getServletPath());
 		DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
+		if(annotatableEntity == null){
+			HttpStatusMessage.UUID_INVALID.send(response);
+			// method will exit here
+		}
 		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
@@ -151,7 +158,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 			// will terminate thread
 		}
 		
-		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
+		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, null);
 		if(featureTree == null){
 			HttpStatusMessage.UUID_NOT_FOUND.send(response);
 			// will terminate thread
@@ -163,7 +170,11 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 				languages,
 				", ");
 		
-		mv.addObject(naturalLanguageDescription);
+		TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
+		textData.putText(naturalLanguageDescription, Language.DEFAULT());
+
+		mv.addObject(textData);
+		
 		return mv;
 	}
 	

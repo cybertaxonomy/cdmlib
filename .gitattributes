@@ -3153,7 +3153,6 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/empty-default-datasourc
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsonConfigurations.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text

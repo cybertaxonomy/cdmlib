@@ -119,19 +119,37 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	}
 	
 	
+	/**
+	 * @param featureTree
+	 * @param description
+	 * @param language
+	 * @return
+	 */
 	public String generateStringNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description,	Language language) {
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language);
 		return buildString(featureTree.getRootChildren(), featureTree.getRoot(), description, languages).toString();
 	}
 	
-	/** recursive function that goes through a tree containing the order in which the description has to be generated,
-	 *  if an element of this tree matches one of the TaxonDescription, a DescriptionBuilder is called which returns a TextData with the corresponding description.
+	/**
+	 * recursive function that goes through a tree containing the order in which
+	 * the description has to be generated, if an element of this tree matches
+	 * one of the TaxonDescription, a DescriptionBuilder is called which returns
+	 * a TextData with the corresponding description.
+	 * <p>
+	 * Also applies the folowing formatting rules which are special for data coming from Delta, DeltaAccess, DiversityDescriptions:
+	 * 
+	 * <ul>
+	 * <li><b>(1.A) if( doSkipTextInBrackets) : </b>Label Text in brackets is always skipped the remaining text string I the TEXT_TO_DISPLAY. The text may contain multiple substrings tagged with the brackets. A tagged substring may also occur in the middle of the whole string.</li>
+	 * <li><b>(1.B) else : </b>just remove the brackets
+	 * <li><b>(2) : </b> If the TEXT_TO_DISPLAY is equal the TEXT_TO_DISPLAY of the previous element output of this text is suppressed.</li>
+	 * </ul>
 	 * 
 	 * @param children
 	 * @param parent
 	 * @param description
-	 * @param language The language in which the description has to be written
+	 * @param language
+	 *            The language in which the description has to be written
 	 * @return
 	 */
 	private StringBuilder buildString(List<FeatureNode> children, FeatureNode parent, TaxonDescription description, List<Language> languages) {
