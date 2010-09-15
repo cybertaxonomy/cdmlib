@@ -9,7 +9,7 @@ package eu.etaxonomy.cdm.common;
  * @author n.hoffmann
  *
  */
-public class ProgressMonitorBase implements IProgressMonitor {
+public class NullProgressMonitor implements IProgressMonitor {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.common.IProgressMonitor#beginTask(java.lang.String, int)
