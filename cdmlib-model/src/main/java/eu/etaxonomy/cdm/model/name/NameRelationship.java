@@ -85,7 +85,9 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
     @ManyToOne(fetch = FetchType.LAZY)
 	private NameRelationshipType type;
 
-	//for hibernate, don't use
+    /**
+	 * @deprecated for hibernate use only, don't use
+	 */
 	@Deprecated
 	private NameRelationship(){
 		super();
