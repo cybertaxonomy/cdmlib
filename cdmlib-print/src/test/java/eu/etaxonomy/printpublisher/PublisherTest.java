@@ -12,10 +12,10 @@ package eu.etaxonomy.printpublisher;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.print.PublishConfigurator;
@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
  * @created Apr 9, 2010
  * @version 1.0
  */
+@Ignore // Implement this test in a more generic way
 public class PublisherTest {
 	private static final Logger logger = Logger.getLogger(PublisherTest.class);
 
