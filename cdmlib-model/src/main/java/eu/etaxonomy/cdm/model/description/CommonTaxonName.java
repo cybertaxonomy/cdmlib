@@ -105,7 +105,7 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
 	
 	
 	/**
-	 * Deprecated because {@link Feature feature} should always be {@link Feature#COMMON_NAME() COMMON_NAME}
+	 * @deprecated Deprecated because {@link Feature feature} should always be {@link Feature#COMMON_NAME() COMMON_NAME}
 	 * for all common name instances.
 	*/
 	/* (non-Javadoc)
