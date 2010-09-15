@@ -167,7 +167,11 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 		return media;
 	}
 
-	@Deprecated //use only for bidirectional and hibernate
+	/**
+	 * @deprecated for internal (bidirectional) use only
+	 * @param media
+	 */
+	@Deprecated
 	protected void setMedia(Media media) {
 		this.media = media;
 	}
