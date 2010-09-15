@@ -9,6 +9,7 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 
@@ -49,6 +50,8 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	//etc
 	private boolean doMarker = true;
 	private boolean doUser = true;
+
+	private IProgressMonitor progressMonitor;
 
 	
 	/* (non-Javadoc)
@@ -239,5 +242,22 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	 */
 	public void setUseTaxonomicTree(boolean useTaxonomicTree) {
 		this.useTaxonomicTree = useTaxonomicTree;
+	}
+	
+	@Override
+	public void setProgressMonitor(IProgressMonitor monitor) {
+		this.progressMonitor = monitor;
+	}
+	
+	public IProgressMonitor getProgressMonitor(){
+		return this.progressMonitor;
+	}
+	
+	@Override
+	public void updateProgress(String message) {
+		if(progressMonitor != null){
+			progressMonitor.worked(1);
+			progressMonitor.subTask(message);
+		}
 	}
 }

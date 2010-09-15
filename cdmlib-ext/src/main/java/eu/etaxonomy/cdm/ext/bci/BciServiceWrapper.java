@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpException;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -29,25 +34,13 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
+import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 /**
@@ -58,8 +51,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  *
  */
 @Component
-public class BciService implements IBciService{
-	private static final Logger logger = Logger.getLogger(BciService.class);
+public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements IBciServiceWrapper{
+	private static final Logger logger = Logger.getLogger(BciServiceWrapper.class);
 	
 	 private enum ServiceType{
 		 AUTHOR,
@@ -91,10 +84,46 @@ public class BciService implements IBciService{
 	 * @return
 	 */
 	public List<Collection> getCollectionsByCode(String code, ICdmApplicationConfiguration appConfig){
+		
+		SchemaAdapterBase<Collection> schemaAdapter = schemaAdapterMap.get("recordSchema");
+		if(schemaAdapter == null){
+			logger.error("No SchemaAdapter found for " + "recordSchema");
+		}
+		
+		String SruOperation = "searchRetrieve";
+		
+		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		pairs.add(new BasicNameValuePair("code", SruOperation));
+		
+		Map<String, String> requestHeaders = new HashMap<String, String>();
+		requestHeaders.put("Accept-Charset", "UTF-8");
+		
+		try {
+			URI requestUri = createUri(null, pairs);
+			
+			
+			InputStream stream = executeHttpGet(requestUri, requestHeaders);
+			return schemaAdapter.getCmdEntities(stream);
+			
+		} catch (IOException e) { 
+			// thrown by doHttpGet
+			logger.error(e);
+		} catch (URISyntaxException e) {
+			// thrown by createUri
+			logger.error(e);
+		} catch (HttpException e) {
+			// thrown by executeHttpGet
+			logger.error(e);
+		} 
+		
+//		return null;
+	
+		
+		
 		code = normalizeParameter(code);
 		String request = code;
 		
-		return (List)queryService(request, appConfig, getServiceUrl(IBciService.LOOKUP_CODE_REST), ServiceType.AUTHOR);
+		return (List)queryService(request, appConfig, getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST), ServiceType.AUTHOR);
 	}
 	       
 

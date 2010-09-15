@@ -92,7 +92,9 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 		String sourceName = config.getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null){
-			logger.info("nb units to insert: "+unitsList.getLength());
+			String message = "nb units to insert: "+unitsList.getLength();
+			logger.info(message);
+			config.updateProgress(message);
 			
 			Abcd206DataHolder dataHolder = new Abcd206DataHolder();
 			
@@ -102,7 +104,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 				
 				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
 				compareABCDtoCDM(sourceName, dataHolder.knownABCDelements, dataHolder);
-				
+								
 				//reset the ABCD elements added in CDM
 				//knownABCDelements = new ArrayList<String>();
 				dataHolder.allABCDelements = new HashMap<String,String>();
@@ -121,6 +123,8 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 
 		TransactionStatus tx = startTransaction();
 		try {
+			config.updateProgress("Importing data for unit: " + dataHolder.unitID);
+			
 //			ReferenceBase sec = Database.NewInstance();
 //			sec.setTitleCache("XML DATA");
 			ReferenceBase sec = config.getTaxonReference();
@@ -312,7 +316,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 	private void setUnitPropertiesXML(Element root, Abcd206DataHolder dataHolder){
 		try{
 			NodeList group;
-
+			
 //			try{afficherInfos(racine, 0);}catch (Exception e) {logger.info(e);}
 			group = root.getChildNodes();
 //			logger.info("ABCD ELEMENT not stored: "+group.item(i).getNodeName().toString()+" - value: "+group.item(i).getTextContent());

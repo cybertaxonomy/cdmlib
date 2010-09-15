@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  *
  */
 @Component
-public class IpniService implements IIpniService{
+public class IpniService  implements IIpniService{
 	private static final String EAST_OR_WEST = "East or west";
 
 	private static final String NORTH_OR_SOUTH = "North or south";

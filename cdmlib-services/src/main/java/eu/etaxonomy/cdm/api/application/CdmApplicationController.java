@@ -19,6 +19,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -50,6 +52,8 @@ import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.ProgressMonitorBase;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -73,6 +77,8 @@ public class CdmApplicationController {
 	public AbstractApplicationContext applicationContext;
 	private ICdmApplicationConfiguration configuration; 
 	private Resource applicationContextResource;
+
+	private IProgressMonitor progressMonitor;
 	
 	final static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
 	
@@ -85,7 +91,7 @@ public class CdmApplicationController {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
-		return new CdmApplicationController(null, dataSource, dbSchemaValidation, false);
+		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
 	
 	/**
@@ -95,10 +101,7 @@ public class CdmApplicationController {
 	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation)  throws DataSourceNotFoundException, TermNotFoundException {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
-		if (dbSchemaValidation == null){
-			dbSchemaValidation = defaultDbSchemaValidation;
-		}
-		return new CdmApplicationController(null, dataSource, dbSchemaValidation, false);
+		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
 
 	
@@ -109,22 +112,29 @@ public class CdmApplicationController {
 	 */
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource) 
 	throws DataSourceNotFoundException, TermNotFoundException{
-		return new CdmApplicationController(null, dataSource, defaultDbSchemaValidation, false);
+		return CdmApplicationController.NewInstance(null, dataSource, defaultDbSchemaValidation, false);
 	}
 	
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) 
 	throws DataSourceNotFoundException, TermNotFoundException{
-		return new CdmApplicationController(null, dataSource, dbSchemaValidation, false);
+		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
 
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
 	throws DataSourceNotFoundException, TermNotFoundException{
-		return new CdmApplicationController(null, dataSource, dbSchemaValidation, omitTermLoading);
+		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, omitTermLoading);
 	}
 	
 	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
 	throws DataSourceNotFoundException, TermNotFoundException{
-		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading);
+		return CdmApplicationController.NewInstance(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading);
+	}
+	
+	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor) 
+	throws DataSourceNotFoundException, TermNotFoundException{
+
+		
+		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor);
 	}
 
 	/**
@@ -133,19 +143,17 @@ public class CdmApplicationController {
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
+	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor){
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
-		if (applicationContextResource != null){
-			this.applicationContextResource = applicationContextResource;
-		}else{
-			this.applicationContextResource = new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+		
+		if (dbSchemaValidation == null){
+			dbSchemaValidation = defaultDbSchemaValidation;
 		}
 		
-		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
+		this.applicationContextResource = applicationContextResource != null ? applicationContextResource : new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+		this.progressMonitor = progressMonitor != null ? progressMonitor : new ProgressMonitorBase();
 		
-//		if (setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading) == false){
-//			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
-//		}
+		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
 	}
 		
 	
@@ -158,40 +166,52 @@ public class CdmApplicationController {
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
 		logger.info("Connecting to '" + dataSource.getName() + "'");
-
+		progressMonitor.subTask("Connecting to '" + dataSource.getName() + "'");
+		progressMonitor.worked(1);
 
 		GenericApplicationContext appContext;
-//		try {
-			appContext = new EclipseRcpSaveGenericApplicationContext();
-			
-			BeanDefinition datasourceBean = dataSource.getDatasourceBean();
-			datasourceBean.setAttribute("isLazy", false);
-			appContext.registerBeanDefinition("dataSource", datasourceBean);
-			
-			BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(dbSchemaValidation);
-			appContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
-			
-			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
-			xmlReader.loadBeanDefinitions(this.applicationContextResource);		 
-			
-			//omitTerms
-			String initializerName = "persistentTermInitializer";
-			BeanDefinition beanDef = appContext.getBeanDefinition(initializerName);
-			MutablePropertyValues values = beanDef.getPropertyValues();
-			values.addPropertyValue("omit", omitTermLoading);
-			
-			appContext.refresh();
-			appContext.start();
-			
+		appContext = new EclipseRcpSaveGenericApplicationContext();
+		
+		BeanDefinition datasourceBean = dataSource.getDatasourceBean();
+		datasourceBean.setAttribute("isLazy", false);
+		progressMonitor.subTask("Registering datasource.");
+		progressMonitor.worked(1);
+		appContext.registerBeanDefinition("dataSource", datasourceBean);
+		
+		BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(dbSchemaValidation);
+		appContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
+		
+		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
+		progressMonitor.subTask("Registering context resources.");
+		progressMonitor.worked(1);
+		xmlReader.loadBeanDefinitions(this.applicationContextResource);		 
+		
+		//omitTerms
+		String initializerName = "persistentTermInitializer";
+		BeanDefinition beanDef = appContext.getBeanDefinition(initializerName);
+		MutablePropertyValues values = beanDef.getPropertyValues();
+		values.addPropertyValue("omit", omitTermLoading);
+		
+		progressMonitor.subTask("Starting context. This might take a while...");
+		progressMonitor.worked(1);
+		appContext.refresh();
+		appContext.start();
+		
+		progressMonitor.subTask("Setting application context.");
+		progressMonitor.worked(1);
 		setApplicationContext(appContext);
 		
 		//initialize user and metaData for new databases
 		int userCount = getUserService().count(User.class);
 		if (userCount == 0 ){
+			progressMonitor.subTask("Creating Admin User");
+			progressMonitor.worked(1);
 			createAdminUser();
 		}
 		int metaDataCount = getCommonService().getCdmMetaData().size();
 		if (metaDataCount == 0){
+			progressMonitor.subTask("Creating Meta Data");
+			progressMonitor.worked(1);
 			createMetadata();
 		}
 		
@@ -297,9 +317,11 @@ public class CdmApplicationController {
 		//TODO delete next row (was just for testing)
 		if (logger.isInfoEnabled()){
 			logger.info("Registered Beans: ");
-			String[] beans = applicationContext.getBeanDefinitionNames();
-			for (String bean:beans){
-				logger.info(bean);
+			progressMonitor.subTask("Registered Beans: ");
+			String[] beanNames = applicationContext.getBeanDefinitionNames();
+			for (String beanName : beanNames){
+				logger.info(beanName);
+				progressMonitor.subTask(beanName);
 			}
 		}
 		configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
