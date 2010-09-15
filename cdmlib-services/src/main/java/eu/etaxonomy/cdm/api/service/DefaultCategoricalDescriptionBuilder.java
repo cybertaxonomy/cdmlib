@@ -44,11 +44,19 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 	protected String buildFeature(Feature feature, boolean doItBetter){
 		if (feature==null || feature.getLabel()==null) return "";
 		else {
-			if (doItBetter) {
-				String betterString = StringUtils.substringBefore(feature.getLabel(), "<");
-				return StringUtils.removeEnd(betterString, " ");
+			if (doItBetter) { // remove the text between brackets
+				String str= feature.getLabel();
+				StringBuilder strbuilder = new StringBuilder();
+				do	{
+					strbuilder.append(StringUtils.substringBefore(str, "<"));
+				}
+				while (!(str=StringUtils.substringAfter(str, ">")).equals(""));
+				return StringUtils.substringBeforeLast(strbuilder.toString()," ");
 			}
-			else	return feature.getLabel();
+			else{
+				String betterString = StringUtils.replaceChars(feature.getLabel(), "<>",""); // only remove the brackets
+				return StringUtils.substringBeforeLast(betterString," ");
+			}
 		}
 	}
 }
