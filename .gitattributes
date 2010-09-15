@@ -1262,7 +1262,6 @@ cdmlib-ext/README.TXT -text
 cdmlib-ext/pom.xml -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciServiceWrapper.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciServiceWrapper_Old.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/IBciServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/SchemaAdapterBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/ServiceWrapperBase.java -text
