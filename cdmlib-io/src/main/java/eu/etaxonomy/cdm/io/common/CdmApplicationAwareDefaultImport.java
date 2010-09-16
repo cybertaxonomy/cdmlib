@@ -144,9 +144,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		}
 				
 		ReferenceBase sourceReference = config.getSourceReference();
-		String message = "Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'";
-		logger.info(message);
-		config.updateProgress(message);
+		logger.info("Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'");
+		
 		
 		ImportStateBase state = config.getNewState();
 		state.initialize(config);
@@ -190,11 +189,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 //			
 //		}
 		
-		message = "End import from source '" + config.getSourceNameString() 
-								+ "' to destination '" + config.getDestinationNameString() + "'"+
-								(result? "(successful)":"(with errors)");
-		logger.info(message) ;
-		config.updateProgress(message);
+		logger.info("End import from source '" + config.getSourceNameString() 
+				+ "' to destination '" + config.getDestinationNameString() + "'"+
+				(result? "(successful)":"(with errors)")) ;
 		return result;
 	}
 	

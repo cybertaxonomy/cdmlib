@@ -73,10 +73,5 @@ public interface IIoConfigurator {
 	 * @return
 	 */
 	public IProgressMonitor getProgressMonitor();
-	
-	/**
-	 * 
-	 * @param message
-	 */
-	public void updateProgress(String message);
+
 }

@@ -38,6 +38,8 @@ public interface ICdmIO<STATE extends IoStateBase> {
 	
 //	public boolean invoke(IoState<T> state);
 	
+	public void updateProgress(STATE state, String message);
 	
+	public void updateProgress(STATE state, String message, int worked);
 	
 }

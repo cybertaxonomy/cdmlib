@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "annotations"
 })
 @MappedSuperclass
-public abstract class AnnotatableEntity extends VersionableEntity {
+public abstract class AnnotatableEntity extends VersionableEntity implements IAnnotatableEntity {
 	private static final long serialVersionUID = 9151211842542443102L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotatableEntity.class);

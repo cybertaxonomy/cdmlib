@@ -92,20 +92,19 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 	public boolean doInvoke(Abcd206ImportState state){
 		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
 		boolean result = true;
-		Abcd206ImportConfigurator config = state.getConfig();
 		//AbcdIO test = new AbcdIO();
-		String sourceName = config.getSource();
+		String sourceName = state.getConfig().getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null){
 			String message = "nb units to insert: "+unitsList.getLength();
 			logger.info(message);
-			config.updateProgress(message);
+			updateProgress(state, message);
 			
 			Abcd206DataHolder dataHolder = new Abcd206DataHolder();
 			
 			for (int i=0 ; i<unitsList.getLength() ; i++){
 				this.setUnitPropertiesXML((Element)unitsList.item(i), dataHolder);
-				result &= this.handleSingleUnit(config, dataHolder);
+				result &= this.handleSingleUnit(state, dataHolder);
 				
 				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
 				compareABCDtoCDM(sourceName, dataHolder.knownABCDelements, dataHolder);
@@ -123,12 +122,14 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 	/*
 	 * Store the unit with its Gathering informations in the CDM
 	 */
-	private boolean handleSingleUnit(Abcd206ImportConfigurator config, Abcd206DataHolder dataHolder){
+	private boolean handleSingleUnit(Abcd206ImportState state, Abcd206DataHolder dataHolder){
 		boolean result = true;
 
+		Abcd206ImportConfigurator config = state.getConfig();
+		
 		TransactionStatus tx = startTransaction();
 		try {
-			config.updateProgress("Importing data for unit: " + dataHolder.unitID);
+			updateProgress(state, "Importing data for unit: " + dataHolder.unitID);
 			
 //			ReferenceBase sec = Database.NewInstance();
 //			sec.setTitleCache("XML DATA");
