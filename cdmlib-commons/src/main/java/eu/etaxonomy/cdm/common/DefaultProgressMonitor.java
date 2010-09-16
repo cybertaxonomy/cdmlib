@@ -19,11 +19,21 @@ import org.apache.log4j.Logger;
 public class DefaultProgressMonitor implements IProgressMonitor {
 	private static final Logger logger = Logger.getLogger(DefaultProgressMonitor.class);
 
+	public static final DefaultProgressMonitor NewInstance(){
+		return new DefaultProgressMonitor();
+	}
+	
 	private boolean isCanceled = false;
 	private String taskName = "No task name";
 	private int totalWork = 0;
 	private int workDone = 0;
 	private String subTask = "No subtask name";
+	
+
+	private DefaultProgressMonitor(){
+		
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.common.IProgressMonitor#beginTask(java.lang.String, int)

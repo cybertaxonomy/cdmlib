@@ -30,7 +30,7 @@ public class CdmUpdater {
 	public boolean updateToCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor){
 		boolean result = true;
 		if (monitor == null){
-			monitor = new DefaultProgressMonitor();
+			monitor = DefaultProgressMonitor.NewInstance();
 		}
 		
 		ISchemaUpdater currentSchemaUpdater = getCurrentSchemaUpdater();
