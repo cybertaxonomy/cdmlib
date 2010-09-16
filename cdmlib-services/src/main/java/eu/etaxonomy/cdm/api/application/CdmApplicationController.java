@@ -19,8 +19,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -53,7 +51,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.ProgressMonitorBase;
+import eu.etaxonomy.cdm.common.NullProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -151,7 +149,7 @@ public class CdmApplicationController {
 		}
 		
 		this.applicationContextResource = applicationContextResource != null ? applicationContextResource : new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
-		this.progressMonitor = progressMonitor != null ? progressMonitor : new ProgressMonitorBase();
+		this.progressMonitor = progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 		
 		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
 	}

@@ -117,16 +117,16 @@ public interface IProgressMonitor {
 	
 	/**
 	 * Notifies about a warning
-	 * @param warning
+	 * @param message
 	 */
-	public void warning(String warning);
+	public void warning(String message);
 	
 	/**
 	 * Notifies about a warning that was caused by an exception.
-	 * @param string
-	 * @param exception
+	 * @param message
+	 * @param throwable
 	 */
-	public void warning(String string, Exception exeption);
+	public void warning(String message, Throwable throwable);
 	
 }
 
