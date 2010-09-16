@@ -62,7 +62,17 @@ public interface IGeneric extends IPublicationBase, INomenclaturalReference, IVo
 	 */
 	public void setPages(String pages);
 
+	/**
+	 * Returns the inreference of this generic reference
+	 */
+	public IGeneric getInReference();
 	
+	/**
+	 * Sets the inreference.
+	 * @param inReference
+	 */
+	public void setInReference(ReferenceBase inReference);
+
 	void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy);
 	
 }
