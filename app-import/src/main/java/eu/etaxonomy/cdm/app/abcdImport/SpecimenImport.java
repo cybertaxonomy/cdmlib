@@ -21,12 +21,12 @@ public class SpecimenImport {
 private static Logger logger = Logger.getLogger(SpecimenImport.class);
 	
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	final static String xmlSource = "/home/patricia/Desktop/multiABCD.xml";
-//	final static String xmlSource = "C:\\localCopy\\eclipse\\cdmlib\\app-import\\src\\main\\resources\\specimenABCD\\multiABCD.xml";	
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
+//	final static String xmlSource = "/home/patricia/Desktop/multiABCD.xml";
+	final static String xmlSource = "file:D:/_Tagungen/2010-09 TDWG 2010/Workshop/data/specimen/Picris pauciflora/B-W14632-000_B-W14632-010_B100097145_B100097146_B100326668_B180004364_B180017717_.xml";
 	
 	
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_patricia();
+	static final ICdmDataSource cdmDestination = CdmDestinations.local_cdm_edit_cichorieae_b();
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
@@ -46,7 +46,12 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 		specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
 		specimenImportConfigurator.setDoAutomaticParsing(true);
 		specimenImportConfigurator.setReUseExistingMetadata(true);
+		
+		specimenImportConfigurator.setDoMatchTaxa(true);
 		specimenImportConfigurator.setReUseTaxon(true);
+		
+		specimenImportConfigurator.setDoCreateIndividualsAssociations(true);
+		
 		specimenImportConfigurator.setSourceReference(null);
 		specimenImportConfigurator.setTaxonReference(null);
 		

@@ -112,19 +112,22 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	 * @param facade
 	 */
 	private String getCode(DerivedUnitFacade facade) {
-		String code = facade.getCollection().getCode();
-		if (CdmUtils.isEmpty(code)){
-			Institution institution = facade.getCollection().getInstitute();
-			if (institution != null){
-				code = institution.getCode();
-			}
+		String code = "";
+		if(facade.getCollection() != null){			
+			code = facade.getCollection().getCode();
 			if (CdmUtils.isEmpty(code)){
-				Collection superCollection = facade.getCollection().getSuperCollection();
-				if (superCollection != null){
-					code = superCollection.getCode();
+				Institution institution = facade.getCollection().getInstitute();
+				if (institution != null){
+					code = institution.getCode();
+				}
+				if (CdmUtils.isEmpty(code)){
+					Collection superCollection = facade.getCollection().getSuperCollection();
+					if (superCollection != null){
+						code = superCollection.getCode();
+					}
 				}
 			}
-		}
+		} 
 		return code;
 	}
 	

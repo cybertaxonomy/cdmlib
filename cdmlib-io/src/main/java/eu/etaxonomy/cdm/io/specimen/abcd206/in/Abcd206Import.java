@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,6 +41,10 @@ import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -995,7 +1000,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 		}catch(Exception e){
 			institutions=new ArrayList<Institution>();
 		}
-		if (institutions.size() ==0 || !config.getReUseExistingMetadata()){
+		if (institutions.size() ==0 || !config.isReUseExistingMetadata()){
 			logger.info("Institution (agent) unknown or not allowed to reuse existing metadata");
 			//create institution
 			institution = Institution.NewInstance();
@@ -1023,7 +1028,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 		}catch(Exception e){
 			collections=new ArrayList<Collection>();
 		}
-		if (collections.size() ==0 || !config.getReUseExistingMetadata()){
+		if (collections.size() ==0 || !config.isReUseExistingMetadata()){
 			logger.info("Collection not found or do not reuse existing metadata  " + dataHolder.collectionCode);
 			//create new collection
 			collection.setCode(dataHolder.collectionCode);
@@ -1086,7 +1091,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 			if (fullScientificNameString.indexOf("_code_") != -1){	
 				dataHolder.nomenclatureCode = fullScientificNameString.split("_code_")[1];
 			}
-			if (config.getDoAutomaticParsing() || dataHolder.atomisedIdentificationList == null || dataHolder.atomisedIdentificationList.size()==0){	
+			if (config.isDoAutomaticParsing() || dataHolder.atomisedIdentificationList == null || dataHolder.atomisedIdentificationList.size()==0){	
 				taxonName = this.parseScientificName(scientificName, dataHolder);	
 			} else {
 				if (dataHolder.atomisedIdentificationList != null || dataHolder.atomisedIdentificationList.size()>0){
@@ -1097,7 +1102,14 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 				taxonName = NonViralName.NewInstance(null);
 				taxonName.setFullTitleCache(scientificName);
 			}
-			if (config.getDoReUseTaxon()){
+			
+			// --- cascade through several options in order to find an appropriate taxon ---
+			
+			if (config.isDoMatchTaxa()){
+				taxon = getTaxonService().findBestMatchingTaxon(scientificName);
+				logger.info("Matching to existing Taxon : " + taxon.getTitleCache());
+			} 
+			if (taxon == null && config.isDoReUseTaxon()){
 				try{
 					names = getTaxonService().searchTaxaByName(scientificName, sec);
 					taxon = (Taxon)names.get(0);
@@ -1108,10 +1120,13 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 //			taxonName = NonViralName.NewInstance(null);
 //			taxonName.setFullTitleCache(scientificName);
 
-			if (!config.getDoReUseTaxon() || taxon == null){
+			if (!config.isDoReUseTaxon() || taxon == null){
 				getNameService().save(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //TODO sec set null
 			}
+			
+			// --- taxon is found now ---
+			
 			determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
 			determinationEvent.setPreferredFlag(preferredFlag);
@@ -1123,6 +1138,33 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 				determinationEvent.addReference(reference);
 			}
 			facade.addDetermination(determinationEvent);
+			
+			if(config.isDoCreateIndividualsAssociations()){
+				TaxonDescription taxonDescription = null;
+				if(config.isDoMatchToExistingDescription()){
+					logger.error("The import option 'DoMatchToExistingDescription' is not yet implemented.");
+				} else {
+					UUID taxonDescriptionUUID = config.getTaxonToDescriptionMap().get(taxon.getUuid()); // rather put in state
+					taxonDescription = (TaxonDescription) getDescriptionService().load(taxonDescriptionUUID);
+					if(taxonDescription == null){
+						taxonDescription = TaxonDescription.NewInstance(taxon);
+						config.getTaxonToDescriptionMap().put(taxon.getUuid(), taxonDescription.getUuid());
+						if(taxonDescriptionUUID == null){
+							logger.info("Creating new TaxonDescription for " + taxon.getTitleCache());
+						} else {
+							logger.fatal("TaxonDescription with UUID " + taxonDescriptionUUID + " not found --> creating a new one.");					
+						}
+					}
+				}
+				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
+				individualsAssociation.setAssociatedSpecimenOrObservation(facade.getDerivedUnit());
+				individualsAssociation.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
+				for(ReferenceBase citation : determinationEvent.getReferences()){
+					individualsAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
+				}
+				taxonDescription.addElement(individualsAssociation);
+				getDescriptionService().saveOrUpdate(taxonDescription);
+			}
 		}
 
 	}

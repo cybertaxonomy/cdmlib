@@ -137,6 +137,7 @@ public  class ImageMetaData extends MediaMetaData {
 			URLConnection connection = imageUrl.openConnection();
 			connection.setConnectTimeout(timeOut);
 			inputStream = connection.getInputStream();
+			
 			IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
 			
 			if (mediaData != null){
@@ -157,8 +158,7 @@ public  class ImageMetaData extends MediaMetaData {
 				}
 			}
 		} catch (ImageReadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn(e.getLocalizedMessage());
 		} catch (IOException e) {
 			logger.warn("The image server is not available!");
 			throw e;

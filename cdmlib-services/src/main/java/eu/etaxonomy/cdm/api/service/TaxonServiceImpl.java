@@ -614,18 +614,41 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		Taxon matchedTaxon = null;
 		try{
+			// 1. search for acceptet taxa
 			List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
 			for(IdentifiableEntity taxonBaseCandidate : taxonList){
 				if(taxonBaseCandidate instanceof Taxon){
 					matchedTaxon = (Taxon)taxonBaseCandidate;
 					if(taxonList.size() > 1){
 						logger.info(taxonList.size() + " TaxonBases found, using first accepted Taxon: " + matchedTaxon.getTitleCache());
+						return matchedTaxon;
 					} else {
-						logger.info("using accepted Taxon: " + matchedTaxon.getTitleCache());									
+						logger.info("using accepted Taxon: " + matchedTaxon.getTitleCache());
+						return matchedTaxon;
 					}
 					//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found 
 				}
 			}
+			
+			// 2. search for synonyms
+			List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
+			for(IdentifiableEntity taxonBase : synonymList){
+				if(taxonBase instanceof Synonym){
+					Set<Taxon> acceptetdCandidates = ((Synonym)taxonBase).getAcceptedTaxa();
+					if(!acceptetdCandidates.isEmpty()){
+						matchedTaxon = acceptetdCandidates.iterator().next();
+						if(acceptetdCandidates.size() == 1){
+							logger.info(acceptetdCandidates.size() + " Accepted taxa found for synonym " + taxonBase.getTitleCache() + ", using first one: " + matchedTaxon.getTitleCache());
+							return matchedTaxon;
+						} else {
+							logger.info("using accepted Taxon " +  matchedTaxon.getTitleCache() + "for synonym " + taxonBase.getTitleCache());
+							return matchedTaxon;
+						}
+						//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found
+					}
+				}
+			}
+			
 		} catch (Exception e){
 			logger.error(e);
 		}
