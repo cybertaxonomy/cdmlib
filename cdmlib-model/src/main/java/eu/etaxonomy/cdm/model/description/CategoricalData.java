@@ -125,7 +125,7 @@ public class CategoricalData extends DescriptionElementBase {
 	 * @see     		#getStates()
 	 * @see     		#addState(State)
 	 */
-	public void removeState(State state){
+	public void removeState(StateData state){
 		this.states.remove(state);
 	}
 

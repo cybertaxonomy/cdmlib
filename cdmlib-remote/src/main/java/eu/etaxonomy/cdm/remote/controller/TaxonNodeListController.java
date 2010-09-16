@@ -58,11 +58,6 @@ public class TaxonNodeListController extends BaseListController<TaxonNode, ITaxo
 		this.service = service;
 	}
 	
-	@InitBinder
-    public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
-	}
-	
 	/**
 	 * @param treeUuid
 	 * @param response

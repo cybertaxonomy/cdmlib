@@ -1056,9 +1056,12 @@ public class DerivedUnitFacade {
 	public Map<Language, LanguageString> getEcologyAll(){
 		if (ecology == null){
 			try {
-				ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), true, false);
+				ecology = initializeFieldObjectTextDataWithSupportTest(Feature.ECOLOGY(), false, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
+			}
+			if (ecology == null){
+				return new HashMap<Language, LanguageString>();
 			}
 		}
 		return ecology.getMultilanguageText();
@@ -1117,9 +1120,12 @@ public class DerivedUnitFacade {
 	public Map<Language, LanguageString> getPlantDescriptionAll(){
 		if (plantDescription == null){
 			try {
-				plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), true, false);
+				plantDescription = initializeFieldObjectTextDataWithSupportTest(Feature.DESCRIPTION(), false, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
+			}
+			if (plantDescription == null){
+				return new HashMap<Language, LanguageString>();
 			}
 		}
 		return plantDescription.getMultilanguageText();

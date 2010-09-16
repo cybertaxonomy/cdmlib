@@ -10,12 +10,20 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -24,12 +32,16 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.10.2008
  * @version 1.0
  */
-public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState> implements IImportConfigurator {
+public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState> implements IImportConfigurator, IMatchingImportConfigurator {
 	private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
-	private boolean reuseTaxon = false;
+	private boolean reuseTaxon = true;
 	private String taxonReference = null;
+	private boolean doCreateIndividualsAssociations = false;
+	private boolean doReuseExistingDescription = false;
+	private boolean doMatchTaxa = false;
+	private Map<UUID, UUID> taxonToDescriptionMap = new HashMap<UUID, UUID>();
 
 	
 	//TODO
@@ -73,9 +85,11 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
+	@Override
 	public Abcd206ImportState getNewState() {
 		return new Abcd206ImportState(this);
 	}
+	
 
 	public String getSource(){
 		return (String)super.getSource();
@@ -133,7 +147,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 		this.doParsing=doParsing;
 	}
 	
-	public boolean getDoAutomaticParsing(){
+	public boolean isDoAutomaticParsing(){
 		return this.doParsing;
 	}
 	
@@ -141,7 +155,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 		this.reuseMetadata = reuseMetadata;
 	}
 	
-	public boolean getReUseExistingMetadata(){
+	public boolean isReUseExistingMetadata(){
 		return this.reuseMetadata;
 	}
 	
@@ -149,8 +163,68 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 		this.reuseTaxon = reuseTaxon;
 	}
 	
-	public boolean getDoReUseTaxon(){
+	/**
+	 * if {@link #doMatchTaxa} is set false or no matching taxon is found new
+	 * taxa will be created. If this flag is set <code>true</code> the newly created taxa
+	 * will be reused if possible. Setting this flag to <code>false</code> may lead to
+	 * multiple identical taxa.
+	 * 
+	 * @return
+	 */
+	public boolean isDoReUseTaxon(){
 		return this.reuseTaxon;
+	}
+
+	public void setDoCreateIndividualsAssociations(
+			boolean doCreateIndividualsAssociations) {
+		this.doCreateIndividualsAssociations = doCreateIndividualsAssociations;
+	}
+
+	/**
+	 * Create an IndividualsAssociations for each determination element in the ABCD data. ABCD has no such concept as IndividualsAssociations so the only way to 
+	 * 
+	 * @return
+	 */
+	public boolean isDoCreateIndividualsAssociations() {
+		return doCreateIndividualsAssociations;
+	}
+
+	/**
+	 * @param doReuseExistingDescription the doReuseExistingDescription to set
+	 */
+	public void setDoReuseExistingDescription(boolean doReuseExistingDescription) {
+		this.doReuseExistingDescription = doReuseExistingDescription;
+	}
+
+	/**
+	 * @return the doReuseExistingDescription
+	 */
+	public boolean isDoMatchToExistingDescription() {
+		return doReuseExistingDescription;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator#isDoMatchTaxa()
+	 */
+	@Override
+	public boolean isDoMatchTaxa() {
+		return doMatchTaxa;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator#setDoMatchTaxa(boolean)
+	 */
+	@Override
+	public void setDoMatchTaxa(boolean doMatchTaxa) {
+		this.doMatchTaxa = doMatchTaxa;
+	}
+
+	/**
+	 * @return
+	 */
+	public Map<UUID, UUID> getTaxonToDescriptionMap() {
+		// TODO Auto-generated method stub
+		return taxonToDescriptionMap ;
 	}
 	
 	

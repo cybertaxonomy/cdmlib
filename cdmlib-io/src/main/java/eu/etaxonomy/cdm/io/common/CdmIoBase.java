@@ -21,6 +21,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -44,7 +45,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 			logger.warn("No invoke for " + ioName + " (ignored)");
 			return true;
 		}else{
-			state.getConfig().updateProgress("Invoking " + ioName);
+			updateProgress(state, "Invoking " + ioName);
 			return doInvoke(state);
 		}
 	}
@@ -172,6 +173,17 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 		}
 	}
 
+	@Override
+	public void updateProgress(STATE state, String message) {
+		updateProgress(state, message, 1);
+	};
 	
-
+	@Override
+	public void updateProgress(STATE state, String message, int worked) {
+		if(state.getConfig().getProgressMonitor() != null){
+			IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+			monitor.worked(worked);
+			monitor.subTask(message);
+		}
+	}
 }

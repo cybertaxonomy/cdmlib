@@ -20,6 +20,7 @@ import org.jdom.Namespace;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 24.10.2008
  * @version 1.0
  */
-public class SDDImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class SDDImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SDDImportConfigurator.class);
 
 	//TODO

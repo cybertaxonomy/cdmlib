@@ -252,12 +252,4 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public IProgressMonitor getProgressMonitor(){
 		return this.progressMonitor;
 	}
-	
-	@Override
-	public void updateProgress(String message) {
-		if(progressMonitor != null){
-			progressMonitor.worked(1);
-			progressMonitor.subTask(message);
-		}
-	}
 }

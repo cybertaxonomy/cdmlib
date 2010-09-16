@@ -17,8 +17,8 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "StateData")
 @Entity
 @Audited
-public class StateData extends VersionableEntity {
+public class StateData extends VersionableEntity implements IModifiable{
 	private static final long serialVersionUID = -4380314126624505415L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StateData.class);
@@ -173,8 +173,8 @@ public class StateData extends VersionableEntity {
 	 * @see    	   		#getModifyingText()
 	 * @see    	   		#addModifyingText(LanguageString)
 	 */
-	public void addModifyingText(String text, Language language){
-		this.modifyingText.put(language, LanguageString.NewInstance(text, language));
+	public LanguageString addModifyingText(String text, Language language){
+		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
 	}
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
@@ -186,8 +186,8 @@ public class StateData extends VersionableEntity {
 	 * @see    	   	#getModifyingText()
 	 * @see    	   	#addModifyingText(String, Language)
 	 */
-	public void addModifyingText(LanguageString text){
-		this.modifyingText.put(text.getLanguage(),text);
+	public LanguageString addModifyingText(LanguageString text){
+		return this.modifyingText.put(text.getLanguage(),text);
 	}
 	/** 
 	 * Removes from the {@link MultilanguageText multilanguage text} used to qualify the validity
@@ -198,8 +198,8 @@ public class StateData extends VersionableEntity {
 	 * 				has been formulated
 	 * @see     	#getModifyingText()
 	 */
-	public void removeModifyingText(Language lang){
-		this.modifyingText.remove(lang);
+	public LanguageString removeModifyingText(Language lang){
+		return this.modifyingText.remove(lang);
 	}
 
 }

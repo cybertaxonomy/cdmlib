@@ -74,8 +74,9 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 			});
 	
 	@InitBinder
+	@Override
 	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+		super.initBinder(binder);
 		binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
 		binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
 	}
