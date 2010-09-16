@@ -60,8 +60,8 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 // ************************** UPDATE STEPS ************************************************
 	
 	@Override
-	protected List<SimpleSchemaUpdaterStep> getUpdaterList() {
-		List<SimpleSchemaUpdaterStep> stepList = new ArrayList<SimpleSchemaUpdaterStep>();
+	protected List<ISchemaUpdaterStep> getUpdaterList() {
+		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		String updateQuery;
 		String stepName;
 		
@@ -85,6 +85,10 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
 		stepList.add(step);
 		
+		//rename taxonomicTree -> classification
+		stepName = "Rename taxonomic tree into classification";
+		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", true);
+		stepList.add(tableChanger);
 		
 		
 		return stepList;

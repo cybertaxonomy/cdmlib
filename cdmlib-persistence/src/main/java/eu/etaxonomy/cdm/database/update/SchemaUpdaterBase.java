@@ -28,7 +28,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterBase.class);
 	private String mySchemaVersion;
 	
-	private List<SimpleSchemaUpdaterStep> list;
+	private List<ISchemaUpdaterStep> list;
 	
 	
 	
@@ -84,7 +84,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 		}
 		
 		
-		for (SimpleSchemaUpdaterStep step : list){
+		for (ISchemaUpdaterStep step : list){
 			try {
 				monitor.subTask(step.getStepName());
 				result &= step.invoke(datasource, monitor);
@@ -101,7 +101,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	}
 
 	
-	protected abstract List<SimpleSchemaUpdaterStep> getUpdaterList();
+	protected abstract List<ISchemaUpdaterStep> getUpdaterList();
 
 	protected boolean isAfterMyVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
 		int depth = 4;
