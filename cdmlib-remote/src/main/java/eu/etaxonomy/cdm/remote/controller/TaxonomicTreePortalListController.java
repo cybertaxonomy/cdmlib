@@ -89,8 +89,9 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 
 	
 	@InitBinder
+	@Override
     public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+		super.initBinder(binder);
 		binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
 	}
 	

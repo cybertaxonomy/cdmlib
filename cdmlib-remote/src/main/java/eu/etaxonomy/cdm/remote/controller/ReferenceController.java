@@ -55,11 +55,6 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 			"authorTeam.$"  // TODO obsolete??
 	});
 	
-	@InitBinder
-    public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
-	}
-	
 	public ReferenceController(){
 		setInitializationStrategy(Arrays.asList(new String[]{
 				"$",

@@ -57,7 +57,9 @@ public class TaxonomicTreePortalController extends AnnotatableController<Taxonom
 
 	
 	@InitBinder
+	@Override
     public void initBinder(WebDataBinder binder) {
+		super.initBinder(binder);
 		binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
 	}
 	

@@ -239,8 +239,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	}
 	
 	@InitBinder
+	@Override
     public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+		super.initBinder(binder);
 		binder.registerCustomEditor(NamedArea.class, new NamedAreaPropertyEditor());
 		binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
 	}
