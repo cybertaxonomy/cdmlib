@@ -59,8 +59,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase{
 
 //********************************* DELEGATES *********************************/
 	
-	public String put(DatabaseTypeEnum key, String value) {
-		return queryMap.put(key, value);
+	public String put(DatabaseTypeEnum dbType, String query) {
+		return queryMap.put(dbType, query);
 	}
 
 
