@@ -86,10 +86,10 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 		SimpleSchemaUpdaterStep updateSortindex = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
 		stepList.add(updateSortindex);
 		
-		//rename taxonomicTree -> classification
-		stepName = "Rename taxonomic tree into classification";
-		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
-		stepList.add(tableChanger);
+//		//rename taxonomicTree -> classification
+//		stepName = "Rename taxonomic tree into classification";
+//		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
+//		stepList.add(tableChanger);
 		
 		
 		return stepList;
