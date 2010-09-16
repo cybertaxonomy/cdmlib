@@ -268,8 +268,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 		List<NameRelationship> results = new ArrayList<NameRelationship>();
 		if (numberOfResults > 0) { // no point checking again
-			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedTo, type, pageSize, pageNumber,
-				orderHints, propertyPaths);
+			results = dao.getNameRelationships(name, 
+											   NameRelationship.Direction.relatedTo, 
+											   type, 
+											   pageSize, 
+											   pageNumber,
+				                               orderHints, 
+				                               propertyPaths);
 		}
 		return results;
 	}

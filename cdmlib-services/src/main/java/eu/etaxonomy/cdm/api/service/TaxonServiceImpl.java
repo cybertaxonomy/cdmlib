@@ -443,7 +443,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		Class<? extends TaxonBase> clazz = null;
 		List<String> propertyPath = new ArrayList<String>();
-		if(configurator.getTaxonNamePropertyPath() != null){
+		if(configurator.getTaxonPropertyPath() != null){
 			propertyPath.addAll(configurator.getTaxonPropertyPath());
 		}
 		if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
