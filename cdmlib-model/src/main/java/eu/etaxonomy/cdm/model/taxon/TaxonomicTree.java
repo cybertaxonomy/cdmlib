@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -42,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -92,8 +90,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	private String microReference;
 	
 //	/**
-//	 * If this taxonomic view is an alternative view for a subtree in an other view(parent view),
-//	 * the alternativeViewRoot is the connection node from this view to the parent view.
+//	 * If this classification is an alternative classification for a subclassification in 
+//	 * an other classification(parent view),
+//	 * the alternativeViewRoot is the connection node from this classification to the parent classification.
 //	 * It replaces another node in the parent view.
 //	 */
 //	private AlternativeViewRoot alternativeViewRoot;
