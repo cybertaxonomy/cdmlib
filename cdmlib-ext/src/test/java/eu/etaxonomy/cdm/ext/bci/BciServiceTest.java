@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
@@ -43,6 +44,7 @@ public class BciServiceTest {
 	}
 
 	@Test
+	@Ignore // service is under refactoring 
 	public void testGetCollectionsByCode(){
 		ICdmApplicationConfiguration config = null;
 		List<Collection> collectionList = service1.getCollectionsByCode("BG", config);
