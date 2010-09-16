@@ -37,7 +37,7 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
 	 */
-	public abstract boolean invoke (ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
+	public abstract Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep#setStepName(java.lang.String)

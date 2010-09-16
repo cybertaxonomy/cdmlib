@@ -7,7 +7,14 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 public interface ISchemaUpdaterStep {
 
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
+	/**
+	 * 
+	 * @param datasource
+	 * @param monitor
+	 * @return identifier of newly created term
+	 * @throws SQLException
+	 */
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
 
 	public void setStepName(String stepName);
 

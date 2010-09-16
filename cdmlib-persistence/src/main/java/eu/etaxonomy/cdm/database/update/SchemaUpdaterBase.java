@@ -88,7 +88,8 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 		for (ISchemaUpdaterStep step : list){
 			try {
 				monitor.subTask(step.getStepName());
-				result &= step.invoke(datasource, monitor);
+				Integer termId = step.invoke(datasource, monitor);
+				result &= (termId != null);
 				monitor.worked(1);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

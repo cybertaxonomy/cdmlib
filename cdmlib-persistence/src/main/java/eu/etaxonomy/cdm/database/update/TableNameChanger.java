@@ -45,14 +45,14 @@ public class TableNameChanger extends SchemaUpdaterStepBase implements ISchemaUp
 	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
 	 */
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
 		result &= renameTable(oldName, newName, datasource, monitor);
 		if (includeAudTable){
 			String aud = "_AUD";
 			result &= renameTable(oldName + aud, newName + aud, datasource, monitor);
 		}
-		return result;
+		return (result == true )? 0 : null;
 	}
 
 	private boolean renameTable(String oldName, String newName, ICdmDataSource datasource, IProgressMonitor monitor) {

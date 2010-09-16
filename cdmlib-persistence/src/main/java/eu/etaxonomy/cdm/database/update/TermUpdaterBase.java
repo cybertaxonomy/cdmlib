@@ -89,7 +89,8 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 		for (SingleTermUpdater step : list){
 			try {
 				monitor.subTask(step.getStepName());
-				result &= step.invoke(datasource, monitor);
+				Integer stepResult = step.invoke(datasource, monitor);
+				result &= (stepResult != null);
 				monitor.worked(1);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

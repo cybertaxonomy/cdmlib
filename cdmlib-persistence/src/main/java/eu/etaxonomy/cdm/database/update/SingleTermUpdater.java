@@ -16,7 +16,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * @author a.mueller
@@ -27,44 +29,42 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	
-	public static final SingleTermUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, Integer orderIndex, UUID uuidVocabulary){
-		return new SingleTermUpdater(stepName, uuidTerm, description, label, abbrev, dtype, orderIndex, uuidVocabulary);
-		
+	public static final SingleTermUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
+		return new SingleTermUpdater(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);	
 	}
 	
-//	private ICdmDataSource datasource;
-//	private IProgressMonitor monitor;
 	private UUID uuidTerm ;
 	private String description;
 	private String label;
 	private String abbrev;
 	private String dtype;
 	private UUID uuidVocabulary;
-	private Integer orderIndex;
-	
+	private boolean isOrdered;
+	private UUID uuidAfterTerm;
+	private UUID uuidLanguage;
 	
 
-	private SingleTermUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, String dtype, Integer orderIndex, UUID uuidVocabulary) {
+	private SingleTermUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
 		super(stepName);
 		this.abbrev = abbrev;
-//		this.datasource = datasource;
-//		this.monitor = monitor;
 		this.description = description;
 		this.dtype = dtype;
 		this.label = label;
-		this.orderIndex = orderIndex;
+		this.isOrdered = isOrdered;
 		this.uuidTerm = uuidTerm;
 		this.uuidVocabulary = uuidVocabulary;
+		this.uuidAfterTerm = uuidAfterTerm;
+		this.uuidLanguage = uuidLanguage;
 	}
 
 
 
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
  		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
 		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
 		if (n != 0){
 			monitor.warning("Term already exists: " + label + "(" + uuidTerm + ")");
-			return true;
+			return null;
 		}
 		
 		//vocabulary id
@@ -76,10 +76,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		}else{
 			String warning = "Vocabulary ( "+ uuidVocabulary +" ) for term does not exist!";
 			monitor.warning(warning);
-			return false;
+			return null;
 		}
 		
-		int termId;
+		Integer termId;
 		String sqlMaxId = " SELECT max(id)+1 as maxId FROM DefinedTermBase";
 		rs = datasource.executeQuery(sqlMaxId);
 		if (rs.next()){
@@ -87,17 +87,25 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		}else{
 			String warning = "No defined terms do exist yet. Can't update terms!";
 			monitor.warning(warning);
-			return false;
+			return null;
 		}
 		
 		String id = Integer.toString(termId);
-		String created = "2010-09-01 10:15:00";
+		String created = "2010-09-16 10:15:00";
 		String defaultColor = "null";
-		String protectedTitleCache = "b'0'";
+		String protectedTitleCache = getBoolean(false, datasource);
+		String orderIndex;
+		if (isOrdered){
+			orderIndex = getOrderIndex(datasource, vocId, monitor);
+		}else{
+			orderIndex = "null";
+		}
 		String titleCache = label != null ? label : (abbrev != null ? abbrev : description );
 		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
 				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
 		datasource.executeUpdate(sqlInsertTerm);
+		
+		updateFeatureTerms(termId, datasource, monitor);
 		
 //
 //		INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id) 
@@ -107,14 +115,14 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 
 		//language id
 		int langId;
-		String sqlLangId = " SELECT id FROM DefinedTermBase WHERE uuid = 'e9f8cdb7-6819-44e8-95d3-e2d0690c3523'";
+		String sqlLangId = " SELECT id FROM DefinedTermBase WHERE uuid = '" + uuidLanguage + "'";
 		rs = datasource.executeQuery(sqlLangId);
 		if (rs.next()){
 			langId = rs.getInt("id");
 		}else{
 			String warning = "Term for default language (English) not  does not exist!";
 			monitor.warning(warning);
-			return false;
+			return null;
 		}
 		
 		//representation
@@ -126,7 +134,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		}else{
 			String warning = "No representations do exist yet. Can't update terms!";
 			monitor.warning(warning);
-			return false;
+			return null;
 		}
 		
 		UUID uuidRepresentation = UUID.randomUUID();
@@ -135,30 +143,97 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		
 		datasource.executeUpdate(sqlInsertRepresentation);
 		
-		
-//		-- representation
-//		INSERT INTO Representation (id, created, uuid, text, abbreviatedlabel, label, language_id) 
-//		SELECT  ( @repId := max(id)+1 ) AS maxId ,'2010-06-01 18:49:07','fadb1730-9936-44e7-8911-884a84662b08', 'Google Earth','Google','Google Earth', @langId
-//		FROM Representation;
-//		;
-		
-		//
-//		-- representation
-//		INSERT INTO Representation (id, created, uuid, text, abbreviatedlabel, label, language_id) 
-//		SELECT  ( @repId := max(id)+1 ) AS maxId ,'2010-06-01 18:49:07','fadb1730-9936-44e7-8911-884a84662b08', 'Google Earth','Google','Google Earth', @langId
-//		FROM Representation;
-//		;
-
 		String sqlInsertMN = "INSERT INTO DefinedTermBase_Representation (DefinedTermBase_id, representations_id) " + 
 				" VALUES ("+ termId +"," +repId+ " )";		
 		
 		datasource.executeUpdate(sqlInsertMN);
 		
-//		 -- defTerm <-> representation
-//		INSERT INTO DefinedTermBase_Representation (DefinedTermBase_id, representations_id) 
-//		VALUES (@defTermId,@repId);
-//	
-		return true;
+		return termId;
+	}
+
+
+
+	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) {
+		if (dtype.equals(Feature.class.getSimpleName())){
+			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
+				" supportscategoricaldata = " + getBoolean(false, datasource) + ", " + 
+				" supportscommontaxonname = " + getBoolean(false, datasource) + ", " + 
+				" supportsdistribution = " + getBoolean(false, datasource) + ", " +
+				" supportsindividualassociation = " + getBoolean(false, datasource) + ", " +
+				" supportsquantitativedata = " + getBoolean(false, datasource) + ", " +
+				" supportstaxoninteraction = " + getBoolean(false, datasource) + ", " +
+				" supportstextdata = " + getBoolean(true, datasource) +  " " +
+				" WHERE id = " + termId;
+			datasource.executeUpdate(sqlUpdate);
+		}
+	}
+
+
+
+	private String getBoolean(boolean value, ICdmDataSource datasource) {
+		String result;
+		DatabaseTypeEnum type = datasource.getDatabaseType();
+		int intValue = value == true? 1 : 0;
+		if (type.equals(DatabaseTypeEnum.MySQL)){
+			result = "b'"+intValue+"'";
+		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
+			result = "'"+intValue+"'";
+		}else if (type.equals(DatabaseTypeEnum.H2)){
+			logger.warn("H2 boolean not tested yet");
+			result = "b'"+intValue+"'";
+		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+			logger.warn("SQLServer boolean not tested yet");
+			result = "b'"+intValue+"'";
+		}else{
+			throw new RuntimeException("Database type not supported for boolean" + type.getName());
+		}
+		return result;
+	}
+
+
+
+	/**
+	 * @param datasource
+	 * @param vocId
+	 * @param monitor
+	 * @return
+	 * @throws SQLException
+	 */
+	private String getOrderIndex(ICdmDataSource datasource, int vocId, IProgressMonitor monitor) throws SQLException {
+		ResultSet rs;
+		Integer intOrderIndex = null;
+		String sqlOrderIndex = " SELECT orderindex FROM DefinedTermBase WHERE uuid = '"+uuidAfterTerm+"' AND vocabulary_id = "+vocId+"";
+		rs = datasource.executeQuery(sqlOrderIndex);
+		if (rs.next()){
+			intOrderIndex = rs.getInt("orderindex") + 1;
+			
+			String sqlUpdateLowerTerms = "UPDATE DefinedTermBase SET orderindex = orderindex + 1 WHERE vocabulary_id = " + vocId+ " AND orderindex >= " + intOrderIndex;
+			datasource.executeUpdate(sqlUpdateLowerTerms);
+		}else{
+			String warning = "The previous term has not been found in vocabulary. Put term to the end";
+			monitor.warning(warning);
+			return "null";
+		}
+		if (intOrderIndex == null){
+			String sqlMaxOrderIndex = " SELECT max(orderindex) FROM DefinedTermBase WHERE vocabulary_id = " + vocId + "";
+			intOrderIndex = (Integer)datasource.getSingleValue(sqlMaxOrderIndex);
+			if (intOrderIndex != null){
+				intOrderIndex++;
+			}else{
+				String warning = "No term was found in vocabulary or vocabulary does not exist. Use order index '0'.";
+				monitor.warning(warning);
+				return "0";
+			}
+		}
+		
+		return intOrderIndex.toString();
+//			-- absence term max orderindex
+//			SELECT (@maxAbsenceOrderIndex := max(orderindex)) AS b FROM DefinedTermBase WHERE DTYPE = 'AbsenceTerm';
+//
+//			-- native reported in error
+//			SELECT (@presenceOrderIndex := orderindex) AS a FROM DefinedTermBase WHERE uuid = '4ba212ef-041e-418d-9d43-2ebb191b61d8';
+//			UPDATE DefinedTermBase SET uuid = '61cee840-801e-41d8-bead-015ad866c2f1', DTYPE = 'AbsenceTerm', vocabulary_id = 18, orderindex = @maxAbsenceOrderIndex + 1 WHERE uuid = '4ba212ef-041e-418d-9d43-2ebb191b61d8';
+//			UPDATE DefinedTermBase SET orderindex = orderindex -1 WHERE DTYPE = 'PresenceTerm' AND orderindex > @presenceOrderIndex ;
 	}
 	
 }

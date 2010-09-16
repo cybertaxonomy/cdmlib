@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
@@ -57,8 +58,8 @@ public class TermUpdater_3_0 extends TermUpdaterBase implements ITermUpdater {
 		String abbrev = "comb. illeg.";
 		String dtype = NomenclaturalStatusType.class.getSimpleName();
 		UUID uuidVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");
-		Integer orderIndex = null;
-		list.add( SingleTermUpdater.NewInstance("Add comb. illeg. status", uuidTerm, description, label, abbrev, dtype, orderIndex, uuidVocabulary));
+		UUID uuidAfterTerm = UUID.fromString("f858e619-7b7f-4225-913b-880a2143ec83");
+		list.add( SingleTermUpdater.NewInstance("Add comb. illeg. status", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
 		
 		//Habitat
 		uuidTerm = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
@@ -67,8 +68,8 @@ public class TermUpdater_3_0 extends TermUpdaterBase implements ITermUpdater {
 		abbrev = "Habitat";
 		dtype = Feature.class.getSimpleName();
 		uuidVocabulary = uuidFeatureVocabulary;
-		orderIndex = null;
-		list.add( SingleTermUpdater.NewInstance("Add habitat feature", uuidTerm, description, label, abbrev, dtype, orderIndex, uuidVocabulary));
+		uuidAfterTerm = null;
+		list.add( SingleTermUpdater.NewInstance("Add habitat feature", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidEnglish, false, null));
 
 		//Habitat & Ecology
 		uuidTerm = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
@@ -77,8 +78,8 @@ public class TermUpdater_3_0 extends TermUpdaterBase implements ITermUpdater {
 		abbrev = "Hab. & Ecol.";
 		dtype = Feature.class.getSimpleName();
 		uuidVocabulary = uuidFeatureVocabulary;
-		orderIndex = null;
-		list.add( SingleTermUpdater.NewInstance("Add habitat & ecology feature", uuidTerm, description, label, abbrev, dtype, orderIndex, uuidVocabulary));
+		uuidAfterTerm = null;
+		list.add( SingleTermUpdater.NewInstance("Add habitat & ecology feature", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidEnglish, false, null));
 
 		//Chromosome Numbers
 		uuidTerm = UUID.fromString("6f677e98-d8d5-4bc5-80bf-affdb7e3945a");
@@ -87,8 +88,8 @@ public class TermUpdater_3_0 extends TermUpdaterBase implements ITermUpdater {
 		abbrev = "Chromosome Numbers";
 		dtype = Feature.class.getSimpleName();
 		uuidVocabulary = uuidFeatureVocabulary;
-		orderIndex = null;
-		list.add( SingleTermUpdater.NewInstance("Add chromosome number feature", uuidTerm, description, label, abbrev, dtype, orderIndex, uuidVocabulary));
+		uuidAfterTerm = null;
+		list.add( SingleTermUpdater.NewInstance("Add chromosome number feature", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidEnglish, false, null));
 		
 		return list;
 	}

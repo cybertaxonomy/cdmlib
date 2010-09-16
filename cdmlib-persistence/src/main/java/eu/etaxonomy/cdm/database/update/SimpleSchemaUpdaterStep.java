@@ -48,13 +48,14 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
 	 */
-	public boolean invoke (ICdmDataSource datasource, IProgressMonitor monitor){
+	public Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor){
+		boolean result = true;
 		String query = queryMap.get(datasource.getDatabaseType());
 		if (query == null){
 			query = queryMap.get(null);
 		}
 		datasource.executeUpdate(query);
-		return true;
+		return (result == true )? 0 : null;
 	}
 
 //********************************* DELEGATES *********************************/

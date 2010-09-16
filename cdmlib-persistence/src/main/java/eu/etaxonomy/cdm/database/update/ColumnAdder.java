@@ -47,14 +47,14 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
 	 */
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
 		result &= addColumn(tableName, newColumnName, columnType, datasource, monitor);
 		if (includeAudTable){
 			String aud = "_AUD";
 			result &= addColumn(tableName + aud, newColumnName, columnType, datasource, monitor);
 		}
-		return result;
+		return (result == true )? 0 : null;
 	}
 
 	private boolean addColumn(String tableName, String newColumnName, String columnType, ICdmDataSource datasource, IProgressMonitor monitor) {
