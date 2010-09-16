@@ -96,7 +96,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 	 * @see eu.etaxonomy.cdm.common.IProgressMonitor#warning(java.lang.String, java.lang.Exception)
 	 */
 	@Override
-	public void warning(String warning, Exception exeption) {
+	public void warning(String warning, Throwable exeption) {
 		logger.warn(warning);
 		exeption.printStackTrace();
 	}
