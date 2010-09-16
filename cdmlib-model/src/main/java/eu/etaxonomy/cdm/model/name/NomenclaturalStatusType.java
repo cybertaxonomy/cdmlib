@@ -86,6 +86,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidInvalid = UUID.fromString("b09d4f51-8a77-442a-bbce-e7832aaf46b7");
 	private static final UUID uuidNudum = UUID.fromString("e0d733a8-7777-4b27-99a3-05ab50e9f312");
 	private static final UUID uuidCombinationInvalid = UUID.fromString("f858e619-7b7f-4225-913b-880a2143ec83");
+	private static final UUID uuidCombinationIllegitimate = UUID.fromString("d901d455-4e01-45cb-b653-01a840b97eed");
 	private static final UUID uuidProvisional = UUID.fromString("a277507e-ad93-4978-9419-077eb889c951");
 	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
@@ -583,6 +584,16 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 */
 	public static final NomenclaturalStatusType COMBINATION_INVALID(){
 		return getTermByUuid(uuidCombinationInvalid);
+	}
+	
+	/**
+	 * Returns the nomenclatural status type "illegitimate combination". 
+	 * TODO explanation
+	 *
+	 * @see  #isInvalidType()
+	 */
+	public static final NomenclaturalStatusType COMBINATION_ILLEGITIMATE(){
+		return getTermByUuid(uuidCombinationIllegitimate);
 	}
 
 	/**

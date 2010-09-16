@@ -532,6 +532,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
 	private static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
 	private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
+	private static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
+	private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
+	private static final UUID uuidChromosomeNumber = UUID.fromString("6f677e98-d8d5-4bc5-80bf-affdb7e3945a");
+	
 	private static final UUID uuidBiologyEcology = UUID.fromString("9832e24f-b670-43b4-ac7c-20a7261a1d8c");
 	private static final UUID uuidKey = UUID.fromString("a677f827-22b9-4205-bb37-11cb48dd9106");
 	private static final UUID uuidMaterialsExamined = UUID.fromString("7c0c7571-a864-47c1-891d-01f59000dae1");
@@ -650,8 +654,29 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	public static final Feature ECOLOGY(){
 		return getTermByUuid(uuidEcology);
-	}	
+	}
 	
+	/**
+	 * Returns the "habitat" feature. This feature only applies
+	 * to {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.<BR>
+	 * The "habitat" feature generalizes all other possible features concerning
+	 * habitat matters.
+	 */
+	public static final Feature HABITAT(){
+		return getTermByUuid(uuidHabitat);
+	}
+
+	
+	/**
+	 * Returns the "habitat & ecology" feature. This feature only applies
+	 * to {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.<BR>
+	 * The "habitat & ecology" feature generalizes all other possible features concerning
+	 * habitat and ecology matters.
+	 */
+	public static final Feature HABITAT_ECOLOGY(){
+		return getTermByUuid(uuidHabitatAndEcology);
+	}
+
 	/**
 	 * Returns the "biology_ecology" feature. This feature only applies
 	 * to {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.<BR>
@@ -663,6 +688,15 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature BIOLOGY_ECOLOGY(){
 		return getTermByUuid(uuidBiologyEcology);
 	}
+
+	/**
+	 * Returns the "chromosome number" feature. This feature only applies
+	 * to {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.<BR>
+	 */
+	public static final Feature CHROMOSOME_NUMBER(){
+		return getTermByUuid(uuidChromosomeNumber);
+	}
+
 	
 	/**
 	 * Returns the "key" feature. This feature is the "upper" feature generalizing
