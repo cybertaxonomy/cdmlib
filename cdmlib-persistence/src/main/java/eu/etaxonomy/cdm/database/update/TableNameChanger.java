@@ -70,6 +70,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase implements ISchemaUp
 			return false;
 		}
 		updateQuery = updateQuery.replace("@oldName", oldName);
+		updateQuery = updateQuery.replace("@newName", newName);
 		datasource.executeQuery(updateQuery);
 		return true;
 	}
