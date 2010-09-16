@@ -59,8 +59,9 @@ public class TableNameChanger extends SchemaUpdaterStepBase implements ISchemaUp
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		if (type.equals(DatabaseTypeEnum.MySQL)){
+			//MySQL allows both syntaxes
 			updateQuery = "RENAME TABLE @oldName TO @newName";
-		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL)){
+		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
 			updateQuery = "ALTER TABLE @oldName RENAME TO @newName";
 		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			updateQuery = "EXEC sp_rename '@oldName', '@newName'";
