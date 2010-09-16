@@ -67,27 +67,28 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 		
 		//sortIndex on children in FeatureNode
 		stepName = "Add sort index on FeatureNode children";
-		updateQuery = "ALTER TABLE featurenode ADD COLUMN sortindex int";
-		SimpleSchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE featurenode ADD sortindex int");
+		ColumnAdder step = ColumnAdder.NewIntegerInstance(stepName, "FeatureNode", "sortindex", INCLUDE_AUDIT);
+//		updateQuery = "ALTER TABLE FeatureNode ADD COLUMN sortindex int";
+//		SimpleSchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+//		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE FeatureNode ADD sortindex int");
 		stepList.add(step);
 
-		//sortIndex on children in FeatureNode
-		stepName = "Add sort index on FeatureNode children";
-		updateQuery = "ALTER TABLE featurenode_aud ADD COLUMN sortindex int";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE featurenode_aud ADD sortindex int");
-		stepList.add(step);
+//		//sortIndex on children in FeatureNode
+//		stepName = "Add sort index on FeatureNode children in auditing table";
+//		updateQuery = "ALTER TABLE FeatureNode_AUD ADD COLUMN sortindex int";
+//		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+//		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE featurenode_aud ADD sortindex int");
+//		stepList.add(step);
 		
 		//update sortindex on FeatureNode children
 		stepName = "Update sort index on FeatureNode children";
-		updateQuery = "UPDATE featurenode SET sortindex = id WHERE sortindex is null";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-		stepList.add(step);
+		updateQuery = "UPDATE FeatureNode SET sortindex = id WHERE sortindex is null";
+		SimpleSchemaUpdaterStep updateSortindex = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+		stepList.add(updateSortindex);
 		
 		//rename taxonomicTree -> classification
 		stepName = "Rename taxonomic tree into classification";
-		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", true);
+		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
 		stepList.add(tableChanger);
 		
 		

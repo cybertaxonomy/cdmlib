@@ -49,15 +49,15 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 	@Override
 	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
-		result &= renameTable(tableName, newColumnName, columnType, datasource, monitor);
+		result &= addColumn(tableName, newColumnName, columnType, datasource, monitor);
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= renameTable(tableName + aud, newColumnName, columnType, datasource, monitor);
+			result &= addColumn(tableName + aud, newColumnName, columnType, datasource, monitor);
 		}
 		return result;
 	}
 
-	private boolean renameTable(String tableName, String newColumnName, String columnType, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private boolean addColumn(String tableName, String newColumnName, String columnType, ICdmDataSource datasource, IProgressMonitor monitor) {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
@@ -73,7 +73,7 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@columnName", newColumnName);
 		updateQuery = updateQuery.replace("@columnType", columnType);
-		datasource.executeQuery(updateQuery);
+		datasource.executeUpdate(updateQuery);
 		return true;
 	}
 

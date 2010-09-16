@@ -27,6 +27,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterBase.class);
 	private String mySchemaVersion;
+	protected static boolean INCLUDE_AUDIT = true;
 	
 	private List<ISchemaUpdaterStep> list;
 	
