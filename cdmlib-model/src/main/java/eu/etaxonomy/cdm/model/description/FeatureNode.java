@@ -85,17 +85,21 @@ public class FeatureNode extends VersionableEntity {
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
 //    @IndexColumn(name="sortIndex", base = 0)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	@JoinColumn(name="parent_fk")
+	@JoinColumn(name="parent_fk" /*, insertable=false, updatable=false, nullable=false*/)
 	private FeatureNode parent;
     
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
-//    @OrderColumn("sortIndex")  //TODO JPA 2.0
-    // for some reason @IndexColumn does not work in @OneToMany
+//    @OrderColumn("sortIndex")  //JPA 2.0 same as @IndexColumn
+    // @IndexColumn does not work because not every FeatureNode has a parent. But only NotNull will solve the problem (otherwise 
+    // we will need a join table 
+    // http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
+    // http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-collection-extratype-indexbidir
     //see also https://forum.hibernate.org/viewtopic.php?p=2392563
-    // reading works, but writing doesn't, maybe directly saving the child and/or the parent may help
+    //http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
+    // reading works, but writing doesn't
     //
-//    @IndexColumn(name="sortIndex", base = 0) 
+    @IndexColumn(name="sortIndex", base = 0) 
     @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
