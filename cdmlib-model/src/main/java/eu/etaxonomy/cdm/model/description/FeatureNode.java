@@ -21,6 +21,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -81,18 +82,28 @@ public class FeatureNode extends VersionableEntity {
     @XmlElement(name = "Parent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
+//    @IndexColumn(name="sortIndex", base = 0)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	@JoinColumn(name="parent_fk")
 	private FeatureNode parent;
     
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
-    @IndexColumn(name="sortIndex", base = 0)
-	@OneToMany(fetch = FetchType.LAZY,mappedBy="parent")
+//    @OrderColumn("sortIndex")  //TODO JPA 2.0
+    // for some reason @IndexColumn does not work in @OneToMany
+    //see also https://forum.hibernate.org/viewtopic.php?p=2392563
+    // reading works, but writing doesn't, maybe directly saving the child and/or the parent may help
+    //
+//    @IndexColumn(name="sortIndex", base = 0) 
+    @OrderBy("sortIndex")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
 
+    //see comment on children @IndexColumn
+    private Integer sortIndex;
+    
 	@XmlElementWrapper(name = "OnlyApplicableIf")
 	@XmlElement(name = "OnlyApplicableIf")
 	@XmlIDREF
@@ -238,8 +249,13 @@ public class FeatureNode extends VersionableEntity {
 		if (child.getParent() != null){
 			child.getParent().removeChild(child);
 		}
-		child.setParent(this);		
+		child.setParent(this);
 		children.add(index, child);
+		//TODO workaround (see sortIndex doc)
+		for(int i = 0; i < children.size(); i++){
+			children.get(i).sortIndex = i;
+		}
+		child.sortIndex = index;
 	}
 	/** 
 	 * Removes the given feature node from the list of {@link #getChildren() children}
@@ -273,7 +289,12 @@ public class FeatureNode extends VersionableEntity {
 		FeatureNode child = children.get(index);
 		if (child != null){
 			children.remove(index);
-			child.setParent(child);
+			child.setParent(null);
+			//TODO workaround (see sortIndex doc)
+			for(int i = 0; i < children.size(); i++){
+				children.get(i).sortIndex = i;
+			}
+			child.sortIndex = null;
 		}
 	}
 
