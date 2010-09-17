@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -24,8 +25,12 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -36,6 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -51,6 +57,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	
 	@Autowired
 	private IDefinedTermDao definedTermDao;	
+	
+	@Autowired
+	private IDescriptionService descriptionService;	
 	
 	@Autowired
 	private AbstractBeanInitializer beanInitializer;
@@ -162,4 +171,39 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		beanInitializer.initialize(derivedUnitFacade, propertyPaths);
 		return derivedUnitFacade;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listDerivedUnitFacades(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.List)
+	 */
+	@Override
+	public List<DerivedUnitFacade> listDerivedUnitFacades(
+			DescriptionBase description, List<String> propertyPaths) {
+		
+		List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<DerivedUnitFacade>();
+		IndividualsAssociation tempIndividualsAssociation;
+		SpecimenOrObservationBase tempSpecimenOrObservationBase;
+		List<DescriptionElementBase> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
+		for(DescriptionElementBase element : elements){
+			if(element instanceof IndividualsAssociation){
+				tempIndividualsAssociation = (IndividualsAssociation)element;
+				if(tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null){
+					tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
+					if(tempSpecimenOrObservationBase instanceof DerivedUnitBase){
+						try {
+							derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance((DerivedUnitBase)tempSpecimenOrObservationBase));
+						} catch (DerivedUnitFacadeNotSupportedException e) {
+							logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " +e.getMessage());
+						}
+					}
+				}
+				
+			}
+		}
+		
+		beanInitializer.initializeAll(derivedUnitFacadeList, propertyPaths);
+			
+		return derivedUnitFacadeList;
+	}
+	
+	
 }

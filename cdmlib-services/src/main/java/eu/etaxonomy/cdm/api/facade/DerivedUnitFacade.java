@@ -786,6 +786,7 @@ public class DerivedUnitFacade {
 	 * @see #getAbsoluteElevationError()
 	 * @see #getAbsoluteElevationRange()
 	 **/
+	@Transient
 	public Integer getAbsoluteElevation() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getAbsoluteElevation() : null);
 	}
@@ -794,6 +795,7 @@ public class DerivedUnitFacade {
 	}
 
 	//absolute elevation error
+	@Transient
 	public Integer getAbsoluteElevationError() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getAbsoluteElevationError() : null);
 	}
@@ -807,6 +809,7 @@ public class DerivedUnitFacade {
 	 * @see #setAbsoluteElevationRange(Integer, Integer)
 	 * @see #getAbsoluteElevationMaximum()
 	 */
+	@Transient
 	public Integer getAbsoluteElevationMinimum(){
 		if ( ! hasGatheringEvent() ){
 			return null;
@@ -823,6 +826,7 @@ public class DerivedUnitFacade {
 	 * @see #setAbsoluteElevationRange(Integer, Integer)
 	 * @see #getAbsoluteElevationMinimum()
 	 */
+	@Transient
 	public Integer getAbsoluteElevationMaximum(){
 		if ( ! hasGatheringEvent() ){
 			return null;
@@ -899,6 +903,7 @@ public class DerivedUnitFacade {
 	}
 
 	//distance to ground
+	@Transient
 	public Integer getDistanceToGround() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToGround() : null);
 	}
@@ -907,6 +912,7 @@ public class DerivedUnitFacade {
 	}
 
 	//distance to water surface
+	@Transient
 	public Integer getDistanceToWaterSurface() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToWaterSurface() : null);
 	}
@@ -1349,6 +1355,7 @@ public class DerivedUnitFacade {
 	public void addDetermination(DeterminationEvent determination) {
 		derivedUnit.addDetermination(determination);
 	}
+	@Transient
 	public Set<DeterminationEvent> getDeterminations() {
 		return derivedUnit.getDeterminations();
 	}
@@ -1408,6 +1415,7 @@ public class DerivedUnitFacade {
 
 	
 	//Accession Number
+	@Transient
 	public String getAccessionNumber() {
 		return derivedUnit.getAccessionNumber();
 	}
@@ -1569,6 +1577,7 @@ public class DerivedUnitFacade {
 		this.derivedUnit.addAnnotation(annotation);
 	}
 
+	@Transient
 	public void getAnnotations(){
 		this.derivedUnit.getAnnotations();
 	}
