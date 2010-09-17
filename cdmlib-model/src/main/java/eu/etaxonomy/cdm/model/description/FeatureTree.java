@@ -190,6 +190,7 @@ public class FeatureTree extends TermBase {
 	}
 	
 	/**
+	 * Computes a set of distinct features that are present in this feature tree
 	 * 
 	 * @return
 	 */
