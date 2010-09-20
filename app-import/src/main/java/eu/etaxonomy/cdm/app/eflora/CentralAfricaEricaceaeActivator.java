@@ -53,8 +53,8 @@ public class CentralAfricaEricaceaeActivator {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 	
 
 	//feature tree uuid
@@ -72,6 +72,7 @@ public class CentralAfricaEricaceaeActivator {
 	
 	//taxa
 	static final boolean doTaxa = true;
+	static final boolean doDeduplicate = false;
 
 	private boolean includeEricaceae = true;
 
@@ -114,14 +115,15 @@ public class CentralAfricaEricaceaeActivator {
 		}
 		
 		//deduplicate
-		CdmApplicationController app = myImport.getCdmAppController();
-		int count = app.getAgentService().deduplicate(Person.class, null, null);
-		logger.warn("Deduplicated " + count + " persons.");
-		count = app.getAgentService().deduplicate(Team.class, null, null);
-		logger.warn("Deduplicated " + count + " teams.");
-		count = app.getReferenceService().deduplicate(ReferenceBase.class, null, null);
-		logger.warn("Deduplicated " + count + " references.");
-		
+		if (doDeduplicate){
+			CdmApplicationController app = myImport.getCdmAppController();
+			int count = app.getAgentService().deduplicate(Person.class, null, null);
+			logger.warn("Deduplicated " + count + " persons.");
+			count = app.getAgentService().deduplicate(Team.class, null, null);
+			logger.warn("Deduplicated " + count + " teams.");
+			count = app.getReferenceService().deduplicate(ReferenceBase.class, null, null);
+			logger.warn("Deduplicated " + count + " references.");
+		}		
 	}
 	
 	private ReferenceBase getSourceReference(String string) {
