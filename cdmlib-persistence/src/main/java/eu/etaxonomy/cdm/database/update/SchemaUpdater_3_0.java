@@ -92,6 +92,10 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 //		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
 //		stepList.add(tableChanger);
 		
+		//update sortindex on FeatureNode children
+		stepName = "Add country column to gathering event";
+		step = ColumnAdder.NewIntegerInstance(stepName, "GatheringEvent", "country_id", INCLUDE_AUDIT);
+		stepList.add(step);
 		
 		return stepList;
 	}

@@ -25,7 +25,6 @@ import javax.persistence.Transient;
 
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -762,6 +761,16 @@ public class DerivedUnitFacade {
 //****************** GETTER / SETTER / ADDER / REMOVER ***********************/	
 	
 // ****************** Gathering Event *********************************/
+	
+	//country
+	public NamedArea getCountry(){
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getCountry() : null);
+	}
+	
+	public void setCountry(NamedArea country){
+		getGatheringEvent(true).setCountry(country);
+	}
+	
 	
 	//Collecting area
 	public void addCollectingArea(NamedArea area) {
