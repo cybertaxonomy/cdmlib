@@ -297,7 +297,8 @@ public class FeatureNode extends VersionableEntity {
 			child.setParent(null);
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
-				children.get(i).sortIndex = i;
+				FeatureNode childAt = children.get(i);
+				childAt.sortIndex = i;
 			}
 			child.sortIndex = null;
 		}
