@@ -14,8 +14,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-
 /**
  * @author a.mueller
  * @date 10.09.2010
@@ -92,9 +90,21 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 //		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
 //		stepList.add(tableChanger);
 		
-		//update sortindex on FeatureNode children
+		//add country to gathering event
 		stepName = "Add country column to gathering event";
 		step = ColumnAdder.NewIntegerInstance(stepName, "GatheringEvent", "country_id", INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//add unplaced and excluded to taxon
+		stepName = "Add unplaced to taxon";
+		Boolean defaultValue = false;
+		step = ColumnAdder.NewBooleanInstance(stepName, "TaxonBase", "unplaced", INCLUDE_AUDIT, defaultValue);
+		stepList.add(step);
+		
+		//add excluded to taxon
+		stepName = "Add unplaced and excluded to taxon";
+		defaultValue = false;
+		step = ColumnAdder.NewBooleanInstance(stepName, "TaxonBase", "excluded", INCLUDE_AUDIT, defaultValue);
 		stepList.add(step);
 		
 		return stepList;

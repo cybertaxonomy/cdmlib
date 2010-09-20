@@ -30,17 +30,23 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 	private String newColumnName;
 	private String columnType;
 	private boolean includeAudTable;
+	private Object defaultValue;
 	
 	public static final ColumnAdder NewIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
-		return new ColumnAdder(stepName, tableName, newColumnName, "int", includeAudTable);
+		return new ColumnAdder(stepName, tableName, newColumnName, "int", includeAudTable, null);
+	}
+
+	public static final ColumnAdder NewBooleanInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, Boolean defaultValue){
+		return new ColumnAdder(stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue);
 	}
 	
-	protected ColumnAdder(String stepName, String tableName, String newColumnName, String columnType, boolean includeAudTable) {
+	protected ColumnAdder(String stepName, String tableName, String newColumnName, String columnType, boolean includeAudTable, Object defaultValue) {
 		super(stepName);
 		this.tableName = tableName;
 		this.newColumnName = newColumnName;
 		this.columnType = columnType;
 		this.includeAudTable = includeAudTable;
+		this.defaultValue = defaultValue;
 	}
 
 	/* (non-Javadoc)
@@ -74,6 +80,11 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 		updateQuery = updateQuery.replace("@columnName", newColumnName);
 		updateQuery = updateQuery.replace("@columnType", columnType);
 		datasource.executeUpdate(updateQuery);
+		
+		if (defaultValue instanceof Boolean){
+			updateQuery = "UPADTE @tableName SET @columnName = " + defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource);
+			datasource.executeUpdate(updateQuery);
+		}
 		return true;
 	}
 

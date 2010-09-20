@@ -16,7 +16,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 
@@ -168,27 +167,6 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		}
 	}
 
-
-
-	private String getBoolean(boolean value, ICdmDataSource datasource) {
-		String result;
-		DatabaseTypeEnum type = datasource.getDatabaseType();
-		int intValue = value == true? 1 : 0;
-		if (type.equals(DatabaseTypeEnum.MySQL)){
-			result = "b'"+intValue+"'";
-		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
-			result = "'"+intValue+"'";
-		}else if (type.equals(DatabaseTypeEnum.H2)){
-			logger.warn("H2 boolean not tested yet");
-			result = "b'"+intValue+"'";
-		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
-			logger.warn("SQLServer boolean not tested yet");
-			result = "b'"+intValue+"'";
-		}else{
-			throw new RuntimeException("Database type not supported for boolean" + type.getName());
-		}
-		return result;
-	}
 
 
 
