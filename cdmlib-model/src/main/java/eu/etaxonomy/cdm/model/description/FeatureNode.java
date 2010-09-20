@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 		"feature",
 		"parent",
 		"children",
+		"sortIndex",
 		"onlyApplicableIf",
 		"inapplicableIf",
 		"questions",
