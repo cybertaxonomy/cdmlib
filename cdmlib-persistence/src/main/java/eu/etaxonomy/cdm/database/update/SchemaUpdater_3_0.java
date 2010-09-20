@@ -24,7 +24,8 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdater {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_3_0.class);
-	private static final String thisUpdatersStartSchemaVersion = "2.4.1.2.201004231015";
+	private static final String startSchemaVersion = "2.4.1.2.201004231015";
+	private static final String endSchemaVersion = "3.0.0.0.201009201255";
 	
 // ********************** FACTORY METHOD *******************************************
 	
@@ -36,7 +37,7 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 // ********************** CONSTRUCTOR *******************************************/
 	
 	private SchemaUpdater_3_0(){
-		super(thisUpdatersStartSchemaVersion);
+		super(startSchemaVersion, endSchemaVersion);
 	}
 	
 // ************************ NEXT / PREVIOUS **************************************/

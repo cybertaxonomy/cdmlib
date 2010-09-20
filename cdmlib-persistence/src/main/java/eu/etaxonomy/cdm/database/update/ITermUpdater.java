@@ -6,10 +6,28 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public interface ITermUpdater {
 
 	/**
-	 * Invokes this CDM term updater
+	 * Invokes this CDM term updater and updates the schema up to the current CDM
+	 * term version. Throws an exception if this updaters target version does
+	 * not equal the current CDM schema version.
+	 * @param datasource
+	 * @param monitor
 	 * @return
+	 * @throws Exception 
 	 */
-	boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor);	
+	boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;	
+
+	/**
+	 * Invokes this CDM term updater and updates the terms up to the given
+	 * target version. Throws an exception if this updaters target version does
+	 * not equal the given target version.
+	 * @param targetVersion
+	 * @param datasource
+	 * @param monitor
+	 * @return
+	 * @throws Exception 
+	 */
+	boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;	
+	
 	/**
 	 * Returns the previous CDM term updater
 	 * @return
@@ -31,6 +49,6 @@ public interface ITermUpdater {
 	 */
 	int countSteps(ICdmDataSource datasource);
 
-
+	String getTargetVersion();
 	
 }

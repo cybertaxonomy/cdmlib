@@ -26,15 +26,19 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
 public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterBase.class);
-	private String mySchemaVersion;
+	private String startSchemaVersion;
+	private String targetSchemaVersion;
+
+
 	protected static boolean INCLUDE_AUDIT = true;
 	
 	private List<ISchemaUpdaterStep> list;
 	
 	
 	
-	protected SchemaUpdaterBase(String mySchemaVersion){
-		this.mySchemaVersion = mySchemaVersion;
+	protected SchemaUpdaterBase(String startSchemaVersion, String endSchemaVersion){
+		this.startSchemaVersion = startSchemaVersion;
+		this.targetSchemaVersion = endSchemaVersion;
 		list = getUpdaterList();
 	}
 	
@@ -49,39 +53,65 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 		return result;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
 	 */
 	@Override
 	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
+		String currentLibrarySchemaVersion = CdmMetaData.getCurrentSchemaVersion();
+		return invoke(currentLibrarySchemaVersion, datasource, monitor);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
+	 */
+	@Override
+	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
 		boolean result = true;
-		
 		String datasourceSchemaVersion;
 		try {
 			datasourceSchemaVersion = getCurrentVersion(datasource, monitor);
 		} catch (SQLException e1) {
 			monitor.warning("SQLException", e1);
 			return false;
+		}		
+
+		
+		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isAfterMyTargetVersion = isAfterMyTargetVersion(targetVersion, monitor);
+		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
+		
+		if (! isBeforeMyTargetVersion){
+			String warning = "Target version ("+targetVersion+") is not before updater target version ("+this.targetSchemaVersion+"). Nothing to update.";
+			monitor.warning(warning);
+			return true;
 		}
 		
-		boolean isAfterMyVersion = isAfterMyVersion(datasourceSchemaVersion, monitor);
-		if (isAfterMyVersion){
-			String warning = "Database version is higher than updater version";
+		if (isAfterMyStartVersion && isBeforeMyTargetVersion){
+			String warning = "Database version is higher than updater start version but lower than updater target version";
 			RuntimeException exeption = new RuntimeException(warning);
 			monitor.warning(warning, exeption);
 			throw exeption;
 		}
 		
-		boolean isBeforeMyVersion = isBeforeMyVersion(datasourceSchemaVersion, monitor);
-		if (isBeforeMyVersion){
+		if (isBeforeMyStartVersion){
 			if (getPreviousUpdater() == null){
 				String warning = "Database version is before updater version but no previous version updater exists";
 				RuntimeException exeption = new RuntimeException(warning);
 				monitor.warning(warning, exeption);
 				throw exeption;
 			}
-			result &= getPreviousUpdater().invoke(datasource, monitor);
+			result &= getPreviousUpdater().invoke(startSchemaVersion, datasource, monitor);
+		}
+		
+
+		
+		if (isBeforeMyTargetVersion){
+			String warning = "Target version ("+targetVersion+") is lower than updater target version ("+this.targetSchemaVersion+")";
+			RuntimeException exeption = new RuntimeException(warning);
+			monitor.warning(warning, exeption);
+			throw exeption;
 		}
 		
 		
@@ -97,24 +127,49 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 				throw e;
 			}
 		}
+		updateSchemaVersion(datasource, monitor);
+		
 		return result;
 		
 		
 	}
 
 	
+	private void updateSchemaVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+			int intSchemaVersion = 0;
+			String sqlUpdateSchemaVersion = "UPDATE CdmMetaData SET value = '" + this.targetSchemaVersion + "' WHERE propertyname = " +  intSchemaVersion;
+			try {
+				datasource.executeUpdate(sqlUpdateSchemaVersion);
+			} catch (Exception e) {
+				monitor.warning("Error when trying to set new schemaversion: ", e);
+				throw new SQLException(e);
+			}
+		
+	}
+
 	protected abstract List<ISchemaUpdaterStep> getUpdaterList();
 
-	protected boolean isAfterMyVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+	protected boolean isAfterMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
 		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, mySchemaVersion, depth, monitor);
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, startSchemaVersion, depth, monitor);
 		return compareResult > 0;
 	}
 
-	protected boolean isBeforeMyVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+	protected boolean isBeforeMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
 		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, mySchemaVersion, depth, monitor);
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, startSchemaVersion, depth, monitor);
+		return compareResult < 0;
+	}
+	protected boolean isAfterMyTargetVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+		int depth = 4;
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, targetSchemaVersion, depth, monitor);
 		return compareResult > 0;
+	}
+
+	protected boolean isBeforeMyTargetVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+		int depth = 4;
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, targetSchemaVersion, depth, monitor);
+		return compareResult < 0;
 	}
 
 
@@ -142,4 +197,10 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	 */
 	@Override
 	public abstract ISchemaUpdater getPreviousUpdater();
+	
+	@Override
+	public String getTargetVersion() {
+		return this.targetSchemaVersion;
+	}
+	
 }

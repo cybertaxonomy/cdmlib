@@ -28,18 +28,19 @@ public class TermUpdater_3_0 extends TermUpdaterBase implements ITermUpdater {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdater_3_0.class);
 	
-	public static final String myTermVersion = "2.4.2.2.201006011715";
+	public static final String startTermVersion = "2.4.2.2.201006011715";
+	private static final String endTermVersion = "3.0.0.0.201009201255";
 	
 // *************************** FACTORY **************************************/
 	
 	public static TermUpdater_3_0 NewInstance(){
-		return new TermUpdater_3_0(myTermVersion);
+		return new TermUpdater_3_0(startTermVersion, endTermVersion);
 	}
 	
 // *************************** CONSTRUCTOR ***********************************/	
 
-	protected TermUpdater_3_0(String mySchemaVersion) {
-		super(mySchemaVersion);
+	protected TermUpdater_3_0(String startTermVersion, String endTermVersion) {
+		super(startTermVersion, endTermVersion);
 	}
 	
 // 

@@ -30,12 +30,14 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 	protected static final UUID uuidFeatureVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
 	
 	private List<SingleTermUpdater> list;
-	private String mySchemaVersion;
+	private String startTermVersion;
+	private String targetTermVersion;
 	
 	
 	
-	protected TermUpdaterBase(String mySchemaVersion){
-		this.mySchemaVersion = mySchemaVersion;
+	protected TermUpdaterBase(String startTermVersion, String targetTermVersion){
+		this.startTermVersion = startTermVersion;
+		this.targetTermVersion = targetTermVersion;
 		list = getUpdaterList();
 	}
 	
@@ -55,7 +57,17 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
 	 */
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor){
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
+		String currentLibraryTermVersion = CdmMetaData.getCurrentTermsVersion();
+		return invoke(currentLibraryTermVersion, datasource, monitor);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
+	 */
+	@Override
+	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
 		boolean result = true;
 		
 		String datasourceSchemaVersion;
@@ -66,24 +78,43 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 			return false;
 		}
 		
-		boolean isAfterMyVersion = isAfterMyVersion(datasourceSchemaVersion, monitor);
-		if (isAfterMyVersion){
-			String warning = "Database version is higher than updater version";
+		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isAfterMyTargetVersion = isAfterMyTargetVersion(targetVersion, monitor);
+		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
+
+
+		if (! isBeforeMyTargetVersion){
+			String warning = "Target version ("+targetVersion+") is not before updater target version ("+this.targetTermVersion+"). Nothing to update.";
+			monitor.warning(warning);
+			return true;
+		}
+		
+		if (isAfterMyStartVersion){
+			String warning = "Database version is higher than updater start version";
 			RuntimeException exeption = new RuntimeException(warning);
 			monitor.warning(warning, exeption);
 			throw exeption;
 		}
 		
-		boolean isBeforeMyVersion = isBeforeMyVersion(datasourceSchemaVersion, monitor);
-		if (isBeforeMyVersion){
+		if (isBeforeMyStartVersion){
 			if (getPreviousUpdater() == null){
 				String warning = "Database version is before updater version but no previous version updater exists";
 				RuntimeException exeption = new RuntimeException(warning);
 				monitor.warning(warning, exeption);
 				throw exeption;
 			}
-			result &= getPreviousUpdater().invoke(datasource, monitor);
+			result &= getPreviousUpdater().invoke(startTermVersion, datasource, monitor);
 		}
+
+		
+		if (isBeforeMyTargetVersion){
+			String warning = "Target version ("+targetVersion+") is lower than updater target version ("+this.targetTermVersion+")";
+			RuntimeException exeption = new RuntimeException(warning);
+			monitor.warning(warning, exeption);
+			throw exeption;
+		}
+
 		
 		
 		for (SingleTermUpdater step : list){
@@ -98,26 +129,52 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 				result = false;
 			}
 		}
+		updateTermVersion(datasource, monitor);
+
 		return result;
 	}
 	
+	private void updateTermVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+		int intSchemaVersion = 1;
+		String sqlUpdateSchemaVersion = "UPDATE CdmMetaData SET value = '" + this.targetTermVersion + "' WHERE propertyname = " +  intSchemaVersion;
+		try {
+			datasource.executeUpdate(sqlUpdateSchemaVersion);
+		} catch (Exception e) {
+			monitor.warning("Error when trying to set new schemaversion: ", e);
+			throw new SQLException(e);
+		}
+	
+}
+	
 	protected abstract List<SingleTermUpdater> getUpdaterList();
 
-	protected boolean isAfterMyVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+	protected boolean isAfterMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
 		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, mySchemaVersion, depth, monitor);
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, startTermVersion, depth, monitor);
 		return compareResult > 0;
 	}
 
-	protected boolean isBeforeMyVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+	protected boolean isBeforeMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
 		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, mySchemaVersion, depth, monitor);
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, startTermVersion, depth, monitor);
+		return compareResult < 0;
+	}
+
+	protected boolean isAfterMyTargetVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+		int depth = 4;
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, targetTermVersion, depth, monitor);
 		return compareResult > 0;
 	}
 
+	protected boolean isBeforeMyTargetVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
+		int depth = 4;
+		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, targetTermVersion, depth, monitor);
+		return compareResult < 0;
+	}
+	
 
 	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		int intSchemaVersion = 0;
+		int intSchemaVersion = 1;
 		String sqlSchemaVersion = "SELECT value FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
 		try {
 			String value = (String)datasource.getSingleValue(sqlSchemaVersion);
@@ -141,5 +198,9 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 	@Override
 	public abstract ITermUpdater getPreviousUpdater();
 
-
+	
+	@Override
+	public String getTargetVersion() {
+		return this.targetTermVersion;
+	}
 }

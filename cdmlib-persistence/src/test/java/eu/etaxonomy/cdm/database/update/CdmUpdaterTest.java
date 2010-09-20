@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.AccountStore;
@@ -47,6 +48,7 @@ public class CdmUpdaterTest {
 
 // ******************** TESTS ****************************************************/
 	
+//	@Ignore
 	@Test
 	public void testUpdateToCurrentVersion() {
 		CdmUpdater cdmUpdater = new CdmUpdater();

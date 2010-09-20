@@ -39,7 +39,7 @@ public class CdmUpdater {
 		int steps = currentSchemaUpdater.countSteps(datasource);
 		steps += currentTermUpdater.countSteps(datasource);
 		
-		String taskName = "Update to schema version ... and to term version ... "; //+ currentSchemaUpdater.getVersion();
+		String taskName = "Update to schema version " + currentSchemaUpdater.getTargetVersion() + " and to term version " + currentTermUpdater.getTargetVersion(); //+ currentSchemaUpdater.getVersion();
 		monitor.beginTask(taskName, steps);
 		
 		try {
@@ -71,6 +71,7 @@ public class CdmUpdater {
 	 */
 	public static void main(String[] args) {
 		logger.warn("main method not yet implemented");
+		//TODO
 		CdmUpdater myUpdater = new CdmUpdater();
 //		myUpdater.updateToCurrentVersion(datasource, monitor);
 	}
