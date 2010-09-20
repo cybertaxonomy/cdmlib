@@ -83,6 +83,8 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 		
 		if (defaultValue instanceof Boolean){
 			updateQuery = "UPADTE @tableName SET @columnName = " + defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource);
+			updateQuery = updateQuery.replace("@tableName", tableName);
+			updateQuery = updateQuery.replace("@columnName", newColumnName);
 			datasource.executeUpdate(updateQuery);
 		}
 		return true;
