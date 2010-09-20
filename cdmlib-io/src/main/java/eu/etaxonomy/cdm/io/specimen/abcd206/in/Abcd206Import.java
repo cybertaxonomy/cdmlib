@@ -1108,7 +1108,6 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 			
 			if (config.isDoMatchTaxa()){
 				taxon = getTaxonService().findBestMatchingTaxon(scientificName);
-				logger.info("Matching to existing Taxon : " + taxon.getTitleCache());
 			} 
 			if (taxon == null && config.isDoReUseTaxon()){
 				try{
@@ -1117,14 +1116,17 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 				} catch(Exception e){
 					taxon=null;
 				}
+			} else {			
+				logger.info("Matching to existing Taxon : " + taxon.getTitleCache());
 			}
-//			taxonName = NonViralName.NewInstance(null);
-//			taxonName.setFullTitleCache(scientificName);
 
 			if (!config.isDoReUseTaxon() || taxon == null){
 				getNameService().save(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //TODO sec set null
 			}
+
+//			taxonName = NonViralName.NewInstance(null);
+//			taxonName.setFullTitleCache(scientificName);
 			
 			// --- taxon is found now ---
 			
