@@ -81,8 +81,11 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
 		boolean isAfterMyTargetVersion = isAfterMyTargetVersion(targetVersion, monitor);
 		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
+		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceSchemaVersion, monitor);
 		
-		if (! isBeforeMyTargetVersion){
+		
+		
+		if (! isDatasourceBeforeMyTargetVersion){
 			String warning = "Target version ("+targetVersion+") is not before updater target version ("+this.targetSchemaVersion+"). Nothing to update.";
 			monitor.warning(warning);
 			return true;
