@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
  * @author a.mueller
  *
  */
-public class CdmApplicationController {
+public class CdmApplicationController implements ICdmApplicationConfiguration{
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
@@ -415,6 +415,12 @@ public class CdmApplicationController {
 		return configuration.getAuthenticationManager();
 	}
 	
+
+	@Override
+	public final PlatformTransactionManager getTransactionManager() {
+		return configuration.getTransactionManager();
+	}
+	
 	public final Object getBean(String name){
 		return this.applicationContext.getBean(name);
 	}
@@ -467,4 +473,5 @@ public class CdmApplicationController {
 		txManager.commit(txStatus);
 		return;
 	}
+
 }
