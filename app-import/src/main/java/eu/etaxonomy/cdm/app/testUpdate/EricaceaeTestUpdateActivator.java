@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -36,19 +37,19 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.06.2008
  * @version 1.0
  */
-public class CentralAfricaEricaceaeActivator {
-	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeActivator.class);
+public class EricaceaeTestUpdateActivator {
+	private static final Logger logger = Logger.getLogger(EricaceaeTestUpdateActivator.class);
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 	static final String source = EfloraSources.ericacea_local();
 
 	
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 	
 
 	//feature tree uuid
@@ -101,18 +102,30 @@ public class CentralAfricaEricaceaeActivator {
 		
 		app = myImport.getCdmAppController();
 		
+		TransactionStatus tx = app.startTransaction();
 		List<FeatureTree> featureTrees = app.getFeatureTreeService().list(null, null, null, null, null);
 		for (FeatureTree tree :featureTrees){
-			FeatureNode root = tree.getRoot();
-			int count = root.getChildCount();
-			FeatureNode lastChild = root.getChildAt(count - 1);
-			root.removeChild(lastChild);
-			root.addChild(lastChild, 0);
-			
+			if (tree.getClass().getSimpleName().equalsIgnoreCase("FeatureTree")){
+				moveChild(app, tree);
+			}
 		}
+		app.commitTransaction(tx);
 		
 		
 		
+	}
+
+	/**
+	 * @param app
+	 * @param tree
+	 */
+	private void moveChild(CdmApplicationController app, FeatureTree tree) {
+		FeatureNode root = tree.getRoot();
+		int count = root.getChildCount();
+		FeatureNode lastChild = root.getChildAt(count - 1);
+		root.removeChild(lastChild);
+		root.addChild(lastChild, 1);
+		app.getFeatureTreeService().saveOrUpdate(tree);
 	}
 	
 	private ReferenceBase getSourceReference(String string) {
@@ -127,7 +140,7 @@ public class CentralAfricaEricaceaeActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		CentralAfricaEricaceaeActivator me = new CentralAfricaEricaceaeActivator();
+		EricaceaeTestUpdateActivator me = new EricaceaeTestUpdateActivator();
 		me.doImport(cdmDestination);
 	}
 	

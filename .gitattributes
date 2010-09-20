@@ -64,7 +64,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/synthesysImport/SynthesysCacheActi
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsRdfTestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsXmlTestActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/testUpdate/CentralAfricaEricaceaeActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/testUpdate/EricaceaeTestUpdateActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestDatabase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestTransaction.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/viennaImport/ViennaActivator.java -text
