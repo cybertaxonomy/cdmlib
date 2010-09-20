@@ -102,7 +102,7 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 		stepList.add(step);
 		
 		//add excluded to taxon
-		stepName = "Add unplaced and excluded to taxon";
+		stepName = "Add excluded to taxon";
 		defaultValue = false;
 		step = ColumnAdder.NewBooleanInstance(stepName, "TaxonBase", "excluded", INCLUDE_AUDIT, defaultValue);
 		stepList.add(step);

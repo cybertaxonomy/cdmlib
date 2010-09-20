@@ -3644,6 +3644,8 @@
         doubtful bit not null,
         usenamecache bit not null,
         taxonstatusunknown bit,
+        unplaced bit,
+        excluded bit,
         taxonomicchildrencount integer,
         createdby_id integer,
         updatedby_id integer,
@@ -3677,6 +3679,8 @@
         taxonName_fk integer,
         sec_id integer,
         taxonstatusunknown bit,
+        unplaced bit,
+        excluded bit,
         taxonomicchildrencount integer,
         taxonomicparentcache_id integer,
         primary key (id, REV)
