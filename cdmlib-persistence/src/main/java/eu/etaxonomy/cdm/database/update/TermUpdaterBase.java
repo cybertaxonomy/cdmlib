@@ -178,12 +178,12 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 		int intSchemaVersion = 1;
 		try {
 			String sqlCount = "SELECT count(*) FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
-			Integer count = (Integer)datasource.getSingleValue(sqlCount);
+			Long count = (Long)datasource.getSingleValue(sqlCount);
 			if (count == 0){
 				String defaultVersion = "2.4.2.2.201006011715";
 				String sqlMaxId = "SELECT max(id) FROM CdmMetaData";
 				Integer maxId = (Integer)datasource.getSingleValue(sqlMaxId) + 1;
-				String sqlUpdate = "INSERT INTO CdmMetaData (id, created, propertyname, value) VALUES (" + maxId + "'2010-09-21 13:52:54', 1, '" + defaultVersion + "')";
+				String sqlUpdate = "INSERT INTO CdmMetaData (id, created, uuid, propertyname, value) VALUES (" + maxId + ", '"+UUID.randomUUID()+"', '2010-09-21 13:52:54', 1, '" + defaultVersion + "')";
 				datasource.executeUpdate(sqlUpdate);
 				return defaultVersion;
 			}else{
