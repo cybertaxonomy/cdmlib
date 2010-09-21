@@ -93,10 +93,10 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 		step = ColumnAdder.NewBooleanInstance(stepName, "TaxonBase", "excluded", INCLUDE_AUDIT, defaultValue);
 		stepList.add(step);
 
-//		//add barcode to derived unit base
-//		stepName = "Add barcode to specimen";
-//		step = ColumnAdder.NewStringInstance(stepName, "SpecimenOrObservationBase", "barcode", INCLUDE_AUDIT);
-//		stepList.add(step);
+		//add barcode to derived unit base
+		stepName = "Add barcode to specimen";
+		step = ColumnAdder.NewStringInstance(stepName, "SpecimenOrObservationBase", "barcode", INCLUDE_AUDIT);
+		stepList.add(step);
 
 		
 //		//rename taxonomicTree -> classification

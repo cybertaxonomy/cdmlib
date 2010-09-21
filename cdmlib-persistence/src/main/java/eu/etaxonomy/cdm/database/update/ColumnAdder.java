@@ -40,6 +40,10 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 		return new ColumnAdder(stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue);
 	}
 	
+	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
+		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar(255)", includeAudTable, null);
+	}
+	
 	protected ColumnAdder(String stepName, String tableName, String newColumnName, String columnType, boolean includeAudTable, Object defaultValue) {
 		super(stepName);
 		this.tableName = tableName;
@@ -55,12 +59,21 @@ public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdater
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
-		result &= addColumn(tableName, newColumnName, columnType, datasource, monitor);
+		String databaseColumnType = getDatabaseColumnType(datasource, columnType);
+		result &= addColumn(tableName, newColumnName, databaseColumnType, datasource, monitor);
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= addColumn(tableName + aud, newColumnName, columnType, datasource, monitor);
+			result &= addColumn(tableName + aud, newColumnName, databaseColumnType, datasource, monitor);
 		}
 		return (result == true )? 0 : null;
+	}
+
+	private String getDatabaseColumnType(ICdmDataSource datasource, String columnType) {
+		String result = columnType;
+		if (datasource.getDatabaseType().equals(DatabaseTypeEnum.PostgreSQL)){
+			result = result.replace("nvarchar", "varchar");
+		}
+		return result;
 	}
 
 	private boolean addColumn(String tableName, String newColumnName, String columnType, ICdmDataSource datasource, IProgressMonitor monitor) {

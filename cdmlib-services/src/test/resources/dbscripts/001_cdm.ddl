@@ -3259,6 +3259,7 @@
         collectorsnumber varchar(255),
         fieldnotes varchar(255),
         fieldnumber varchar(255),
+        barcode varchar(255),
         createdby_id integer,
         updatedby_id integer,
         lifestage_id integer,
@@ -3301,6 +3302,7 @@
         preservation_id integer,
         fieldnotes varchar(255),
         fieldnumber varchar(255),
+        barcode varchar(255),
         gatheringevent_id integer,
         primary key (id, REV)
     );
