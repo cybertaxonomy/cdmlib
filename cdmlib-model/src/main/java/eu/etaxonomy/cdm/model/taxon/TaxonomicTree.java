@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -87,8 +88,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	//TODO 
-    private Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
+	//TODO
+//    @NotNull // avoids creating a UNIQUE key for this field
+	private Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
 
 	@XmlElement(name = "reference")
 	@XmlIDREF
