@@ -12,15 +12,10 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations .CascadeType;
-
 import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,6 +26,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -107,11 +104,15 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
 		this.gatheringEvent = gatheringEvent;
+		addGatheringEventPropertyChangeListener();
+	}	
+	
+
+	private void addGatheringEventPropertyChangeListener() {
 		if (gatheringEvent != null){
 			gatheringEvent.addPropertyChangeListener(getNewGatheringEventPropChangeListener());
 		}
-	}	
-	
+	}
 
 	public String getFieldNumber() {
 		return fieldNumber;
