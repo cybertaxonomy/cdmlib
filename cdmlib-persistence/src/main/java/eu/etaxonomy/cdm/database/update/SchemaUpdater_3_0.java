@@ -61,34 +61,20 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
-		String updateQuery;
 		String stepName;
 		
 		//sortIndex on children in FeatureNode
 		stepName = "Add sort index on FeatureNode children";
 		ColumnAdder step = ColumnAdder.NewIntegerInstance(stepName, "FeatureNode", "sortindex", INCLUDE_AUDIT);
-//		updateQuery = "ALTER TABLE FeatureNode ADD COLUMN sortindex int";
-//		SimpleSchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-//		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE FeatureNode ADD sortindex int");
 		stepList.add(step);
-
-//		//sortIndex on children in FeatureNode
-//		stepName = "Add sort index on FeatureNode children in auditing table";
-//		updateQuery = "ALTER TABLE FeatureNode_AUD ADD COLUMN sortindex int";
-//		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-//		step.put(DatabaseTypeEnum.SqlServer2005, "ALTER TABLE featurenode_aud ADD sortindex int");
-//		stepList.add(step);
 		
 		//update sortindex on FeatureNode children
 		stepName = "Update sort index on FeatureNode children";
-		updateQuery = "UPDATE FeatureNode SET sortindex = id WHERE sortindex is null";
-		SimpleSchemaUpdaterStep updateSortindex = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-		stepList.add(updateSortindex);
-		
-//		//rename taxonomicTree -> classification
-//		stepName = "Rename taxonomic tree into classification";
-//		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
-//		stepList.add(tableChanger);
+//		updateQuery = "UPDATE FeatureNode SET sortindex = id WHERE sortindex is null";
+//		SimpleSchemaUpdaterStep updateSortindex = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+//		stepList.add(updateSortindex);
+		SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, "FeatureNode", "parent_fk", "sortindex", INCLUDE_AUDIT);
+		stepList.add(updateSortIndex);
 		
 		//add country to gathering event
 		stepName = "Add country column to gathering event";
@@ -106,6 +92,17 @@ public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdat
 		defaultValue = false;
 		step = ColumnAdder.NewBooleanInstance(stepName, "TaxonBase", "excluded", INCLUDE_AUDIT, defaultValue);
 		stepList.add(step);
+
+//		//add barcode to derived unit base
+//		stepName = "Add barcode to specimen";
+//		step = ColumnAdder.NewStringInstance(stepName, "SpecimenOrObservationBase", "barcode", INCLUDE_AUDIT);
+//		stepList.add(step);
+
+		
+//		//rename taxonomicTree -> classification
+//		stepName = "Rename taxonomic tree into classification";
+//		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
+//		stepList.add(tableChanger);
 		
 		return stepList;
 	}
