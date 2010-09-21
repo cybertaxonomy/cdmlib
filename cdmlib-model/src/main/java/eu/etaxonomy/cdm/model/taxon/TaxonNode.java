@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -82,6 +83,8 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	
+//	TODO @NotNull // avoids creating a UNIQUE key for this field
 	private TaxonomicTree taxonomicTree;
 	
 	@XmlElementWrapper(name = "childNodes")

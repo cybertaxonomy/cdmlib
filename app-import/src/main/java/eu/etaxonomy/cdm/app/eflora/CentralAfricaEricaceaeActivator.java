@@ -50,12 +50,13 @@ public class CentralAfricaEricaceaeActivator {
 	static final String source = EfloraSources.ericacea_local();
 
 	
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 	
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();	
 
 	//feature tree uuid
 	public static final UUID featureTreeUuid = UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7");
@@ -92,7 +93,7 @@ public class CentralAfricaEricaceaeActivator {
 		CdmDefaultImport<EfloraImportConfigurator> myImport = new CdmDefaultImport<EfloraImportConfigurator>();
 
 		
-		//Sapindaceae1
+		//Ericaceae
 		if (includeEricaceae){
 			System.out.println("Start import from ("+ source.toString() + ") ...");
 			config.setSourceReference(getSourceReference(config.getSourceReferenceTitle()));
