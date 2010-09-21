@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterStepBase.class);
 	
 	private String stepName;
@@ -65,8 +64,7 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
 			result = "'"+intValue+"'";
 		}else if (type.equals(DatabaseTypeEnum.H2)){
-			logger.warn("H2 boolean not tested yet");
-			result = "b'"+intValue+"'";
+			result = value == true ? "TRUE" : "FALSE";
 		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			logger.warn("SQLServer boolean not tested yet");
 			result = "b'"+intValue+"'";
