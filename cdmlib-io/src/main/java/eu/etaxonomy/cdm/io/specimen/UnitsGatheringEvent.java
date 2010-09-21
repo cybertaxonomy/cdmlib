@@ -90,11 +90,15 @@ public class UnitsGatheringEvent {
 	 */
 	public void setCoordinates(Double longitude, Double latitude){
 		//create coordinates point
+		if(longitude == null || latitude == null){
+			return;
+		}
 		Point coordinates = Point.NewInstance();
 		//add coordinates
 		coordinates.setLongitude(longitude);
 		coordinates.setLatitude(latitude);
 		this.gatheringEvent.setExactLocation(coordinates);
+		
 	}
 
 	public void setElevation(Integer elevation){

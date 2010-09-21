@@ -873,7 +873,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 			path="";
 			dataHolder.longitude = Double.valueOf(group.item(0).getTextContent());
 		} catch (NullPointerException e) {
-			dataHolder.longitude=0.0;
+			dataHolder.longitude=null;
 		}
 		try {
 			group = root.getElementsByTagName("LatitudeDecimal");
@@ -883,7 +883,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 			path="";
 			dataHolder.latitude = Double.valueOf(group.item(0).getTextContent());
 		} catch (NullPointerException e) {
-			dataHolder.latitude=0.0;
+			dataHolder.latitude=null;
 		}
 		try {
 			group = root.getElementsByTagName("Country");
