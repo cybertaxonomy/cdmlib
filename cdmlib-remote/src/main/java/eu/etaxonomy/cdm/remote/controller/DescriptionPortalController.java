@@ -148,6 +148,5 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
 		return distTree;
 	}
-	
 
 }

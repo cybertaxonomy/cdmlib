@@ -58,6 +58,8 @@ public class CdmMetaData extends CdmBase{
 		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
 		// schema version
 		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
+		//term version
+		result.add(new CdmMetaData(MetaDataPropertyName.TERMS_VERSION, termsVersion));
 		// database create time
 		result.add(new CdmMetaData(MetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
 		return result;	

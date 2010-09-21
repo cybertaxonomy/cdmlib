@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -32,6 +33,14 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
+import eu.etaxonomy.cdm.model.occurrence.Observation;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author a.mueller
@@ -42,10 +51,29 @@ public class EditGeoServiceUtilities {
 	private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
 	private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
+	
+	private static HashMap<Class<? extends SpecimenOrObservationBase<?>>, Color> defaultSpecimenOrObservationTypeColors;
+
+	private static final String MS_SEPARATOR = ",";
+	
+	static {
+		defaultSpecimenOrObservationTypeColors = new HashMap<Class<? extends SpecimenOrObservationBase<?>>, Color>();
+		defaultSpecimenOrObservationTypeColors.put(FieldObservation.class, Color.ORANGE);
+		defaultSpecimenOrObservationTypeColors.put(DerivedUnit.class, Color.YELLOW);
+		defaultSpecimenOrObservationTypeColors.put(LivingBeing.class, Color.GREEN);
+		defaultSpecimenOrObservationTypeColors.put(Observation.class, Color.ORANGE);
+		defaultSpecimenOrObservationTypeColors.put(Specimen.class, Color.GRAY);
+		
+	}
+
+	
+//	@Transient
+//	public static String getOccurrenceServiceRequestParameterString()
+//			
 
 	//preliminary implementation for TDWG areas
 	/**
-	 * Returns the parameter String for the EDIT geo webservice to create a map.
+	 * Returns the parameter String for the EDIT geo webservice to create a dsitribution map.
 	 * @param distributions A set of distributions that should be shown on the map
 	 * @param presenceAbsenceTermColors A map that defines the colors of PresenceAbsenceTerms. 
 	 * The PresenceAbsenceTerms are defined by their uuid. If a PresenceAbsenceTerm is not included in
@@ -58,7 +86,7 @@ public class EditGeoServiceUtilities {
 	 * @return the parameter string or an empty string if the <code>distributions</code> set was null or empty.
 	 */
 	@Transient
-	public static String getEditGeoServiceUrlParameterString(
+	public static String getDistributionServiceRequestParameterString(
 			Set<Distribution> distributions, 
 			Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors, 
 			int width, 
@@ -72,11 +100,8 @@ public class EditGeoServiceUtilities {
 		String areaData = "";
 		String areaStyle = "";
 		String areaTitle = "";
-		String widthStr = "";
-		String heightStr = "";
 		String adLayerSeparator = ":";
 		String styleInAreaDataSeparator = "|";
-		String msSeparator = ","; //Separator for the ms parameter values , e.g. 'x' => ms=600x400
 		//double borderWidth = 0.1;
 		double borderWidth = 0.1;
 		
@@ -102,16 +127,7 @@ public class EditGeoServiceUtilities {
 		}else{
 			bbox = "bbox=" + bbox;
 		}
-		if (width > 0){
-			widthStr = "" + width;
-		}
-		if (height > 0){
-			heightStr = msSeparator + height;
-		}
-		String ms = "ms=" + widthStr + heightStr;
-		if (ms.equals("ms=")){
-			ms = null;
-		}
+		String ms = mapSizeParameter(width, height);
 		
 		//iterate through distributions and group styles and layers
 		//and collect necessary information
@@ -194,10 +210,10 @@ public class EditGeoServiceUtilities {
 		}
 		
 		if(areaStyle.length() > 0){
-			areaStyle = "as=" + encode(areaStyle); //remove first |
+			areaStyle = "as=" + encode(areaStyle.substring(1)); //remove first |
 		}
 		if(areaTitle.length() > 0){
-			areaTitle = "title=" + encode(areaTitle); //remove first |
+			areaTitle = "title=" + encode(areaTitle.substring(1)); //remove first |
 		}
 		
 		boolean separateLevels = false; //FIXME as parameter
@@ -243,14 +259,59 @@ public class EditGeoServiceUtilities {
 		return result;
 	}
 
-	private static String encode(String areaStyle) {
-		String encoded = areaStyle;
+	private static String mapSizeParameter(int width, int height) {
+
+		String widthStr = "";
+		String heightStr = "";
+
+		if (width > 0) {
+			widthStr = "" + width;
+		}
+		if (height > 0) {
+			heightStr = MS_SEPARATOR + height;
+		}
+		String ms = "ms=" + widthStr + heightStr;
+		if (ms.equals("ms=")) {
+			ms = null;
+		}
+		return ms;
+	}
+
+	/**
+	 * URI encode the given String
+	 * @param string
+	 * @return
+	 */
+	private static String encode(String string) {
+		String encoded = string;
 		try {
-			encoded = URLEncoder.encode(areaStyle.substring(1), "UTF-8");
+			encoded = URLEncoder.encode(string, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			logger.error(e);
 		}
 		return encoded;
+	}
+	
+	/**
+	 * combine parameter into a URI query string fragment. The values will be
+	 * escaped correctly.
+	 * 
+	 * @param parameters
+	 * @return a URI query string fragment
+	 */
+	private static String makeQueryString(Map<String, String> parameters){
+		StringBuilder queryString = new StringBuilder();
+		for (String key : parameters.keySet()) {
+			if(queryString.length() > 0){
+				queryString.append('&');
+			}
+			if(key.equals("od")){
+				queryString.append(key).append('=').append(parameters.get(key));				
+			} else {
+				queryString.append(key).append('=').append(encode(parameters.get(key)));
+			}
+		}
+		return queryString.toString();
 	}
 	
 	private static Map<PresenceAbsenceTermBase<?>,Color> makeDefaultColorMap(){
@@ -313,6 +374,7 @@ public class EditGeoServiceUtilities {
 		return "unknown";
 	}
 	
+	
 	private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
 			List<PresenceAbsenceTermBase<?>> statusList) {
 		PresenceAbsenceTermBase<?> status = distribution.getStatus();
@@ -336,5 +398,96 @@ public class EditGeoServiceUtilities {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * @param fieldObservationPoints
+	 * @param derivedUnitPoints
+	 * @param specimenOrObservationTypeColors
+	 * @param doReturnImage TODO
+	 * @param width
+	 * @param height
+	 * @param bbox
+	 * @param backLayer
+	 * @return
+	 * e.g.:
+	 * 	l=v%3Aatbi%2Ce_w_0
+	 *  &legend=0
+	 *  &image=false
+	 *  &recalculate=false
+	 *  &ms=400%2C350
+
+	 *  &od=1%3A44.29481%2C6.82161|44.29252%2C6.822873|44.29247%2C6.82346|44.29279%2C6.823678|44.29269%2C6.82394|44.28482%2C6.887252|44.11469%2C7.287144|44.11468%2C7.289168
+	 *  &os=1%3Ac%2FFFD700%2F10%2FAporrectodea caliginosa
+	 */
+	public static String getOccurrenceServiceRequestParameterString(
+			List<Point> fieldObservationPoints,
+			List<Point> derivedUnitPoints,
+			Map<Class<? extends SpecimenOrObservationBase<?>>, Color> specimenOrObservationTypeColors,
+			Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
+		
+			specimenOrObservationTypeColors = mergeMaps(defaultSpecimenOrObservationTypeColors, specimenOrObservationTypeColors);
+			
+			Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("legend", "0");
+			parameters.put("image", doReturnImage != null && doReturnImage ? "true" : "false");
+			parameters.put("recalculate", "false"); // TODO add parameter to method
+			if(bbox != null){
+				parameters.put("bbox", bbox);
+			}
+			if(width != null || height != null){
+				parameters.put("ms", mapSizeParameter(width, height));
+			}
+			
+			Map<String, String> styleAndData = new HashMap<String, String>();
+			
+			addToStyleAndData(fieldObservationPoints, FieldObservation.class, specimenOrObservationTypeColors, styleAndData);
+			addToStyleAndData(derivedUnitPoints, DerivedUnit.class, specimenOrObservationTypeColors, styleAndData);
+			
+			parameters.put("os", StringUtils.join(styleAndData.keySet().iterator(), "||"));
+			parameters.put("od", StringUtils.join(styleAndData.values().iterator(), "||"));
+			
+			String queryString = makeQueryString(parameters);
+			
+			logger.info(queryString);
+			
+		return queryString;
+	}
+
+	/**
+	 * @param <T>
+	 * @param <S>
+	 * @param defaultMap
+	 * @param overrideMap
+	 * @return
+	 */
+	private static <T, S> Map<T, S> mergeMaps(Map<T, S> defaultMap, Map<T, S> overrideMap) {
+		Map<T, S> tmpMap = new HashMap<T, S>();
+		tmpMap.putAll(defaultMap);
+		if(overrideMap != null){				
+			tmpMap.putAll(overrideMap);
+		}
+		return tmpMap;
+	}
+
+	private static void addToStyleAndData(
+			List<Point> points,
+			Class<? extends SpecimenOrObservationBase<?>> specimenOrObservationType,
+			Map<Class<? extends SpecimenOrObservationBase<?>>, Color> specimenOrObservationTypeColors, Map<String, String> styleAndData) {
+
+		//TODO add markerShape and size and Label to specimenOrObservationTypeColors -> Map<Class<SpecimenOrObservationBase<?>>, MapStyle>
+		
+		if(points != null && points.size()>0){
+			String style =  "c/" + Integer.toHexString(specimenOrObservationTypeColors.get(specimenOrObservationType).getRGB()).substring(2) + "/10/noLabel";
+			StringBuilder data = new StringBuilder();
+			for(Point point : points){
+				if(data.length() > 0){
+					data.append('|');
+				}
+				data.append(point.getLatitude() + "," + point.getLongitude());
+			}
+			int index = styleAndData.size() + 1;
+			styleAndData.put(index + ":" +style, index + ":" +data.toString());
+		}
 	}
 }

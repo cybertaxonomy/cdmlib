@@ -16,6 +16,7 @@ import java.util.Map;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -46,7 +47,7 @@ public interface IEditGeoService {
 	 * @return
 	 * 			
 	 */
-	public String getEditGeoServiceUrlParameterString(
+	public String getDistributionServiceRequestParameterString(
 			List<TaxonDescription> taxonDescriptions,
 			Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
 			int width, int height, String bbox, String backLayer,
@@ -72,7 +73,7 @@ public interface IEditGeoService {
 	 * @return
 	 * 			
 	 */
-	public String getEditGeoServiceUrlParameterString(TaxonDescription description, 
+	public String getDistributionServiceRequestParameterString(TaxonDescription description, 
 			Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors, 
 			int width, 
 			int height, 
@@ -98,11 +99,22 @@ public interface IEditGeoService {
 	 * 
 	 */
 	@Deprecated
-	public String getEditGeoServiceUrlParameterString(Taxon taxon, 
+	public String getDistributionServiceRequestParameterString(Taxon taxon, 
 			Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors, 
 			int width, 
 			int height, 
 			String bbox, 
 			String backLayer,
 			List<Language> langs);
+	
+	
+	public String getOccurrenceServiceRequestParameterString(
+			List<TaxonDescription> taxonDescriptions, 
+			Map<Class<? extends SpecimenOrObservationBase<?>>,Color> specimenOrObservationTypeColors,
+			Boolean doReturnImage,
+			Integer width, 
+			Integer height, 
+			String bbox, 
+			String backLayer);
+	
 }

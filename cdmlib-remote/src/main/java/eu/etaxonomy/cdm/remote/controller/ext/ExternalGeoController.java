@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
@@ -53,7 +54,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  * 
  */
 @Controller
-@RequestMapping(value = { "/geo/map/distribution/{uuid}" })
+@RequestMapping(value = { "ext/edit/mapServiceParameters/" })
 public class ExternalGeoController extends BaseController<TaxonBase, ITaxonService> {
 	
 	public static final Logger logger = Logger.getLogger(ExternalGeoController.class);
@@ -89,12 +90,18 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 	 * @return URI parameter Strings for the EDIT Map Service
 	 * @throws IOException TODO write controller method documentation
 	 */
-	@RequestMapping(value = { "/geo/map/distribution/{uuid}" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "taxonDistributionFor/{uuid}" }, method = RequestMethod.GET)
 	public ModelAndView doGetDistributionMapUriParams(
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, 
 			HttpServletResponse response)
 			throws IOException {
+		
+		
+		int width = 0;
+		int height = 0;
+		String bbox = null;
+		String backLayer = null;
 		
 		logger.info("doGetDistributionMapUriParams() " + request.getServletPath());
 		ModelAndView mv = new ModelAndView();
@@ -108,8 +115,50 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
 		Pager<TaxonDescription> page = descriptionService.getTaxonDescriptions(taxon, null, null, null, null, null);
 		List<TaxonDescription> taxonDescriptions = page.getRecords();
-		String uriParams = geoservice.getEditGeoServiceUrlParameterString(taxonDescriptions, presenceAbsenceTermColors, 0, 0, null,
-			null, langs);
+		String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
+			backLayer, langs);
+		mv.addObject(uriParams);
+		return mv;
+	}
+	
+	
+	/**
+	 * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the  
+	 * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into 
+	 * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all 
+	 * nested sub-areas. 
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return URI parameter Strings for the EDIT Map Service
+	 * @throws IOException TODO write controller method documentation
+	 */
+	@RequestMapping(value = { "taxonOccurrencesFor/{uuid}" }, method = RequestMethod.GET)
+	public ModelAndView doGetOccurrenceMapUriParams(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response)
+			throws IOException {
+		
+		Integer width = null;
+		Integer height = null;
+		String bbox = null;
+		String backLayer = null;
+		Boolean doReturnImage = null;
+		Map<Class<? extends SpecimenOrObservationBase<?>>, Color> specimenOrObservationTypeColors = null;
+		
+		logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath());
+		ModelAndView mv = new ModelAndView();
+		
+		// get the descriptions for the taxon
+		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+
+		Pager<TaxonDescription> page = descriptionService.getTaxonDescriptions(taxon, null, null, null, null, null);
+		List<TaxonDescription> taxonDescriptions = page.getRecords();
+		
+		String uriParams = geoservice.getOccurrenceServiceRequestParameterString(taxonDescriptions, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
 		mv.addObject(uriParams);
 		return mv;
 	}
