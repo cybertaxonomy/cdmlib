@@ -5,11 +5,6 @@
         http://maven.apache.org/plugins/maven-site-plugin/examples/sitedescriptor.html
     -->
     
-    <poweredBy>
-        <logo name="Funded by EDIT" href="http://www.e-taxonomy.eu/" img="http://wp5.e-taxonomy.eu/cdmlib/site/logo_edit.png" />
-        <logo name="Build with Maven 2" href="http://maven.apache.org" img="images/logos/maven-feather.png" />
-    </poweredBy>
-    
     <body>
         <links>
             <item name="Edit" href="http://www.e-taxonomy.eu/" />
@@ -28,11 +23,14 @@
             <item name="CDM Persistence" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-persistence/"/>        
             <item name="CDM Service" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-services/"/>        
         	<item name="CDM External" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-ext/"/>        
-		    <item name="CDM Import/Export" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-io/"/>        
-            <item name="CDM Server" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote/"/>        
+		    <item name="CDM Import/Export" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-io/"/>
+			<item name="CDM Print" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-print/"/>
+			<item name="CDM Remote" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote/"/>			
+            <item name="CDM Remote Webapp" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote-webapp/"/>			
+            <item name="CDM Community Standalone Server" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-server/"/>        
 		</menu>
         
-        ${reports}
+        <menu ref="reports"/>
         
     </body>
     
