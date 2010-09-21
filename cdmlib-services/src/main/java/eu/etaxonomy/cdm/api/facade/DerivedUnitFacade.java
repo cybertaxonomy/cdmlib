@@ -1432,6 +1432,15 @@ public class DerivedUnitFacade {
 		derivedUnit.setCatalogNumber(catalogNumber);
 	}
 
+	//barcode
+	public String getBarcode() {
+		return derivedUnit.getBarcode();
+	}
+	public void setBarcode(String barcode) {
+		derivedUnit.setCatalogNumber(barcode);
+	}
+
+	
 	//Preservation Method
 	
 	/**
