@@ -27,7 +27,7 @@
 			<item name="CDM Print" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-print/"/>
 			<item name="CDM Remote" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote/"/>			
             <item name="CDM Remote Webapp" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote-webapp/"/>			
-            <item name="CDM Community Standalone Server" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-server/"/>        
+            <item name="CDM Community Standalone Server" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdm-server/"/>        
 		</menu>
         
         <menu ref="reports"/>
