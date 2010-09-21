@@ -176,10 +176,21 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 
 	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		int intSchemaVersion = 1;
-		String sqlSchemaVersion = "SELECT value FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
 		try {
-			String value = (String)datasource.getSingleValue(sqlSchemaVersion);
-			return value;
+			String sqlCount = "SELECT count(*) FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
+			Integer count = (Integer)datasource.getSingleValue(sqlCount);
+			if (count == 0){
+				String defaultVersion = "2.4.2.2.201006011715";
+				String sqlMaxId = "SELECT max(id) FROM CdmMetaData";
+				Integer maxId = (Integer)datasource.getSingleValue(sqlMaxId) + 1;
+				String sqlUpdate = "INSERT INTO CdmMetaData (id, created, propertyname, value) VALUES (" + maxId + "'2010-09-21 13:52:54', 1, '" + defaultVersion + "')";
+				datasource.executeUpdate(sqlUpdate);
+				return defaultVersion;
+			}else{
+				String sqlSchemaVersion = "SELECT value FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
+				String value = (String)datasource.getSingleValue(sqlSchemaVersion);
+				return value;
+			}
 		} catch (SQLException e) {
 			monitor.warning("Error when trying to receive schemaversion: ", e);
 			throw e;
