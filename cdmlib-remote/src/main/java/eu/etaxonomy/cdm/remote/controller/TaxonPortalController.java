@@ -39,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
@@ -63,7 +64,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * The TaxonPortalController class is a Spring MVC Controller.
@@ -98,6 +98,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	@Autowired
 	private IDescriptionService descriptionService;
+	
+	@Autowired
+	private IOccurrenceService occurrenceService;
 	
 	@Autowired
 	private ITaxonTreeService taxonTreeService;
@@ -182,6 +185,15 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
 			"elements.media.title",
+	});
+	
+	protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
+			"$",
+			"sources.citation.authorTeam",
+			"sources.nameUsedInSource.originalNameString",
+			"multilanguageText",
+			"media.representations.parts",
+			"media.title",
 	});
 	
 	
@@ -549,8 +561,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	@RequestMapping(
 			value = {"descriptions"},
 			method = RequestMethod.GET)
-	public List<TaxonDescription> doGetDescriptions(@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<TaxonDescription> doGetDescriptions(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response)throws IOException {
 		if(request != null){
 			logger.info("doGetDescriptions()" + request.getServletPath());
 		}
@@ -558,6 +572,75 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 		return p.getRecords();
 	}
+	
+	@RequestMapping(value = "descriptions/elementsByType/{classSimpleName}", method = RequestMethod.GET)
+	public ModelAndView doGetDescriptionElementsByType(
+			@PathVariable("uuid") UUID uuid,
+			@PathVariable("classSimpleName") String classSimpleName,
+			@RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException {
+		logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+		
+		ModelAndView mv = new ModelAndView();
+		
+		List<DescriptionElementBase> allElements = new ArrayList<DescriptionElementBase>();
+		List<DescriptionElementBase> elements;
+		int count = 0;
+		
+		List<String> initStrategy = doCount ? null : DESCRIPTION_ELEMENT_INIT_STRATEGY; 
+		
+		List<TaxonDescription> taxonDescriptions = doGetDescriptions(uuid, request, response);
+		try {
+			Class type;
+			type = Class.forName("eu.etaxonomy.cdm.model.description."
+					+ classSimpleName);
+			if (taxonDescriptions != null) {
+				for (TaxonDescription description : taxonDescriptions) {
+					elements = descriptionService.listDescriptionElements(description, null, type, null, 0, initStrategy);
+					allElements.addAll(elements);
+					count += elements.size();
+				}
+
+			}
+		} catch (ClassNotFoundException e) {
+			HttpStatusMessage.fromString(e.getLocalizedMessage()).send(response);
+		}
+		if(doCount){
+			mv.addObject(count);
+		} else {
+			mv.addObject(allElements);
+		}
+		return mv;
+	}
+	
+//	@RequestMapping(value = "specimens", method = RequestMethod.GET)
+//	public ModelAndView doGetSpecimens(
+//			@PathVariable("uuid") UUID uuid,
+//			HttpServletRequest request, 
+//			HttpServletResponse response) throws IOException, ClassNotFoundException {
+//		logger.info("doGetSpecimens() - " + request.getServletPath());
+//		
+//		ModelAndView mv = new ModelAndView();
+//		
+//		List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<DerivedUnitFacade>();
+//
+//		// find speciemens in the TaxonDescriptions
+//		List<TaxonDescription> taxonDescriptions = doGetDescriptions(uuid, request, response);
+//		if (taxonDescriptions != null) {
+//			
+//			for (TaxonDescription description : taxonDescriptions) {
+//				derivedUnitFacadeList.addAll( occurrenceService.listDerivedUnitFacades(description, null) );
+//			}
+//		}
+//		// TODO find speciemens in the NameDescriptions ??
+//		
+//		// TODO also find type specimens
+//		
+//		mv.addObject(derivedUnitFacadeList);
+//	
+//		return mv;
+//	}
 
 	/**
 	 * Get the {@link Media} attached to the {@link Taxon} instance 
