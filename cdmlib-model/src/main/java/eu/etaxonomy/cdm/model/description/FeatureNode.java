@@ -440,6 +440,7 @@ public class FeatureNode extends VersionableEntity {
 		this.questions.remove(question);
 	}
 
+	@Transient
 	public Representation getQuestion(Language lang) {
 		for (Representation question : questions){
 			Language reprLanguage = question.getLanguage();
