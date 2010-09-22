@@ -23,7 +23,7 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpd
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_24_25.class);
 	private static final String startSchemaVersion = "2.4.1.2.201004231015";
-	private static final String endSchemaVersion = "3.0.0.0.201009201255";
+	private static final String endSchemaVersion = "2.5.0.0.201009211255";
 	
 // ********************** FACTORY METHOD *******************************************
 	

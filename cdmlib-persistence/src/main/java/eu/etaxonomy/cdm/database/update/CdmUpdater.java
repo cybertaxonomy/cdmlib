@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
@@ -23,8 +24,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class CdmUpdater {
 	private static final Logger logger = Logger.getLogger(CdmUpdater.class);
 	
+
 	/**
-	 * 
+	 * @param datasource
+	 * @param monitor may be <code>null</code>
 	 * @return
 	 */
 	public boolean updateToCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor){
@@ -70,10 +73,19 @@ public class CdmUpdater {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		logger.warn("main method not yet fully implemented");
-		//TODO
+		logger.warn("main method not yet fully implemented (only works with mysql!!!)");
+		if(args.length < 2){
+			logger.error("Arguments missing: server database [username [password]]");
+		}
+		//TODO better implementation
 		CdmUpdater myUpdater = new CdmUpdater();
-//		myUpdater.updateToCurrentVersion(datasource, monitor);
+		String server = args[0];
+		String database  = args[1];
+		String username = args.length > 2 ? args[2] : null;
+		String password  = args.length > 3 ? args[3] : null;
+		
+		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+		myUpdater.updateToCurrentVersion(dataSource, null);
 	}
 
 }
