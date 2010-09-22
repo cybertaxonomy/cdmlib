@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
-import java.net.URL;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
