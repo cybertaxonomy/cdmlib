@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.sdd.SDDTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -91,7 +92,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @created 24.10.2008
  * @version 1.0
  */
-@Component("sddDescriptionIO")
+@Component("sddImport")
 public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
 	private static final Logger logger = Logger.getLogger(SDDImport.class);
 
@@ -176,7 +177,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		//for each Dataset
 		logger.info("start Dataset ...");
 		for (Element elDataset : elDatasets){
-			importDataset(elDataset, sddNamespace, success, sddConfig);			
+			success &= importDataset(elDataset, sddNamespace, state);			
 			if ((++i % modCount) == 0){ logger.info("Datasets handled: " + i);}
 			logger.info(i + " Datasets handled");
 		}
@@ -460,21 +461,21 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	// imports the complete dataset information
-	protected void importDataset(Element elDataset, Namespace sddNamespace, boolean success, SDDImportConfigurator sddConfig){			// <Dataset xml:lang="en-us">
-
+	protected boolean importDataset(Element elDataset, Namespace sddNamespace, SDDImportState state){			// <Dataset xml:lang="en-us">
+		boolean success = true;
+		SDDImportConfigurator sddConfig = state.getConfig();
 		importDatasetLanguage(elDataset,sddConfig);
 		importDatasetRepresentation(elDataset, sddNamespace);
 		importRevisionData(elDataset, sddNamespace);
 		importIPRStatements(elDataset, sddNamespace, sddConfig);
 		importTaxonNames(elDataset, sddNamespace, sddConfig);
 		importDescriptiveConcepts(elDataset, sddNamespace, sddConfig);
-		importCharacters(elDataset, sddNamespace, sddConfig, success);
+		success &= importCharacters(elDataset, sddNamespace, sddConfig);
 		importCharacterTrees(elDataset, sddNamespace, sddConfig, success);
 		
-		//FIXME (a.mueller) 
-		MarkerType editorMarkerType = MarkerType.NewInstance("Editor", "editor", "edt") ;
-		MarkerType geographicAreaMarkerType = MarkerType.NewInstance("", "SDDGeographicArea", "ga");
-		MarkerType descriptiveConceptMarkerType = MarkerType.NewInstance("Descriptive Concept", "DescriptiveConcept", "DC");
+		MarkerType editorMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerEditor, "editor", "Editor", "edt");
+		MarkerType geographicAreaMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerSDDGeographicArea, "SDDGeographicArea", "SDDGeographicArea", "ga"); 
+		MarkerType descriptiveConceptMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerDescriptiveConcept, "DescriptiveConcept", "Descriptive Concept", "DC");
 		markerTypes.add(editorMarkerType);
 		markerTypes.add(geographicAreaMarkerType);
 		markerTypes.add(descriptiveConceptMarkerType);
@@ -609,7 +610,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		}
 		logger.info("end of persistence ...");
 		
-		
+		return success;
 	}
 
 	private void saveAnnotationType() {
@@ -866,163 +867,198 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	// imports the characters (categorical, quantitative and text ; sequence characters not supported) which correspond to CDM Features
-	protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+	protected boolean importCharacters(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
+		boolean success = true;
 		// <Characters>
 		logger.info("start Characters ...");
 		Element elCharacters = elDataset.getChild("Characters", sddNamespace);
 
 		// <CategoricalCharacter id="c1">
 		if (elCharacters != null) {
-			List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
-			int j = 0;
-			for (Element elCategoricalCharacter : elCategoricalCharacters){
-				try {
+			success &= handleCategoricalData(sddNamespace, sddConfig, elCharacters);
 
-					String idCC = elCategoricalCharacter.getAttributeValue("id");
-					Feature categoricalCharacter = Feature.NewInstance();
-					categoricalCharacter.setKindOf(Feature.DESCRIPTION());
-					importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
-					categoricalCharacter.setSupportsCategoricalData(true);
+			success &= handleQuantitativeData(sddNamespace, sddConfig, elCharacters);
 
-					// <States>
-					Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
-
-					// <StateDefinition id="s1">
-					List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-					TermVocabulary<State> termVocabularyState = new TermVocabulary<State>();
-					int k = 0;
-					//for each StateDefinition
-					for (Element elStateDefinition : elStateDefinitions){
-
-						if ((++k % modCount) == 0){ logger.info("StateDefinitions handled: " + (k-1));}
-
-						String idS = elStateDefinition.getAttributeValue("id");
-						State state = State.NewInstance();
-						importRepresentation(elStateDefinition, sddNamespace, state, idS, sddConfig);
-
-						//StateData stateData = StateData.NewInstance();
-						//stateData.setState(state);
-						termVocabularyState.addTerm(state);
-						states.put(idS,state);
-					}
-					categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
-					features.put(idCC, categoricalCharacter);
-
-				} catch (Exception e) {
-					logger.warn("Import of CategoricalCharacter " + j + " failed.");
-					success = false; 
-				}
-
-				if ((++j % modCount) == 0){ logger.info("CategoricalCharacters handled: " + j);}
-
-			}
-
-			// <QuantitativeCharacter id="c2">
-			List<Element> elQuantitativeCharacters = elCharacters.getChildren("QuantitativeCharacter", sddNamespace);
-			j = 0;
-			//for each QuantitativeCharacter
-			for (Element elQuantitativeCharacter : elQuantitativeCharacters){
-
-				try {
-
-					String idQC = elQuantitativeCharacter.getAttributeValue("id");
-
-					// <Representation>
-					//  <Label>Leaf length</Label>
-					// </Representation>
-					Feature quantitativeCharacter = Feature.NewInstance();
-					quantitativeCharacter.setKindOf(Feature.DESCRIPTION());
-					importRepresentation(elQuantitativeCharacter, sddNamespace, quantitativeCharacter, idQC, sddConfig);
-
-					quantitativeCharacter.setSupportsQuantitativeData(true);
-
-					// <MeasurementUnit>
-					//  <Label role="Abbrev">m</Label>
-					// </MeasurementUnit>
-					Element elMeasurementUnit = elQuantitativeCharacter.getChild("MeasurementUnit",sddNamespace);
-					String label = "";
-					String role = "";
-					if (elMeasurementUnit != null) {
-						Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
-						role = elLabel.getAttributeValue("role");
-						label = (String)ImportHelper.getXmlInputValue(elMeasurementUnit, "Label",sddNamespace);
-					}
-
-					MeasurementUnit unit = null;
-					if (!label.equals("")){
-						if (role != null) {
-							if (role.equals("Abbrev")){
-								unit = MeasurementUnit.NewInstance(label,label,label);
-							}
-						} else {
-							unit = MeasurementUnit.NewInstance(label,label,label);
-						}
-					}
-
-					if (unit != null) {
-						units.put(idQC, unit);
-					}
-
-					//<Default>
-					//  <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
-					//</Default>
-					Element elDefault = elQuantitativeCharacter.getChild("Default",sddNamespace);
-					if (elDefault != null) {
-						String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
-						if (!measurementUnitPrefix.equals("")){
-							defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
-						}
-					}
-
-					features.put(idQC, quantitativeCharacter);
-
-				} catch (Exception e) {
-					//FIXME
-					logger.warn("Import of QuantitativeCharacter " + j + " failed.");
-					success = false; 
-				}
-
-				if ((++j % modCount) == 0){ logger.info("QuantitativeCharacters handled: " + j);}
-
-			}
-
-			// <TextCharacter id="c3">
-			List<Element> elTextCharacters = elCharacters.getChildren("TextCharacter", sddNamespace);
-			j = 0;
-			//for each TextCharacter
-			for (Element elTextCharacter : elTextCharacters){
-
-				try {
-
-					String idTC = elTextCharacter.getAttributeValue("id");
-
-					// <Representation>
-					//  <Label xml:lang="en">Leaf features not covered by other characters</Label>
-					// </Representation>
-					Feature textCharacter = Feature.NewInstance();
-					textCharacter.setKindOf(Feature.DESCRIPTION());
-					importRepresentation(elTextCharacter, sddNamespace, textCharacter, idTC, sddConfig);
-
-					textCharacter.setSupportsTextData(true);
-
-					features.put(idTC, textCharacter);
-
-				} catch (Exception e) {
-					//FIXME
-					logger.warn("Import of TextCharacter " + j + " failed.");
-					success = false; 
-				}
-
-				if ((++j % modCount) == 0){ logger.info("TextCharacters handled: " + j);}
-
-			}
+			success &= handleTextCharacters(sddNamespace, sddConfig, elCharacters);
 
 		}
 
 		/*for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
 			featureSet.add(f.next()); //XIM Why this line ?
 		}*/
+		
+		return success;
 
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param sddConfig
+	 * @param success
+	 * @param elCharacters
+	 * @return
+	 */
+	private boolean handleCategoricalData(Namespace sddNamespace, SDDImportConfigurator sddConfig, Element elCharacters) {
+		boolean success = true;
+		List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
+		int j = 0;
+		for (Element elCategoricalCharacter : elCategoricalCharacters){
+			try {
+
+				String idCC = elCategoricalCharacter.getAttributeValue("id");
+				Feature categoricalCharacter = Feature.NewInstance();
+				categoricalCharacter.setKindOf(Feature.DESCRIPTION());
+				importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
+				categoricalCharacter.setSupportsCategoricalData(true);
+
+				// <States>
+				Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
+
+				// <StateDefinition id="s1">
+				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
+				TermVocabulary<State> termVocabularyState = new TermVocabulary<State>();
+				int k = 0;
+				//for each StateDefinition
+				for (Element elStateDefinition : elStateDefinitions){
+
+					if ((++k % modCount) == 0){ logger.info("StateDefinitions handled: " + (k-1));}
+
+					String idS = elStateDefinition.getAttributeValue("id");
+					State state = State.NewInstance();
+					importRepresentation(elStateDefinition, sddNamespace, state, idS, sddConfig);
+
+					//StateData stateData = StateData.NewInstance();
+					//stateData.setState(state);
+					termVocabularyState.addTerm(state);
+					states.put(idS,state);
+				}
+				categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
+				features.put(idCC, categoricalCharacter);
+
+			} catch (Exception e) {
+				logger.warn("Import of CategoricalCharacter " + j + " failed.");
+				success = false; 
+			}
+
+			if ((++j % modCount) == 0){ logger.info("CategoricalCharacters handled: " + j);}
+
+		}
+		return success;
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param sddConfig
+	 * @param elCharacters
+	 */
+	private boolean handleQuantitativeData(Namespace sddNamespace,	SDDImportConfigurator sddConfig, Element elCharacters) {
+		boolean success = true;
+		int j;
+		// <QuantitativeCharacter id="c2">
+		List<Element> elQuantitativeCharacters = elCharacters.getChildren("QuantitativeCharacter", sddNamespace);
+		j = 0;
+		//for each QuantitativeCharacter
+		for (Element elQuantitativeCharacter : elQuantitativeCharacters){
+
+			try {
+
+				String idQC = elQuantitativeCharacter.getAttributeValue("id");
+
+				// <Representation>
+				//  <Label>Leaf length</Label>
+				// </Representation>
+				Feature quantitativeCharacter = Feature.NewInstance();
+				quantitativeCharacter.setKindOf(Feature.DESCRIPTION());
+				importRepresentation(elQuantitativeCharacter, sddNamespace, quantitativeCharacter, idQC, sddConfig);
+
+				quantitativeCharacter.setSupportsQuantitativeData(true);
+
+				// <MeasurementUnit>
+				//  <Label role="Abbrev">m</Label>
+				// </MeasurementUnit>
+				Element elMeasurementUnit = elQuantitativeCharacter.getChild("MeasurementUnit",sddNamespace);
+				String label = "";
+				String role = "";
+				if (elMeasurementUnit != null) {
+					Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
+					role = elLabel.getAttributeValue("role");
+					label = (String)ImportHelper.getXmlInputValue(elMeasurementUnit, "Label",sddNamespace);
+				}
+
+				MeasurementUnit unit = null;
+				if (!label.equals("")){
+					if (role != null) {
+						if (role.equals("Abbrev")){
+							unit = MeasurementUnit.NewInstance(label,label,label);
+						}
+					} else {
+						unit = MeasurementUnit.NewInstance(label,label,label);
+					}
+				}
+
+				if (unit != null) {
+					units.put(idQC, unit);
+				}
+
+				//<Default>
+				//  <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
+				//</Default>
+				Element elDefault = elQuantitativeCharacter.getChild("Default",sddNamespace);
+				if (elDefault != null) {
+					String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
+					if (!measurementUnitPrefix.equals("")){
+						defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
+					}
+				}
+
+				features.put(idQC, quantitativeCharacter);
+
+			} catch (Exception e) {
+				//FIXME
+				logger.warn("Import of QuantitativeCharacter " + j + " failed.");
+				success = false; 
+			}
+
+			if ((++j % modCount) == 0){ logger.info("QuantitativeCharacters handled: " + j);}
+
+		}
+		return success;
+	}
+
+	private boolean handleTextCharacters(Namespace sddNamespace, SDDImportConfigurator sddConfig, Element elCharacters) {
+		boolean success = true;
+		int j;
+		// <TextCharacter id="c3">
+		List<Element> elTextCharacters = elCharacters.getChildren("TextCharacter", sddNamespace);
+		j = 0;
+		//for each TextCharacter
+		for (Element elTextCharacter : elTextCharacters){
+
+			try {
+
+				String idTC = elTextCharacter.getAttributeValue("id");
+
+				// <Representation>
+				//  <Label xml:lang="en">Leaf features not covered by other characters</Label>
+				// </Representation>
+				Feature textCharacter = Feature.NewInstance();
+				textCharacter.setKindOf(Feature.DESCRIPTION());
+				importRepresentation(elTextCharacter, sddNamespace, textCharacter, idTC, sddConfig);
+
+				textCharacter.setSupportsTextData(true);
+
+				features.put(idTC, textCharacter);
+
+			} catch (Exception e) {
+				//FIXME
+				logger.warn("Import of TextCharacter " + j + " failed.");
+				success = false; 
+			}
+
+			if ((++j % modCount) == 0){ logger.info("TextCharacters handled: " + j);}
+
+		}
+		return success;
 	}
 
 	// imports the descriptions of taxa

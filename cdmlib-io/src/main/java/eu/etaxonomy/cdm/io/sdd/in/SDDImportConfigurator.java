@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.sdd.SDDTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -37,7 +38,7 @@ public class SDDImportConfigurator extends ImportConfiguratorBase implements IIm
 	private static final Logger logger = Logger.getLogger(SDDImportConfigurator.class);
 
 	//TODO
-	private static IInputTransformer defaultTransformer = null;
+	private static IInputTransformer defaultTransformer = new SDDTransformer();
 	
 	private boolean doMatchTaxa = false;
 	

@@ -31,14 +31,13 @@ public class SDDTransformer extends InputTransformerBase {
 	
 	
 	
-	//feature uuids
-	public static final UUID uuidNote = UUID.fromString("b9af1489-6b68-497f-8d4b-260a9f886827");
-	
-	//extension type uuids
-	public static final UUID uuidTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
-	
+//	//feature uuids
+//	public static final UUID uuidNote = UUID.fromString("b9af1489-6b68-497f-8d4b-260a9f886827");
+//	
 	//marker type uuid
-	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
+	public static final UUID uuidMarkerEditor = UUID.fromString("9f06df5b-7b89-43d2-ac4a-8c57a173af8d");
+	public static final UUID uuidMarkerSDDGeographicArea = UUID.fromString("aa623fc8-bfb6-4bc9-b0d4-62f7a022d472");
+	public static final UUID uuidMarkerDescriptiveConcept = UUID.fromString("037e8126-334e-460c-bfb3-cee640dfa3a3");
 	
 
 	/* (non-Javadoc)
@@ -47,8 +46,8 @@ public class SDDTransformer extends InputTransformerBase {
 	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
-		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
-		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
+//		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
+//		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
 		}else{
 			return null;
 		}
@@ -61,7 +60,7 @@ public class SDDTransformer extends InputTransformerBase {
 	public UUID getFeatureUuid(String key) 	throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
 
-		}else if (key.equalsIgnoreCase("lifeform")){return uuidNote;
+//		}else if (key.equalsIgnoreCase("lifeform")){return uuidNote;
 		
 		}else{
 			return null;
@@ -87,10 +86,10 @@ public class SDDTransformer extends InputTransformerBase {
 	@Override
 	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
-		}else if (key.equalsIgnoreCase("excluded")){return uuidExcludedTaxon;
-		}else if (key.equalsIgnoreCase("EXCLUDED SPECIES, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
-		}else if (key.equalsIgnoreCase("EXCLUDED GENUS, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
-		}else if (key.equalsIgnoreCase("INCOMPLETELY KNOWN SPECIES")){return uuidNote;
+//		}else if (key.equalsIgnoreCase("excluded")){return uuidExcludedTaxon;
+//		}else if (key.equalsIgnoreCase("EXCLUDED SPECIES, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
+//		}else if (key.equalsIgnoreCase("EXCLUDED GENUS, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
+//		}else if (key.equalsIgnoreCase("INCOMPLETELY KNOWN SPECIES")){return uuidNote;
 		}else{
 			return null;
 		}
