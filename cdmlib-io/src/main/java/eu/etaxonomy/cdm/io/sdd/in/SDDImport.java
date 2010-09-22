@@ -32,7 +32,6 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -108,7 +107,6 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
 	private Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
-	private Map<String,StateData> stateDatas = new HashMap<String,StateData>();
 	private Map<String,State> states = new HashMap<String,State>();
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
@@ -121,7 +119,6 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
 
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
-	private Set<TermVocabulary<Modifier>> termVocabularyStates = new HashSet<TermVocabulary<Modifier>>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
 	private ReferenceBase sec = ReferenceFactory.newDatabase();
@@ -614,23 +611,20 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	private void saveAnnotationType() {
-		for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
-			AnnotationType annotationType = at.next();
+		for (AnnotationType annotationType: annotationTypes){
 			getTermService().save(annotationType); 
 		}
 	}
 
 	private void saveStatisticalMeasure() {
-		for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
-			StatisticalMeasure sm = k.next();
+		for (StatisticalMeasure sm : statisticalMeasures){
 			getTermService().save(sm); 
 		}
 	}
 
 	private void saveUnits() {
 		if (units != null) {
-			for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
-				MeasurementUnit unit = k.next();
+			for (MeasurementUnit unit : units.values()){
 				if (unit != null) {
 					getTermService().save(unit); 
 				}
@@ -639,44 +633,35 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	private void saveAreas(MarkerType geographicAreaMarkerType) {
-		for (Iterator<NamedArea> k = namedAreas.values().iterator() ; k.hasNext() ;) {
+		for (NamedArea area : namedAreas.values() ){
 			Marker marker = Marker.NewInstance();
 			marker.setMarkerType(geographicAreaMarkerType);
-			NamedArea area = k.next();
 			area.addMarker(marker);
-			//getTermService().save(area);
 			getTermService().save(area);
 		}
 	}
 
 	private void saveStates() {
-		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
-			State state = k.next();
+		for (State state : states.values() ){
 			getTermService().save(state);
 		}
 	}
 
 	private void saveMarkerType() {
-		for(Iterator<MarkerType> k = markerTypes.iterator() ; k.hasNext() ;){
-			MarkerType markerType = k.next();
+		for (MarkerType markerType : markerTypes){
 			getTermService().save(markerType);
 		}
 	}
 
 	private void saveModifiers() {
-
-		for (Iterator<Modifier> k = modifiers.values().iterator() ; k.hasNext() ;){
-			Modifier modifier = k.next();
+		for (Modifier modifier : modifiers.values() ){
 			getTermService().save(modifier);
 		}
 	}
 
 	private void saveFeatures() {
-		ITermService termService = getTermService();
-		
-		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
-			Feature feature = k.next();
-			termService.save(feature); 
+		for (Feature feature : features.values() ){
+			getTermService().save(feature);
 		}
 	}
 
@@ -924,7 +909,12 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 					if ((++k % modCount) == 0){ logger.info("StateDefinitions handled: " + (k-1));}
 
 					String idS = elStateDefinition.getAttributeValue("id");
-					State state = State.NewInstance();
+					State state = states.get(idS);
+					if (state == null){
+						state = State.NewInstance();
+					}else{
+						logger.debug("State duplicate found");
+					}
 					importRepresentation(elStateDefinition, sddNamespace, state, idS, sddConfig);
 
 					//StateData stateData = StateData.NewInstance();
@@ -1175,21 +1165,21 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
 								ref = elState.getAttributeValue("ref");
 								State state = states.get(ref);
-								if (state!=null) {
+								if (state != null) {
 									StateData stateData = StateData.NewInstance();
 									stateData.setState(state);
 									List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
 									for (Element elModifier : elModifiers){
 										ref = elModifier.getAttributeValue("ref");
 										Modifier modifier = modifiers.get(ref);
-										if (modifier!=null) {
+										if (modifier != null) {
 											stateData.addModifier(modifier);
 										}
 									}
-								categoricalData.addState(stateData);
+									categoricalData.addState(stateData);
+								}
+								taxonDescription.addElement(categoricalData);
 							}
-							taxonDescription.addElement(categoricalData);
-						}
 						}
 						// <Quantitative ref="c2">
 						List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
