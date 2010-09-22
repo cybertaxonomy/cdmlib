@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class SDDDescriptionIOTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
-	SDDDescriptionIO sddDescriptionIo;
+	SDDImport sddDescriptionIo;
 	
 	@SpringBeanByType
 	INameService nameService;

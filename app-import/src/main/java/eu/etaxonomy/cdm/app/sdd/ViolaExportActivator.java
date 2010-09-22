@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultExport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.sdd.SDDExportConfigurator;
+import eu.etaxonomy.cdm.io.sdd.out.SDDExportConfigurator;
 
 /**
  * @author h.fradin (from a.babadshanjan eu.etaxonomy.cdm.app.jaxb.CdmExportImportActivator)

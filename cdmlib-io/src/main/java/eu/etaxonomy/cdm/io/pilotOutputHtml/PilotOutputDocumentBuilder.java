@@ -19,7 +19,7 @@ import javax.xml.bind.Marshaller;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
-import eu.etaxonomy.cdm.io.sdd.SDDDataSet;
+import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Representation;

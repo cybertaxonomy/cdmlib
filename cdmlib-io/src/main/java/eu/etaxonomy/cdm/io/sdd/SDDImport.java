@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.Configurator;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.joda.time.DateTime;
@@ -34,9 +33,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -87,10 +83,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author h.fradin
@@ -98,8 +92,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @version 1.0
  */
 @Component("sddDescriptionIO")
-public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
-	private static final Logger logger = Logger.getLogger(SDDDescriptionIO.class);
+public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
+	private static final Logger logger = Logger.getLogger(SDDImport.class);
 
 	private static int modCount = 1000;
 
@@ -148,7 +142,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 	private int taxonNamesCount = 0; //XIM ajout
 	
-	public SDDDescriptionIO(){
+	public SDDImport(){
 		super();
 	}
 
@@ -163,14 +157,14 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	//	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 	@Override
 	public boolean doInvoke(SDDImportState state){
-
+		boolean success = true;
+		
 		TransactionStatus ts = startTransaction();
 		SDDImportConfigurator sddConfig = state.getConfig();
 
 		logger.info("start Datasets ...");
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
 		Element root = sddConfig.getSourceRoot();
-		boolean success = true;
 		Namespace sddNamespace = sddConfig.getSddNamespace();
 
 		logger.info("start TechnicalMetadata ...");

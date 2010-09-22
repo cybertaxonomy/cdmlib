@@ -46,7 +46,7 @@ public class SDDImportConfigurator extends ImportConfiguratorBase implements IIm
 
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				SDDDescriptionIO.class
+				SDDImport.class
 		};
 	};
 	

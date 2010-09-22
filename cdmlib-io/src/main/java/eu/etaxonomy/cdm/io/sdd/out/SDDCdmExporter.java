@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.sdd;
+package eu.etaxonomy.cdm.io.sdd.out;
 
 import java.io.File;
 import java.io.FileOutputStream;
