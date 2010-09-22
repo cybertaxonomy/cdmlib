@@ -55,6 +55,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 	
 	@Bean
 	public DataSource dataSource() {
+		//TODO validate data schema version
 		if(this.dataSource == null){
 			String jndiName = findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false);
 			
