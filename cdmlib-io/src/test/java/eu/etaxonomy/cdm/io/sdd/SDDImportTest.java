@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 
 @Ignore
-public class SDDDescriptionIOTest extends CdmTransactionalIntegrationTest {
+public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
 	SDDImport sddDescriptionIo;
@@ -45,7 +45,7 @@ public class SDDDescriptionIOTest extends CdmTransactionalIntegrationTest {
 	
 	@Before
 	public void setUp() {
-		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.xml");
+		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
 		configurator = SDDImportConfigurator.NewInstance(url.toString(), null);
 	}
 	
