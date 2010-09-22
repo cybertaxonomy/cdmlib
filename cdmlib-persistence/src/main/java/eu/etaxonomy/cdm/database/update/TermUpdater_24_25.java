@@ -29,7 +29,7 @@ public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
 	private static final Logger logger = Logger.getLogger(TermUpdater_24_25.class);
 	
 	public static final String startTermVersion = "2.4.2.2.201006011715";
-	private static final String endTermVersion = "3.0.0.0.201009201255";
+	private static final String endTermVersion = "2.5.0.0.201009211255";
 	
 // *************************** FACTORY **************************************/
 	
