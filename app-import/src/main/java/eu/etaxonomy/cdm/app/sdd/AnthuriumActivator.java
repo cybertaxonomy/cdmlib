@@ -45,20 +45,6 @@ public class AnthuriumActivator {
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
-	//authors
-	static final boolean doAuthors = true;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	//names
-	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = true;
-
-	//taxa
-	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = true;
-	static final boolean doFacts = true;
-
-
 	/**
 	 * @param args
 	 */
@@ -73,16 +59,6 @@ public class AnthuriumActivator {
 
 		sddImportConfigurator.setSecUuid(secUuid);
 		sddImportConfigurator.setSourceSecId(sourceSecId);
-
-		sddImportConfigurator.setDoAuthors(doAuthors);
-		sddImportConfigurator.setDoReferences(doReferences);
-		sddImportConfigurator.setDoTaxonNames(doTaxonNames);
-		sddImportConfigurator.setDoRelNames(doRelNames);
-
-		sddImportConfigurator.setDoTaxa(doTaxa);
-		sddImportConfigurator.setDoRelTaxa(doRelTaxa);
-		sddImportConfigurator.setDoFacts(doFacts);
-
 
 		sddImportConfigurator.setCheck(check);
 		sddImportConfigurator.setDbSchemaValidation(hbm2dll);
