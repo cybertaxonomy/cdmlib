@@ -9,6 +9,7 @@
     
     <!-- enable processing of annotations such as @Autowired and @Configuration -->
     <context:annotation-config/>
+    
     <bean class="eu.etaxonomy.cdm.remote.config.DataSourceConfigurer" >
     </bean>
     
@@ -19,7 +20,7 @@
                 the hibernate.dialect will be set by the JndiDataSourceConfig accorging to the 
                 according WebAppContext attributes or to the environment variable
               -->
-              <prop key="hibernate.hbm2ddl.auto">update</prop>
+              <prop key="hibernate.hbm2ddl.auto">validate</prop><!-- !!! must never be update !!! -->
               <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
               <prop key="hibernate.show_sql">false</prop>
               <prop key="hibernate.format_sql">false</prop>
