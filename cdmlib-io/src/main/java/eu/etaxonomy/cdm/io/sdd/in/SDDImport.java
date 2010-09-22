@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -30,8 +30,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -78,7 +76,6 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -193,8 +190,8 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	// associates the reference of a media object in SDD with a CdmBase Object
 	protected void associateImageWithCdmBase(String refMO, CdmBase cb){
 		if ((refMO != null) && (cb!=null)) {
-			if (!refMO.equals("")) {
-				if (!mediaObject_ListCdmBase.containsKey(refMO)) {
+			if (! refMO.equals("")) {
+				if (! mediaObject_ListCdmBase.containsKey(refMO)) {
 					List<CdmBase> lcb = new ArrayList<CdmBase>();
 					lcb.add(cb);
 					mediaObject_ListCdmBase.put(refMO,lcb);
@@ -249,54 +246,93 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	// imports the representation (label, detail, lang) of a particular SDD element
 	protected void importRepresentation(Element parent, Namespace sddNamespace, VersionableEntity ve, String id, IImportConfigurator config){
 		Element elRepresentation = parent.getChild("Representation",sddNamespace);
-		// <Label xml:lang="la">Viola hederacea Labill.</Label>
-		List<Element> listLabels = elRepresentation.getChildren("Label",sddNamespace);
-		List<Element> listDetails = elRepresentation.getChildren("Detail",sddNamespace);
+		
 		Map<Language,List<String>> langLabDet = new HashMap<Language,List<String>>();
 
-		for (Element elLabel : listLabels){
-			String lang = elLabel.getAttributeValue("lang",xmlNamespace);
-			Language language = null;
-			if (lang != null) {
-				if (!lang.equals("")) {
-					language = getTermService().getLanguageByIso(lang.substring(0, 2));
-				} else {
-					language = datasetLanguage;
-				}
-			} else {
-				language = datasetLanguage;
+		handleRepresentationLabels(sddNamespace, elRepresentation, langLabDet);
+		handleRepresentationDetails(sddNamespace, elRepresentation, langLabDet);
+
+		if (ve instanceof TermBase) {
+			makeRepresentationForTerms((TermBase)ve, langLabDet);
+		}else if (ve instanceof Media) {
+			makeRepresentationForMedia((Media)ve, langLabDet);
+		}else if (ve instanceof IdentifiableEntity<?>) {
+			IdentifiableEntity<?> ie = (IdentifiableEntity<?>)ve;
+			makeRepresentationForIdentifiableEntity(sddNamespace, ie, elRepresentation, langLabDet);
+			if (ve instanceof IdentifiableMediaEntity<?>){
+				makeRepresentationForIdentifiableMediaEntity(parent, sddNamespace, (IdentifiableMediaEntity<?>)ve);
 			}
-			String label = elLabel.getText();
-			List<String> labDet = new ArrayList<String>(3);
-			labDet.add(label);
-			langLabDet.put(language, labDet);
 		}
 
+		makeRepresentationMediaObjects(sddNamespace, ve, elRepresentation);
+
+	}
+
+
+	/**
+	 * Handles the "Detail" children of representations. Adds the result to the langLabDet.
+	 * @param sddNamespace
+	 * @param elRepresentation
+	 * @param langLabDet
+	 */
+	private void handleRepresentationDetails(Namespace sddNamespace,
+			Element elRepresentation, Map<Language, List<String>> langLabDet) {
+		List<Element> listDetails = elRepresentation.getChildren("Detail",sddNamespace);
 		for (Element elDetail : listDetails){
-			String lang = elDetail.getAttributeValue("lang",xmlNamespace);
+			Language language = getLanguage(elDetail);
 			String role = elDetail.getAttributeValue("role");
-			Language language = null;
-			if (lang != null) {
-				if (!lang.equals("")) {
-					language = getTermService().getLanguageByIso(lang.substring(0, 2));
-				} else {
-					language = datasetLanguage;
-				}
-			} else {
-				language = datasetLanguage;
-			}
 			String detail = elDetail.getText();
 			List<String> labDet = langLabDet.get(language);
 			labDet.add(detail);
 			labDet.add(role);
 			langLabDet.put(language, labDet);
 		}
+	}
 
-		if (ve instanceof TermBase) {
-			TermBase tb = (TermBase) ve;
+	/**
+	 * Handles the "Label" children of representations. Adds the result to the langLabDet.
+	 * @param sddNamespace
+	 * @param elRepresentation
+	 * @param langLabDet
+	 */
+	private void handleRepresentationLabels(Namespace sddNamespace,
+				Element elRepresentation, Map<Language, List<String>> langLabDet) {
+		// <Label xml:lang="la">Viola hederacea Labill.</Label>
+		List<Element> listLabels = elRepresentation.getChildren("Label",sddNamespace);
+		for (Element elLabel : listLabels){
+			Language language = getLanguage(elLabel);
+			String label = elLabel.getText();
+			List<String> labDet = new ArrayList<String>(3);
+			labDet.add(label);
+			langLabDet.put(language, labDet);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param ve
+	 * @param langLabDet
+	 */
+	private void makeRepresentationForMedia(Media m, Map<Language, List<String>> langLabDet) {
+		for (Language lang : langLabDet.keySet()){
+			List<String> labDet = langLabDet.get(lang);
+			if (labDet.get(0) != null){
+				m.addTitle(LanguageString.NewInstance(labDet.get(0), lang));
+			}
+			if (labDet.size()>1) {
+				m.addDescription(labDet.get(1), lang);
+			}
+		}
+	}
 
-			for (Iterator<Language> l = langLabDet.keySet().iterator() ; l.hasNext() ;){
-				Language lang = l.next();
+	/**
+	 * Handles representations for terms. Adds one representation per language in langLabDet.
+	 * 
+	 * @param ve
+	 * @param langLabDet
+	 */
+	private void makeRepresentationForTerms(TermBase tb, Map<Language, List<String>> langLabDet) {
+			for (Language lang : langLabDet.keySet()){
 				List<String> labDet = langLabDet.get(lang);
 				if (labDet.size()>0){
 					if (labDet.size()>1) {
@@ -305,125 +341,140 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 						tb.addRepresentation(Representation.NewInstance(labDet.get(0), labDet.get(0), labDet.get(0), lang));
 					}
 				}
-				ve = tb;
 			}
+	}
 
-		} else if (ve instanceof Media) {
-			Media m = (Media) ve;
 
-			for (Iterator<Language> l = langLabDet.keySet().iterator() ; l.hasNext() ;){
-				Language lang = l.next();
-				List<String> labDet = langLabDet.get(lang);
-				if (labDet.get(0) != null){
-					m.addTitle(LanguageString.NewInstance(labDet.get(0), lang));
-				}
-				if (labDet.size()>1) {
-					m.addDescription(labDet.get(1), lang);
-				}
-				ve = m;
-			}
-
-		} 
-		if (ve instanceof IdentifiableEntity<?>) {
-			IdentifiableEntity<?> ie = (IdentifiableEntity<?>) ve;
-			List<String> labDet = null;
-
-			if (ve instanceof TaxonNameBase) {
-				if (langLabDet.keySet().contains(getTermService().getLanguageByIso("la"))) {
-					labDet = langLabDet.get(getTermService().getLanguageByIso("la"));
-				} else if (langLabDet.keySet().contains(datasetLanguage)) {
-					labDet = langLabDet.get(datasetLanguage);
-					logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
-				} else {
-					labDet = langLabDet.get(langLabDet.keySet().iterator().next());
-					logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
-				}
-			} else {
-				labDet = langLabDet.get(langLabDet.keySet().iterator().next());
-			}
-
-			ie.setTitleCache(labDet.get(0), true);
-
-			if (labDet.size()>1) {
-				Annotation annotation = null;
-				if (labDet.get(1) != null) {
-					if (labDet.get(2) != null) {
-						annotation = Annotation.NewInstance(labDet.get(2) + " - " + labDet.get(1), datasetLanguage);
-					} else {
-						annotation = Annotation.NewInstance(labDet.get(1), datasetLanguage);
-					}
-				}
-				ie.addAnnotation(annotation);
-			}
-
-			ve = ie;
-
-		}
-		
-		if (ve instanceof IdentifiableMediaEntity<?>){
-			IdentifiableMediaEntity<?> ime = (IdentifiableMediaEntity<?>) ve;
-			Element elLinks = parent.getChild("Links",sddNamespace);
-
-			if (elLinks != null) {
-
-				//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
-				List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
-				Media link = Media.NewInstance();
-				MediaRepresentation mr = MediaRepresentation.NewInstance();
-				int k = 0;
-				//for each Link
-				for (Element elLink : listLinks){
-
-					try {
-
-						String rel = elLink.getAttributeValue("rel");
-						String href = elLink.getAttributeValue("href");
-
-						mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
-						link.addRepresentation(mr);
-						ime.addMedia(link);
-
-					} catch (Exception e) {
-						//FIXME
-						logger.warn("Import of Link " + k + " failed.");
-					}
-
-					if ((++k % modCount) == 0){ logger.info("Links handled: " + k);}
-
-				}
-			}
-		}
-
-		List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+	/**
+	 * Handles the "MediaObject" children of representations.
+	 * @param sddNamespace
+	 * @param ve
+	 * @param elRepresentation
+	 */
+	private void makeRepresentationMediaObjects(Namespace sddNamespace,
+			VersionableEntity ve, Element elRepresentation) {
+		List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject", sddNamespace);
 		for (Element elMediaObject : listMediaObjects) {
 			String ref = null;
+			//TODO
 			String role = null;
 			if (elMediaObject != null) {
 				ref = elMediaObject.getAttributeValue("ref");
 				role = elMediaObject.getAttributeValue("role");
 			}
-			if (ref != null) {
-				if (!ref.equals("")) {
-					if (ref != null) {
-						if (ve instanceof TaxonDescription) {
-							TaxonDescription td = (TaxonDescription) ve;
-							//TODO: ensure that all images are imported
-							if (td.getDescriptionSources().toArray().length > 0) {
-								this.associateImageWithCdmBase(ref,(ReferenceBase) td.getDescriptionSources().toArray()[0]);
-							} else {
-								ReferenceBase descriptionSource = ReferenceFactory.newGeneric();
-								td.addDescriptionSource(descriptionSource);
-								this.associateImageWithCdmBase(ref,descriptionSource);
-							}
-						} else {
-							this.associateImageWithCdmBase(ref,ve);
-						}
+			if (StringUtils.isNotBlank(ref)) {
+				if (ve instanceof TaxonDescription) {
+					TaxonDescription td = (TaxonDescription) ve;
+					//TODO: ensure that all images are imported
+					if (td.getDescriptionSources().size() > 0) {
+						this.associateImageWithCdmBase(ref,(ReferenceBase) td.getDescriptionSources().toArray()[0]);
+					} else {
+						ReferenceBase descriptionSource = ReferenceFactory.newGeneric();
+						td.addDescriptionSource(descriptionSource);
+						this.associateImageWithCdmBase(ref,descriptionSource);
 					}
-
+				} else {
+					this.associateImageWithCdmBase(ref,ve);
 				}
 			}
 		}
+	}
 
+	/**
+	 * Handles the "Links" element
+	 * @param parent
+	 * @param sddNamespace
+	 * @param ve
+	 */
+	private void makeRepresentationForIdentifiableMediaEntity(Element parent,
+			Namespace sddNamespace, IdentifiableMediaEntity ime) {
+		Element elLinks = parent.getChild("Links",sddNamespace);
+
+		if (elLinks != null) {
+
+			//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
+			List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
+			Media link = Media.NewInstance();
+			MediaRepresentation mr = MediaRepresentation.NewInstance();
+			int k = 0;
+			//for each Link
+			for (Element elLink : listLinks){
+
+				try {
+					//TODO
+					String rel = elLink.getAttributeValue("rel");
+					String href = elLink.getAttributeValue("href");
+
+					mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
+					link.addRepresentation(mr);
+					ime.addMedia(link);
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of Link " + k + " failed.");
+				}
+
+				if ((++k % modCount) == 0){ logger.info("Links handled: " + k);}
+
+			}
+		}
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param ve
+	 * @param elRepresentation
+	 * @param langLabDet
+	 * @return
+	 */
+	private void makeRepresentationForIdentifiableEntity(Namespace sddNamespace, IdentifiableEntity<?> ie, 
+					Element elRepresentation, Map<Language, List<String>> langLabDet) {
+		List<String> labDet = null;
+
+		if (ie instanceof TaxonNameBase) {
+			if (langLabDet.keySet().contains(getTermService().getLanguageByIso("la"))) {
+				labDet = langLabDet.get(getTermService().getLanguageByIso("la"));
+			} else if (langLabDet.keySet().contains(datasetLanguage)) {
+				labDet = langLabDet.get(datasetLanguage);
+				logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
+			} else {
+				labDet = langLabDet.get(langLabDet.keySet().iterator().next());
+				logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
+			}
+		} else {
+			labDet = langLabDet.get(langLabDet.keySet().iterator().next());
+		}
+
+		//FIXME labDet is != null only for TaxonNameBase
+		ie.setTitleCache(labDet.get(0), true);
+
+		if (labDet.size()>1) {
+			Annotation annotation = null;
+			if (labDet.get(1) != null) {
+				if (labDet.get(2) != null) {
+					annotation = Annotation.NewInstance(labDet.get(2) + " - " + labDet.get(1), datasetLanguage);
+				} else {
+					annotation = Annotation.NewInstance(labDet.get(1), datasetLanguage);
+				}
+			}
+			ie.addAnnotation(annotation);
+		}
+		return;
+	}
+
+	/**
+	 * @param elLabel
+	 * @return
+	 */
+	private Language getLanguage(Element elLanguage) {
+		String lang = elLanguage.getAttributeValue("lang",xmlNamespace);
+		Language language = null;
+		if (StringUtils.isNotBlank(lang)) {
+			language = getTermService().getLanguageByIso(lang.substring(0, 2));
+		} else {
+			language = datasetLanguage;
+		}
+		return language;
 	}
 	
 
@@ -487,7 +538,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		saveStatisticalMeasure();		
 		saveAnnotationType();
 		
-		importCodedDescriptions(elDataset, sddNamespace, sddConfig, success);
+		success &= importCodedDescriptions(elDataset, sddNamespace, sddConfig);
 		importAgents(elDataset, sddNamespace, sddConfig, success);
 		importPublications(elDataset, sddNamespace, sddConfig, success);
 		importMediaObjects(elDataset, sddNamespace, sddConfig, success);
@@ -500,15 +551,15 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		if ((authors != null)||(editors != null)) {
 			Team team = Team.NewInstance();
 			if (authors != null) {
-			for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
-				team.addTeamMember(author.next());
-			}
+				for (Person author : authors.values()){
+					team.addTeamMember(author);
+				}
 			}
 			if (editors != null) {
 				Marker marker = Marker.NewInstance();
 				marker.setMarkerType(editorMarkerType);
-				for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
-					Person edit = editor.next();
+				for (Person editor : editors.values()){
+					Person edit = editor;
 					edit.addMarker(marker);
 					team.addTeamMember(edit);
 				}
@@ -525,27 +576,23 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		// Returns a CdmApplicationController created by the values of this configuration.
 		IDescriptionService descriptionService = getDescriptionService();
 
-		for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
-			TaxonDescription taxonDescription = k.next();
+		for (TaxonDescription taxonDescription : taxonDescriptions.values()){
 			// Persists a Description
 			descriptionService.save(taxonDescription);
 		}
-
-
 		
-		for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
-			String ref = refCD.next();
+		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
-				IArticle publication = (IArticle) publications.get(citations.get(ref));
+				ReferenceBase publication = publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
 					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
 					annotationTypes.add(annotationType);
 					location.setAnnotationType(annotationType);
-					((ReferenceBase)publication).addAnnotation(location);
+					(publication).addAnnotation(location);
 				}
-				td.addDescriptionSource((ReferenceBase)publication);
+				td.addDescriptionSource(publication);
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");
@@ -561,10 +608,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 
 		if (descriptiveConcepts != null) {
-			for (Iterator<Feature> feat = descriptiveConcepts.iterator() ; feat.hasNext() ;) {
+			for (Feature feature : descriptiveConcepts) {
 				Marker marker = Marker.NewInstance();
 				marker.setMarkerType(descriptiveConceptMarkerType);
-				Feature feature = feat.next();
 				feature.addMarker(marker);
 			}
 		}
@@ -586,23 +632,18 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		
 		//XIMtermService.save(geographicAreaMarkerType);
 
-		IReferenceService referenceService = getReferenceService();
 		// referenceService.saveReference(sourceReference); 
-		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
-			ReferenceBase publication = (ReferenceBase) k.next();
-			referenceService.save(publication); 
+		for (ReferenceBase publication : publications.values()){
+			getReferenceService().save(publication); 
 		}
 
-		for (Iterator<FeatureTree> k = featureTrees.iterator() ; k.hasNext() ;) {
-			FeatureTree tree = k.next();
-			getFeatureTreeService().save(tree);
+		for (FeatureTree featureTree : featureTrees) {
+			getFeatureTreeService().save(featureTree);
 		}
-		for (Iterator<TaxonomicTree> k = taxonomicTrees.iterator() ; k.hasNext() ;) {
-			TaxonomicTree tree = k.next();
-			getTaxonTreeService().save(tree);
+		for (TaxonomicTree taxonomicTree : taxonomicTrees) {
+			getTaxonTreeService().save(taxonomicTree);
 		}
-		for (Iterator<Specimen> k = specimens.values().iterator() ; k.hasNext() ;) {
-			Specimen specimen = k.next();
+		for (Specimen specimen : specimens.values()) {
 			getOccurrenceService().save(specimen);
 		}
 		logger.info("end of persistence ...");
@@ -861,11 +902,8 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		// <CategoricalCharacter id="c1">
 		if (elCharacters != null) {
 			success &= handleCategoricalData(sddNamespace, sddConfig, elCharacters);
-
 			success &= handleQuantitativeData(sddNamespace, sddConfig, elCharacters);
-
 			success &= handleTextCharacters(sddNamespace, sddConfig, elCharacters);
-
 		}
 
 		/*for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
@@ -996,7 +1034,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				Element elDefault = elQuantitativeCharacter.getChild("Default",sddNamespace);
 				if (elDefault != null) {
 					String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
-					if (!measurementUnitPrefix.equals("")){
+					if (! measurementUnitPrefix.equals("")){
 						defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
 					}
 				}
@@ -1052,246 +1090,307 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	// imports the descriptions of taxa
-	protected void importCodedDescriptions(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+	protected boolean importCodedDescriptions(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
+		boolean success = true;
+		
 		// <CodedDescriptions>
 		logger.info("start CodedDescriptions ...");
 		Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
+
 		// <CodedDescription id="D101">
-		
-
-		ITaxonService taxonService = getTaxonService();
-
 		if (elCodedDescriptions != null) {
 			List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
 			int j = 0;
 			//for each CodedDescription
-
 			for (Element elCodedDescription : listCodedDescriptions){
-
-				try {
-
-					String idCD = elCodedDescription.getAttributeValue("id");
-
-					// <Representation>
-					//  <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8, 2006</Label>
-					// </Representation>
-					TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-					importRepresentation(elCodedDescription, sddNamespace, taxonDescription, idCD, sddConfig);
-
-					// <Scope>
-					//  <TaxonName ref="t1"/>
-					//  <Citation ref="p1" location="p. 30"/>
-					// </Scope>
-					Element elScope = elCodedDescription.getChild("Scope",sddNamespace);
-					String ref = "";
-					Taxon taxon = null;
-					if (elScope != null) {
-						Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
-						ref = elTaxonName.getAttributeValue("ref");
-						NonViralName taxonNameBase = taxonNameBases.get(ref);
-						
-						if(sddConfig.isDoMatchTaxa()){
-							taxon = getTaxonService().findBestMatchingTaxon(taxonNameBase.getTitleCache());
-						}
-						
-						if(taxon != null){
-							logger.info("using existing Taxon" + taxon.getTitleCache());
-							if(!taxonNameBase.getUuid().equals(taxon.getName().getUuid())){
-								logger.warn("TaxonNameBase entity of existing taxon does not match Name in list -> replacing Name in list");
-								taxonNameBase = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
-							}				
-						} else {							
-							logger.info("creating new Taxon from TaxonName" + taxonNameBase.getTitleCache());
-							taxon = Taxon.NewInstance(taxonNameBase, sec);
-						}
-					}
-					
-					else {//in case no taxon is linked to the description, a new one is created
-						NonViralName tnb = NonViralName.NewInstance(null);
-						String id = new String(""+taxonNamesCount);
-						IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
-						importRepresentation(elCodedDescription, sddNamespace, tnb, id, sddConfig);
-						
-						if(sddConfig.isDoMatchTaxa()){
-							taxon = getTaxonService().findBestMatchingTaxon(tnb.getTitleCache());
-						}
-						
-						if(taxon != null){
-							tnb = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
-//							taxonNameBases.put(id ,tnb);
-//							taxonNamesCount++;
-							logger.info("using existing Taxon" + taxon.getTitleCache());
-						} else {
-							tnb.addSource(source);
-							taxonNameBases.put(id ,tnb);
-							taxonNamesCount++;						
-							logger.info("creating new Taxon from TaxonName" + tnb.getTitleCache());
-							taxon = Taxon.NewInstance(tnb, sec);
-						}
-					}
-
-					String refCitation = "";
-					String location = "";
-
-					if (elScope != null) {
-						Element elCitation = elScope.getChild("Citation",sddNamespace);
-						if (elCitation != null) {
-							refCitation = elCitation.getAttributeValue("ref");
-							location = elCitation.getAttributeValue("location");
-						}
-					}
-
-					// <SummaryData>
-					Element elSummaryData = elCodedDescription.getChild("SummaryData",sddNamespace);
-					if (elSummaryData != null) {
-
-						// <Categorical ref="c4">
-						List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
-						int k = 0;
-						//for each Categorical
-						for (Element elCategorical : elCategoricals){
-							if ((++k % modCount) == 0){ logger.warn("Categorical handled: " + (k-1));}
-							ref = elCategorical.getAttributeValue("ref");
-							Feature feature = features.get(ref);
-							CategoricalData categoricalData = CategoricalData.NewInstance();
-							categoricalData.setFeature(feature);
-
-							// <State ref="s3"/>
-							List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
-							int l = 0;
-							
-							//for each State
-							for (Element elState : elStates){
-								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
-								ref = elState.getAttributeValue("ref");
-								State state = states.get(ref);
-								if (state != null) {
-									StateData stateData = StateData.NewInstance();
-									stateData.setState(state);
-									List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
-									for (Element elModifier : elModifiers){
-										ref = elModifier.getAttributeValue("ref");
-										Modifier modifier = modifiers.get(ref);
-										if (modifier != null) {
-											stateData.addModifier(modifier);
-										}
-									}
-									categoricalData.addState(stateData);
-								}
-								taxonDescription.addElement(categoricalData);
-							}
-						}
-						// <Quantitative ref="c2">
-						List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
-						k = 0;
-						//for each Quantitative
-						for (Element elQuantitative : elQuantitatives){
-							if ((++k % modCount) == 0){ logger.warn("Quantitative handled: " + (k-1));}
-							ref = elQuantitative.getAttributeValue("ref");
-							Feature feature = features.get(ref);
-							QuantitativeData quantitativeData = QuantitativeData.NewInstance();
-							quantitativeData.setFeature(feature);
-
-							MeasurementUnit unit = units.get(ref);
-							String prefix = defaultUnitPrefixes.get(ref);
-							if (unit != null) {
-								String u = unit.getLabel();
-								if (prefix != null) {
-									u = prefix + u;
-								}
-								unit.setLabel(u);
-								quantitativeData.setUnit(unit);
-							}
-
-							// <Measure type="Min" value="2.3"/>
-							List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
-							int l = 0;
-							
-							//for each State
-							for (Element elMeasure : elMeasures){
-								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
-								String type = elMeasure.getAttributeValue("type");
-								String value = elMeasure.getAttributeValue("value");
-								if (value.contains(",")) {
-									value = value.replace(',', '.');
-								}
-								Float v = Float.parseFloat(value);
-								//Float v = new Float(0);
-								StatisticalMeasure t = null;
-								if (type.equals("Min")) {
-									t = StatisticalMeasure.MIN();
-								} else if (type.equals("Mean")) {
-									t = StatisticalMeasure.AVERAGE();
-								} else if (type.equals("Max")) {
-									t = StatisticalMeasure.MAX();
-								} else if (type.equals("SD")) {
-									t = StatisticalMeasure.STANDARD_DEVIATION();
-								} else if (type.equals("N")) {
-									t = StatisticalMeasure.SAMPLE_SIZE();
-								} else if (type.equals("UMethLower")) {
-									t = StatisticalMeasure.TYPICAL_LOWER_BOUNDARY();
-								} else if (type.equals("UMethUpper")) {
-									t = StatisticalMeasure.TYPICAL_UPPER_BOUNDARY();
-								} else if (type.equals("Var")) {
-									t = StatisticalMeasure.VARIANCE();
-								} else {
-									t = StatisticalMeasure.NewInstance(type,type,type);
-									statisticalMeasures.add(t);
-								}
-
-								StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
-								statisticalValue.setValue(v);
-								statisticalValue.setType(t);
-								quantitativeData.addStatisticalValue(statisticalValue);
-								featureData.add(statisticalValue);
-							}
-							taxonDescription.addElement(quantitativeData);
-						}
-
-						// <TextChar ref="c3">
-						List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
-						k = 0;
-						//for each TextChar
-						for (Element elTextChar : elTextChars){
-							if ((++k % modCount) == 0){ logger.info("TextChar handled: " + (k-1));}
-							ref = elTextChar.getAttributeValue("ref");
-							Feature feature = features.get(ref);
-							TextData textData = TextData.NewInstance();
-							textData.setFeature(feature);
-
-							// <Content>Free form text</Content>
-							String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
-							textData.putText(content, datasetLanguage);
-							taxonDescription.addElement(textData);
-						}
-
-					}
-
-					if (taxon != null) {
-						taxon.addDescription(taxonDescription);
-					}
-
-					if (!refCitation.equals("")){
-						citations.put(idCD,refCitation);
-					}
-
-					if (!location.equals("")){
-						locations.put(idCD, location);
-					}
-					
-					taxonDescription.setDescriptiveSystem(featureSet);
-
-					taxonDescriptions.put(idCD, taxonDescription);//FIXME
-
-				} catch (Exception e) {
-					//FIXME
-					logger.warn("Import of CodedDescription " + j + " failed.", e);
-					success = false;
-				}
+				success &= handleCodedDescription(sddNamespace, sddConfig, elCodedDescription, j);
 				if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + j);}
+			}
+		}
+		return success;
+	}
 
+	/**
+	 * @param sddNamespace
+	 * @param sddConfig
+	 * @param j
+	 * @param elCodedDescription
+	 * @return
+	 */
+	private boolean handleCodedDescription(Namespace sddNamespace, SDDImportConfigurator sddConfig, Element elCodedDescription, int j) {
+		boolean success = true ;
+		try {
+
+			String idCD = elCodedDescription.getAttributeValue("id");
+
+			// <Representation>
+			//  <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8, 2006</Label>
+			// </Representation>
+			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+			importRepresentation(elCodedDescription, sddNamespace, taxonDescription, idCD, sddConfig);
+
+			// <Scope>
+			//  <TaxonName ref="t1"/>
+			//  <Citation ref="p1" location="p. 30"/>
+			// </Scope>
+			Element elScope = elCodedDescription.getChild("Scope", sddNamespace);
+			Taxon taxon;
+			if (elScope != null) {
+				taxon = handleCDScope(sddNamespace, sddConfig, idCD, elScope);
+			} else {//in case no taxon is linked to the description, a new one is created
+				taxon = handleCDNoScope(sddNamespace, sddConfig, elCodedDescription);
 			}
 
+			// <SummaryData>
+			Element elSummaryData = elCodedDescription.getChild("SummaryData",sddNamespace);
+			if (elSummaryData != null) {
+				handleSummaryCategoricalData(sddNamespace, taxonDescription, elSummaryData);
+				handleSummaryQuantitativeData(sddNamespace, taxonDescription, elSummaryData);
+				handleSummaryTextData(sddNamespace, taxonDescription, elSummaryData);
+			}
+
+			if (taxon != null) {
+				taxon.addDescription(taxonDescription);
+			}
+			
+			taxonDescription.setDescriptiveSystem(featureSet);
+
+			taxonDescriptions.put(idCD, taxonDescription);//FIXME
+
+		} catch (Exception e) {
+			//FIXME
+			logger.warn("Import of CodedDescription " + j + " failed.", e);
+			success = false;
+		}
+		return success;
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param sddConfig
+	 * @param elCodedDescription
+	 * @param taxon
+	 * @return
+	 */
+	private Taxon handleCDNoScope(Namespace sddNamespace,
+			SDDImportConfigurator sddConfig, Element elCodedDescription	) {
+		Taxon taxon = null;
+		NonViralName nonViralName = NonViralName.NewInstance(null);
+		String id = new String("" + taxonNamesCount);
+		IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
+		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, sddConfig);
+		
+		if(sddConfig.isDoMatchTaxa()){
+			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
+		}
+		
+		if(taxon != null){
+			nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
+//							taxonNameBases.put(id ,tnb);
+//							taxonNamesCount++;
+			logger.info("using existing Taxon" + taxon.getTitleCache());
+		} else {
+			nonViralName.addSource(source);
+			taxonNameBases.put(id ,nonViralName);
+			taxonNamesCount++;						
+			logger.info("creating new Taxon from TaxonName" + nonViralName.getTitleCache());
+			taxon = Taxon.NewInstance(nonViralName, sec);
+		}
+		return taxon;
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param sddConfig
+	 * @param idCD
+	 * @param elScope
+	 * @param taxon
+	 * @return
+	 */
+	private Taxon handleCDScope(Namespace sddNamespace, SDDImportConfigurator sddConfig, 
+			String idCD, Element elScope) {
+		Taxon taxon = null;
+		Element elTaxonName = elScope.getChild("TaxonName", sddNamespace);
+		String ref = elTaxonName.getAttributeValue("ref");
+		NonViralName nonViralName = taxonNameBases.get(ref);
+		
+		if(sddConfig.isDoMatchTaxa()){
+			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
+		}
+		
+		if(taxon != null){
+			logger.info("using existing Taxon" + taxon.getTitleCache());
+			if(!nonViralName.getUuid().equals(taxon.getName().getUuid())){
+				logger.warn("TaxonNameBase entity of existing taxon does not match Name in list -> replacing Name in list");
+				nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
+			}				
+		} else {							
+			logger.info("creating new Taxon from TaxonName" + nonViralName.getTitleCache());
+			taxon = Taxon.NewInstance(nonViralName, sec);
+		}
+		
+		//citation
+		Element elCitation = elScope.getChild("Citation",sddNamespace);
+		if (elCitation != null) {
+			String refCitation = elCitation.getAttributeValue("ref");
+			if (! refCitation.equals("")){
+				citations.put(idCD, refCitation);
+			}
+			String location = elCitation.getAttributeValue("location");
+			if (! location.equals("")){
+				locations.put(idCD, location);
+			}
+		}
+		return taxon;
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param taxonDescription
+	 * @param elSummaryData
+	 */
+	private void handleSummaryTextData(Namespace sddNamespace,
+			TaxonDescription taxonDescription, Element elSummaryData) {
+		String ref;
+		int k;
+		// <TextChar ref="c3">
+		List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
+		k = 0;
+		//for each TextChar
+		for (Element elTextChar : elTextChars){
+			if ((++k % modCount) == 0){ logger.info("TextChar handled: " + (k-1));}
+			ref = elTextChar.getAttributeValue("ref");
+			Feature feature = features.get(ref);
+			TextData textData = TextData.NewInstance();
+			textData.setFeature(feature);
+
+			// <Content>Free form text</Content>
+			String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
+			textData.putText(content, datasetLanguage);
+			taxonDescription.addElement(textData);
+		}
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param taxonDescription
+	 * @param elSummaryData
+	 */
+	private void handleSummaryQuantitativeData(Namespace sddNamespace,
+			TaxonDescription taxonDescription, Element elSummaryData) {
+		String ref;
+		int k;
+		// <Quantitative ref="c2">
+		List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
+		k = 0;
+		//for each Quantitative
+		for (Element elQuantitative : elQuantitatives){
+			if ((++k % modCount) == 0){ logger.warn("Quantitative handled: " + (k-1));}
+			ref = elQuantitative.getAttributeValue("ref");
+			Feature feature = features.get(ref);
+			QuantitativeData quantitativeData = QuantitativeData.NewInstance();
+			quantitativeData.setFeature(feature);
+
+			MeasurementUnit unit = units.get(ref);
+			String prefix = defaultUnitPrefixes.get(ref);
+			if (unit != null) {
+				String u = unit.getLabel();
+				if (prefix != null) {
+					u = prefix + u;
+				}
+				unit.setLabel(u);
+				quantitativeData.setUnit(unit);
+			}
+
+			// <Measure type="Min" value="2.3"/>
+			List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
+			int l = 0;
+			
+			//for each State
+			for (Element elMeasure : elMeasures){
+				if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
+				String type = elMeasure.getAttributeValue("type");
+				String value = elMeasure.getAttributeValue("value");
+				if (value.contains(",")) {
+					value = value.replace(',', '.');
+				}
+				Float v = Float.parseFloat(value);
+				//Float v = new Float(0);
+				StatisticalMeasure t = null;
+				if (type.equals("Min")) {
+					t = StatisticalMeasure.MIN();
+				} else if (type.equals("Mean")) {
+					t = StatisticalMeasure.AVERAGE();
+				} else if (type.equals("Max")) {
+					t = StatisticalMeasure.MAX();
+				} else if (type.equals("SD")) {
+					t = StatisticalMeasure.STANDARD_DEVIATION();
+				} else if (type.equals("N")) {
+					t = StatisticalMeasure.SAMPLE_SIZE();
+				} else if (type.equals("UMethLower")) {
+					t = StatisticalMeasure.TYPICAL_LOWER_BOUNDARY();
+				} else if (type.equals("UMethUpper")) {
+					t = StatisticalMeasure.TYPICAL_UPPER_BOUNDARY();
+				} else if (type.equals("Var")) {
+					t = StatisticalMeasure.VARIANCE();
+				} else {
+					t = StatisticalMeasure.NewInstance(type,type,type);
+					statisticalMeasures.add(t);
+				}
+
+				StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
+				statisticalValue.setValue(v);
+				statisticalValue.setType(t);
+				quantitativeData.addStatisticalValue(statisticalValue);
+				featureData.add(statisticalValue);
+			}
+			taxonDescription.addElement(quantitativeData);
+		}
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param taxonDescription
+	 * @param elSummaryData
+	 */
+	private void handleSummaryCategoricalData(Namespace sddNamespace,
+			TaxonDescription taxonDescription, Element elSummaryData) {
+		String ref;
+		// <Categorical ref="c4">
+		List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
+		int k = 0;
+		//for each Categorical
+		for (Element elCategorical : elCategoricals){
+			if ((++k % modCount) == 0){ logger.warn("Categorical handled: " + (k-1));}
+			ref = elCategorical.getAttributeValue("ref");
+			Feature feature = features.get(ref);
+			CategoricalData categoricalData = CategoricalData.NewInstance();
+			categoricalData.setFeature(feature);
+
+			// <State ref="s3"/>
+			List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
+			int l = 0;
+			
+			//for each State
+			for (Element elState : elStates){
+				if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
+				ref = elState.getAttributeValue("ref");
+				State state = states.get(ref);
+				if (state != null) {
+					StateData stateData = StateData.NewInstance();
+					stateData.setState(state);
+					List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
+					for (Element elModifier : elModifiers){
+						ref = elModifier.getAttributeValue("ref");
+						Modifier modifier = modifiers.get(ref);
+						if (modifier != null) {
+							stateData.addModifier(modifier);
+						}
+					}
+					categoricalData.addState(stateData);
+				}
+				taxonDescription.addElement(categoricalData);
+			}
 		}
 	}
 
