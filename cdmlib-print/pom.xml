@@ -10,13 +10,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>eu.etaxonomy</groupId>
-	
 	<artifactId>cdmlib-print</artifactId>
-	
 	<packaging>jar</packaging>
-		
-	<version>3.0</version>
-	
 	<name>CDM Print</name>
 	
 	<url>http://maven.apache.org</url>
@@ -24,7 +19,6 @@
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
 			<artifactId>cdmlib-remote</artifactId>
-			<version>3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>

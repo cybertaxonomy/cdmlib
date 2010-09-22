@@ -9,11 +9,10 @@
     <version>2.5</version>
 	<relativePath>pom.xml</relativePath>
   </parent>
+  
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-remote-webapp</artifactId>
-  
   <name>CDM Remote Webapp</name>
-  
   <packaging>war</packaging>
   
   <scm>
