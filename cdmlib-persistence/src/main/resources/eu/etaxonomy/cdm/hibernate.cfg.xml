@@ -17,7 +17,7 @@
           and also org.springframework.orm.hibernate3.AbstractSessionFactoryBean.setDataSource(DataSource dataSource)
           
           IMPORTANT: 
-          Because of the constraint (1) the org.hibernate.connection.C3P0ConnectionProvider anc not be used 
+          Because of the constraint (1) the org.hibernate.connection.C3P0ConnectionProvider are not be used 
           for the cdm library because it requires the dataSource bean in some cases. 
               
           (1)
@@ -29,6 +29,7 @@
           (2)
           Hibernate uses the hibernate.c3p0.max_size property to determine if c3p0
           is begin used.  Therefore the max_size property MUST be set. - maybe not need in hibernate 3.4 +
+          
           (3) If you are using Hibernate's C3P0ConnectionProvider you must set the following properties 
           in your hibernate configuration, using hibernate-specific configuration keys. 
           All other properties must be defined as usual in a c3p0.properties file. 
