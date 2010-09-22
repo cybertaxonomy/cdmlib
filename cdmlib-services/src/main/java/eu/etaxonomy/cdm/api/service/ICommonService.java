@@ -106,6 +106,4 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	
 	public List getHqlResult(String hqlQuery);
 
-	public boolean isDatabaseSchemaCompatible();
-
 }

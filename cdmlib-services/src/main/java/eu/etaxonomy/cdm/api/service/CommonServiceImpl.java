@@ -23,13 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.database.DatabaseSchemaMismatchException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
+import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
@@ -263,40 +262,4 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 		return result;
 	}
 
-	/**
-	 * Checks whether the current database schema is compatible with the CDM Library 
-	 * version by checking the first 3(??) numbers of the schema version
-	 * .
-	 * @throws DatabaseSchemaMismatchException
-	 */
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#isDatabaseSchemaCompatible()
-	 */
-	public boolean isDatabaseSchemaCompatible() {
-		int index = 3; 
-		Map<MetaDataPropertyName, CdmMetaData> allCommonData = getCdmMetaData();
-
-		if (allCommonData.containsKey(MetaDataPropertyName.DB_SCHEMA_VERSION)) {
-			
-			String currentSchemaVersionPrefix = CdmMetaData.getCurrentSchemaVersion(index);
-			String databaseSchemaVersionPrefix = CdmMetaData.getDatabaseSchemaVersion(allCommonData, index);
-			
-			if (areStringsEqual(currentSchemaVersionPrefix, databaseSchemaVersionPrefix)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Compares version numbers of the current schema version with the database schema version.
-	 * @param currentSchemaVersion
-	 * @param databaseSchemaVersion
-	 * @throws DatabaseSchemaMismatchException
-	 */
-	private boolean areStringsEqual(String first, String second) {
-		return first.equals(second);
-	}
-
-	
 }
