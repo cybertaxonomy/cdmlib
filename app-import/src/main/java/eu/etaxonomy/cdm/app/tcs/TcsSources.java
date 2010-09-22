@@ -65,7 +65,7 @@ public class TcsSources {
 
 	public static String tcsXmlTest_local(){
 		//		tcsXmlTest.xml
-		URL url = new SDDSources().getClass().getResource("/tcsXmlTest.xml");
+		URL url = new TcsSources().getClass().getResource("/tcsXmlTest.xml");
 		String sourceUrl = url.toString();
 		return sourceUrl;
 		
@@ -73,17 +73,16 @@ public class TcsSources {
 	
 	public static String tcsXmlTest_local2(){
 		//		tcsXmlTest.xml
-		URL url = new SDDSources().getClass().getResource("/TcsXmlImportConfiguratorTest-input.xml");
+		URL url = new TcsSources().getClass().getResource("/TcsXmlImportConfiguratorTest-input.xml");
 		String sourceUrl = url.toString();
-		return sourceUrl;
-		
+		return sourceUrl;	
 	}
 	
 	public static String tcsRdf_globis(){
 		//		globis.rdf.xml
 		//String sourceUrl = "file:C:/Dokumente und Einstellungen/a.kohlbecker.BGBM/Desktop/globis.rdf.xml";
 		String sourceUrl = "/globis_valid.rdf.xml";
-		URL resourceUrl = new SDDSources().getClass().getResource(sourceUrl);
+		URL resourceUrl = new TcsSources().getClass().getResource(sourceUrl);
 		logger.debug("TcsRdfSource " +  resourceUrl.toString());
 		return resourceUrl.toString();
 		
