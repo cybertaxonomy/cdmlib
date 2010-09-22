@@ -19,22 +19,22 @@ import org.apache.log4j.Logger;
  * @date 10.09.2010
  *
  */
-public class SchemaUpdater_3_0 extends SchemaUpdaterBase implements ISchemaUpdater {
+public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpdater {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SchemaUpdater_3_0.class);
+	private static final Logger logger = Logger.getLogger(SchemaUpdater_24_25.class);
 	private static final String startSchemaVersion = "2.4.1.2.201004231015";
 	private static final String endSchemaVersion = "3.0.0.0.201009201255";
 	
 // ********************** FACTORY METHOD *******************************************
 	
-	public static SchemaUpdater_3_0 NewInstance(){
-		return new SchemaUpdater_3_0();
+	public static SchemaUpdater_24_25 NewInstance(){
+		return new SchemaUpdater_24_25();
 	}
 
 	
 // ********************** CONSTRUCTOR *******************************************/
 	
-	private SchemaUpdater_3_0(){
+	private SchemaUpdater_24_25(){
 		super(startSchemaVersion, endSchemaVersion);
 	}
 	

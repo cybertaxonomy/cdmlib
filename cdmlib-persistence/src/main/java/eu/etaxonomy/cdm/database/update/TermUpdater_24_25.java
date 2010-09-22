@@ -24,22 +24,22 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
  * @date 10.09.2010
  *
  */
-public class TermUpdater_3_0 extends TermUpdaterBase implements ITermUpdater {
+public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermUpdater_3_0.class);
+	private static final Logger logger = Logger.getLogger(TermUpdater_24_25.class);
 	
 	public static final String startTermVersion = "2.4.2.2.201006011715";
 	private static final String endTermVersion = "3.0.0.0.201009201255";
 	
 // *************************** FACTORY **************************************/
 	
-	public static TermUpdater_3_0 NewInstance(){
-		return new TermUpdater_3_0(startTermVersion, endTermVersion);
+	public static TermUpdater_24_25 NewInstance(){
+		return new TermUpdater_24_25(startTermVersion, endTermVersion);
 	}
 	
 // *************************** CONSTRUCTOR ***********************************/	
 
-	protected TermUpdater_3_0(String startTermVersion, String endTermVersion) {
+	protected TermUpdater_24_25(String startTermVersion, String endTermVersion) {
 		super(startTermVersion, endTermVersion);
 	}
 	

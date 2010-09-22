@@ -53,7 +53,7 @@ public class CdmUpdater {
 	}
 	
 	private ITermUpdater getCurrentTermUpdater() {
-		return TermUpdater_3_0.NewInstance();
+		return TermUpdater_24_25.NewInstance();
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class CdmUpdater {
 	 * @return
 	 */
 	private ISchemaUpdater getCurrentSchemaUpdater() {
-		return SchemaUpdater_3_0.NewInstance();
+		return SchemaUpdater_24_25.NewInstance();
 	}
 
 
@@ -70,7 +70,7 @@ public class CdmUpdater {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		logger.warn("main method not yet implemented");
+		logger.warn("main method not yet fully implemented");
 		//TODO
 		CdmUpdater myUpdater = new CdmUpdater();
 //		myUpdater.updateToCurrentVersion(datasource, monitor);
