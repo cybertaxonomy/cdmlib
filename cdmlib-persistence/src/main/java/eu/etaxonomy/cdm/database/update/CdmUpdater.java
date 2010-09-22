@@ -51,7 +51,7 @@ public class CdmUpdater {
 		} catch (Exception e) {
 				monitor.warning("Stopped schema updater");
 		}
-		
+		logger.info("Update finished " + (result ? "successfully" : "with ERRORS"));
 		return result;
 	}
 	
@@ -85,7 +85,8 @@ public class CdmUpdater {
 		String password  = args.length > 3 ? args[3] : null;
 		
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-		myUpdater.updateToCurrentVersion(dataSource, null);
+		boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
+		System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
 	}
 
 }
