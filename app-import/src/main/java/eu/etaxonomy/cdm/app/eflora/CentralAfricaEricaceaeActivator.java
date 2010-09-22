@@ -53,7 +53,9 @@ public class CentralAfricaEricaceaeActivator {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_preview();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_flora_central_africa_production();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
+	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();	
 
 	//feature tree uuid
@@ -122,10 +124,9 @@ public class CentralAfricaEricaceaeActivator {
 			logger.warn("Deduplicated " + count + " teams.");
 			count = app.getReferenceService().deduplicate(ReferenceBase.class, null, null);
 			logger.warn("Deduplicated " + count + " references.");
+		}		
 		}
 		
-	}
-	
 	private ReferenceBase getSourceReference(String string) {
 		ReferenceBase result = ReferenceFactory.newGeneric();
 		result.setTitleCache(string);

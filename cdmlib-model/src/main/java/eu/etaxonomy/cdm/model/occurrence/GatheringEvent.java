@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -45,6 +46,8 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
@@ -56,6 +59,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @XmlType(name = "GatheringEvent", propOrder = {
     "locality",
     "exactLocation",
+    "country",
     "collectingAreas",
     "collectingMethod",
     "absoluteElevation",
@@ -80,12 +84,21 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlElement(name = "ExactLocation")
 	private Point exactLocation;
 	
+	
+	@XmlElement(name = "Country")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private NamedArea country;
+	
     @XmlElementWrapper(name = "CollectingAreas")
 	@XmlElement(name = "CollectingArea")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@NotNull
+	// further collecting areas. Should not include country
 	private Set<NamedArea> collectingAreas = new HashSet<NamedArea>();
 	
 	@XmlElement(name = "CollectingMethod")
@@ -135,7 +148,20 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.exactLocation = exactLocation;
 	}
 
+	
 
+	public NamedArea getCountry() {
+		return country;
+	}
+
+	public void setCountry(NamedArea country) {
+		this.country = country;
+	}
+
+	/**
+	 * Further collecting areas. Should not include #getCountry()
+	 * @return
+	 */
 	public Set<NamedArea> getCollectingAreas(){
 		if(collectingAreas == null) {
 			this.collectingAreas = new HashSet<NamedArea>();
@@ -144,6 +170,10 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	}
 
 	
+	 /**
+	  * Further collecting areas. Should not include #getCountry()
+	  * @param area
+	 */
 	public void addCollectingArea(NamedArea area){
 		if (this.collectingAreas == null)
 			this.collectingAreas = getNewNamedAreaSet();

@@ -111,8 +111,8 @@ public class Distribution extends DescriptionElementBase {
 	}
 	
 	/** 
-	 * Deprecated because {@link Feature feature} should always be {@link Feature#DISTRIBUTION() DISTRIBUTION}
-	 * for all distribution instances.
+	 * @deprecated Deprecated because {@link Feature feature} should always be {@link Feature#DISTRIBUTION() DISTRIBUTION}
+	 * for all distribution instances and therefore it should not be changed.
 	 */
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#setFeature(eu.etaxonomy.cdm.model.description.Feature)

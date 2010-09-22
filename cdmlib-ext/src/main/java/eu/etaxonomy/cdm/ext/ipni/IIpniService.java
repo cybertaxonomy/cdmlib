@@ -214,10 +214,12 @@ public interface IIpniService {
 	 *  
 	 * @param title
 	 * @param abbreviation
-	 * @param appConfig
+	 * @param services to retrieve data from the database. Needed to attach the same 'IPNI' reference to each of the resulting objects.
+	 * Otherwise the resulting IPNI reference will be duplicate for each result and each time the service is called.  
+	 * @param config for finetuning, maybe null
 	 * @return
 	 */
-	public List<ReferenceBase> getPublications(String title, String abbreviation, ICdmApplicationConfiguration appConfig, IpniServicePublicationConfigurator config);
+	public List<ReferenceBase> getPublications(String title, String abbreviation, ICdmApplicationConfiguration services, IpniServicePublicationConfigurator config);
 
 	public URL getServiceUrl(String url);
 }

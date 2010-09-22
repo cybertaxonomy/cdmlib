@@ -104,7 +104,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
     "hybridFormula",
     "monomHybrid",
     "binomHybrid",
-    "trinomHybrid",
+    "trinomHybrid"
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
@@ -1144,9 +1144,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    	   		#addHybridRelationship(HybridRelationship)
 	 * @see    	   		TaxonNameBase#addRelationship(RelationshipBase)
 	 * @see    	   		TaxonNameBase#addNameRelationship(NameRelationship)
+	 * @deprecated to be used by RelationshipBase only
 	 */
 	@Override
-	@Deprecated  //To be used by RelationshipBase only
+	@Deprecated
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof HybridRelationship){
 			addHybridRelationship((HybridRelationship)relation);

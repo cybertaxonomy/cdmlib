@@ -212,7 +212,10 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 		this.notDesignated = notDesignated;
 	}
 	
-	@Deprecated //for bidirectional use only
+	/**
+	 * @deprecated for bidirectional use only
+	 */
+	@Deprecated
 	protected void addTypifiedName(TaxonNameBase taxonName){
 		this.typifiedNames.add(taxonName);
 	}

@@ -83,7 +83,9 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @ManyToOne(fetch=FetchType.EAGER)
 	private TaxonRelationshipType type;
 	
-	//for hibernate, don't use
+	/**
+	 * @deprecated for hibernate only, don't use
+	 */
 	@Deprecated
 	private TaxonRelationship(){		
 	}

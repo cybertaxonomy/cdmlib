@@ -75,9 +75,9 @@ public interface IParsable {
 	/**
 	 * Returns the integer value of the position where a parsing problem starts.
 	 * If no problem exists -1 is returned.
-	 * This method will be removed by a more sophisticated method in future versions, 
-	 * therefore it is deprecated.<BR>
 	 * Default: -1
+	 * @deprecated This method will be removed by a more sophisticated method in future versions, 
+	 * therefore it is deprecated.<BR>
 	 * @see  #getHasProblem()
 	 */
 	@Deprecated
@@ -86,21 +86,25 @@ public interface IParsable {
 	/**
 	 * Returns the integer value of the position where a parsing problem ends.
 	 * If no problem exists -1 is returned.
-	 * This method will be removed by a more sophisticated method in future versions, 
-	 * therefore it is deprecated. <BR>
 	 * Default: -1
+	 * @deprecated This method will be removed by a more sophisticated method in future versions, 
+	 * therefore it is deprecated. <BR>
 	 * @see  #getHasProblem()
 	 */
 	@Deprecated
 	public int getProblemEnds();
 	
 	/**
+	 * @deprecated This method will be removed by a more sophisticated method in future versions, 
+	 * therefore it is deprecated. <BR>
 	 * @see  #getProblemStarts()
 	 */
 	@Deprecated
 	public void setProblemStarts(int start);
 	
 	/**
+	 * @deprecated This method will be removed by a more sophisticated method in future versions, 
+	 * therefore it is deprecated. <BR>
 	 * @see  #getProblemEnds()
 	 */
 	@Deprecated

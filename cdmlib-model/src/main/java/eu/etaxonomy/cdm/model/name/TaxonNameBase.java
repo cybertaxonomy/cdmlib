@@ -1198,10 +1198,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see		#getNomenclaturalMicroReference()
 	 */
 	@Transient
-	@Deprecated
 	public String getCitationString(){
-		logger.warn("getCitationString not yet implemented");
-		return null;
+		return getNomenclaturalReference().getNomenclaturalCitation(getNomenclaturalMicroReference());
 	}
 
 	/**

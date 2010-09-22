@@ -15,7 +15,10 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -59,7 +62,13 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		try {
 			facade = DerivedUnitFacade.NewInstance(derivedUnit);
 			//country
-			//TODO
+			String strCountry = null;
+			NamedArea country = facade.getCountry();
+			Representation repCountry = country == null ? null : country.getRepresentation(Language.DEFAULT());
+			//TODO currently the label is the 3 digit representation of the country and text is the full text.
+			//this is against the common way of handling text, label and labelabbrev in defined terms
+			strCountry = repCountry == null ? null: repCountry.getText();
+			result = CdmUtils.concat(", ", result, strCountry);
 			
 			// FIXME hasGatheringEvent needed;
 			//locality

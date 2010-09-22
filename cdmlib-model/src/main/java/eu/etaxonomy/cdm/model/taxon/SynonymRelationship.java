@@ -100,7 +100,9 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @ManyToOne(fetch=FetchType.EAGER)
 	private SynonymRelationshipType type;
 	
-	//for hibernate, don't use
+	/**
+	 * @deprecated for hibernate only, don't use
+	 */
 	@Deprecated
 	private SynonymRelationship(){
 	}

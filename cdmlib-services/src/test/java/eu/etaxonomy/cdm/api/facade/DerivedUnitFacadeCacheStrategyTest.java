@@ -24,8 +24,10 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -70,7 +72,8 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	Stage lifeStage = Stage.NewInstance("A wonderful stage", "stage", "st");
 	Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
 	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
-
+	NamedArea country = WaterbodyOrCountry.GERMANY();
+	
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
 	TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
@@ -122,6 +125,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 		
 		gatheringEvent.setTimeperiod(gatheringPeriod);
 		gatheringEvent.setLocality(locality);
+		gatheringEvent.setCountry(country);
 		
 		fieldObservation.setFieldNumber(fieldNumber);
 		fieldObservation.setFieldNotes(fieldNotes);
@@ -161,7 +165,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1\"N, 12°18'E (WGS84), sand dunes, 05.05.2005 (B 8909756); flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1\"N, 12°18'E (WGS84), sand dunes, 05.05.2005 (B 8909756); flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");

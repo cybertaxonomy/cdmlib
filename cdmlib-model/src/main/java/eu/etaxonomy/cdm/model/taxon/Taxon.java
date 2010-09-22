@@ -124,6 +124,12 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlAttribute(name= "taxonStatusUnknown")
 	private boolean taxonStatusUnknown = false;
 
+	@XmlAttribute(name= "unplaced")
+	private boolean unplaced = false;
+
+	@XmlAttribute(name= "excluded")
+	private boolean excluded = false;
+	
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	@XmlElement(name = "TaxonomicParentCache")
 	@XmlIDREF
@@ -1505,13 +1511,26 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		this.taxonStatusUnknown = taxonStatusUnknown;
 	}
 
-	/**
-	 * Returns the List of all homotypic groups heterotypic synonyms of this taxon belongs too.
-	 * This does not include the homotypic group of <i>this</i> taxon.
-	 * @return
-	 */
-	/**
+	
+	
 
+	public boolean isUnplaced() {
+		return unplaced;
+	}
+
+	public void setUnplaced(boolean unplaced) {
+		this.unplaced = unplaced;
+	}
+
+	public boolean isExcluded() {
+		return excluded;
+	}
+
+	public void setExcluded(boolean excluded) {
+		this.excluded = excluded;
+	}
+
+	/**
 	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} heterotypic
 	 * {@link Synonym synonyms} of <i>this</i> taxon belongs to.
 	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms belong to at least

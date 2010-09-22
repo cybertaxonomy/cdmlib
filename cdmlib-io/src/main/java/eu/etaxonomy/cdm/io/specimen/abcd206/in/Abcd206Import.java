@@ -171,9 +171,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 			derivedUnitFacade.setLocality(gatheringEvent.getLocality());
 			derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
 			derivedUnitFacade.setCollector(gatheringEvent.getCollector());
-			derivedUnitFacade.addCollectingArea(areaCountry);
-			//FIXME setCountry
-			derivedUnitFacade.addCollectingArea(areaCountry);
+			derivedUnitFacade.setCountry(areaCountry);
 			derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
 			
 			//TODO exsiccatum

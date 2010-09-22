@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -97,6 +98,8 @@ public class DerivedUnitFacadeTest {
 	
 	DerivedUnitFacade emptyFacade;
 	
+	NamedArea country = WaterbodyOrCountry.GERMANY();
+	
 	
 //****************************** SET UP *****************************************/
 	
@@ -129,6 +132,7 @@ public class DerivedUnitFacadeTest {
 		gatheringEvent.setDistanceToWaterSurface(distanceToSurface);
 		gatheringEvent.setExactLocation(exactLocation);
 		gatheringEvent.setDescription(gatheringEventDescription);
+		gatheringEvent.setCountry(country);
 		
 		gatheringEvent.setTimeperiod(gatheringPeriod);
 		gatheringEvent.setLocality(locality);
@@ -223,6 +227,10 @@ public class DerivedUnitFacadeTest {
 		}
 	}
 	
+	@Test
+	public void testGetSetCountry(){
+	
+	}
 	
 	
 	/**

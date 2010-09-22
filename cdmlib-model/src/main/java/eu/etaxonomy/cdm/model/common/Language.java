@@ -292,7 +292,7 @@ public class Language extends DefinedTermBase<Language> {
 	private static final UUID uuidLahnda = UUID.fromString("55f20809-946a-424c-8eda-f14b0e8fc6c0");
 	private static final UUID uuidLamba = UUID.fromString("34f22b78-1cfe-4f4f-a1c0-e57ea7d47ee5");
 	private static final UUID uuidLao = UUID.fromString("0b9fbbfa-b8e6-4d4d-a90d-a4988f6c3531");
-	private static final UUID uuidLatin = UUID.fromString("160a5b6c-87f5-4422-9bda-78cd404c179e");
+	public static final UUID uuidLatin = UUID.fromString("160a5b6c-87f5-4422-9bda-78cd404c179e");
 	private static final UUID uuidLatvian = UUID.fromString("173784fb-62ce-4741-b214-53cb5d297411");
 	private static final UUID uuidLezghian = UUID.fromString("4783aea1-46c0-40b3-ad02-c13157c7817d");
 	private static final UUID uuidLimburgan_Limburger_Limburgish = UUID.fromString("682508f8-414a-4958-a89d-3abea3da1852");

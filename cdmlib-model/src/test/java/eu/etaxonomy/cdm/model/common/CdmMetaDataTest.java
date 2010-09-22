@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -108,6 +110,21 @@ public class CdmMetaDataTest {
 	@Test
 	public void testGetDatabaseSchemaVersion() {
 		//TODO
+	}
+	
+	@Test
+	public void testCompareVersion(){
+		String version1 = "2.1.2.5.12343244234";
+		String version2 = "2.1.3.5.11654354355";
+		int compare = CdmMetaData.compareVersion(version1, version2, 4, null);
+		Assert.assertEquals("Result should be -1", -1, compare);
+		compare = CdmMetaData.compareVersion(version2, version1, 4, null);
+		Assert.assertEquals("Result should be 1", 1, compare);
+		compare = CdmMetaData.compareVersion(version2, version1, 2, null);
+		Assert.assertEquals("Result should be 0", 0, compare);
+		compare = CdmMetaData.compareVersion(version2, version1, null, null);
+		Assert.assertEquals("Result should be 1", 1, compare);
+		
 	}
 
 }

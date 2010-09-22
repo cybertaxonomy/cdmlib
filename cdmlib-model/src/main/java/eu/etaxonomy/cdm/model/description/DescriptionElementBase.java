@@ -225,6 +225,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	public Feature getType(){
 		return this.getFeature();
 	}
+	
 	/**
 	 * Does exactly the same as setFeature(Feature).
 	 * 

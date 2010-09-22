@@ -52,7 +52,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "storedUnder",
     "derivationEvent",
     "accessionNumber",
-    "collectorsNumber"
+    "collectorsNumber",
+    "barcode"
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
@@ -85,6 +86,12 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String collectorsNumber;
+	
+	@XmlElement(name = "Barcode")
+	@Field(index=Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
+	private String barcode;
 	
 	@XmlElement(name = "StoredUnder")
 	@XmlIDREF
@@ -169,6 +176,13 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		this.catalogNumber = catalogNumber;
 	}
 	
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
+	public String getBarcode() {
+		return barcode;
+	}
+	
 	public void setStoredUnder(TaxonNameBase storedUnder) {
 		this.storedUnder = storedUnder;
 	}
@@ -218,4 +232,5 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		//no changes to: accessionNumber, catalogNumber, collectorsNumber
 		return result;
 	}
+
 }

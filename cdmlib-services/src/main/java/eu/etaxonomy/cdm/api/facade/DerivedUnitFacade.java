@@ -25,7 +25,6 @@ import javax.persistence.Transient;
 
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -763,6 +762,16 @@ public class DerivedUnitFacade {
 	
 // ****************** Gathering Event *********************************/
 	
+	//country
+	public NamedArea getCountry(){
+		return  (hasGatheringEvent() ? getGatheringEvent(true).getCountry() : null);
+	}
+	
+	public void setCountry(NamedArea country){
+		getGatheringEvent(true).setCountry(country);
+	}
+	
+	
 	//Collecting area
 	public void addCollectingArea(NamedArea area) {
 		getGatheringEvent(true).addCollectingArea(area);
@@ -1431,6 +1440,15 @@ public class DerivedUnitFacade {
 		derivedUnit.setCatalogNumber(catalogNumber);
 	}
 
+	//barcode
+	public String getBarcode() {
+		return derivedUnit.getBarcode();
+	}
+	public void setBarcode(String barcode) {
+		derivedUnit.setCatalogNumber(barcode);
+	}
+
+	
 	//Preservation Method
 	
 	/**

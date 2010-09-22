@@ -97,10 +97,11 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		return this.mediaRepresentation;
 	}
 
+	/**
+	 *  @deprecated for internal (bidirectional) use only
+	 */
 	@Deprecated
-	// use only for bidirectional and hibernate
-	protected void setMediaRepresentation(
-			MediaRepresentation mediaRepresentation) {
+	protected void setMediaRepresentation(MediaRepresentation mediaRepresentation) {
 		this.mediaRepresentation = mediaRepresentation;
 	}
 

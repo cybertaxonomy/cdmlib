@@ -64,6 +64,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/synthesysImport/SynthesysCacheActi
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsRdfTestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsXmlTestActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/testUpdate/EricaceaeTestUpdateActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestDatabase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestTransaction.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/viennaImport/ViennaActivator.java -text
@@ -1229,6 +1230,7 @@ cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/AccountStore.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DefaultProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DoubleResult.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ExcelUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/FileCopy.java -text
@@ -2250,6 +2252,21 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatab
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2000DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CdmUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnAdder.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnNameChanger.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdaterStep.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_3_0.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SortIndexUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableNameChanger.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdater_3_0.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoPropertyInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.java -text
@@ -2401,6 +2418,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatab
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2000DatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseTypeTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/update/CdmUpdaterTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImplTest.java -text
@@ -3586,8 +3604,6 @@ pdfdocs/cdm.pdf -text
 pdfdocs/cdmlib-config.properties -text
 pdfdocs/cdmlib-doc.sh -text
 pdfdocs/pdfdoclet-1.0.2-all.jar -text
-/pom.xml -text
-/settings.xml -text
 src/docbkx/ReferenceDocumentation.xml -text
 src/docbkx/annotation-and-markers.xml -text
 src/docbkx/base-classes.xml -text

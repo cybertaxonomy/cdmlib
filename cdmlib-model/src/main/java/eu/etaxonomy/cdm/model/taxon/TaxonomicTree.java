@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -43,7 +42,6 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -73,15 +71,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	@IndexedEmbedded
 	private LanguageString name;
 	
-//	@XmlElementWrapper(name = "allNodes")
-//	@XmlElement(name = "taxonNode")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//    @OneToMany(mappedBy="taxonomicTree", fetch=FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-//    @Deprecated // FIXME remove this. A set containing all nodes of the tree is a major performance killer, especially when it is not really in use
-//	private Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
-
 	@XmlElementWrapper(name = "rootNodes")
 	@XmlElement(name = "rootNode")
     @XmlIDREF
@@ -103,8 +92,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	private String microReference;
 	
 //	/**
-//	 * If this taxonomic view is an alternative view for a subtree in an other view(parent view),
-//	 * the alternativeViewRoot is the connection node from this view to the parent view.
+//	 * If this classification is an alternative classification for a subclassification in 
+//	 * an other classification(parent view),
+//	 * the alternativeViewRoot is the connection node from this classification to the parent classification.
 //	 * It replaces another node in the parent view.
 //	 */
 //	private AlternativeViewRoot alternativeViewRoot;
@@ -161,24 +151,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
 	}
 	
-	/**
-	 * Adds a taxon to the taxonomic tree and makes it one of the root nodes.
-	 * @param taxon
-	 * @param synonymUsed
-	 * @return
-	 * @deprecated use addChildNode() or addChildTaxon() instead
-	 */
-	public TaxonNode addRoot(Taxon taxon, Synonym synonymUsed, ReferenceBase reference){
-		TaxonNode newRoot = new TaxonNode(taxon, this);
-		rootNodes.add(newRoot);
-		newRoot.setParent(null);
-		newRoot.setTaxonomicTree(this);
-		newRoot.setTaxon(taxon);
-		newRoot.setReferenceForParentChildRelation(reference);
-		newRoot.setSynonymToBeUsed(synonymUsed);
-		return newRoot;
-	}
-	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
@@ -217,16 +189,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 	
 	/**
-	 * 
-	 * @param node
-	 * @return
-	 * @deprecated use removeChildNode() instead
-	 */
-	public boolean removeRoot(TaxonNode node){
-		return deleteChildNode(node);
-	}
-	
-	/**
 	 * Appends an existing topmost node to another node of this tree. The existing topmost node becomes 
 	 * an ordinary node.
 	 * @param topmostNode
@@ -252,16 +214,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		otherNode.addChildNode(topmostNode, ref, microReference, null);
 		//getRootNodes().remove(root);
 	}
-
-	@Deprecated //will be removed in v3.0
-	public void makeRootChildOfOtherNode(TaxonNode root, TaxonNode otherNode, ReferenceBase ref, String microReference)
-				throws IllegalArgumentException{
-		makeTopmostNodeChildOfOtherNode(root, otherNode, ref, microReference);
-	}
-	
-//	public void makeThisNodePartOfOtherView(TaxonNode oldRoot, TaxonNode replacedNodeInOtherView, ReferenceBase reference, String microReference){
-//		AlternativeViewRoot newRoot = new AlternativeViewRoot(oldRoot, replacedNodeInOtherView, reference, microReference);
-//	}
 	
 
 	/**
@@ -300,11 +252,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return (getTopmostNode(taxon) != null);
 	}	
 	
-	@Deprecated //will be removed in version 3.0
-	public boolean isRootInTree(Taxon taxon){
-		return (getTopmostNode(taxon) != null);
-	}
-	
 	
 	/**
 	 * Checks if the taxon is a direct child of <b>this</b> tree and returns the according node if true.
@@ -327,11 +274,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			}
 		}
 		return null;
-	}
-
-	@Deprecated //will be removed in version 3.0
-	public TaxonNode getRootNode(Taxon taxon){
-		return getTopmostNode(taxon);
 	}
 
 	private boolean handleCitationOverwrite(TaxonNode childNode, ReferenceBase citation, String microCitation){
@@ -453,11 +395,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	public Set<TaxonNode> getChildNodes() {
 		return rootNodes;
 	}
-	
-	@Deprecated //will be removed in version 3.0
-	public Set<TaxonNode> getRootNodes() {
-		return getChildNodes();
-	}
 
 	private void setRootNodes(Set<TaxonNode> rootNodes) {
 		this.rootNodes = rootNodes;
@@ -496,53 +433,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 
 	public int compareTo(Object o) {
 		return 0;
-	}
-	
-	/**
-	 * Returns all TaxonNodes of the tree for a given Rank.
-	 * If a branch does not contain a TaxonNode with a TaxonName at the given
-	 * Rank the node associated with the next lower Rank is taken as root node.
-	 * If the <code>rank</code> is null the absolute root nodes will be returned.
-	 * 
-	 * @param rank may be null
-	 * @return
-	 * @deprecated use {@link ITaxonTreeService.loadRankSpecificRootNode} or {@link ITaxonomicTreeDao.loadRankSpecificRootNode} instead
-	 */
-	@Deprecated //will be removed in v3.0
-	public List<TaxonNode> getRankSpecificRootNodes(Rank rank) {
-		List<TaxonNode> baseNodes = new ArrayList<TaxonNode>();
-		if(rank != null){
-			findNodesForRank(rank, getChildNodes(), baseNodes);
-		} else {
-			baseNodes.addAll(getChildNodes());
-		}
-		return baseNodes;
-	}
-
-	/**
-	 * Walks the tree returning all nodes of exactly the given <code>rank</code>
-	 * or the next lower rank if an exact match by rank is not possible.
-	 * 
-	 * @param baseRank
-	 *            the rank to return nodes for
-	 * @param nodeSet
-	 *            the set of nodes to search in
-	 * @param rootNodes
-	 *            a List to put the found nodes in
-	 * @return the <code>rootNodes</code> List given as parameter
-	 */
-	private List<TaxonNode> findNodesForRank(Rank baseRank, Set<TaxonNode> nodeSet, List<TaxonNode> rootNodes) {
-		for(TaxonNode node : nodeSet){
-			Rank thisRank = node.getTaxon().getName().getRank();
-			if(thisRank.isHigher(baseRank)){
-				// if the current rank still is higher than the given baseRank iterate deeper into tree
-				findNodesForRank(baseRank, node.getChildNodes(), rootNodes);
-			} else {
-				// gotsha! It is a base node of this level
-				rootNodes.add(node);
-			}
-		}
-		return rootNodes;
 	}
 
 	/* (non-Javadoc)

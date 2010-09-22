@@ -133,7 +133,9 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	}
 	
 	
-	/** To be used only by OrderedTermVocabulary*/
+	/** 
+	 * @deprecated To be used only by OrderedTermVocabulary
+	 **/
 	@Deprecated
 	protected boolean decreaseIndex(OrderedTermVocabulary<T> vocabulary){
 		if (vocabulary.indexChangeAllowed(this) == true){
@@ -144,7 +146,9 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		}
 	}
 	
-	/** To be used only by OrderedTermVocabulary*/
+	/** 
+	 * @deprecated To be used only by OrderedTermVocabulary
+	 **/
 	@Deprecated
 	protected boolean incrementIndex(OrderedTermVocabulary<T> vocabulary){
 		if (vocabulary.indexChangeAllowed(this) == true){
