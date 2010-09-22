@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.sdd;
+package eu.etaxonomy.cdm.io.sdd.in;
 
 import org.apache.log4j.Logger;
 
