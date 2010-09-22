@@ -580,9 +580,24 @@
 		  		<artifactId>cdmlib-remote</artifactId>
 		  		<version>${project.version}</version>
 		  	</dependency>
-		   	<dependency>
+			<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-remote-webapp</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+			<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdm-server</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+			<dependency>
 		  		<groupId>eu.etaxonomy</groupId>
 		  		<artifactId>cdmlib-ext</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+				<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-print</artifactId>
 		  		<version>${project.version}</version>
 		  	</dependency>
 			<!--*********** JAXB********* -->
