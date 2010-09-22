@@ -93,15 +93,13 @@ public class CdmMetaDataTest {
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#getCurrentSchemaVersion(int)}.
 	 */
 	@Test
-	public void testGetCurrentSchemaVersion() {
-		String strSchemaVersion = CdmMetaData.getCurrentSchemaVersion(2);
+	public void testGetDbSchemaVersion() {
+		String strSchemaVersion = CdmMetaData.getDbSchemaVersion();
 		assertNotNull(strSchemaVersion);
 		int indexFirst = strSchemaVersion.indexOf(".");
 		int indexLast = strSchemaVersion.lastIndexOf(".");
 		assertTrue(indexFirst >0 );
-		assertTrue(indexFirst == indexLast);
-		
-		
+		assertTrue("DB schema version is not in the correct format", indexLast == 7);
 	}
 
 	/**
@@ -116,14 +114,41 @@ public class CdmMetaDataTest {
 	public void testCompareVersion(){
 		String version1 = "2.1.2.5.12343244234";
 		String version2 = "2.1.3.5.11654354355";
+		String version3 = "2.1.2";
+		
 		int compare = CdmMetaData.compareVersion(version1, version2, 4, null);
 		Assert.assertEquals("Result should be -1", -1, compare);
+		
 		compare = CdmMetaData.compareVersion(version2, version1, 4, null);
 		Assert.assertEquals("Result should be 1", 1, compare);
+		
 		compare = CdmMetaData.compareVersion(version2, version1, 2, null);
 		Assert.assertEquals("Result should be 0", 0, compare);
+		
 		compare = CdmMetaData.compareVersion(version2, version1, null, null);
 		Assert.assertEquals("Result should be 1", 1, compare);
+		
+		compare = CdmMetaData.compareVersion(version1, version3, 3, null);
+		Assert.assertEquals("Result should be 0", 0, compare);
+		
+		boolean exception = false;
+		try{
+			compare = CdmMetaData.compareVersion("test", version1, null, null);
+		}catch(RuntimeException e){
+			exception = true;
+		}
+		
+		Assert.assertTrue("Should have thrown an exception on incorrect input values", exception);
+		exception = false;
+		
+		try{
+			compare = CdmMetaData.compareVersion(version1, version2, 7, null);
+		}catch(RuntimeException e){
+			exception = true;
+		}
+		
+		Assert.assertTrue("Should have thrown an exception on incompatible depth", exception);
+		exception = false;
 		
 	}
 

@@ -58,7 +58,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	 */
 	@Override
 	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
-		String currentLibrarySchemaVersion = CdmMetaData.getCurrentSchemaVersion();
+		String currentLibrarySchemaVersion = CdmMetaData.getDbSchemaVersion();
 		return invoke(currentLibrarySchemaVersion, datasource, monitor);
 	}
 	

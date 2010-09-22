@@ -58,7 +58,7 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 	 */
 	@Override
 	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
-		String currentLibraryTermVersion = CdmMetaData.getCurrentTermsVersion();
+		String currentLibraryTermVersion = CdmMetaData.getTermsVersion();
 		return invoke(currentLibraryTermVersion, datasource, monitor);
 	}
 	

@@ -20,6 +20,7 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 
 /**
@@ -67,12 +68,16 @@ public class CdmMetaData extends CdmBase{
 	/**
 	 * The version number for the terms loaded by the termloader (csv-files)
 	 * It is recommended to have the first two numbers equal to the CDM Library version number.
+	 * 
 	 * But it is not obligatory as there may be cases when the library number changes but the
 	 * schema version is not changing.
+	 * 
 	 * The third should be incremented if the terms change in a way that is not compatible
 	 * to the previous version (e.g. by changing the type of a term)
-	 * The fourth number shoud be incremented when compatible term changes take place
+	 * 
+	 * The fourth number should be incremented when compatible term changes take place
 	 * (e.g. when new terms were added)
+	 * 
 	 * The last number represents the date of change.
 	 */
 	private static final String termsVersion = "2.5.0.0.201009211255";
@@ -82,7 +87,11 @@ public class CdmMetaData extends CdmBase{
 		DB_SCHEMA_VERSION,
 		TERMS_VERSION,
  		DB_CREATE_DATE,
-		DB_CREATE_NOTE
+		DB_CREATE_NOTE;
+		
+		public String getSqlQuery(){
+			return "SELECT value FROM CdmMetaData WHERE propertyname=" + this.ordinal();
+		}
 	}
 	
 	/* END OF CONFUSION */
@@ -165,14 +174,16 @@ public class CdmMetaData extends CdmBase{
 			int result = 0;
 			String[] version1Split = version1.split("\\.");
 			String[] version2Split = version2.split("\\.");
-			if (version1Split.length != version2Split.length){
-				String warning = "Versionstrings are not compatible: " + version1 + "<->" + version2;
-				RuntimeException exception =  new RuntimeException(warning);
-				if (monitor != null){
-					monitor.warning(warning, exception);
-				}
-				throw exception;
+			
+			if(version1Split.length == 1 || version2Split.length == 1){
+				throwException("Tried to compare version but given Strings don't seem to " +
+						"contain version numbers. version1: " + version1 + ", version2:" + version2); 
 			}
+			
+			if(depth != null && (version1Split.length < depth || version2Split.length < depth )){
+				throwException("Desired depth can not be achieved with the given strings. depth: " + depth  + ", version1: " + version1 + ", version2:" + version2); 
+			}			
+			
 			int length = (depth == null ||version1Split.length < depth) ? version1Split.length : depth;
 			for (int i = 0; i < length; i++){
 				Long version1Part = Long.valueOf(version1Split[i]);
@@ -183,6 +194,14 @@ public class CdmMetaData extends CdmBase{
 				}
 			}
 			return result;
+		}
+		
+		private Throwable throwException(String message){
+			RuntimeException exception =  new RuntimeException(message);
+			if (monitor != null){
+				monitor.warning(message, exception);
+			}
+			throw exception;
 		}
 		
 	}
@@ -202,98 +221,20 @@ public class CdmMetaData extends CdmBase{
 		return versionComparator.compare(version1, version2);
 	}
 	
-//************************ STATIC SCHEMA VERSION METHODS ************************/
-	
-	public static String getCurrentSchemaVersion() {
+	public static boolean isDbSchemaVersionCompatible(String version){
+		return compareVersion(dbSchemaVersion, version, 3, null) == 0;
+	}
+
+	public static String getDbSchemaVersion() {
 		return dbSchemaVersion;
 	}
-
-	/**
-	 * Gets the first i parts of the current CdmLibrary schema version.
-	 * @param allCommonData
-	 * @return current schema version.
-	 */
-	public static String getCurrentSchemaVersion(int i) {
-		// Get current schema version
-		String schemaVersion = CdmMetaData.getCurrentSchemaVersion();
-		return getVersion(schemaVersion, i);
+	
+	public static String getTermsVersion() {
+		return termsVersion;
 	}
 
-	/**
-	 * Gets the first i parts of the passed database schema version.
-	 * @param allCommonData
-	 * @return database schema version.
-	 */
-	public static String getDatabaseSchemaVersion(Map<MetaDataPropertyName, CdmMetaData> cdmMetaDataFromDatabase, int i) {
-		// Get database schema version
-		String schemaVersion = cdmMetaDataFromDatabase.get(MetaDataPropertyName.DB_SCHEMA_VERSION).getValue();
-		return getVersion(schemaVersion, i);
+	public static boolean isTermsVersionCompatible(String version){
+		return compareVersion(termsVersion, version, 3, null) == 0;
 	}
-	
-	
-	public static boolean isVersionEqual(String databaseSchemaVersion, int index){
-		String currentSchemaVersionPrefix = getCurrentSchemaVersion(index);
-		String databaseSchemaVersionPrefix = getVersion(databaseSchemaVersion, index);
-		if (currentSchemaVersionPrefix.equals( databaseSchemaVersionPrefix)) {
-			return true;
-		}
-		return false;
-	}
-	
-	
-//************************ STATIC TERMS VERSION METHODS ************************/
-	public static String getCurrentTermsVersion() {
-		return dbSchemaVersion;
-	}
-
-	/**
-	 * Gets the first i parts of the current CdmLibrary terms version.
-	 * @param allCommonData
-	 * @return current schema version.
-	 */
-	public static String getCurrentTermsVersion(int i) {
-		// Get current schema version
-		String schemaVersion = CdmMetaData.getCurrentTermsVersion();
-		return getVersion(schemaVersion, i);
-	}
-
-	/**
-	 * Gets the first i parts of the passed database schema version.
-	 * @param allCommonData
-	 * @return database schema version.
-	 */
-	public static String getDatabaseTermsVersion(Map<MetaDataPropertyName, CdmMetaData> cdmMetaDataFromDatabase, int i) {
-		// Get database schema version
-		String termsVersion = cdmMetaDataFromDatabase.get(MetaDataPropertyName.TERMS_VERSION).getValue();
-		return getVersion(termsVersion, i);
-	}
-	
-	
-
-	
-//************************ helping methods ************************/
-
-	/**
-	 * @param versionProperty
-	 * @return Version number as string.
-	 */
-	private static String getVersion(String versionProperty, int i) {
-		return versionProperty.substring(0, nthIndexOf(versionProperty, ".", i));
-	}
-
-	/**
-	 * Calculates the n-th occurrence of a string.
-	 * @param versionProperty
-	 * @return Index of N-th occurence of a string.
-	 */
-	private static int nthIndexOf(String versionProperty, String pattern, int n) {
-		int currentIndex = -1;
-		for (int i=0; i<n; i++) {
-			currentIndex = versionProperty.indexOf(pattern, currentIndex + 1);
-		}
-		return currentIndex;
-	}
-
-	
 	
 }
