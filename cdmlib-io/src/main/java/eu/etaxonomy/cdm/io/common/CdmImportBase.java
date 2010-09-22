@@ -212,6 +212,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (feature == null){
 				feature = Feature.NewInstance(text, label, labelAbbrev);
 				feature.setUuid(uuid);
+				feature.setSupportsTextData(true);
 				//set vocabulary ; FIXME use another user-defined vocabulary
 				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 
 				TermVocabulary<Feature> voc = getVocabularyService().find(uuidFeatureVoc);
