@@ -64,14 +64,11 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 			String strDatePublished = elDatePublished.getTextNormalize();
 			TimePeriod datePublished = TimePeriod.parseString(strDatePublished);
 			publication.setDatePublished(datePublished);
-		}else{
-			
 		}
-		
 		
 		//Do nothing
 		//TODO implement EDIT TcsMetaData extension
-		if (logger.isDebugEnabled()){logger.info("PublicationDetailed element found: " +  elPublicationDetailed.getName());}
+		if (logger.isDebugEnabled()){logger.debug("PublicationDetailed element found: " +  elPublicationDetailed.getName());}
 		return success.getValue();
 	}
 	
