@@ -1189,7 +1189,8 @@ app-import/src/main/resources/taxonX/palm_tc_98853.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98863.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98882.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98886.xml -text
-app-import/src/main/resources/tcsXmlTest.xml -text
+app-import/src/main/resources/tcs/Cichorium_tcs.xml -text
+app-import/src/main/resources/tcs/tcsXmlTest.xml -text
 cdm-server/LICENSE.TXT -text
 cdm-server/ide/eclipse/Bootloader[!!-~]-[!!-~]Help.launch -text
 cdm-server/ide/eclipse/Bootloader.launch -text

@@ -36,9 +36,9 @@ public class TcsXmlTestActivator {
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String tcsSource = TcsSources.tcsXmlTest_local2();
+	static final String tcsSource = TcsSources.tcsXml_cichorium();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_niels1();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "XXX";
@@ -89,8 +89,7 @@ public class TcsXmlTestActivator {
 		
 		
 		IReferenceService refService = tcsImport.getCdmAppController().getReferenceService();
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		IBook book = refFactory.newBook();
+		IBook book = ReferenceFactory.newBook();
 		//book.setDatePublished(TimePeriod.NewInstance(1945));
 		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
 		refService.saveOrUpdate((ReferenceBase)book);

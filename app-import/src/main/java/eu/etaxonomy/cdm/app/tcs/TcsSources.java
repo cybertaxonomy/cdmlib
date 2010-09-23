@@ -66,12 +66,19 @@ public class TcsSources {
 
 	public static String tcsXmlTest_local(){
 		//		tcsXmlTest.xml
-		URL url = new TcsSources().getClass().getResource("/tcsXmlTest.xml");
+		URL url = new TcsSources().getClass().getResource("/tcs/tcsXmlTest.xml");
 		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}	
 
+	public static String tcsXml_cichorium(){
+		//		tcsXmlTest.xml
+		URL url = new TcsSources().getClass().getResource("/tcs/Cichorium_tcs.xml");
+		String sourceUrl = url.toString();
+		return sourceUrl;	
+	}
+	
 	public static String tcsXml_localPath(){
 		File file = new File("C:\\localCopy\\Data\\tdwg\\Cichorium_tcs.xml");
 		String sourceUrl;
