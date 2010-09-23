@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -30,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
-public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState> implements IImportConfigurator {
+public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsXmlImportConfigurator.class);
 	
 	//TODO
@@ -85,9 +86,9 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		};
 	};
 	
-	public static TcsXmlImportConfigurator NewInstance(String url,
+	public static TcsXmlImportConfigurator NewInstance(URI uri,
 			ICdmDataSource destination){
-		return new TcsXmlImportConfigurator(url, destination);
+		return new TcsXmlImportConfigurator(uri, destination);
 	}
 	
 	/**
@@ -106,9 +107,9 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private TcsXmlImportConfigurator(String url, ICdmDataSource destination) {
+	private TcsXmlImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 	}
 	
@@ -124,25 +125,25 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
-	public String getSource() {
-		return (String)super.getSource();
+	public URI getSource() {
+		return (URI)super.getSource();
 	}
 	
 	/**
 	 * @param file
 	 */
-	public void setSource(String file) {
-		super.setSource(file);
+	public void setSource(URI uri) {
+		super.setSource(uri);
 	}
 	
 	/**
 	 * @return
 	 */
 	public Element getSourceRoot(){
-		String source = getSource();
+		URI source = getSource();
 		try {
 			URL url;
-			url = new URL(source);
+			url = source.toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Element root = XmlHelp.getRoot(is);
@@ -194,7 +195,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

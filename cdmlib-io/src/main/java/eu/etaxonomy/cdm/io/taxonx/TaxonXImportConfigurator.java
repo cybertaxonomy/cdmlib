@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.taxonx;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 29.07.2008
  * @version 1.0
  */
-public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState> implements IImportConfigurator {
+public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 	
 	//if true the information in the mods part (taxonxHeader)
@@ -60,12 +61,12 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	}
 	
 	/**
-	 * @param url
+	 * @param uri
 	 * @param destination
 	 * @return
 	 */
-	public static TaxonXImportConfigurator NewInstance(String url, ICdmDataSource destination){
-		return new TaxonXImportConfigurator(url, destination);
+	public static TaxonXImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new TaxonXImportConfigurator(uri, destination);
 	}
 
 
@@ -73,9 +74,9 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	 * @param url
 	 * @param destination
 	 */
-	private TaxonXImportConfigurator(String url, ICdmDataSource destination) {
+	private TaxonXImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 	}
 	
@@ -87,26 +88,12 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public TaxonXImportState getNewState() {
 		return new TaxonXImportState(this);
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
-
-	/**
-	 * @param file
-	 */
-	public void setSource(String file) {
-		super.setSource(file);
-	}
 	
 	public Element getSourceRoot(){
-		String source = getSource();
+		URI source = getSource();
 		try {
 			URL url;
-			url = new URL(source);
+			url = source.toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Element root = XmlHelp.getRoot(is);
@@ -139,7 +126,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 

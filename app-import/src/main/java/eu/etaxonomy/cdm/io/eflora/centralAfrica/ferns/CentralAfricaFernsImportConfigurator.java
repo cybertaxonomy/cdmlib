@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.03.2008
  * @version 1.0
  */
-public class CentralAfricaFernsImportConfigurator extends ImportConfiguratorBase<CentralAfricaFernsImportState> implements IImportConfigurator{
+public class CentralAfricaFernsImportConfigurator extends ImportConfiguratorBase<CentralAfricaFernsImportState, Source> implements IImportConfigurator{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CentralAfricaFernsImportConfigurator.class);
 
@@ -76,14 +76,6 @@ public class CentralAfricaFernsImportConfigurator extends ImportConfiguratorBase
 	   setDestination(destination);
 	}
 	
-	
-	public Source getSource() {
-		return (Source)super.getSource();
-	}
-	public void setSource(Source berlinModelSource) {
-		super.setSource(berlinModelSource);
-	}
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */

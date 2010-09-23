@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.app.eflora;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +48,7 @@ public class CentralAfricaEricaceaeActivator {
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String source = EfloraSources.ericacea_local();
+	static final URI source = EfloraSources.ericacea_local();
 
 	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();

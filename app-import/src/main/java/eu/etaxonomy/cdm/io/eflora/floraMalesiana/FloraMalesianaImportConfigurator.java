@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.eflora.floraMalesiana;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +21,11 @@ import eu.etaxonomy.cdm.io.eflora.EfloraTaxonImport;
 
 @Component
 public class FloraMalesianaImportConfigurator extends EfloraImportConfigurator  {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FloraMalesianaImportConfigurator.class);
 	
-	public static FloraMalesianaImportConfigurator NewInstance(String url, ICdmDataSource destination){
-		return new FloraMalesianaImportConfigurator(url, destination);
+	public static FloraMalesianaImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new FloraMalesianaImportConfigurator(uri, destination);
 	}
 	
 	//TODO
@@ -49,8 +52,8 @@ public class FloraMalesianaImportConfigurator extends EfloraImportConfigurator  
 	 * @param url
 	 * @param destination
 	 */
-	private FloraMalesianaImportConfigurator(String url, ICdmDataSource destination) {
-		super(url, destination, defaultTransformer);
+	private FloraMalesianaImportConfigurator(URI uri, ICdmDataSource destination) {
+		super(uri, destination, defaultTransformer);
 		this.setClassificationTitle(classificationTitle);
 		this.setSourceReferenceTitle(sourceReferenceTitle);
 	}

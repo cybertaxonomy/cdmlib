@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.eflora.centralAfrica.ericaceae;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +23,8 @@ public class CentralAfricaEricaceaeImportConfigurator extends EfloraImportConfig
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CentralAfricaEricaceaeImportConfigurator.class);
 	
-	public static CentralAfricaEricaceaeImportConfigurator NewInstance(String url, ICdmDataSource destination){
-		return new CentralAfricaEricaceaeImportConfigurator(url, destination);
+	public static CentralAfricaEricaceaeImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new CentralAfricaEricaceaeImportConfigurator(uri, destination);
 	}
 	
 	private static IInputTransformer defaultTransformer = new CentralAfricaEricaceaeTransformer();
@@ -48,8 +50,8 @@ public class CentralAfricaEricaceaeImportConfigurator extends EfloraImportConfig
 	 * @param url
 	 * @param destination
 	 */
-	private CentralAfricaEricaceaeImportConfigurator(String url, ICdmDataSource destination) {
-		super(url, destination, defaultTransformer);
+	private CentralAfricaEricaceaeImportConfigurator(URI uri, ICdmDataSource destination) {
+		super(uri, destination, defaultTransformer);
 		this.setClassificationTitle(classificationTitle);
 		this.setSourceReferenceTitle(sourceReferenceTitle);
 	}

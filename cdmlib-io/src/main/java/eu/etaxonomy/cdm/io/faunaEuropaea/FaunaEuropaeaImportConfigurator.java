@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 08.05.2009
  * @version 1.0
  */
-public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<FaunaEuropaeaImportState> implements IImportConfigurator {
+public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<FaunaEuropaeaImportState, Source> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportConfigurator.class);
 
 	//TODO
@@ -65,30 +65,16 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		setNomenclaturalCode(NomenclaturalCode.ICBN);
 	}
 	
-	public static FaunaEuropaeaImportConfigurator NewInstance(ICdmDataSource source, ICdmDataSource destination){
-		return new FaunaEuropaeaImportConfigurator(source, destination);
-}
+//	public static FaunaEuropaeaImportConfigurator NewInstance(ICdmDataSource source, ICdmDataSource destination){
+//		return new FaunaEuropaeaImportConfigurator(source, destination);
+//}
 	
-	private FaunaEuropaeaImportConfigurator(ICdmDataSource source, ICdmDataSource destination) {
-		super(defaultTransformer);
-		setSource(source);
-		setDestination(destination);
-		setNomenclaturalCode(NomenclaturalCode.ICBN);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public Source getSource() {
-		return (Source)super.getSource();
-	}
-	
-	/**
-	 * @param dbSource
-	 */
-	public void setSource(Source dbSource) {
-		super.setSource(dbSource);
-	}
+//	private FaunaEuropaeaImportConfigurator(ICdmDataSource source, ICdmDataSource destination) {
+//		super(defaultTransformer);
+//		setSource(source);
+//		setDestination(destination);
+//		setNomenclaturalCode(NomenclaturalCode.ICBN);
+//	}
 
 	
 	/* (non-Javadoc)

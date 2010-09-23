@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.io.reference;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,7 +48,12 @@ public class EndnoteRecordsImportTest /*extends CdmTransactionalIntegrationTest 
 		String inputFile = "/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = EndnoteImportConfigurator.NewInstance(url.toString(), null);
+		try {
+			configurator = EndnoteImportConfigurator.NewInstance(url.toURI(), null);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	
@@ -67,12 +74,18 @@ public class EndnoteRecordsImportTest /*extends CdmTransactionalIntegrationTest 
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		
-		EndnoteImportConfigurator config = EndnoteImportConfigurator.NewInstance(url.toString(), cdmDestination);
-		config.setDbSchemaValidation(hbm2dll);
+		EndnoteImportConfigurator config;
+		try {
+			config = EndnoteImportConfigurator.NewInstance(url.toURI(), cdmDestination);
+			config.setDbSchemaValidation(hbm2dll);
+			
+			CdmDefaultImport<EndnoteImportConfigurator> defaultImport = new CdmDefaultImport<EndnoteImportConfigurator>();
+			defaultImport.invoke(config);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
 		
-		CdmDefaultImport<EndnoteImportConfigurator> defaultImport = new CdmDefaultImport<EndnoteImportConfigurator>();
-		defaultImport.invoke(config);
-
 		
 		//IIboolean result = defaultImport.invoke(confi
 	

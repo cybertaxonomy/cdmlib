@@ -9,6 +9,9 @@
 */
 package eu.etaxonomy.cdm.app.eflora;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -21,37 +24,68 @@ public class EfloraSources {
 	private static final Logger logger = Logger.getLogger(EfloraSources.class);
 
 	//Ericaceae
-	public static String ericacea_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/africa/ericaceae_v2.xml";
-		return sourceUrl;
+	public static URI ericacea_local() {
+		URI sourceUrl;
+		try {
+			sourceUrl = new URI("file:C:/localCopy/Data/eflora/africa/ericaceae_v2.xml");
+			return sourceUrl;
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	//Sapindaceae
-	public static String fm_sapindaceae_local(){
+	public static URI fm_sapindaceae_local(){
 		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-01v25.xml";
-		return sourceUrl;
+		try {
+			URI uri = new URI(sourceUrl);
+			return uri;
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 	
 	//Sapindaceae2
-	public static String fm_sapindaceae2_local(){
+	public static URI fm_sapindaceae2_local(){
 		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/sapindaceae-02final2.xml";
-//		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
-//		String sourceUrl = url.toString();
-		return sourceUrl;
+		URI uri;
+		try {
+			uri = new URI(sourceUrl);
+			return uri;
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 	
 	//Flora Malesiana Vol 13-1
-	public static String fm_13_1_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/fm13_1_v8 final.xml";
-//		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
-//		String sourceUrl = url.toString();
-		return sourceUrl;
+	public static URI fm_13_1_local(){
+		URI sourceUrl;
+		try {
+			sourceUrl = new URI("file:C:/localCopy/Data/eflora/floraMalesiana/fm13_1_v8 final.xml");
+			return sourceUrl;
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 
 	//Flora Malesiana Vol 13-2
-	public static String fm_13_2_local(){
-		String sourceUrl = "file:C:/localCopy/Data/eflora/floraMalesiana/fm13_2_v8 final.xml";
-		return sourceUrl;
+	public static URI fm_13_2_local(){
+		URI sourceUrl;
+		try {
+			sourceUrl = new URI("file:C:/localCopy/Data/eflora/floraMalesiana/fm13_2_v8 final.xml");
+			return sourceUrl;
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 
 

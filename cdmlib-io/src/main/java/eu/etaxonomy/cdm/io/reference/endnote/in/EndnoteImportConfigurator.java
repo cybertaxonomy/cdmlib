@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.reference.endnote.in;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -23,21 +24,16 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.jaxb.JaxbExport;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
-public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImportState> implements IImportConfigurator {
+public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(EndnoteImportConfigurator.class);
 	
-	public static EndnoteImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new EndnoteImportConfigurator(url, destination);
+	public static EndnoteImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new EndnoteImportConfigurator(uri, destination);
 	}
 	
 	private boolean doRecords = true;
@@ -74,9 +70,9 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	 * @param url
 	 * @param destination
 	 */
-	private EndnoteImportConfigurator(String url, ICdmDataSource destination) {
+	private EndnoteImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 	}
 	
@@ -89,28 +85,14 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 		return new EndnoteImportState(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
-	
-	/**
-	 * @param file
-	 */
-	public void setSource(String file) {
-		super.setSource(file);
-	}
-	
 	/**
 	 * @return
 	 */
 	public Element getSourceRoot(){
-		String source = getSource();
+		URI source = getSource();
 		try {
 			URL url;
-			url = new URL(source);
+			url = source.toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Element root = XmlHelp.getRoot(is);
@@ -155,7 +137,7 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

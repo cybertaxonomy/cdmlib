@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 29.05.2008
  * @version 1.0
  */
-public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState> implements IImportConfigurator {
+public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
 	
 	
@@ -75,9 +76,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		};
 	};
 	
-	public static TcsRdfImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new TcsRdfImportConfigurator(url, destination);
+	public static TcsRdfImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new TcsRdfImportConfigurator(uri, destination);
 	}
 	
 	//TODO for spring use only 
@@ -92,35 +92,20 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private TcsRdfImportConfigurator(String url, ICdmDataSource destination) {
+	private TcsRdfImportConfigurator(URI url, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
-	
-	/**
-	 * @param file
-	 */
-	public void setSource(String file) {
-		super.setSource(file);
-	}
-	
 	/**
 	 * @return
 	 */
 	public Element getSourceRoot(){
-		String source = getSource();
+		URI source = getSource();
 		try {
 			URL url;
-			url = new URL(source);
+			url = source.toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Element root = XmlHelp.getRoot(is);
@@ -187,7 +172,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

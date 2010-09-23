@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.eflora;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.UUID;
 
@@ -28,11 +29,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
-public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImportState> implements IImportConfigurator {
+public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(EfloraImportConfigurator.class);
 	
-	public static EfloraImportConfigurator NewInstance(String url, ICdmDataSource destination){
-		return new EfloraImportConfigurator(url, destination);
+	public static EfloraImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new EfloraImportConfigurator(uri, destination);
 	}
 	
 	//TODO
@@ -75,9 +76,9 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 	 * @param url
 	 * @param destination
 	 */
-	protected EfloraImportConfigurator(String url, ICdmDataSource destination) {
+	protected EfloraImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 	}
 	
@@ -85,9 +86,9 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 	 * @param url
 	 * @param destination
 	 */
-	protected EfloraImportConfigurator(String url, ICdmDataSource destination, IInputTransformer transformer) {
+	protected EfloraImportConfigurator(URI uri, ICdmDataSource destination, IInputTransformer transformer) {
 		super(transformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 	}
 
@@ -98,29 +99,13 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 	public EfloraImportState getNewState() {
 		return new EfloraImportState(this);
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
-	
-	/**
-	 * @param file
-	 */
-	public void setSource(String file) {
-		super.setSource(file);
-	}
 	
 	/**
 	 * @return
 	 */
 	public Element getSourceRoot(){
-		String source = getSource();
 		try {
-			URL url;
-			url = new URL(source);
+			URL url = getSource().toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Element root = XmlHelp.getRoot(is);
@@ -158,7 +143,7 @@ public class EfloraImportConfigurator extends ImportConfiguratorBase<EfloraImpor
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 02-Jul-2010 13:06:43
  *
  */
-public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImportState<CacheUpdaterConfigurator>> implements IImportConfigurator{
+public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImportState<CacheUpdaterConfigurator>, Object> implements IImportConfigurator{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CacheUpdaterConfigurator.class);
 

@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.app.wp6.palmae;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -88,42 +90,49 @@ public class PalmaeActivator {
 		boolean success = true;
 		System.out.println("Start import from Tcs("+ tcsSource.toString() + ") ...");
 		
-		//make BerlinModel Source
-		String source = tcsSource;
+		//make Source
+		URI source;
+		try {
+			source = new URI(tcsSource);
 		
-		TcsRdfImportConfigurator tcsImportConfigurator = TcsRdfImportConfigurator.NewInstance(source,  destination);
+			TcsRdfImportConfigurator tcsImportConfigurator = TcsRdfImportConfigurator.NewInstance(source,  destination);
+			
+			tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
+			tcsImportConfigurator.setSecUuid(secUuid);
+			tcsImportConfigurator.setSourceSecId(sourceSecId);
+			
+			tcsImportConfigurator.setDoAuthors(doAuthors);
+			tcsImportConfigurator.setDoReferences(doReferences);
+			tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
+			tcsImportConfigurator.setDoRelNames(doRelNames);
+			
+			tcsImportConfigurator.setDoTaxa(doTaxa);
+			tcsImportConfigurator.setDoRelTaxa(doRelTaxa);
+			tcsImportConfigurator.setDoFacts(doFacts);
+			tcsImportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
+			tcsImportConfigurator.setPublishReferences(pubishReferencesInBibliography);
+			
+			tcsImportConfigurator.setCheck(check);
+			tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
+	
+			// invoke import
+			CdmDefaultImport<TcsRdfImportConfigurator> tcsImport = new CdmDefaultImport<TcsRdfImportConfigurator>();
+			success &= tcsImport.invoke(tcsImportConfigurator);
+			
+			//make feature tree
+			logger.info("Make feature tree");
+			CdmApplicationController app = tcsImport.getCdmAppController();
+			
+			FeatureTree tree = getFeatureTree();
+			app.getFeatureTreeService().saveOrUpdate(tree);
+			System.out.println("End import from TCS ("+ source.toString() + ")...");
+			
+			return success;
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return false;
+		}
 		
-		tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
-		tcsImportConfigurator.setSecUuid(secUuid);
-		tcsImportConfigurator.setSourceSecId(sourceSecId);
-		
-		tcsImportConfigurator.setDoAuthors(doAuthors);
-		tcsImportConfigurator.setDoReferences(doReferences);
-		tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
-		tcsImportConfigurator.setDoRelNames(doRelNames);
-		
-		tcsImportConfigurator.setDoTaxa(doTaxa);
-		tcsImportConfigurator.setDoRelTaxa(doRelTaxa);
-		tcsImportConfigurator.setDoFacts(doFacts);
-		tcsImportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
-		tcsImportConfigurator.setPublishReferences(pubishReferencesInBibliography);
-		
-		tcsImportConfigurator.setCheck(check);
-		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
-
-		// invoke import
-		CdmDefaultImport<TcsRdfImportConfigurator> tcsImport = new CdmDefaultImport<TcsRdfImportConfigurator>();
-		success &= tcsImport.invoke(tcsImportConfigurator);
-		
-		//make feature tree
-		logger.info("Make feature tree");
-		CdmApplicationController app = tcsImport.getCdmAppController();
-		
-		FeatureTree tree = getFeatureTree();
-		app.getFeatureTreeService().saveOrUpdate(tree);
-		System.out.println("End import from TCS ("+ source.toString() + ")...");
-		
-		return success;
 	}
 	
 	

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 23.06.2009
  * @version 1.0
  */
-public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<DefaultImportState> {
+public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<DefaultImportState, File> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PalmaeProtologueImportConfigurator.class);
 
@@ -93,10 +93,6 @@ public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<D
 		}else{
 			return this.getSource().getName();
 		}
-	}
-	
-	public File getSource() {
-		return (File)super.getSource();
 	}
 	
 	public String getOriginalSourceTaxonNamespace() {

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.03.2008
  * @version 1.0
  */
-public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportState> implements IImportConfigurator{
+public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportState, Source> implements IImportConfigurator{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(ErmsImportConfigurator.class);
 

@@ -13,8 +13,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,7 +49,12 @@ public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTes
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = TcsRdfImportConfigurator.NewInstance(url.toString(), null);
+		try {
+			configurator = TcsRdfImportConfigurator.NewInstance(url.toURI(), null);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	

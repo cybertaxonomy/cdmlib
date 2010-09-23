@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.app.wp6.palmae;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -52,7 +53,7 @@ public class PalmaeTaxonXImportActivator {
 		//make destination
 		ICdmDataSource destination = cdmDestination;
 		
-		TaxonXImportConfigurator taxonXImportConfigurator = TaxonXImportConfigurator.NewInstance("", destination);
+		TaxonXImportConfigurator taxonXImportConfigurator = TaxonXImportConfigurator.NewInstance(null, destination);
 		// invoke import
 		CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 		
@@ -69,7 +70,12 @@ public class PalmaeTaxonXImportActivator {
 		if (source.isDirectory()){
 			makeDirectory(cdmImport, taxonXImportConfigurator, source);
 		}else{
-			success &= importFile(cdmImport, taxonXImportConfigurator, source);
+			try {
+				success &= importFile(cdmImport, taxonXImportConfigurator, source);
+			} catch (URISyntaxException e) {
+				success = false;
+				e.printStackTrace();
+			}
 		}
 		return success;
 	}
@@ -80,7 +86,12 @@ public class PalmaeTaxonXImportActivator {
 		for (File file : source.listFiles() ){
 			if (file.isFile()){
 				doCount(count++, 300, "Files");
-				success &= importFile(cdmImport, taxonXImportConfigurator, file);
+				try {
+					success &= importFile(cdmImport, taxonXImportConfigurator, file);
+				} catch (URISyntaxException e) {
+					success = false;
+					e.printStackTrace();
+				}
 			}else{
 				if (! file.getName().startsWith(".")){
 					makeDirectory(cdmImport, taxonXImportConfigurator, file);
@@ -91,11 +102,11 @@ public class PalmaeTaxonXImportActivator {
 	}
 	
 	private boolean importFile(CdmDefaultImport<IImportConfigurator> cdmImport, 
-				TaxonXImportConfigurator config, File file){
+				TaxonXImportConfigurator config, File file) throws URISyntaxException{
 		boolean success = true;
 		try{
 			URL url = file.toURI().toURL();
-			config.setSource(url.toString());
+			config.setSource(url.toURI());
 			String originalSourceId = file.getName();
 			originalSourceId =originalSourceId.replace(".xml", "");
 			logger.debug(originalSourceId);

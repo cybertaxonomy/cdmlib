@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -46,20 +46,6 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	protected boolean isIgnore(TaxonExcelImportState state) {
 		return false;
 	}
-	
-	private int floatString2IntValue(String value) {
-		
-		int intValue = 0;
-		try {
-			Float fobj = new Float(Float.parseFloat(value));
-			intValue = fobj.intValue();
-			if (logger.isDebugEnabled()) { logger.debug("Value formatted: " + intValue); }
-		} catch (NumberFormatException ex) {
-			logger.error(value + " is not an integer");
-		}
-		return intValue;
-	}
-	
 	
 	
 	/* (non-Javadoc)
@@ -85,7 +71,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     		key = CdmUtils.removeDuplicateWhitespace(key.trim()).toString();
     		
     		String value = (String) record.get(key);
-    		if (!CdmUtils.isEmpty(value)) {
+    		if (! StringUtils.isBlank(value)) {
     			if (logger.isDebugEnabled()) { logger.debug(key + ": " + value); }
         		value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
     		}

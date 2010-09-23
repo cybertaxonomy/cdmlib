@@ -11,10 +11,6 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 
 import org.apache.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
-
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 
 /**
@@ -23,7 +19,6 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
  * @version 1.0
  */
 public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExcelImportState> {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
 
 	/*
@@ -80,6 +75,8 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExce
 			return this.value;
 		}
 	}
+	
+
 	
 
 }

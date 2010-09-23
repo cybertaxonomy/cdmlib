@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.03.2008
  * @version 1.0
  */
-public class GlobisImportConfigurator extends ImportConfiguratorBase<GlobisImportState> implements IImportConfigurator{
+public class GlobisImportConfigurator extends ImportConfiguratorBase<GlobisImportState, Source> implements IImportConfigurator{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(GlobisImportConfigurator.class);
 

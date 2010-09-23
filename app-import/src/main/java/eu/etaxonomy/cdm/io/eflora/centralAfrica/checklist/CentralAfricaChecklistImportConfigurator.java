@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.03.2008
  * @version 1.0
  */
-public class CentralAfricaChecklistImportConfigurator extends ImportConfiguratorBase<CentralAfricaChecklistImportState> implements IImportConfigurator{
+public class CentralAfricaChecklistImportConfigurator extends ImportConfiguratorBase<CentralAfricaChecklistImportState, Source> implements IImportConfigurator{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CentralAfricaChecklistImportConfigurator.class);
 

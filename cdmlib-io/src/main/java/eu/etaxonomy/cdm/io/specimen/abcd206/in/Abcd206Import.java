@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +94,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
 		boolean result = true;
 		//AbcdIO test = new AbcdIO();
-		String sourceName = state.getConfig().getSource();
+		URI sourceName = state.getConfig().getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null){
 			String message = "nb units to insert: "+unitsList.getLength();
@@ -292,12 +293,12 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 	 * @param fileName: the file's location
 	 * @return the list of root nodes ("Unit")
 	 */
-	private static NodeList getUnitsNodeList(String urlFileName){
+	private static NodeList getUnitsNodeList(URI urlFileName){
 		NodeList unitList = null;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			URL url = new URL(urlFileName);
+			URL url = urlFileName.toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Document document = builder.parse(is);
@@ -1363,12 +1364,12 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 		return value;
 	}
 
-	private void compareABCDtoCDM(String urlFileName, ArrayList<String> knownElts, Abcd206DataHolder dataHolder){
+	private void compareABCDtoCDM(URI urlFileName, ArrayList<String> knownElts, Abcd206DataHolder dataHolder){
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder constructeur = factory.newDocumentBuilder();
-			URL url = new URL(urlFileName);
+			URL url = urlFileName.toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Document document = constructeur.parse(is);

@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.io.taxonx;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -43,7 +45,12 @@ public class TaxonXImportConfiguratorTest extends CdmTransactionalIntegrationTes
 		String inputFile = "/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = TaxonXImportConfigurator.NewInstance(url.toString(), null);
+		try {
+			configurator = TaxonXImportConfigurator.NewInstance(url.toURI(), null);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	

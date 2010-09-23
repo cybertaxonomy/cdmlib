@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.app.tcs;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -39,6 +41,7 @@ public class TcsXmlTestActivator {
 	static final String tcsSource = TcsSources.tcsXml_cichorium();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "XXX";
@@ -62,40 +65,46 @@ public class TcsXmlTestActivator {
 	private void doImport(){
 		System.out.println("Start import from Tcs("+ tcsSource.toString() + ") ...");
 		
-		//make BerlinModel Source
-		String source = tcsSource;
-		ICdmDataSource destination = cdmDestination;
+		//make Source
+		URI source;
+		try {
+			source = new URI(tcsSource);
+			ICdmDataSource destination = cdmDestination;
+			
+			TcsXmlImportConfigurator tcsImportConfigurator = TcsXmlImportConfigurator.NewInstance(source,  destination);
+			
+			tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
+			tcsImportConfigurator.setSourceSecId(sourceSecId);
+			
+			tcsImportConfigurator.setDoMetaData(doMetaData);
+			tcsImportConfigurator.setDoReferences(doReferences);
+			tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
+			tcsImportConfigurator.setDoRelNames(doRelNames);
+			
+			tcsImportConfigurator.setDoTaxa(doTaxa);
+			tcsImportConfigurator.setDoRelTaxa(doRelTaxa);
+			
+			tcsImportConfigurator.setCheck(check);
+			tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
+	
+			// invoke import
+			CdmDefaultImport<TcsXmlImportConfigurator> tcsImport = new CdmDefaultImport<TcsXmlImportConfigurator>();
+			//new Test().invoke(tcsImportConfigurator);
+			tcsImport.invoke(tcsImportConfigurator);
+			
+			
+			IReferenceService refService = tcsImport.getCdmAppController().getReferenceService();
+			IBook book = ReferenceFactory.newBook();
+			//book.setDatePublished(TimePeriod.NewInstance(1945));
+			book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
+			refService.saveOrUpdate((ReferenceBase)book);
+			tcsImport.getCdmAppController().close();
+			logger.info("End");
+			System.out.println("End import from TCS ("+ source.toString() + ")...");
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		
-		TcsXmlImportConfigurator tcsImportConfigurator = TcsXmlImportConfigurator.NewInstance(source,  destination);
-		
-		tcsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
-		tcsImportConfigurator.setSourceSecId(sourceSecId);
-		
-		tcsImportConfigurator.setDoMetaData(doMetaData);
-		tcsImportConfigurator.setDoReferences(doReferences);
-		tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
-		tcsImportConfigurator.setDoRelNames(doRelNames);
-		
-		tcsImportConfigurator.setDoTaxa(doTaxa);
-		tcsImportConfigurator.setDoRelTaxa(doRelTaxa);
-		
-		tcsImportConfigurator.setCheck(check);
-		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
-
-		// invoke import
-		CdmDefaultImport<TcsXmlImportConfigurator> tcsImport = new CdmDefaultImport<TcsXmlImportConfigurator>();
-		//new Test().invoke(tcsImportConfigurator);
-		tcsImport.invoke(tcsImportConfigurator);
-		
-		
-		IReferenceService refService = tcsImport.getCdmAppController().getReferenceService();
-		IBook book = ReferenceFactory.newBook();
-		//book.setDatePublished(TimePeriod.NewInstance(1945));
-		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
-		refService.saveOrUpdate((ReferenceBase)book);
-		tcsImport.getCdmAppController().close();
-		logger.info("End");
-		System.out.println("End import from TCS ("+ source.toString() + ")...");
 	}
 
 	/**

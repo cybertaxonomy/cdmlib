@@ -8,6 +8,9 @@
  */
 
 package eu.etaxonomy.cdm.app.synthesysImport;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -34,27 +37,33 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String source = excelSource;
-		System.out.println(source);
-		System.out.println("Start import from  Synthesys Specimen data("+ source.toString() + ") ...");
+		URI source;
+		try {
+			source = new URI(excelSource);
+			System.out.println(source);
+			System.out.println("Start import from  Synthesys Specimen data("+ source.toString() + ") ...");
+			
+			ICdmDataSource destination = cdmDestination;
+			SpecimenExcelImportConfigurator specimenImportConfigurator = SpecimenExcelImportConfigurator.NewInstance(source,  destination);
+			
+			specimenImportConfigurator.setSourceSecId("specimen");
+			specimenImportConfigurator.setCheck(check);
+			specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
+			specimenImportConfigurator.setDoAutomaticParsing(true);
+			specimenImportConfigurator.setReUseExistingMetadata(true);
+			specimenImportConfigurator.setReUseTaxon(true);
+			specimenImportConfigurator.setSourceReference(null);
+			specimenImportConfigurator.setTaxonReference(null);
+			
+			// invoke import
+			CdmDefaultImport<SpecimenExcelImportConfigurator> specimenImport = new CdmDefaultImport<SpecimenExcelImportConfigurator>();
+			//new Test().invoke(tcsImportConfigurator);
+			specimenImport.invoke(specimenImportConfigurator);
+			System.out.println("End import from SpecimenData ("+ source.toString() + ")...");
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		
-		ICdmDataSource destination = cdmDestination;
-		SpecimenExcelImportConfigurator specimenImportConfigurator = SpecimenExcelImportConfigurator.NewInstance(source,  destination);
-		
-		specimenImportConfigurator.setSourceSecId("specimen");
-		specimenImportConfigurator.setCheck(check);
-		specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
-		specimenImportConfigurator.setDoAutomaticParsing(true);
-		specimenImportConfigurator.setReUseExistingMetadata(true);
-		specimenImportConfigurator.setReUseTaxon(true);
-		specimenImportConfigurator.setSourceReference(null);
-		specimenImportConfigurator.setTaxonReference(null);
-		
-		// invoke import
-		CdmDefaultImport<SpecimenExcelImportConfigurator> specimenImport = new CdmDefaultImport<SpecimenExcelImportConfigurator>();
-		//new Test().invoke(tcsImportConfigurator);
-		specimenImport.invoke(specimenImportConfigurator);
-		System.out.println("End import from SpecimenData ("+ source.toString() + ")...");
 	}
 
 }

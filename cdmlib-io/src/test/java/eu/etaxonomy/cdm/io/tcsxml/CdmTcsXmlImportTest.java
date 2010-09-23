@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
@@ -41,11 +42,11 @@ public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 	private IImportConfigurator configurator;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = TcsXmlImportConfigurator.NewInstance(url.toString(), null);
+		configurator = TcsXmlImportConfigurator.NewInstance(url.toURI(), null);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.app.eflora;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,10 +43,10 @@ public class FloraMalesianaActivator {
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String fmSource1 = EfloraSources.fm_sapindaceae_local();
-	static final String fmSource2 = EfloraSources.fm_sapindaceae2_local();
-	static final String fmSource13_1 = EfloraSources.fm_13_1_local();
-	static final String fmSource13_2 = EfloraSources.fm_13_2_local();
+	static final URI fmSource1 = EfloraSources.fm_sapindaceae_local();
+	static final URI fmSource2 = EfloraSources.fm_sapindaceae2_local();
+	static final URI fmSource13_1 = EfloraSources.fm_13_1_local();
+	static final URI fmSource13_2 = EfloraSources.fm_13_2_local();
 	
 	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
@@ -75,8 +76,8 @@ public class FloraMalesianaActivator {
 	
 	private void doImport(ICdmDataSource cdmDestination){
 		
-		//make BerlinModel Source
-		String source = fmSource1;
+		//make Source
+		URI source = fmSource1;
 		EfloraImportConfigurator floraMalesianaConfig= EfloraImportConfigurator.NewInstance(source, cdmDestination);
 		floraMalesianaConfig.setTaxonomicTreeUuid(classificationUuid);
 		floraMalesianaConfig.setDoTaxa(doTaxa);

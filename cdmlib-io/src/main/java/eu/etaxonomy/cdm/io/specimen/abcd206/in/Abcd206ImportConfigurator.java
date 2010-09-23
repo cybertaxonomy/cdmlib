@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.10.2008
  * @version 1.0
  */
-public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState> implements IImportConfigurator, IMatchingImportConfigurator {
+public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState, URI> implements IImportConfigurator, IMatchingImportConfigurator {
 	private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
@@ -55,9 +56,9 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 		};
 	};
 	
-	public static Abcd206ImportConfigurator NewInstance(String url,
+	public static Abcd206ImportConfigurator NewInstance(URI uri,
 			ICdmDataSource destination){
-		return new Abcd206ImportConfigurator(url, destination);
+		return new Abcd206ImportConfigurator(uri, destination);
 	}
 	
 	
@@ -66,9 +67,9 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private Abcd206ImportConfigurator(String url, ICdmDataSource destination) {
+	private Abcd206ImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 	}
 	
@@ -91,15 +92,15 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 	}
 	
 
-	public String getSource(){
-		return (String)super.getSource();
+	public URI getSource(){
+		return super.getSource();
 	}
 	
 	/**
 	 * @param file
 	 */
-	public void setSource(String file) {
-		super.setSource(file);
+	public void setSource(URI uri) {
+		super.setSource(uri);
 	}
 	
 
@@ -139,7 +140,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return (String)this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

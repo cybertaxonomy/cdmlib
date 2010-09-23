@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -24,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 29.10.2008
  * @version 1.0
  */
-public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<SpecimenExcelImportState> implements IImportConfigurator {
+public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<SpecimenExcelImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SpecimenExcelImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
@@ -43,9 +45,8 @@ public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<Spec
 		};
 	};
 	
-	public static SpecimenExcelImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new SpecimenExcelImportConfigurator(url, destination);
+	public static SpecimenExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new SpecimenExcelImportConfigurator(uri, destination);
 	}
 	
 	
@@ -54,9 +55,9 @@ public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<Spec
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private SpecimenExcelImportConfigurator(String url, ICdmDataSource destination) {
+	private SpecimenExcelImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 	}
 	
@@ -68,21 +69,6 @@ public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<Spec
 	public SpecimenExcelImportState getNewState() {
 		return new SpecimenExcelImportState(this);
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
-	
-	/**
-	 * @param file
-	 */
-	public void setSource(String file) {
-		super.setSource(file);
-	}
-	
 
 
 	/* (non-Javadoc)
@@ -120,7 +106,7 @@ public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<Spec
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

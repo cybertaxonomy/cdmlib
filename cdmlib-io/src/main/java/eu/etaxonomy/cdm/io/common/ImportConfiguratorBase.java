@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @param <STATE>
  */
 @Component
-public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> extends IoConfiguratorBase implements IImportConfigurator{
+public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOURCE> extends IoConfiguratorBase implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
 	//check
@@ -71,7 +71,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	
 	private Object sourceSecId = -1;
 	
-	private Object source;
+	private SOURCE source;
 	protected ReferenceBase sourceReference;
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
@@ -113,7 +113,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	/**
 	 * @param source the source to set
 	 */
-	public void setSource(Object source) {
+	public void setSource(SOURCE source) {
 		this.source = source;
 	}
 	
@@ -121,7 +121,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	/**
 	 * @param source the source to get
 	 */
-	public Object getSource() {
+	public SOURCE getSource() {
 		return source;
 	}
 	

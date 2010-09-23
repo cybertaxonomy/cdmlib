@@ -127,5 +127,19 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState> extends 
 	public CdmApplicationController getApplicationController() {
 		return appCtr;
 	}
+	
+	
+	protected int floatString2IntValue(String value) {
+		int intValue = 0;
+		try {
+			Float fobj = new Float(Float.parseFloat(value));
+			intValue = fobj.intValue();
+			if (logger.isDebugEnabled()) { logger.debug("Value formatted: " + intValue); }
+		} catch (NumberFormatException ex) {
+			logger.error(value + " is not an integer");
+		}
+		return intValue;
+	}
+
 
 }

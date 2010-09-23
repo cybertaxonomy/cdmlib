@@ -13,8 +13,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,7 +55,12 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = Abcd206ImportConfigurator.NewInstance(url.toString(), null);
+		try {
+			configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	

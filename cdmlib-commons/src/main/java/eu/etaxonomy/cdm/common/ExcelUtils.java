@@ -56,7 +56,9 @@ public class ExcelUtils {
     			
     			if(row != null) {
     				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
-    				if(tmp > cols) cols = tmp;
+    				if(tmp > cols){
+    					cols = tmp;
+    				}
     			}
     		}
     		HashMap<String, String> headers = null;

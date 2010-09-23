@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelImportConfigurator extends ImportConfiguratorBase<BerlinModelImportState> implements IImportConfigurator{
+public class BerlinModelImportConfigurator extends ImportConfiguratorBase<BerlinModelImportState, Source> implements IImportConfigurator{
 	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);
 
 	public static BerlinModelImportConfigurator NewInstance(Source berlinModelSource, ICdmDataSource destination){
