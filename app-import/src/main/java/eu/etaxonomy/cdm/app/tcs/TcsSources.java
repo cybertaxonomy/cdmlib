@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.app.tcs;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -67,6 +68,19 @@ public class TcsSources {
 		//		tcsXmlTest.xml
 		URL url = new TcsSources().getClass().getResource("/tcsXmlTest.xml");
 		String sourceUrl = url.toString();
+		return sourceUrl;
+		
+	}	
+
+	public static String tcsXml_localPath(){
+		File file = new File("C:\\localCopy\\Data\\tdwg\\Cichorium_tcs.xml");
+		String sourceUrl;
+		try{
+			sourceUrl = file.toURI().toURL().toString();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 		return sourceUrl;
 		
 	}	
