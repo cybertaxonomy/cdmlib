@@ -262,10 +262,12 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			childName = "MicroReference";
 			obligatory = false;
 			Element elMicroReference = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			String microReference = elMicroReference.getTextNormalize();
-			if (CdmUtils.Nz(microReference).equals("")){
-				//TODO
-				logger.warn("MicroReference not yet implemented for AccordingToDetailed");	
+			if (elMicroReference != null){
+				String microReference = elMicroReference.getTextNormalize();
+				if (CdmUtils.Nz(microReference).equals("")){
+					//TODO
+					logger.warn("MicroReference not yet implemented for AccordingToDetailed");	
+				}
 			}
 		}
 		return result;

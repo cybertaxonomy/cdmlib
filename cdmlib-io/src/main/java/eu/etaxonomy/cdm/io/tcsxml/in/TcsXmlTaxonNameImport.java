@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -22,21 +22,18 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -264,7 +261,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			obligatory = false;
 			Element elUninomial = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
 			String uninomial = (elUninomial == null)? "" : elUninomial.getTextNormalize();
-			if (! uninomial.trim().equals("")){
+			if (StringUtils.isNotBlank(uninomial)){
 				nonViralName.setGenusOrUninomial(uninomial);
 				if (nonViralName.getRank() != null && nonViralName.getRank().isLower(Rank.GENUS())){  // TODO check
 					logger.warn("Name " + simple + " lower then 'genus' but has a canonical name part 'Uninomial'.");
@@ -275,13 +272,15 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			childName = "Genus";
 			obligatory = false;
 			Element elGenus = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-			String genus = (elGenus == null)? "" : elGenus.getTextNormalize();
-			//TODO do Attributes reference
-			makeGenusReferenceType(name, elGenus, taxonNameMap, success);
-			if (! genus.trim().equals("")){
-				nonViralName.setGenusOrUninomial(genus);
-				if (nonViralName.getRank() != null &&  ! nonViralName.getRank().isLower(Rank.GENUS() )){  // TODO check
-					logger.warn("Name " + simple + " is not lower then 'genus' but has canonical name part 'Genus'.");
+			if (elGenus != null){
+				//TODO do Attributes reference
+				makeGenusReferenceType(name, elGenus, taxonNameMap, success);
+				String genus = elGenus.getTextNormalize();
+				if (StringUtils.isNotBlank(genus)){
+					nonViralName.setGenusOrUninomial(genus);
+					if (nonViralName.getRank() != null &&  ! nonViralName.getRank().isLower(Rank.GENUS() )){  // TODO check
+						logger.warn("Name " + simple + " is not lower then 'genus' but has canonical name part 'Genus'.");
+					}
 				}
 			}
 			
