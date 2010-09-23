@@ -345,8 +345,9 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			Taxon taxonFrom = (Taxon)fromTaxon;
 			if (relType.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				makeTaxonomicallyIncluded(state, taxonTo, taxonFrom, citation, microReference);
+			}else{
+				taxonFrom.addTaxonRelation(taxonTo, taxRelType, citation, microReference);
 			}
-			taxonFrom.addTaxonRelation(taxonTo, taxRelType, citation, microReference);
 		}
 	}
 	
