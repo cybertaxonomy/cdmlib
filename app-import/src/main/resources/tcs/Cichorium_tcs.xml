@@ -18,78 +18,91 @@
 		<Publication id="ref2">
 			<Simple>Sp. Pl.</Simple>
 			<PublicationDetailed>
+				<Title>Sp. Pl.</Title>
 				<DatePublished>1753</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref3">
-			<Simple>Voyage Yemen</Simple>
+			<Simple>Voyage Yemen 1889</Simple>
 			<PublicationDetailed>
+				<Title>Voyage Yemen</Title>
 				<DatePublished>1889</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref4">
 			<Simple>in Schweinfurth, Beitr. Fl. Äthiop.</Simple>
 			<PublicationDetailed>
+				<Title>in Schweinfurth, Beitr. Fl. Äthiop.</Title>
 				<DatePublished>1867</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref5">
 			<Simple>Consp. Fl. Graec. 2</Simple>
 			<PublicationDetailed>
+				<Title>Consp. Fl. Graec. 2</Title>
 				<DatePublished>1902</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref6">
 			<Simple>in Willdenowia 37</Simple>
 			<PublicationDetailed>
+				<Title>in Willdenowia 37</Title>
 				<DatePublished>2007</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref7">
 			<Simple>Observ. Bot. 4</Simple>
 			<PublicationDetailed>
+				<Title>Observ. Bot. 4</Title>
 				<DatePublished>1771</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref8">
 			<Simple>Syn. Gen. Compos.</Simple>
 			<PublicationDetailed>
+				<Title>Syn. Gen. Compos.</Title>
 				<DatePublished>1832</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref9">
 			<Simple>Compos. Ind.</Simple>
 			<PublicationDetailed>
+				<Title>Compos. Ind.</Title>
 				<DatePublished>1876</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref10">
 			<Simple>Prodr. Stirp. Chap. Allerton.</Simple>
 			<PublicationDetailed>
+				<Title>Prodr. Stirp. Chap. Allerton.</Title>
 				<DatePublished>1796</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref11">
 			<Simple>in Lamarck &amp; Candolle, Fl. Franç. ed. 3, 4</Simple>
 			<PublicationDetailed>
+				<Title>in Lamarck &amp; Candolle, Fl. Franç. ed. 3, 4</Title>
 				<DatePublished>1805</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref12">
 			<Simple>Prodr. 7</Simple>
 			<PublicationDetailed>
+				<Title>Prodr. 7</Title>
 				<DatePublished>1838</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref13">
 			<Simple>Fl. Portug. 2</Simple>
 			<PublicationDetailed>
+				<Title>Fl. Portug. 2</Title>
 				<DatePublished>1825-1828</DatePublished>
 			</PublicationDetailed>
 		</Publication>
 		<Publication id="ref14">
 			<Simple>in Komarov, Fl. SSSR 29</Simple>
 			<PublicationDetailed>
+				<Title>in Komarov, Fl. SSSR 29</Title>
 				<DatePublished>1964</DatePublished>
 			</PublicationDetailed>
 		</Publication>

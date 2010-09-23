@@ -54,17 +54,49 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 		}
 		if (elPublicationDetailed == null){
 			return true;
+		}else{
+			publication.setProtectedTitleCache(false);
 		}
 		
-		String childName = "DatePublished";
-		boolean obligatory = false;
-		Namespace ns = config.getTcsXmlNamespace();
-		Element elDatePublished = XmlHelp.getSingleChildElement(success, elPublicationDetailed, childName, ns, obligatory);
-		if (elDatePublished != null){
-			String strDatePublished = elDatePublished.getTextNormalize();
-			TimePeriod datePublished = TimePeriod.parseString(strDatePublished);
-			publication.setDatePublished(datePublished);
+		String childName;
+		Namespace tcsNs = config.getTcsXmlNamespace();
+		for (Object o : elPublicationDetailed.getChildren()){
+			Element element = (Element)o;
+			String value = element.getTextNormalize();
+			
+			childName = "Title";
+			if (element.getName().equalsIgnoreCase(childName) && element.getNamespace().equals(tcsNs)){
+				publication.setTitle(value);
+				continue;
+			}
+
+			childName = "DatePublished";
+			if (element.getName().equalsIgnoreCase(childName) && element.getNamespace().equals(tcsNs)){
+				TimePeriod datePublished = TimePeriod.parseString(value);
+				publication.setDatePublished(datePublished);
+				continue;
+			}
+			
+			logger.warn("Unhandled Publication Detailed child element: " +  element.getName());
+	
 		}
+//		String childName = "Title";
+//		boolean obligatory = false;
+//		Element elTitle = XmlHelp.getSingleChildElement(success, elPublicationDetailed, childName, ns, obligatory);
+//		if (elTitle != null){
+//			String strTitle = elTitle.getTextNormalize();
+//			publication.setTitle(strTitle);
+//		}
+
+//		childName = "DatePublished";
+//		obligatory = false;
+//		ns = config.getTcsXmlNamespace();
+//		Element elDatePublished = XmlHelp.getSingleChildElement(success, elPublicationDetailed, childName, ns, obligatory);
+//		if (elDatePublished != null){
+//			String strDatePublished = elDatePublished.getTextNormalize();
+//			TimePeriod datePublished = TimePeriod.parseString(strDatePublished);
+//			publication.setDatePublished(datePublished);
+//		}
 		
 		//Do nothing
 		//TODO implement EDIT TcsMetaData extension
