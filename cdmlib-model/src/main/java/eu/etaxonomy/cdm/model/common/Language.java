@@ -23,9 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -1191,6 +1194,30 @@ public class Language extends DefinedTermBase<Language> {
 		writer.writeNext(line);
 	}
 
+	public static Language getLanguageByDescription(String text){
+		if (StringUtils.isBlank(text)){
+			return null;
+		}
+		for (Language language : termMap.values()){
+			if (text.equalsIgnoreCase(language.getDescription())){
+				return language;
+			}
+		}
+		return null;
+	}
+	
+	public static Language getLanguageByLabel(String label){
+		if (StringUtils.isBlank(label)){
+			return null;
+		}
+		for (Language language : termMap.values()){
+			if (label.equalsIgnoreCase(language.getLabel())){
+				return language;
+			}
+		}
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
 	 */
@@ -1213,6 +1240,7 @@ public class Language extends DefinedTermBase<Language> {
 		csvLanguage = ENGLISH();
 		addLanguageForVocabularyRepresentation(termVocabulary);
 	}
+
 	
 	/**
 	 * During vocabulary initialization the default language is not yet set to ENGLISH but is still null.
