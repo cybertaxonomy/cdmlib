@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.app.images;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
 
 import org.apache.log4j.Logger;
 
@@ -26,11 +27,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 11.11.2008
  * @version 1.0
  */
-public class ImageImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class ImageImportConfigurator extends ImportConfiguratorBase<ImageImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(ImageImportConfigurator.class);
 
 
-	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
+	public static ImageImportConfigurator NewInstance(URI source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
 		return new ImageImportConfigurator(source, destination, mediaUrlString, importerClass);		
 	}
 	
@@ -46,11 +47,11 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	 * @return
 	 */
 	 
-	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
+	public static ImageImportConfigurator NewInstance(URI source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
 		return new ImageImportConfigurator(source, destination, null, importerClass);		
 	}
 	
-	private ImageImportConfigurator(File source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
+	private ImageImportConfigurator(URI source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
 		super(defaultTransformer);
 		FileNotFoundException e;
 		setSource(source);
@@ -107,13 +108,6 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 		this.mediaUrlString = mediaUrlString;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	@Override
-	public Object getSource() {
-		return super.getSource();
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()

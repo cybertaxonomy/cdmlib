@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.app.wp6.cichorieae;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -41,12 +43,18 @@ public class CichorieaeImageActivator  {
 		
 		ICdmDataSource destination = CdmDestinations.chooseDestination(cowabunga) != null ? CdmDestinations.chooseDestination(cowabunga) : cdmDestination;
 		
-		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-				CichorieaeActivator.imageFolder, destination, CichorieaeImageImport.class);
-		imageConfigurator.setSecUuid(secUuid);
-		imageConfigurator.setTaxonomicTreeUuid(treeUuid);
-		
-		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
-		importer.invoke(imageConfigurator);
+		URI imageFolderCichorieae;
+		try {
+			imageFolderCichorieae = new URI (CichorieaeActivator.imageFolderString);
+			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
+					imageFolderCichorieae, destination, CichorieaeImageImport.class);
+			imageConfigurator.setSecUuid(secUuid);
+			imageConfigurator.setTaxonomicTreeUuid(treeUuid);
+			
+			CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
+			importer.invoke(imageConfigurator);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 }

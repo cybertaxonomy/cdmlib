@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,7 +169,8 @@ public class PalmaeImageImport extends AbstractImageImporter {
 	protected boolean invokeImageImport (ImageImportConfigurator config){
 		
 		logger.info("Importing images from directory: " + config.getSourceNameString());
-		File sourceFolder = (File)config.getSource();
+		
+		File sourceFolder = new File(config.getSource());
 		String taxonName;
 		if(sourceFolder.isDirectory()){
 			int count = 0;

@@ -9,10 +9,12 @@
 
 package eu.etaxonomy.cdm.app.excelImport.taxa;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
-import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
@@ -35,15 +37,21 @@ public class NormalExplicitActivator {
     public static void main(String[] args) {
 
     	NomenclaturalCode code = NomenclaturalCode.ICBN;
-    	NormalExplicitImportConfigurator normalExplicitImportConfigurator = 
-    		NormalExplicitImportConfigurator.NewInstance(fileName, destinationDb, code);
-
-		CdmDefaultImport<NormalExplicitImportConfigurator> normalExplicitImport = 
-			new CdmDefaultImport<NormalExplicitImportConfigurator>();
-
-		// invoke import
-		logger.debug("Invoking Normal Explicit Excel import");
-		normalExplicitImport.invoke(normalExplicitImportConfigurator);
-    	
+    	URI uri;
+		try {
+			uri = new URI(fileName);
+			NormalExplicitImportConfigurator normalExplicitImportConfigurator = 
+	    		NormalExplicitImportConfigurator.NewInstance(uri, destinationDb, code);
+	
+			CdmDefaultImport<NormalExplicitImportConfigurator> normalExplicitImport = 
+				new CdmDefaultImport<NormalExplicitImportConfigurator>();
+	
+			// invoke import
+			logger.debug("Invoking Normal Explicit Excel import");
+			normalExplicitImport.invoke(normalExplicitImportConfigurator);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+    	    	
     }
 }

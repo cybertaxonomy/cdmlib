@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -59,24 +62,31 @@ public class CichorieaeActivator {
 
 		logger.info("Start import from SDD ("+ sddSource.toString() + ") ...");
 
-		String source = sddSource;
-		ICdmDataSource destination = cdmDestination;
+		//make Source
+		URI source;
+		try {
+			source = new URI(sddSource);
+			ICdmDataSource destination = cdmDestination;
 
-		SDDImportConfigurator sddImportConfigurator = SDDImportConfigurator.NewInstance(source,  destination);
-
-		sddImportConfigurator.setSourceSecId(sourceSecId);
-
-		sddImportConfigurator.setCheck(check);
-		sddImportConfigurator.setDbSchemaValidation(hbm2dll);
-		
-		sddImportConfigurator.setDoMatchTaxa(doMatchTaxa);
-		
-
-		// invoke import
-		CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
-		sddImport.invoke(sddImportConfigurator);
-
-		logger.info("End import from SDD ("+ source.toString() + ")...");
+			SDDImportConfigurator sddImportConfigurator = SDDImportConfigurator.NewInstance(source,  destination);
+	
+			sddImportConfigurator.setSourceSecId(sourceSecId);
+	
+			sddImportConfigurator.setCheck(check);
+			sddImportConfigurator.setDbSchemaValidation(hbm2dll);
+			
+			sddImportConfigurator.setDoMatchTaxa(doMatchTaxa);
+			
+	
+			// invoke import
+			CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
+			sddImport.invoke(sddImportConfigurator);
+	
+			logger.info("End import from SDD ("+ source.toString() + ")...");
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 

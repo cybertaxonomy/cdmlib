@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
@@ -47,9 +48,9 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	private SDDImportConfigurator configurator;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
-		configurator = SDDImportConfigurator.NewInstance(url.toString(), null);
+		configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
 	}
 	
 	@Test

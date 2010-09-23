@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.jaxb;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -25,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.babadshanjan
  * @created 14.11.2008
  */
-public class JaxbImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportState, URI> implements IImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(JaxbImportConfigurator.class);
 		
@@ -166,9 +168,8 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		};
 	};
 
-	public static JaxbImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new JaxbImportConfigurator(url, destination);
+	public static JaxbImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new JaxbImportConfigurator(uri, destination);
 	}
 
 
@@ -176,30 +177,12 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	 * @param url
 	 * @param destination
 	 */
-	private JaxbImportConfigurator(String url, ICdmDataSource destination) {
+	private JaxbImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
-		setSource(url);
+		setSource(uri);
 		setDestination(destination);
 		setDbSchemaValidation(DbSchemaValidation.CREATE);
 	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public Object getSource() {
-//	public String getSource() {
-		return (String)super.getSource();
-	}
-
-
-	/**
-	 * @param file
-	 */
-	public void setSource(String fileName) {
-		super.setSource(fileName);
-	}
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
@@ -208,9 +191,8 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	public ReferenceBase getSourceReference() {
 		//TODO
 		if (this.sourceReference == null){
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = refFactory.newDatabase();
+			sourceReference = ReferenceFactory.newDatabase();
 			sourceReference.setTitleCache("Jaxb import", true);
 		}
 		return sourceReference;
@@ -224,7 +206,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return (String)this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

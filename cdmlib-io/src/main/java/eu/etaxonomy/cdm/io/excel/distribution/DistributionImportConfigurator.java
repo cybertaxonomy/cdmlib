@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.excel.distribution;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -35,9 +37,8 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 		};
 	};
 	
-	public static DistributionImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new DistributionImportConfigurator(url, destination);
+	public static DistributionImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new DistributionImportConfigurator(uri, destination);
 	}
 	
 	
@@ -45,8 +46,8 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 	 * @param url
 	 * @param destination
 	 */
-	private DistributionImportConfigurator(String url, ICdmDataSource destination) {
-		super(url, destination);
+	private DistributionImportConfigurator(URI uri, ICdmDataSource destination) {
+		super(uri, destination);
 	}
 	
 	
@@ -57,21 +58,6 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 	 */
 	public ExcelImportState getNewState() {
 		return new ExcelImportState(this);
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
-
-	
-	/**
-	 * @param file
-	 */
-	public void setSource(String fileName) {
-		super.setSource(fileName);
 	}
 	
 
@@ -98,7 +84,7 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

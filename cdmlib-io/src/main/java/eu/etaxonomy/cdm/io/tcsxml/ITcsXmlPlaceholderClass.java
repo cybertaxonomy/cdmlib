@@ -19,8 +19,7 @@ public interface ITcsXmlPlaceholderClass {
 	public abstract boolean makeMetaDataDetailed(
 			TcsXmlImportConfigurator tcsConfig, Element elMetaDataDetailed);
 
-	public abstract boolean makePublicationDetailed(
-			TcsXmlImportConfigurator tcsConfig, Element elPublicationDetailed,
-			ReferenceBase publication);
+	public abstract boolean makePublicationDetailed(TcsXmlImportConfigurator tcsConfig, 
+			Element elPublicationDetailed, ReferenceBase publication);
 
 }

@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -47,23 +50,30 @@ public class SDDImportActivator {
 		String sddSource = SDDSources.SDDImport_local(args[0]+args[1]);
 		System.out.println("Start import from SDD("+ sddSource.toString() + ") ...");
 
-		//make BerlinModel Source
-		String source = sddSource;
-	//	ICdmDataSource destination = CdmDestinations.localH2("cdm","sa","C:/Documents and Settings/lis/Mes documents/CDMtest/");
-		ICdmDataSource destination = CdmDestinations.localH2(args[3],"sa",args[2]);
+		//make Source
+		URI source;
+		try {
+			source = new URI(sddSource);
+		
+		//	ICdmDataSource destination = CdmDestinations.localH2("cdm","sa","C:/Documents and Settings/lis/Mes documents/CDMtest/");
+			ICdmDataSource destination = CdmDestinations.localH2(args[3],"sa",args[2]);
+	
+			SDDImportConfigurator sddImportConfigurator = SDDImportConfigurator.NewInstance(source,  destination);
+	
+			sddImportConfigurator.setSourceSecId(sourceSecId);
+	
+			sddImportConfigurator.setCheck(check);
+			sddImportConfigurator.setDbSchemaValidation(hbm2dll);
+	
+			// invoke import
+			CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
+			sddImport.invoke(sddImportConfigurator);
+	
+			System.out.println("End import from SDD ("+ source.toString() + ")...");
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 
-		SDDImportConfigurator sddImportConfigurator = SDDImportConfigurator.NewInstance(source,  destination);
-
-		sddImportConfigurator.setSourceSecId(sourceSecId);
-
-		sddImportConfigurator.setCheck(check);
-		sddImportConfigurator.setDbSchemaValidation(hbm2dll);
-
-		// invoke import
-		CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
-		sddImport.invoke(sddImportConfigurator);
-
-		System.out.println("End import from SDD ("+ source.toString() + ")...");
 	}
 
 

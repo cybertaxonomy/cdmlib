@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -30,9 +32,9 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		};
 	};
 	
-	public static NormalExplicitImportConfigurator NewInstance(String url,
+	public static NormalExplicitImportConfigurator NewInstance(URI uri,
 			ICdmDataSource destination, NomenclaturalCode nomenclaturalCode){
-		return new NormalExplicitImportConfigurator(url, destination, nomenclaturalCode);
+		return new NormalExplicitImportConfigurator(uri, destination, nomenclaturalCode);
 	}
 	
 	
@@ -40,9 +42,9 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	 * @param url
 	 * @param destination
 	 */
-	private NormalExplicitImportConfigurator(String url, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode) {
-		super(url, destination);
-		setSource(url);
+	private NormalExplicitImportConfigurator(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode) {
+		super(uri, destination);
+		setSource(uri);
 		setDestination(destination);
 		setDbSchemaValidation(DbSchemaValidation.CREATE);
 		setNomenclaturalCode(nomenclaturalCode);
@@ -58,21 +60,6 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		return new TaxonExcelImportState(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
-		return (String)super.getSource();
-	}
-
-	
-	/**
-	 * @param file
-	 */
-	public void setSource(String fileName) {
-		super.setSource(fileName);
-	}
-	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
@@ -97,7 +84,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return this.getSource().toString();
 		}
 	}
 	

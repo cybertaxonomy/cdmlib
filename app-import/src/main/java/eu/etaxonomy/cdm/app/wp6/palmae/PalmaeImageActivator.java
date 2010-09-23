@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.app.wp6.palmae;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -32,7 +34,7 @@ public class PalmaeImageActivator  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PalmaeImageActivator.class);
 	
-	public static final File sourceFolder = new File("\\\\Media\\EditWP6\\palmae\\photos\\new");
+	public static final String sourceFolderString = "\\\\Media\\EditWP6\\palmae\\photos\\new";
 	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 	
 	
@@ -42,12 +44,19 @@ public class PalmaeImageActivator  {
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 
 	public static void main (String[] cowabunga){
-		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(sourceFolder, cdmDestination, urlString, PalmaeImageImport.class);
-		imageConfigurator.setSecUuid(secUuid);
+		URI uri;
+		try {
+			uri = new URI(sourceFolderString);
+			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(uri, cdmDestination, urlString, PalmaeImageImport.class);
+			imageConfigurator.setSecUuid(secUuid);
+			
+			CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
+			//AbstractImageImporter imageImporter = new PalmaeImageActivator();
+			importer.invoke(imageConfigurator);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		
-		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
-		//AbstractImageImporter imageImporter = new PalmaeImageActivator();
-		importer.invoke(imageConfigurator);
 	}
 
 }

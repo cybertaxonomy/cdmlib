@@ -201,14 +201,12 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	 */
 	protected static Rank makeRank(Element elRank){
 		Rank result;
-		if (elRank == null){
+ 		if (elRank == null){
 			return null;
 		}
 		String strRankCode = elRank.getAttributeValue("code");
 		String strRankString = elRank.getTextNormalize();
-		if (strRankCode == null || "".equals(strRankCode.trim()) &&
-				strRankString == null || "".equals(strRankString.trim())
-			){
+		if ( StringUtils.isBlank(strRankCode) && StringUtils.isBlank(strRankString)){
 			return null;
 		}
 		
@@ -227,10 +225,10 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 		
 		//codeRank exists
-		if (! (codeRank == null) && ! codeRank.equals(Rank.UNKNOWN_RANK())){
+		if ( (codeRank != null) && ! codeRank.equals(Rank.UNKNOWN_RANK())){
 			result = codeRank;
 			if (! codeRank.equals(stringRank) && ! stringRank.equals(Rank.UNKNOWN_RANK())){
-				logger.warn("code rank and string rank are unequal. code: " + codeRank.getLabel() + stringRank.getLabel());
+				logger.warn("code rank and string rank are unequal. code: " + codeRank.getLabel() + " <-> string: " + stringRank.getLabel());
 			}
 		}
 		//codeRank does not exist
@@ -457,7 +455,9 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				obligatory = false;
 				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				INomenclaturalAuthor combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
-				nonViralName.setCombinationAuthorTeam(combinationAuthor);
+				if (combinationAuthor != null){
+					nonViralName.setCombinationAuthorTeam(combinationAuthor);
+				}
 				testNoMoreElements();
 				
 				if (elAuthorship != null && (elBasionymAuthorship != null || elCombinationAuthorship != null) ){

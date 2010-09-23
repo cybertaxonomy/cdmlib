@@ -11,8 +11,12 @@ package eu.etaxonomy.cdm.io.tcsxml;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import org.jdom.Namespace;
 
+import eu.etaxonomy.cdm.common.ResultWrapper;
+import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -43,18 +47,32 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 	/* (non-Javadoc)
 	 * @see tcsxml.ITcsXmlPlaceholderClass#makePublicationDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element, eu.etaxonomy.cdm.model.reference.ReferenceBase)
 	 */
-	public boolean makePublicationDetailed(TcsXmlImportConfigurator tcsConfig, Element elPublicationDetailed, ReferenceBase publication){
-		if (tcsConfig == null){
+	public boolean makePublicationDetailed(TcsXmlImportConfigurator config, Element elPublicationDetailed, ReferenceBase publication){
+		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
+		if (config == null){
 			return false;
 		}
 		if (elPublicationDetailed == null){
 			return true;
 		}
 		
+		String childName = "DatePublished";
+		boolean obligatory = false;
+		Namespace ns = config.getTcsXmlNamespace();
+		Element elDatePublished = XmlHelp.getSingleChildElement(success, elPublicationDetailed, childName, ns, obligatory);
+		if (elDatePublished != null){
+			String strDatePublished = elDatePublished.getTextNormalize();
+			TimePeriod datePublished = TimePeriod.parseString(strDatePublished);
+			publication.setDatePublished(datePublished);
+		}else{
+			
+		}
+		
+		
 		//Do nothing
 		//TODO implement EDIT TcsMetaData extension
-		logger.info("PublicationDetailed element found: " +  elPublicationDetailed.getName());
-		return true;
+		if (logger.isDebugEnabled()){logger.info("PublicationDetailed element found: " +  elPublicationDetailed.getName());}
+		return success.getValue();
 	}
 	
 	

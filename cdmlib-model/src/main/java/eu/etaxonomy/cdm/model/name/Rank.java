@@ -589,6 +589,10 @@ public class Rank extends OrderedTermBase<Rank> {
 		if (abbrev == null){ 
 			throw new NullPointerException("Abbrev is NULL in getRankByAbbreviation");
 		}
+		if (abbrev.trim().equals("")){
+			//handle empty abbrev as unknown
+			abbrev = "oijaämöö";
+		}
 		if (abbrevMap == null){
 			return null;
 		}

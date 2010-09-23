@@ -189,22 +189,35 @@ public class PalmaeActivator {
 		if (includeImages){
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
-			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeImageActivator.sourceFolder, destination, imageUrlString, PalmaeImageImport.class);
-			imageConfigurator.setSecUuid(secUuid);
-			success &= imageImporter.invoke(imageConfigurator);
-			System.out.println("End importing images ...");
+			URI folderUri;
+			try {
+				folderUri = new URI(PalmaeImageActivator.sourceFolderString);
+				ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
+						folderUri, destination, imageUrlString, PalmaeImageImport.class);
+				imageConfigurator.setSecUuid(secUuid);
+				success &= imageImporter.invoke(imageConfigurator);
+				System.out.println("End importing images ...");
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (includeExcelProtologue){
 			System.out.println("Start importing protologues ...");
-			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeExcelProtologueActivator.sourceFile, destination, protologueUrlString, PalmaeProtologueImport.class);
-			imageConfigurator.setSecUuid(secUuid);
+			URI fileUri;
+			try {
+				fileUri = new URI(PalmaeExcelProtologueActivator.sourceFileString);
+				ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
+						fileUri, destination, protologueUrlString, PalmaeProtologueImport.class);
+				imageConfigurator.setSecUuid(secUuid);
+				
+				CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
+				imageImporter.invoke(imageConfigurator);
+				System.out.println("End importing protologues ...");
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 			
-			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
-			imageImporter.invoke(imageConfigurator);
-			System.out.println("End importing protologues ...");
 		}
 		if (includeMediaProtologue){
 			System.out.println("Start importing protologues from \\\\media...");

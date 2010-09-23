@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.app.wp6.palmae;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -30,7 +32,7 @@ public class PalmaeExcelProtologueActivator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PalmaeExcelProtologueActivator.class);
 
-	public static final File sourceFile = new File("src/main/resources/images/protologue_links_palmae.xls");
+	public static final String sourceFileString = "src/main/resources/images/protologue_links_palmae.xls";
 	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
@@ -39,11 +41,18 @@ public class PalmaeExcelProtologueActivator {
 	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
 	
 	public static void main (String[] whatever){
-		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(sourceFile, cdmDestination, urlString, PalmaeProtologueImport.class);
-		imageConfigurator.setSecUuid(secUuid);
+		URI uri;
+		try {
+			uri = new URI(sourceFileString);
+			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(uri, cdmDestination, urlString, PalmaeProtologueImport.class);
+			imageConfigurator.setSecUuid(secUuid);
+			
+			CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
+			importer.invoke(imageConfigurator);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		
-		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
-		importer.invoke(imageConfigurator);
 	}
 	
 }

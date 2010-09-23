@@ -71,7 +71,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
         URI uri = null;
 		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)state.getConfig();
     	
-    	String urlFileName = (String)jaxbImpConfig.getSource();
+    	String urlFileName = jaxbImpConfig.getSource().toString();
 		logger.debug("urlFileName: " + urlFileName);
     	try {
     		uri = new URI(urlFileName);

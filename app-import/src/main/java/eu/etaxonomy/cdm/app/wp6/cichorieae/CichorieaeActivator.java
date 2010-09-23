@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.app.wp6.cichorieae;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -68,7 +70,7 @@ public class CichorieaeActivator {
 	//Mac
 	//static final File protologuePath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	public static final File imageFolder  = new File("//media/editwp6/photos");
+	public static final String imageFolderString  = "//media/editwp6/photos";
 	static final File protologuePath = new File("//media/editwp6/protolog");
 //	public static final File imageFolder  = new File("/media/photos");
 //	static final File protologuePath = new File("/media/protolog");
@@ -194,6 +196,7 @@ public class CichorieaeActivator {
 			logger.error("Could not configure protologue ResourceLocations");
 		}
 		
+		File imageFolder = new File(imageFolderString);
 		// also check the image source folder
 		if ( !imageFolder.exists() || !imageFolder.isDirectory()){
 			if(stopOnMediaErrors){
@@ -250,12 +253,18 @@ public class CichorieaeActivator {
 		if (includeImages) {
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
-			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					CichorieaeActivator.imageFolder, destination, CichorieaeImageImport.class);
-			imageConfigurator.setSecUuid(secUuid);
-			imageConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
-			success &= imageImporter.invoke(imageConfigurator);
-			System.out.println("End importing images ...");
+			URI imageFolderCichorieae;
+			try {
+				imageFolderCichorieae = new URI(CichorieaeActivator.imageFolderString);
+				ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
+						imageFolderCichorieae, destination, CichorieaeImageImport.class);
+				imageConfigurator.setSecUuid(secUuid);
+				imageConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
+				success &= imageImporter.invoke(imageConfigurator);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+				System.out.println("End importing images ...");
 		}
 		logger.warn("!!!! NOTE: RefDetail notes and RelPTaxon notes are not imported automatically. Please check for these notes and import them manually.");
 		

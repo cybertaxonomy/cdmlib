@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -71,11 +72,11 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	private IImportConfigurator configurator;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = NormalExplicitImportConfigurator.NewInstance(url.toString(), null, NomenclaturalCode.ICBN);
+		configurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	

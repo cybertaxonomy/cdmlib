@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.app.jaxb;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
@@ -37,7 +39,7 @@ public class JaxbImportActivator {
 	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb();
 	
 	// Import:
-	private static String importFileName = 
+	private static String importFileNameString = 
 		//"C:\\workspace\\cdmlib_2.2\\cdmlib-io\\src\\test\\resources\\eu\\etaxonomy\\cdm\\io\\jaxb\\export_test_app_import.xml";
 		"file:/C:/export_test_app_import.xml";
 	
@@ -62,26 +64,36 @@ public class JaxbImportActivator {
 		return null;
 	}
 
-	private void invokeImport(String importFileParam, ICdmDataSource destination) {
-		JaxbImportConfigurator jaxbImportConfigurator;
-		if (importFileParam !=null && destination != null){
-			jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileParam, destination);
-		}else if (destination != null){			
-		jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileName, destination);
-		} else if (importFileParam !=null ){
-			jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileParam, cdmDestination);
-		} else{
-			jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileName, cdmDestination);
+	private void invokeImport(String importFileParamString, ICdmDataSource destination) {
+		try {
+			JaxbImportConfigurator jaxbImportConfigurator;
+			if (importFileParamString !=null && destination != null){
+				URI importFileParam;
+				importFileParam = new URI(importFileParamString);
+				jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileParam, destination);
+			}else if (destination != null){			
+				URI importFileName = new URI(importFileNameString);
+				jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileName, destination);
+			} else if (importFileParamString !=null ){
+				URI importFileParam = new URI(importFileParamString);
+				jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileParam, cdmDestination);
+			} else{
+				URI importFileName = new URI(importFileNameString);
+				jaxbImportConfigurator = JaxbImportConfigurator.NewInstance(importFileName, cdmDestination);
+			}
+			
+			CdmDefaultImport<JaxbImportConfigurator> jaxbImport = 
+				new CdmDefaultImport<JaxbImportConfigurator>();
+	
+	
+			// invoke import
+			logger.debug("Invoking Jaxb import");
+	
+			jaxbImport.invoke(jaxbImportConfigurator, destination, true);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
-		
-		CdmDefaultImport<JaxbImportConfigurator> jaxbImport = 
-			new CdmDefaultImport<JaxbImportConfigurator>();
-
-
-		// invoke import
-		logger.debug("Invoking Jaxb import");
-
-		jaxbImport.invoke(jaxbImportConfigurator, destination, true);
+	
 
 	}
 
@@ -111,7 +123,7 @@ public class JaxbImportActivator {
 
 		JaxbImportActivator sc = new JaxbImportActivator();
 		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
-		String file = chooseFile(args)!= null ? chooseFile(args) : importFileName;
+		String file = chooseFile(args)!= null ? chooseFile(args) : importFileNameString;
 		CdmApplicationController appCtr = null;
 		appCtr = sc.initDb(destination);
 				

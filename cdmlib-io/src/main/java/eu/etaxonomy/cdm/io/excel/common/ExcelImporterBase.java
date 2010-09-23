@@ -57,7 +57,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState> extends 
 			return false;
 		}
 		// read and save all rows of the excel worksheet
-		String source = (String)state.getConfig().getSource();
+		String source = state.getConfig().getSource().toString();
 		source = source.replace("file:/", "");
 		try {
 			recordList = ExcelUtils.parseXLS(source);

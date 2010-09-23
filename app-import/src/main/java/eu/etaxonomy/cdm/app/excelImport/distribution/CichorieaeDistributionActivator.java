@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.app.excelImport.distribution;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.util.TestDatabase;
@@ -33,16 +36,20 @@ public class CichorieaeDistributionActivator {
     
     public static void main(String[] args) {
 
-    	DistributionImportConfigurator distributionImportConfigurator = 
-    		DistributionImportConfigurator.NewInstance(fileName, destinationDb);
-
-		CdmDefaultImport<DistributionImportConfigurator> distributionImport = 
-			new CdmDefaultImport<DistributionImportConfigurator>();
-
-		// invoke import
-		logger.debug("Invoking Cichorieae distribution import");
-		distributionImport.invoke(distributionImportConfigurator);
-    	
+    	DistributionImportConfigurator distributionImportConfigurator;
+		try {
+			distributionImportConfigurator = DistributionImportConfigurator.NewInstance(new URI(fileName), destinationDb);
+		
+			CdmDefaultImport<DistributionImportConfigurator> distributionImport = 
+				new CdmDefaultImport<DistributionImportConfigurator>();
+	
+			// invoke import
+			logger.debug("Invoking Cichorieae distribution import");
+			distributionImport.invoke(distributionImportConfigurator);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	
     }
 	
 }

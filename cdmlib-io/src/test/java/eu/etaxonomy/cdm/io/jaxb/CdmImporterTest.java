@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.dbunit.Assertion;
@@ -35,9 +36,9 @@ public class CdmImporterTest  extends CdmTransactionalIntegrationTest{
 	private JaxbImportConfigurator configurator;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest-input.xml");
-		configurator = JaxbImportConfigurator.NewInstance(url.toString(),null);
+		configurator = JaxbImportConfigurator.NewInstance(url.toURI(),null);
 	}
 	
 	

@@ -79,7 +79,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState> implements I
     	try{
     		recordList = ExcelUtils.parseXLS(state.getConfig().getSourceNameString());
 		} catch (FileNotFoundException e1) {
-			logger.error("File not found: " + (String)state.getConfig().getSource());
+			logger.error("File not found: " + state.getConfig().getSource().toString());
 			return false;
 		}
     	if (recordList != null) {
