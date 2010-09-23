@@ -9,6 +9,17 @@
 
 package eu.etaxonomy.cdm.io.excel.taxa;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+
+import org.hibernate.type.OrderedSetType;
+
 /**
  * @author a.babadshanjan
  * @created 13.01.2009
@@ -26,16 +37,25 @@ public class NormalExplicitRow {
 	private String language;
 	private String reference;
 	
+	//Sets
+	private TreeMap<Integer, String> distributions = new TreeMap<Integer, String>();
+	
+	private TreeMap<Integer, String> protologues = new TreeMap<Integer, String>();
+	
+	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
+	
+	
+	
 	public NormalExplicitRow() {
 		this.id = 0;
 		this.parentId = 0;
-		this.rank = new String("");
-		this.scientificName = new String("");
-		this.author = new String("");
-		this.nameStatus = new String("");
-		this.commonName = new String("");
-		this.language = new String("");
-		this.reference = new String("");
+		this.rank = "";
+		this.scientificName = "";
+		this.author =  "";
+		this.nameStatus =  "";
+		this.commonName =  "";
+		this.language =  "";
+		this.reference =  "";
 	}
 	
 	public NormalExplicitRow(String name, int parentId) {
@@ -47,6 +67,8 @@ public class NormalExplicitRow {
 		this.scientificName = scientificName;
 		this.reference = reference;
 	}
+	
+// **************************** GETTER / SETTER *********************************/	
 	
 	/**
 	 * @return the parentId
@@ -168,6 +190,37 @@ public class NormalExplicitRow {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
+	public void putDistribution(int key, String distribution){
+		this.distributions.put(key, distribution);
+	}
 	
+	public List<String> getDistributions() {
+		return getOrdered(distributions);
+	}
+
+	public void putProtologue(int key, String protologue){
+		this.protologues.put(key, protologue);
+	}
+	
+	public List<String> getProtologues() {
+		return getOrdered(protologues);
+	}
+
+	public void putImage(int key, String image){
+		this.images.put(key, image);
+	}
+	
+	public List<String> getImages() {
+		return getOrdered(images);
+	}
+
+	private List<String> getOrdered(TreeMap<Integer, String> distributions) {
+		List<String> result = new ArrayList<String>();
+		for (String distribution : distributions.values()){
+			result.add(distribution);
+		}
+		return result;
+	}
 	
 }

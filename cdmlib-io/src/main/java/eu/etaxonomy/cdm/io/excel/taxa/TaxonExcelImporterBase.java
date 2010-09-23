@@ -47,6 +47,12 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExce
 	protected static final String VERNACULAR_NAME_COLUMN = "VernacularName";
 	protected static final String LANGUAGE_COLUMN = "Language";
 	protected static final String REFERENCE_COLUMN = "Reference";
+
+	protected static final String PROTOLOGUE_COLUMN = "Protologue";
+	protected static final String IMAGE_COLUMN = "Image";
+	protected static final String TDWG_COLUMN = "TDWG";
+	protected static final String COUNTRY_COLUMN = "Country";
+	
 	
 	
 	// TODO: This enum is for future use (perhaps).
@@ -63,7 +69,7 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExce
 		private String head;
 		private String value;
 	
-		Columns(String head) {
+		private Columns(String head) {
 			this.head = head;
 		}
 		
