@@ -10,9 +10,11 @@
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -30,11 +32,12 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -128,6 +131,8 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
+		
 		ITaxonService taxonService = getTaxonService();
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
@@ -166,72 +171,78 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 			childName = "Name";
 			obligatory = true;
 			Element elName = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			TaxonNameBase<?,?> taxonName = makeName(elName, null, taxonNameMap, success);
-			elementList.add(childName.toString());
-			
-			//TODO how to handle
-			childName = "Rank";
-			obligatory = false;
-			Element elRank = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			Rank rank = TcsXmlTaxonNameImport.makeRank(elRank);
-			if (rank != null){
-				logger.warn("Rank in TaxonIO not yet implemented");
-			}
-			elementList.add(childName.toString());
-			
-			childName = "AccordingTo";
-			obligatory = false;
-			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			ReferenceBase sec = makeAccordingTo(elAccordingTo, referenceMap, success);
-			elementList.add(childName.toString());
-			// TODO may sec be null?
-			if (sec == null){
-				sec = unknownSec();
-			}
-			
-			TaxonBase taxonBase;
-			if (synonymIdSet.contains(strId)){
-				taxonBase = Synonym.NewInstance(taxonName, sec);
+			if (isVernacular(success, elName)){
+				handleVernacularName(success, strId, elName, commonNameMap);
 			}else{
-				taxonBase = Taxon.NewInstance(taxonName, sec);	
+				TaxonNameBase<?,?> taxonName = makeScientificName(elName, null, taxonNameMap, success);
+				elementList.add(childName.toString());
+				
+				//TODO how to handle
+				childName = "Rank";
+				obligatory = false;
+				Element elRank = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				Rank rank = TcsXmlTaxonNameImport.makeRank(elRank);
+				if (rank != null){
+					logger.warn("Rank in TaxonIO not yet implemented");
+				}
+				elementList.add(childName.toString());
+				
+				childName = "AccordingTo";
+				obligatory = false;
+				Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				ReferenceBase sec = makeAccordingTo(elAccordingTo, referenceMap, success);
+				elementList.add(childName.toString());
+				// TODO may sec be null?
+				if (sec == null){
+					sec = unknownSec();
+				}
+				
+				TaxonBase taxonBase;
+				if (synonymIdSet.contains(strId)){
+					taxonBase = Synonym.NewInstance(taxonName, sec);
+				}else{
+					taxonBase = Taxon.NewInstance(taxonName, sec);	
+				}
+				
+				childName = "TaxonRelationships";
+				obligatory = false;
+				Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				makeTaxonRelationships(taxonBase, elTaxonRelationships, success);
+				elementList.add(childName.toString());
+	
+				childName = "SpecimenCircumscription";
+				obligatory = false;
+				Element elSpecimenCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				makeSpecimenCircumscription(taxonBase, elSpecimenCircumscription, success);
+				elementList.add(childName.toString());
+	
+				childName = "CharacterCircumscription";
+				obligatory = false;
+				Element elCharacterCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				makeCharacterCircumscription(taxonBase, elCharacterCircumscription, success);
+				elementList.add(childName.toString());
+	
+				
+				childName = "ProviderLink";
+				obligatory = false;
+				Element elProviderLink = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				makeProviderLink(taxonBase, elProviderLink, success);
+				elementList.add(childName.toString());
+				
+				childName = "ProviderSpecificData";
+				obligatory = false;
+				Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				makeProviderSpecificData(taxonBase, elProviderSpecificData, success);
+				elementList.add(childName.toString());
+	
+				testAdditionalElements(elTaxonConcept, elementList);
+				ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
+				taxonMap.put(strId, taxonBase);
 			}
-			
-			childName = "TaxonRelationships";
-			obligatory = false;
-			Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			makeTaxonRelationships(taxonBase, elTaxonRelationships, success);
-			elementList.add(childName.toString());
-
-			childName = "SpecimenCircumscription";
-			obligatory = false;
-			Element elSpecimenCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			makeSpecimenCircumscription(taxonBase, elSpecimenCircumscription, success);
-			elementList.add(childName.toString());
-
-			childName = "CharacterCircumscription";
-			obligatory = false;
-			Element elCharacterCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			makeCharacterCircumscription(taxonBase, elCharacterCircumscription, success);
-			elementList.add(childName.toString());
-
-			
-			childName = "ProviderLink";
-			obligatory = false;
-			Element elProviderLink = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			makeProviderLink(taxonBase, elProviderLink, success);
-			elementList.add(childName.toString());
-			
-			childName = "ProviderSpecificData";
-			obligatory = false;
-			Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			makeProviderSpecificData(taxonBase, elProviderSpecificData, success);
-			elementList.add(childName.toString());
-
-			testAdditionalElements(elTaxonConcept, elementList);
-			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
-			taxonMap.put(strId, taxonBase);
 			
 		}
+		state.setCommonNameMap(commonNameMap);
+		
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 		logger.info(i + " taxa handled. Saving ...");
 		taxonService.save(taxonMap.objects());
@@ -239,6 +250,43 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		return success.getValue();
 	}
 	
+	private void handleVernacularName(ResultWrapper<Boolean> success, String taxonId, Element elName, Map<String, CommonTaxonName> commonNameMap) {
+		String name = elName.getTextNormalize();
+		//TODO ref
+		
+		Language language = null;
+		String strLanguage = elName.getAttributeValue("language");
+		//TODO
+		//Language
+		if (strLanguage != null){
+			language = Language.getLanguageByLabel(strLanguage);
+			if (language == null){
+				language = Language.getLanguageByDescription(strLanguage);
+			}
+			if (language == null){
+				logger.warn("language ("+strLanguage+") not found for name " + name);	
+			}
+		}
+		CommonTaxonName commonName = CommonTaxonName.NewInstance(name, language);
+		commonNameMap.put(taxonId, commonName);
+		
+		//TODO check other elements
+	}
+
+
+	private boolean isVernacular(ResultWrapper<Boolean> success, Element elName) {
+		try{
+			String strScientific = elName.getAttributeValue("scientific");
+			boolean scientific = Boolean.valueOf(strScientific);
+			return ! scientific;
+		} catch (Exception e) {
+			logger.warn("Value for scientific is not boolean");
+			success.setValue(false);
+			return false;
+		}
+	}
+
+
 	
 	private boolean hasIsSynonymRelation(Element taxonConcept, Namespace rdfNamespace){
 		boolean result = false;
@@ -265,26 +313,13 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	 * @param elTaxonRelationships
 	 * @param success
 	 */
-	private TaxonNameBase<?, ?> makeName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonNameBase<?,?>> objectMap, ResultWrapper<Boolean> success){
+	private TaxonNameBase<?, ?> makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonNameBase<?,?>> objectMap, ResultWrapper<Boolean> success){
 		TaxonNameBase<?, ?> result = null;
 		if (elName != null){
-			//scientific
-			try {
-				String strScientific = elName.getAttributeValue("scientific");
-				boolean scientific = Boolean.valueOf(strScientific);
-				if (! scientific){
-					//TODO
-					logger.warn("Non scientific names not yet implemented");
-					success.setValue(false);
-				}
-			} catch (Exception e) {
-				logger.warn("Value for scientific is not boolean");
-			}
 			String language = elName.getAttributeValue("language");
-			//TODO
 			//Language
 			if (language != null){
-				logger.warn("language for name not yet implemented");	
+				logger.warn("language for name not yet implemented. Language for scientific name should always be Latin");	
 			}
 			Class<? extends IdentifiableEntity> clazz = (Class<? extends IdentifiableEntity>)NonViralName.class;
 			if (code != null){

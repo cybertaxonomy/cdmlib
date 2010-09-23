@@ -10,10 +10,12 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 
 /**
  * @author a.mueller
@@ -24,9 +26,24 @@ public class TcsXmlImportState extends ImportStateBase<TcsXmlImportConfigurator,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsXmlImportState.class);
 
+	//TODO make it better
+	private Map<String, CommonTaxonName> commonNameMap = null;
+	
 	public TcsXmlImportState(TcsXmlImportConfigurator config) {
 		super(config);
 	}
+	
+	public Map<String, CommonTaxonName> getCommonNameMap() {
+		return commonNameMap;
+	}
+
+	public void setCommonNameMap(Map<String, CommonTaxonName> commonNameMap) {
+		this.commonNameMap = commonNameMap;
+	}
+
+
+	
+	
 	
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)

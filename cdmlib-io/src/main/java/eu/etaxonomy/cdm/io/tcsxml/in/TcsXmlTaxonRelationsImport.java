@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -23,7 +24,10 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -213,67 +217,70 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		try {
 			ResultWrapper<Boolean> isInverse = new ResultWrapper<Boolean>();
 			isInverse.setValue(false);
-			RelationshipTermBase<?> relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
-			
-			//toTaxon (should be part of relationshipType)
-			boolean isSynonym = (relType instanceof SynonymRelationshipType);
-			TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, isSynonym, success);
-			
-			if (toTaxon != null && fromTaxon != null){
-				//exchange taxa if relationship is inverse
-				if (isInverse.getValue() == true ){
-					TaxonBase tmp = toTaxon;
-					toTaxon = fromTaxon;
-					fromTaxon = tmp;
-				}
-				
-				//Create relationship
-				if (! (toTaxon instanceof Taxon)){
-					logger.warn("TaxonBase toTaxon is not of Type 'Taxon'. Relationship is not added.");
-					success.setValue(false);
-				}else{
-					Taxon taxonTo = (Taxon)toTaxon;
-					ReferenceBase citation = null;
-					String microReference = null;
-					if (relType instanceof SynonymRelationshipType){
-						SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
-						if (! (fromTaxon instanceof Synonym )){
-							logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
-							success.setValue(false);
-						}else{
-							Synonym synonym = (Synonym)fromTaxon;
-							TaxonNameBase<?,?> synName = synonym.getName();
-							TaxonNameBase<?,?> accName = taxonTo.getName();
-							if (synName != null && accName != null && synName.isHomotypic(accName)
-										&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
-								synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
-							}
-							if (! relationExists(taxonTo, synonym, synRelType)){
-								taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
-							}else{
-								//TODO citation, microReference
-								//TODO different synRelTypes -> warning
-								success.setValue(false);
-							}
-						}
-					}else if (relType instanceof TaxonRelationshipType){
-						makeTaxonRelationship(state, (TaxonRelationshipType)relType, fromTaxon, taxonTo, citation, microReference, success);
-					}else{
-						logger.warn("Unknown Relationshiptype");
-						success.setValue(false);
-					}
-					taxonStore.add(toTaxon);
-				}
+			if ("has vernacular".equalsIgnoreCase(strRelType)){
+				handleVernacular(success, state, elRelationship, fromTaxon);
 			}else{
-				if (toTaxon == null){
-					logger.warn("toTaxon (" + /*strToTaxon + */ ") could  not be found in taxonMap. Relationship of type " + strRelType + " was not added to CDM");
+				RelationshipTermBase<?> relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
+				
+				//toTaxon (should be part of relationshipType)
+				boolean isSynonym = (relType instanceof SynonymRelationshipType);
+				TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, isSynonym, success);
+				
+				if (toTaxon != null && fromTaxon != null){
+					//exchange taxa if relationship is inverse
+					if (isInverse.getValue() == true ){
+						TaxonBase tmp = toTaxon;
+						toTaxon = fromTaxon;
+						fromTaxon = tmp;
+					}
+					
+					//Create relationship
+					if (! (toTaxon instanceof Taxon)){
+						logger.warn("TaxonBase toTaxon is not of Type 'Taxon'. Relationship is not added.");
+						success.setValue(false);
+					}else{
+						Taxon taxonTo = (Taxon)toTaxon;
+						ReferenceBase citation = null;
+						String microReference = null;
+						if (relType instanceof SynonymRelationshipType){
+							SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
+							if (! (fromTaxon instanceof Synonym )){
+								logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
+								success.setValue(false);
+							}else{
+								Synonym synonym = (Synonym)fromTaxon;
+								TaxonNameBase<?,?> synName = synonym.getName();
+								TaxonNameBase<?,?> accName = taxonTo.getName();
+								if (synName != null && accName != null && synName.isHomotypic(accName)
+											&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
+									synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
+								}
+								if (! relationExists(taxonTo, synonym, synRelType)){
+									taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
+								}else{
+									//TODO citation, microReference
+									//TODO different synRelTypes -> warning
+									success.setValue(false);
+								}
+							}
+						}else if (relType instanceof TaxonRelationshipType){
+							makeTaxonRelationship(state, (TaxonRelationshipType)relType, fromTaxon, taxonTo, citation, microReference, success);
+						}else{
+							logger.warn("Unknown Relationshiptype");
+							success.setValue(false);
+						}
+						taxonStore.add(toTaxon);
+					}
+				}else{
+					if (toTaxon == null){
+						logger.warn("toTaxon (" + /*strToTaxon + */ ") could  not be found in taxonMap. Relationship of type " + strRelType + " was not added to CDM");
+					}
+					if (fromTaxon == null){
+						logger.warn("fromTaxon (" + /*strTaxonAbout + */") could not be found in taxonMap. Relationship was not added to CDM");
+					}
+					success.setValue(false);
 				}
-				if (fromTaxon == null){
-					logger.warn("fromTaxon (" + /*strTaxonAbout + */") could not be found in taxonMap. Relationship was not added to CDM");
-				}
-				success.setValue(false);
-			}
-			
+			}		
 		} catch (UnknownCdmTypeException e) {
 			//TODO
 			logger.warn("relationshipType " + strRelType + " not yet implemented");
@@ -282,6 +289,53 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return;
 	}
 	
+	private void handleVernacular(ResultWrapper<Boolean> success, TcsXmlImportState state, Element elRelationship, TaxonBase taxonBase) {
+		if (! taxonBase.isInstanceOf(Taxon.class)){
+			logger.warn("From Taxon is not of type Taxon but of type " +  taxonBase.getClass().getSimpleName());
+			success.setValue(false);
+			return;
+		}else{
+			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+			Map<String, CommonTaxonName> commonNameMap = state.getCommonNameMap();
+			CommonTaxonName commonTaxonName = getCommonName(elRelationship, commonNameMap, success);
+			TaxonDescription description = getDescription(taxon);
+			description.addElement(commonTaxonName);
+		}
+	}
+	
+	private TaxonDescription getDescription(Taxon taxon) {
+		if (taxon.getDescriptions().isEmpty()){
+			return TaxonDescription.NewInstance(taxon);
+		}else{
+			//TODO only if the description represents this TCS file
+			return taxon.getDescriptions().iterator().next();
+		}
+	}
+
+	private CommonTaxonName getCommonName(Element elTaxonRelationship, Map<String, CommonTaxonName> commonNameMap, ResultWrapper<Boolean> success){
+		CommonTaxonName result = null;
+		if (elTaxonRelationship == null || commonNameMap == null){
+			success.setValue(false);
+		}else{
+			String childName = "ToTaxonConcept";
+			boolean obligatory = true;
+			Element elToTaxonConcept = XmlHelp.getSingleChildElement(success, elTaxonRelationship, childName, elTaxonRelationship.getNamespace(), obligatory);
+			
+			String linkType = elToTaxonConcept.getAttributeValue("linkType");
+			if (linkType == null || linkType.equals("local")){
+				String ref = elToTaxonConcept.getAttributeValue("ref");
+				if (ref != null){
+					result = commonNameMap.get(ref);
+				}else{
+					logger.warn("Non ref not yet implemented for vernacular name relationship");
+				}
+			}else{
+				logger.warn("External link types for vernacular name not yet implemented");
+			}
+		}
+		return result;
+	}
+
 	private void makeTaxonRelationship(TcsXmlImportState state, TaxonRelationshipType relType, TaxonBase fromTaxon, Taxon taxonTo, ReferenceBase citation, String microReference, ResultWrapper<Boolean> success){
 		TaxonRelationshipType taxRelType = (TaxonRelationshipType)relType;
 		if (! (fromTaxon instanceof Taxon )){
