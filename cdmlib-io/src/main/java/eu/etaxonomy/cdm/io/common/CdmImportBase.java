@@ -389,18 +389,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
 				logger.warn(message);
 			}
-			//TODO do we really want to check the url?
-			if (imd != null ){
-				ImageFile imf = ImageFile.NewInstance(multimediaObject, null, imd);
-				MediaRepresentation representation = MediaRepresentation.NewInstance();
-				representation.addRepresentationPart(imf);
-				Media media = Media.NewInstance();
-				media.addRepresentation(representation);
+			ImageFile imf = ImageFile.NewInstance(multimediaObject, null, imd);
+			MediaRepresentation representation = MediaRepresentation.NewInstance();
+			representation.addRepresentationPart(imf);
+			Media media = Media.NewInstance();
+			media.addRepresentation(representation);
 				
-				return media;
-			}else{
-				return null;
-			}
+			return media;
 		}
 	}
 
