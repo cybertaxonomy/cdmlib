@@ -17,14 +17,11 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -39,9 +36,9 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = true;
 	private String taxonReference = null;
-	private boolean doCreateIndividualsAssociations = false;
+	private boolean doCreateIndividualsAssociations = true;
 	private boolean doReuseExistingDescription = false;
-	private boolean doMatchTaxa = false;
+	private boolean doMatchTaxa = true;
 	private Map<UUID, UUID> taxonToDescriptionMap = new HashMap<UUID, UUID>();
 
 	

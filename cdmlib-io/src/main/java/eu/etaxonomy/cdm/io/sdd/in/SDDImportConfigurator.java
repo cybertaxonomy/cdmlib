@@ -39,7 +39,7 @@ public class SDDImportConfigurator extends ImportConfiguratorBase<SDDImportState
 	//TODO
 	private static IInputTransformer defaultTransformer = new SDDTransformer();
 	
-	private boolean doMatchTaxa = false;
+	private boolean doMatchTaxa = true;
 	
 	//xml xmlNamespace
 	Namespace sddNamespace;
