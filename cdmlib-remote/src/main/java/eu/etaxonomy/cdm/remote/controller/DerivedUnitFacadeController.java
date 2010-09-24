@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
@@ -64,6 +66,34 @@ public class DerivedUnitFacadeController extends AbstractController{
 		logger.info("getGet() - " + request.getServletPath());
 		DerivedUnitFacade duf = newFacadeFrom(uuid, response, null);
 		return duf;
+	}
+	
+	@RequestMapping(value = {"derivedUnitMedia"}, method = RequestMethod.GET)
+	public ModelAndView doGetDerivedUnitMedia(
+		@PathVariable("uuid") UUID uuid,
+		HttpServletRequest request,
+		HttpServletResponse response) throws IOException {
+
+		logger.info("doGetDerivedUnitMedia() - " + request.getServletPath());
+		ModelAndView mv = new ModelAndView();
+		DerivedUnitFacade duf = newFacadeFrom(uuid, response,Arrays.asList(new String []{
+				"derivedUnitMedia.representations.parts", "derivedUnitMedia.title"}));
+		mv.addObject(duf.getDerivedUnitMedia());
+		return mv;
+	}
+	
+	@RequestMapping(value = {"fieldObjectMedia"}, method = RequestMethod.GET)
+	public ModelAndView doGetFieldObjectMedia(
+		@PathVariable("uuid") UUID uuid,
+		HttpServletRequest request,
+		HttpServletResponse response) throws IOException {
+
+		logger.info("doGetFieldObjectMedia() - " + request.getServletPath());
+		ModelAndView mv = new ModelAndView();
+		DerivedUnitFacade duf = newFacadeFrom(uuid, response,Arrays.asList(new String []{
+				"fieldObjectMedia.representations.parts", "fieldObjectMedia.title"}));
+		mv.addObject(duf.getFieldObjectMedia());
+		return mv;
 	}
 	
 // TODO	

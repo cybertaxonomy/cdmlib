@@ -66,9 +66,12 @@
                             <value>FeatureNode.children</value>
                             <value>FeatureNode.feature</value>
                             <value>TreeNode.data</value>
+                            <value>Media.representations</value>
+                            <value>MediaRepresentation.parts</value>
+                            <value>TreeNode.data</value>
                             
                             <!-- CardinalityPropertyFilter should allow defining acceptions for abstract super classes : -->
-                            <!-- < value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> --> 
+                            <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> --> 
                             
                             <value>TextData.feature</value>
                             <value>CategoricalData.feature</value>
