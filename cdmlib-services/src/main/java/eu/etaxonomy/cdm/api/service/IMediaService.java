@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpException;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.description.MediaKey;
@@ -84,7 +86,7 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @return
 	 * @throws IOException 
 	 */
-	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException;
+	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException;
 	
 	/**
 	 * 
@@ -93,5 +95,5 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @return
 	 * @throws IOException 
 	 */
-	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException;
+	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException, HttpException;
 }

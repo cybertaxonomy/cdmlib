@@ -17,12 +17,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageInfo;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.common.IImageMetadata;
 import org.apache.sanselan.common.ImageMetadata.Item;
+
+import eu.etaxonomy.cdm.common.UriUtils;
 
 
 /**
@@ -96,22 +99,15 @@ public  class ImageMetaData extends MediaMetaData {
 		
 	}
 	
-	
-	
+		
 
-	public void readImageInfo(URI imageUri, Integer timeOut) throws IOException{
+	public void readImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException{
 		
 		File image = null;
 		InputStream inputStream;
 		try {
 			
-		
-			URL imageUrl = imageUri.toURL();    
-		    
-			URLConnection connection = imageUrl.openConnection();
-			connection.setConnectTimeout(timeOut);
-			
-			inputStream = connection.getInputStream();
+			inputStream = UriUtils.getInputStream(imageUri);
 
 			ImageInfo imageInfo = Sanselan.getImageInfo(inputStream, null);
 			
@@ -128,15 +124,10 @@ public  class ImageMetaData extends MediaMetaData {
 	}
 
 	
-	public void readMetaData(URI mediaUri, Integer timeOut) throws IOException {
+	public void readMetaData(URI mediaUri, Integer timeOut) throws IOException, HttpException {
 		readImageInfo(mediaUri, timeOut);
 		try {
-			InputStream inputStream;
-			URL imageUrl = mediaUri.toURL();    
-			    
-			URLConnection connection = imageUrl.openConnection();
-			connection.setConnectTimeout(timeOut);
-			inputStream = connection.getInputStream();
+			InputStream inputStream = UriUtils.getInputStream(mediaUri);
 			
 			IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
 			

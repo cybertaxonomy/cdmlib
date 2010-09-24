@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
@@ -145,6 +146,8 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 			logger.error("Malformed URL", e);
 		} catch (IOException e) {
 			logger.error("IOException when handling image url");
+		} catch (HttpException e) {
+			logger.error("HttpException when handling image url");
 		}
 	}
 
@@ -155,8 +158,9 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 	 * @return
 	 * @throws MalformedURLException
 	 * @throws IOException 
+	 * @throws HttpException 
 	 */
-	private Media getMedia(String fileName, String taxonName) throws MalformedURLException, IOException {
+	private Media getMedia(String fileName, String taxonName) throws MalformedURLException, IOException, HttpException {
 		String urlPrefix = "http://media.bgbm.org/erez/erez?src=EditWP6/photos/";
 		String urlString = urlPrefix + fileName;
 		logger.info(urlString);

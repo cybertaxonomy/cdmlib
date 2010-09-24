@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -68,10 +69,11 @@ public class MediaMetaDataTest {
 	}
 	
 	/********************* TESTS 
-	 * @throws IOException ********************/
+	 * @throws IOException 
+	 * @throws HttpException ********************/
 	
 	@Test
-	public void readImageInfoFromFile() throws IOException {
+	public void readImageInfoFromFile() throws IOException, HttpException {
 		File imageFile = new File("./src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
 		MetaDataFactory metaFactory = MetaDataFactory.getInstance();
 		ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.JPEG, 0);
@@ -85,7 +87,7 @@ public class MediaMetaDataTest {
 	}
 	
 	@Test
-	public void readImageInfoFromUrl() throws IOException {
+	public void readImageInfoFromUrl() throws IOException, HttpException {
 		try {
 			
 			//TODO make ready for windows

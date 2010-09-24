@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,18 @@ public class UriUtils {
 	private static final Logger logger = Logger.getLogger(UriUtils.class);
 		
 	/**
+	 * see {@link #getInputStream(URI, Map)}
+	 * 
+	 * @param uri
+	 * @return
+	 * @throws IOException
+	 * @throws HttpException
+	 */
+	public static InputStream getInputStream(URI uri) throws IOException, HttpException{
+		return getInputStream(uri, null);
+	}
+	
+	/**
 	 * Retrieves an {@link InputStream input stream} of the resource located at the given uri.
 	 * 
 	 * @param uri
@@ -47,9 +60,13 @@ public class UriUtils {
 	 * @throws IOException
 	 * @throws HttpException 
 	 */
-	public static InputStream getInputStream(URI uri) throws IOException, HttpException{
+	public static InputStream getInputStream(URI uri, Map<String, String> requestHeaders) throws IOException, HttpException{
 		
-        HttpResponse response = UriUtils.getResponse(uri, null);
+		if(requestHeaders == null){
+			requestHeaders = new HashMap<String, String>();
+		}
+		
+        HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
 
         if(UriUtils.isOk(response)){
         	InputStream stream = response.getEntity().getContent();
@@ -96,7 +113,7 @@ public class UriUtils {
 	public static HttpResponse getResponse(URI uri, Map<String, String> requestHeaders) throws ClientProtocolException, IOException{
 		// Create an instance of HttpClient.
 		HttpClient  client = new DefaultHttpClient();
-
+		
 		HttpGet  method = new HttpGet(uri);
 	    
         // configure the connection

@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -455,6 +456,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			logger.error("URISyntaxException reading image metadata." , e);
 		} catch (IOException e) {
 			logger.error("IOError reading image metadata." , e);
+		} catch (HttpException e) {
+			logger.error("HttpException reading image metadata." , e);
 		}
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 		media.addRepresentation(mediaRepresentation);

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -69,7 +70,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 	}
 
 
-	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException{
+	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException{
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		imageMetaData.readImageInfo(imageUri, timeOut);
 		imageMetaData.readMetaData(imageUri, timeOut);
@@ -77,7 +78,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return imageMetaData;
 	}
 	
-	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException{
+	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException, HttpException{
 		
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		imageMetaData.readMetaData(imageUri, timeOut);

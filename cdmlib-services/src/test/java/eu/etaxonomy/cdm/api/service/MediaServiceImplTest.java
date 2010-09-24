@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class MediaServiceImplTest extends CdmIntegrationTest{
 	
 
 	@Test
-	public void testGetImageMetaData() throws IOException {
+	public void testGetImageMetaData() throws IOException, HttpException {
 		File imageFile;
 		imageFile = new File("./src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg");
 		URI uri = imageFile.toURI();

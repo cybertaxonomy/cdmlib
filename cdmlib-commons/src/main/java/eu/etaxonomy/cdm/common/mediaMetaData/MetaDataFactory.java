@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.common.mediaMetaData;
 import java.io.IOException;
 import java.net.URI;
 
+import org.apache.http.HttpException;
+
 
 /**
  * @author k.luther
@@ -31,7 +33,7 @@ public final class MetaDataFactory {
         }
         return instance;
     }
-	public MediaMetaData readMediaData(URI uri, MimeType mimetype, Integer timeOut) throws IOException{
+	public MediaMetaData readMediaData(URI uri, MimeType mimetype, Integer timeOut) throws IOException, HttpException{
 		//MediaMetaData metaData = MediaMetaData.newInstance();
 		//MimeType mimeType = metaData.readMediaInfo(uri);
 		switch (mimetype){

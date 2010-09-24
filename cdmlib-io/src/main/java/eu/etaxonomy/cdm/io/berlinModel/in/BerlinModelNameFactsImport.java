@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -355,6 +356,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 			imageMetaData.readMetaData(file.toURI(), 0);
 		} catch (IOException e) {
 			logger.error("IOError reading image metadata." , e);
+		} catch (HttpException e) {
+			logger.error("HttpException reading image metadata." , e);
 		}
 		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
 		return image;

@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 
 /**
@@ -29,7 +30,7 @@ public abstract class MediaMetaData {
 	HashMap<String, String> metaData;
 	
 	
-	public abstract void readMetaData(URI mediaUri, Integer timeOut) throws IOException;
+	public abstract void readMetaData(URI mediaUri, Integer timeOut) throws IOException, HttpException;
  
 	public Map<String, String> getMetaData() {
 		
