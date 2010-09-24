@@ -42,4 +42,6 @@ public interface ICdmIO<STATE extends IoStateBase> {
 	
 	public void updateProgress(STATE state, String message, int worked);
 	
+	public void warnProgress(STATE state, String message, Throwable e);
+	
 }

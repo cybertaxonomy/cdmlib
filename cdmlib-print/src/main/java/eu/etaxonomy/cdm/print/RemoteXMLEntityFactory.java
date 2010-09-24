@@ -13,17 +13,23 @@ package eu.etaxonomy.cdm.print;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.output.XMLOutputter;
 
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 
 /**
@@ -223,44 +229,43 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	 * 
 	 * @param restRequest
 	 * @return
+	 * @throws URISyntaxException 
 	 */
 	private Element queryService(String restRequest){
 		
 		try {
-			// create the request url
-			URL newUrl = new URL(serviceUrl.getProtocol(),
-								 serviceUrl.getHost(),
-								 serviceUrl.getPort(),
-								 serviceUrl.getPath() 
-								 + restRequest);
-			// open a connection 
-			HttpURLConnection connection = (HttpURLConnection) newUrl.openConnection();
-			// set the accept property to XML so we can use jdom to handle the content
-			connection.setRequestProperty("Accept", "text/xml");
-		
+			URI newUri = UriUtils.createUri(serviceUrl, restRequest, null, null);
 			
-			logger.info("Firing request for URL: " + newUrl);
+			
+			Map<String, String> requestHeaders = new HashMap<String, String>();
+			requestHeaders.put("Accept", "text/xml");
+			requestHeaders.put("Accept-Charset", "UTF-8");
+			
+			
+			HttpResponse response = UriUtils.getResponse(newUri, requestHeaders);
+			
+			if(UriUtils.isOk(response)){
+			
+				logger.info("Firing request for URI: " + newUri);
 				
-			int responseCode = connection.getResponseCode();
-			
-			// get the content at the resource
-			InputStream content = (InputStream) connection.getContent();
-			
-			// build the jdom document
-			Document document = builder.build(content);
-			
-			if(responseCode == HttpURLConnection.HTTP_OK){
+				// get the content at the resource
+				InputStream content = UriUtils.getContent(response);
+				
+				// build the jdom document
+				Document document = builder.build(content);
+				
+				
 				return document.getRootElement();
 			}else{
-				XMLOutputter outputter = new XMLOutputter();
-				String output = outputter.outputString(document.getRootElement());
-				logger.error(output);
+				logger.error(UriUtils.getStatus(response));
 			}
 			
 		} catch (IOException e) {
 			logger.error("No content for request: " + restRequest);
 		} catch (JDOMException e) {
 			logger.error("Error building the document.", e);
+		} catch (URISyntaxException e) {
+			logger.error("Error building URI", e);
 		}
 		
 		// error

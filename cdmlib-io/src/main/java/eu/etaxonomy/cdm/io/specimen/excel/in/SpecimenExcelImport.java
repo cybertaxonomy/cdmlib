@@ -9,11 +9,12 @@
 
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -21,17 +22,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.specimen.SpecimenIoBase;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -516,13 +514,15 @@ public class SpecimenExcelImport  extends SpecimenIoBase<SpecimenExcelImportConf
 	protected boolean doInvoke(SpecimenExcelImportState state) {
 		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
 		SpecimenExcelImport test = new SpecimenExcelImport();
-		String sourceName = state.getConfig().getSourceNameString();
+		URI source = state.getConfig().getSource();
 		ArrayList<HashMap<String,String>> unitsList = null;
 		try{
-			System.out.println("euhhhhhhhhhh");
-			unitsList = ExcelUtils.parseXLS(sourceName);
+			unitsList = ExcelUtils.parseXLS(source);
+		} catch(FileNotFoundException e){
+			String message = "File not found: " + source;
+			warnProgress(state, message, e);
+			logger.error(message);
 		}
-		catch(Exception e){System.out.println("moui..."+e);}
 		System.out.println("unitsList"+unitsList);
 		if (unitsList != null){
 			HashMap<String,String> unit=null;

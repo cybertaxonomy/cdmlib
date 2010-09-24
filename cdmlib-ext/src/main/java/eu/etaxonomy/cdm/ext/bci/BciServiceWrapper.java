@@ -34,6 +34,7 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -111,10 +112,10 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 		} catch (URISyntaxException e) {
 			// thrown by createUri
 			logger.error(e);
-		} catch (HttpException e) {
-			// thrown by executeHttpGet
+		} catch (HttpException e){
+			// thrown by createUri
 			logger.error(e);
-		} 
+		}
 		
 //		return null;
 	

@@ -49,7 +49,7 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 		
 		ArrayList<HashMap<String, String>> contents;
 		try {
-			contents = ExcelUtils.parseXLS(config.getSource().toString());
+			contents = ExcelUtils.parseXLS(config.getSource());
 		} catch (/*FileNotFound*/Exception e) {
 			logger.error("FileNotFound: " + config.getSource().toString());
 			return false;

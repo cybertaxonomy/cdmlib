@@ -10,10 +10,10 @@
 
 package eu.etaxonomy.cdm.common;
 
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -31,12 +31,12 @@ public class ExcelUtils {
 	private static final Logger logger = Logger.getLogger(ExcelUtils.class);
 	
     /** Reads all rows of an Excel worksheet */
-    public static ArrayList<HashMap<String, String>> parseXLS(String fileName) throws FileNotFoundException {
+    public static ArrayList<HashMap<String, String>> parseXLS(URI uri) throws FileNotFoundException {
     	
     	ArrayList<HashMap<String, String>> recordList = new ArrayList<HashMap<String, String>>();
 
     	try {
-    		POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(fileName));
+    		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(uri));
     		HSSFWorkbook wb = new HSSFWorkbook(fs);
     		HSSFSheet sheet = wb.getSheetAt(0);
     		HSSFRow row;
@@ -101,7 +101,7 @@ public class ExcelUtils {
     			recordList.add(headers);
     		}
     	} catch(FileNotFoundException fne) {
-    		throw new FileNotFoundException(fileName);
+    		throw new FileNotFoundException(uri.toString());
     	} catch(Exception ioe) {
     		logger.error("Error reading the Excel file.");
     		ioe.printStackTrace();

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.excel.distribution;
 
 import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,10 +77,13 @@ public class DistributionImport extends CdmIoBase<ExcelImportState> implements I
     	
 		// read and save all rows of the excel worksheet
 		ArrayList<HashMap<String, String>> recordList;
-    	try{
-    		recordList = ExcelUtils.parseXLS(state.getConfig().getSourceNameString());
-		} catch (FileNotFoundException e1) {
-			logger.error("File not found: " + state.getConfig().getSource().toString());
+		URI source = state.getConfig().getSource();
+		try{
+    		recordList = ExcelUtils.parseXLS(source);
+		} catch (FileNotFoundException e) {
+			String message = "File not found: " + source;
+			warnProgress(state, message, e);
+			logger.error(message);
 			return false;
 		}
     	if (recordList != null) {

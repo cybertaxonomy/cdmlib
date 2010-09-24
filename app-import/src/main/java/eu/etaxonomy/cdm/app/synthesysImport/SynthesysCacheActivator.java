@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.app.synthesysImport;
 
 import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -440,17 +442,18 @@ public class SynthesysCacheActivator {
 
 	/**
 	 * @param args
+	 * @throws URISyntaxException 
 	 */
-	public static void main(String[] args) {
-		String filename = "/home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls";
+	public static void main(String[] args) throws URISyntaxException {
+		URI uri = new URI("file:///home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls");
 		
 		logger.info("main method");
 		SynthesysCacheActivator abcdAct = new SynthesysCacheActivator();
 		ArrayList<HashMap<String, String>> units;
 		try {
-			units = ExcelUtils.parseXLS(filename);
+			units = ExcelUtils.parseXLS(uri);
 		} catch (FileNotFoundException e) {
-			logger.error("FileNotFound: " + filename);
+			logger.error("FileNotFound: " + uri);
 			return;
 		}
 		HashMap<String,String> unit=null;

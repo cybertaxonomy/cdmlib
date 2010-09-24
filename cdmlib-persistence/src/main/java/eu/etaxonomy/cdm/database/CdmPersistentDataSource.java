@@ -27,7 +27,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;

@@ -186,4 +186,16 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 			monitor.subTask(message);
 		}
 	}
+	
+	@Override
+	public void warnProgress(STATE state, String message, Throwable e) {
+		if(state.getConfig().getProgressMonitor() != null){
+			IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+			if (e == null) {
+				monitor.warning(message);
+			}else{
+				monitor.warning(message, e);
+			}
+		}
+	};
 }

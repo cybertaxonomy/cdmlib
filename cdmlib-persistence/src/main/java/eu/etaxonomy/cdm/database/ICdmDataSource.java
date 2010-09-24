@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.database;
 
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -101,7 +102,34 @@ public interface ICdmDataSource {
 
 	public NomenclaturalCode getNomenclaturalCode();
 
+	/**
+	 * Returns a single the first value of a row of a resultset.
+	 * 
+	 * <strong>Caution</strong> This method opens a connection on first use. Subsequent calls will use the same connection.
+	 * Please close the connection when not needed anymore with {@link ICdmDataSource#closeOpenConnections()}
+	 * 
+	 * @param query
+	 * @return
+	 * @throws SQLException
+	 */
 	public Object getSingleValue(String query) throws SQLException;	
+	
+	/**
+	 * Returns {@link DatabaseMetaData} for <code>this</code> datasource.
+	 * 
+	 * <br>
+	 * <br>
+	 * <strong>Caution</strong> This method opens a connection that should be closed
+	 * with {@link #closeOpenConnections()}
+	 * 
+	 * @return
+	 */
+	public DatabaseMetaData getMetaData();
+	
+	/**
+	 * 
+	 */
+	public void closeOpenConnections();
 	
 //
 //	public void setFilePath(String filePath);
