@@ -2402,6 +2402,7 @@ cdmlib-persistence/src/main/java/org/hibernate/dialect/H2CorrectedDialect.java -
 cdmlib-persistence/src/main/java/org/hibernate/dialect/HSQLCorrectedDialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/MySQL5InnoDBUtf8Dialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/MySQL5MyISAMUtf8Dialect.java -text
+cdmlib-persistence/src/main/resources/c3p0-config.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/h2-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml -text
