@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.specimen.SpecimenIoBase;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class SpecimenExcelImport  extends SpecimenIoBase<SpecimenExcelImportConfigurator, SpecimenExcelImportState>  implements ICdmIO<SpecimenExcelImportState> {
+public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImportConfigurator, SpecimenExcelImportState>  implements ICdmIO<SpecimenExcelImportState> {
 
 	private static final Logger logger = Logger.getLogger(SpecimenExcelImport.class);
 

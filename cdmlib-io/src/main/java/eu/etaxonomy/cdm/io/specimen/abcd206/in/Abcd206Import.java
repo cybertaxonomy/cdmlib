@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.specimen.SpecimenIoBase;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abcd206ImportState> implements ICdmIO<Abcd206ImportState> {
+public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> implements ICdmIO<Abcd206ImportState> {
 	private static final Logger logger = Logger.getLogger(Abcd206Import.class);
 
 

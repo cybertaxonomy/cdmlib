@@ -22,9 +22,9 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 20.10.2008
  * @version 1.0
  */
-public abstract class SpecimenIoBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>  extends CdmImportBase<CONFIG, STATE> {
+public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>  extends CdmImportBase<CONFIG, STATE> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenIoBase.class);
+	private static final Logger logger = Logger.getLogger(SpecimenImportBase.class);
 
 	protected abstract boolean doInvoke(STATE state);
 

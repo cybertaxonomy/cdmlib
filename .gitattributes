@@ -1587,7 +1587,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/out/SDDDataSet.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/out/SDDDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/out/SDDExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/out/SDDExportState.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/SpecimenIoBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/SpecimenImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/UnitsGatheringArea.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/UnitsGatheringEvent.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206DataHolder.java -text
