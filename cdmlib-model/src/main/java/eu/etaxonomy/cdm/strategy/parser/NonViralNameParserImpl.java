@@ -868,6 +868,28 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	/**
+	 * Author parser for external use
+	 * @param nonViralName
+	 * @param authorString
+	 * @throws StringNotParsableException
+	 */
+	public void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException{
+		TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
+		Integer[] years = new Integer[4];
+		Class<? extends NonViralName> clazz = nonViralName.getClass();
+		fullAuthors(authorString, authors, years, clazz);
+		nonViralName.setCombinationAuthorTeam(authors[0]);
+		nonViralName.setExCombinationAuthorTeam(authors[1]);
+		nonViralName.setBasionymAuthorTeam(authors[2]);
+		nonViralName.setExBasionymAuthorTeam(authors[3]);
+		if (nonViralName instanceof ZoologicalName){
+			ZoologicalName zooName = CdmBase.deproxy(nonViralName, ZoologicalName.class);
+			zooName.setPublicationYear(years[0]);
+			zooName.setOriginalPublicationYear(years[2]);
+		}
+	}
+	
+	/**
 	 * @param nameToBeFilled
 	 * @param fullNameString
 	 * @param authorString

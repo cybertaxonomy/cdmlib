@@ -129,18 +129,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 		return sourceReference;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
-		if (this.getSource() == null){
-			return null;
-		}else{
-			return this.getSource().toString();
-		}
-	}
-	
 	public void setDoAutomaticParsing(boolean doParsing){
 		this.doParsing=doParsing;
 	}

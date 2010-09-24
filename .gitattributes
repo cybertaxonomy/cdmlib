@@ -23,6 +23,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/EfloraSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/eflora/FloraMalesianaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/taxa/NormalExplicitActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/exel/NormalExplicitTestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/globis/GlobisActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.java -text
@@ -123,6 +124,7 @@ app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
 app-import/src/main/resources/arecaceae.rdf -text
 app-import/src/main/resources/collections/Acronyms.tab -text
 app-import/src/main/resources/distribution/distribution_cich.xls -text
+app-import/src/main/resources/excel/NormalExplicit.xls -text
 app-import/src/main/resources/globis.rdf.xml -text
 app-import/src/main/resources/globis_valid.rdf.xml -text
 app-import/src/main/resources/images/images_cich.xls -text

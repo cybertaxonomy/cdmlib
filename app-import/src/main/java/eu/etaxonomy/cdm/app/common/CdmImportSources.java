@@ -9,8 +9,11 @@
 */
 package eu.etaxonomy.cdm.app.common;
 
+import java.net.URL;
+
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.app.sdd.SDDSources;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.io.common.Source;
 

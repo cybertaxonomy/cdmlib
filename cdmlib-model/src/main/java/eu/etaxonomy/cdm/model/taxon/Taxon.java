@@ -266,7 +266,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	/**
 	 * Returns the image gallery for a taxon. If there are multiple taxon descriptions
 	 * marked as image galleries an arbitrary one is chosen.
-	 * Im no image gallery exists, a new one is created if <code>createNewIfNotExists</code>
+	 * If no image gallery exists, a new one is created if <code>createNewIfNotExists</code>
 	 * is <code>true</code>.
 	 * @param createNewIfNotExists
 	 * @return

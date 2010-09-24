@@ -9,13 +9,17 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -32,9 +36,13 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -336,5 +344,65 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			childName.setBasionymAuthorTeam(parentName.getBasionymAuthorTeam());
 		}	
 	}
+	
+	/**
+	 * Returns the image gallery for a taxon. If there are multiple taxon descriptions
+	 * marked as image galleries an arbitrary one is chosen.
+	 * If no image gallery exists, a new one is created if <code>createNewIfNotExists</code>
+	 * is <code>true</code>.
+	 * @param createNewIfNotExists
+	 * @return
+	 */
+	public TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
+		TaxonDescription result = null;
+		Set<TaxonDescription> descriptions= taxon.getDescriptions();
+		for (TaxonDescription description : descriptions){
+			if (description.isImageGallery() == isImageGallery){
+				result = description;
+				break;
+			}
+		}
+		if (result == null && createNewIfNotExists){
+			result = TaxonDescription.NewInstance(taxon);
+			result.setImageGallery(isImageGallery);
+		}
+		return result;
+	}
+	
+
+	/**
+	 * @param derivedUnitFacade
+	 * @param multimediaObject
+	 * @throws MalformedURLException
+	 */
+	protected Media getImageMedia(String multimediaObject, boolean readDataFromUrl) throws MalformedURLException {
+		if( multimediaObject == null){
+			return null;
+		} else {
+			ImageMetaData imd = ImageMetaData.newInstance();
+			try {
+				if (readDataFromUrl){
+					URL url = new URL(multimediaObject);
+					imd.readMetaData(url.toURI(), 0);
+				}
+			} catch (Exception e) {
+				String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
+				logger.warn(message);
+			}
+			//TODO do we really want to check the url?
+			if (imd != null ){
+				ImageFile imf = ImageFile.NewInstance(multimediaObject, null, imd);
+				MediaRepresentation representation = MediaRepresentation.NewInstance();
+				representation.addRepresentationPart(imf);
+				Media media = Media.NewInstance();
+				media.addRepresentation(representation);
+				
+				return media;
+			}else{
+				return null;
+			}
+		}
+	}
+
 	
 }

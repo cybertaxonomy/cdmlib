@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.excelImport.taxa.NormalExplicitActivator;
+import eu.etaxonomy.cdm.app.exel.NormalExplicitTestActivator;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
@@ -39,12 +41,14 @@ public class TcsXmlTestActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.tcsXml_cichorium();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "TestTCS";
+	
+	static final boolean includeNormalExplicit = true; 
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -93,12 +97,15 @@ public class TcsXmlTestActivator {
 			tcsImport.invoke(tcsImportConfigurator);
 			
 			
-			IReferenceService refService = tcsImport.getCdmAppController().getReferenceService();
-			IBook book = ReferenceFactory.newBook();
-			//book.setDatePublished(TimePeriod.NewInstance(1945));
-			book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
-			refService.saveOrUpdate((ReferenceBase)book);
-			tcsImport.getCdmAppController().close();
+//			IReferenceService refService = tcsImport.getCdmAppController().getReferenceService();
+//			IBook book = ReferenceFactory.newBook();
+//			book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
+//			refService.saveOrUpdate((ReferenceBase)book);
+//			tcsImport.getCdmAppController().close();
+			
+			NormalExplicitTestActivator normExActivator = new NormalExplicitTestActivator();
+			normExActivator.doImport(destination, DbSchemaValidation.VALIDATE);
+			
 			logger.info("End");
 			System.out.println("End import from TCS ("+ source.toString() + ")...");
 		} catch (URISyntaxException e) {

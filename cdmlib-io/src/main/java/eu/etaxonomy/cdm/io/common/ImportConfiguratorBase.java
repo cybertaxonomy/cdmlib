@@ -382,7 +382,18 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		if (this.getDestination() == null) {
 			return null;
 		} else {
-			return (String)this.getDestination().getName();
+			return this.getDestination().getName().toString();
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
+	 */
+	public String getSourceNameString() {
+		if (this.getSource() == null){
+			return null;
+		}else{
+			return this.getSource().toString();
 		}
 	}
 

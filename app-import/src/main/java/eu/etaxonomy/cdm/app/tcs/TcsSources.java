@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.app.tcs;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -24,6 +26,26 @@ import eu.etaxonomy.cdm.app.sdd.SDDSources;
  */
 public class TcsSources {
 	private static final Logger logger = Logger.getLogger(TcsSources.class);
+	
+	
+	public static URI normalExplicit(){
+		try {
+			URL url = new URL("file:C:\\localCopy\\eclipse\\cdmlib\\trunk\\app-import\\src\\main\\resources\\excel\\NormalExplicit.xls");
+			boolean exists = new File(url.getFile()).exists();
+			if (! exists) throw new RuntimeException("File not found: " + url);
+//			URL url = new TcsSources().getClass().getResource("excel/NormalExplicit.xls");
+			URI uri = url.toURI();
+			return uri;
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw new RuntimeException(e1);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
+	}
 	
 	public static String arecaceae(){
 		//	Monocots rdf

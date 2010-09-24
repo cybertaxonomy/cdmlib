@@ -142,6 +142,11 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState> extends 
 		}
 		return intValue;
 	}
+	
+	protected String floatString2IntStringValue(String value) {
+		int i = floatString2IntValue(value);
+		return String.valueOf(i);
+	}
 
 
 }

@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.SpecimenIoBase;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
@@ -47,9 +46,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -185,32 +182,9 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 
 //			//add Multimedia URLs
 			if(dataHolder.multimediaObjects.size() > 0){
-				MediaRepresentation representation;
-				Media media;
-				ImageMetaData imd ;
-				URL url ;
-				ImageFile imf;
 				for (String multimediaObject : dataHolder.multimediaObjects){
-					if( multimediaObject != null){
-						imd = ImageMetaData.newInstance();
-						url = new URL(multimediaObject);
-						try {
-							imd.readMetaData(url.toURI(), 0);
-						} catch (Exception e) {
-							String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
-							logger.warn(message);
-						}
-						//TODO do we really want to check the url?
-						if (imd != null){
-							imf = ImageFile.NewInstance(multimediaObject, null, imd);
-							representation = MediaRepresentation.NewInstance();
-							representation.addRepresentationPart(imf);
-							media = Media.NewInstance();
-							media.addRepresentation(representation);
-							
-							derivedUnitFacade.addFieldObjectMedia(media);
-						}
-					}
+					Media media = getImageMedia(multimediaObject, true);
+					derivedUnitFacade.addDerivedUnitMedia(media);
 				}
 			}
 			
@@ -236,7 +210,6 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 
 		return result;
 	}
-
 
 	private void setCollectionData(Abcd206ImportConfigurator config,
 			Abcd206DataHolder dataHolder, DerivedUnitFacade derivedUnitFacade) {
@@ -1108,6 +1081,7 @@ public class Abcd206Import extends SpecimenIoBase<Abcd206ImportConfigurator, Abc
 			if (config.isDoMatchTaxa()){
 				taxon = getTaxonService().findBestMatchingTaxon(scientificName);
 			} 
+			
 			if (taxon == null && config.isDoReUseTaxon()){
 				try{
 					names = getTaxonService().searchTaxaByName(scientificName, sec);

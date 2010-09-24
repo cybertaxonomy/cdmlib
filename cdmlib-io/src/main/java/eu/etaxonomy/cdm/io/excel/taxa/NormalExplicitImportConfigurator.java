@@ -17,23 +17,27 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
-public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
+public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
 	private static final Logger logger = Logger.getLogger(NormalExplicitImportConfigurator.class);
 	
-//	@SuppressWarnings("unchecked")
+	private boolean isDoMatchTaxa;
+
+
+	//	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				NormalExplicitImport.class
 		};
 	};
 	
-	public static NormalExplicitImportConfigurator NewInstance(URI uri,
-			ICdmDataSource destination, NomenclaturalCode nomenclaturalCode){
+	public static NormalExplicitImportConfigurator NewInstance(URI uri, ICdmDataSource destination, 
+						NomenclaturalCode nomenclaturalCode){
 		return new NormalExplicitImportConfigurator(uri, destination, nomenclaturalCode);
 	}
 	
@@ -69,23 +73,19 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			sourceReference = refFactory.newGeneric();
+			sourceReference = ReferenceFactory.newGeneric();
 			sourceReference.setTitleCache("Excel Taxon import", true);
 		}
 		return sourceReference;
 	}
+	
+	
+	public boolean isDoMatchTaxa() {
+		return isDoMatchTaxa;
+	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
-		if (this.getSource() == null){
-			return null;
-		}else{
-			return this.getSource().toString();
-		}
+	public void setDoMatchTaxa(boolean isDoMatchTaxa) {
+		this.isDoMatchTaxa = isDoMatchTaxa;
 	}
 	
 }
