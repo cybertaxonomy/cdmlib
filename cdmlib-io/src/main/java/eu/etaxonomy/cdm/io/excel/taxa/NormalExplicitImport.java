@@ -174,10 +174,14 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 
 			// Determine the rank
 			try {
-				rank = Rank.getRankByName(rankStr);
+				rank = Rank.getRankByNameOrAbbreviation(rankStr);
 			} catch (UnknownCdmTypeException ex) {
-				success = false;
-				logger.error(rankStr + " is not a valid rank.");
+				try {
+					rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);
+				} catch (UnknownCdmTypeException e) {
+					success = false;
+					logger.error(rankStr + " is not a valid rank.");
+				}
 			}
 			
             // Create the taxon name object depending on the setting of the nomenclatural code 
@@ -186,7 +190,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			
 			TaxonBase taxonBase = null;
 			
-			if (state.getConfig().isDoMatchTaxa()){
+			if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isDoMatchTaxa()){
 				String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
 				taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
 				if (taxonBase != null){
@@ -263,59 +267,81 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	@Override
     protected boolean secondPass(TaxonExcelImportState state) {
 		boolean success = true;
-		String taxonNameStr = state.getTaxonLight().getScientificName();
-		String nameStatus = state.getTaxonLight().getNameStatus();
-		String commonNameStr = state.getTaxonLight().getCommonName();
-		Integer parentId = state.getTaxonLight().getParentId();
-		Integer childId = state.getTaxonLight().getId();
-		
-		Taxon parentTaxon = (Taxon)state.getTaxonBase(parentId);
-		if (CdmUtils.isNotEmpty(taxonNameStr)) {
-			nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
-			if (validMarkers.contains(nameStatus)){
-				Taxon taxon = (Taxon)state.getTaxonBase(childId);
-				// Add the parent relationship
-				if (state.getTaxonLight().getParentId() != 0) {
-					if (parentTaxon != null) {
-						//Taxon taxon = (Taxon)state.getTaxonBase(childId);
-						
-						ReferenceBase citation = state.getConfig().getSourceReference();
-						String microCitation = null;
-						Taxon childTaxon = taxon;
-						success &= makeParent(state, parentTaxon, childTaxon, citation, microCitation);
-						getTaxonService().saveOrUpdate(parentTaxon);
-					} else {
-						logger.warn("Taxonomic parent not found for " + taxonNameStr);
-						success = false;
-					}
-				}else{
-					//do nothing (parent == 0) no parent exists
-				}
-			}else if (synonymMarkers.contains(nameStatus)){
-				//add synonym relationship
-				Synonym synonym = (Synonym)state.getTaxonBase(childId);
-				parentTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
-			}
-		} 
-		if (CdmUtils.isNotEmpty(commonNameStr)){			// add common name to taxon
+		try {
+			String taxonNameStr = state.getTaxonLight().getScientificName();
+			String nameStatus = state.getTaxonLight().getNameStatus();
+			String commonNameStr = state.getTaxonLight().getCommonName();
+			Integer parentId = state.getTaxonLight().getParentId();
+			Integer childId = state.getTaxonLight().getId();
 			
-			Language language = getTermService().getLanguageByIso(state.getTaxonLight().getLanguage());
-			if (language == null && CdmUtils.isNotEmpty(state.getTaxonLight().getLanguage())  ){
-				String error ="Language is null but shouldn't"; 
-				logger.error(error);
-				throw new IllegalArgumentException(error);
+			Taxon parentTaxon = (Taxon)state.getTaxonBase(parentId);
+			if (CdmUtils.isNotEmpty(taxonNameStr)) {
+				nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
+				if (validMarkers.contains(nameStatus)){
+					Taxon taxon = (Taxon)state.getTaxonBase(childId);
+					// Add the parent relationship
+					if (state.getTaxonLight().getParentId() != 0) {
+						if (parentTaxon != null) {
+							//Taxon taxon = (Taxon)state.getTaxonBase(childId);
+							
+							ReferenceBase citation = state.getConfig().getSourceReference();
+							String microCitation = null;
+							Taxon childTaxon = taxon;
+							success &= makeParent(state, parentTaxon, childTaxon, citation, microCitation);
+							getTaxonService().saveOrUpdate(parentTaxon);
+						} else {
+							logger.warn("Taxonomic parent not found for " + taxonNameStr);
+							success = false;
+						}
+					}else{
+						//do nothing (parent == 0) no parent exists
+					}
+				}else if (synonymMarkers.contains(nameStatus)){
+					//add synonym relationship
+					try {
+						TaxonBase taxonBase = state.getTaxonBase(childId);
+						Synonym synonym = CdmBase.deproxy(taxonBase,Synonym.class);
+						parentTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+						getTaxonService().saveOrUpdate(parentTaxon);
+					} catch (Exception e) {
+						logger.warn("Child id = " + childId);
+						e.printStackTrace();
+					}
+				}
+			} 
+			if (CdmUtils.isNotEmpty(commonNameStr)){			// add common name to taxon
+				handleCommonName(state, taxonNameStr, commonNameStr, parentId);
 			}
-			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonNameStr, language);
-			try {
-				Taxon taxon = (Taxon)state.getTaxonBase(parentId);
-				TaxonDescription taxonDescription = getTaxonDescription(taxon, false, true);
-				taxonDescription.addElement(commonTaxonName);
-				logger.info("Common name " + commonNameStr + " added to " + taxon.getTitleCache());
-			} catch (ClassCastException ex) {
-				logger.error(taxonNameStr + " is not a taxon instance.");
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return success;
+	}
+
+
+	/**
+	 * @param state
+	 * @param taxonNameStr
+	 * @param commonNameStr
+	 * @param parentId
+	 */
+	private void handleCommonName(TaxonExcelImportState state,
+			String taxonNameStr, String commonNameStr, Integer parentId) {
+		Language language = getTermService().getLanguageByIso(state.getTaxonLight().getLanguage());
+		if (language == null && CdmUtils.isNotEmpty(state.getTaxonLight().getLanguage())  ){
+			String error ="Language is null but shouldn't"; 
+			logger.error(error);
+			throw new IllegalArgumentException(error);
+		}
+		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonNameStr, language);
+		try {
+			Taxon taxon = (Taxon)state.getTaxonBase(parentId);
+			TaxonDescription taxonDescription = getTaxonDescription(taxon, false, true);
+			taxonDescription.addElement(commonTaxonName);
+			logger.info("Common name " + commonNameStr + " added to " + taxon.getTitleCache());
+		} catch (ClassCastException ex) {
+			logger.error(taxonNameStr + " is not a taxon instance.");
+		}
 	}
 
 
@@ -349,7 +375,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 					parser.parseAuthors(taxonNameBase, authorStr);
 				} catch (StringNotParsableException e) {
 					taxonNameBase.setAuthorshipCache(authorStr);
-				}
+ 				}
 			}
 		}
 
@@ -399,7 +425,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		if (sec.equals(childTaxon.getSec())){
 			success &=  (null !=  tree.addParentChild(parentTaxon, childTaxon, citation, microCitation));
 		}else{
-			logger.warn("No relationship added");
+			logger.warn("No relationship added for child " + childTaxon.getTitleCache());
 		}
 		return success;
 	}
