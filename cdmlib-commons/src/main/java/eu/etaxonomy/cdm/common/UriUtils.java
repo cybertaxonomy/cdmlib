@@ -12,14 +12,13 @@ package eu.etaxonomy.cdm.common;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -46,18 +45,18 @@ public class UriUtils {
 	 * @param uri
 	 * @return
 	 * @throws IOException
+	 * @throws HttpException 
 	 */
-	public static InputStream getInputStream(URI uri) throws IOException{
-		URL url;
-		try {
-			url = uri.toURL();
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("Could not create URL from URI.", e);
-		}
+	public static InputStream getInputStream(URI uri) throws IOException, HttpException{
 		
-		URLConnection urlConnection = url.openConnection();
-		
-		return urlConnection.getInputStream();
+        HttpResponse response = UriUtils.getResponse(uri, null);
+
+        if(UriUtils.isOk(response)){
+        	InputStream stream = response.getEntity().getContent();
+        	return stream;
+        } else {
+        	throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
+        }
 	}
 	
 	/**
