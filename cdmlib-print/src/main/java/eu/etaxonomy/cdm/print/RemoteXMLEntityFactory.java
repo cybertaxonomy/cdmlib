@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.print;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -27,7 +26,6 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.output.XMLOutputter;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
