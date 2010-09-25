@@ -37,19 +37,12 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	private boolean doRelNames = true;
 	private boolean doNameStatus = true;
 	private boolean doTypes = true;
-	private boolean doNameFacts = true;
 	
 	//taxa
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
-	private boolean doFacts = true;
-
-	//occurrence
-	private boolean doOccurrence = true;
 	
 	//etc
-	private boolean doMarker = true;
-	private boolean doUser = true;
 
 	private IProgressMonitor progressMonitor;
 
@@ -135,18 +128,7 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public void setDoNameStatus(boolean doNameStatus) {
 		this.doNameStatus = doNameStatus;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoNameFacts()
-	 */
-	public boolean isDoNameFacts() {
-		return doNameFacts;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoNameFacts(boolean)
-	 */
-	public void setDoNameFacts(boolean doNameFacts) {
-		this.doNameFacts = doNameFacts;
-	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoTypes()
 	 */
@@ -183,52 +165,7 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public void setDoRelTaxa(boolean doRelTaxa) {
 		this.doRelTaxa = doRelTaxa;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoFacts()
-	 */
-	public boolean isDoFacts() {
-		return doFacts;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoFacts(boolean)
-	 */
-	public void setDoFacts(boolean doFacts) {
-		this.doFacts = doFacts;
-	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoOccurrence()
-	 */
-	public boolean isDoOccurrence() {
-		return doOccurrence;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoOccurrence(boolean)
-	 */
-	public void setDoOccurrence(boolean doOccurrence) {
-		this.doOccurrence = doOccurrence;
-	}
-
-	public boolean isDoMarker() {
-		return doMarker;
-	}
-
-	public void setDoMarker(boolean doMarker) {
-		this.doMarker = doMarker;
-	}
-	
-
-	public boolean isDoUser() {
-		return doUser;
-	}
-
-	public void setDoUser(boolean doUser) {
-		this.doUser = doUser;
-	}
-	
-
 	/**
 	 * @return the useTaxonomicTree
 	 */

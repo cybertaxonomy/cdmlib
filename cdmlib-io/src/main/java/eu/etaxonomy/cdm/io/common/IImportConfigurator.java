@@ -53,9 +53,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public <STATE extends ImportStateBase> STATE getNewState();
 
 	/* ****************** GETTER/SETTER **************************/
-	public boolean isDeleteAll();
-
-	public void setDeleteAll(boolean deleteAll);
 
 	public boolean isDoAuthors();
 
@@ -115,10 +112,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 
 	public void setDoNameStatus(boolean doNameStatus);
 
-	public boolean isDoNameFacts();
-
-	public void setDoNameFacts(boolean doNameFacts);
-
 	public boolean isDoTypes();
 
 	public void setDoTypes(boolean doTypes);
@@ -130,29 +123,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public boolean isDoRelTaxa();
 
 	public void setDoRelTaxa(boolean doRelTaxa);
-
-	public boolean isDoFacts();
-
-	public void setDoFacts(boolean doFacts);
-	
-	public boolean isDoMarker();
-	
-	public void setDoMarker(boolean doMarker);
-
-	public void setDoUser(boolean doUser);
-	
-	public boolean isDoUser();
-
-
-	/**
-	 * @return the doOccurrence
-	 */
-	public boolean isDoOccurrence();
-
-	/**
-	 * @param doOccurrence the doOccurrence to set
-	 */
-	public void setDoOccurrence(boolean doOccurrence);
 	
 	/**
 	 * The destination data source for the import 

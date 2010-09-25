@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 
 /**
@@ -33,7 +32,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	private boolean doFeatureData = true;
 	private boolean doDescriptions = true;
 	private boolean doMedia = true;
-//	private boolean doOccurrences = true;
+	private boolean doOccurrence = true;
 //	private boolean doReferences = true;
 	private boolean doReferencedEntities = true;
 //	private boolean doRelationships = true;
@@ -231,6 +230,13 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 
 	public void setDoTypeDesignations(boolean doTypeDesignations) {
 		this.doTypeDesignations = doTypeDesignations;
+	}
+	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
 	}
 
 		

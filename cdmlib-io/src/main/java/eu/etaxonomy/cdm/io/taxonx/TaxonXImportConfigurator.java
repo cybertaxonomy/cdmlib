@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -22,7 +21,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -37,6 +35,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	
 	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;
+	private boolean doFacts = true;
 	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
@@ -159,6 +158,14 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	 */
 	public void setDoMods(boolean doMods) {
 		this.doMods = doMods;
+	}
+	
+	
+	public boolean isDoFacts() {
+		return doFacts;
+	}
+	public void setDoFacts(boolean doFacts) {
+		this.doFacts = doFacts;
 	}
 
 	/**

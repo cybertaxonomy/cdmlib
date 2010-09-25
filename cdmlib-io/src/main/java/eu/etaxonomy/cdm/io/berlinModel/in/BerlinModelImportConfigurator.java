@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,6 +49,11 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private static IInputTransformer defaultTransformer = null;
 	
 	private boolean doCommonNames = true;
+	private boolean doOccurrence = true;
+	private boolean doMarker = true;
+	private boolean doUser = true;
+	private boolean doFacts = true;
+	private boolean doNameFacts = true;
 	
 	
 	/* Max number of records to be saved with one service call */
@@ -341,6 +345,46 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 		this.doCommonNames = doCommonNames;
 		
 	}
+	
+	public boolean isDoFacts() {
+		return doFacts;
+	}
+	public void setDoFacts(boolean doFacts) {
+		this.doFacts = doFacts;
+	}
+
+	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+
+
+	public boolean isDoMarker() {
+		return doMarker;
+	}
+
+	public void setDoMarker(boolean doMarker) {
+		this.doMarker = doMarker;
+	}
+
+	public boolean isDoUser() {
+		return doUser;
+	}
+
+	public void setDoUser(boolean doUser) {
+		this.doUser = doUser;
+	}
+	
+	public boolean isDoNameFacts() {
+		return doNameFacts;
+	}
+	public void setDoNameFacts(boolean doNameFacts) {
+		this.doNameFacts = doNameFacts;
+	}
+
 
 
 

@@ -36,7 +36,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase imp
 	private boolean doFeatureData = true;
 	private boolean doDescriptions = true;
 	private boolean doMedia = true;
-//	private boolean doOccurrences = true;
+	private boolean doOccurrence = true;
 //	private boolean doReferences = true;
 	private boolean doReferencedEntities = true;
 //	private boolean doRelationships = true;
@@ -144,6 +144,14 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase imp
 		this.doHomotypicalGroups = doHomotypicalGroups;
 	}
 
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+
+	
 	
 //	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {

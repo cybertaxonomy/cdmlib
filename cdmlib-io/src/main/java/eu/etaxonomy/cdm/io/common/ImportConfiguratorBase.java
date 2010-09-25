@@ -47,9 +47,9 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	 */
 	private IInputTransformer transformer;
 
-	
-	//TODO
-	private boolean deleteAll = false;
+//	
+//	//TODO
+//	private boolean deleteAll = false;
 		
 	//nullValues
 	private boolean ignoreNull = false;
@@ -179,19 +179,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	 */
 	public void setIoClassList(Class<ICdmIO>[] ioClassList){
 		this.ioClassList = ioClassList;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDeleteAll()
-	 */
-	public boolean isDeleteAll() {
-		return deleteAll;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDeleteAll(boolean)
-	 */
-	public void setDeleteAll(boolean deleteAll) {
-		this.deleteAll = deleteAll;
 	}
 
 	

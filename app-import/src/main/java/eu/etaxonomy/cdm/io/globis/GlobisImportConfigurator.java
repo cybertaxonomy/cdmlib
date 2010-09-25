@@ -48,6 +48,7 @@ public class GlobisImportConfigurator extends ImportConfiguratorBase<GlobisImpor
 	private boolean doLinks = true;
 	private boolean doNotes = true;
 	private boolean doImages = true;
+	private boolean doOccurrence = true;
 	
 	private static IInputTransformer defaultTransformer = new GlobisTransformer();
 	
@@ -208,6 +209,14 @@ public class GlobisImportConfigurator extends ImportConfiguratorBase<GlobisImpor
 		return doImages;
 	}
 	
+	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+
 	
 
 }

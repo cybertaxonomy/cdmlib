@@ -34,7 +34,8 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	private boolean doTaxonomicallyIncluded = true;
 	private boolean doMisappliedNames = true;
 	private boolean doHeterotypicSynonyms = true;
-	private boolean doHeterotypicSynonymsForBasionyms;
+	private boolean doHeterotypicSynonymsForBasionyms ;
+	private boolean doOccurrence = true;
 	
 	/* Max number of taxa to be saved with one service call */
 	private int limitSave = 900;
@@ -216,4 +217,17 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		return doHeterotypicSynonymsForBasionyms;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoOccurrence()
+	 */
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoOccurrence(boolean)
+	 */
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
 }

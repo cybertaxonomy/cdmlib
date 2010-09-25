@@ -40,6 +40,7 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase implements 
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
+	private boolean doOccurrence = true;
 	
 	
 	public static SDDExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
@@ -137,6 +138,14 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase implements 
 	public void setDoHomotypicalGroups(boolean doHomotypicalGroups) {
 		this.doHomotypicalGroups = doHomotypicalGroups;
 	}
+	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+
 
 	
 //	@SuppressWarnings("unchecked")

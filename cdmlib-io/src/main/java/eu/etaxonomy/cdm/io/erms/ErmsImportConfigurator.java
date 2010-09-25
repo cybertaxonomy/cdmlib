@@ -48,6 +48,7 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	private boolean doLinks = true;
 	private boolean doNotes = true;
 	private boolean doImages = true;
+	private boolean doOccurrence = true;
 	
 	private static IInputTransformer defaultTransformer = new ErmsTransformer();
 	
@@ -225,5 +226,11 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	}
 	
 	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
 
 }

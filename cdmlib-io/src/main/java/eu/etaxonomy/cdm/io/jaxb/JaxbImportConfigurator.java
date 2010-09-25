@@ -17,9 +17,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -37,13 +35,13 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	private static IInputTransformer defaultTransformer = null;
 
 	
-	private boolean doUsers = true;
+	private boolean doUser = true;
 	private boolean doAgentData = true;
 	private boolean doLanguageData = true;
 	private boolean doFeatureData = true;
 	private boolean doDescriptions = true;
 	private boolean doMedia = true;
-//	private boolean doOccurrences = true;
+	private boolean doOccurrence = true;
 //	private boolean doReferences = true;
 	private boolean doReferencedEntities = true;
 //	private boolean doRelationships = true;
@@ -221,6 +219,24 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public boolean isDoTaxonomicTreeData() {
 		return this.doTaxonomicTreeData;
 	}
+	
+	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+	
+
+	public boolean isDoUser() {
+		return doUser;
+	}
+
+	public void setDoUser(boolean doUser) {
+		this.doUser = doUser;
+	}
+
 }
 
    

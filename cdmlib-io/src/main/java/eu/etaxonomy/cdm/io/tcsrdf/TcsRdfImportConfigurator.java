@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -42,6 +41,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
+	
+	private boolean doFacts = true;
 	
 	//rdfNamespace
 	private Namespace rdfNamespace;
@@ -250,6 +251,14 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	 */
 	public void setPublishReferences(boolean isPublishReferences) {
 		this.isPublishReferences = isPublishReferences;
+	}
+	
+	
+	public boolean isDoFacts() {
+		return doFacts;
+	}
+	public void setDoFacts(boolean doFacts) {
+		this.doFacts = doFacts;
 	}
 
 	/* (non-Javadoc)

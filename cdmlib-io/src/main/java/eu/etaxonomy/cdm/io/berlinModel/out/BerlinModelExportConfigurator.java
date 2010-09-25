@@ -29,6 +29,10 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	//ID for the isHomotypic relationship in RelName, if not exist null
 	private Integer isHomotypicId = null;
 	
+	private boolean doOccurrence = true;
+	private boolean doFacts = true;
+	private boolean doNameFacts = true;
+	
 	public static BerlinModelExportConfigurator NewInstance(Source berlinModelDestination, ICdmDataSource source){
 			return new BerlinModelExportConfigurator(berlinModelDestination, source);
 	}
@@ -84,6 +88,28 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 		return new BerlinModelExportState(this);
 	}
 	
+	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+	
+	public boolean isDoFacts() {
+		return doFacts;
+	}
+	public void setDoFacts(boolean doFacts) {
+		this.doFacts = doFacts;
+	}
+
+	public boolean isDoNameFacts() {
+		return doNameFacts;
+	}
+	public void setDoNameFacts(boolean doNameFacts) {
+		this.doNameFacts = doNameFacts;
+	}
+
 	
 
 	

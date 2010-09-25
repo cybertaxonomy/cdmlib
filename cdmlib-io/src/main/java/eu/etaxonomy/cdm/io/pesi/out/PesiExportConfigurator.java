@@ -29,6 +29,9 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 	private static Logger logger = Logger.getLogger(PesiExportConfigurator.class);
 	private int limitSave = 1000;
 	private ReferenceBase<?> auctReference;
+	private boolean doOccurrence = true;
+	private boolean doFacts = true;
+	private boolean doNameFacts = true;
 
 	public static PesiExportConfigurator NewInstance(Source pesiDestination, ICdmDataSource source) {
 			return new PesiExportConfigurator(pesiDestination, source);
@@ -95,5 +98,29 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 		}
 		return auctReference;
 	}
+	
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+	
+	
+	public boolean isDoFacts() {
+		return doFacts;
+	}
+	public void setDoFacts(boolean doFacts) {
+		this.doFacts = doFacts;
+	}
+	
+	public boolean isDoNameFacts() {
+		return doNameFacts;
+	}
+	public void setDoNameFacts(boolean doNameFacts) {
+		this.doNameFacts = doNameFacts;
+	}
+
+
 
 }

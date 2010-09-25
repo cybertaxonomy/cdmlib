@@ -49,7 +49,7 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 	private static final Logger logger = Logger.getLogger(PilotOutputExporter.class);
 	private PilotOutputDocumentBuilder pilotOutputDocumentBuilder = null;
 
-	private String ioName = null;
+	private boolean doOccurrence = true;
 
 	
 	/**
@@ -261,5 +261,7 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 	protected boolean isIgnore(PilotOutputExportState state) {
 		return false;
 	}
+
+
 	
 }
