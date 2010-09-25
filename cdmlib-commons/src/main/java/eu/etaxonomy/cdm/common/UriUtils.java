@@ -10,11 +10,14 @@
 
 package eu.etaxonomy.cdm.common;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,14 +69,20 @@ public class UriUtils {
 			requestHeaders = new HashMap<String, String>();
 		}
 		
-        HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
-
-        if(UriUtils.isOk(response)){
-        	InputStream stream = response.getEntity().getContent();
-        	return stream;
-        } else {
-        	throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
-        }
+		if (uri.getScheme().equals("http") || uri.getScheme().equals("https")){
+			HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
+			if(UriUtils.isOk(response)){
+	        	InputStream stream = response.getEntity().getContent();
+	        	return stream;
+	        } else {
+	        	throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
+	        }
+		}else if (uri.getScheme().equals("file")){
+			File file = new File(uri);
+			return new FileInputStream(file);
+		}else{
+			throw new RuntimeException("Protokoll not yet handled: " + uri.getScheme()); 
+		}
 	}
 	
 	/**
