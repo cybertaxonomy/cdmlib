@@ -779,10 +779,21 @@ public class NonViralNameParserImplTest {
 	@Test
 	public void testNeverEndingParsing(){
 		//some full titles result in never ending parsing process https://dev.e-taxonomy.eu/trac/ticket/1556
+
+		String irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
+		NonViralName nvn = this.parser.parseReferencedName(irinaExample, NomenclaturalCode.ICZN, null);
+		Assert.assertEquals("Titlecache", "Milichiidae Sharp, 1899", nvn.getTitleCache());
+		Assert.assertEquals("If this line reached everything should be ok", "Milichiidae", nvn.getGenusOrUninomial());
+		
+		String anotherExample = "Scorzonera hispanica var. brevifolia Boiss. & Balansa in Boissier, Diagn. Pl. Orient., ser. 2 6: 119. 1859.";
+		nvn = this.parser.parseReferencedName(anotherExample, NomenclaturalCode.ICBN, null);
+		Assert.assertEquals("Titlecache", "Scorzonera hispanica var. brevifolia Boiss. & Balansa", nvn.getTitleCache());
+		Assert.assertEquals("If this line reached everything should be ok", "Scorzonera", nvn.getGenusOrUninomial());
+		
 		String unparsable = "Taraxacum nevskii L., Trudy Bot. Inst. Nauk S.S.S.R., Ser. 1, Fl. Sist. Vyssh. Rast. 4: 293. 1937.";
 		String unparsableA = "Taraxacum nevskii L. in Trudy Bot. Inst. Nauk: 293. 1937.";
 		
-		NonViralName nvn = this.parser.parseReferencedName(unparsable, NomenclaturalCode.ICBN, null);
+		nvn = this.parser.parseReferencedName(unparsable, NomenclaturalCode.ICBN, null);
 		Assert.assertEquals("Titlecache", "Taraxacum nevskii L.", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Taraxacum", nvn.getGenusOrUninomial());
 		
