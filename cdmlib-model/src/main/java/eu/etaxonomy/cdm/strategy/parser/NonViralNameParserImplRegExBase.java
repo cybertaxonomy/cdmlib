@@ -163,14 +163,16 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String detail = pDetailAlternatives;
     
     //reference
-    protected static String volume = nr4 + "(\\("+ nr4  + "\\))?"; 	      
-    protected static String anySepChar = "([\u005E:\\.]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
+    protected static String volume = nr4 + "(\\("+ nr4  + "\\))?";
+    //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
+    protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
+//  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";    
     
     protected static int authorSeparatorMaxPosition = 4;  //Author may have a maximum of 4 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + ")";  
     protected static String referenceTitleFirstPart = "(" + word + pTitleWordSeparator + ")";
     protected static String referenceTitle = referenceTitleFirstPart + "*" + dotWord;  //reference title may have words seperated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word 
-    protected static String referenceTitleWithSepCharacters = "((" + referenceTitle  + anySepChar + "?)*" + referenceTitle + ")"; //,?
+    protected static String referenceTitleWithSepCharacters = "((" + referenceTitle  + anySepChar + ")*" + referenceTitle + ")"; //,?
     //TODO test performance ??
     protected static String referenceTitleWithSepCharactersAndBrackets = referenceTitleWithSepCharacters + fWs + "(\\(" + referenceTitleWithSepCharacters + "\\)"+fWs+ ")?(" + referenceTitleWithSepCharacters +")?" ; 
     
@@ -196,6 +198,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     
     
     protected static String pReferenceSineDetail = "(" + pArticleReference + "|" + pBookSectionReference + "|" + pBookReference + ")"; 
+    
     
     protected static String pReference = pReferenceSineDetail + detailSeparator + detail + 
 					yearSeperator + yearPhrase + "(" + referenceEnd + ")?"; 

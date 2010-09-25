@@ -19,6 +19,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -771,6 +773,23 @@ public class NonViralNameParserImplTest {
 		assertEquals("1987", ref.getYear());
 		ReferenceBase refBase = (ReferenceBase)ref;
 		assertEquals("Sp. Pl.", refBase.getTitle());
+	}
+	
+	
+	@Test
+	public void testNeverEndingParsing(){
+		//some full titles result in never ending parsing process https://dev.e-taxonomy.eu/trac/ticket/1556
+		String unparsable = "Taraxacum nevskii L., Trudy Bot. Inst. Nauk S.S.S.R., Ser. 1, Fl. Sist. Vyssh. Rast. 4: 293. 1937.";
+		String unparsableA = "Taraxacum nevskii L. in Trudy Bot. Inst. Nauk: 293. 1937.";
+		
+		NonViralName nvn = this.parser.parseReferencedName(unparsable, NomenclaturalCode.ICBN, null);
+		Assert.assertEquals("Titlecache", "Taraxacum nevskii L.", nvn.getTitleCache());
+		Assert.assertEquals("If this line reached everything should be ok", "Taraxacum", nvn.getGenusOrUninomial());
+		
+		String unparsable2 = "Hieracium pxxx Dahlst., Kongl. Svenska Vetensk. Acad. Handl. ser. 2, 26(3): 255. 1894";
+		String unparsable2A = "Hieracium pxxx Dahlst., Kongl Svenska Vetensk Acad Handl, 26: 255. 1894.";
+		nvn = this.parser.parseReferencedName(unparsable2, NomenclaturalCode.ICBN, null);
+		
 	}
 
 	/**

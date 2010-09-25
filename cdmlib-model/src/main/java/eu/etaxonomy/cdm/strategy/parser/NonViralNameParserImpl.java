@@ -58,8 +58,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	final static boolean MAKE_NOT_EMPTY = false;
 	
 	private boolean authorIsAlwaysTeam = true;
-	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
-	
 	
 	public static NonViralNameParserImpl NewInstance(){
 		return new NonViralNameParserImpl();
@@ -482,7 +480,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		INomenclaturalReference ref;
 		//ref = Generic.NewInstance();
 		
-		ref = refFactory.newGeneric();
+		ref = ReferenceFactory.newGeneric();
 		ref.setTitleCache(strReference,true);
 		ref.setProblemEnds(strReference.length());
 		ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
@@ -499,16 +497,16 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 */
 	private INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
 		IBook result = null;
-		
+
 		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(strReference);
 		if (! refSineDetailMatcher.matches()){
 			//TODO ?
 		}
 		
 		Matcher articleMatcher = getMatcher(pArticleReference, strReference);
+		Matcher bookMatcher = getMatcher(pBookReference, strReference);
 		
 		Matcher softArticleMatcher = getMatcher(pSoftArticleReference, strReference);
-		Matcher bookMatcher = getMatcher(pBookReference, strReference);
 		Matcher bookSectionMatcher = getMatcher(pBookSectionReference, strReference);
 		
 		
@@ -517,7 +515,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				result = parseBook(strReference);
 			}else{
 				logger.warn("Non-InRef must be book but does not match book");
-				result = refFactory.newBook();
+				result = ReferenceFactory.newBook();
 				makeUnparsableRefTitle(result, strReference);
 			}
 		}else{  //inRef
@@ -529,7 +527,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}else if (bookSectionMatcher.matches()){
 				result = parseBookSection(strReference);
 			}else{
-				result =  refFactory.newGeneric();
+				result =  ReferenceFactory.newGeneric();
 				makeUnparsableRefTitle(result, "in " + strReference);
 			}
 		}
@@ -638,7 +636,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 	
 	private IBook parseBook(String reference){
-		IBook result = refFactory.newBook();
+		IBook result = ReferenceFactory.newBook();
 		reference = makeEdition(result, reference);
 		reference = makeVolume(result, reference);
 		result.setTitle(reference);
@@ -649,16 +647,16 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	private ReferenceBase parseArticle(String reference){
 		//if (articlePatter)
 		//(type, author, title, volume, editor, series;
-		ReferenceBase result = refFactory.newArticle();
+		ReferenceBase result = ReferenceFactory.newArticle();
 		reference = makeVolume(result, reference);
-		ReferenceBase inJournal = refFactory.newJournal();
+		ReferenceBase inJournal = ReferenceFactory.newJournal();
 		inJournal.setTitle(reference);
 		result.setInReference(inJournal);
 		return result;
 	}
 	
 	private ReferenceBase parseBookSection(String reference){
-		ReferenceBase result = refFactory.newBookSection();
+		ReferenceBase result = ReferenceFactory.newBookSection();
 		String[] parts = reference.split(referenceAuthorSeparator, 2);
 		if (parts.length != 2){
 			logger.warn("Unexpected number of parts");
