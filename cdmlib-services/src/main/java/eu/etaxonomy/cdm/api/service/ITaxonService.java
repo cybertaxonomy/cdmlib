@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -35,6 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -398,4 +398,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public Taxon findBestMatchingTaxon(String taxonName);
+	
+	public Synonym findBestMatchingSynonym(String taxonName);
+	
 }

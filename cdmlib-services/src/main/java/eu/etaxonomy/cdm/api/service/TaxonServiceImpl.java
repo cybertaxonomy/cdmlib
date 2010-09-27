@@ -24,26 +24,21 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -655,4 +650,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return matchedTaxon;
 	}
+
+	@Override
+	public Synonym findBestMatchingSynonym(String taxonName) {
+		List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
+		if(! synonymList.isEmpty()){
+			Synonym result = CdmBase.deproxy(synonymList.iterator().next(), Synonym.class);
+			if(synonymList.size() == 1){
+				logger.info(synonymList.size() + " Synonym found " + result.getTitleCache() );
+				return result;
+			} else {
+				logger.info("Several matching synonyms found. Using first: " +  result.getTitleCache());
+				return result;
+			}
+		}
+		return null;
+	}
+	
+	
 }
