@@ -56,7 +56,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 	
     @Override
     @PostConstruct
-	public void initialize(){
+	public void doInitialize(){
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 		IDatabaseConnection connection = null;
 

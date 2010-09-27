@@ -78,7 +78,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 */
 	@PostConstruct
 	@Override
-	public void initialize(){
+	public void doInitialize(){
 		logger.debug("PersistentTermInitializer initialize start ...");
 		if (omit){
 			logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
