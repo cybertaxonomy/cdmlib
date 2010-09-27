@@ -632,7 +632,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			
 			// 2. search for synonyms
 			List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
-			for(IdentifiableEntity taxonBase : synonymList){
+			for(TaxonBase taxonBase : synonymList){
 				if(taxonBase instanceof Synonym){
 					Set<Taxon> acceptetdCandidates = ((Synonym)taxonBase).getAcceptedTaxa();
 					if(!acceptetdCandidates.isEmpty()){
