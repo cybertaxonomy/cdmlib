@@ -17,9 +17,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
@@ -68,5 +71,14 @@ public class TermLoaderTest {
         TermVocabulary<NameTypeDesignationStatus> defaultStatus = termLoader.loadTerms(VocabularyEnum.NameTypeDesignationStatus, terms);
 		assertNotNull(defaultStatus.findTermByUuid(uuidTautonymy));
 		assertTrue(terms.containsKey(uuidTautonymy));
+	}
+	
+	@Test
+	public void testUnloadAllTerms(){
+		DefaultTermInitializer initializer = new DefaultTermInitializer();
+		initializer.initialize();
+		Assert.assertNotNull("Editorial annotation type should be loaded", AnnotationType.EDITORIAL());
+		termLoader.unloadAllTerms();
+		Assert.assertNull("Editorial annotation type should be unloaded now", AnnotationType.EDITORIAL());
 	}
 }

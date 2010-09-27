@@ -603,6 +603,17 @@ public class Language extends DefinedTermBase<Language> {
 		this(label,text,labelAbbrev, DEFAULT());
 	}
 	
+//********************************** METHODS *********************************************************/	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	protected static Language getTermByUuid(UUID uuid){
 		if (termMap == null){
 			return null;  //better return null then initialize the termMap in an unwanted way 

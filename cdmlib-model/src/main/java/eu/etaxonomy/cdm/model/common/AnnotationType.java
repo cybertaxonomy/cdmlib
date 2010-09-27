@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.util.Assert;
 
 /**
  * Annotation types ...
@@ -69,6 +70,14 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 
 	
 //************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
 	
 	protected static AnnotationType getTermByUuid(UUID uuid){
 		if (termMap == null){

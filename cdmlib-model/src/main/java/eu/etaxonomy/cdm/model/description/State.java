@@ -99,6 +99,17 @@ public class State extends OrderedTermBase<State> {
 		return new State(term, label, labelAbbrev);
 	}
 
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<State> termVocabulary){
 		termMap = new HashMap<UUID, State>();

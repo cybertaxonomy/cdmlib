@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -17,8 +18,8 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name="NaturalLanguageTerm")
@@ -30,6 +31,9 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	private static final long serialVersionUID = 6754598791831848705L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NaturalLanguageTerm.class);
+	
+	protected static Map<UUID, NaturalLanguageTerm> termMap = null;		
+
 	
 	private static NaturalLanguageTerm FROM = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm TO = new NaturalLanguageTerm();
@@ -54,6 +58,16 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	public NaturalLanguageTerm(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
 	
 	@XmlElement(name = "KindOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlIDREF

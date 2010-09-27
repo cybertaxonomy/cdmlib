@@ -223,6 +223,19 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		}
 	}
 
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#setDefaultTerms(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
 	@Override
 	protected void setDefaultTerms(TermVocabulary<PresenceTerm> termVocabulary) {
 		termMap = new HashMap<UUID, PresenceTerm>();

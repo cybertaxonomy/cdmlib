@@ -72,6 +72,16 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 		super(term, label, labelAbbrev);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	protected static InstitutionType getTermByUuid(UUID uuid){
 		if (termMap == null){
 			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
@@ -80,6 +90,8 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 		return (InstitutionType)termMap.get(uuid);
 	}
 
+	
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<InstitutionType> termVocabulary){
 		termMap = new HashMap<UUID, InstitutionType>();

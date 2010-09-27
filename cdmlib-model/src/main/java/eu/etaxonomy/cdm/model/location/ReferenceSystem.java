@@ -81,6 +81,17 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 		super(term, label, labelAbbrev);
 	}
 
+// ************************************* MTEHODS ***************************************************/	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 
 	protected static ReferenceSystem getTermByUuid(UUID uuid){
 		if (termMap == null){

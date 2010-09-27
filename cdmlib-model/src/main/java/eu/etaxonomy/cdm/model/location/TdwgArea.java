@@ -53,7 +53,22 @@ public class TdwgArea extends NamedArea {
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
 	
-	protected static Map<UUID, TdwgArea> termMap = null;		
+	protected static Map<UUID, TdwgArea> termMap = null;
+	
+
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+		labelMap = null;
+		abbrevMap = null;
+	}
+
 
 	protected static TdwgArea getTermByUuid(UUID uuid){
 		if (termMap == null){

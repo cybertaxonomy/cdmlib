@@ -100,6 +100,16 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	
 //************************** METHODS ********************************
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
+	
 	protected static StatisticalMeasure getTermByUuid(UUID uuid){
 		if (termMap == null){
 			return null;  //better return null then initialize the termMap in an unwanted way 

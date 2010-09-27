@@ -191,6 +191,16 @@ public class Feature extends DefinedTermBase<Feature> {
 
 /* *************************************************************************************/
 	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	/**
 	 * Returns the boolean value of the flag indicating whether <i>this</i>
 	 * feature can be described with {@link QuantitativeData quantitative data} (true)

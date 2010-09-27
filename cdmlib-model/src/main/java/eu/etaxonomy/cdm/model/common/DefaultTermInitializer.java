@@ -27,7 +27,12 @@ public class DefaultTermInitializer implements ITermInitializer {
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializer.class);
 	protected ITermLoader termLoader = new TermLoader();
 	
-	public void initialize() {
+	public final void initialize() {
+		termLoader.unloadAllTerms();
+		doInitialize();
+	}
+	
+	protected void doInitialize(){
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
 //		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
@@ -35,7 +40,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 //			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
 			TermVocabulary<?> voc  = termLoader.loadTerms(vocabularyEnum, terms);
 			setDefinedTerms(vocabularyEnum.getClazz(),voc);
-		}		
+		}				
 	}
 	
 	protected void setDefinedTerms(Class<? extends DefinedTermBase<?>> clazz, TermVocabulary<?> vocabulary) {

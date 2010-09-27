@@ -105,7 +105,16 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	}
 
 	
-	//********* METHODS **************************************/
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
 	protected static AbsenceTerm getTermByUuid(UUID uuid){
 		if (termMap == null){
 			return null;

@@ -24,8 +24,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.description.Feature;
-
 /**
  * Extension types similar to dynamically defined attributes. These are not data
  * types, but rather content types like "DOI", "2nd nomenclatural reference", "3rd
@@ -82,6 +80,8 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	public static ExtensionType NewInstance(String term, String label, String labelAbbrev){
 		return new ExtensionType(term, label, labelAbbrev);
 	}
+
+//********************************** Constructor *******************************************************************/	
 	
 	//public only for Term Loader
 	@Deprecated
@@ -103,6 +103,18 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 		super(term, label, labelAbbrev);
 	}
 
+//************************** METHODS *******************************************************/
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	protected static ExtensionType getTermByUuid(UUID uuid){
 		if (termMap == null){
 			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();

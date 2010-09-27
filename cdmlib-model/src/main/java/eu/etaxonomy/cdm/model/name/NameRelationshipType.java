@@ -119,8 +119,17 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 
-	//********* METHODS **************************************/
-
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+	
 	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status

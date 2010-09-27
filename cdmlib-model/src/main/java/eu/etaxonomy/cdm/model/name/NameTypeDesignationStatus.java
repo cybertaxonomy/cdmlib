@@ -93,8 +93,16 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 		super(term, label, labelAbbrev);
 	}
 
-//********* METHODS **************************************
+//************************** METHODS ********************************
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
 
 	/**
 	 * Returns the "automatic" name type designation status.</BR>

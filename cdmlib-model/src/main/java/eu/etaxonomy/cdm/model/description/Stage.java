@@ -100,6 +100,19 @@ public class Stage extends Scope {
 		return new Stage(term, label, labelAbbrev);
 	}
 	
+
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
 		termMap = new HashMap<UUID, Stage>();

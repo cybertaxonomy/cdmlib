@@ -107,6 +107,15 @@ public class Sex extends Scope {
 	
 //************************** METHODS ********************************
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	protected static Sex getTermByUuid(UUID uuid){
 		if (termMap == null){
 			return null;  //better return null then initialize the termMap in an unwanted way 

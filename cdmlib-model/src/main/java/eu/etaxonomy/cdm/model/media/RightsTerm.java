@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -76,7 +75,16 @@ public class RightsTerm extends DefinedTermBase<RightsTerm> {
 	}
 
 	
-//************************** METHODS ********************************
+
+// ************************************* MTEHODS ***************************************************/	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
 	
 	protected static RightsTerm getTermByUuid(UUID uuid){
 		if (termMap == null){

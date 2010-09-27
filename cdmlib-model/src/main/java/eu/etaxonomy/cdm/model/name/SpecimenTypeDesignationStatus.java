@@ -109,7 +109,16 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		super(term, label, labelAbbrev);
 	}
 	
-//********* METHODS **************************************
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
 	
 	protected static SpecimenTypeDesignationStatus findTermByUuid(UUID uuid){
 		if (termMap == null){

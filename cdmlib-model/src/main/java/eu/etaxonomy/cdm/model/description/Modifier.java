@@ -89,6 +89,19 @@ public class Modifier extends OrderedTermBase<Modifier> {
 	}
 
 
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
 		termMap = new HashMap<UUID, Modifier>();

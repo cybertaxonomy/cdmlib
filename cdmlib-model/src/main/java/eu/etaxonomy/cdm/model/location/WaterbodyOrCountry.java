@@ -608,6 +608,8 @@ public class WaterbodyOrCountry extends NamedArea {
 		super(term, label, labelAbbrev);
 	}
 
+	
+	
 	public Set<Continent> getContinents() {
 		return continents;
 	}
@@ -674,6 +676,19 @@ public class WaterbodyOrCountry extends NamedArea {
 		writer.writeNext(line);
 	}	
 
+
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
 		termMap = new HashMap<UUID, NamedArea>();

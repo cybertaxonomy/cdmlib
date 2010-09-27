@@ -152,6 +152,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	@Cascade(CascadeType.SAVE_UPDATE)
 	protected TermVocabulary<T> vocabulary;	
 	
+//***************************** CONSTRUCTOR *******************************************/	
+	
 	public DefinedTermBase() {
 		super();
 	}
@@ -159,8 +161,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		super(term, label, labelAbbrev);
 	}
 
-	protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);
+//******************************* METHODS ******************************************************/
+	
+	public abstract void resetTerms();
 
+	protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
 	 */

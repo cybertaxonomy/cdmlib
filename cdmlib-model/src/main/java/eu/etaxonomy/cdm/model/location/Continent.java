@@ -82,6 +82,20 @@ public class Continent extends NamedArea {
 		super(term, label, labelAbbrev);
 	}
 	
+
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
+	
 	protected static Continent getTermByUuid(UUID uuid){
 		if (termMap == null){
 			return null;

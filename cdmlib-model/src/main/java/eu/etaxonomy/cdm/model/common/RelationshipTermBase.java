@@ -89,7 +89,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		setSymmetric(symmetric);
 		setTransitive(transitive);		
 	}
-
+	
+//************************** METHODS ********************************
 	
 	public boolean isSymmetric() {
 		return symmetric;

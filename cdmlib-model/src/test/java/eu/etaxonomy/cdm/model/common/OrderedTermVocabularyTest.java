@@ -59,9 +59,9 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 			super(term, label, labelAbbrev);
 		}
 		@Override
-		protected void setDefaultTerms(
-				TermVocabulary<DerivedOrderedTermBase> termVocabulary) {
-		}
+		protected void setDefaultTerms(TermVocabulary<DerivedOrderedTermBase> termVocabulary) {}
+		@Override
+		public void resetTerms() {};
 	}
 
 

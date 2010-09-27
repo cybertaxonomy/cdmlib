@@ -139,8 +139,16 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		super(term, label, labelAbbrev);
 	}
 
-	//********* METHODS **************************************
+//********* METHODS **************************************
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
 
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status

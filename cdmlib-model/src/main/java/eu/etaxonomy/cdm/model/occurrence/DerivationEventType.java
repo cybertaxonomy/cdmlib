@@ -23,9 +23,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -85,6 +83,13 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 
 
 //************************** METHODS ********************************
+	
+	
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
 	
 	protected static DerivationEventType getTermByUuid(UUID uuid){
 		if (termMap == null){

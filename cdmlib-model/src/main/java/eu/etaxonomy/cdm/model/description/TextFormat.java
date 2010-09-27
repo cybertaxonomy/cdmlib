@@ -48,7 +48,31 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	
 	protected static Map<UUID, TextFormat> termMap = null;
 	
-	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Creates a new empty text format instance.
+	 * 
+	 * @see 	#NewInstance(String, String, String, boolean, boolean)
+	 */
+	public static TextFormat NewInstance(){
+		return new TextFormat();
+	}
+	/** 
+	 * Creates a new text format instance with a description, a label
+	 * and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new text format to be created 
+	 * @param	label  		 the string identifying the new text format to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new text format to be created
+	 * @see 				 #NewInstance()
+	 */
+	public static TextFormat NewInstance(String term, String label, String labelAbbrev){
+		return new TextFormat(term, label, labelAbbrev);
+	}
+
+// ************* CONSTRUCTORS *************/	
+
 	/** 
 	 * Class constructor: creates a new empty text format instance.
 	 * 
@@ -72,28 +96,15 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 		super(term, label, labelAbbrev);
 	}
 
-	//********* METHODS **************************************/
-	/** 
-	 * Creates a new empty text format instance.
-	 * 
-	 * @see 	#NewInstance(String, String, String, boolean, boolean)
+//********* METHODS **************************************/
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
-	public static TextFormat NewInstance(){
-		return new TextFormat();
-	}
-	/** 
-	 * Creates a new text format instance with a description, a label
-	 * and a label abbreviation.
-	 * 
-	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new text format to be created 
-	 * @param	label  		 the string identifying the new text format to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-	 * 						 new text format to be created
-	 * @see 				 #NewInstance()
-	 */
-	public static TextFormat NewInstance(String term, String label, String labelAbbrev){
-		return new TextFormat(term, label, labelAbbrev);
+	@Override
+	public void resetTerms(){
+		termMap = null;
 	}
 
 	@Override

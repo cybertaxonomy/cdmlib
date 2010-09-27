@@ -101,6 +101,19 @@ public class Scope extends Modifier {
 		return new Scope(term, label, labelAbbrev);
 	}
 	
+
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
 		termMap = new HashMap<UUID, Scope>();

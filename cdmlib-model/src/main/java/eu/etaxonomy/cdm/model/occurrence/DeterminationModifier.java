@@ -25,8 +25,6 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Modifier;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * modifier for a determination.
@@ -41,6 +39,7 @@ import eu.etaxonomy.cdm.model.location.TdwgArea;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class DeterminationModifier extends Modifier {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);
 
 	private static final UUID uuidUnknown = UUID.fromString("00000000-0000-0000-0000-000000000000");
@@ -77,6 +76,19 @@ public class DeterminationModifier extends Modifier {
 	protected DeterminationModifier(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
+	
+
+	
+//************************** METHODS ********************************
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {

@@ -92,6 +92,17 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 		return new MeasurementUnit(term, label, labelAbbrev);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<MeasurementUnit> termVocabulary) {
 		termMap = new HashMap<UUID, MeasurementUnit>();

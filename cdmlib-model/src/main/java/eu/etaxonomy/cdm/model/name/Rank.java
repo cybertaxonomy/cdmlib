@@ -183,7 +183,17 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 //********* METHODS **************************************/
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
 
+	
+	
 	protected static Rank getTermByUuid(UUID uuid){
 		if (termMap == null){
 			return null;  //better return null then initialize the termMap in an unwanted way 

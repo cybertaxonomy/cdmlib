@@ -68,11 +68,9 @@ public class TermVocabularyTest extends EntityTestBase {
 			super(term, label, labelAbbrev);
 		}
 		@Override
-		protected void setDefaultTerms(
-				TermVocabulary<DerivedDefinedTermBase> termVocabulary) {
-			// TODO Auto-generated method stub
-			
-		}
+		protected void setDefaultTerms(TermVocabulary<DerivedDefinedTermBase> termVocabulary) {}
+		@Override
+		public void resetTerms() {};
 	}
 	
 /****************** TESTS ****************************************/

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.validator.util.NewInstance;
 import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -41,6 +42,29 @@ public class TermLoader implements ITermLoader {
 		this.termFileNames = termFileNames;
 	}
 	
+	public void unloadAllTerms(){
+		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
+//			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
+			this.unloadVocabularyType(vocabularyEnum);
+		}
+	}
+
+	private <T extends DefinedTermBase> void unloadVocabularyType(VocabularyEnum vocType){
+		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
+		try {
+			T termInstance = ((Class<T>)termClass).newInstance();
+			termInstance.resetTerms();
+			
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} 
+
+	}
+
+	
+	
 	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
 		
 		String filename = vocType.name()+".csv";
@@ -59,10 +83,6 @@ public class TermLoader implements ITermLoader {
 		logger.debug("strResourceFileName is " + strResourceFileName);
 		
 		try {
-			//Could we use resources?
-			//InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + CdmUtils.getFolderSeperator() + filename);
-			//if (inputStream == null) {logger.info("inputStream is null");}
-			//CSVReader reader = new CSVReader(new InputStreamReader(inputStream, ""));
 			CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
 			
 			//vocabulary

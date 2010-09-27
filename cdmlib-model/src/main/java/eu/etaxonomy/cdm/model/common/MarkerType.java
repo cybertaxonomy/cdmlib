@@ -103,6 +103,16 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 //***************************** TERMS **************************************/
     
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	 */
+	@Override
+	public void resetTerms(){
+		termMap = null;
+	}
+
+	
 	protected static MarkerType getTermByUuid(UUID uuid){
 		if (termMap == null){
 			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
