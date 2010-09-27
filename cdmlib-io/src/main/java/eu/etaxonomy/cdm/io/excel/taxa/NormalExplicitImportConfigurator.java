@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
 	private static final Logger logger = Logger.getLogger(NormalExplicitImportConfigurator.class);
 	
-	private boolean isDoMatchTaxa;
+	private boolean isDoMatchTaxa = true;
 
 
 	//	@SuppressWarnings("unchecked")
