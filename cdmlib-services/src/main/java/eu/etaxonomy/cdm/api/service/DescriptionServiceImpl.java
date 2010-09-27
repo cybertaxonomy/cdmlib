@@ -160,6 +160,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		return results;
 	}
+	
 	public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
 		

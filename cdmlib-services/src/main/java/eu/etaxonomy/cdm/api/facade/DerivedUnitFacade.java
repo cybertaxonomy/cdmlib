@@ -763,6 +763,7 @@ public class DerivedUnitFacade {
 // ****************** Gathering Event *********************************/
 	
 	//country
+	@Transient
 	public NamedArea getCountry(){
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getCountry() : null);
 	}
@@ -781,6 +782,7 @@ public class DerivedUnitFacade {
 			getGatheringEvent(true).addCollectingArea(area);
 		}
 	}
+	@Transient
 	public Set<NamedArea> getCollectingAreas() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getCollectingAreas() : null);
 	}
@@ -896,6 +898,7 @@ public class DerivedUnitFacade {
 	}
 
 	//collector
+	@Transient
 	public AgentBase getCollector() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getCollector() : null);
 	}
@@ -904,6 +907,7 @@ public class DerivedUnitFacade {
 	}
 
 	//collecting method
+	@Transient
 	public String getCollectingMethod() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getCollectingMethod() : null);
 	}
@@ -930,6 +934,7 @@ public class DerivedUnitFacade {
 	}
 
 	//exact location
+	@Transient
 	public Point getExactLocation() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getExactLocation() : null );
 	}
@@ -955,6 +960,7 @@ public class DerivedUnitFacade {
 	}
 	
 	//gathering event description
+	@Transient
 	public String getGatheringEventDescription() {
 		return  (hasGatheringEvent() ? getGatheringEvent(true).getDescription() : null);
 	}
@@ -963,6 +969,7 @@ public class DerivedUnitFacade {
 	}
 
 	//gatering period
+	@Transient
 	public TimePeriod getGatheringPeriod() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getTimeperiod() : null);
 	}
@@ -971,6 +978,7 @@ public class DerivedUnitFacade {
 	}
 
 	//locality
+	@Transient
 	public LanguageString getLocality(){
 		return (hasGatheringEvent() ? getGatheringEvent(true).getLocality() : null);
 	}
@@ -1068,6 +1076,7 @@ public class DerivedUnitFacade {
 //		LanguageString languageString = getEcologyAll().getPreferredLanguageString(languages);
 //		return languageString.getText();
 //	}
+	@Transient
 	public Map<Language, LanguageString> getEcologyAll(){
 		if (ecology == null){
 			try {
@@ -1132,6 +1141,7 @@ public class DerivedUnitFacade {
 //		LanguageString languageString = getPlantDescriptionAll().getPreferredLanguageString(languages);
 //		return languageString.getText();
 //	}
+	@Transient
 	public Map<Language, LanguageString> getPlantDescriptionAll(){
 		if (plantDescription == null){
 			try {
@@ -1173,7 +1183,7 @@ public class DerivedUnitFacade {
 	public void addFieldObjectDefinition(String text, Language language) {
 		getFieldObservation(true).addDefinition(text, language);
 	}
-	
+	@Transient
 	public Map<Language, LanguageString> getFieldObjectDefinition() {
 		if (! hasFieldObservation()){
 			return new HashMap<Language, LanguageString>();
@@ -1239,6 +1249,7 @@ public class DerivedUnitFacade {
 	 * Returns the media for the field object.<BR>
 	 * @return
 	 */
+	@Transient
 	public List<Media> getFieldObjectMedia() {
 		try {
 			List<Media> result = getMedia(getFieldObservation(false), false);
@@ -1256,6 +1267,7 @@ public class DerivedUnitFacade {
 	}
 
 	//field number
+	@Transient
 	public String getFieldNumber() {
 		if (! hasFieldObservation()){
 			return null;
@@ -1269,6 +1281,7 @@ public class DerivedUnitFacade {
 
 	
 	//field notes
+	@Transient
 	public String getFieldNotes() {
 		if (! hasFieldObservation()){
 			return null;
@@ -1282,6 +1295,7 @@ public class DerivedUnitFacade {
 
 
 	//individual counts
+	@Transient
 	public Integer getIndividualCount() {
 		return (hasFieldObservation()? getFieldObservation(true).getIndividualCount() : null );
 	}
@@ -1290,6 +1304,7 @@ public class DerivedUnitFacade {
 	}
 
 	//life stage
+	@Transient
 	public Stage getLifeStage() {
 		return (hasFieldObservation()? getFieldObservation(true).getLifeStage() : null );
 	}
@@ -1298,6 +1313,7 @@ public class DerivedUnitFacade {
 	}
 
 	//sex
+	@Transient
 	public Sex getSex() {
 		return (hasFieldObservation()? getFieldObservation(true).getSex() : null );
 	}
@@ -1344,6 +1360,7 @@ public class DerivedUnitFacade {
 	public void addDerivedUnitDefinition(String text, Language language) {
 		derivedUnit.addDefinition(text, language);
 	}
+	@Transient
 	public Map<Language, LanguageString> getDerivedUnitDefinitions(){
 		return this.derivedUnit.getDefinition();
 	}
@@ -1406,6 +1423,7 @@ public class DerivedUnitFacade {
 	 * Returns the media for the specimen.<BR>
 	 * @return
 	 */
+	@Transient
 	public List<Media> getDerivedUnitMedia() {
 		try {
 			List<Media> result = getMedia(derivedUnit, false);
@@ -1432,7 +1450,7 @@ public class DerivedUnitFacade {
 		derivedUnit.setAccessionNumber(accessionNumber);
 	}
 
-	//Catalog Number
+	@Transient
 	public String getCatalogNumber() {
 		return derivedUnit.getCatalogNumber();
 	}
@@ -1440,7 +1458,7 @@ public class DerivedUnitFacade {
 		derivedUnit.setCatalogNumber(catalogNumber);
 	}
 
-	//barcode
+	@Transient
 	public String getBarcode() {
 		return derivedUnit.getBarcode();
 	}
@@ -1456,6 +1474,7 @@ public class DerivedUnitFacade {
 	 * @see #DerivedUnitType
 	 * @return
 	 */
+	@Transient
 	public PreservationMethod getPreservationMethod() throws MethodNotSupportedByDerivedUnitTypeException {
 		if (derivedUnit.isInstanceOf(Specimen.class)){
 			return CdmBase.deproxy(derivedUnit, Specimen.class).getPreservation();
@@ -1485,6 +1504,7 @@ public class DerivedUnitFacade {
 	}
 
 	//Stored under name
+	@Transient
 	public TaxonNameBase getStoredUnder() {
 		return derivedUnit.getStoredUnder();
 	}
@@ -1493,6 +1513,7 @@ public class DerivedUnitFacade {
 	}
 
 	//colletors number
+	@Transient
 	public String getCollectorsNumber() {
 		return derivedUnit.getCollectorsNumber();
 	}
@@ -1537,7 +1558,7 @@ public class DerivedUnitFacade {
 		}
 		return result;
 	}
-	
+	@Transient
 	public String getExsiccatum() {
 		logger.warn("Exsiccatum method not yet supported. Needs model change");
 		return null;
@@ -1565,7 +1586,8 @@ public class DerivedUnitFacade {
 		derivedUnit.addSource(source);
 		return source;
 	}
-	
+
+	@Transient
 	public Set<IdentifiableSource> getSources(){
 		return derivedUnit.getSources();
 	}
@@ -1578,6 +1600,7 @@ public class DerivedUnitFacade {
 	/**
 	 * @return the collection
 	 */
+	@Transient
 	public Collection getCollection() {
 		return derivedUnit.getCollection();
 	}
