@@ -29,7 +29,7 @@ public class NormalExplicitActivator {
 
 	private static final String dbName = "cdm_test_jaxb";
 	private static String fileName = 
-		new String("C:\\Cichori-test.xls");
+		new String("D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\NormalExplicit.xls");
 	
 	private static final ICdmDataSource destinationDb = CdmDestinations.cdm_test_jaxb();
     private static final Logger logger = Logger.getLogger(NormalExplicitActivator.class);

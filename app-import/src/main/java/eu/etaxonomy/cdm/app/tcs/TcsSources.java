@@ -30,7 +30,10 @@ public class TcsSources {
 	
 	public static URI normalExplicit(){
 		try {
-			URL url = new URL("file:C:\\localCopy\\eclipse\\cdmlib\\trunk\\app-import\\src\\main\\resources\\excel\\NormalExplicit.xls");
+			//URL url = new URL("file:C:\\localCopy\\eclipse\\cdmlib\\trunk\\app-import\\src\\main\\resources\\excel\\NormalExplicit.xls");
+			
+			URL url = new File("D:\\NormalExplicit.xls").toURI().toURL();
+			
 			boolean exists = new File(url.getFile()).exists();
 			if (! exists) throw new RuntimeException("File not found: " + url);
 //			URL url = new TcsSources().getClass().getResource("excel/NormalExplicit.xls");

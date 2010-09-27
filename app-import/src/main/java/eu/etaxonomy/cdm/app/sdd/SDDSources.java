@@ -86,7 +86,10 @@ public class SDDSources {
 	}
 	
 	public static String Cichorieae_DA_export_sdd(){
-		URL url = new SDDSources().getClass().getResource("/sdd/Cichorieae-DA-export-sdd.xml");
+		String locationString = "/sdd/Xper2-import-export.sdd.xml";
+		//String locationString = "/sdd/Cichorieae-DA-export-sdd.xml";
+		
+		URL url = new SDDSources().getClass().getResource(locationString);
 		String sourceUrl = url.toString();
 		return sourceUrl;	
 	}

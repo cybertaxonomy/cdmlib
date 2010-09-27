@@ -8,6 +8,7 @@
  */
 
 package eu.etaxonomy.cdm.app.abcdImport;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -27,7 +28,10 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 //	final static String xmlSource = "/home/patricia/Desktop/multiABCD.xml";
-	final static String xmlSource = "file:D:/_Tagungen/2010-09 TDWG 2010/Workshop/data/specimen/Picris pauciflora/B-W14632-000_B-W14632-010_B100097145_B100097146_B100326668_B180004364_B180017717_.xml";
+	//final static String xmlSource = "D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\specimen\\Picris pauciflora\\B-W14632-000_B-W14632-010_B100097145_B100097146_B100326668_B180004364_B180017717_.xml";
+	final static String xmlSource = "D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\specimen\\Cichorium endivia 1\\B-W14812-000_B-W14812-010_B-W14812-020_B-W14812-030_B100066574_B100066583_.xml";
+	
+	
 	
 	
 	static final ICdmDataSource cdmDestination = CdmDestinations.local_cdm_edit_cichorieae_b();
@@ -40,7 +44,8 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 	public static void main(String[] args) {
 		URI source;
 		try {
-			source = new URI(xmlSource);
+			URI uri = new File(xmlSource).toURI();
+			source = new URI(uri.toString());
 			System.out.println(source.toString());
 			System.out.println("Start import from  ABCD Specimen data("+ source.toString() + ") ...");
 			

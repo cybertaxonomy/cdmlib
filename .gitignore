@@ -5,6 +5,7 @@ app-import/.project
 app-import/.settings
 app-import/.umlproject
 app-import/app-import.uml
+app-import/bin
 app-import/eu.etaxonomy.cdm.model.common.DefinedTermBase
 app-import/eu.etaxonomy.cdm.model.common.LanguageString
 app-import/eu.etaxonomy.cdm.model.description.DescriptionBase

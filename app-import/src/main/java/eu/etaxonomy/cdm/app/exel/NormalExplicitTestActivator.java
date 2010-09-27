@@ -36,7 +36,7 @@ public class NormalExplicitTestActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 //	static final String mySources = TcsSources.taxonX_local();
 	static final URI mySource = TcsSources.normalExplicit();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_tdwg2010();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 

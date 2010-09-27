@@ -179,52 +179,52 @@ public class MediaUtils {
 				Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
 				int representationCnt = 0;
 				for (MediaRepresentation representation : media.getRepresentations()) {
-					
-					Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
-					if (mather.matches()) {
-						int dwa = 0;
-						
-						//first the size is used for comparison
-						for (MediaRepresentationPart part : representation.getParts()) {
-							if (part.getSize()!= null){
-								int sizeOfPart = part.getSize();
-								int distance = sizeOfPart - size;
-								if (distance < 0) {
-									distance*= -1;
+					if(representation.getMimeType() != null){
+						Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
+						if (mather.matches()) {
+							int dwa = 0;
+							
+							//first the size is used for comparison
+							for (MediaRepresentationPart part : representation.getParts()) {
+								if (part.getSize()!= null){
+									int sizeOfPart = part.getSize();
+									int distance = sizeOfPart - size;
+									if (distance < 0) {
+										distance*= -1;
+									}
+									dwa += distance;
 								}
-								dwa += distance;
-							}
-							//if height and width/duration is defined, add this information, too
-							if (height != 0 && widthOrDuration != 0){
-								int dw = 0;
-								
-								if (part instanceof ImageFile) {
-									ImageFile image = (ImageFile) part;
-									dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
-								}
-								else if (part instanceof MovieFile){
-									MovieFile movie = (MovieFile) part;
-									dw = movie.getDuration() - widthOrDuration;
-											
-								}else if (part instanceof AudioFile){
-									AudioFile audio = (AudioFile) part;
-									dw = audio.getDuration() - widthOrDuration;
+								//if height and width/duration is defined, add this information, too
+								if (height != 0 && widthOrDuration != 0){
+									int dw = 0;
+									
+									if (part instanceof ImageFile) {
+										ImageFile image = (ImageFile) part;
+										dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
+									}
+									else if (part instanceof MovieFile){
+										MovieFile movie = (MovieFile) part;
+										dw = movie.getDuration() - widthOrDuration;
+												
+									}else if (part instanceof AudioFile){
+										AudioFile audio = (AudioFile) part;
+										dw = audio.getDuration() - widthOrDuration;
+										
+									}
+									if (dw < 0) {
+										dw *= -1;
+									}
+									dwa += dw;
 									
 								}
-								if (dw < 0) {
-									dw *= -1;
-								}
-								dwa += dw;
-								
 							}
+							dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
+							
+							//keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
+							
+							prefRepr.put((dwa + representationCnt++), representation);
 						}
-						dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
-						
-						//keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
-						
-						prefRepr.put((dwa + representationCnt++), representation);
-					}
-						
+					}		
 				}										
 			}
 		}
