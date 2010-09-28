@@ -190,14 +190,19 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			
 			TaxonBase taxonBase = null;
 			
+			String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
 			if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isDoMatchTaxa()){
-				String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+				titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
 				taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
+			}else{
+				taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
 				if (taxonBase != null){
-					logger.warn("Matching taxon found for " + titleCache);
+					logger.info("Matching taxon/synonym found for " + titleCache);
 				}
-			} 
-			if (taxonBase == null){
+			}
+			if (taxonBase != null){
+				logger.info("Matching taxon/synonym found for " + titleCache);
+			}else {
 				taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus, nc);
 			}
 			if (taxonBase == null){
