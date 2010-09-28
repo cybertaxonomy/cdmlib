@@ -613,9 +613,11 @@ public class IpniService  implements IIpniService{
 
 	private Map<Integer, String> getParameterMap(String headerLine) {
 		Map<Integer, String> result = new HashMap<Integer, String>();
-		String[] splits = headerLine.split("%");
-		for (int i = 0; i < splits.length ; i ++){
-			result.put(i, splits[i]);
+		if ( headerLine != null ){
+			String[] splits = headerLine.split("%");
+			for (int i = 0; i < splits.length ; i ++){
+				result.put(i, splits[i]);
+			}
 		}
 		return result;
 	}
