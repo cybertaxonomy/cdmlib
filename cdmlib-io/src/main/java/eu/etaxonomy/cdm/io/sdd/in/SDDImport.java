@@ -114,6 +114,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,Modifier> modifiers = new HashMap<String,Modifier>();
 	
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
+	private Set<TermVocabulary> vocabularies = new HashSet<TermVocabulary>();
 
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
@@ -529,6 +530,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		markerTypes.add(descriptiveConceptMarkerType);
 
 		//saving of all imported data into the CDM db
+		saveVocabularies();
 		saveFeatures();
 		saveModifiers();
 		saveStates();
@@ -649,6 +651,16 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		logger.info("end of persistence ...");
 		
 		return success;
+	}
+
+	/**
+	 * 
+	 */
+	private void saveVocabularies() {
+		for (TermVocabulary vocabulary : vocabularies ){
+			getVocabularyService().save(vocabulary);
+		}
+		
 	}
 
 	private void saveAnnotationType() {
@@ -940,6 +952,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				// <StateDefinition id="s1">
 				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
 				TermVocabulary<State> termVocabularyState = new TermVocabulary<State>();
+				
+				vocabularies.add(termVocabularyState);
+				
 				int k = 0;
 				//for each StateDefinition
 				for (Element elStateDefinition : elStateDefinitions){
