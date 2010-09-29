@@ -170,14 +170,15 @@ public abstract class NonViralNameParserImplRegExBase  {
     
     protected static int authorSeparatorMaxPosition = 4;  //Author may have a maximum of 4 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + ")";  
+    protected static String pSeriesPart = ",?" + fWs + "[sS]er(\\.)?" + oWs + "\\d{1,2},?";
     protected static String referenceTitleFirstPart = "(" + word + pTitleWordSeparator + ")";
-    protected static String referenceTitle = referenceTitleFirstPart + "*" + dotWord;  //reference title may have words seperated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word 
-    protected static String referenceTitleWithSepCharacters = "((" + referenceTitle  + anySepChar + ")*" + referenceTitle + ")"; //,?
+    protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + pSeriesPart + ")";  //reference title may have words seperated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word 
+    protected static String referenceTitleWithSepCharacters = "(((" + referenceTitle +"|\\(.+\\))"  + anySepChar + ")*" + referenceTitle + ")"; //,?
     //TODO test performance ??
-    protected static String referenceTitleWithSepCharactersAndBrackets = referenceTitleWithSepCharacters + fWs + "(\\(" + referenceTitleWithSepCharacters + "\\)"+fWs+ ")?(" + referenceTitleWithSepCharacters +")?" ; 
+    protected static String referenceTitleWithSepCharactersAndBrackets = referenceTitleWithSepCharacters + fWs + "(\\(" + referenceTitleWithSepCharacters + "\\)"+fWs+ ")?(" + referenceTitleWithSepCharacters +")?"  ; 
     
     protected static String referenceTitleWithoutAuthor = "(" + referenceTitleFirstPart + ")" + "{"+ (authorSeparatorMaxPosition -1) +",}" + dotWord + 
-    			anySepChar + referenceTitleWithSepCharactersAndBrackets;   //separators exist and first separator appears at position authorSeparatorMaxPosition or later
+    			anySepChar + referenceTitleWithSepCharactersAndBrackets ;   //separators exist and first separator appears at position authorSeparatorMaxPosition or later
    
     protected static String editionSeparator = "(" + oWs + "|," + fWs + ")ed\\.?" + oWs;  //
     protected static String pEdition = nr2;

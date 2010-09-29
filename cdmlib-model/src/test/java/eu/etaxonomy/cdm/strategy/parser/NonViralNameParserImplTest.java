@@ -18,6 +18,8 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 //import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
@@ -413,7 +416,7 @@ public class NonViralNameParserImplTest {
 		assertFullRefNameStandard(name4);
 		assertEquals(fullReferenceWithoutYear + " " + parsedYear, name4.getFullTitleCache());
 		ref = name4.getNomenclaturalReference();
-		assertEquals(eu.etaxonomy.cdm.model.reference.ReferenceType.Article, ref.getType());
+		assertEquals(ReferenceType.Article, ref.getType());
 		//article = (Article)ref;
 		assertEquals(parsedYear, ref.getYear());
 		journal = ((IArticle)ref).getInJournal();
@@ -781,27 +784,35 @@ public class NonViralNameParserImplTest {
 		//some full titles result in never ending parsing process https://dev.e-taxonomy.eu/trac/ticket/1556
 
 		String irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
+//		irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Uiuis Iuiui Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
 		NonViralName nvn = this.parser.parseReferencedName(irinaExample, NomenclaturalCode.ICZN, null);
+		int parsingProblem = nvn.getParsingProblem();
+		Assert.assertEquals("Name should have only rank warning", 1, parsingProblem);
 		Assert.assertEquals("Titlecache", "Milichiidae Sharp, 1899", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Milichiidae", nvn.getGenusOrUninomial());
 		
 		String anotherExample = "Scorzonera hispanica var. brevifolia Boiss. & Balansa in Boissier, Diagn. Pl. Orient., ser. 2 6: 119. 1859.";
 		nvn = this.parser.parseReferencedName(anotherExample, NomenclaturalCode.ICBN, null);
+		parsingProblem = nvn.getParsingProblem();
+		Assert.assertEquals("Problem should be 0", 0, parsingProblem);
 		Assert.assertEquals("Titlecache", "Scorzonera hispanica var. brevifolia Boiss. & Balansa", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Scorzonera", nvn.getGenusOrUninomial());
 		
 		String unparsable = "Taraxacum nevskii L., Trudy Bot. Inst. Nauk S.S.S.R., Ser. 1, Fl. Sist. Vyssh. Rast. 4: 293. 1937.";
 		String unparsableA = "Taraxacum nevskii L. in Trudy Bot. Inst. Nauk: 293. 1937.";
-		
 		nvn = this.parser.parseReferencedName(unparsable, NomenclaturalCode.ICBN, null);
 		Assert.assertEquals("Titlecache", "Taraxacum nevskii L.", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Taraxacum", nvn.getGenusOrUninomial());
+		parsingProblem = nvn.getParsingProblem();
+		Assert.assertEquals("Name should no warnings or errors", 0, parsingProblem);
 		
 		String unparsable2 = "Hieracium pxxx Dahlst., Kongl. Svenska Vetensk. Acad. Handl. ser. 2, 26(3): 255. 1894";
 		String unparsable2A = "Hieracium pxxx Dahlst., Kongl Svenska Vetensk Acad Handl, 26: 255. 1894.";
 		nvn = this.parser.parseReferencedName(unparsable2, NomenclaturalCode.ICBN, null);
 		Assert.assertEquals("Titlecache", "Hieracium pxxx Dahlst.", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Hieracium", nvn.getGenusOrUninomial());
+		parsingProblem = nvn.getParsingProblem();
+		Assert.assertEquals("Name should no warnings or errors", 0, parsingProblem);
 		
 		
 		String again = "Adiantum emarginatum Bory ex. Willd., Species Plantarum, ed. 4,5,1: 449,450. 1810";
@@ -809,6 +820,13 @@ public class NonViralNameParserImplTest {
 		Assert.assertEquals("Titlecache", "Adiantum emarginatum Bory ex Willd.", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Adiantum", nvn.getGenusOrUninomial());
 		
+	}
+	
+	@Test
+	public final void testSeriesPart(){
+		Pattern seriesPattern = Pattern.compile(NonViralNameParserImpl.pSeriesPart);
+		Matcher matcher = seriesPattern.matcher("ser. 2");
+		Assert.assertTrue("", matcher.matches());
 	}
 
 	/**
