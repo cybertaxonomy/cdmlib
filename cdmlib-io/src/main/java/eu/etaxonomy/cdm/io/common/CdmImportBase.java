@@ -391,6 +391,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}
 			ImageFile imf = ImageFile.NewInstance(multimediaObject, null, imd);
 			MediaRepresentation representation = MediaRepresentation.NewInstance();
+			representation.setMimeType(imd.getMimeType());
 			representation.addRepresentationPart(imf);
 			Media media = Media.NewInstance();
 			media.addRepresentation(representation);
