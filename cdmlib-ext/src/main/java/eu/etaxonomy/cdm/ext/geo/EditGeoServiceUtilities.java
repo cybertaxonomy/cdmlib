@@ -59,7 +59,7 @@ public class EditGeoServiceUtilities {
 	static {
 		defaultSpecimenOrObservationTypeColors = new HashMap<Class<? extends SpecimenOrObservationBase<?>>, Color>();
 		defaultSpecimenOrObservationTypeColors.put(FieldObservation.class, Color.ORANGE);
-		defaultSpecimenOrObservationTypeColors.put(DerivedUnit.class, Color.YELLOW);
+		defaultSpecimenOrObservationTypeColors.put(DerivedUnit.class, Color.RED);
 		defaultSpecimenOrObservationTypeColors.put(LivingBeing.class, Color.GREEN);
 		defaultSpecimenOrObservationTypeColors.put(Observation.class, Color.ORANGE);
 		defaultSpecimenOrObservationTypeColors.put(Specimen.class, Color.GRAY);
