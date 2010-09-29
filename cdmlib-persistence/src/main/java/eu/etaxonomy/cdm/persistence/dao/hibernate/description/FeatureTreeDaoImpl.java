@@ -18,6 +18,7 @@ import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -84,8 +85,13 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
 		TermVocabulary featureVocabulary = termVocabularyDao.findByUuid(VocabularyEnum.Feature.getUuid());
 		
 		List<Feature> featureList = new ArrayList<Feature>(featureVocabulary.getTerms());
-				
-		FeatureTree featureTree = FeatureTree.NewInstance(featureList);
+		List<Feature> selectedFeatures = new ArrayList<Feature>();
+		for(Feature feature : featureList){
+			if(!feature.equals(Feature.INDIVIDUALS_ASSOCIATION())){
+				selectedFeatures.add(feature);
+			}
+		}
+		FeatureTree featureTree = FeatureTree.NewInstance(selectedFeatures);
 		featureTree.setUuid(DefaultFeatureTreeUuid);
 		return featureTree;
 	}
