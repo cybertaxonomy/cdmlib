@@ -2,13 +2,18 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -67,8 +72,35 @@ public class DistributionTree extends Tree<Distribution>{
 		return result;
 	}
 	
+	private List<Distribution> orderDistributionsByLevel(List<Distribution> distList){
+		boolean flag = true;
+		int length = distList.size()-1;
+		Distribution dist;
+		List<Distribution> orderedList = new ArrayList<Distribution>(length);
+		orderedList.addAll(distList);
+		
+		for (int i = 0; i < length && flag; i++) {
+			flag = false;
+			for (int j = 0; j < length-1; j++) {
+				String level1 = orderedList.get(j).getArea().getLevel().toString();
+				String level2 = orderedList.get(j+1).getArea().getLevel().toString();
+				//if level from j+1 is greater than level from j
+				if (level2.compareTo(
+						level1) < 0) {
+					dist = orderedList.get(j);
+					orderedList.set(j, orderedList.get(j+1));
+					orderedList.set(j+1, dist);
+					flag = true;					
+				}
+			}
+		}
+		return orderedList;
+	}
+	
 	public void merge(List<Distribution> distList, Set<NamedAreaLevel> omitLevels){
-		for (Distribution distribution : distList) {
+		List<Distribution> orderedDistList = orderDistributionsByLevel(distList);
+	
+		for (Distribution distribution : orderedDistList) {
 			List<NamedArea> levelList = 
 				this.getAreaLevelPathList(distribution.getArea(), omitLevels);
 			mergeAux(distribution, distribution.getArea().getLevel(), levelList, this.getRootElement());
@@ -98,6 +130,7 @@ public class DistributionTree extends Tree<Distribution>{
 				 		  TreeNode<Distribution> root){
 		TreeNode<Distribution> highestDistNode;
 		TreeNode<Distribution> child;// the new child to add or the child to follow through the tree
+				
 		//if the list to merge is empty finish the execution
 		if (areaHierarchieList.isEmpty()) {
 			return;
