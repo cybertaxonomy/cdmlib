@@ -33,11 +33,11 @@ public class NormalExplicitTestActivator {
 	private static final Logger logger = Logger.getLogger(NormalExplicitTestActivator.class);
 	
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 //	static final String mySources = TcsSources.taxonX_local();
 	static final URI mySource = TcsSources.normalExplicit();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_tdwg2010();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_tdwg2010();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 
 	static final UUID treeUuid = UUID.fromString("00505000-0c97-48ac-8d33-6099ed68c625");
