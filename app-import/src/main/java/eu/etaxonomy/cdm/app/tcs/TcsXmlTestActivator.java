@@ -35,8 +35,8 @@ public class TcsXmlTestActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.tcsXml_cichorium();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
