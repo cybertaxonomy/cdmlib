@@ -1694,7 +1694,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 					}
 				}
 				catch (Exception e) {
-					logger.warn("Import of DescriptiveConcept " + j + " failed.");
+					logger.warn("Import of DescriptiveConcept " + j + " failed: " + e.getMessage());
 				}
 				if ((++j % modCount) == 0){ logger.info("DescriptiveConcepts handled: " + j);}
 
