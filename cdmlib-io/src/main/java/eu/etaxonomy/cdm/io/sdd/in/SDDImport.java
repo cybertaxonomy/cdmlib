@@ -521,14 +521,8 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		importTaxonNames(elDataset, sddNamespace, sddConfig);
 
 		importDescriptiveConcepts(elDataset, sddNamespace, sddConfig);
-		//FIXME delete
-		getTermService().getLanguageByIso("la");
 		success &= importCharacters(elDataset, sddNamespace, sddConfig);
 		importCharacterTrees(elDataset, sddNamespace, sddConfig, success);
-
-		//FIXME delete
-		getTermService().getLanguageByIso("la");
-
 		
 		MarkerType editorMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerEditor, "editor", "Editor", "edt");
 		MarkerType geographicAreaMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerSDDGeographicArea, "SDDGeographicArea", "SDDGeographicArea", "ga"); 
@@ -536,10 +530,6 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		markerTypes.add(editorMarkerType);
 		markerTypes.add(geographicAreaMarkerType);
 		markerTypes.add(descriptiveConceptMarkerType);
-
-		//FIXME delete
-		getTermService().getLanguageByIso("la");
-
 		
 		//saving of all imported data into the CDM db
 		saveVocabularies();
@@ -551,10 +541,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		saveUnits();
 		saveStatisticalMeasure();		
 		saveAnnotationType();
-		
-		//FIXME delete
-		getTermService().getLanguageByIso("la");
-		
+
 		success &= importCodedDescriptions(elDataset, sddNamespace, sddConfig);
 		importAgents(elDataset, sddNamespace, sddConfig, success);
 		importPublications(elDataset, sddNamespace, sddConfig, success);
@@ -562,7 +549,6 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		importTaxonHierarchies(elDataset, sddNamespace, sddConfig, success);
 		importGeographicAreas(elDataset, sddNamespace, sddConfig);
 		importSpecimens(elDataset,sddNamespace, sddConfig);
-			
 		
 		
 		if ((authors != null)||(editors != null)) {
@@ -580,7 +566,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 					edit.addMarker(marker);
 					team.addTeamMember(edit);
 				}
-				}
+			}
 			sec.setAuthorTeam(team);
 			sourceReference.setAuthorTeam(team);
 		}
