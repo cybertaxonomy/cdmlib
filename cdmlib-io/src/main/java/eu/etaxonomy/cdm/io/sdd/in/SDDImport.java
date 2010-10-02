@@ -513,14 +513,22 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	protected boolean importDataset(Element elDataset, Namespace sddNamespace, SDDImportState state){			// <Dataset xml:lang="en-us">
 		boolean success = true;
 		SDDImportConfigurator sddConfig = state.getConfig();
+
 		importDatasetLanguage(elDataset,sddConfig);
 		importDatasetRepresentation(elDataset, sddNamespace);
 		importRevisionData(elDataset, sddNamespace);
 		importIPRStatements(elDataset, sddNamespace, sddConfig);
 		importTaxonNames(elDataset, sddNamespace, sddConfig);
+
 		importDescriptiveConcepts(elDataset, sddNamespace, sddConfig);
+		//FIXME delete
+		getTermService().getLanguageByIso("la");
 		success &= importCharacters(elDataset, sddNamespace, sddConfig);
 		importCharacterTrees(elDataset, sddNamespace, sddConfig, success);
+
+		//FIXME delete
+		getTermService().getLanguageByIso("la");
+
 		
 		MarkerType editorMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerEditor, "editor", "Editor", "edt");
 		MarkerType geographicAreaMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerSDDGeographicArea, "SDDGeographicArea", "SDDGeographicArea", "ga"); 
@@ -529,6 +537,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		markerTypes.add(geographicAreaMarkerType);
 		markerTypes.add(descriptiveConceptMarkerType);
 
+		//FIXME delete
+		getTermService().getLanguageByIso("la");
+
+		
 		//saving of all imported data into the CDM db
 		saveVocabularies();
 		saveFeatures();
@@ -539,6 +551,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		saveUnits();
 		saveStatisticalMeasure();		
 		saveAnnotationType();
+		
+		//FIXME delete
+		getTermService().getLanguageByIso("la");
 		
 		success &= importCodedDescriptions(elDataset, sddNamespace, sddConfig);
 		importAgents(elDataset, sddNamespace, sddConfig, success);
@@ -1716,80 +1731,17 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
-						FeatureTree feattree =  FeatureTree.NewInstance();
-						importRepresentation(elCharacterTree, sddNamespace, feattree, "", sddConfig);
-						FeatureNode root = feattree.getRoot();
-						List<Element> listelNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
+					FeatureTree feattree =  FeatureTree.NewInstance();
+					importRepresentation(elCharacterTree, sddNamespace, feattree, "", sddConfig);
+					FeatureNode root = feattree.getRoot();
+					List<Element> listelNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
 
 					//Nodes of CharacterTrees in SDD always refer to DescriptiveConcepts
-						for (Element elNodes : listelNodes) {
-							List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
-							if (listNodes != null) {
-								for (Element elNode : listNodes){
-									String idN = elNode.getAttributeValue("id");
-									FeatureNode fn = null;
-								Feature dc = null;
-								if (idN!=null) {
-									// DescriptiveConcepts are used as nodes in CharacterTrees
-										Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
-										if (elDescriptiveConcept != null){
-											String refDC = elDescriptiveConcept.getAttributeValue("ref");
-										dc = features.get(refDC);
-										fn = FeatureNode.NewInstance(dc);
-										}
-									if (fn==null){
-											fn = FeatureNode.NewInstance();
-										}
-										Element elParent = elNode.getChild("Parent", sddNamespace);
-									// in SDD links between Nodes are referenced by the <Parent> tag
-										if (elParent!=null){
-											String refP = elParent.getAttributeValue("ref");
-										if (refP!=null) {
-											FeatureNode parent = featureNodes.get(refP);
-											if (parent==null){
-												root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
-											}
-											else {
-												parent.addChild(fn);
-											}
-										}
-									}
-										else {
-										root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
-										}
-									}
-								featureNodes.put(idN, fn);
-								}
-						}
-
-						// Leaves of CharacterTrees in SDD are always CharNodes (referring to Characters)
-								List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
-						if (listCharNodes != null) {
-								for (Element elCharNode : listCharNodes){
-									Element elParent = elCharNode.getChild("Parent", sddNamespace);
-									Element elCharacter = elCharNode.getChild("Character", sddNamespace);							
-									FeatureNode fn = FeatureNode.NewInstance();
-									if (elParent!=null){
-										String refP = elParent.getAttributeValue("ref");
-										if ((refP!=null)&&(!refP.equals(""))) {
-										FeatureNode parent = featureNodes.get(refP);
-											if (parent==null){
-											parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
-											}
-											parent.addChild(fn);
-										}
-									}
-									String refC = elCharacter.getAttributeValue("ref");
-									if ((refC!=null)&&(!refC.equals(""))){
-										Feature character = features.get(refC);
-										fn.setFeature(character);
-								featureNodes.put(refC, fn);
-									}
-							}		
-									}
-								}
-						featureTrees.add(feattree);
+					for (Element elNodes : listelNodes) {
+						handleCharacterNodes(sddNamespace, root, elNodes);
 					}
+					featureTrees.add(feattree);
+				}
 
 				catch (Exception e) {
 					logger.warn("Import of Character tree " + j + " failed.");
@@ -1799,6 +1751,78 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 			}
 
+		}
+	}
+
+	/**
+	 * @param sddNamespace
+	 * @param root
+	 * @param elNodes
+	 */
+	private void handleCharacterNodes(Namespace sddNamespace, FeatureNode root, Element elNodes) {
+		List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
+		if (listNodes != null) {
+			for (Element elNode : listNodes){
+				String idN = elNode.getAttributeValue("id");
+				FeatureNode fn = null;
+				Feature dc = null;
+				if (idN!=null) {
+					// DescriptiveConcepts are used as nodes in CharacterTrees
+					Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
+					if (elDescriptiveConcept != null){
+						String refDC = elDescriptiveConcept.getAttributeValue("ref");
+						dc = features.get(refDC);
+						fn = FeatureNode.NewInstance(dc);
+					}
+					if (fn==null){
+						fn = FeatureNode.NewInstance();
+					}
+					Element elParent = elNode.getChild("Parent", sddNamespace);
+					// in SDD links between Nodes are referenced by the <Parent> tag
+					if (elParent!=null){
+						String refP = elParent.getAttributeValue("ref");
+						if (refP!=null) {
+							FeatureNode parent = featureNodes.get(refP);
+							if (parent==null){
+								root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
+							}
+							else {
+								parent.addChild(fn);
+							}
+						}
+					}
+					else {
+						root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
+					}
+				}
+				featureNodes.put(idN, fn);
+			}
+		}
+
+		// Leaves of CharacterTrees in SDD are always CharNodes (referring to Characters)
+		List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
+		if (listCharNodes != null) {
+			for (Element elCharNode : listCharNodes){
+				Element elParent = elCharNode.getChild("Parent", sddNamespace);
+				Element elCharacter = elCharNode.getChild("Character", sddNamespace);							
+				FeatureNode fn = FeatureNode.NewInstance();
+				if (elParent!=null){
+					String refP = elParent.getAttributeValue("ref");
+					if ((refP!=null)&&(!refP.equals(""))) {
+					FeatureNode parent = featureNodes.get(refP);
+						if (parent==null){
+						parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
+						}
+						parent.addChild(fn);
+					}
+				}
+				String refC = elCharacter.getAttributeValue("ref");
+				if ((refC!=null)&&(!refC.equals(""))){
+					Feature character = features.get(refC);
+					fn.setFeature(character);
+					featureNodes.put(refC, fn);
+				}
+			}		
 		}
 	}
 
