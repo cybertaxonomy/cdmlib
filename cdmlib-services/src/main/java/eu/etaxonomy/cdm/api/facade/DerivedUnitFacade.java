@@ -940,7 +940,7 @@ public class DerivedUnitFacade {
 	}
 	
 	/**
-	 * Returns a sexagesimal representation of the exact location (e.g. 12°59'N, 35°23E).
+	 * Returns a sexagesimal representation of the exact location (e.g. 12Â°59'N, 35Â°23E).
 	 * If the exact location is <code>null</code> the empty string is returned.
 	 * @param includeEmptySeconds
 	 * @param includeReferenceSystem

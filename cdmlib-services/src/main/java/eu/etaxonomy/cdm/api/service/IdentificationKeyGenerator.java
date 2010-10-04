@@ -198,7 +198,7 @@ public class IdentificationKeyGenerator {
 		return feature;
 	}
 	
-	// réutiliser et vérif si rien de trop
+	// rutiliser et vrif si rien de trop <- FIXME please do not comment in french or at least use proper file encoding
 	private float DefaultMeanScore(int nTaxons){
 		int i;
 		float score=0;
