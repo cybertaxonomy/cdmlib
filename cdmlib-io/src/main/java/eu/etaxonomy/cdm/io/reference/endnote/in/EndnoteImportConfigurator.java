@@ -48,7 +48,7 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	
 	//	rdfNamespace
 	Namespace EndnoteNamespace;
-/*TODO: wieder zurück!!!
+/*TODO: wieder zurÃ¼ck!!!
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			EndnoteRecordsImport.class

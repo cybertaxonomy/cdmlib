@@ -122,7 +122,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					String initials = null;
 					for (int j = 1; j <= rs.getMetaData().getColumnCount(); j++){
 						String label = rs.getMetaData().getColumnLabel(j);
-						if (label.equalsIgnoreCase("Initials") || label.equalsIgnoreCase("Kürzel")){
+						if (label.equalsIgnoreCase("Initials") || label.equalsIgnoreCase("KÃ¼rzel")){
 							initials = rs.getString(j);
 							break;
 						}

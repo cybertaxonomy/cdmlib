@@ -841,7 +841,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		if (value.startsWith(replacementString) ){
 			value = value.substring(replacementString.length()).trim();
 		}
-		while (value.startsWith("-") || value.startsWith("–") ){
+		while (value.startsWith("-") || value.startsWith("â€“") ){
 			value = value.substring("-".length()).trim();
 		}
 		return value;
@@ -1007,7 +1007,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 */
 	protected String removeStartingTypeRefMinus(String typeRef) {
 		typeRef = replaceStart(typeRef, "-");
-		typeRef = replaceStart(typeRef, "—");
+		typeRef = replaceStart(typeRef, "â€”");
 		typeRef = replaceStart(typeRef, "\u002d");
 		typeRef = replaceStart(typeRef, "\u2013");
 		typeRef = replaceStart(typeRef, "--");
@@ -1034,7 +1034,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		//create name
 		BotanicalName nameType = (BotanicalName)parser.parseFullName(typeText, NomenclaturalCode.ICBN, Rank.SPECIES());
 		((NameTypeDesignation) typeDesignation).setTypeName(nameType);
-		//TODO wie können NameTypes den Namen zugeordnet werden? -  wird aber vom Portal via NameCache matching gemacht
+		//TODO wie kÃ¶nnen NameTypes den Namen zugeordnet werden? -  wird aber vom Portal via NameCache matching gemacht
 	}
 
 
@@ -1217,7 +1217,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		}
 		
 		//test nom element has no text
-		if (StringUtils.isNotBlank(elNom.getTextNormalize().replace("—", "").replace("\u002d","").replace("\u2013", ""))){
+		if (StringUtils.isNotBlank(elNom.getTextNormalize().replace("â€”", "").replace("\u002d","").replace("\u2013", ""))){
 			String strElNom = elNom.getTextNormalize();
 			if ("?".equals(strElNom)){
 				handleQuestionMark(name, taxon);

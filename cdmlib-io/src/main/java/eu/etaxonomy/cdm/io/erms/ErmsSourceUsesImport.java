@@ -300,7 +300,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 */
 	private IdentifiableEntity makeCombinationReference(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		// Kopie von Orig. Comb.
-		//TODO ist das wirklich der richtige Name, oder muss ein verknüpfter Name verwendet werden
+		//TODO ist das wirklich der richtige Name, oder muss ein verknÃ¼pfter Name verwendet werden
 		TaxonNameBase taxonName = (TaxonNameBase)state.getRelatedObject(ErmsTaxonImport.NAME_NAMESPACE, strTaxonId);
 		taxonName.setNomenclaturalReference(ref);
 		taxonName.setNomenclaturalMicroReference(strPageNr);

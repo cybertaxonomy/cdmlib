@@ -217,7 +217,7 @@ public final class ErmsTransformer extends InputTransformerBase {
 		}else if (ermsAbbrev.equals("de")){return Language.GERMAN();
 //		}else if (ermsAbbrev.equals("ec")){return Language.ENGLISH-CANADIAN();  //no iso
 		}else if (ermsAbbrev.equals("ee")){return Language.ESTONIAN();
-//		}else if (ermsAbbrev.equals("ek")){return Language.EVEN-KAMCHATKA(); //iso639-3: eve    Lamut, Ewen, Eben, Orich, Ilqan; Russian: ???´????? ???´?, earlier also ????????? ???´?) is a Tungusic language spoken by the Evens in Siberia
+//		}else if (ermsAbbrev.equals("ek")){return Language.EVEN-KAMCHATKA(); //iso639-3: eve    Lamut, Ewen, Eben, Orich, Ilqan; Russian: ???Â´????? ???Â´?, earlier also ????????? ???Â´?) is a Tungusic language spoken by the Evens in Siberia
 		}else if (ermsAbbrev.equals("en")){return Language.ENGLISH();
 		}else if (ermsAbbrev.equals("ep")){return Language.ESPERANTO();
 		}else if (ermsAbbrev.equals("es")){return Language.SPANISH_CATALAN();

@@ -1017,9 +1017,9 @@ public final class PesiTransformer {
 	public static String STR_AREA_CORVO = "Corvo";
 	public static String STR_AREA_FAIAL = "Faial";
 	public static String STR_AREA_GRACIOSA = "Graciosa";
-	public static String STR_AREA_SAO_JORGE = "São Jorge";
+	public static String STR_AREA_SAO_JORGE = "SÃ£o Jorge";
 	public static String STR_AREA_FLORES = "Flores";
-	public static String STR_AREA_SAO_MIGUEL = "São Miguel";
+	public static String STR_AREA_SAO_MIGUEL = "SÃ£o Miguel";
 	public static String STR_AREA_PICO = "Pico";
 	public static String STR_AREA_SANTA_MARIA = "Santa Maria";
 	public static String STR_AREA_TERCEIRA = "Terceira";
@@ -1102,7 +1102,7 @@ public final class PesiTransformer {
 	public static String STR_AREA_RUSSIA_NORTHERN = "Russia Northern";
 	public static String STR_AREA_RUSSIA_SOUTHWEST = "Russia Southwest";
 	public static String STR_AREA_SARDEGNA = "Sardegna";
-	public static String STR_AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN = "Svalbard with Björnöya and Jan Mayen";
+	public static String STR_AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN = "Svalbard with BjÃ¶rnÃ¶ya and Jan Mayen";
 	public static String STR_AREA_SELVAGENS_ISLANDS = "Selvagens Islands";
 	public static String STR_AREA_SICILY_WITH_MALTA = "Sicily with Malta";
 	public static String STR_AREA_MALTA = "Malta";

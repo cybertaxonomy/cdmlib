@@ -66,8 +66,8 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.NOMENCLATURAL_STANDARD(), "NomStandard"));
 		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.AREA_OF_INTREREST(), "AreaOfInterest"));
 		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(), "Initials"));
-//		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(),Kürzel")); //Initials used instead
-//		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(), "DraftKürz")); //Initials used instead
+//		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(),KÃ¼rzel")); //Initials used instead
+//		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(), "DraftKÃ¼rz")); //Initials used instead
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 		
 		return mapping;
