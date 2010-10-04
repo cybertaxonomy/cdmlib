@@ -483,13 +483,13 @@ public class IpniService  implements IIpniService{
 			String latMinutes = CdmUtils.Nz(valueMap.get(LATITUDE_MINUTES));
 			String latSeconds = CdmUtils.Nz(valueMap.get(LATITUDE_SECONDS));
 			String direction = CdmUtils.Nz(valueMap.get(NORTH_OR_SOUTH));
-			String latitude = latDegrees + "°" + latMinutes + "'" + latSeconds + "\"" + direction;
+			String latitude = latDegrees + "Â°" + latMinutes + "'" + latSeconds + "\"" + direction;
 			
 			String lonDegrees = CdmUtils.Nz(valueMap.get(LATITUDE_DEGREES));
 			String lonMinutes = CdmUtils.Nz(valueMap.get(LATITUDE_MINUTES));
 			String lonSeconds = CdmUtils.Nz(valueMap.get(LATITUDE_SECONDS));
 			direction = CdmUtils.Nz(valueMap.get(EAST_OR_WEST));
-			String longitude = lonDegrees + "°" + lonMinutes + "'" + lonSeconds + "\"" + direction;
+			String longitude = lonDegrees + "Â°" + lonMinutes + "'" + lonSeconds + "\"" + direction;
 
 			
 			specimen.setExactLocationByParsing(longitude, latitude, null, null);
