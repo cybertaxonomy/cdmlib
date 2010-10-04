@@ -123,7 +123,7 @@ public class TaxonGenerator {
 		taxonDescription.addElement(textData);
 		
 		//commonName
-		String commonNameString = "Schönveilchen";
+		String commonNameString = "SchÃ¶nveilchen";
 		CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
 		taxonDescription.addElement(commonName);
 		
