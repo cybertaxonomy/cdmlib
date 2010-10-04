@@ -123,7 +123,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 		assertEquals("page 1 should be sorted alphabetically","Arum lucanum Cavara & Grande",page1.get(29).getName().getTitleCache());
 		assertEquals("page 2 should contain 16 taxa",16,page2.size());
 		assertEquals("page 2 should be sorted alphabetically","Arum maculatum L.",page2.get(0).getName().getTitleCache());
-		assertEquals("page 2 should be sorted alphabetically","Arum x sooi Terpó",page2.get(15).getName().getTitleCache());
+		assertEquals("page 2 should be sorted alphabetically","Arum x sooi TerpÃ³",page2.get(15).getName().getTitleCache());
     }
     
     @Test
