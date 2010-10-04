@@ -165,7 +165,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1\"N, 12°18'E (WGS84), sand dunes, 05.05.2005 (B 8909756); flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10¡34'1\"N, 12¡18'E (WGS84), sand dunes, 05.05.2005 (B 8909756); flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
