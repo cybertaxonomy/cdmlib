@@ -155,10 +155,21 @@ public class IpniServiceTest {
 		//20009158-1%1.2%Pinaceae%%N%Abies%%N%alba%apennina%subsp.%Brullo, Scelsi & Spamp.%%Brullo, Scelsi & Spamp.%Abies alba subsp. apennina%Vegetaz. Aspromonte%41 (2001)%2001%%%%%%Italy%tax. nov.
 
 		Assert.assertEquals("There should be exactly 1 result for 'Species Plantarum, Edition 3'", 1, refList.size());
-		ReferenceBase name = refList.get(0);
+		ReferenceBase ref = refList.get(0);
 		//title cache
-		Assert.assertEquals("Title Cache for Abies albertiana should be 'Species Plantarum, Edition 3'", "Species Plantarum, Edition 3. 1764", name.getTitleCache());
+		//the author title may be improved in future
+		Assert.assertEquals("Title Cache should be 'Linnaeus, Carl, Species Plantarum, Edition 3'", "Linnaeus, Carl, Species Plantarum, Edition 3. 1764", ref.getTitleCache());
 
+		
+		refList = service1.getPublications("Flora of Macar", null, services, config);
+		Assert.assertNotNull("Empty resultset should not throw exception and should not be null", refList);
+			
+		refList = service1.getPublications("Flora Europaea [ed. 2]", null, services, config);
+		Assert.assertEquals("There should be exactly 1 result for 'Flora Europaea [ed. 2]'", 1, refList.size());
+		ref = refList.get(0);
+		Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorTeam().getTitleCache());
+		
+		
 //		for (ReferenceBase ref : refList){
 //			System.out.println(ref.getTitleCache());
 //		}

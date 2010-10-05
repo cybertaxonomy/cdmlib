@@ -304,6 +304,13 @@ public class IpniService  implements IIpniService{
 	}
 
 
+	/**
+	 * @param line
+	 * @param parameterMap
+	 * @param appConfig
+	 * @param config
+	 * @return
+	 */
 	private ReferenceBase getPublicationFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig, IpniServicePublicationConfigurator config) {
 		//fill value map
 		String[] splits = line.split("%");
@@ -330,22 +337,38 @@ public class IpniService  implements IIpniService{
 		ref.setPlacePublished(valueMap.get(PLACE));
 
 		String author = valueMap.get(PUBLICATION_AUTHOR_TEAM);
-		Team team = Team.NewTitledInstance(author, author);
-		ref.setAuthorTeam(team);
+		if (StringUtils.isNotBlank(author)){
+			Team team = Team.NewTitledInstance(author, author);
+			ref.setAuthorTeam(team);
+		}
 		
 		//remarks
 		String remarks = valueMap.get(REMARKS);
 		Annotation annotation = Annotation.NewInstance(remarks, AnnotationType.EDITORIAL(), Language.ENGLISH());
 		ref.addAnnotation(annotation);
 
+
+		String tl2AuthorString = valueMap.get(TL2_AUTHOR);
+		if (ref.getAuthorTeam() == null){
+			Team tl2Author = Team.NewTitledInstance(tl2AuthorString, null);
+			ref.setAuthorTeam(tl2Author);
+		}else{
+			//TODO parse name, 
+			ref.getAuthorTeam().setTitleCache(tl2AuthorString, true);
+			ref.addAnnotation(Annotation.NewInstance(tl2AuthorString, AnnotationType.EDITORIAL(), Language.ENGLISH()));
+		}
+
+		
 		//dates
 		TimePeriod date = TimePeriod.parseString(valueMap.get(DATE));
 		ref.setDatePublished(date);
+
 
 		//source
 		ReferenceBase citation = getIpniCitation(appConfig);
 		ref.addSource(valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
 
+		
 		
 /*		TODO
 		BPH number
@@ -353,7 +376,6 @@ public class IpniService  implements IIpniService{
 		In publication facade
 		LC number
 		Preceded by
-		TL2 author
 		TL2 number
 		TDWG abbreviation
 	*/
