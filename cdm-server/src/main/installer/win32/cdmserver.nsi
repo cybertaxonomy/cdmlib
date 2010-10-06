@@ -15,10 +15,12 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-!define COPYRIGHT_FILE "..\templates\copyright"
+!define COPYRIGHT_FILE "..\templates\copyright.txt"
 !define DATASOURCES_FILE "..\templates\.cdmLibrary\datasources.xml"
-!define JAR_FILE "..\..\..\..\target\cdmserver-standalone.jar"
+!define JAR_FILE "..\..\..\..\target\cdm-server-2.5.jar"
 
+!define JAR_FILE_NAME "cdm-server-2.5.jar"
+!define COPYRIGHT_FILE_NAME "copyright.txt"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -118,8 +120,8 @@ Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
   ;Delete "$INSTDIR\logs\cdmserverLog.txt"
-  Delete "$INSTDIR\license\license.txt"
-  Delete "$INSTDIR\libs\cdmserver-standalone.jar"
+  Delete "$INSTDIR\license\${COPYRIGHT_FILE_NAME}"
+  Delete "$INSTDIR\libs\${JAR_FILE_NAME}"
   Delete "$INSTDIR\libs\.cdmLibrary\datasources.xml"
   Delete "$INSTDIR\bin\cdmserver.bat"
   Delete "$INSTDIR\bin\cdmserver.exe"

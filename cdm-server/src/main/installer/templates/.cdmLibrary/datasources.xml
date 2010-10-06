@@ -27,7 +27,7 @@
        ======================================================-->
  
     <!-- the default data sources can be mapped to a specific URL root folder   -->
-    <bean id="myCDMServerInstance1"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="myCDMServerInstance1"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="user" value="edit"/>
         <property name="password" value="wp5"/>
@@ -47,5 +47,13 @@
         <property name="password" value="123"/>
         <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_3"/>
     </bean>
+    
+    <bean id="palmae"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="edit"/>
+        <property name="password" value="wp5"/>
+        <property name="url" value="jdbc:mysql://160.45.63.201/cdm_edit_palmae_b"/>
+    </bean>
+    
     -->
 </beans>

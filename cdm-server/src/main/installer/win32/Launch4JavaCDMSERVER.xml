@@ -1,7 +1,7 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>console</headerType>
-  <jar>C:\Dokumente und Einstellungen\f.revilla\Desktop\cdmlib-remote\target\cdmserver-standalone.jar</jar>
+  <jar>C:\Dokumente und Einstellungen\f.revilla\Eigene Dateien\dev\cdm-server\target\cdm-server-2.5.jar</jar>
   <outfile>cdmserver\bin\cdmserver.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
@@ -18,6 +18,6 @@
     <minVersion>1.5.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <opt>-Xmx1024M -jar &quot;%CD%..\\libs\\cdmserver-standalone.jar&quot; --httpPort=8080 --ajp13Port=-1 --logfile=%CD%..\\logs\\cdmserverLog.txt</opt>
+    <opt>-Xmx1024M -jar &quot;%CD%..\\libs\\cdm-server-2.5.jar&quot; --httpPort=8080 --ajp13Port=-1 --logfile=%CD%..\\logs\\cdmserverLog.txt</opt>
   </jre>
 </launch4jConfig>
