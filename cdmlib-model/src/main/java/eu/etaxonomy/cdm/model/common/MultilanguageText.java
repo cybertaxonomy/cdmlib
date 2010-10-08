@@ -37,8 +37,8 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	 * Factory method
 	 * @return
 	 */
-	public static IMultiLanguageText NewInstance(LanguageString languageString){
-		IMultiLanguageText result =  new MultilanguageText(languageString);
+	public static MultilanguageText NewInstance(LanguageString languageString){
+		MultilanguageText result =  new MultilanguageText(languageString);
 		return result;
 	}
 	

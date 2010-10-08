@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created Sep 18, 2009
  * @version 1.0
  */
-public interface ITreeNode extends ICdmBase {
+public interface ITreeNode extends IAnnotatableEntity {
 
 	/**
 	 * Adds a taxon node as a child of the ITreeNode
