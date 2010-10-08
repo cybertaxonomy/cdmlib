@@ -72,7 +72,11 @@ public class TableNameChanger extends SchemaUpdaterStepBase implements ISchemaUp
 		}
 		updateQuery = updateQuery.replace("@oldName", oldName);
 		updateQuery = updateQuery.replace("@newName", newName);
-		datasource.executeQuery(updateQuery);
+		try {
+			datasource.executeQuery(updateQuery);
+		} catch (SQLException e) {
+			monitor.warning("Could not perform rename table operation", e);
+		}
 		return true;
 	}
 

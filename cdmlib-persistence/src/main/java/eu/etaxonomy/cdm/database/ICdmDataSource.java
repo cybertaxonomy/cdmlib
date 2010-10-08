@@ -80,9 +80,11 @@ public interface ICdmDataSource {
 	/**
 	 * Tests, if a database connection can be established.
 	 * @return true if test was successful, false otherwise
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
 	 * @throws Exception 
 	 */
-	public boolean testConnection() throws DataSourceNotFoundException;
+	public boolean testConnection() throws ClassNotFoundException, SQLException;
 	
 	public String getUsername();
 	
@@ -91,8 +93,9 @@ public interface ICdmDataSource {
 	 /**
      * Executes a query and returns the ResultSet.
      * @return ResultSet for the query.
+	 * @throws SQLException 
      */
-	public ResultSet executeQuery (String query);
+	public ResultSet executeQuery (String query) throws SQLException;
 	
     /**
      * Executes an update

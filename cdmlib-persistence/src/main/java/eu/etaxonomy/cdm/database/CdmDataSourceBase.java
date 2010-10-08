@@ -54,22 +54,17 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
 	 */
-	public boolean testConnection() throws DataSourceNotFoundException {
+	public boolean testConnection() throws ClassNotFoundException, SQLException {
 
 		IDatabaseType dbType = getDatabaseType().getDatabaseType();
 		String classString = dbType.getClassString();
-		try {
-			Class.forName(classString);
-			String mUrl = dbType.getConnectionString(this);
-			Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
-			if (connection != null){
-				return true;
-			}
-		} catch (ClassNotFoundException e) {
-			throw new DataSourceNotFoundException(e);
-		} catch (SQLException e) {
-			throw new DataSourceNotFoundException(e);
+		Class.forName(classString);
+		String mUrl = dbType.getConnectionString(this);
+		Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
+		if (connection != null){
+			return true;
 		}
+		
 		return false;
 	}
 
@@ -97,23 +92,21 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     /**
      * Executes a query and returns the ResultSet.
      * @return ResultSet for the query.
+     * @throws SQLException 
      */
 	@Override
-	public ResultSet executeQuery (String query) {
+	public ResultSet executeQuery (String query) throws SQLException {
 
 		ResultSet resultSet;
-		try {
-			if (query == null){
-				return null;
-			}
-			Connection connection = getConnection();
-			Statement statement = connection.createStatement();
-			resultSet = statement.executeQuery(query);
-			return resultSet;
-		}catch(SQLException e) {
-			logger.error("Problems when executing query \n  " + query, e);
+
+		if (query == null){
 			return null;
 		}
+		Connection connection = getConnection();
+		Statement statement = connection.createStatement();
+		resultSet = statement.executeQuery(query);
+		return resultSet;
+
 	}
 	
     /**

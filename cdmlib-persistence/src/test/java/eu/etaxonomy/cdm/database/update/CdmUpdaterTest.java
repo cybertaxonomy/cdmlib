@@ -10,16 +10,16 @@
 package eu.etaxonomy.cdm.database.update;
 
 
+import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -56,7 +56,9 @@ public class CdmUpdaterTest {
 		try {
 			boolean connectionAvailable = datasource.testConnection();
 			Assert.assertTrue("Testdatabase is not available", connectionAvailable);
-		} catch (DataSourceNotFoundException e) {
+		} catch (ClassNotFoundException e) {
+			Assert.fail();
+		} catch (SQLException e) {
 			Assert.fail();
 		}
 		cdmUpdater.updateToCurrentVersion(datasource, null); 

@@ -79,7 +79,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	@PostConstruct
 	@Override
 	public void doInitialize(){
-		logger.debug("PersistentTermInitializer initialize start ...");
+		logger.info("PersistentTermInitializer initialize start ...");
 		if (omit){
 			logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
 			return;
@@ -95,7 +95,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 			}
 			transactionManager.commit(txStatus);
 		}
-		logger.debug("PersistentTermInitializer initialize end ...");
+		logger.info("PersistentTermInitializer initialize end ...");
 	}	
 	
 	/**
@@ -139,7 +139,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 * @return the <code>UUID</code> of the loaded vocabulary as found in CSV file
 	 */
 	public UUID firstPass(VocabularyEnum vocabularyType, Map<UUID, DefinedTermBase> persistedTerms) {
-		logger.debug("loading terms for " + vocabularyType.getClazz().getSimpleName());
+		logger.info("Loading terms for " + vocabularyType.getClazz().getSimpleName());
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
 		for(DefinedTermBase d : persistedTerms.values()) {
