@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +140,7 @@ public class UriUtils {
 	public static URI createUri(URL baseUrl, String subPath, List<NameValuePair> qparams, String fragment) throws	URISyntaxException {
 		
 		String path = baseUrl.getPath();
+		
 		if(subPath != null){
 			if(!path.endsWith("/")){
 				path += "/";
@@ -147,6 +149,10 @@ public class UriUtils {
 				subPath = subPath.substring(1);
 			}
 			path += subPath;
+		}
+		
+		if(qparams == null){
+			qparams = new ArrayList<NameValuePair>(0);
 		}
 
 		URI uri = URIUtils.createURI(baseUrl.getProtocol(),
