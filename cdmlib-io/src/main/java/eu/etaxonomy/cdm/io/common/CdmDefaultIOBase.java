@@ -9,10 +9,8 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 /**
  * This is an exporter that invokes the application aware defaultExport when invoked itself
@@ -43,23 +41,17 @@ public class CdmDefaultIOBase<T extends IIoConfigurator>  {
 				throw new IllegalArgumentException("The export may not run with DbSchemaValidation.CREATE or DbSchemaValidation.CREATE_DROP as this value deletes the source database");
 			}
 		}
-		try {
-			if ( createNew == true || cdmApp == null){
-				cdmApp = CdmApplicationController.NewInstance(cdmSource, schemaValidation, omitTermLoading);
-				if (cdmApp != null){
-					return true;
-				}else{
-					return false;
-				}
+
+		if ( createNew == true || cdmApp == null){
+			cdmApp = CdmApplicationController.NewInstance(cdmSource, schemaValidation, omitTermLoading);
+			if (cdmApp != null){
+				return true;
+			}else{
+				return false;
 			}
-			return true;
-		} catch (DataSourceNotFoundException  e) {
-			logger.error("could not connect to CDM database");
-			return false;
-		}catch (TermNotFoundException e) {
-			logger.error("could not find required term in CDM database");
-			return false;
 		}
+		return true;
+		
 	}
 	
 	

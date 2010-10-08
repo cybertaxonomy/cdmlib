@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.faunaEuropaea;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -26,8 +25,6 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -106,26 +103,26 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 		Set<UUID> uuidSet = new HashSet<UUID>();
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		ICdmDataSource destination = fauEuConfig.getDestination();
+		TransactionStatus txStatus = null;
+		List<TaxonNameBase> taxonNames = null;
+		txStatus = startTransaction(false);
 
 		String selectQuery = "SELECT t.uuid from TaxonNameBase t INNER JOIN " +
 				"TaxonNameBase t2 ON t.GenusOrUninomial = t2.GenusOrUninomial AND t.SpecificEpithet = t2.SpecificEpithet " +
 				"WHERE t.InfraGenericEpithet IS NULL AND t.rank_id = 764 AND t2.rank_id = 766 AND t2.InfraGenericEpithet IS NOT NULL";
 		
-		logger.error("Retrieving TaxonNames...");
-		ResultSet resultSet = destination.executeQuery(selectQuery);
-
-		TransactionStatus txStatus = null;
-		List<TaxonNameBase> taxonNames = null;
-		txStatus = startTransaction(false);
+		logger.info("Retrieving TaxonNames...");
 		
-		// Collect UUIDs
+		ResultSet resultSet;
 		try {
+			resultSet = destination.executeQuery(selectQuery);
+		
+			// Collect UUIDs
 			while (resultSet.next()) {
 				uuidSet.add(UUID.fromString(resultSet.getString("UUID")));
 			}
 		} catch (SQLException e) {
-			logger.error("An error occured: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("An error occured: ", e);
 		}
 
 		// Fetch TaxonName objects for UUIDs
@@ -153,14 +150,14 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 								
 								// set infraGenericEpithet
 //									targetNonViralName.setInfraGenericEpithet(infraGenericEpithet);
-								logger.error("Added an InfraGenericEpithet to this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+								logger.info("Added an InfraGenericEpithet to this TaxonName: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 								count++;
 							}
 						}
 					} else if (foundTaxa.size() > 1) {
-						logger.error("Multiple taxa match search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
+						logger.warn("Multiple taxa match search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 						for (TaxonBase foundTaxon : foundTaxa) {
-							logger.error(foundTaxon.getUuid() + ", " + foundTaxon.getTitleCache());
+							logger.warn(foundTaxon.getUuid() + ", " + foundTaxon.getTitleCache());
 						}
 					} else if (foundTaxa.size() == 0) {
 //							logger.error("No matches for search criteria: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
@@ -172,7 +169,7 @@ public class FaunaEuropaeaAdditionalTaxonDataImport extends FaunaEuropaeaImportB
 
 		// Commit transaction
 		commitTransaction(txStatus);
-		logger.error("Committed transaction.");
+		logger.info("Committed transaction.");
 		
 		return success;
 	}

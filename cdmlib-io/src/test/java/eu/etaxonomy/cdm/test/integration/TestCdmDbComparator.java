@@ -19,7 +19,6 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -29,7 +28,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -250,18 +248,13 @@ public class TestCdmDbComparator {
 
 		CdmApplicationController appCtr = null;
 
-    	try {
-    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-    		
-    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
-    	} catch (DataSourceNotFoundException e) {
-    		logger.error("datasource error");
-    	} catch (TermNotFoundException e) {
-    		logger.error("defined terms not found");
-    	}
+		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
+		
+		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
+
     	
     	TransactionStatus txStatus = appCtr.startTransaction(true);
 
@@ -290,18 +283,13 @@ public class TestCdmDbComparator {
 
 		CdmApplicationController appCtr = null;
 
-    	try {
-    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-    		
-    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
-    	} catch (DataSourceNotFoundException e) {
-    		logger.error("datasource error");
-    	} catch (TermNotFoundException e) {
-    		logger.error("defined terms not found");
-    	}
+		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
+		
+		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
+
     	
     	TransactionStatus txStatus = appCtr.startTransaction(true);
 
