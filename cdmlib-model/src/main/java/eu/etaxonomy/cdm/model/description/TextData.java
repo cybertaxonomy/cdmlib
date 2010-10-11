@@ -206,29 +206,9 @@ public class TextData extends DescriptionElementBase {
 	 * 
 	 * @param languages
 	 * @return
-	 * @deprecated replaced by static method  {@link MultilanguageTextHelper#getPreferredLanguageString(Map, List)}
 	 */
-	@Deprecated
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
-		
-		LanguageString languageString = null;
-		if(languages != null){
-			for(Language language : languages) {
-				languageString = multilanguageText.get(language);
-				if(languageString != null){
-					return languageString;
-				}
-			}
-		}
-		languageString = multilanguageText.get(Language.DEFAULT());
-		
-		if(languageString == null && multilanguageText.size() > 0){
-			Iterator<LanguageString> it = multilanguageText.values().iterator();
-			if(it.hasNext()){
-				languageString = it.next();
-			}
-		}
-		return languageString;
+		return MultilanguageTextHelper.getPreferredLanguageString(multilanguageText, languages);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -108,5 +109,14 @@ public class MultilanguageTextHelper {
 			}
 		}
 		return languageString;
+	}
+	
+	/**
+	 * Returns a {@link Set} of {@link Language Languages} that are contained in the given multilanguage map
+	 * @param multilanguageText
+	 * @return
+	 */
+	public static Set<Language> getLanguages(Map<Language, LanguageString> multilanguageText){
+		return multilanguageText.keySet();
 	}
 }

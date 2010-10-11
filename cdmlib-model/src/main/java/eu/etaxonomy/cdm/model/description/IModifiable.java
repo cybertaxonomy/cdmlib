@@ -10,14 +10,9 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.IVersionableEntity;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author n.hoffmann
