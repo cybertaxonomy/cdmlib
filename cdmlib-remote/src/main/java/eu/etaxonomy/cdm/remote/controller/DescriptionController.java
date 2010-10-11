@@ -116,7 +116,9 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		if(annotatableEntity == null){
 			HttpStatusMessage.UUID_INVALID.send(response);
 			// method will exit here
+			return null;
 		}
+
 		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
