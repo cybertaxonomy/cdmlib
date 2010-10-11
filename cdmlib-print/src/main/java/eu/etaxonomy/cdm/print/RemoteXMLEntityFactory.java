@@ -16,12 +16,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -44,15 +47,20 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	
 	private URL serviceUrl;
 	
+	private static final List<NameValuePair> UNLIMITED_RESULTS = Arrays.asList(new NameValuePair[]{
+			new BasicNameValuePair("start", "0"),
+			new BasicNameValuePair("limit", "-1")			
+	});
+	
 	private static final String UUID = "{uuid}";
 	
-	private static final String CLASSIFICATIONS = "classifications?start=0&limit=-1";
+	private static final String CLASSIFICATIONS = "classifications";
 	private static final String CLASSIFICATION_CHILD_NODES = "classification/" + UUID + "/childNodes/";
 	private static final String TAXONNODE_CHILD_NODES = "taxonNode/" + UUID + "/childNodes/";
 	private static final String TAXONNODE =  "taxonNode/" + UUID;
 	private static final String TAXONNODE_TAXON = TAXONNODE + "/taxon";
 	
-	private static final String FEATURETREES = "featuretrees?start=0&limit=-1";
+	private static final String FEATURETREES = "featuretrees";
 	private static final String FEATURETREE = "featuretree/" + UUID;
 	private static final String FEATURENODE = "featurenode/" + UUID;
 	private static final String FEATURENODE_FEATURE = FEATURENODE + "/feature";
@@ -82,10 +90,10 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getClassifications()
 	 */
 	public List<Element> getClassifications(){
-		Element result = queryService(CLASSIFICATIONS);
+		Element result = queryServiceWithParameters(CLASSIFICATIONS, UNLIMITED_RESULTS);
 		return processElementList(result);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getChildNodes(org.jdom.Element)
@@ -126,7 +134,7 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTrees()
 	 */
 	public List<Element> getFeatureTrees() {
-		Element result = queryService(FEATURETREES);
+		Element result = queryServiceWithParameters(FEATURETREES, UNLIMITED_RESULTS);
 		return processElementList(result);
 	}
 	
@@ -220,7 +228,7 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	 */
 	private Element queryService(UUID uuid, String restRequest){
 		String request = restRequest.replace(UUID, uuid.toString());
-		return queryService(request);
+		return queryServiceWithParameters(request, null);
 	}
 	
 	/**
@@ -229,14 +237,14 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	 * @return
 	 * @throws URISyntaxException 
 	 */
-	private Element queryService(String restRequest){
+	private Element queryServiceWithParameters(String restRequest, List<NameValuePair> queryParameters){
 		
 		try {
-			URI newUri = UriUtils.createUri(serviceUrl, restRequest, null, null);
+			URI newUri = UriUtils.createUri(serviceUrl, restRequest, queryParameters, null);
 			
 			
 			Map<String, String> requestHeaders = new HashMap<String, String>();
-			requestHeaders.put("Accept", "text/xml");
+			requestHeaders.put("Accept", "application/xml");
 			requestHeaders.put("Accept-Charset", "UTF-8");
 			
 			
