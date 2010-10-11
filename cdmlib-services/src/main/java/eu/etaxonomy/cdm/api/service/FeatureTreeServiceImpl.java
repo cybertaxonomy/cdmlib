@@ -112,5 +112,15 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 	public FeatureTree load(UUID uuid, List<String> propertyPaths) {
 		return super.load(uuid, propertyPaths);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#createTransientDefaultFeatureTree()
+	 */
+	@Override
+	public FeatureTree createTransientDefaultFeatureTree() {
+		return load(IFeatureTreeDao.DefaultFeatureTreeUuid);
+	}
+
+	
 	
 }

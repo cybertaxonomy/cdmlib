@@ -15,24 +15,18 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -62,15 +56,8 @@ public class TestTaxonServices {
     getCdmApplicationController(
     		ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
     	
-		CdmApplicationController appCtr = null;
-		try {
-			appCtr = 
-				CdmApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
-		} catch (DataSourceNotFoundException e) {
-			logger.error("Could not connect to database");
-		}catch (TermNotFoundException e) {
-			logger.error("Terms not found in database.");
-		}
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
+		
 		return appCtr;
     }
 

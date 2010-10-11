@@ -18,12 +18,9 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -43,9 +40,7 @@ public class TestTaxonFunction {
 			cdmApp = CdmApplicationController.NewInstance(dataSource, hbm2dll);
 		} catch (DataSourceNotFoundException e) {
 			e.printStackTrace();
-		} catch (TermNotFoundException e) {
-			logger.error("defined terms not found");
-		}
+		} 
 		return cdmApp;
 		
 	}

@@ -36,4 +36,5 @@ public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureT
 	
 	public Map<UUID, FeatureNode> saveOrUpdateFeatureNodesAll(Collection<FeatureNode> featureNodeCollection);
 	
+	public FeatureTree createTransientDefaultFeatureTree();
 }

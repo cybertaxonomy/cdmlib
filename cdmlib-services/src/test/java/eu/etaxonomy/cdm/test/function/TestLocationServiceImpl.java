@@ -21,11 +21,8 @@ import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.ILocationService.NamedAreaVocabularyType;
 import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
-
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -59,27 +56,20 @@ public class TestLocationServiceImpl  extends CdmIntegrationTest{
 	}
 	
 	public void testNewDatasourceClass(){
-		try {
 //			String server = "192.168.2.10";
 //			String database = "cdm_test_andreasM";
 //			String username = "edit";
 //			String password = CdmUtils.readInputLine("Password: ");
-			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", null);
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-			
-			ConversationHolder conversation = appCtr.NewConversation();
-			conversation.bind();
-			
-			Taxon taxon = Taxon.NewInstance(null, null);
+		ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", null);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+		
+		ConversationHolder conversation = appCtr.NewConversation();
+		conversation.bind();
+		
+		Taxon taxon = Taxon.NewInstance(null, null);
 
-
-		} catch (DataSourceNotFoundException e) {
-			logger.error("datasource error");
-		} catch (TermNotFoundException e) {
-			logger.error("defined terms not found");
-		}
 	}
 }

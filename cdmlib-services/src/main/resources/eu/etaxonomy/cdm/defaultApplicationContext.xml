@@ -16,6 +16,7 @@
 	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
 		<!--  <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/> -->
 	</context:component-scan>
+	
 	<context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
 
 	<!-- EditGeoService was moved to ext. Therefore it will not be found by the default component scan.

@@ -19,11 +19,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -51,13 +49,8 @@ public class CreateDataTestNoUnit {
 			 dbSchemaValidation = DbSchemaValidation.CREATE;
 		}
 		ICdmDataSource dataSource = CreateDataTest.cdm_test();
-		try {
-			app  = CdmApplicationController.NewInstance(dataSource, dbSchemaValidation);
-		} catch (DataSourceNotFoundException e) {
-			e.printStackTrace();
-		} catch (TermNotFoundException e) {
-			e.printStackTrace();
-		}
+		app  = CdmApplicationController.NewInstance(dataSource, dbSchemaValidation);
+
 		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().find(UUID.fromString(CreateDataTest.genusNameUuid));
 		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();
 		System.out.println("Size:" + set.size());
