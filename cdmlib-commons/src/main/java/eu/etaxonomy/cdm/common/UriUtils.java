@@ -26,6 +26,7 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -105,9 +106,8 @@ public class UriUtils {
 	}
 	
 	public static String getStatus(HttpResponse response){
-		int status = response.getStatusLine().getStatusCode();
-		String statusString = EnglishReasonPhraseCatalog.INSTANCE.getReason(status, null);
-		return "(" + status + ")" + statusString;
+		StatusLine statusLine = response.getStatusLine();
+		return "(" + statusLine.getStatusCode() + ")" + statusLine.getReasonPhrase();
 	}
 	
 	/**
