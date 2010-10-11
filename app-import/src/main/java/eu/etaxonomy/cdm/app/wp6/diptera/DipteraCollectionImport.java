@@ -25,11 +25,9 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -48,25 +46,18 @@ public class DipteraCollectionImport {
 	
 
 	public boolean invoke(ICdmDataSource dataSource) {
-		try {
-			CdmApplicationController cdmApp = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.VALIDATE);
+		CdmApplicationController cdmApp = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.VALIDATE);
 			
-			//create collections
-			TransactionStatus tx = cdmApp.startTransaction();
-			Map<String, Collection> colletionMap = createCollections(cdmApp);
-			
-			//add collections to specimen
-			addCollectionsToSpecimen(cdmApp, colletionMap);
-			cdmApp.commitTransaction(tx);
-			
-			return true;
-		} catch (DataSourceNotFoundException e) {
-			e.printStackTrace();
-			return false;
-		} catch (TermNotFoundException e) {
-			e.printStackTrace();
-			return false;
-		}
+		//create collections
+		TransactionStatus tx = cdmApp.startTransaction();
+		Map<String, Collection> colletionMap = createCollections(cdmApp);
+		
+		//add collections to specimen
+		addCollectionsToSpecimen(cdmApp, colletionMap);
+		cdmApp.commitTransaction(tx);
+		
+		return true;
+		
 	}
 
 

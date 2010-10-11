@@ -28,11 +28,9 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -417,14 +415,9 @@ public class DipteraDistributionParser {
 	 */
 	public static void main(String[] args) {
 		CdmApplicationController app = null;
-		try {
-			DbSchemaValidation val = DbSchemaValidation.UPDATE;
-			app = CdmApplicationController.NewInstance(cdmDestination, val);
-		} catch (DataSourceNotFoundException e) {
-			e.printStackTrace();
-		} catch (TermNotFoundException e) {
-			e.printStackTrace();
-		}
+		DbSchemaValidation val = DbSchemaValidation.UPDATE;
+		app = CdmApplicationController.NewInstance(cdmDestination, val);
+		
 		DipteraDistributionParser dipDist = new DipteraDistributionParser();
 		if (app != null){
 			dipDist.doDistribution(app);

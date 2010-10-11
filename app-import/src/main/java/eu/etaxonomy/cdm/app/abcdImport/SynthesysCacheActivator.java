@@ -26,14 +26,12 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -47,7 +45,6 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -208,15 +205,8 @@ public class SynthesysCacheActivator {
 		TransactionStatus tx = null;
 
 
-		try {
-			app = CdmApplicationController.NewInstance(CdmDestinations.cdm_test_patricia(), hbm2dll);
-		} catch (DataSourceNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("DataSourceNotFoundException "+e1);
-		} catch (TermNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("TermNotFoundException " +e1);
-		}
+		app = CdmApplicationController.NewInstance(CdmDestinations.cdm_test_patricia(), hbm2dll);
+		
 		tx = app.startTransaction();
 		try {
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();

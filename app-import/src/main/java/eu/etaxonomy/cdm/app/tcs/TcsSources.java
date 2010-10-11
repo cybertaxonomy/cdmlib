@@ -32,6 +32,7 @@ public class TcsSources {
 		try {
 			//URL url = new URL("file:C:\\localCopy\\eclipse\\cdmlib\\trunk\\app-import\\src\\main\\resources\\excel\\NormalExplicit.xls");
 			
+			// FIXME what is this????
 			URL url = new File("D:\\NormalExplicit.xls").toURI().toURL();
 			
 			boolean exists = new File(url.getFile()).exists();
