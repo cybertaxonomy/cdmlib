@@ -280,7 +280,7 @@ public class NonViralNameParserImplTest {
 		assertNull(nameNull);
 		
 		//some authors
-		String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex MÃ¼ller & Schmidt)Clark ex Ciardelli"; 
+		String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex M\u00FCller & Schmidt)Clark ex Ciardelli"; 
 		BotanicalName authorname = (BotanicalName)parser.parseFullName(fullNameString);
 		assertFalse(authorname.hasProblem());
 		assertEquals("Basionym author should have 3 authors", 3, ((Team)authorname.getExBasionymAuthorTeam()).getTeamMembers().size());
@@ -739,6 +739,10 @@ public class NonViralNameParserImplTest {
 		
 		testParsable = "Abies alba Mill. var. alba";
 		assertTrue("Autonym problem", isParsable(testParsable, NomenclaturalCode.ICBN));
+
+		
+		testParsable = "Hieracium antarcticum d'Urv. in Mém. Soc. Linn. Paris 4: 608. 1826";
+		assertTrue("xxx", isParsable(testParsable, NomenclaturalCode.ICBN));
 
 	}
 	
