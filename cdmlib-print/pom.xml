@@ -10,14 +10,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>eu.etaxonomy</groupId>
-	
 	<artifactId>cdmlib-print</artifactId>
-	
-	<packaging>jar</packaging>
-		
 	<version>3.0</version>
-	
 	<name>CDM Print</name>
+	<packaging>jar</packaging>
+	
+	<scm>
+		<connection>
+		  scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/
+		</connection>
+		<developerConnection>
+		  scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/
+		</developerConnection>
+		<url>
+		  http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-print/
+		</url>
+	</scm>
+ 
 	
 	<url>http://maven.apache.org</url>
 	<dependencies>
