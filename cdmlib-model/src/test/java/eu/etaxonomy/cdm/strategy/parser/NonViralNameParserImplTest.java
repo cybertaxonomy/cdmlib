@@ -742,6 +742,7 @@ public class NonViralNameParserImplTest {
 
 		
 		testParsable = "Hieracium antarcticum d'Urv. in Mém. Soc. Linn. Paris 4: 608. 1826";
+//		testParsable = "Hieracium antarcticum Urv. in Mém. Soc. Linn. Paris 4: 608. 1826";
 		assertTrue("xxx", isParsable(testParsable, NomenclaturalCode.ICBN));
 
 	}

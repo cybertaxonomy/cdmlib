@@ -79,7 +79,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     
     
     //AuthorString
-    protected static String authorPart = "(" + "(D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
+    protected static String authorPart = "(" + "(d'|D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
     protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
     protected static String teamSplitter = fWs + "(&)" + fWs;
     protected static String authorTeam = fWs + "(" + author + teamSplitter + ")*" + author + "(" + teamSplitter + "al.)?" + fWs;
