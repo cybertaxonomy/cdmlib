@@ -13,18 +13,17 @@
   <artifactId>cdmlib-remote-webapp</artifactId>
   
   <name>CDM Remote Webapp</name>
-  
   <packaging>war</packaging>
   
   <scm>
     <connection>
-      scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+      scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote-webapp/
     </connection>
     <developerConnection>
-      scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+      scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote-webapp/
     </developerConnection>
     <url>
-      http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
+      http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote-webapp/
     </url>
   </scm>
   
