@@ -37,8 +37,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.06.2008
  * @version 1.0
  */
-public class EricaceaeTestUpdateActivator {
-	private static final Logger logger = Logger.getLogger(EricaceaeTestUpdateActivator.class);
+public class TestUpdateActivator {
+	private static final Logger logger = Logger.getLogger(TestUpdateActivator.class);
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
@@ -140,7 +140,7 @@ public class EricaceaeTestUpdateActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		EricaceaeTestUpdateActivator me = new EricaceaeTestUpdateActivator();
+		TestUpdateActivator me = new TestUpdateActivator();
 		me.doImport(cdmDestination);
 	}
 	
