@@ -1564,8 +1564,8 @@ public class DerivedUnitFacade {
 		return null;
 	}
 	
-	public String setExsiccatum() throws MethodNotSupportedException{
-		throw new MethodNotSupportedException("Exsiccatum method not yet supported. Needs model change");
+	public void setExsiccatum(String exsiccatum) throws Exception{
+		throw new Exception("Exsiccatum method not yet supported. Needs model change");
 	}
 	
 	
