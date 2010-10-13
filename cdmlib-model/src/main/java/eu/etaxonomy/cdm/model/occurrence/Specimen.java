@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @Audited
 @Configurable
 public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<Specimen>> implements Cloneable {
+	private static final long serialVersionUID = -504050482700773061L;
 	private static final Logger logger = Logger.getLogger(Specimen.class);
 	
 	@XmlElement(name = "Preservation")

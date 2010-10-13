@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * @author m.doering
@@ -52,6 +53,15 @@ public class DnaSample extends Specimen implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
 	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DnaSample NewInstance(){
+		return new DnaSample();
+	}
+
+	
 //	@XmlElement(name = "BankNumber")
 //	private String bankNumber;
 	
@@ -62,6 +72,16 @@ public class DnaSample extends Specimen implements Cloneable {
     @OneToMany(fetch = FetchType.LAZY)
 	private Set<Sequence> sequences = new HashSet<Sequence>();
 
+	
+	
+	/**
+	 * Constructor
+	 */
+	protected DnaSample() {
+		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Specimen>();
+	}
+	
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}
