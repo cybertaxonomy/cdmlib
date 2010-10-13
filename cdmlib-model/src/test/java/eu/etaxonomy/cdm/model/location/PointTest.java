@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.location.Point.Sexagesimal;
  *
  */
 public class PointTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PointTest.class);
 
 	private Point point1;
@@ -121,7 +122,7 @@ public class PointTest {
 	
 	@Test
 	public void testGetLongitudeSexagesimal(){
-		Assert.assertEquals("23°7'25\"E", point1.getLongitudeSexagesimal().toString(true));
+		Assert.assertEquals("23\u00B07'25\"E", point1.getLongitudeSexagesimal().toString(true));
 		
 		point2.setLongitudeSexagesimal(Sexagesimal.NewInstance(5, 22, null, Direction.WEST));
 		Assert.assertTrue(point2.getLongitudeSexagesimal().minutes == 22);
@@ -143,7 +144,7 @@ public class PointTest {
 		try {
 			Assert.assertEquals("", longitude1, point1.getLongitude());
 			Assert.assertTrue("", latitude1.equals(point1.getLatitude()));
-			point1.setLatitudeByParsing("35°34'20\"S");
+			point1.setLatitudeByParsing("35\u00B034'20\"S");
 			Assert.assertEquals("", longitude1, point1.getLongitude());
 			Assert.assertFalse("", latitude1.equals(point1.getLatitude()));
 			Assert.assertEquals("", Double.valueOf("-35.57222222222222"), point1.getLatitude());
@@ -151,19 +152,19 @@ public class PointTest {
 			Assert.fail("No parsing error should occur");
 		}
 		try {
-			point1.setLongitudeByParsing("112°34.34'N");
+			point1.setLongitudeByParsing("112\u00B034.34'N");
 			Assert.assertEquals("", "112.57233", point1.getLongitude().toString().substring(0,9));
 		} catch (ParseException e) {
 			Assert.fail("No parsing error should occur");
 		}
 		try {
-			point1.setLatitudeByParsing("112°34.34'S");
+			point1.setLatitudeByParsing("112\u00B034.34'S");
 			Assert.fail("Latitude can not be > 90");
 		} catch (ParseException e) {
 			Assert.assertTrue("Latitude can not be > 90", true);
 		}
 		try {
-			point1.setLongitudeByParsing("45°34.34'S");
+			point1.setLongitudeByParsing("45\u00B034.34'S");
 			Assert.fail("Longitude can not be S");
 		} catch (ParseException e) {
 			Assert.assertTrue("Longitude can not be S", true);
@@ -174,21 +175,21 @@ public class PointTest {
 //		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
 //		Assert.assertFalse("Southern must be latitude", conversionResults.isLongitude);
 //
-//		conversionResults = coordinateConverter.tryConvert("35°34.744");
+//		conversionResults = coordinateConverter.tryConvert("35\u00B034.744");
 //		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 //		Assert.assertNull("Longitude must be undefined", conversionResults.isLongitude);
 //
-//		conversionResults = coordinateConverter.tryConvert("95°34.744");
+//		conversionResults = coordinateConverter.tryConvert("95\u00B034.744");
 //		Assert.assertTrue("Longitude must be defined", conversionResults.isLongitude);
 //
 //		
-//		conversionResults = coordinateConverter.tryConvert("-35°34'55.67S");
+//		conversionResults = coordinateConverter.tryConvert("-35\u00B034'55.67S");
 //		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 //
-//		conversionResults = coordinateConverter.tryConvert("35°11'34.744SN");
+//		conversionResults = coordinateConverter.tryConvert("35\u00B011'34.744SN");
 //		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 //
-//		conversionResults = coordinateConverter.tryConvert("35°11'34.744SW");
+//		conversionResults = coordinateConverter.tryConvert("35\u00B011'34.744SW");
 //		Assert.assertTrue("Western must be longitude", conversionResults.isLongitude);
 //		
 //		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
