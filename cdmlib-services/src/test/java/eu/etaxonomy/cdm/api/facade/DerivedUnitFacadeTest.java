@@ -391,7 +391,7 @@ public class DerivedUnitFacadeTest {
 	public void testSetExactLocationByParsing(){
 		Point point1;
 		try {
-			specimenFacade.setExactLocationByParsing("11°34'20\"W", "34°30,34'N", null, null);
+			specimenFacade.setExactLocationByParsing("112\u00B034'20\"W", "34\u00B030,34'N", null, null);
 			point1 = specimenFacade.getExactLocation();
 			Assert.assertNotNull("", point1.getLatitude());
 			System.out.println(point1.getLatitude().toString());

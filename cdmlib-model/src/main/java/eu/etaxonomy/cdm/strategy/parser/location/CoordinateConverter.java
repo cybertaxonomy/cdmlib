@@ -73,33 +73,33 @@ public class CoordinateConverter {
         patterns.add(pattern);
 
 
-        //Variations of DD(°|d)MM.MMM' with whitespace characters
+        //Variations of DD(\u00B0|d)MM.MMM' with whitespace characters
         pattern = new CoordinatePattern();
-        pattern.description = "Variation of DD(°|d)MM.MMM('|m)";
+        pattern.description = "Variation of DD(\u00B0|d)MM.MMM('|m)";
         pattern.pattern =
             "(^" +
             "(\\s)*(\\+|-|W|w|E|e|N|n|S|s)?(\\s)*" +
-            "((\\d{1,3}(\\s)*(°|º|D|d)?(\\s)*$)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\.|\\,)?(\u02B9|'|M|m)?$)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02B9|'|M|m)?(\\s)*$))" +
+            "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)?(\u02B9|'|M|m)?$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02B9|'|M|m)?(\\s)*$))" +
             ")" +
             "|(^" +
-            "(\\s)*((\\d{1,3}(\\s)*(°|º|D|d)?(\\s)*)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\.|\\,)?(\u02B9|'|M|m)?)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02B9|'|M|m)?(\\s)*))" +
+            "(\\s)*((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)?(\u02B9|'|M|m)?)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02B9|'|M|m)?(\\s)*))" +
             "(W|w|E|e|N|n|S|s)?(\\s)*$" +
             ")";
         patterns.add(pattern);
 
 
-        //Variations of DD°MM'SS.SSS" with whitespace characters
+        //Variations of DD\u00B0MM'SS.SSS" with whitespace characters
         pattern = new CoordinatePattern();
-        pattern.description = "Variation of DD(°|d)MM(\u02B9|m)SS.SSS(\u02BA|s)";
+        pattern.description = "Variation of DD(\u00B0|d)MM(\u02B9|m)SS.SSS(\u02BA|s)";
         pattern.pattern =
-            //+/-/Nn/Ss/Ww/EeDD°MM\u02B9SS.SSS
+            //+/-/Nn/Ss/Ww/EeDD\u00B0MM\u02B9SS.SSS
             "(^" +
             "(\\s)*(\\+|-|W|w|E|e|N|n|S|s)?(\\s)*" +
-            "((\\d{1,3}(\\s)*(°|º|D|d)?(\\s)*$)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*$)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$))" +
+            "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$))" +
             ")" +
-            //DD°MM\u02B9SS.SSSNn/Ss/Ww/Ee
+            //DDÂ°MM\u02B9SS.SSSNn/Ss/Ww/Ee
             "|(^" +
-            "(\\s)*((\\d{1,3}(\\s)*(°|º|D|d)?(\\s)*)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*)|(\\d{1,3}(\\s)*(°|º|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*))" +
+            "(\\s)*((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*))" +
             "(W|w|E|e|N|n|S|s)?(\\s)*$" +
             ")";
         patterns.add(pattern);
@@ -436,7 +436,7 @@ public class CoordinateConverter {
             checkDegreeRange(dd, results);
             doConvertWithCheck(sign, dd, mm, mmm, ss, sss, results);
 
-        }else if (pattern.description.equals("Variation of DD(°|d)MM.MMM('|m)")){
+        }else if (pattern.description.equals("Variation of DD(\u00B0|d)MM.MMM('|m)")){
 
         	//Sets pattern machted, successful, pattern type and pattern info
         	initializeResult(results, pattern);
@@ -454,7 +454,7 @@ public class CoordinateConverter {
 
             //do some further replacing
             //Replace degree symbol
-            str = str.replaceAll("(°|º|D|d)", ":");
+            str = str.replaceAll("(\u00B0|\u00B0|D|d)", ":");
             
             //remove minute symbol
             str = str.replaceAll("(\u02B9|'|M|m)", "");
@@ -486,8 +486,8 @@ public class CoordinateConverter {
             checkDegreeRange(dd, results);
             checkMinuteRange(mm, results);
             doConvertWithCheck(sign, dd, mm, mmm, ss, sss, results);
-         	
-        }else if (pattern.description.equals("Variation of DD(°|d)MM(\u02B9|m)SS.SSS(\u02BA|s)")){
+            
+        }else if (pattern.description.equals("Variation of DD(\u00B0|d)MM(\u02B9|m)SS.SSS(\u02BA|s)")){
         	
         	/* 
              * Note:
@@ -521,7 +521,7 @@ public class CoordinateConverter {
             
             //do some further replacing
             //Replace degree symbol
-            str = str.replaceAll("(°|º|D|d|\u02B9|'|M|m)",":");
+            str = str.replaceAll("(\u00B0|\u00B0|D|d|\u02B9|'|M|m)",":");
 
             //Extract decimal part
             decimalBit = str.split(decSeparatorRegEx);

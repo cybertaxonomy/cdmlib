@@ -139,9 +139,9 @@ public class Point implements Cloneable, Serializable {
 	public static final class CoordinateParser {
 		 
 	    /**
-	     * Pattern zum parsen von Sexagesimalen Grad: 145°
+	     * Pattern zum parsen von Sexagesimalen Grad: 145Â°
 	     */
-	    private static final String DEGREE_REGEX = "([0-9]*)°";
+	    private static final String DEGREE_REGEX = "([0-9]*)\u00B0";
 	    /**
 	     * Pattern zum parsen von Sexagesimalen Minuten: 65'
 	     */
@@ -151,7 +151,7 @@ public class Point implements Cloneable, Serializable {
 	     */
 	    private static final String SECONDS_REGEX = "(?:([0-9]*)(?:''|\"))?";
 	    /**
-	     * Himmelsrichtung Längengrad
+	     * Himmelsrichtung LÃ¤ngengrad
 	     */
 	    private static final String LONGITUDE_DIRECTION_REGEX = "([OEW])";
 	    /**
@@ -167,7 +167,7 @@ public class Point implements Cloneable, Serializable {
 	                    + LATITUDE_DIRECTION_REGEX);
 	 
 	    /**
-	     * Pattern zum Parsen von Längengraden.
+	     * Pattern zum Parsen von LÃ¤ngengraden.
 	     */
 	    private static final Pattern LONGITUDE_PATTERN = Pattern
 	            .compile(DEGREE_REGEX + MINUTES_REGEX + SECONDS_REGEX
@@ -179,10 +179,10 @@ public class Point implements Cloneable, Serializable {
 	 
 	    /**
 	     * Parst einen Breitengrad der Form<br>
-	     * G°M'S""(OEW)<br>
+	     * GÂ°M'S""(OEW)<br>
 	     * Die Formen<br>
-	     * G°(OEW)<br>
-	     * G°M'(OEW)<br>
+	     * GÂ°(OEW)<br>
+	     * GÂ°M'(OEW)<br>
 	     * sind ebenfalls erlaubt.
 	     *
 	     * @param strg
@@ -196,11 +196,11 @@ public class Point implements Cloneable, Serializable {
 	    }
 	 
 	    /**
-	     * Parst einen Längengrad der Form<br>
-	     * G°M'S"(NS)<br>
+	     * Parst einen LÃ¤ngengrad der Form<br>
+	     * GÂ°M'S"(NS)<br>
 	     * Die Formen<br>
-	     * G°(NS)<br>
-	     * G°M'(NS)<br>
+	     * GÂ°(NS)<br>
+	     * GÂ°M'(NS)<br>
 	     * sind ebenfalls erlaubt.
 	     *
 	     * @param strg
@@ -334,7 +334,7 @@ public class Point implements Cloneable, Serializable {
 			            }
 		        }
 		 
-		        // Decimal in °'" umrechnen
+		        // Decimal in \u00B0'" umrechnen
 		        double d = Math.abs(decimalDegree);
 		        d += HALF_SECOND; // add a second for rounding
 		        sexagesimal.degree = (int) Math.floor(d);
@@ -371,7 +371,7 @@ public class Point implements Cloneable, Serializable {
 		}
 		public String toString(boolean includeEmptySeconds){
 			String result;
-			result = String.valueOf(CdmUtils.Nz(degree)) + "°";
+			result = String.valueOf(CdmUtils.Nz(degree)) + "\u00B0";
 			if (seconds != null || minutes != null){
 				result += String.valueOf(CdmUtils.Nz(minutes)) + "'";
 			}
