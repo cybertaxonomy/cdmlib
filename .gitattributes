@@ -2545,6 +2545,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.prop
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource -text
 cdmlib-persistence/src/test/resources/log4j.properties -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
+cdmlib-print/LICENSE.TXT -text
 cdmlib-print/build.properties -text
 cdmlib-print/pom.xml -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/AbstractXmlEntityFactory.java -text
