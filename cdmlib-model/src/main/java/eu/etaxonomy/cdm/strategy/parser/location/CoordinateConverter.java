@@ -454,7 +454,7 @@ public class CoordinateConverter {
 
             //do some further replacing
             //Replace degree symbol
-            str = str.replaceAll("(\u00B0|\u00B0|D|d)", ":");
+            str = str.replaceAll("(\u00B0|\u00BA|D|d)", ":");
             
             //remove minute symbol
             str = str.replaceAll("(\u02B9|'|M|m)", "");

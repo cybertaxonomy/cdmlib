@@ -58,26 +58,26 @@ public class CoordinateConverterTest {
 	 */
 	@Test
 	public void testTryConvert() {
-		ConversionResults conversionResults = coordinateConverter.tryConvert("35°34'20\"S");
+		ConversionResults conversionResults = coordinateConverter.tryConvert("35\u00B034'20\"S");
 		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
 		Assert.assertFalse("Southern must be latitude", conversionResults.isLongitude);
 
-		conversionResults = coordinateConverter.tryConvert("35°34.744");
+		conversionResults = coordinateConverter.tryConvert("35\u00BA34.744"); 
 		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 		Assert.assertNull("Longitude must be undefined", conversionResults.isLongitude);
 
-		conversionResults = coordinateConverter.tryConvert("95°34.744");
+		conversionResults = coordinateConverter.tryConvert("95\u00B034.744");
 		Assert.assertTrue("Longitude must be defined", conversionResults.isLongitude);
 
 		
-		conversionResults = coordinateConverter.tryConvert("-35°34'55.67S");
+		conversionResults = coordinateConverter.tryConvert("-35\u00B034'55.67S");
 		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 
-		conversionResults = coordinateConverter.tryConvert("35°11'34.744SN");
+		conversionResults = coordinateConverter.tryConvert("35\u00B011'34.744SN");
 		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 
-		conversionResults = coordinateConverter.tryConvert("35°11'34.744SW");
+		conversionResults = coordinateConverter.tryConvert("35\u00B011'34.744SW");
 		Assert.assertTrue("Western must be longitude", conversionResults.isLongitude);
 		
 		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
