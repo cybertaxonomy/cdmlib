@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,10 +33,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
