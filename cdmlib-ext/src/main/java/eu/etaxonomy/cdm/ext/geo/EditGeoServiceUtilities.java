@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
@@ -210,7 +209,7 @@ public class EditGeoServiceUtilities {
 		}
 		
 		if(areaStyle.length() > 0){
-			areaStyle = "as=" + encode(areaStyle.substring(1)); //remove first |
+			areaStyle = "as=" + areaStyle.substring(1); //remove first |
 		}
 		if(areaTitle.length() > 0){
 			areaTitle = "title=" + encode(areaTitle.substring(1)); //remove first |
@@ -305,7 +304,7 @@ public class EditGeoServiceUtilities {
 			if(queryString.length() > 0){
 				queryString.append('&');
 			}
-			if(key.equals("od")){
+			if(key.equals("od") || key.equals("os")){
 				queryString.append(key).append('=').append(parameters.get(key));				
 			} else {
 				queryString.append(key).append('=').append(encode(parameters.get(key)));
