@@ -87,15 +87,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#getPreferredLanguageString(java.util.List)
 	 */
 	public LanguageString getPreferredLanguageString(List<Language> languages){
-		
-		LanguageString languageString = null;
-		for (Language language : languages) {
-			languageString = super.get(language);
-			if(languageString != null){
-				return languageString;
-			}
-		}
-		return super.get(Language.DEFAULT());
+		return MultilanguageTextHelper.getPreferredLanguageString(this, languages);
 	}
 	
 //*********** CLONE **********************************/	

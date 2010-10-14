@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.facade;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.mail.MethodNotSupportedException; //FIMXE use other execption class
+import javax.mail.MethodNotSupportedException;
 import javax.persistence.Transient;
-
 
 import org.apache.log4j.Logger;
 
