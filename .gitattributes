@@ -3462,6 +3462,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IMarkerService.java -
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IMediaService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INaturalLanguageGenerator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INaturalLanguageTextDataProcessor.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text

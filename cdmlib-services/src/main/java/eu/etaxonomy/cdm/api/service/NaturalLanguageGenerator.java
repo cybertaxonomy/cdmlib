@@ -1,9 +1,13 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
@@ -16,6 +20,8 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
 
 @Component
@@ -25,6 +31,53 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	private DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder = new DefaultCategoricalDescriptionBuilder();
 	
 	private String previousFeatureName;
+	
+	private Map<String, INaturalLanguageTextDataProcessor> elementProcessors;
+	
+	public Map<String, INaturalLanguageTextDataProcessor> getElementProcessors() {
+		return elementProcessors;
+	}
+
+	/**
+	 * The keys of the elementProcessors map are regular expressions which are
+	 * being used to identify the those Descriptions to which the mapped
+	 * NaturalLanguageTextDataProcessor is applicable.
+	 * 
+	 * @param elementProcessors
+	 */
+	public void setElementProcessors(
+			Map<String, INaturalLanguageTextDataProcessor> elementProcessors) {
+		this.elementProcessors = elementProcessors;
+	}
+
+	private Set<INaturalLanguageTextDataProcessor> applicableElementProcessors = new HashSet<INaturalLanguageTextDataProcessor>();
+	
+	/**
+	 * @param annotations
+	 */
+	private void initNaturalLanguageDescriptionElementProcessors(Set<Annotation> annotations) {
+		 
+		if(annotations != null){
+			for(Annotation annotation : annotations){
+				if(annotation.getAnnotationType().equals(AnnotationType.TECHNICAL())){
+					for(String regex : elementProcessors.keySet()){
+						if(annotation.getText().matches(regex)){
+							applicableElementProcessors.add(elementProcessors.get(regex));
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @param textData
+	 */
+	private void applyNaturalLanguageDescriptionElementProcessors(TextData textData, TextData previousTextData){
+		for(INaturalLanguageTextDataProcessor processor : applicableElementProcessors){
+			processor.process(textData, previousTextData);
+		}
+	}
 	
 	/**
 	 * 
@@ -47,9 +100,14 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description,	Language language) {
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language);
+		
+		initNaturalLanguageDescriptionElementProcessors(description.getAnnotations());
+		
 		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, languages);
 	}
 	
+
+
 	/** recursive function that goes through a tree containing the order in which the description has to be generated,
 	 *  if an element of this tree matches one of the TaxonDescription, a DescriptionBuilder is called which returns a TextData with the corresponding description.
 	 * 
