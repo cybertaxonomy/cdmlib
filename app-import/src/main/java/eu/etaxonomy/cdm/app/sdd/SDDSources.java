@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -21,6 +23,27 @@ import org.apache.log4j.Logger;
 public class SDDSources {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SDDSources.class);
+	
+
+	public static URI tdwg_expert(){
+
+		//		SDD XML example from the SDD v1.1 package
+//		URL url = null;
+//		try {
+//			url = new File("C:\\localCopy\\tdwg2010\\data\\descriptions\\sdd\\Xper-Cichorium_spinosum.sdd.xml").toURL();
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		URL url = new SDDSources().getClass().getResource("/sdd/SDD-Test-Simple.xml");
+		String sourceUrl = "C:\\localCopy\\tdwg2010\\data\\descriptions\\sdd\\Xper-Cichorium_spinosum.sdd.xml";
+//		String sourceUrl = url.toString();
+		URI uri = new File(sourceUrl).toURI();
+		return uri;
+		
+	}
+
 	
 	public static String viola_local(){
 		//		SDD XML example from the SDD v1.1 package

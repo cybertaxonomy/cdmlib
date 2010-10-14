@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.app.sdd;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -33,7 +32,7 @@ public class AnthuriumActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String sddSource = SDDSources.viola_local();
+	static final URI sddSource = SDDSources.tdwg_expert();
 	//static final String sddSource = SDDSources.viola_local_andreas();
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
@@ -55,7 +54,7 @@ public class AnthuriumActivator {
 		//make Source
 		URI source;
 		try {
-			source = new URI(sddSource);
+			source = sddSource;
 			ICdmDataSource destination = cdmDestination;
 	
 			SDDImportConfigurator sddImportConfigurator = SDDImportConfigurator.NewInstance(source,  destination);
@@ -71,7 +70,7 @@ public class AnthuriumActivator {
 			sddImport.invoke(sddImportConfigurator);
 	
 			System.out.println("End import from SDD ("+ source.toString() + ")...");
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
