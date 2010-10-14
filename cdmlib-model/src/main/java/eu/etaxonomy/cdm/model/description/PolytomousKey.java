@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.io.PrintStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,9 +32,14 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.tool.hbm2x.StringUtils;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -63,7 +70,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.FeatureTree")
 @Audited
-public class PolytomousKey extends FeatureTree implements IIdentificationKey{
+public class PolytomousKey extends IdentifiableEntity implements IIdentificationKey, IPolytomousKeyPart{
 	private static final long serialVersionUID = -3368243754557343942L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PolytomousKey.class);
@@ -107,6 +114,11 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@NotNull
 	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
 	
+	@XmlElement(name = "Root")
+	@OneToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	private PolytomousKeyNode root;
+	
 //******************************** STATIC METHODS ********************************/	
 	
 	/** 
@@ -133,6 +145,26 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	 */
 	protected PolytomousKey() {
 		super();
+	}
+	
+	
+//************************ GETTER/ SETTER 
+	
+	
+	/** 
+	 * Returns the topmost {@link FeatureNode feature node} (root node) of <i>this</i>
+	 * feature tree. The root node does not have any parent. Since feature nodes
+	 * recursively point to their child nodes the complete feature tree is
+	 * defined by its root node.
+	 */
+	public PolytomousKeyNode getRoot() {
+		return root;
+	}
+	/**
+	 * @see	#getRoot() 
+	 */
+	public void setRoot(PolytomousKeyNode root) {
+		this.root = root;
 	}
 	
 	/** 
@@ -289,33 +321,68 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 		String strPrint = title;
 		stream.print(title);
 		
-		FeatureNode root = this.getRoot();
+		PolytomousKeyNode root = this.getRoot();
 		IntegerObject no = new IntegerObject();
 		no.inc();
 		strPrint += printNode(root, "  ", no, "Root", stream);
 		return strPrint;
 	}
 
-	private String printNode(FeatureNode node, String identation, IntegerObject no, String myNumber, PrintStream stream) {
+	private String printNode(IPolytomousKeyPart node, String identation, IntegerObject no, String myNumber, PrintStream stream) {
 		int myInt = no.number;
 		String result = identation + myNumber + ". ";
 		if (node != null){
-			result += node.getFeature() == null ? "" : (node.getFeature().getTitleCache() + " - ");
-			Representation question = node.getQuestion(Language.DEFAULT());
-			result +=  ( question == null ? "" : (question.getText()))  ;
-			result +=  ( node.getTaxon() == null ? "" : ": " + node.getTaxon().getName().getTitleCache())  ;
+			if (node instanceof PolytomousKeyNode){
+				String question = CdmBase.deproxy(node, PolytomousKeyNode.class).getQuestion(Language.DEFAULT());
+				result +=  ( question == null ? "" : (question))  ;
+			}else if (node instanceof PolytomousKeyLeaf){
+				PolytomousKeyLeaf leaf = CdmBase.deproxy(node, PolytomousKeyLeaf.class);
+				if (leaf.getTaxa() != null && ! leaf.getTaxa().isEmpty()){
+					String taxonSeparator = ", ";
+					result += ": ";
+					for (Taxon taxon : leaf.getTaxa()){
+						result +=  taxon.getName().getTitleCache() + taxonSeparator ;
+					}
+					result = StringUtils.chompLast(result, taxonSeparator);
+				}
+				
+				
+			}
 			result += "\n";
 			stream.print(result);
 			char nextCounter = 'a';
 			if (! node.getChildren().isEmpty()){
 				no.inc();
 			}
-			for (FeatureNode child : node.getChildren()){
+			for (IPolytomousKeyPart child : node.getChildren()){
 				String nextNumber = myInt + String.valueOf(nextCounter++);
 				result += printNode(child, identation + "  ", no, nextNumber, stream);
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public List<IPolytomousKeyPart> getChildren() {
+		return getRoot().getChildren();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.description.IPolytomousKeyPart#getKey()
+	 */
+	@Override
+	public PolytomousKey getKey() {
+		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.description.IPolytomousKeyPart#setKey(eu.etaxonomy.cdm.model.description.PolytomousKey)
+	 */
+	@Override
+	public void setKey(PolytomousKey key) {
+		if (key !=  this){
+			throw new IllegalArgumentException("A polytomous key always has itself as key. This method exists only for being compliant with IPolytomousKeyPart");
+		}
 	}
 	
 }

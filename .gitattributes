@@ -1825,6 +1825,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureNode.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IIdentificationKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IModifiable.java -text svneol=unset#text/plain
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IPolytomousKeyPart.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IndividualsAssociation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MediaKey.java -text
@@ -1832,6 +1833,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Modifier.java -tex
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MultiAccessKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NaturalLanguageTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKeyLeaf.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNodeBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/QuantitativeData.java -text
