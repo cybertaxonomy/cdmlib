@@ -77,7 +77,7 @@ public class DnaSample extends Specimen implements Cloneable {
 	/**
 	 * Constructor
 	 */
-	protected DnaSample() {
+	private DnaSample() {
 		super();
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Specimen>();
 	}
