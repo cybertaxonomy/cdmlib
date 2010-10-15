@@ -141,7 +141,7 @@ public class DerivedUnitFacade {
 	}
 
 	/**
-	 * Creates a derived unit facade for a given derived unit using the default configuation.
+	 * Creates a derived unit facade for a given derived unit using the default configuration.
 	 * @param derivedUnit
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
