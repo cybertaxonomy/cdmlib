@@ -203,7 +203,7 @@ public class DerivedUnitFacade {
 //		String objectTypeExceptionText = "Specimen";
 //		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(derivedUnit, objectTypeExceptionText, false);
 //		getImageTextDataWithSupportTest(imageGallery, objectTypeExceptionText);
-		this.derivedUnitMediaTextData = inititialzeTextDataWithSupportTest(Feature.IMAGE(), this.derivedUnit, false, true);
+		this.derivedUnitMediaTextData = inititializeTextDataWithSupportTest(Feature.IMAGE(), this.derivedUnit, false, true);
 		
 		//field observation
 //		objectTypeExceptionText = "Field observation";
@@ -440,7 +440,7 @@ public class DerivedUnitFacade {
 		if (fieldObject == null){
 			return null;
 		}
-		return inititialzeTextDataWithSupportTest(feature, fieldObject, createIfNotExists, isImageGallery);
+		return inititializeTextDataWithSupportTest(feature, fieldObject, createIfNotExists, isImageGallery);
 	}
 
 
@@ -452,7 +452,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private TextData inititialzeTextDataWithSupportTest(Feature feature, SpecimenOrObservationBase specimen, boolean createIfNotExists, 
+	private TextData inititializeTextDataWithSupportTest(Feature feature, SpecimenOrObservationBase specimen, boolean createIfNotExists, 
 				boolean isImageGallery) throws DerivedUnitFacadeNotSupportedException {
 		if (feature == null ){
 			return null;
@@ -495,6 +495,36 @@ public class DerivedUnitFacade {
 			description.addElement(textData);
 			return textData;
 		}
+	}
+	
+
+	/**
+	 * Tests if a given image gallery is supported by the derived unit facade.
+	 * It returns the only text data attached to the given image gallery.
+	 * It the given image gallery does not have text data attached, it is created and attached.
+	 * @param imageGallery
+	 * @return
+	 * @throws DerivedUnitFacadeNotSupportedException
+	 */
+	private TextData testImageGallery(SpecimenDescription imageGallery) throws DerivedUnitFacadeNotSupportedException {
+		if (imageGallery.isImageGallery() == false){
+			throw new DerivedUnitFacadeNotSupportedException("Image gallery needs to have image gallery flag set");
+		}
+		if (imageGallery.getElements().size() > 1){
+			throw new DerivedUnitFacadeNotSupportedException("Image gallery must not have more then one description element");
+		}
+		TextData textData;
+		if (imageGallery.getElements().size() == 0){
+			textData = TextData.NewInstance(Feature.IMAGE());
+			imageGallery.addElement(textData);
+		}else{
+			if (! imageGallery.getElements().iterator().next().isInstanceOf(TextData.class)){
+				throw new DerivedUnitFacadeNotSupportedException("Image gallery must only have TextData as element");
+			}else{
+				textData = CdmBase.deproxy(imageGallery.getElements().iterator().next(), TextData.class);
+			}
+		}
+		return textData;
 	}
 
 //************************** METHODS *****************************************	
@@ -1226,7 +1256,26 @@ public class DerivedUnitFacade {
 		}
 	}
 	
+	public void setFieldObjectImageGallery(SpecimenDescription imageGallery) throws DerivedUnitFacadeNotSupportedException{
+		SpecimenDescription existingGallery = getFieldObjectImageGallery(false);
+		//TODO test attached fieldObject is the same as this.getFieldObject
+		
+		if (existingGallery != null){
+			if (existingGallery != imageGallery){
+				throw new DerivedUnitFacadeNotSupportedException("DerivedUnitFacade does not allow more than one image gallery");
+			}else{
+				//do nothing
+			}
+		}else {
+			TextData textData = testImageGallery(imageGallery);
+			this.fieldObjectMediaTextData = textData;
+		}
+	}
+
+	
 	/**
+	 * Returns the field object image gallery. If no such image gallery exists and
+	 * createIfNotExists is true an new one is created. Otherwise null is returned.
 	 * @param createIfNotExists
 	 * @return
 	 */
@@ -1406,7 +1455,7 @@ public class DerivedUnitFacade {
 	public SpecimenDescription getDerivedUnitImageGallery(boolean createIfNotExists){
 		TextData textData;
 		try {
-			textData = inititialzeTextDataWithSupportTest(Feature.IMAGE(), derivedUnit, createIfNotExists, true);
+			textData = inititializeTextDataWithSupportTest(Feature.IMAGE(), derivedUnit, createIfNotExists, true);
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -1414,6 +1463,21 @@ public class DerivedUnitFacade {
 			return CdmBase.deproxy(textData.getInDescription(), SpecimenDescription.class);
 		}else{
 			return null;
+		}
+	}
+	public void setDerivedUnitImageGallery(SpecimenDescription imageGallery) throws DerivedUnitFacadeNotSupportedException{
+		SpecimenDescription existingGallery = getDerivedUnitImageGallery(false);
+		//TODO test attached fieldObject is the same as this.getFieldObject
+		
+		if (existingGallery != null){
+			if (existingGallery != imageGallery){
+				throw new DerivedUnitFacadeNotSupportedException("DerivedUnitFacade does not allow more than one image gallery");
+			}else{
+				//do nothing
+			}
+		}else {
+			TextData textData = testImageGallery(imageGallery);
+			this.derivedUnitMediaTextData = textData;
 		}
 	}
 	
