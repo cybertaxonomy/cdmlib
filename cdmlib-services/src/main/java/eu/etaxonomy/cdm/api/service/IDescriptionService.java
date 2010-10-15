@@ -131,6 +131,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing DescriptionElementBase instances
+	 * 
+	 * FIXME candidate for harmonization - rename to pageDescriptionElements
 	 */
 	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
@@ -171,6 +173,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing TaxonDescription instances
+	 * 
+	 * FIXME candidate for harmonization - rename to pageTaxonDescriptions
 	 */
 	public Pager<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
@@ -195,6 +199,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing TaxonNameBase instances
+	 * 
+	 * FIXME candidate for harmonization - rename to pageTaxonNameDescriptions
 	 */
 	public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
@@ -237,6 +243,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
      * @return a Pager containing media instances
+     * 
+     * FIXME candidate for harmonization - rename to pageMedia
      */
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
     

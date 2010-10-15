@@ -42,19 +42,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
 	/**
 	 * Computes all taxon bases.
-	 * FIXME could substitute with list(Synonym.class, limit, start)
 	 * @param limit
 	 * @param start
 	 * @return
+	 *
+	 * FIXME could substitute with list(Synonym.class, limit, start)
 	 */
 	public List<Synonym> getAllSynonyms(int limit, int start);
 	
 	/**
 	 * Computes all taxon bases.
-	 * FIXME could substitute with list(Taxon.class, limit,start)
 	 * @param limit
 	 * @param start
 	 * @return
+	 * 
+	 * FIXME could substitute with list(Taxon.class, limit,start)
 	 */
 	public List<Taxon> getAllTaxa(int limit, int start);	
 	
@@ -110,6 +112,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param limit
 	 * @param start
 	 * @return
+	 * FIXME candidate for harmonization - rename to listRelationships
 	 */
     public List<RelationshipBase> getAllRelationships(int limit, int start);
 
@@ -349,6 +352,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param widthOrDuration
 	 * @param mimeTypes
 	 * @return
+	 * 
+	 * FIXME candidate for harmonization - rename to listMedia()
 	 */
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
