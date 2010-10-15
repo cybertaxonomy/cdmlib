@@ -51,12 +51,12 @@ public class EditGeoServiceUtilities {
 
 	private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
 	
-	private static HashMap<Class<? extends SpecimenOrObservationBase<?>>, Color> defaultSpecimenOrObservationTypeColors;
+	private static HashMap<Class<? extends SpecimenOrObservationBase>, Color> defaultSpecimenOrObservationTypeColors;
 
 	private static final String MS_SEPARATOR = ",";
 	
 	static {
-		defaultSpecimenOrObservationTypeColors = new HashMap<Class<? extends SpecimenOrObservationBase<?>>, Color>();
+		defaultSpecimenOrObservationTypeColors = new HashMap<Class<? extends SpecimenOrObservationBase>, Color>();
 		defaultSpecimenOrObservationTypeColors.put(FieldObservation.class, Color.ORANGE);
 		defaultSpecimenOrObservationTypeColors.put(DerivedUnit.class, Color.RED);
 		defaultSpecimenOrObservationTypeColors.put(LivingBeing.class, Color.GREEN);
@@ -422,7 +422,7 @@ public class EditGeoServiceUtilities {
 	public static String getOccurrenceServiceRequestParameterString(
 			List<Point> fieldObservationPoints,
 			List<Point> derivedUnitPoints,
-			Map<Class<? extends SpecimenOrObservationBase<?>>, Color> specimenOrObservationTypeColors,
+			Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors,
 			Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
 		
 			specimenOrObservationTypeColors = mergeMaps(defaultSpecimenOrObservationTypeColors, specimenOrObservationTypeColors);
@@ -471,8 +471,8 @@ public class EditGeoServiceUtilities {
 
 	private static void addToStyleAndData(
 			List<Point> points,
-			Class<? extends SpecimenOrObservationBase<?>> specimenOrObservationType,
-			Map<Class<? extends SpecimenOrObservationBase<?>>, Color> specimenOrObservationTypeColors, Map<String, String> styleAndData) {
+			Class<? extends SpecimenOrObservationBase> specimenOrObservationType,
+			Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors, Map<String, String> styleAndData) {
 
 		//TODO add markerShape and size and Label to specimenOrObservationTypeColors -> Map<Class<SpecimenOrObservationBase<?>>, MapStyle>
 		

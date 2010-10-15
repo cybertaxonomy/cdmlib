@@ -133,7 +133,7 @@ public class EditGeoService implements IEditGeoService{
 	@Override
 	public String getOccurrenceServiceRequestParameterString(
 			List<TaxonDescription> taxonDescriptions,
-			Map<Class<? extends SpecimenOrObservationBase<?>>, Color> specimenOrObservationTypeColors, Boolean doReturnImage,
+			Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors, Boolean doReturnImage,
 			Integer width, Integer height, String bbox, String backLayer) {
 		
 			List<Point> fieldObservationPoints = new ArrayList<Point>();
