@@ -7,6 +7,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -22,11 +23,14 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -37,10 +41,13 @@ import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -53,6 +60,12 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
+	
+	@Autowired
+	private IDescriptionDao descriptionDao;
+	
+	@Autowired
+	private ITaxonNameDao taxonNameDao;
 
 	public OccurrenceDaoHibernateImpl() {
 		super(SpecimenOrObservationBase.class);
@@ -299,5 +312,74 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		}
 		
 		return list;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#listByAnyAssociation(java.lang.Class, eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
+	 */
+	@Override
+	public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type,
+			Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		
+		Set<SpecimenOrObservationBase> setOfAll = new HashSet<SpecimenOrObservationBase>();
+		
+		// A Taxon may be referenced by the DeterminationEvent of the SpecimenOrObservationBase
+		List<SpecimenOrObservationBase> byDetermination = list(type, associatedTaxon, null, 0, null, null);
+		setOfAll.addAll(byDetermination);
+		
+		// The IndividualsAssociation elements in a TaxonDescription contain DerivedUnitBases 
+		List<IndividualsAssociation> byIndividualsAssociation = descriptionDao.getDescriptionElementForTaxon(
+				associatedTaxon, null, IndividualsAssociation.class, null, 0, null);
+		for(IndividualsAssociation individualsAssociation : byIndividualsAssociation){
+			setOfAll.add(individualsAssociation.getAssociatedSpecimenOrObservation());
+		}
+		
+		// SpecimenTypeDesignations may be associated with any HomotypicalGroup related to the specific Taxon.
+		List<SpecimenTypeDesignation> bySpecimenTypeDesignation = taxonNameDao.getTypeDesignations(associatedTaxon.getName(), SpecimenTypeDesignation.class, null, null, 0, null);
+		for (SpecimenTypeDesignation specimenTypeDesignation : bySpecimenTypeDesignation) {
+			setOfAll.add(specimenTypeDesignation.getTypeSpecimen());
+		}
+		
+		String queryString = 
+			"select sob " +
+			" from SpecimenOrObservationBase sob" +
+			" where sob in (:setOfAll)";
+		
+		if(type != null){
+			queryString += " and sob.class = :type";
+		}
+		
+		if(orderHints != null && orderHints.size() > 0){
+			queryString += " order by ";
+			String orderStr = "";
+			for(OrderHint orderHint : orderHints){
+				if(orderStr.length() > 0){
+					orderStr += ", ";
+				}
+				queryString += "sob." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+			}
+			queryString += orderStr;
+		}
+		
+		Query query = getSession().createQuery(queryString);
+		query.setParameterList("setOfAll", setOfAll);
+		
+		if(type != null){
+			query.setParameter("type", type.getSimpleName());
+		}
+		
+		if(limit != null) {
+			if(start != null) {
+				query.setFirstResult(start);
+			} else {
+				query.setFirstResult(0);
+			}
+			query.setMaxResults(limit);
+		}
+		    
+		
+	    List<T> results = (List<T>) query.list();
+	    defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 }

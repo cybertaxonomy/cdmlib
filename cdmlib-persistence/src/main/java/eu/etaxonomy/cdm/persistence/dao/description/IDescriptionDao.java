@@ -161,8 +161,8 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 */
 	int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence);
 
-	List<DescriptionElementBase> getDescriptionElementForTaxon(Taxon taxon,
+	<T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(Taxon taxon,
 			Set<Feature> features,
-			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Class<T> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths);
 }

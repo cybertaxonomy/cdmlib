@@ -344,21 +344,35 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			return results;
 		}
 	}
-
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, 
-			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber) {
-		return getTypeDesignations(name, status, pageSize, pageNumber, null);
+	
+	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths){
+		return getTypeDesignations(name, null, status, pageSize, pageNumber, propertyPaths);
 	}
 	
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths){
+	public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonNameBase name, 
+				Class<T> type,
+				TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
+				List<String> propertyPaths){
 		checkNotInPriorView("getTypeDesignations(TaxonNameBase name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
 		Query query = null;
-		if(status == null) {
-			query = getSession().createQuery("select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name");
-		} else {
-			query = getSession().createQuery("select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name and designation.typeStatus = :status");
+		String queryString = "select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name";
+
+		if(status != null) {
+			queryString +=  " and designation.typeStatus = :status";
+		}
+		if(type != null){
+			queryString +=  " and designation.class = :type";
+		}
+
+		query = getSession().createQuery(queryString);
+		
+		if(status != null) {		
 			query.setParameter("status", status);
 		}
+		if(type != null){
+			query.setParameter("type", type.getSimpleName());
+		}
+		
 		query.setParameter("name",name);
 
 		if(pageSize != null) {
@@ -369,7 +383,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 				query.setFirstResult(0);
 			}
 		}
-		return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.list(), propertyPaths);
+		return defaultBeanInitializer.initializeAll((List<T>)query.list(), propertyPaths);
 	}
 
 	

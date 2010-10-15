@@ -593,40 +593,39 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		return descriptionBase;
 	}
 
-	@Deprecated // this method resultst in a org.hibernate.QueryException because "inDescription.taxon" will not work 
-	// for DescriptionBase objects. Who uses this method? Can we remove this? -- nho
-	public List<DescriptionElementBase> getDescriptionElementForTaxon(
+
+	public <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(
 			Taxon taxon, Set<Feature> features,
-			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Class<T> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 			
-		 Criteria criteria = null;
-         if(type == null) {
-         	criteria = getSession().createCriteria(DescriptionElementBase.class);
-         } else {
-         	criteria = getSession().createCriteria(type);
-         }
+		String queryString = "select de" +
+			" from TaxonDescription as td" +
+			" left join td.descriptionElements as de" +
+			" where td.taxon = :taxon";
 		
-         if(taxon != null) {
-		        criteria.add(Restrictions.eq("inDescription.taxon", taxon));
-		    }
+		if(type != null){
+			queryString += " and de.class = :type"; 
+		}
 		
-		    if(features != null && !features.isEmpty()) {
-			    criteria.add(Restrictions.in("feature", features));
-		    }
+		Query query = getSession().createQuery(queryString);
 		
-		    if(pageSize != null) {
-			    criteria.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		    	    criteria.setFirstResult(pageNumber * pageSize);
-		        }
-		    }
+		query.setParameter("taxon", taxon);
+		if(type != null){
+			query.setParameter("type", type.getSimpleName());
+		}
+		
+	    if(pageSize != null) {
+	    	query.setMaxResults(pageSize);
+	        if(pageNumber != null) {
+	        	query.setFirstResult(pageNumber * pageSize);
+	        }
+	    }
 		    
-		    List<DescriptionElementBase> results = (List<DescriptionElementBase>)criteria.list();
-		    
-		    defaultBeanInitializer.initializeAll(results, propertyPaths);
-		
-	    	return results; 
+	    List<DescriptionElementBase> results = (List<DescriptionElementBase>) query.list();
+	    defaultBeanInitializer.initializeAll(results, propertyPaths);
+	
+    	return (List<T>) results; 
 	}
 }

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -131,11 +132,17 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
 		assert acherontiaLachesis != null : "name must exist";
 		
-		List<TypeDesignationBase> result = taxonNameDao.getTypeDesignations(acherontiaLachesis, null, null, null);
+		List<TypeDesignationBase> result1 = taxonNameDao.getTypeDesignations(acherontiaLachesis, null, null, null, null, null);
 		
-		assertNotNull("getTypeDesignations should return a list",result);
-		assertFalse("the list should not be empty", result.isEmpty());
-		assertEquals("getTypeDesignations should return 1 TypeDesignationBase instance",1,result.size());
+		assertNotNull("getTypeDesignations should return a list",result1);
+		assertFalse("the list should not be empty", result1.isEmpty());
+		assertEquals("getTypeDesignations should return 1 TypeDesignationBase instance",1,result1.size());
+		
+		List<SpecimenTypeDesignation> result2 = taxonNameDao.getTypeDesignations(acherontiaLachesis, SpecimenTypeDesignation.class, null, null, null, null);
+		
+		assertNotNull("getTypeDesignations should return a list",result2);
+		assertFalse("the list should not be empty", result2.isEmpty());
+		assertEquals("getTypeDesignations should return 1 TypeDesignationBase instance",1,result2.size());
 	}
 	
 	@Test

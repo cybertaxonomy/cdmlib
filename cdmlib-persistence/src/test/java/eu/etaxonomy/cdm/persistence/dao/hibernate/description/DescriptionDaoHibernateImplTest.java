@@ -33,13 +33,17 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -53,6 +57,9 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	IDefinedTermDao definedTermDao;
 	
+	@SpringBeanByType
+	ITaxonDao taxonDao;
+	
 	private Set<NamedArea> namedAreas;
 	private Set<Feature> features;
 	
@@ -61,6 +68,8 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 	private UUID antarcticaUuid;
 	
 	private UUID uuid;
+
+	private UUID taxonSphingidaeUuid;
 	
 	@Before
 	public void setUp() {
@@ -70,6 +79,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		northernAmericaUuid = UUID.fromString("2757e726-d897-4546-93bd-7951d203bf6f");
 		southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
 		antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
+		taxonSphingidaeUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 		
 		features = new HashSet<Feature>();
 	}
@@ -279,6 +289,39 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		assertNotNull("getDescriptionElements should return a List");
 		assertFalse("getDescriptionElements should not be empty",elements.isEmpty());
 		assertEquals("getDescriptionElement should return 1 elements",1,elements.size());
+	}
+	
+	@Test
+	public void testGetDescriptionElementForTaxon() {
+		
+		Taxon taxonSphingidae = (Taxon) taxonDao.load(taxonSphingidaeUuid);
+		assert taxonSphingidae != null : "taxon must exist";
+		
+		// 1.
+		
+		List<DescriptionElementBase> elements1 = descriptionDao.getDescriptionElementForTaxon(
+				taxonSphingidae , null, null, null, 0, null);
+		
+		assertNotNull("getDescriptionElementForTaxon should return a List", elements1);
+		assertFalse("getDescriptionElementForTaxon should not be empty",elements1.isEmpty());
+		assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements1.size());
+		
+		// 2.
+		
+		List<DescriptionElementBase> elements2 = descriptionDao.getDescriptionElementForTaxon(
+				taxonSphingidae , null, DescriptionElementBase.class, null, 0, null);
+		
+		assertNotNull("getDescriptionElementForTaxon should return a List", elements2);
+		assertTrue("getDescriptionElementForTaxon should be empty",elements2.isEmpty());
+		
+		// 3.
+		
+		List<Distribution> elements3 = descriptionDao.getDescriptionElementForTaxon(
+				taxonSphingidae , null, Distribution.class, null, 0, null);
+		
+		assertNotNull("getDescriptionElementForTaxon should return a List", elements3);
+		assertFalse("getDescriptionElementForTaxon should not be empty",elements3.isEmpty());
+		assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements3.size());
 	}
 	
 }

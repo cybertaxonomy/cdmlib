@@ -26,12 +26,22 @@ public class OrderHint {
 		 * items are sorted in increasing
 		 * order.
 		 */
-		ASCENDING, 
+		ASCENDING("asc"), 
 		/**
 		 * items are sorted in decreasing
 		 * order.
 		 */
-		DESCENDING
+		DESCENDING("desc");
+		
+		private String hql;
+		
+		private SortOrder(String hqlStr){
+			hql = hqlStr;
+		}
+		
+		public String toHql(){
+			return hql;
+		}
 	}
 	
 	private String propertyName;
