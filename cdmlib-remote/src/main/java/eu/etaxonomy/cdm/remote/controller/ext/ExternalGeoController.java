@@ -147,7 +147,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 		String bbox = null;
 		String backLayer = null;
 		Boolean doReturnImage = null;
-		Map<Class<? extends SpecimenOrObservationBase<?>>, Color> specimenOrObservationTypeColors = null;
+		Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
 		
 		logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath());
 		ModelAndView mv = new ModelAndView();
