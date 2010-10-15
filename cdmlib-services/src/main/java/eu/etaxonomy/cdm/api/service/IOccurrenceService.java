@@ -17,13 +17,18 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -39,20 +44,34 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name);
 	
 	/**
-	 * Returns a paged list of occurrences that have been determined to belong to the taxon concept
-	 * determinedAs, optionally restricted to objects belonging to a class that that extends 
-	 * SpecimenOrObservationBase
+	 * Returns a paged list of occurrences that have been determined to belong
+	 * to the taxon concept determinedAs, optionally restricted to objects
+	 * belonging to a class that that extends SpecimenOrObservationBase.
+	 * <p>
+	 * In contrast to {@link #listByAnyAssociation(Class, Taxon, List)} this
+	 * method only takes SpecimenOrObservationBase instances into account which
+	 * are actually determined as the taxon specified by
+	 * <code>determinedAs</code>.
 	 * 
-	 * @param type  The type of entities to return (can be null to count all entities of type <T>)
-	 * @param determinedAs the taxon concept that the occurrences have been determined to belong to
-	 	 * @param pageSize The maximum number of objects returned (can be null for all matching objects)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based, 
-	 *                   can be null, equivalent of starting at the beginning of the recordset)
+	 * @param type
+	 *            The type of entities to return (can be null to count all
+	 *            entities of type <T>)
+	 * @param determinedAs
+	 *            the taxon concept that the occurrences have been determined to
+	 *            belong to
+	 * @param pageSize
+	 *            The maximum number of objects returned (can be null for all
+	 *            matching objects)
+	 * @param pageNumber
+	 *            The offset (in pageSize chunks) from the start of the result
+	 *            set (0 - based, can be null, equivalent of starting at the
+	 *            beginning of the recordset)
 	 * @param orderHints
 	 *            Supports path like <code>orderHints.propertyNames</code> which
 	 *            include *-to-one properties like createdBy.username or
 	 *            authorTeam.persistentTitleCache
-	 * @param propertyPaths properties to be initialized
+	 * @param propertyPaths
+	 *            properties to be initialized
 	 * @return
 	 */
 	public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -113,5 +132,26 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 	
 	public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, List<String> propertyPaths);
+	
+	/**
+	 * Lists all instances of {@link SpecimenOrObservationBase} which are associated with the <code>taxon</code> specified as parameter.
+	 * SpecimenOrObservationBase instances can be associated to taxa in multiple ways, all these possible relations are taken into account:
+	 * <ul>
+	 * <li>The {@link IndividualsAssociation} elements in a {@link TaxonDescription} contain {@link DerivedUnitBase}s</li>
+	 * <li>{@link SpecimenTypeDesignation}s may be associated with any {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
+	 * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent} of the {@link SpecimenOrObservationBase}</li> 
+	 * </ul>
+	 * 
+	 * @param <T>
+	 * @param type
+	 * @param associatedTaxon
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type,
+			Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 		
 }

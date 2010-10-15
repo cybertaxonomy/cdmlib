@@ -31,13 +31,16 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -63,6 +66,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	
 	@Autowired
 	private AbstractBeanInitializer beanInitializer;
+	
+	@Autowired
+	private ITaxonService taxonService;
 	
 	
 
@@ -139,6 +145,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#list(java.lang.Class, eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
 	public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
 		Integer numberOfResults = dao.count(type,determinedAs);
 		List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
@@ -147,7 +156,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 			Integer start = pageSize == null ? 0 : pageSize * pageNumber;
 			results = dao.list(type,determinedAs, pageSize, start, orderHints,propertyPaths);
 		}
-		return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);	}
+		return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);	
+	}
 
 	@Override
 	public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache() {
@@ -203,6 +213,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		beanInitializer.initializeAll(derivedUnitFacadeList, propertyPaths);
 			
 		return derivedUnitFacadeList;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listSpecimenOrObservationsFor(java.lang.Class, eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
+	 */
+	@Override
+	public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type,
+			Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
+	{
+		
+		associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
+		return dao.listByAnyAssociation(type, associatedTaxon, limit, start, orderHints, propertyPaths);
+		
 	}
 	
 	
