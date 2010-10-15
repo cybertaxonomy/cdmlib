@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.controller.ext;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
@@ -37,7 +39,10 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
+import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
@@ -61,8 +66,12 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
 	@Autowired
 	private IEditGeoService geoservice;
+	
 	@Autowired
 	private IDescriptionService descriptionService;
+	
+	@Autowired
+	private IOccurrenceService occurrenceService;
 
 	/*
 	 * (non-Javadoc)
@@ -155,10 +164,16 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 		// get the descriptions for the taxon
 		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
-		Pager<TaxonDescription> page = descriptionService.getTaxonDescriptions(taxon, null, null, null, null, null);
-		List<TaxonDescription> taxonDescriptions = page.getRecords();
+TaxonBase tb = service.load(uuid);
 		
-		String uriParams = geoservice.getOccurrenceServiceRequestParameterString(taxonDescriptions, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+		
+
+		List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAnyAssociation(
+					null, (Taxon)tb, null, 0, orderHints, null);
+		
+		String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
 		mv.addObject(uriParams);
 		return mv;
 	}

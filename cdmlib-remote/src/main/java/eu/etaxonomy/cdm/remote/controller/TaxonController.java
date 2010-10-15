@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,12 +27,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
  * TODO write controller documentation
@@ -45,6 +51,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonController.class);
+	
+	@Autowired
+	private IOccurrenceService occurrenceService;
 	
 	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
 			"taxonNodes"
@@ -110,6 +119,32 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
 			return null;
 		}
+	}
+	
+	@RequestMapping(value = "specimensOrObersvations", method = RequestMethod.GET)
+	public ModelAndView doListSpecimensOrObersvations(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException {
+		logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+		
+		ModelAndView mv = new ModelAndView();
+
+		TaxonBase tb = service.load(uuid);
+		
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+		
+		if(tb instanceof Taxon){
+			List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAnyAssociation(
+					null, (Taxon)tb, null, 0, orderHints, null);
+			mv.addObject(specimensOrObersvations);
+		} else {
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+			return null;
+		}
+		
+		return mv;
 	}
 		
 }
