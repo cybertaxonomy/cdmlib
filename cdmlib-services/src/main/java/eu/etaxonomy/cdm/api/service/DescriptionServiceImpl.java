@@ -331,14 +331,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 			Taxon taxon, Set<Feature> features,
 			Class<? extends DescriptionElementBase> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
-		 return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+		//FIXME remove cast
+		return (List<DescriptionElementBase>) dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
 	}
 	
 	public List<DescriptionElementBase> getDescriptionElementsForTaxon(
 			Taxon taxon, FeatureTree featureTree,
 			Class<? extends DescriptionElementBase> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
-		 return dao.getDescriptionElementForTaxon(taxon, featureTree.getDistinctFeatures(), type, pageSize, pageNumber, propertyPaths);
+		 //FIXME remove cast
+		 return (List<DescriptionElementBase>) dao.getDescriptionElementForTaxon(taxon, featureTree.getDistinctFeatures(), type, pageSize, pageNumber, propertyPaths);
 	}
 
 	/* (non-Javadoc)
