@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.OccurrenceServiceImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -39,6 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 
 /**
  * @author a.kohlbecker
@@ -54,8 +57,12 @@ public class EditGeoService implements IEditGeoService{
 
 	@Autowired
 	private IDescriptionDao dao;
+	
 	@Autowired
 	private IDefinedTermDao termDao;
+	
+	@Autowired
+	private IOccurrenceDao occurrenceDao;
 
 	private Set<Feature> getDistributionFeatures() {
 		Set<Feature> distributionFeature = new HashSet<Feature>();
@@ -132,7 +139,7 @@ public class EditGeoService implements IEditGeoService{
 	 */
 	@Override
 	public String getOccurrenceServiceRequestParameterString(
-			List<TaxonDescription> taxonDescriptions,
+			List<SpecimenOrObservationBase> specimensOrObersvations,
 			Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors, Boolean doReturnImage,
 			Integer width, Integer height, String bbox, String backLayer) {
 		
@@ -142,23 +149,15 @@ public class EditGeoService implements IEditGeoService{
 			IndividualsAssociation individualsAssociation;
 			DerivedUnitBase derivedUnit;
 			
-			for(TaxonDescription taxonDescription : taxonDescriptions){
-				List<DescriptionElementBase> elemements = dao.getDescriptionElements(taxonDescription, null, IndividualsAssociation.class, null, 0, null);
-				for (DescriptionElementBase descriptionElementBase : elemements) {
-					individualsAssociation = (IndividualsAssociation)descriptionElementBase;
-					if(individualsAssociation.getAssociatedSpecimenOrObservation() != null){
-						
-						SpecimenOrObservationBase<?> specimenOrObservation = HibernateProxyHelper.deproxy(individualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-						
-						if(specimenOrObservation instanceof FieldObservation){
-							fieldObservationPoints.add(((FieldObservation)specimenOrObservation).getGatheringEvent().getExactLocation());
-						} 
-						if(specimenOrObservation instanceof DerivedUnitBase<?>){						
-							registerDerivedUnitLocations((DerivedUnitBase)specimenOrObservation, derivedUnitPoints);
-						}
-						
-					}
-				}
+			for(SpecimenOrObservationBase specimenOrObservationBase : specimensOrObersvations){
+				SpecimenOrObservationBase<?> specimenOrObservation = occurrenceDao.load(specimenOrObservationBase.getUuid());
+				
+				if(specimenOrObservation instanceof FieldObservation){
+					fieldObservationPoints.add(((FieldObservation)specimenOrObservation).getGatheringEvent().getExactLocation());
+				} 
+				if(specimenOrObservation instanceof DerivedUnitBase<?>){						
+					registerDerivedUnitLocations((DerivedUnitBase)specimenOrObservation, derivedUnitPoints);
+				}			
 			}
 			
 		return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(

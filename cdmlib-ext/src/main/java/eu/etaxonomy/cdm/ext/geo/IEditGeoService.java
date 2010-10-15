@@ -109,7 +109,7 @@ public interface IEditGeoService {
 	
 	
 	public String getOccurrenceServiceRequestParameterString(
-			List<TaxonDescription> taxonDescriptions, 
+			List<SpecimenOrObservationBase> specimensOrObersvations, 
 			Map<Class<? extends SpecimenOrObservationBase>,Color> specimenOrObservationTypeColors,
 			Boolean doReturnImage,
 			Integer width, 
