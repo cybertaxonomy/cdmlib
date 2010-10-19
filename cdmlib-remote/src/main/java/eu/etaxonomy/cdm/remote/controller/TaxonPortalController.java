@@ -215,7 +215,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
 			//"$",
 			"typeSpecimen.$",
-			"citation",			
+			"citation.authorTeam.$",			
 			"typeName",
 	});
 	
