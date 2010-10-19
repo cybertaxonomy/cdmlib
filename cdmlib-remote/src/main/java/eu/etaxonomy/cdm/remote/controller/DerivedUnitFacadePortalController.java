@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.Arrays;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,5 +23,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = {"/portal/derivedUnitFacade/{uuid}"})
 public class DerivedUnitFacadePortalController extends
 		DerivedUnitFacadeController {
+	
+	public DerivedUnitFacadePortalController(){
+		super();
+		setInitializationStrategy(Arrays.asList(new String []{
+			"*",
+			"gatheringEvent.*",
+			"ecologyAll",
+			"plantDescriptionAll",
+			
+			"fieldObservation.*",
+			"fieldObjectMedia.representations.parts",
+			
+			"derivedUnit.*",
+			"derivedUnitMedia.representations.parts",
+			"derivedUnitDefinitions",
+			
+			"exactLocation.referenceSystem"
+			
+			
+		}));
+	}
 
 }

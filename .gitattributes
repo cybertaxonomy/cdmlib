@@ -3335,7 +3335,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/CdmExceptionResolv
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/NoRecordsMatchException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/JsonConfigFactoryBean.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmBeanProcessingRegistry.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractCdmBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/DerivedUnitFacadeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/HibernateProxyBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/MediaBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/NameRelationshipBeanProcessor.java -text

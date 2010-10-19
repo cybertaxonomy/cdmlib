@@ -152,7 +152,7 @@ public class DerivedUnitFacadeController extends AbstractController{
 
 	private DerivedUnitFacade newFacadeFrom(UUID uuid, HttpServletResponse response, List<String> extendedInitStrategy)
 	throws IOException {
-		List<String> initStrategy = new ArrayList<String>(DEFAULT_INIT_STRATEGY);
+		List<String> initStrategy = new ArrayList<String>(initializationStrategy);
 		if(extendedInitStrategy != null && extendedInitStrategy.size() > 0){
 			initStrategy.addAll(extendedInitStrategy);
 		}
