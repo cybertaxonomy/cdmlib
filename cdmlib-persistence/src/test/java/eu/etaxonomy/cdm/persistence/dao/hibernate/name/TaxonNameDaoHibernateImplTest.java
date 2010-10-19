@@ -14,7 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +35,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -107,6 +105,12 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		assertNotNull("getRelatedNames should return a list",result);
 		assertFalse("the list should not be empty", result.isEmpty());
 		assertEquals("getRelatedNames should return 2 NameRelationship instance",2,result.size());
+	
+		result = taxonNameDao.getNameRelationships(null, null, null, null,null,null, null);
+		
+		assertNotNull("getRelatedNames should return a list",result);
+		assertFalse("the list should not be empty", result.isEmpty());
+		assertEquals("getRelatedNames should return all 2 NameRelationship instance",2,result.size());
 	}
 	
 	@Test

@@ -297,6 +297,9 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
 	public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, 
 			NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, 
 			List<String> propertyPaths) {
@@ -304,8 +307,9 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(NameRelationship.class);
-//			if (name != null)
-			criteria.add(Restrictions.eq(direction.toString(), name));
+			if (name != null || direction != null){
+				criteria.add(Restrictions.eq(direction.toString(), name));
+			}
 			if(type != null) {
 				criteria.add(Restrictions.eq("type", type));
 			}

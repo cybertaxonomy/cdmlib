@@ -56,6 +56,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * Return a List of relationships related to or from this name, optionally filtered
 	 * by relationship type. The direction of the relationships taken in to account is depending on
 	 * the <code>direction</code> parameter.
+	 * If both name and direction is null all name relationships will be returned.
 	 * 
 	 * @param name
 	 *            the name
