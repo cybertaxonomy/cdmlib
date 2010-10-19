@@ -304,6 +304,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(NameRelationship.class);
+//			if (name != null)
 			criteria.add(Restrictions.eq(direction.toString(), name));
 			if(type != null) {
 				criteria.add(Restrictions.eq("type", type));
