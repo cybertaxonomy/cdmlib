@@ -117,7 +117,9 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	/**
 	 * Returns the "monotypy" name type designation status.</BR>
 	 * Only one species was included in original genus description.
-	 * ICZN 68.3
+	 * ICZN 68.3.
+	 * No {@linkplain TypeDesignationBase#getCitation() citation} is needed 
+	 * for a monotypy as the type species is decided within the original paper. 
 	 */
 	public static final NameTypeDesignationStatus MONOTYPY(){
 		return findTermByUuid(uuidMonotypy);
@@ -136,7 +138,9 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	 * Returns the "original designation" name type designation status.</BR>
 	 * The type species is designated in the original genus description 
 	 * (this includes indication in the species name typicus).
-	 * ICZN 68.2
+	 * ICZN 68.2<Br>
+	 * No {@linkplain TypeDesignationBase#getCitation() citation} is needed 
+	 * for an original designation as the type species is decided within the original paper. 
 	 */
 	public static final NameTypeDesignationStatus ORIGINAL_DESIGNATION(){
 		return findTermByUuid(uuidOriginalDesignation);
