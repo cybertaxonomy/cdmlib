@@ -115,7 +115,10 @@ public  class ImageMetaData extends MediaMetaData {
 			readImageInfo(imageInfo);
 		    
 		} catch (IOException e) {
-			logger.warn("Could not read: "+ imageUri.toString() + "; reason:"+e.getMessage());
+			logger.warn("Could not read: "+ imageUri.toString() + "; reason: "+e.getMessage());
+			throw e;
+		} catch (HttpException e) {
+			logger.warn("Could not open url: "+ imageUri.toString() + "; reason: "+e.getMessage());
 			throw e;
 		} catch (ImageReadException e) {
 			logger.error("Could not open url: " + imageUri + ". " + e.getMessage());
