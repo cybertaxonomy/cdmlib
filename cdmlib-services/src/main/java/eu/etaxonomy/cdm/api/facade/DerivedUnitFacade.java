@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.mail.MethodNotSupportedException;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
@@ -356,6 +355,8 @@ public class DerivedUnitFacade {
 	 * Transforms the property paths in a way that the facade is handled just like an 
 	 * ordinary CdmBase object.<BR>
 	 * E.g. a property path "collectinAreas" will be translated into gatheringEvent.collectingAreas
+	 * 
+	 * Not needed (?) as the facade works with REST service property paths without using this method.
 	 * @param propertyPaths
 	 * @return
 	 */
