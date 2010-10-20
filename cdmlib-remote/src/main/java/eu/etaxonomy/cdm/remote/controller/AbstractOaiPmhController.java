@@ -189,6 +189,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 	protected AuditEventRecord<T> obtainCdmEntity(LSID identifier)
 			throws IdDoesNotExistException {
 		T object = service.find(identifier);
+		if(object == null){		
+			throw new IdDoesNotExistException(identifier);
+		}
+		
 		Pager<AuditEventRecord<T>> results = service.pageAuditEvents(object, 1,
 				0, AuditEventSort.BACKWARDS, getPropertyPaths());
 

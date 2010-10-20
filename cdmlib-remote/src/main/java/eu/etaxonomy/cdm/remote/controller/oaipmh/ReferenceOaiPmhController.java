@@ -48,6 +48,7 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"titleCache",
 			"name.titleCache",
+			"name.nomenclaturalReference.titleCache",
 			"$"
 			});
 
@@ -94,7 +95,6 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 		AuditEventRecord<ReferenceBase> auditEventRecord = obtainCdmEntity(identifier);
 		ReferenceBase referenceBase = auditEventRecord.getAuditableObject();
 		List<TaxonBase> list = service.listCoveredTaxa(referenceBase, true, TAXON_INIT_STRATEGY);
-		
 		return list;
 	}
     

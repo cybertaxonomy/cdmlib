@@ -104,12 +104,12 @@
             <a>titleCache</a>
             <b>scientificName</b>
        </field>
-       <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="titleCache">
-            <a>nomenclaturalReference</a>
+       <field>
+            <a>citationString</a>
             <b>namePublishedIn</b>
        </field>
-       <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="authorTeam.titleCache">
-            <a>nomenclaturalReference</a>
+       <field>
+            <a>authorshipCache</a>
             <b>scientificNameAuthorship</b>
        </field>    
        <field>

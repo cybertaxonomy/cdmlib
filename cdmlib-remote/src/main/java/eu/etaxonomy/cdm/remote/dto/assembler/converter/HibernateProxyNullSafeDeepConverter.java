@@ -12,13 +12,9 @@ package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
-import java.util.Vector;
 
 import org.dozer.ConfigurableCustomConverter;
 import org.dozer.Mapper;

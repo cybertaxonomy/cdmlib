@@ -48,7 +48,9 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -56,6 +58,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
@@ -89,7 +92,12 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	    
 	    name = BotanicalName.NewInstance(null);
 	    name.setNameCache("nameCache");
+	    INomenclaturalReference nomenclaturalReference = refFactory.newArticle();
+	    nomenclaturalReference.setTitleCache("nomenclaturalReference", true);
+	    name.setNomenclaturalReference(nomenclaturalReference);
+	    name.setNomenclaturalMicroReference("1");
 	    name.setAuthorshipCache("authorshipCache");
+	    name.setRank(Rank.SPECIES());
 	    
 	    sec = refFactory.newBook();
 	    sec.setAuthorTeam(authorTeam);
@@ -98,6 +106,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	    
 		taxon = Taxon.NewInstance(name, (ReferenceBase)sec);
 		taxon.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
+		taxon.setUpdated(new DateTime(2005, 12, 25, 12, 0, 0, 0));
 		taxon.setTitleCache("titleCache", true);
 		taxon.setLsid(lsid);
 
@@ -183,6 +192,17 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	public void testSpeciesProfileModelMapping() {
 		SpeciesProfileModel speciesProfileModel = (SpeciesProfileModel)mapper.map(taxonDescription, SpeciesProfileModel.class);
 		assertEquals(speciesProfileModel.getHasInformation().size(),2);
+	}
+	
+	@Test
+	public void testSimpleDarwinCoreMapping() {
+		SimpleDarwinRecord simpleDarwinRecord = mapper.map(taxon, SimpleDarwinRecord.class);
+		mapper.map((NonViralName)taxon.getName(), simpleDarwinRecord);
+		assertNotNull(simpleDarwinRecord.getModified());
+		assertEquals(taxon.getName().getTitleCache(), simpleDarwinRecord.getScientificName());
+		assertEquals(((NonViralName)taxon.getName()).getAuthorshipCache(), simpleDarwinRecord.getScientificNameAuthorship());
+		assertEquals(((NonViralName)taxon.getName()).getCitationString(), simpleDarwinRecord.getNamePublishedIn());
+		assertEquals(Rank.SPECIES().getLabel(), simpleDarwinRecord.getTaxonRank());
 	}
 	
 	private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz,final T wrappedCollection) {
