@@ -133,17 +133,18 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 				return -1;
 			}
 		}
+
+		Integer intDate1 = getIntegerDate(taxonBase1);
+		Integer intDate2 = getIntegerDate(taxonBase2);
 		
-		String date1 = getDate(taxonBase1);;
-		String date2 = getDate(taxonBase2);
-		if (date1 == null && date2 == null){
+		if (intDate1 == null && intDate2 == null){
 			result = 0;
-		}else if (date1 == null){
+		}else if (intDate1 == null){
 			return 1;
-		}else if (date2 == null){
+		}else if (intDate2 == null){
 			return -1;
 		}else{
-				result = date1.compareTo(date2);
+			result = intDate1.compareTo(intDate2);
 		}
 
 		if (result == 0){
@@ -184,8 +185,43 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	}
 	
 	
+	private Integer getIntegerDate(TaxonBase taxonBase){
+		Integer result;
+		
+		if (taxonBase == null){
+			result = null;
+		}else{
+			TaxonNameBase name = taxonBase.getName();
+			if (name == null){
+				result = null;
+			}else{
+				if (name instanceof ZoologicalName){
+					
+					result = (((ZoologicalName)name).getPublicationYear());
+				}else{
+					ReferenceBase ref = (ReferenceBase) name.getNomenclaturalReference();
+					if (ref == null){
+						result = null;
+					}else{
+						if (ref.getDatePublished() == null){
+							if (ref.getInReference() == null){
+								result = null;								
+							}else{
+								result = ref.getInReference().getDatePublished().getStartYear();
+							}							
+						}else{
+							result = ref.getDatePublished().getStartYear();
+						}
+					}
+				}
+			}	
+		}
+		
+		return result;
+	}
 	
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	private String getDate(TaxonBase taxonBase){
 		String result = null;
 		if (taxonBase == null){
