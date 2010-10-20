@@ -25,6 +25,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.jndi.JndiObjectFactoryBean;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 @Configuration
 public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 	
@@ -55,7 +57,10 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 	
 	@Bean
 	public DataSource dataSource() {
-		//TODO validate data schema version
+// TODO		
+//		if(!CdmMetaData.isDbSchemaVersionCompatible(CdmMetaData.getDbSchemaVersion())){
+//			logger.error("Schema version of the database ");
+//		}
 		if(this.dataSource == null){
 			String jndiName = findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false);
 			
@@ -65,7 +70,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 				String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
 				dataSource = loadDataSourceBean(beanName);
 			}
-			
 		}
 		return dataSource; 
 	}
@@ -94,15 +98,19 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 	}
 	
 	private DataSource loadDataSourceBean(String beanName) {
-		logger.info("using datasource '"+beanName);
-
+		
 		String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);
 		String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : beanDefinitionFile);
 		logger.info("loading DataSourceBean '" + beanName + "' from: " + path);
 		FileSystemResource file = new FileSystemResource(path);
 		XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
-	
-		return beanFactory.getBean(beanName, DataSource.class);
+		DataSource dataSource = beanFactory.getBean(beanName, DataSource.class);
+		if(dataSource instanceof ComboPooledDataSource){
+			logger.info("DataSourceBean '" + beanName + "is a ComboPooledDataSource [URL:" + ((ComboPooledDataSource)dataSource).getJdbcUrl()+ "]");
+		} else {
+			logger.error("DataSourceBean '" + beanName + "IS NOT a ComboPooledDataSource");
+		}
+		return dataSource;
 	}
 	
 	@Bean
