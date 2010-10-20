@@ -1,7 +1,6 @@
 package eu.etaxonomy.cdm.persistence.hibernate.replace.impl;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,25 +10,18 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.MappingException;
 import org.hibernate.SessionFactory;
-import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.type.AnyType;
 import org.hibernate.type.AssociationType;
 import org.hibernate.type.BagType;
 import org.hibernate.type.CollectionType;
-import org.hibernate.type.EntityType;
 import org.hibernate.type.ListType;
-import org.hibernate.type.MapType;
 import org.hibernate.type.SetType;
 import org.hibernate.type.Type;
-import org.hibernate.validator.xml.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 
