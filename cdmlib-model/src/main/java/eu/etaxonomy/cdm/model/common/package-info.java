@@ -2,10 +2,22 @@
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://etaxonomy.eu/cdm/model/common/1.0", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 @com.sun.xml.bind.XmlAccessorFactory(eu.etaxonomy.cdm.jaxb.CdmAccessorFactoryImpl.class)
-@GenericGenerator(
-		name="system-increment", 
+@org.hibernate.annotations.GenericGenerators({
+@GenericGenerator(		name="system-increment", 
 		strategy = "increment"
-)
+),
+@GenericGenerator(
+		name="system-identity", 
+		strategy = "identity"
+),
+@GenericGenerator(
+		name="system-hilo", 
+		strategy = "hilo"
+),
+@GenericGenerator(
+		name="system-sequence", 
+		strategy = "sequence"
+)})
 @org.hibernate.annotations.TypeDefs( { 
 	@org.hibernate.annotations.TypeDef(name="persistentDuration", typeClass=org.joda.time.contrib.hibernate.PersistentDuration.class),
 	@org.hibernate.annotations.TypeDef(name="dateTimeUserType", typeClass=org.joda.time.contrib.hibernate.PersistentDateTime.class),
