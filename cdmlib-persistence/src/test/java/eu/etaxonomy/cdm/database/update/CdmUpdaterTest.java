@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.AccountStore;
@@ -48,7 +49,7 @@ public class CdmUpdaterTest {
 
 // ******************** TESTS ****************************************************/
 	
-//	@Ignore
+	@Ignore
 	@Test
 	public void testUpdateToCurrentVersion() {
 		CdmUpdater cdmUpdater = new CdmUpdater();
@@ -63,7 +64,6 @@ public class CdmUpdaterTest {
 		}
 		cdmUpdater.updateToCurrentVersion(datasource, null); 
 	}
-	
 	
 	private static ICdmDataSource cdm_test_andreasM(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
