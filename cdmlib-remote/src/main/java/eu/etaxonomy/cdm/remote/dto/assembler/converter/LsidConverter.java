@@ -12,8 +12,9 @@ package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import net.sf.dozer.util.mapping.MappingException;
-import net.sf.dozer.util.mapping.converters.CustomConverter;
+import org.dozer.CustomConverter;
+import org.dozer.MappingException;
+
 import eu.etaxonomy.cdm.model.common.LSID;
 
 public class LsidConverter implements CustomConverter {

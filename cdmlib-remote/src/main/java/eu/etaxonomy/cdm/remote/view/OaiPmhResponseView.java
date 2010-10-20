@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sf.dozer.util.mapping.MapperIF;
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractView;
@@ -25,7 +25,7 @@ public abstract class OaiPmhResponseView extends AbstractView {
 	
 	private Marshaller marshaller;
 	
-	protected MapperIF mapper;
+	protected Mapper mapper;
 	
 	@Autowired
 	public void setMarshaller(Marshaller marshaller) {
@@ -33,7 +33,7 @@ public abstract class OaiPmhResponseView extends AbstractView {
 	}
 	
 	@Autowired
-	public void setMapper(MapperIF mapper) {
+	public void setMapper(Mapper mapper) {
 		this.mapper = mapper;
 	}
 	

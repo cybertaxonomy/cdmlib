@@ -12,12 +12,13 @@ package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import net.sf.dozer.util.mapping.MappingException;
-import net.sf.dozer.util.mapping.converters.CustomConverter;
+import org.dozer.CustomConverter;
+import org.dozer.MappingException;
+
 
 public class PreferLsidToUriConverter implements CustomConverter {
 
-	public Object convert(Object destination, Object source, Class destClass, Class sourceClass) {
+	public Object convert(Object destination, Object source, Class<?> destClass, Class<?> sourceClass) {
 		if (destination == null) {
 			if(source != null) {
 				try {

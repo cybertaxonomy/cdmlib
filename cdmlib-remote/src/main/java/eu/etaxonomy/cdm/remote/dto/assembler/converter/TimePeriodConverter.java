@@ -9,9 +9,9 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-import net.sf.dozer.util.mapping.MappingException;
-import net.sf.dozer.util.mapping.converters.CustomConverter;
 
+import org.dozer.CustomConverter;
+import org.dozer.MappingException;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -21,7 +21,8 @@ public class TimePeriodConverter implements CustomConverter {
 	/* (non-Javadoc)
 	 * @see net.sf.dozer.util.mapping.converters.CustomConverter#convert(java.lang.Object, java.lang.Object, java.lang.Class, java.lang.Class)
 	 */
-	public Object convert(Object destination, Object source, Class destClass, Class sourceClass) {
+	public Object convert(Object existingDestinationFieldValue, Object source, Class<?> destClass, Class<?> sourceClass) {
+	
 		if (source == null) {
 			return null;
 		}
@@ -44,7 +45,7 @@ public class TimePeriodConverter implements CustomConverter {
 		} else {
 			
 			throw new MappingException("Converter TestCustomConverter used incorrectly. Arguments passed in were:"
-					+ destination + " and " + source);
+					+ existingDestinationFieldValue + " and " + source);
 		}
 	}
 

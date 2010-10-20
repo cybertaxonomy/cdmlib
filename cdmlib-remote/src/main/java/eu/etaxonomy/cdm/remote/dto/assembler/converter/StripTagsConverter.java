@@ -13,12 +13,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import net.sf.dozer.util.mapping.MappingException;
-import net.sf.dozer.util.mapping.converters.CustomConverter;
+import org.dozer.CustomConverter;
+import org.dozer.MappingException;
+
 
 public class StripTagsConverter implements CustomConverter {
 
-	public Object convert(Object destination, Object source, Class destClass, Class sourceClass) {
+	public Object convert(Object destination, Object source, Class<?> destClass, Class<?> sourceClass) {
 		if (source == null) {
 			return null;
 		}

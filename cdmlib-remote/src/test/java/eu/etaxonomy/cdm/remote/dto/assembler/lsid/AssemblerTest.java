@@ -18,8 +18,8 @@ import java.util.Set;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import net.sf.dozer.util.mapping.MapperIF;
 
+import org.dozer.Mapper;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
@@ -30,7 +30,6 @@ import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -57,18 +56,14 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.StringType;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
 	
 	@SpringBeanByType
-	private MapperIF mapper;
+	private Mapper mapper;
 	
 	private Taxon taxon;
 	private IBook sec;

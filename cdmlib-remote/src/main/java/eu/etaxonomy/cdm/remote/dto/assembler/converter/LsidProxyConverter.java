@@ -9,8 +9,10 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-import net.sf.dozer.util.mapping.MappingException;
-import net.sf.dozer.util.mapping.converters.CustomConverter;
+
+import org.dozer.CustomConverter;
+import org.dozer.MappingException;
+
 import eu.etaxonomy.cdm.model.common.LSID;
 
 public class LsidProxyConverter implements CustomConverter {

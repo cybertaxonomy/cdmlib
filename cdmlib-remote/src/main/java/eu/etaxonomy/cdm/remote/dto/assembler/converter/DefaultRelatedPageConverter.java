@@ -4,14 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import net.sf.dozer.util.mapping.converters.ConfigurableCustomConverter;
-import net.sf.dozer.util.mapping.converters.CustomConverter;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import org.dozer.ConfigurableCustomConverter;
+
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 
 /**
@@ -29,8 +23,19 @@ public class DefaultRelatedPageConverter implements ConfigurableCustomConverter 
 	public void setRelatedPagePrefix(String relatedPagePrefix) {
 		this.relatedPagePrefix = relatedPagePrefix;
 	}
+	
+	String parameter = null;
+	
+	/* (non-Javadoc)
+	 * @see org.dozer.ConfigurableCustomConverter#setParameter(java.lang.String)
+	 */
+	@Override
+	public void setParameter(String parameter) {
+		this.parameter = parameter;
+		
+	}
 
-	public Object convert(Object existingDestinationFieldValue,	Object sourceFieldValue, Class destinationClass, Class sourceClass,String param) {
+	public Object convert(Object existingDestinationFieldValue,	Object sourceFieldValue, Class<?> destinationClass, Class<?> sourceClass) {
 		if(sourceFieldValue == null) {
 			return null;
 		}
@@ -38,7 +43,7 @@ public class DefaultRelatedPageConverter implements ConfigurableCustomConverter 
 		
 		stringBuffer.append(relatedPagePrefix);
 		
-		stringBuffer.append(param + "/");
+		stringBuffer.append(parameter + "/");
 		stringBuffer.append(((UUID)sourceFieldValue).toString());
 		
 		Relation relation = new Relation();

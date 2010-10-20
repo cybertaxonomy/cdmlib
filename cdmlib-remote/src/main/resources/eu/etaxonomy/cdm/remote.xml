@@ -9,6 +9,7 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 
+
   <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
     <property name="classesToBeBound">
       <list>
@@ -25,7 +26,7 @@
           <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
         </entry>
         <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='/human.xsl'?&gt;"/>
-        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='/oai2.xsl'?&gt;"/>
+        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../oai2.xsl'?&gt;"/>
       </map>
     </property>
   </bean>

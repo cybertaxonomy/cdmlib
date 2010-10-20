@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.dozer.util.mapping.MapperIF;
-
 import org.custommonkey.xmlunit.XMLUnit;
+import org.dozer.Mapper;
 import org.hibernate.envers.RevisionType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -49,7 +48,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 	private Marshaller marshaller;
 	
 	@SpringBeanByType
-	private MapperIF mapper;
+	private Mapper mapper;
 	
     private Map<String,Object> model;
     private IdentifyView identifyView;

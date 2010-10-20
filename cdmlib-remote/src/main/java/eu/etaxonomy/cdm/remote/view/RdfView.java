@@ -8,8 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sf.dozer.util.mapping.MapperIF;
-
+import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.Marshaller;
@@ -37,7 +36,7 @@ public class RdfView extends AbstractView {
 	
 	private Marshaller marshaller;
 	
-	private MapperIF mapper;
+	private Mapper mapper;
 	
 	private Map<Class<? extends CdmBase>,Class<? extends BaseThing>> classMap = new HashMap<Class<? extends CdmBase>,Class<? extends BaseThing>>();
 	
@@ -55,7 +54,7 @@ public class RdfView extends AbstractView {
 	}
 	
 	@Autowired
-	public void setMapper(MapperIF mapper) {
+	public void setMapper(Mapper mapper) {
 		this.mapper = mapper;
 	}
 	

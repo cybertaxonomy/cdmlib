@@ -13,14 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dozer.util.mapping.CustomFieldMapperIF;
-import net.sf.dozer.util.mapping.DozerBeanMapper;
-import net.sf.dozer.util.mapping.MapperIF;
-import net.sf.dozer.util.mapping.converters.CustomConverter;
-import net.sf.dozer.util.mapping.converters.CustomConverterBase;
-import net.sf.dozer.util.mapping.event.DozerEventListener;
-
-import org.springframework.beans.factory.BeanFactory;
+import org.dozer.BeanFactory;
+import org.dozer.CustomConverter;
+import org.dozer.CustomFieldMapper;
+import org.dozer.DozerBeanMapper;
+import org.dozer.DozerEventListener;
+import org.dozer.Mapper;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -35,10 +33,10 @@ public class DozerBeanMapperFactoryBean implements FactoryBean, InitializingBean
 	  private DozerBeanMapper beanMapper;
 	  private Resource[] mappingFiles;
 	  private List<CustomConverter> customConverters;
-	  private Map<String,CustomConverterBase> customConvertersWithId;
+	  private Map<String,CustomConverter> customConvertersWithId;
 	  private List<DozerEventListener> eventListeners;
 	  private Map<String, BeanFactory> factories;
-	  private CustomFieldMapperIF customFieldMapper;
+	  private CustomFieldMapper customFieldMapper;
 	  
 
 	  public final void setMappingFiles(final Resource[] mappingFiles) {
@@ -57,11 +55,11 @@ public class DozerBeanMapperFactoryBean implements FactoryBean, InitializingBean
 	    this.factories = factories;
 	  }
 	  
-	  public final void setCustomFieldMapper(final CustomFieldMapperIF customFieldMapper) {
+	  public final void setCustomFieldMapper(final CustomFieldMapper customFieldMapper) {
 		  this.customFieldMapper = customFieldMapper;
 	  }
 	  
-	  public final void setCustomConvertersWithId(final Map<String,CustomConverterBase> customConvertersWithId) {
+	  public final void setCustomConvertersWithId(final Map<String,CustomConverter> customConvertersWithId) {
 		  this.customConvertersWithId = customConvertersWithId;
 	  }
 
@@ -71,8 +69,8 @@ public class DozerBeanMapperFactoryBean implements FactoryBean, InitializingBean
 	  public final Object getObject() throws Exception {
 	    return this.beanMapper;
 	  }
-	  public final Class<MapperIF> getObjectType() {
-	    return MapperIF.class;
+	  public final Class<Mapper> getObjectType() {
+	    return Mapper.class;
 	  }
 	  public final boolean isSingleton() {
 	    return true;
