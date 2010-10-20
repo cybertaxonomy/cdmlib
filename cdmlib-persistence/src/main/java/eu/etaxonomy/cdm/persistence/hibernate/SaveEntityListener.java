@@ -30,15 +30,14 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
 			if(ICdmBase.class.isAssignableFrom(entityClazz)) {
-	            ICdmBase cdmBase = (ICdmBase)entity;
-				  cdmBase.setCreated(new DateTime());
-				  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-				  if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-				    User user = (User)authentication.getPrincipal();
-				    cdmBase.setCreatedBy(user);
-				  }
-	          }
-
+				ICdmBase cdmBase = (ICdmBase)entity;
+				cdmBase.setCreated(new DateTime());
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+					User user = (User)authentication.getPrincipal();
+					cdmBase.setCreatedBy(user);
+				}
+			}
         }		
 	}
 }
