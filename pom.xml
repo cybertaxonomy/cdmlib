@@ -22,12 +22,12 @@
 		<module>cdmlib-io</module>
 		<module>cdmlib-remote</module>
 		<module>cdmlib-print</module>
-		<module>cdmlib-remote-webapp</module>
-		<module>cdm-server</module>
+		<!--module>cdmlib-remote-webapp</module-->
+		<!--module>cdm-server</module-->
 	</modules>
   
   <properties>
-    <spring.version>3.0.0.RELEASE</spring.version>
+    <spring.version>3.0.4.RELEASE</spring.version>
   </properties>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
@@ -684,10 +684,10 @@
 		  		<version>1.6.3</version>
 		  	</dependency>
 		  	<dependency>
-      			<groupId>org.aspectj</groupId>
-      			<artifactId>aspectjweaver</artifactId>
-      			<version>1.6.3</version>
-    		</dependency>
+      				<groupId>org.aspectj</groupId>
+      				<artifactId>aspectjweaver</artifactId>
+      				<version>1.6.3</version>
+    			</dependency>
 			<dependency>
 			    <groupId>javax.annotation</groupId>
 			    <artifactId>jsr250-api</artifactId>
