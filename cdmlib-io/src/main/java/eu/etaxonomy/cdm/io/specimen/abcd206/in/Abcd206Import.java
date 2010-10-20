@@ -197,7 +197,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			}
 			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//TODO needs to be saved ?? save it sooner
 			
-			getOccurrenceService().save(derivedUnitFacade.getDerivedUnit());
+			getOccurrenceService().save(derivedUnitFacade.innerDerivedUnit());
 			logger.info("saved ABCD specimen ...");
 
 
@@ -1133,7 +1133,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 					}
 				}
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
-				individualsAssociation.setAssociatedSpecimenOrObservation(facade.getDerivedUnit());
+				individualsAssociation.setAssociatedSpecimenOrObservation(facade.innerDerivedUnit());
 				individualsAssociation.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
 				for(ReferenceBase citation : determinationEvent.getReferences()){
 					individualsAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));

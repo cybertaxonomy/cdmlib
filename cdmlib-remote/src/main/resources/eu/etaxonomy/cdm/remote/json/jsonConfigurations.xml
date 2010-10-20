@@ -281,6 +281,9 @@
               <entry key="eu.etaxonomy.cdm.api.facade.DerivedUnitFacade">
                 <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DerivedUnitFacadeBeanProcessor"/>
               </entry>
+              <entry key="eu.etaxonomy.cdm.model.location.Point">
+                <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.PointBeanProcessor"/>
+              </entry>
 			</map>
 		</property>
         <property name="jsonPropertyFilter">

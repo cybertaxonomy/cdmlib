@@ -28,14 +28,15 @@ public class DerivedUnitFacadePortalController extends
 		super();
 		setInitializationStrategy(Arrays.asList(new String []{
 			"*",
-			"gatheringEvent.*",
+			"titleCache",
+//			"gatheringEvent.*",
 			"ecologyAll",
 			"plantDescriptionAll",
 			
-			"fieldObservation.*",
+//			"fieldObservation.*",
 			"fieldObjectMedia.representations.parts",
 			
-			"derivedUnit.*",
+//			"derivedUnit.*",
 			"derivedUnitMedia.representations.parts",
 			"derivedUnitDefinitions",
 			

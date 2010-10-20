@@ -1011,6 +1011,10 @@ public class DerivedUnitFacade {
 	public LanguageString getLocality(){
 		return (hasGatheringEvent() ? getGatheringEvent(true).getLocality() : null);
 	}
+	/**
+	 * convienience method for {@link #getLocality()}.{@link LanguageString#getText() getText()}
+	 * @return
+	 */
 	@Transient
 	public String getLocalityText(){
 		LanguageString locality = getLocality();
@@ -1019,6 +1023,10 @@ public class DerivedUnitFacade {
 		}
 		return null;
 	}
+	/**
+	 * convienience method for {@link #getLocality()}.{@link LanguageString#getLanguage() getLanguage()}
+	 * @return
+	 */
 	@Transient
 	public Language getLocalityLanguage(){
 		LanguageString locality = getLocality();
@@ -1066,8 +1074,8 @@ public class DerivedUnitFacade {
 	public boolean hasGatheringEvent(){
 		return (getGatheringEvent(false) != null);
 	}
-	@Transient
-	public GatheringEvent getGatheringEvent() {
+	
+	public GatheringEvent innerGatheringEvent() {
 		return getGatheringEvent(false);
 	}
 	
@@ -1379,8 +1387,7 @@ public class DerivedUnitFacade {
 	 * Returns the field observation as an object.
 	 * @return
 	 */
-	@Transient
-	public FieldObservation getFieldObservation(){
+	public FieldObservation innerFieldObservation(){
 		return getFieldObservation(false);
 	}
 
@@ -1602,8 +1609,7 @@ public class DerivedUnitFacade {
 	 * Returns the derived unit itself.
 	 * @return the derived unit
 	 */
-	@Transient
-	public DerivedUnitBase getDerivedUnit() {
+	public DerivedUnitBase innerDerivedUnit() {
 		return this.derivedUnit;
 	}
 	

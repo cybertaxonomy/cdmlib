@@ -7,15 +7,23 @@
     http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
-	
-	<!-- include default application context and customization -->
-     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
-     <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-     	<property name="omit" value="false" />
-     </bean>
-    <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
+       
+   <!-- include default application context and customization -->
+    <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
+    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+       <property name="omit" value="false" />
+    </bean>
+   <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
+   
+   <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
     
-    <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/io">
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.pesi.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.faunaEuropaea.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.erms.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.eflora.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />
+    </context:component-scan>
     
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="properties">

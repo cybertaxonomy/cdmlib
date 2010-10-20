@@ -182,7 +182,7 @@ public class DerivedUnitFacadeTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		Assert.assertNotNull("The specimen should have been created", specimenFacade.getDerivedUnit());
+		Assert.assertNotNull("The specimen should have been created", specimenFacade.innerDerivedUnit());
 		//???
 //		Assert.assertNotNull("The derivation event should have been created", specimenFacade.getSpecimen().getDerivedFrom());
 //		Assert.assertNotNull("The field observation should have been created", specimenFacade.getFieldObservation());
@@ -194,10 +194,10 @@ public class DerivedUnitFacadeTest {
 	 */
 	@Test
 	public void testNewInstanceSpecimen() {
-		Assert.assertSame("Specimen should be same", specimen, specimenFacade.getDerivedUnit());
-		Assert.assertSame("Derivation event should be same", derivationEvent, specimenFacade.getDerivedUnit().getDerivedFrom());
-		Assert.assertSame("Field observation should be same", fieldObservation, specimenFacade.getFieldObservation());
-		Assert.assertSame("Gathering event should be same", gatheringEvent, specimenFacade.getGatheringEvent());
+		Assert.assertSame("Specimen should be same", specimen, specimenFacade.innerDerivedUnit());
+		Assert.assertSame("Derivation event should be same", derivationEvent, specimenFacade.innerDerivedUnit().getDerivedFrom());
+		Assert.assertSame("Field observation should be same", fieldObservation, specimenFacade.innerFieldObservation());
+		Assert.assertSame("Gathering event should be same", gatheringEvent, specimenFacade.innerGatheringEvent());
 	
 	}
 
@@ -209,7 +209,7 @@ public class DerivedUnitFacadeTest {
 			specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 			specimenFacade.setDistanceToGround(2);
 			FieldObservation specimenFieldObservation = (FieldObservation)specimen.getDerivedFrom().getOriginals().iterator().next();
-			Assert.assertSame("Facade gathering event and specimen gathering event should be the same",specimenFacade.getGatheringEvent(), specimenFieldObservation.getGatheringEvent());
+			Assert.assertSame("Facade gathering event and specimen gathering event should be the same",specimenFacade.innerGatheringEvent(), specimenFieldObservation.getGatheringEvent());
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			Assert.fail("An error should not occur in NewInstance()");
 		}
@@ -221,7 +221,7 @@ public class DerivedUnitFacadeTest {
 		DerivedUnitFacade specimenFacade;
 		try {
 			specimenFacade = DerivedUnitFacade.NewInstance(specimen);
-			Assert.assertNull("No field observation should exists", specimenFacade.getFieldObservation());
+			Assert.assertNull("No field observation should exists", specimenFacade.innerFieldObservation());
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			Assert.fail("An error should not occur in NewInstance()");
 		}
@@ -243,7 +243,7 @@ public class DerivedUnitFacadeTest {
 		NamedArea newCollectingArea = NamedArea.NewInstance("A nice area", "nice", "n");
 		specimenFacade.addCollectingArea(newCollectingArea);
 		Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade.getCollectingAreas().size());
-		Assert.assertSame("Areas should be same", newCollectingArea, specimenFacade.getFieldObservation().getGatheringEvent().getCollectingAreas().iterator().next());
+		Assert.assertSame("Areas should be same", newCollectingArea, specimenFacade.innerFieldObservation().getGatheringEvent().getCollectingAreas().iterator().next());
 		specimenFacade.addCollectingArea(tdwgArea);
 		Assert.assertEquals("Exactly 2 areas must exist", 2, specimenFacade.getCollectingAreas().size());
 		specimenFacade.removeCollectingArea(newCollectingArea);
@@ -372,7 +372,7 @@ public class DerivedUnitFacadeTest {
 		emptyFacade.setDistanceToWaterSurface(13);
 		Assert.assertNotNull("Field observation must exist if distance to water exists", emptyFacade.getFieldObservation(false));
 		Assert.assertNotNull("Gathering event must exist if distance to water exists", emptyFacade.getGatheringEvent(false));
-		FieldObservation specimenFieldObservation = (FieldObservation)emptyFacade.getDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
+		FieldObservation specimenFieldObservation = (FieldObservation)emptyFacade.innerDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
 		Assert.assertSame("Gathering event of facade and of specimen must be the same", specimenFieldObservation.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
 	}
 
@@ -587,7 +587,7 @@ public class DerivedUnitFacadeTest {
 		Assert.assertNull("Empty facace must not have any field value" ,emptyFacade.getFieldNumber());
 		emptyFacade.setFieldNumber("1256A");
 		Assert.assertNotNull("Field observation must exist if field number exists", emptyFacade.getFieldObservation(false));
-		FieldObservation specimenFieldObservation = (FieldObservation)emptyFacade.getDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
+		FieldObservation specimenFieldObservation = (FieldObservation)emptyFacade.innerDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
 		Assert.assertSame("Field observation of facade and of specimen must be the same", specimenFieldObservation, emptyFacade.getFieldObservation(false));
 		Assert.assertEquals("1256A", emptyFacade.getFieldNumber());
 	}
@@ -612,16 +612,16 @@ public class DerivedUnitFacadeTest {
 		Assert.assertFalse("The initial distance to ground should not be 43", specimenFacade.getDistanceToGround() == 43);
 		specimenFacade.setGatheringEvent(newGatheringEvent);
 		Assert.assertTrue("The final distance to ground should be 43", specimenFacade.getDistanceToGround() == 43);
-		Assert.assertSame("The new gathering event should be 'newGatheringEvent'", newGatheringEvent, specimenFacade.getGatheringEvent());
+		Assert.assertSame("The new gathering event should be 'newGatheringEvent'", newGatheringEvent, specimenFacade.innerGatheringEvent());
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getGatheringEvent()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#innerGatheringEvent()}.
 	 */
 	@Test
 	public void testGetGatheringEvent() {
-		Assert.assertNotNull("Gathering event must not be null", specimenFacade.getGatheringEvent());	
-		Assert.assertEquals("Gathering event must be field observations gathering event", specimenFacade.getFieldObservation().getGatheringEvent(), specimenFacade.getGatheringEvent());
+		Assert.assertNotNull("Gathering event must not be null", specimenFacade.innerGatheringEvent());	
+		Assert.assertEquals("Gathering event must be field observations gathering event", specimenFacade.innerFieldObservation().getGatheringEvent(), specimenFacade.innerGatheringEvent());
 	}
 
 	/**
@@ -850,11 +850,11 @@ public class DerivedUnitFacadeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getDerivedUnit()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#innerDerivedUnit()}.
 	 */
 	@Test
 	public void testGetSpecimen() {
-		Assert.assertEquals("Specimen must be same", specimen, specimenFacade.getDerivedUnit());	
+		Assert.assertEquals("Specimen must be same", specimen, specimenFacade.innerDerivedUnit());	
 	}
 
 	/**
@@ -905,7 +905,7 @@ public class DerivedUnitFacadeTest {
 		specimenFacade.removeDuplicate(newSpecimen1);
 		Assert.assertEquals("There should be 1 duplicate now", 1, specimenFacade.getDuplicates().size());
 		Assert.assertSame("The only duplicate should be 'newSpecimen2' now", newSpecimen2, specimenFacade.getDuplicates().iterator().next());
-		specimenFacade.addDuplicate(specimenFacade.getDerivedUnit());
+		specimenFacade.addDuplicate(specimenFacade.innerDerivedUnit());
 		Assert.assertEquals("There should be still 1 duplicate because the facade specimen is not a duplicate", 1, specimenFacade.getDuplicates().size());
 		
 		Collection newCollection = Collection.NewInstance();
@@ -932,7 +932,7 @@ public class DerivedUnitFacadeTest {
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			Assert.fail("Multiple derivation events in line should not throw a not supported exception");
 		}
-		Assert.assertSame("Gathering event should derive from the derivation line", existingGatheringEvent, specimenFacade.getGatheringEvent());
+		Assert.assertSame("Gathering event should derive from the derivation line", existingGatheringEvent, specimenFacade.innerGatheringEvent());
 		Assert.assertEquals("Mediasize should be 0. Only Imagegallery media are supported", 0, specimenFacade.getFieldObjectMedia().size());
 	}
 	
