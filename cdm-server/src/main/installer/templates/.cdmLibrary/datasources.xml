@@ -27,25 +27,25 @@
        ======================================================-->
  
     <!-- the default data sources can be mapped to a specific URL root folder   -->
-    <bean id="myCDMServerInstance1"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <bean id="myCDMServerInstance1"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="user" value="edit"/>
         <property name="password" value="wp5"/>
-        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_1"/>
+        <property name="jdbcUrl" value="jdbc:mysql://192.168.1.100/myCDMdatabase_1"/>
     </bean>
     <!-- additional data sources mapped to other URL rot folders -->
     <!--  
         <bean id="myCDMServerInstance2"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="user"/>
+        <property name="user" value="user"/>
         <property name="password" value="123"/>
-                <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_2"/>
+        <property name="jdbcUrl" value="jdbc:mysql://192.168.1.100/myCDMdatabase_2"/>
     </bean>
      <bean id="myCDMServerInstance3"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="user"/>
+        <property name="user" value="user"/>
         <property name="password" value="123"/>
-        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_3"/>
+        <property name="jdbcUrl" value="jdbc:mysql://192.168.1.100/myCDMdatabase_3"/>
     </bean>
     
     <bean id="palmae"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
