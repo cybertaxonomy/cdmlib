@@ -26,6 +26,10 @@
 @GenericGenerator(
 		name="system-sequence", 
 		strategy = "sequence"
+),
+@GenericGenerator(
+		name="system-native", 
+		strategy = "native"
 )
 })
 
