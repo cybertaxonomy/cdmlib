@@ -26,21 +26,15 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportMethodMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportTextDataCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation.CentralAfricaFernsTaxonImportValidator;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -220,7 +214,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 //		type.addDuplicate(duplicateSpecimen);
 		//FIXME handle also NameTypeDesignations
 		SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
-		designation.setTypeSpecimen(type.getDerivedUnit());
+		designation.setTypeSpecimen(type.innerDerivedUnit());
 		name.addTypeDesignation(designation, false);
 	}
 
