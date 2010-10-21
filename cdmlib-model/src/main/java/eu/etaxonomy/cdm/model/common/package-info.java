@@ -16,9 +16,21 @@
 		strategy = "hilo"
 ),
 @GenericGenerator(
+		name="enhanced-table", 
+		strategy = "org.hibernate.id.enhanced.TableGenerator"
+),
+@GenericGenerator(
+		name="enhanced-sequence", 
+		strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator"
+),
+@GenericGenerator(
 		name="system-sequence", 
 		strategy = "sequence"
-)})
+)
+})
+
+
+
 @org.hibernate.annotations.TypeDefs( { 
 	@org.hibernate.annotations.TypeDef(name="persistentDuration", typeClass=org.joda.time.contrib.hibernate.PersistentDuration.class),
 	@org.hibernate.annotations.TypeDef(name="dateTimeUserType", typeClass=org.joda.time.contrib.hibernate.PersistentDateTime.class),
