@@ -2,36 +2,64 @@
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://etaxonomy.eu/cdm/model/common/1.0", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 @com.sun.xml.bind.XmlAccessorFactory(eu.etaxonomy.cdm.jaxb.CdmAccessorFactoryImpl.class)
-@org.hibernate.annotations.GenericGenerators({
-@GenericGenerator(		name="system-increment", 
-		strategy = "increment"
-),
-@GenericGenerator(
-		name="system-identity", 
-		strategy = "identity"
-			
-),
-@GenericGenerator(
-		name="system-hilo", 
-		strategy = "hilo"
-),
-@GenericGenerator(
-		name="enhanced-table", 
-		strategy = "org.hibernate.id.enhanced.TableGenerator"
-),
-@GenericGenerator(
-		name="enhanced-sequence", 
-		strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator"
-),
-@GenericGenerator(
-		name="system-sequence", 
-		strategy = "sequence"
-),
-@GenericGenerator(
-		name="system-native", 
-		strategy = "native"
+@org.hibernate.annotations.GenericGenerators(
+	{
+		/* generates identifiers of type long, short or int that are unique only when no other process 
+		 * is inserting data into the same table. Do not use in a cluster or multiple client environment */
+		@GenericGenerator(		
+				name="system-increment", 
+				strategy = "increment"
+		),
+		/* supports identity columns in DB2, MySQL, MS SQL Server, Sybase and HypersonicSQL. 
+		 * The returned identifier is of type long, short or int. */
+		@GenericGenerator(
+				name="system-identity", 
+				strategy = "identity"
+					
+		),
+		/* uses a hi/lo algorithm to efficiently generate identifiers of type long, short or int, 
+		 * given a table and column (by default hibernate_unique_key and next_hi respectively) as 
+		 * a source of hi values. The hi/lo algorithm generates identifiers that are unique only 
+		 * for a particular database. */
+		@GenericGenerator(
+				name="system-hilo", 
+				strategy = "hilo"
+		),
+		/* uses a sequence in DB2, PostgreSQL, Oracle, SAP DB, McKoi or a generator in Interbase. 
+		 * The returned identifier is of type long, short or int */
+		@GenericGenerator(
+				name="system-sequence", 
+				strategy = "sequence"
+		),
+		/* selects identity, sequence or hilo depending upon the capabilities of the underlying database. */
+		@GenericGenerator(
+				name="system-native", 
+				strategy = "native"
+		),
+		/* Steve Ebersole of Hibernate highly recommends the use of the two new generators
+		 * http://relation.to/2082.lace
+		 * Also see: http://docs.jboss.org/hibernate/core/3.3/reference/en/html/mapping.html#mapping-declaration-id-enhanced
+		 */
+		/* new table generator */
+		@GenericGenerator(
+				name="enhanced-table", 
+				strategy = "org.hibernate.id.enhanced.TableGenerator",
+				parameters = {
+				    @Parameter(name="optimizer", value = "pooled"),
+				    @Parameter(name="increment_size", value = "10")
+				}
+		),
+		/* new sequence generator */
+		@GenericGenerator(
+				name="enhanced-sequence", 
+				strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+				parameters = {
+			        @Parameter(name="optimizer", value = "pooled"),
+			        @Parameter(name="increment_size", value = "10")
+			    }
+		)
+	}
 )
-})
 
 
 
@@ -96,6 +124,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.MetaValue;
+import org.hibernate.annotations.Parameter;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -126,17 +155,7 @@ import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-/*import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.PrintSeries;
-import eu.etaxonomy.cdm.model.reference.Proceedings;*/
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-/*import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;*/
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
