@@ -46,16 +46,25 @@
 				strategy = "org.hibernate.id.enhanced.TableGenerator",
 				parameters = {
 				    @Parameter(name="optimizer", value = "pooled"),
-				    @Parameter(name="increment_size", value = "10")
+				    /* initial_value = increment_size as proposed to fix an issue with pooled optimizer
+				     * http://opensource.atlassian.com/projects/hibernate/browse/HHH-3608?focusedCommentId=37112&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_37112
+				     */
+				    @Parameter(name="initial_value", value= "20"),
+				    @Parameter(name="increment_size", value = "20")
 				}
 		),
-		/* new sequence generator */
+		/* new sequence generator
+		 * Using sequence when the dialect supports it, otherwise it will emulate a sequence using a table in the db */
 		@GenericGenerator(
 				name="enhanced-sequence", 
 				strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
 				parameters = {
 			        @Parameter(name="optimizer", value = "pooled"),
-			        @Parameter(name="increment_size", value = "10")
+			        /* initial_value = increment_size as proposed to fix an issue with pooled optimizer
+				     * http://opensource.atlassian.com/projects/hibernate/browse/HHH-3608?focusedCommentId=37112&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_37112
+				     */
+				    @Parameter(name="initial_value", value= "20"),
+				    @Parameter(name="increment_size", value = "20")
 			    }
 		)
 	}
