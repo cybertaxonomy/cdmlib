@@ -50,7 +50,8 @@
 				     * http://opensource.atlassian.com/projects/hibernate/browse/HHH-3608?focusedCommentId=37112&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_37112
 				     */
 				    @Parameter(name="initial_value", value= "20"),
-				    @Parameter(name="increment_size", value = "20")
+				    @Parameter(name="increment_size", value = "20"),
+				    @Parameter(name="prefer_entity_table_as_segment_value", value="true")
 				}
 		),
 		/* new sequence generator
