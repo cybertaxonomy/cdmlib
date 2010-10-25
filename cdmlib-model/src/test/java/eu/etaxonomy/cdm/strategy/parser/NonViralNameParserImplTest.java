@@ -741,9 +741,9 @@ public class NonViralNameParserImplTest {
 		assertTrue("Autonym problem", isParsable(testParsable, NomenclaturalCode.ICBN));
 
 		
-		testParsable = "Hieracium antarcticum d'Urv. in Mém. Soc. Linn. Paris 4: 608. 1826";
-//		testParsable = "Hieracium antarcticum Urv. in Mém. Soc. Linn. Paris 4: 608. 1826";
-		assertTrue("xxx", isParsable(testParsable, NomenclaturalCode.ICBN));
+		testParsable = "Hieracium antarcticum d'Urv. in M\u00E9m. Soc. Linn. Paris 4: 608. 1826";
+//		testParsable = "Hieracium antarcticum Urv. in M\u00E9m. Soc. Linn. Paris 4: 608. 1826";
+		assertTrue("Name with apostrophe is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
 
 	}
 	
