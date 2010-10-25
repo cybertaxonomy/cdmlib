@@ -38,7 +38,7 @@ public class MediaServiceImplTest extends CdmIntegrationTest{
 		Map<String,String> metaData = service.getImageMetaData(uri, 0);
 		
 		
-		assertEquals("The list of metaData should contain 49 entries",49, metaData.size());
+		assertEquals("The list of metaData should contain 48 entries",48, metaData.size());
 		
 		imageFile = new File("./src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif");
 		uri = imageFile.toURI();
