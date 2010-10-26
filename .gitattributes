@@ -3614,6 +3614,7 @@ pdfdocs/cdm.pdf -text
 pdfdocs/cdmlib-config.properties -text
 pdfdocs/cdmlib-doc.sh -text
 pdfdocs/pdfdoclet-1.0.2-all.jar -text
+/pom.xml -text
 src/docbkx/ReferenceDocumentation.xml -text
 src/docbkx/annotation-and-markers.xml -text
 src/docbkx/base-classes.xml -text
