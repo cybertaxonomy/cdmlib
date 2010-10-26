@@ -6,7 +6,7 @@
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
 		<version>3.0</version>
-		<relativePath>../cdmlib-parent/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
   <modelVersion>4.0.0</modelVersion>
