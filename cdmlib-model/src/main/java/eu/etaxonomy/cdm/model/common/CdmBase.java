@@ -86,6 +86,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@XmlTransient
 	@Id
 	@GeneratedValue(generator = "system-increment")
+//	@GeneratedValue(generator = "enhanced-table")
 	@DocumentId
 	@Match(MatchMode.IGNORE)
 	@NotNull
