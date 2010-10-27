@@ -125,11 +125,12 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 				result &= (termId != null);
 				monitor.worked(1);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				monitor.warning("Exception occurred while updating schema", e);
 				throw e;
 			}
 		}
+		// TODO schema version gets updated even if something went utterly wrong while executing the steps
+		// I don't think we want this to happen
 		updateSchemaVersion(datasource, monitor);
 		
 		return result;

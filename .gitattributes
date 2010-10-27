@@ -2233,6 +2233,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdater.j
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_24_25.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_25_26.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SequenceTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SortIndexUpdater.java -text

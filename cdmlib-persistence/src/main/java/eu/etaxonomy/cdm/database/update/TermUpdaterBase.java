@@ -130,6 +130,9 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 				result = false;
 			}
 		}
+		
+		// TODO term version gets updated even if something went utterly wrong while executing the steps
+		// I don't think we want this to happen
 		updateTermVersion(datasource, monitor);
 
 		return result;

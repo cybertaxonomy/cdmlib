@@ -37,6 +37,7 @@ public class CdmUpdater {
 		}
 		
 		ISchemaUpdater currentSchemaUpdater = getCurrentSchemaUpdater();
+		// TODO do we really always update the terms??
 		ITermUpdater currentTermUpdater = getCurrentTermUpdater();
 		
 		int steps = currentSchemaUpdater.countSteps(datasource);
@@ -47,11 +48,19 @@ public class CdmUpdater {
 		
 		try {
 			result &= currentSchemaUpdater.invoke(datasource, monitor);
+			// the above apparently did not work while testing. Did not want to set the version in CdmMetaData yet
+//			result &= currentSchemaUpdater.invoke(currentSchemaUpdater.getTargetVersion(), datasource, monitor);
 			result &= currentTermUpdater.invoke(datasource, monitor);
 		} catch (Exception e) {
-				monitor.warning("Stopped schema updater");
+			result = false;
+			monitor.warning("Stopped schema updater");
+		} finally {
+			String message = "Update finished " + (result ? "successfully" : "with ERRORS");
+			monitor.subTask(message);
+			monitor.done();
+			logger.info(message);
 		}
-		logger.info("Update finished " + (result ? "successfully" : "with ERRORS"));
+		
 		return result;
 	}
 	
@@ -65,10 +74,9 @@ public class CdmUpdater {
 	 */
 	private ISchemaUpdater getCurrentSchemaUpdater() {
 		return SchemaUpdater_24_25.NewInstance();
+//		return SchemaUpdater_25_26.NewInstance();
 	}
 
-
-//	5432
 	/**
 	 * @param args
 	 */
