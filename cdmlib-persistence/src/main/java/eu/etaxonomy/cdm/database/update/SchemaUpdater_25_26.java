@@ -72,7 +72,7 @@ public class SchemaUpdater_25_26 extends SchemaUpdaterBase {
 	 */
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
-		return null;
+		return SchemaUpdater_24_25.NewInstance();
 	}
 
 }

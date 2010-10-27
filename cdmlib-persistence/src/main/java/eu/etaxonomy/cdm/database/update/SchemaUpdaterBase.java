@@ -190,14 +190,16 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getNextUpdater()
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.update.ISchemaUpdater#getNextUpdater()
 	 */
 	@Override
 	public abstract ISchemaUpdater getNextUpdater();
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getPreviousUpdater()
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.update.ISchemaUpdater#getPreviousUpdater()
 	 */
 	@Override
 	public abstract ISchemaUpdater getPreviousUpdater();

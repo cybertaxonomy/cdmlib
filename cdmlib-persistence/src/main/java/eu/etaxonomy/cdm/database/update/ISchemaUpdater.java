@@ -38,6 +38,7 @@ public interface ISchemaUpdater {
 
 	/**
 	 * Returns the next CDM schema updater
+	 * 
 	 * @return
 	 */
 	public ISchemaUpdater getNextUpdater();
