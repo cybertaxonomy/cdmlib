@@ -8,12 +8,11 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.io.erms;
+package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper;
 
 /**
  * @author a.mueller
