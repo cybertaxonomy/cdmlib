@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.specimen.abcd206;
+package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
