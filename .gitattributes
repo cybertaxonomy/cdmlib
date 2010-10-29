@@ -1438,12 +1438,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/UndefinedTransformerMethodException.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/eflora/EfloraImportBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/eflora/EfloraImportConfigurator.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/eflora/EfloraImportState.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/eflora/EfloraTaxonImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/eflora/EfloraTransformer.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/eflora/UnmatchedLeads.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
