@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,108 +24,133 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 
 public class IdentificationKeyGenerator {
 	
-	static int level=-1;
-	private PolytomousKey polyto;
-	private List<Feature> features;
-	private Set<TaxonDescription> taxa;
+	static int level=-1; // global variable needed by the printTree function in order to store the level which is being printed
+	private PolytomousKey polytomousKey; // the Identification Key
+	private List<Feature> features; // the features used to generate the key
+	private Set<TaxonDescription> taxa; // the base of taxa
 	
+	private String before="<";
+	private String after=">";
+	private String separator = ", ";
+	
+	/**
+	 * Sets the features used to generate the key
+	 * 
+	 * @param featuresList
+	 */
 	public void setFeatures(List<Feature> featuresList){
 		this.features = featuresList;
 	}
 	
+	/**
+	 * Sets the base of taxa
+	 * 
+	 * @param featuresList
+	 */
 	public void setTaxa(Set<TaxonDescription> taxaSet){
 		this.taxa = taxaSet;
 	}
 	
 	
-	public void makeandprint(){
-		Boucle();
-		List<FeatureNode> rootlist = new ArrayList<FeatureNode>();
-		rootlist.add(polyto.getRoot());
-		String spaces = new String();
-		printTree2(rootlist,spaces);
+	/**
+	 * Initializes the function buildBranches() with the starting parameters in order to build the key 
+	 */
+	private void Loop(){
+		polytomousKey = PolytomousKey.NewInstance();
+		FeatureNode root = polytomousKey.getRoot();
+		buildBranches(root,features,taxa);	
 	}
 	
 	
-	private void Boucle(){
-		polyto = PolytomousKey.NewInstance();
-		FeatureNode root = polyto.getRoot();
-		buildBranches(root,features,taxa);
-		
+	/**
+	 * Creates the key and prints it
+	 */
+	public void makeandprint(){
+		Loop();
+		List<FeatureNode> rootlist = new ArrayList<FeatureNode>();
+		rootlist.add(polytomousKey.getRoot());
+		String spaces = new String();
+		printTree(rootlist,spaces);
 	}
 	
 
+	/**
+	 * Recursive function that builds the branches of the identification key (FeatureTree)
+	 * 
+	 * @param father the node considered
+	 * @param featuresLeft List of features that can be used at this point
+	 * @param taxaCovered the taxa left at this point (i.e. that verify the description corresponding to the path leading to this node)
+	 */
 	private void buildBranches(FeatureNode father, List<Feature> featuresLeft, Set<TaxonDescription> taxaCovered){
-		List<DescriptionElementBase> debsDone = new ArrayList<DescriptionElementBase>();
-		List<State> statesDone = new ArrayList<State>(); // ATTENTION ONLY FOR CAT
-		List<QuantitativeData> quantitativeStatesDone = new ArrayList<QuantitativeData>();
-		
-		//Map<Set<TaxonDescription>,DescriptionElementBase> floor = new HashMap<Set<TaxonDescription>,DescriptionElementBase>(); // local variable never read
-		
+		// this map stores the thresholds giving the best dichotomy of taxa for the corresponding feature supporting quantitative data
 		Map<Feature,Float> quantitativeFeaturesThresholds = new HashMap<Feature,Float>();
+		// the scores of the different features are calculated, the thresholds in the same time
 		Map<Feature,Float> scoreMap = FeatureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
+		// the feature with the best score becomes the one corresponding to the current node
 		Feature winnerFeature = DefaultWinner(taxaCovered.size(), scoreMap);
+		// the feature is removed from the list of features available to build the next level of the tree
 		featuresLeft.remove(winnerFeature);
+		// this boolean indicates if the current father node has children or not (i.e. is a leaf or not) ; (a leaf has a "Question" element)
 		boolean childrenExist = false;
 		int i;
-		String sign;
-		String before="<";
-		String after=">";
 		
+		/************** either the feature supports quantitative data... **************/
+		// NB: in this version, "quantitative features" are dealt with in a dichotomous way
 		if (winnerFeature.isSupportsQuantitativeData()) {
+			// first, get the threshold
 			float threshold = quantitativeFeaturesThresholds.get(winnerFeature);
-			List<Set<TaxonDescription>> taxonQuantitativeStates = runOverQuantitativeStates(threshold,winnerFeature,taxaCovered);
+			String sign;
+			
+			// then determine which taxa are before and which are after this threshold (dichotomy) in order to create the children of the father node
+			List<Set<TaxonDescription>> quantitativeStates = determineQuantitativeStates(threshold,winnerFeature,taxaCovered);
 			for (i=0;i<2;i++) {
-				Set<TaxonDescription> set = taxonQuantitativeStates.get(i);
-				if (i==1) sign = before;
-				else sign = after;
-				if (!(set.size()==taxaCovered.size())&&set.size()>0){
+				Set<TaxonDescription> newTaxaCovered = quantitativeStates.get(i);
+				if (i==0) sign = before; // the first element of the list corresponds to taxa before the threshold
+				else sign = after; // the second to those after
+				if (!(newTaxaCovered.size()==taxaCovered.size())&&newTaxaCovered.size()>0){ // if the taxa are discriminated compared to those of the father node, a child is created
+					childrenExist = true;
 					FeatureNode son = FeatureNode.NewInstance();
-					Representation question = new Representation(null, sign + threshold,null, Language.DEFAULT());
-					son.addQuestion(question);
 					son.setFeature(winnerFeature);
+					Representation question = new Representation(null, sign + threshold,null, Language.DEFAULT()); // the question attribute is used to store the state of the feature
+					son.addQuestion(question);
 					father.addChild(son);
-					//List<Feature> newFeaturesLeft = new LinkedList<Feature>(featuresLeft); // replaced by featuresLeft.remove(winnerFeature)
-					//newFeaturesLeft.remove(winnerFeature);
-					buildBranches(son,featuresLeft, set);
+					buildBranches(son,featuresLeft, newTaxaCovered);
 				}
 			}
-			// On a déjà les états normalements
-			// on passe les états on regarde les taxons concernés
-			// on fait un fils
 		}
 		
-		
+		/************** ...or it supports categorical data. **************/
+		// "categorical features" may present several different states, each one of these might correspond to one child
+		List<State> statesDone = new ArrayList<State>();
+		int numberOfStates;
 		if (winnerFeature.isSupportsCategoricalData()) {
-		for (TaxonDescription td : taxaCovered){ // look for the different states
+		for (TaxonDescription td : taxaCovered){
+			// go through all the states possible for one feature for the taxa considered
 			DescriptionElementBase debConcerned = null;
 			for (DescriptionElementBase deb : td.getElements()) {
 				if (deb.getFeature().equals(winnerFeature)) debConcerned = deb;
 			}
-				Map<Set<TaxonDescription>,List<State>> taxonStatesMap = runOverStates(statesDone,debConcerned,winnerFeature,taxaCovered); // /!\ ATTENTION not working yet for quantitative data
-				if (taxonStatesMap!=null && !taxonStatesMap.isEmpty()) {
+			// a map is created, the key being the set of taxa that present the state(s) stored in the corresponding value
+				Map<Set<TaxonDescription>,List<State>> taxonStatesMap = determineCategoricalStates(statesDone,(CategoricalData)debConcerned,winnerFeature,taxaCovered);
+				if (taxonStatesMap!=null && !taxonStatesMap.isEmpty()) { 
 					for (Map.Entry<Set<TaxonDescription>,List<State>> e : taxonStatesMap.entrySet()){
 						Set<TaxonDescription> newTaxaCovered = e.getKey();
-						List<State> list = e.getValue(); // for the tree
-						if (!(newTaxaCovered.size()==taxaCovered.size())){// if the remaining taxa are still discriminated, continue
-							//System.out.println(taxaCovered.size());
+						List<State> listOfStates = e.getValue();
+						if (!(newTaxaCovered.size()==taxaCovered.size())){ // if the taxa are discriminated compared to those of the father node, a child is created
 							childrenExist = true;
 							FeatureNode son = FeatureNode.NewInstance();
 							StringBuilder questionLabel = new StringBuilder();
-							for (State st : list) questionLabel.append(st.getLabel());
+							numberOfStates = listOfStates.size()-1;
+							for (State st : listOfStates) {
+								questionLabel.append(st.getLabel());
+								if (listOfStates.lastIndexOf(st)!=numberOfStates) questionLabel.append(separator);
+							}
 							Representation question = new Representation(null, questionLabel.toString(),null, Language.DEFAULT());
 							son.addQuestion(question);
 							son.setFeature(winnerFeature);
 							father.addChild(son);
-							//List<Feature> newFeaturesLeft = new LinkedList<Feature>(featuresLeft); // replaced by featuresLeft.remove(winnerFeature)
-							//newFeaturesLeft.remove(winnerFeature);
+							featuresLeft.remove(winnerFeature); // TODO was commented before, why ?
 							buildBranches(son,featuresLeft, newTaxaCovered);
-						}
-						else {
-							//						FeatureNode son = FeatureNode.NewInstance();
-							//						Representation question = new Representation(null, taxaCovered.toString(),null, Language.DEFAULT());
-							//						son.addQuestion(question);
-							//						father.addChild(son);// a leaf is reached
 						}
 					}
 				}
@@ -137,32 +161,27 @@ public class IdentificationKeyGenerator {
 			if (question!=null && taxaCovered!= null) question.setLabel(question.getLabel() + " --> " + taxaCovered.toString());
 		}
 		featuresLeft.add(winnerFeature);
-		//loop over the floor, if new = old taxa -> leaf ; else -> node + loop
-		
 	}
+
 	
-	private Map<Set<TaxonDescription>,List<State>> runOverStates(List<State> statesDone, DescriptionElementBase deb, Feature winnerFeature, Set<TaxonDescription> taxaCovered){
-		if (deb==null){
-			return null;
-		}
-		if (deb.isInstanceOf(CategoricalData.class)) {
-			return rOSCategoricalDefault(statesDone, (CategoricalData)deb, winnerFeature, taxaCovered);
-		}
-		else return null;
-	}
-	
-	private Map<Set<TaxonDescription>,List<State>> rOSCategoricalDefault(List<State> statesDone, CategoricalData categoricalData, Feature winnerFeature, Set<TaxonDescription> taxaCovered){
+	/**
+	 * fills a map of the sets of taxa (key) presenting the different states (value) for the given feature.
+	 * 
+	 * @param statesDone the list of states already done for this feature
+	 * @param categoricalData the element from which the states are extracted
+	 * @param feature the feature corresponding to the CategoricalData
+	 * @param taxaCovered the base of taxa considered
+	 * @return
+	 */
+	private Map<Set<TaxonDescription>,List<State>> determineCategoricalStates(List<State> statesDone, CategoricalData categoricalData, Feature feature, Set<TaxonDescription> taxaCovered){
 		Map<Set<TaxonDescription>,List<State>> childrenStatesMap = new HashMap<Set<TaxonDescription>,List<State>>();
 		
 		List<StateData> stateDatas = categoricalData.getStates();
 		
-		List<State> states = new ArrayList<State>(); // In this function STATES ONLY ARE CONSIDERED, MODIFIERS ARE NOT
+		List<State> states = new ArrayList<State>(); // In this function states only are considered, modifiers are not
 		for (StateData sd : stateDatas){
 			states.add(sd.getState());
 		}
-//		for (StateData sd : stateDatas){
-//			states.add(sd.getState());
-//		}
 		
 		for (State featureState : states){
 			if(!statesDone.contains(featureState)){
@@ -172,7 +191,7 @@ public class IdentificationKeyGenerator {
 				sd.setState(featureState);
 				//((CategoricalData)debsDone.get(0)).addState(sd);// A VOIR
 				
-				Set<TaxonDescription> newTaxaCovered = whichTaxa(winnerFeature,featureState,taxaCovered);
+				Set<TaxonDescription> newTaxaCovered = whichTaxa(feature,featureState,taxaCovered);
 				List<State> newStates = childrenStatesMap.get(newTaxaCovered);
 				if (newStates==null) {
 					newStates = new ArrayList<State>();
@@ -251,7 +270,7 @@ public class IdentificationKeyGenerator {
 		return scoreMap;
 	}
 	
-	private List<Set<TaxonDescription>> runOverQuantitativeStates (Float threshold, Feature feature, Set<TaxonDescription> taxa){
+	private List<Set<TaxonDescription>> determineQuantitativeStates (Float threshold, Feature feature, Set<TaxonDescription> taxa){
 		List<Set<TaxonDescription>> list = new ArrayList<Set<TaxonDescription>>();
 		Set<TaxonDescription> taxaBefore = new HashSet<TaxonDescription>();
 		Set<TaxonDescription> taxaAfter = new HashSet<TaxonDescription>();
@@ -336,8 +355,8 @@ public class IdentificationKeyGenerator {
 			taxaBefore=0;
 			taxaAfter=0;
 			for (j=0;j<allValues.size()/2;j++) {
-				if (allValues.get(j*2)<=threshold) taxaBefore++;
-				if (allValues.get(j*2+1)>=threshold) taxaAfter++;
+				if (allValues.get(j*2+1)<=threshold) taxaBefore++;
+				if (allValues.get(j*2)>=threshold) taxaAfter++;
 			}
 			difference = Math.abs(taxaBefore-taxaAfter);
 			if (difference<differenceMin){
@@ -405,27 +424,7 @@ public class IdentificationKeyGenerator {
 		else return 1;
 	}
 	
-	private void printTree(List<FeatureNode> fnodes){
-		Feature featureSpace = Feature.NewInstance(null, ";", null);
-		FeatureNode featureNodeSpace = FeatureNode.NewInstance(featureSpace);
-		List<FeatureNode> children = new ArrayList<FeatureNode>();
-		for (FeatureNode fnode : fnodes){
-			if (fnode.getFeature()!=null) {
-			//System.out.print(fnode.getFeature().getLabel() + " ");
-			}
-			List<FeatureNode> childrenbis = fnode.getChildren();
-			for (FeatureNode fnodebis : childrenbis){
-				children.add(fnodebis);
-			}
-			if (children.size()>0) {children.add(featureNodeSpace);}
-		}
-		//System.out.println("\n-----");
-		if (children.size()>0){
-			printTree(children);
-		}
-	}
-	
-	private void printTree2(List<FeatureNode> fnodes, String spaces){
+	private void printTree(List<FeatureNode> fnodes, String spaces){
 		if (!fnodes.isEmpty()){
 			level++;
 			int levelcopy = level;
@@ -438,10 +437,10 @@ public class IdentificationKeyGenerator {
 					System.out.println(newspaces + levelcopy + " : " + j + " " + fnode.getFeature().getLabel() + " = " + state);
 					j++;
 				}
-				else {
+				else { // TODO never read ?
 					if (fnode.getQuestion(Language.DEFAULT())!=null) System.out.println(newspaces + "-> " + fnode.getQuestion(Language.DEFAULT()).getLabel());
 				}
-				printTree2(fnode.getChildren(),newspaces);
+				printTree(fnode.getChildren(),newspaces);
 			}
 		}
 	}
