@@ -131,6 +131,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 	private String generatorName = "";
 	private String generatorVersion = "";
+	
 
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
@@ -1090,7 +1091,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		// <CodedDescriptions>
 		logger.info("start CodedDescriptions ...");
 		Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
-
+		
 		// <CodedDescription id="D101">
 		if (elCodedDescriptions != null) {
 			List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
@@ -1121,6 +1122,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 			//  <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8, 2006</Label>
 			// </Representation>
 			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+			if (!generatorName.isEmpty()){
+				Annotation annotation = Annotation.NewInstance(generatorName, AnnotationType.TECHNICAL(),Language.DEFAULT());
+				taxonDescription.addAnnotation(annotation);
+			}
 			importRepresentation(elCodedDescription, sddNamespace, taxonDescription, idCD, sddConfig);
 
 			// <Scope>
@@ -1767,8 +1772,35 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		if (listCharNodes != null) {
 			for (Element elCharNode : listCharNodes){
 				Element elParent = elCharNode.getChild("Parent", sddNamespace);
-				Element elCharacter = elCharNode.getChild("Character", sddNamespace);							
+				Element elCharacter = elCharNode.getChild("Character", sddNamespace);
+				Element elDependencyRules = elCharNode.getChild("DependencyRules", sddNamespace);
 				FeatureNode fn = FeatureNode.NewInstance();
+				
+				if (elDependencyRules!=null){
+					Element elInapplicableIf = elCharNode.getChild("InapplicableIf", sddNamespace);
+					if (elInapplicableIf!=null){
+						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
+						for (Element stateElement : listStates) {
+							String refState = stateElement.getAttributeValue("ref");
+							if ((refState!=null)&&(!refState.equals(""))) {
+								State state = states.get(refState);
+								fn.addInapplicableState(state);
+							}
+						}
+					}
+					Element elOnlyapplicableIf = elCharNode.getChild("OnlyApplicableIf", sddNamespace);
+					if (elOnlyapplicableIf!=null){
+						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
+						for (Element stateElement : listStates) {
+							String refState = stateElement.getAttributeValue("ref");
+							if ((refState!=null)&&(!refState.equals(""))) {
+								State state = states.get(refState);
+								fn.addApplicableState(state);
+							}
+						}
+					}
+				}
+				
 				if (elParent!=null){
 					String refP = elParent.getAttributeValue("ref");
 					if ((refP!=null)&&(!refP.equals(""))) {
