@@ -258,7 +258,7 @@ public class SDDDocumentBuilder {
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
 		if (natlang) {
-			buildNaturalLanguageDescription(baselement);
+			buildIdentificationKey(baselement);
 		}
 		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -324,13 +324,13 @@ public class SDDDocumentBuilder {
 			for (TaxonDescription td : taxon.getDescriptions()){
 				descriptions.add(td);
 				for(DescriptionElementBase deb : td.getElements()){
-				if (deb.isInstanceOf(CategoricalData.class)){
-					CategoricalData catdat = (CategoricalData)deb;
-					Feature feat = catdat.getFeature();
+//				if (deb.isInstanceOf(CategoricalData.class)){
+					//CategoricalData catdat = (CategoricalData)deb;
+					Feature feat = deb.getFeature();
 					if (feat!=null && feat.getLabel()!=null && !featureList.contains(feat)){
-						featureList.add(catdat.getFeature());
+						featureList.add(feat);
 					}
-				}
+//				}
 				}
 			}
 		}
@@ -1226,6 +1226,31 @@ public class SDDDocumentBuilder {
 			charnodeCount = buildReference(parent, featuretrees, ID, elCharNode, "cn", charnodeCount);
 			ElementImpl elCharacter = new ElementImpl(document, CHARACTER);
 			Feature fref = parent.getFeature();
+			boolean dependencies = false;
+			ElementImpl elDependecyRules = new ElementImpl(document, "DependecyRules");
+			if (parent.getInapplicableIf()!=null){
+				Set<State> innaplicableIf = parent.getInapplicableIf();
+				ElementImpl elInnaplicableIf = new ElementImpl(document, "InapplicableIf");
+				for (State state : innaplicableIf) {
+					ElementImpl elState = new ElementImpl(document, STATE);
+					buildReference(state, states, REF, elState, "State", statesCount);
+					elInnaplicableIf.appendChild(elState);
+				}
+				elDependecyRules.appendChild(elInnaplicableIf);
+				dependencies = true;
+			}
+			if (parent.getOnlyApplicableIf()!=null){
+				Set<State> onlyApplicableIf = parent.getOnlyApplicableIf();
+				ElementImpl elOnlyApplicableIf = new ElementImpl(document, "OnlyApplicableIf");
+				for (State state : onlyApplicableIf) {
+					ElementImpl elState = new ElementImpl(document, STATE);
+					buildReference(state, states, REF, elState, "State", statesCount);
+					elOnlyApplicableIf.appendChild(elState);
+				}
+				elDependecyRules.appendChild(elOnlyApplicableIf);
+				dependencies = true;
+			}
+			if (dependencies == true) elCharNode.appendChild(elDependecyRules);
 			charactersCount = buildReference(fref, characters, REF, elCharacter, "c", charactersCount);
 			elCharNode.appendChild(elCharacter);
 			elCharNode.appendChild(elParent);
