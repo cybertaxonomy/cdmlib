@@ -41,6 +41,8 @@ public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
 		json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
 		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
+		json.element("unplaced", node.getTaxon().isUnplaced());
+		json.element("excluded", node.getTaxon().isExcluded());
 		String ranklabel = null;
 		if(node.getTaxon().getName().getRank() != null){
 			ranklabel = node.getTaxon().getName().getRank().getLabel();
