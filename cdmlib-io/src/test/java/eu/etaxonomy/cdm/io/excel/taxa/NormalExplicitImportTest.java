@@ -88,7 +88,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet
-//	@Ignore //does run standalone, but not in suite (maven)
+	@Ignore //does run standalone, but not in suite (maven)
 	public void testDoInvoke() {
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator);
