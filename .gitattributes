@@ -447,6 +447,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/reference/EndnoteRecordsImportTest.j
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/out/SDDCdmExporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/CdmTcsXmlImportTest.java -text
