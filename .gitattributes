@@ -235,6 +235,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTextDataCreat
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTruncatedStringMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbNotYetImplementedMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbSingleAttributeImportMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/ICheckIgnoreMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformed.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformer.java -text
