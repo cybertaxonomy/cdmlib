@@ -17,15 +17,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
+import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 public class UnmatchedLeads {
 	private static final Logger logger = Logger.getLogger(UnmatchedLeads.class);
 
 	
-	private Map<UnmatchedLeadsKey, Set<FeatureNode>> map = new HashMap<UnmatchedLeadsKey, Set<FeatureNode>>();
+	private Map<UnmatchedLeadsKey, Set<PolytomousKeyNode>> map = new HashMap<UnmatchedLeadsKey, Set<PolytomousKeyNode>>();
 	
 	public static class UnmatchedLeadsKey{
 		public static UnmatchedLeadsKey NewInstance(PolytomousKey key, String num){
@@ -121,10 +124,10 @@ public class UnmatchedLeads {
 //************************* METHODS ********************************/
 	
 	
-	public void addKey(UnmatchedLeadsKey key, FeatureNode node){
-		Set<FeatureNode> nodes = map.get(key);
+	public void addKey(UnmatchedLeadsKey key, PolytomousKeyNode node){
+		Set<PolytomousKeyNode> nodes = map.get(key);
 		if (nodes == null){
-			nodes = new HashSet<FeatureNode>();
+			nodes = new HashSet<PolytomousKeyNode>();
 			map.put(key, nodes);
 		}else{
 			logger.info("A Feature node for this key does already exist: " + key.toString());
@@ -132,17 +135,17 @@ public class UnmatchedLeads {
 		nodes.add(node);
 	}
 	
-	public Set<FeatureNode> getNodes(UnmatchedLeadsKey key){
-		Set<FeatureNode> result = new HashSet<FeatureNode>();
-		Set<FeatureNode> nodes = map.get(key);
+	public Set<PolytomousKeyNode> getNodes(UnmatchedLeadsKey key){
+		Set<PolytomousKeyNode> result = new HashSet<PolytomousKeyNode>();
+		Set<PolytomousKeyNode> nodes = map.get(key);
 		if (nodes != null){
 			result.addAll(nodes);
 		}
 		return result;
 	}
 
-	public boolean removeNode(UnmatchedLeadsKey key, FeatureNode matchingNode) {
-		Set<FeatureNode> nodes = map.get(key);
+	public boolean removeNode(UnmatchedLeadsKey key, PolytomousKeyNode matchingNode) {
+		Set<PolytomousKeyNode> nodes = map.get(key);
 		if (nodes != null){
 			boolean result = nodes.remove(matchingNode);
 			if (nodes.isEmpty()){
@@ -153,12 +156,12 @@ public class UnmatchedLeads {
 		return false;
 	}
 	
-	public void saveToSession(IFeatureTreeService service){
-		Set<FeatureNode> allNodes = new HashSet<FeatureNode>();
-		for (Set<FeatureNode> set :map.values()){
+	public void saveToSession(IPolytomousKeyService service){
+		Set<PolytomousKeyNode> allNodes = new HashSet<PolytomousKeyNode>();
+		for (Set<PolytomousKeyNode> set :map.values()){
 			allNodes.addAll(set);
 		}
-		service.saveOrUpdateFeatureNodesAll(allNodes);
+		service.saveOrUpdatePolytomousKeyNodesAll(allNodes);
 	}
 	
 //********************** toString()******************************/

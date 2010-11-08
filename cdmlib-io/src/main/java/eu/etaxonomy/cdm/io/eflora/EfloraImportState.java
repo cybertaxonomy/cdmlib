@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.io.eflora.EfloraImportBase;
 import eu.etaxonomy.cdm.io.eflora.EfloraTransformer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 /**
  * @author a.mueller
@@ -35,6 +36,8 @@ public class EfloraImportState extends ImportStateBase<EfloraImportConfigurator,
 	private UnmatchedLeads unmatchedLeads;
 
 	private Set<FeatureNode> featureNodesToSave = new HashSet<FeatureNode>();
+
+	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
 
 	private Language defaultLanguage;
 	
@@ -69,6 +72,15 @@ public class EfloraImportState extends ImportStateBase<EfloraImportConfigurator,
 		return featureNodesToSave;
 	}
 
+
+	public void setPolytomousKeyNodesToSave(Set<PolytomousKeyNode> polytomousKeyNodesToSave) {
+		this.polytomousKeyNodesToSave = polytomousKeyNodesToSave;
+	}
+
+	public Set<PolytomousKeyNode> getPolytomousKeyNodesToSave() {
+		return polytomousKeyNodesToSave;
+	}
+	
 	public Language getDefaultLanguage() {
 		return this.defaultLanguage;
 	}

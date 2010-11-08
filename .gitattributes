@@ -606,12 +606,14 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTree.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IIdentificationKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IModifiable.java -text svneol=unset#text/plain
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IndividualsAssociation.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/KeyStatement.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MediaKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Modifier.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MultiAccessKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NaturalLanguageTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/QuantitativeData.java -text
@@ -946,6 +948,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermVocabularyTest.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TimePeriodTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/DefaultTermInitializerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/TermLoaderTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text
@@ -1039,10 +1042,12 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnNameChan
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdaterStep.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/PolytomousKeyTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_24_25.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_25_26.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_26_30.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SequenceTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpdater.java -text
@@ -1088,6 +1093,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IF
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IFeatureNodeDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IFeatureTreeDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IIdentificationKeyDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IPolytomousKeyDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IPolytomousKeyNodeDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IStatisticalMeasurementValueDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IWorkingSetDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/AlternativeSpellingSuggestionParser.java -text
@@ -1120,6 +1127,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/desc
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/FeatureNodeDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/FeatureTreeDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/IdentificationKeyDaoImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/PolytomousKeyDaoImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/PolytomousKeyNodeDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/StatisticalMeasurementValueDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/WorkingSetDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoHibernateImpl.java -text
@@ -2244,6 +2253,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -te
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INaturalLanguageGenerator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INaturalLanguageTextDataProcessor.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeComparator.java -text
@@ -2267,6 +2277,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaNodeComparat
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenerator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text

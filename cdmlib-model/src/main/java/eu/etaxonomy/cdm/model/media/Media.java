@@ -79,6 +79,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends IdentifiableEntity implements Cloneable {
 	private static final long serialVersionUID = -1927421567263473658L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Media.class);
 
     // TODO once hibernate annotations support custom collection type

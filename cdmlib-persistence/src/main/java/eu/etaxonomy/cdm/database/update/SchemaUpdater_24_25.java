@@ -45,7 +45,7 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpd
 	 */
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return new SchemaUpdater_25_26();
 	}
 
 	/* (non-Javadoc)

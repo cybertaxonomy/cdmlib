@@ -1473,10 +1473,10 @@
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
+        featureTree_id integer not null,
         feature_id integer,
         parent_fk integer,
-		taxon_id integer,
-        primary key (id)
+	primary key (id)
     );
 
     create table FeatureNode_AUD (
@@ -1488,12 +1488,13 @@
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
+        featureTree_id integer not null,
         feature_id integer,
         parent_fk integer,
         primary key (id, REV)
     );
 
-	create table FeatureNode_DefinedTermBase_OnlyApplicable (
+    create table FeatureNode_DefinedTermBase_OnlyApplicable (
         FeatureNode_id integer not null,
         OnlyApplicable_id integer not null,
         primary key (FeatureNode_id, OnlyApplicable_id)
@@ -1507,7 +1508,7 @@
         primary key (REV, FeatureNode_id, OnlyApplicable_id)
     );
 
-	create table FeatureNode_DefinedTermBase_InapplicableIf (
+    create table FeatureNode_DefinedTermBase_InapplicableIf (
         FeatureNode_id integer not null,
         InapplicableIf_id integer not null,
         primary key (FeatureNode_id, InapplicableIf_id)
@@ -1884,6 +1885,48 @@
         person_id integer,
         primary key (id, REV)
     );
+    
+              
+    create table KeyStatement (
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+    
+    create table KeyStatement_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+      );
+      
+     create table KeyStatement_LanguageString (
+        keyStatement_id integer not null,
+        label_id integer not null,
+        label_mapkey_id integer not null,
+        primary key (keyStatement_id, label_mapkey_id),
+        unique (label_id)
+    );
+
+    create table KeyStatement_LanguageString_AUD (
+        REV integer not null,
+        keyStatement_id integer not null,
+        label_id integer not null,
+        label_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, keyStatement_id, label_id, label_mapkey_id)
+    );
+
 
     create table LSIDAuthority (
         id integer not null,
@@ -2607,46 +2650,166 @@
         primary key (REV, Reference_id, id, sortIndex)
     );
 
-    create table PolytomousKey_CoveredTaxon (
-        polytomousKey_fk integer not null,
-        coveredTaxon_fk integer not null,
-        primary key (polytomousKey_fk, coveredTaxon_fk)
+     
+   create table PolytomousKey (
+       	id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        root_id integer,
+        primary key (id),
+        unique (uuid)
     );
 
-    create table PolytomousKey_CoveredTaxon_AUD (
+   create table PolytomousKey_AUD (
+       	id integer not null,
         REV integer not null,
-        polytomousKey_fk integer not null,
-        coveredTaxon_fk integer not null,
         revtype tinyint,
-        primary key (REV, polytomousKey_fk, coveredTaxon_fk)
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        root_id integer,
+        primary key (id, REV)
+    );
+
+    create table PolytomousKey_Annotation (
+        PolytomousKey_id integer not null,
+        annotations_id integer not null,
+        primary key (PolytomousKey_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table PolytomousKey_Annotation_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, annotations_id)
+    );
+
+    create table PolytomousKey_Credit (
+        PolytomousKey_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        primary key (PolytomousKey_id, sortIndex),
+        unique (credits_id)
+    );
+
+    create table PolytomousKey_Credit_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, credits_id, sortIndex)
+    );
+
+    create table PolytomousKey_Extension (
+        PolytomousKey_id integer not null,
+        extensions_id integer not null,
+        primary key (PolytomousKey_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table PolytomousKey_Extension_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, extensions_id)
+    );
+
+    create table PolytomousKey_Marker (
+        PolytomousKey_id integer not null,
+        markers_id integer not null,
+        primary key (PolytomousKey_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table PolytomousKey_Marker_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, markers_id)
     );
 
     create table PolytomousKey_NamedArea (
         PolytomousKey_id integer not null,
-        geographicalScope_id integer not null,
-        primary key (PolytomousKey_id, geographicalScope_id)
+        geographicalscope_id integer not null,
+        primary key (PolytomousKey_id, geographicalscope_id)
     );
 
     create table PolytomousKey_NamedArea_AUD (
         REV integer not null,
         PolytomousKey_id integer not null,
-        geographicalScope_id integer not null,
+        geographicalscope_id integer not null,
         revtype tinyint,
-        primary key (REV, PolytomousKey_id, geographicalScope_id)
+        primary key (REV, PolytomousKey_id, geographicalscope_id)
+    );
+    
+    create table PolytomousKey_OriginalSourceBase (
+        PolytomousKey_id integer not null,
+        sources_id integer not null,
+        primary key (PolytomousKey_id, sources_id),
+        unique (sources_id)
     );
 
+    create table PolytomousKey_OriginalSourceBase_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, sources_id)
+    );
+
+    create table PolytomousKey_Rights (
+        PolytomousKey_id integer not null,
+        rights_id integer not null,
+        primary key (PolytomousKey_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table PolytomousKey_Rights_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, rights_id)
+    );
+    
     create table PolytomousKey_Scope (
         PolytomousKey_id integer not null,
-        scopes_id integer not null,
-        primary key (PolytomousKey_id, scopes_id)
+        scoperestrictions_id integer not null,
+        primary key (PolytomousKey_id, scoperestrictions_id)
     );
 
     create table PolytomousKey_Scope_AUD (
         REV integer not null,
         PolytomousKey_id integer not null,
-        scopes_id integer not null,
+        scoperestrictions_id integer not null,
         revtype tinyint,
-        primary key (REV, PolytomousKey_id, scopes_id)
+        primary key (REV, PolytomousKey_id, scoperestrictions_id)
     );
 
     create table PolytomousKey_Taxon (
@@ -2662,6 +2825,47 @@
         revtype tinyint,
         primary key (REV, polytomousKey_fk, taxon_fk)
     );
+    
+        
+    create table PolytomousKeyNode (
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        sortindex integer,
+        createdby_id integer,
+        updatedby_id integer,
+        key_id integer,
+        parent_id integer,
+        question_id integer,
+        statement_id integer,
+        taxon_id integer,
+        subkey_id integer,
+        othernode_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+
+    create table PolytomousKeyNode_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        sortindex integer,
+        createdby_id integer,
+        updatedby_id integer,
+        key_id integer,
+        parent_id integer,
+        question_id integer,
+        statement_id integer,
+        taxon_id integer,
+        subkey_id integer,
+        othernode_id integer,
+        primary key (id, REV)
+    );
+
     
     create table Reference (
         DTYPE varchar(31) not null,
@@ -5810,6 +6014,11 @@
         references UserAccount;
 
     alter table FeatureNode 
+        add constraint FK4CEED9F8DE9A3E39 
+        foreign key (featureTree_id) 
+        references FeatureTree;
+
+    alter table FeatureNode 
         add constraint FK4CEED9F84220AFEB 
         foreign key (feature_id) 
         references DefinedTermBase;
@@ -5854,21 +6063,6 @@
         foreign key (REV) 
         references AuditEvent;
 */
-	alter table FeatureNode_Question 
-        add constraint FK9B1410F03C6A411A
-        foreign key (FeatureNode_id) 
-        references FeatureNode;
-
-    alter table FeatureNode_Question 
-        add constraint FK8D2234F48AF8471C
-        foreign key (questions_id) 
-        references Representation;
-
-    alter table FeatureNode_Question_AUD 
-        add constraint FK72595A8589344fD6 
-        foreign key (REV) 
-        references AuditEvent;
-
     alter table FeatureTree 
         add constraint FK4CF19F944FF2DB2C 
         foreign key (createdby_id) 
@@ -6774,25 +6968,11 @@
         foreign key (REV) 
         references AuditEvent;
 
-	alter table PolytomousKey_CoveredTaxon 
-        add constraint FK5D10620561FE4E83 
-        foreign key (polytomousKey_fk) 
-        references FeatureTree;
-
-    alter table PolytomousKey_CoveredTaxon 
-        add constraint FKB92FB32E5339CF05 
-        foreign key (coveredTaxon_fk) 
-        references TaxonBase;
-
-    alter table PolytomousKey_CoveredTaxon_AUD 
-        add constraint FKF6E40B9726674EEE 
-        foreign key (REV) 
-        references AuditEvent;
 
     alter table PolytomousKey_NamedArea 
         add constraint FKB3A8962EBDE6AA88 
         foreign key (PolytomousKey_id) 
-        references FeatureTree;
+        references PolytomousKey;
 
     alter table PolytomousKey_NamedArea 
         add constraint FK7A13F2876AE348D0 
@@ -6807,11 +6987,11 @@
     alter table PolytomousKey_Scope 
         add constraint FKC0AA0A4F46A84CA5 
         foreign key (PolytomousKey_id) 
-        references FeatureTree;
+        references PolytomousKey;
 
     alter table PolytomousKey_Scope 
         add constraint FK95F6137239A78EF4 
-        foreign key (scopes_id) 
+        foreign key (scoperestrictions_id) 
         references DefinedTermBase;
 
     alter table PolytomousKey_Scope_AUD 
@@ -6822,7 +7002,7 @@
     alter table PolytomousKey_Taxon 
         add constraint FK94EBDAF65411052A 
         foreign key (polytomousKey_fk) 
-        references FeatureTree;
+        references PolytomousKey;
 
     alter table PolytomousKey_Taxon 
         add constraint FK890257C0688940C2 

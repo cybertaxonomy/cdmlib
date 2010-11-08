@@ -36,10 +36,12 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -387,7 +389,15 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	
 	public final IVocabularyService getVocabularyService(){
 		return configuration.getVocabularyService();
-	}	
+	}
+	
+	public final IIdentificationKeyService getIdentificationKeyService(){
+		return configuration.getIdentificationKeyService();
+	}
+
+	public final IPolytomousKeyService getPolytomousKeyService(){
+		return configuration.getPolytomousKeyService();
+	}
 	
 	public final IService<CdmBase> getMainService(){
 		return configuration.getMainService();

@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,13 +31,16 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.tool.hbm2x.StringUtils;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -46,11 +49,16 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * polytomous authored decision keys used to identify
  * {@link SpecimenOrObservationBase specimens or observations} (this means to
  * assign {@link Taxon taxa} to).
- * The different paths are expressed by a {@link FeatureTree decision tree}.
+ * The different paths are expressed by a {@link PolytomousKey decision tree}.
  * 
  * @author h.fradin
  * @created 13.08.2009
  * @version 1.0
+ * 
+ * @author a.mueller
+ * @created 08.11.2010
+ * @version 2.0
+
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -58,13 +66,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
     "coveredTaxa",
     "taxonomicScope",
     "geographicalScope",
-    "scopeRestrictions"
+    "scopeRestrictions",
+    "root"
 })
 @XmlRootElement(name = "PolytomousKey")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.FeatureTree")
 @Audited
-public class PolytomousKey extends FeatureTree implements IIdentificationKey{
+public class PolytomousKey extends IdentifiableEntity implements IIdentificationKey{
 	private static final long serialVersionUID = -3368243754557343942L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PolytomousKey.class);
@@ -108,6 +117,11 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@NotNull
 	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
 	
+	@XmlElement(name = "Root")
+	@OneToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	private PolytomousKeyNode root;
+	
 //******************************** STATIC METHODS ********************************/	
 	
 	/** 
@@ -118,7 +132,7 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	}
 	
 	/** 
-	 * Creates a new empty identification multi-access key instance.
+	 * Creates a new empty identification polytomous key instance.
 	 */
 	public static PolytomousKey NewTitledInstance(String title){
 		PolytomousKey result = new PolytomousKey();
@@ -134,6 +148,27 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	 */
 	protected PolytomousKey() {
 		super();
+		root = PolytomousKeyNode.NewInstance();
+	}
+	
+	
+//************************ GETTER/ SETTER 
+	
+	
+	/** 
+	 * Returns the topmost {@link FeatureNode feature node} (root node) of <i>this</i>
+	 * feature tree. The root node does not have any parent. Since feature nodes
+	 * recursively point to their child nodes the complete feature tree is
+	 * defined by its root node.
+	 */
+	public PolytomousKeyNode getRoot() {
+		return root;
+	}
+	/**
+	 * @see	#getRoot() 
+	 */
+	public void setRoot(PolytomousKeyNode root) {
+		this.root = root;
 	}
 	
 	/** 
@@ -282,41 +317,82 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	private class IntegerObject{
 		int number = 0;
 		int inc(){return number++;};
-		@Override public String toString(){ return String.valueOf(number);}
+		@Override 
+		public String toString(){ 
+			return String.valueOf(number);
+		}
 	}
 	
 	public String print(PrintStream stream){
 		String title = this.getTitleCache() + "\n";
 		String strPrint = title;
-		stream.print(title);
 		
-		FeatureNode root = this.getRoot();
+		if (stream != null){
+			stream.print(title);
+		}
+		
+		PolytomousKeyNode root = this.getRoot();
 		IntegerObject no = new IntegerObject();
 		no.inc();
 		strPrint += printNode(root, "  ", no, "Root", stream);
 		return strPrint;
 	}
 
-	private String printNode(FeatureNode node, String identation, IntegerObject no, String myNumber, PrintStream stream) {
+	
+	/**
+	 * TODO this is a preliminary implementation
+	 * @param node
+	 * @param identation
+	 * @param no
+	 * @param myNumber
+	 * @param stream
+	 * @return
+	 */
+	private String printNode(PolytomousKeyNode node, String identation, IntegerObject no, String myNumber, PrintStream stream) {
 		int myInt = no.number;
 		String result = identation + myNumber + ". ";
 		if (node != null){
-			result += node.getFeature() == null ? "" : (node.getFeature().getTitleCache() + " - ");
-			Representation question = node.getQuestion(Language.DEFAULT());
-			result +=  ( question == null ? "" : (question.getText()))  ;
-			result +=  ( node.getTaxon() == null ? "" : ": " + node.getTaxon().getName().getTitleCache())  ;
+			if (! node.isLeaf()){
+				if (node.getStatement() != null){
+					String question = node.getQuestion().getLabelText(Language.DEFAULT());
+					result +=  ( question == null ? "" : (question))  ;
+				}
+			}else{
+				PolytomousKeyNode leaf = node;
+				if (leaf.getTaxon() != null){
+					String taxonSeparator = ", ";
+					result += ": ";
+					String strTaxon = "";
+					if (leaf.getTaxon().getName() != null){
+						strTaxon = leaf.getTaxon().getName().getTitleCache() ;
+					}else{
+						strTaxon = leaf.getTaxon().getTitleCache() ;
+					}
+					
+					result +=  strTaxon + taxonSeparator ;
+					result = StringUtils.chompLast(result, taxonSeparator);
+				}
+				
+				
+			}
 			result += "\n";
-			stream.print(result);
+			if (stream != null){
+				stream.print(result);
+			}
 			char nextCounter = 'a';
 			if (! node.getChildren().isEmpty()){
 				no.inc();
 			}
-			for (FeatureNode child : node.getChildren()){
+			for (PolytomousKeyNode child : node.getChildren()){
 				String nextNumber = myInt + String.valueOf(nextCounter++);
 				result += printNode(child, identation + "  ", no, nextNumber, stream);
 			}
 		}
 		return result;
 	}
-	
+//
+//	public List<PolytomousKeyNode> getChildren() {
+//		return getRoot().getChildren();
+//	}
+
 }

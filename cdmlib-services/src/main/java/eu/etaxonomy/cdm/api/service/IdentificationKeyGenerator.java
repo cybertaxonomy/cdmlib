@@ -14,7 +14,9 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -25,7 +27,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 public class IdentificationKeyGenerator {
 	
 	static int level=-1; // global variable needed by the printTree function in order to store the level which is being printed
-	private PolytomousKey polytomousKey; // the Identification Key
+	private FeatureTree polytomousKey; // the Identification Key
 	private List<Feature> features; // the features used to generate the key
 	private Set<TaxonDescription> taxa; // the base of taxa
 	
@@ -56,7 +58,7 @@ public class IdentificationKeyGenerator {
 	 * Initializes the function buildBranches() with the starting parameters in order to build the key 
 	 */
 	private void loop(){
-		polytomousKey = PolytomousKey.NewInstance();
+		polytomousKey = FeatureTree.NewInstance();
 		FeatureNode root = polytomousKey.getRoot();
 		buildBranches(root,features,taxa);	
 	}
@@ -67,7 +69,7 @@ public class IdentificationKeyGenerator {
 	 */
 	public void makeandprint(){
 		loop();
-		List<FeatureNode> rootlist = new ArrayList<FeatureNode>();
+		List<PolytomousKeyNode> rootlist = new ArrayList<PolytomousKeyNode>();
 		rootlist.add(polytomousKey.getRoot());
 		String spaces = new String();
 		printTree(rootlist,spaces);
@@ -424,23 +426,27 @@ public class IdentificationKeyGenerator {
 		else return 1;
 	}
 	
-	private void printTree(List<FeatureNode> fnodes, String spaces){
-		if (!fnodes.isEmpty()){
+	private void printTree(List<PolytomousKeyNode> polytomousKeyNodes, String spaces){
+		if (! polytomousKeyNodes.isEmpty()){
 			level++;
 			int levelcopy = level;
 			int j=1;
 			String newspaces = spaces.concat("\t");
-			for (FeatureNode fnode : fnodes){
-				if (fnode.getFeature()!=null) {
+			for (PolytomousKeyNode polytomousKeyNode : polytomousKeyNodes){
+				if (polytomousKeyNode.getQuestion() != null) {
 					String state = null;
-					if (fnode.getQuestion(Language.DEFAULT())!=null) state = fnode.getQuestion(Language.DEFAULT()).getLabel();
-					System.out.println(newspaces + levelcopy + " : " + j + " " + fnode.getFeature().getLabel() + " = " + state);
+					if (polytomousKeyNode.getStatement().getLabel(Language.DEFAULT() ) != null){
+						state = polytomousKeyNode.getStatement().getLabelText(Language.DEFAULT());
+					}
+					System.out.println(newspaces + levelcopy + " : " + j + " " + polytomousKeyNode.getQuestion().getLabelText(Language.DEFAULT()) + " = " + state);
 					j++;
 				}
 				else { // TODO never read ?
-					if (fnode.getQuestion(Language.DEFAULT())!=null) System.out.println(newspaces + "-> " + fnode.getQuestion(Language.DEFAULT()).getLabel());
+					if (polytomousKeyNode.getStatement().getLabel(Language.DEFAULT() ) != null){
+						System.out.println(newspaces + "-> " + polytomousKeyNode.getStatement().getLabelText(Language.DEFAULT()));
+					}
 				}
-				printTree(fnode.getChildren(),newspaces);
+				printTree(polytomousKeyNode.getChildren(),newspaces);
 			}
 		}
 	}

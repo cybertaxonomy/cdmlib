@@ -52,7 +52,9 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -119,7 +121,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		state.setUnmatchedLeads(unmatchedLeads);
 		
 		TransactionStatus tx = startTransaction();
-		unmatchedLeads.saveToSession(getFeatureTreeService());
+		unmatchedLeads.saveToSession(getPolytomousKeyService());
 		
 		
 		//TODO generally do not store the reference object in the config
@@ -182,6 +184,9 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		getTaxonService().saveOrUpdate(taxaToSave);
 		getFeatureTreeService().saveOrUpdateFeatureNodesAll(state.getFeatureNodesToSave());
 		state.getFeatureNodesToSave().clear();
+		getPolytomousKeyService().saveOrUpdatePolytomousKeyNodesAll(state.getPolytomousKeyNodesToSave());
+		state.getPolytomousKeyNodesToSave().clear();
+		
 		commitTransaction(tx);
 		
 		logger.info("end makeTaxa ...");
@@ -394,7 +399,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		if (state.getConfig().isDoPrintKeys()){
 			key.print(System.err);
 		}
-		getFeatureTreeService().save(key);
+		getPolytomousKeyService().save(key);
 		return key;
 	}
 
@@ -410,10 +415,10 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	private void handleKeyChoices(EfloraImportState state, UnmatchedLeads openKeys, PolytomousKey key, Element elKeychoice, Taxon taxon) {
 		
 		//char Attribute
-		Feature feature = handleKeychoiceChar(state, elKeychoice);
+		KeyStatement statement = handleKeychoiceChar(state, elKeychoice);
 		
 		//lead
-		List<FeatureNode> childNodes = handleKeychoiceLeads(state, key, elKeychoice, taxon, feature);
+		List<PolytomousKeyNode> childNodes = handleKeychoiceLeads(state, key, elKeychoice, taxon, statement);
 		
 		//num -> match with unmatched leads
 		handleKeychoiceNum(openKeys, key, elKeychoice, childNodes);
@@ -429,19 +434,19 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param elKeychoice
 	 * @param childNodes
 	 */
-	private void handleKeychoiceNum(UnmatchedLeads openKeys, PolytomousKey key, Element elKeychoice, List<FeatureNode> childNodes) {
+	private void handleKeychoiceNum(UnmatchedLeads openKeys, PolytomousKey key, Element elKeychoice, List<PolytomousKeyNode> childNodes) {
 		Attribute numAttr = elKeychoice.getAttribute("num");
 		String num = CdmUtils.removeTrailingDot(numAttr == null? "":numAttr.getValue());
 		UnmatchedLeadsKey okk = UnmatchedLeadsKey.NewInstance(key, num);
-		Set<FeatureNode> matchingNodes = openKeys.getNodes(okk);
-		for (FeatureNode matchingNode : matchingNodes){
-			for (FeatureNode childNode : childNodes){
+		Set<PolytomousKeyNode> matchingNodes = openKeys.getNodes(okk);
+		for (PolytomousKeyNode matchingNode : matchingNodes){
+			for (PolytomousKeyNode childNode : childNodes){
 				matchingNode.addChild(childNode);
 			}
 			openKeys.removeNode(okk, matchingNode);
 		}
 		if (matchingNodes.isEmpty()){
-			for (FeatureNode childNode : childNodes){
+			for (PolytomousKeyNode childNode : childNodes){
 				key.getRoot().addChild(childNode);
 			}
 		}
@@ -458,11 +463,11 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param feature
 	 * @return
 	 */
-	private List<FeatureNode> handleKeychoiceLeads(	EfloraImportState state, PolytomousKey key,	Element elKeychoice, Taxon taxon, Feature feature) {
-		List<FeatureNode> childNodes = new ArrayList<FeatureNode>();
+	private List<PolytomousKeyNode> handleKeychoiceLeads(	EfloraImportState state, PolytomousKey key,	Element elKeychoice, Taxon taxon, KeyStatement statement) {
+		List<PolytomousKeyNode> childNodes = new ArrayList<PolytomousKeyNode>();
 		List<Element> leads = elKeychoice.getChildren("lead");
 		for(Element elLead : leads){
-			FeatureNode childNode = handleLead(state, key, elLead, taxon, feature);
+			PolytomousKeyNode childNode = handleLead(state, key, elLead, taxon, statement);
 			childNodes.add(childNode);
 		}
 		return childNodes;
@@ -474,21 +479,22 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param elKeychoice
 	 * @return
 	 */
-	private Feature handleKeychoiceChar(EfloraImportState state, Element elKeychoice) {
-		Feature feature = null;
+	private KeyStatement handleKeychoiceChar(EfloraImportState state, Element elKeychoice) {
+		KeyStatement statement = null;
 		Attribute charAttr = elKeychoice.getAttribute("char");
 		if (charAttr != null){
 			String charStr = charAttr.getValue();
-			feature = getFeature(charStr, state);
+			if (StringUtils.isNotBlank(charStr)){
+				statement = KeyStatement.NewInstance(charStr);
+			}
 			elKeychoice.removeAttribute("char");
 		}
-		return feature;
+		return statement;
 	}
 
-
-	private FeatureNode handleLead(EfloraImportState state, PolytomousKey key, Element elLead, Taxon taxon, Feature feature) {
-		FeatureNode node = FeatureNode.NewInstance();
-		node.setFeature(feature);
+	private PolytomousKeyNode handleLead(EfloraImportState state, PolytomousKey key, Element elLead, Taxon taxon, KeyStatement statement) {
+		PolytomousKeyNode node = PolytomousKeyNode.NewInstance();
+		node.setStatement(statement);
 		
 		//text
 		String text = handleLeadText(elLead, node);
@@ -511,13 +517,14 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param node
 	 * @return
 	 */
-	private String handleLeadText(Element elLead, FeatureNode node) {
+	private String handleLeadText(Element elLead, PolytomousKeyNode node) {
 		String text = elLead.getAttributeValue("text").trim();
 		if (StringUtils.isBlank(text)){
 			logger.warn("Empty text in lead");
 		}
 		elLead.removeAttribute("text");
-		node.addQuestion(Representation.NewInstance(text, null, null, Language.DEFAULT()));
+		KeyStatement question = KeyStatement.NewInstance(text);
+		node.setQuestion(question);
 		return text;
 	}
 
@@ -529,7 +536,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param taxon
 	 * @param node
 	 */
-	private void handleLeadGoto(EfloraImportState state, PolytomousKey key, Element elLead, Taxon taxon, FeatureNode node) {
+	private void handleLeadGoto(EfloraImportState state, PolytomousKey key, Element elLead, Taxon taxon, PolytomousKeyNode node) {
 		Attribute gotoAttr = elLead.getAttribute("goto");
 		if (gotoAttr != null){
 			String strGoto = gotoAttr.getValue().trim();
@@ -545,8 +552,8 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 			UnmatchedLeads openKeys = state.getUnmatchedLeads();
 			openKeys.addKey(gotoKey, node);
 			if (gotoKey.isInnerLead()){
-				Set<FeatureNode> existingNodes = openKeys.getNodes(gotoKey);
-				for (FeatureNode existingNode : existingNodes){
+				Set<PolytomousKeyNode> existingNodes = openKeys.getNodes(gotoKey);
+				for (PolytomousKeyNode existingNode : existingNodes){
 					node.addChild(existingNode);
 				}
 			}
@@ -1205,7 +1212,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 			String taxonString = name.getNameCache();
 			//try to find matching lead nodes 
 			UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, taxonString);
-			Set<FeatureNode> matchingNodes = handleMatchingNodes(state, taxon, leadsKey);
+			Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, taxon, leadsKey);
 			//same without using the num
 			if (num != null){
 				UnmatchedLeadsKey noNumLeadsKey = UnmatchedLeadsKey.NewInstance("", taxonString);
@@ -1305,12 +1312,12 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param leadsKey
 	 * @return
 	 */
-	private Set<FeatureNode> handleMatchingNodes(EfloraImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
-		Set<FeatureNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
-		for (FeatureNode matchingNode : matchingNodes){
+	private Set<PolytomousKeyNode> handleMatchingNodes(EfloraImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
+		Set<PolytomousKeyNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
+		for (PolytomousKeyNode matchingNode : matchingNodes){
 			state.getUnmatchedLeads().removeNode(leadsKey, matchingNode);
 			matchingNode.setTaxon(taxon);
-			state.getFeatureNodesToSave().add(matchingNode);
+			state.getPolytomousKeyNodesToSave().add(matchingNode);
 		}
 		return matchingNodes;
 	}
