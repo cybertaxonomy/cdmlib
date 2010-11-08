@@ -55,7 +55,7 @@ public class IdentificationKeyGenerator {
 	/**
 	 * Initializes the function buildBranches() with the starting parameters in order to build the key 
 	 */
-	private void Loop(){
+	private void loop(){
 		polytomousKey = PolytomousKey.NewInstance();
 		FeatureNode root = polytomousKey.getRoot();
 		buildBranches(root,features,taxa);	
@@ -66,7 +66,7 @@ public class IdentificationKeyGenerator {
 	 * Creates the key and prints it
 	 */
 	public void makeandprint(){
-		Loop();
+		loop();
 		List<FeatureNode> rootlist = new ArrayList<FeatureNode>();
 		rootlist.add(polytomousKey.getRoot());
 		String spaces = new String();
@@ -85,9 +85,9 @@ public class IdentificationKeyGenerator {
 		// this map stores the thresholds giving the best dichotomy of taxa for the corresponding feature supporting quantitative data
 		Map<Feature,Float> quantitativeFeaturesThresholds = new HashMap<Feature,Float>();
 		// the scores of the different features are calculated, the thresholds in the same time
-		Map<Feature,Float> scoreMap = FeatureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
+		Map<Feature,Float> scoreMap = featureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
 		// the feature with the best score becomes the one corresponding to the current node
-		Feature winnerFeature = DefaultWinner(taxaCovered.size(), scoreMap);
+		Feature winnerFeature = defaultWinner(taxaCovered.size(), scoreMap);
 		// the feature is removed from the list of features available to build the next level of the tree
 		featuresLeft.remove(winnerFeature);
 		// this boolean indicates if the current father node has children or not (i.e. is a leaf or not) ; (a leaf has a "Question" element)
@@ -225,8 +225,8 @@ public class IdentificationKeyGenerator {
 	}
 	
 	//change names
-	private Feature DefaultWinner(int nTaxons, Map<Feature,Float> scores){
-		float meanScore = DefaultMeanScore(nTaxons);
+	private Feature defaultWinner(int nTaxons, Map<Feature,Float> scores){
+		float meanScore = defaultMeanScore(nTaxons);
 		float bestScore = nTaxons*nTaxons;
 		Feature feature = null;
 		Iterator it = scores.entrySet().iterator();
@@ -248,7 +248,7 @@ public class IdentificationKeyGenerator {
 	}
 	
 	// rutiliser et vrif si rien de trop <- FIXME please do not comment in french or at least use proper file encoding
-	private float DefaultMeanScore(int nTaxons){
+	private float defaultMeanScore(int nTaxons){
 		int i;
 		float score=0;
 		for (i=1;i<nTaxons;i++){
@@ -257,14 +257,14 @@ public class IdentificationKeyGenerator {
 		return score;
 	}
 	
-	private Map<Feature,Float> FeatureScores(List<Feature> featuresLeft, Set<TaxonDescription> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
+	private Map<Feature,Float> featureScores(List<Feature> featuresLeft, Set<TaxonDescription> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 		Map<Feature,Float> scoreMap = new HashMap<Feature,Float>();
 		for (Feature feature : featuresLeft){
 			if (feature.isSupportsCategoricalData()) {
-				scoreMap.put(feature, FeatureScore(feature,coveredTaxa));
+				scoreMap.put(feature, featureScore(feature,coveredTaxa));
 			}
 			if (feature.isSupportsQuantitativeData()){
-				scoreMap.put(feature, QuantitativeFeatureScore(feature,coveredTaxa, quantitativeFeaturesThresholds));
+				scoreMap.put(feature, quantitativeFeatureScore(feature,coveredTaxa, quantitativeFeaturesThresholds));
 			}
 		}
 		return scoreMap;
@@ -300,7 +300,7 @@ public class IdentificationKeyGenerator {
 		return list;
 	}
 	
-	private float QuantitativeFeatureScore(Feature feature, Set<TaxonDescription> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
+	private float quantitativeFeatureScore(Feature feature, Set<TaxonDescription> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 		List<Float> allValues = new ArrayList<Float>();
 		boolean lowerboundarypresent;
 		boolean upperboundarypresent;
@@ -373,7 +373,7 @@ public class IdentificationKeyGenerator {
 		return (float)(defaultQuantitativeScore);
 	}
 	
-	private float FeatureScore(Feature feature, Set<TaxonDescription> coveredTaxa){
+	private float featureScore(Feature feature, Set<TaxonDescription> coveredTaxa){
 		int i,j;
 		float score =0;
 		TaxonDescription[] coveredTaxaArray = coveredTaxa.toArray(new TaxonDescription[coveredTaxa.size()]); // I did not figure a better way to do this
@@ -389,23 +389,23 @@ public class IdentificationKeyGenerator {
 				for (DescriptionElementBase deb : elements2){
 					if (deb.getFeature().equals(feature)) deb2 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
 				}
-				score = score + DefaultPower(deb1,deb2);
+				score = score + defaultPower(deb1,deb2);
 			}
 		}
 		return score;
 		}
 	
-	private float DefaultPower(DescriptionElementBase deb1, DescriptionElementBase deb2){
+	private float defaultPower(DescriptionElementBase deb1, DescriptionElementBase deb2){
 		if (deb1==null || deb2==null) {
 			return -1; //what if the two taxa don't have this feature in common ?
 		}
 		if ((deb1.isInstanceOf(CategoricalData.class))&&(deb2.isInstanceOf(CategoricalData.class))) {
-			return DefaultCategoricalPower((CategoricalData)deb1, (CategoricalData)deb2);
+			return defaultCategoricalPower((CategoricalData)deb1, (CategoricalData)deb2);
 		}
 		else return 0;
 	}
 	
-	private float DefaultCategoricalPower(CategoricalData deb1, CategoricalData deb2){
+	private float defaultCategoricalPower(CategoricalData deb1, CategoricalData deb2){
 		List<StateData> states1 = deb1.getStates();
 		List<StateData> states2 = deb2.getStates();
 		boolean bool = false;
