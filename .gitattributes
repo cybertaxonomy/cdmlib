@@ -1118,7 +1118,6 @@ cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/spelling.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
-cdmlib-persistence/src/site/site.xml -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmPersistentDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
