@@ -398,6 +398,14 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	public List<Object> getTaggedName(T nonViralName) {
 		List<Object> tags = new ArrayList<Object>();
 		
+		if (nonViralName.isProtectedNameCache() ||
+				nonViralName.isProtectedAuthorshipCache() ||
+				nonViralName.isProtectedFullTitleCache() ||
+				nonViralName.isProtectedTitleCache()){
+			tags.add(nonViralName.getTitleCache());
+			return tags;
+		}
+		
 		// Why does it make sense to add the nameCache in case of non existing genusOrUninomial?
 //		if (nonViralName.getGenusOrUninomial() == null){
 //			tags.add(nonViralName.getNameCache());
