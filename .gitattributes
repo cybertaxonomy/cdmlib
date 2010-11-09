@@ -56,7 +56,6 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceConfiguratorBase.j
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceNamesConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServicePublicationConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
-cdmlib-ext/src/site/site.xml -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
