@@ -1,5 +1,4 @@
 * text=auto !eol
-/INSTALL.TXT -text
 /LICENSE.txt -text
 /README.txt -text
 cdmlib-commons/LICENSE.TXT -text
@@ -2323,7 +2322,6 @@ cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
 /pom.xml -text
-/settings.xml -text
 src/docbkx/ReferenceDocumentation.xml -text
 src/docbkx/annotation-and-markers.xml -text
 src/docbkx/base-classes.xml -text
