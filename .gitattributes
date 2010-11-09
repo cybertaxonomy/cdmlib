@@ -1283,6 +1283,13 @@ cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/xml/XMLOutputModule.java -
 cdmlib-print/src/main/resources/eu/etaxonomy/printpublisher/out/odf/cdmToOdfText.xsl -text
 cdmlib-print/src/main/resources/eu/etaxonomy/printpublisher/out/pdf/cdmToPdf.xsl -text
 cdmlib-print/src/main/resources/log4j.properties -text
+cdmlib-print/src/site/apt/download.apt -text
+cdmlib-print/src/site/apt/formats.apt -text
+cdmlib-print/src/site/apt/getting-started.apt -text
+cdmlib-print/src/site/apt/index.apt -text
+cdmlib-print/src/site/apt/writing-templates.apt -text
+cdmlib-print/src/site/fml/troubleshooting.fml -text
+cdmlib-print/src/site/site.xml -text
 cdmlib-print/src/test/java/eu/etaxonomy/printpublisher/PublisherTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/printpublisher/TransformatorTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/printpublisher/out/odf/OdfOutputModuleTest.java -text
