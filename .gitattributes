@@ -355,7 +355,6 @@ cdmlib-io/src/main/resources/schema/cdm/reference.xsd -text
 cdmlib-io/src/main/resources/schema/cdm/taxon.xsd -text
 cdmlib-io/src/main/resources/schema/xml/XMLSchema.xsd -text
 cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
-cdmlib-io/src/site/site.xml -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.java -text
