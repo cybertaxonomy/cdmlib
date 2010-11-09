@@ -1,0 +1,10 @@
+			------
+			What is the Common Data Model
+			------
+			------
+			2010-11-05
+			------
+		
+What is the Common Data Model	
+			
+  The CDM Library is meant to be a shared library for the between several applications which can be of any kind, i.e. J2EE having an application container, simple command line tools or swing desktop applications. The library defines a persistent domain model, EDITs CommonDataModel, that can be serialised and read in XML. Business logic shared between applications should be part of this library as much as possible, while application specific logic has to stay out. We are developing this library in collaboration with the CATE project initially, but we seeking development collaboration with other projects like Key2Nature and PESI as well.
