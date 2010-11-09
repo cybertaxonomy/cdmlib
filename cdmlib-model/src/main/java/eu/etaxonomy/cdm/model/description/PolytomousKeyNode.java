@@ -228,8 +228,22 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	 * @see				#removeChild(int) 
 	 */
 	public void addChild(PolytomousKeyNode child, int index){
+		if (index < 0 || index > children.size() + 1){
+			throw new IndexOutOfBoundsException("Wrong index: " + index);
+		}
+		
+//		if (child.getParent() != null){
+//			child.getParent().removeChild(child);
+//		}
+//		child.setParent(this);
 		children.add(index, child);
 		child.setKey(this.getKey());
+		//TODO workaround (see sortIndex doc)
+		for(int i = 0; i < children.size(); i++){
+			children.get(i).sortIndex = i;
+		}
+		child.sortIndex = index;
+		
 	}
 	/** 
 	 * Removes the given polytomous key node from the list of {@link #getChildren() children}
@@ -261,6 +275,19 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	 */
 	public void removeChild(int index){
 		children.remove(index);
+		
+		PolytomousKeyNode child = children.get(index);
+		if (child != null){
+			children.remove(index);
+//			child.setParent(null);
+			//TODO workaround (see sortIndex doc)
+			for(int i = 0; i < children.size(); i++){
+				PolytomousKeyNode childAt = children.get(i);
+				childAt.sortIndex = i;
+		}
+			child.sortIndex = null;
+		}
+		
 	}
 
 	/** 

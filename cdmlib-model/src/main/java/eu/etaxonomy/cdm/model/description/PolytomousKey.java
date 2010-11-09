@@ -149,6 +149,7 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	protected PolytomousKey() {
 		super();
 		root = PolytomousKeyNode.NewInstance();
+		root.setKey(this);
 	}
 	
 	

@@ -182,12 +182,12 @@ public class FeatureNode extends VersionableEntity {
 	
 //*************************** TREE ************************************/	
 
-	private void setFeatureTree(FeatureTree featureTree) {
-		this.featureTree = featureTree;
+	public FeatureTree getFeatureTree() {
+		return featureTree;
 	}
 
-	private FeatureTree getFeatureTree() {
-		return featureTree;
+	protected void setFeatureTree(FeatureTree featureTree) {
+		this.featureTree = featureTree;
 	}
 	
 	//** ********************** FEATURE ******************************/
@@ -281,7 +281,7 @@ public class FeatureNode extends VersionableEntity {
 		//TODO workaround (see sortIndex doc)
 		for(int i = 0; i < children.size(); i++){
 			children.get(i).sortIndex = i;
-	}
+		}
 		child.sortIndex = index;
 	}
 	/** 
@@ -323,7 +323,7 @@ public class FeatureNode extends VersionableEntity {
 				childAt.sortIndex = i;
 		}
 			child.sortIndex = null;
-	}
+		}
 	}
 
 	/** 
