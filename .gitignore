@@ -10,6 +10,7 @@ cdmlib-ext/.classpath
 cdmlib-ext/.project
 cdmlib-ext/.settings
 cdmlib-ext/bin
+cdmlib-ext/hibernate.log
 cdmlib-ext/target
 cdmlib-io/.classpath
 cdmlib-io/.project
