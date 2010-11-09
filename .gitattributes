@@ -1901,7 +1901,6 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/oai2.xsl -text
-cdmlib-remote-webapp/src/site/site.xml -text
 cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
 cdmlib-remote-webapp/src/test/resources/log4j.properties -text
 cdmlib-remote/LICENSE.TXT -text
