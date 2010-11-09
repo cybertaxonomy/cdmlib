@@ -355,8 +355,8 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 		if (node != null){
 			if (! node.isLeaf()){
 				if (node.getStatement() != null){
-					String question = node.getQuestion().getLabelText(Language.DEFAULT());
-					result +=  ( question == null ? "" : (question))  ;
+					String statement = node.getStatement().getLabelText(Language.DEFAULT());
+					result +=  ( statement == null ? "" : (statement))  ;
 				}
 			}else{
 				PolytomousKeyNode leaf = node;
@@ -373,8 +373,6 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 					result +=  strTaxon + taxonSeparator ;
 					result = StringUtils.chompLast(result, taxonSeparator);
 				}
-				
-				
 			}
 			result += "\n";
 			if (stream != null){

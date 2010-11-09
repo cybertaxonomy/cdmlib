@@ -2865,7 +2865,14 @@
         othernode_id integer,
         primary key (id, REV)
     );
-
+     
+    create table PolytomousKeyNode_PolytomousKeyNode_AUD(
+    	id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        parent_id integer, 
+        sortIndex integer
+    )
     
     create table Reference (
         DTYPE varchar(31) not null,

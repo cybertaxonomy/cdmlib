@@ -1161,6 +1161,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/UserDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/IdentificationKeyDaoHibernateImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/PolytomousKeyDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/ConfigurableNameCacheStrategyGeneratorsTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImplTest.java -text
@@ -1242,6 +1243,8 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/IdentificationKeyDaoHibernateImplTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/PolytomousKeyDaoHibernateImplTest.testSavePolytomousKey-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/PolytomousKeyDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.tif -text

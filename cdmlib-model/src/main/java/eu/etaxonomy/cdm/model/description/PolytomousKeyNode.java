@@ -345,7 +345,7 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	}
 
 	
-	//** ********************** QUESTIONS ******************************/
+	//** ********************** QUESTIONS AND STATEMENTS ******************************/
 
 	/**
 	 * Returns the statement for <code>this</code> PolytomousKeyNode. If the user
@@ -355,6 +355,28 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	 */
 	public KeyStatement getStatement() {
 		return statement;
+	}
+	
+	/**
+	 * This is a convenience method to set the statement text for this node 
+	 * in the given language. <BR>
+	 * If no statement exists yet a new statement is created. <BR>
+	 * If a statement text in the given language exists already it is overwritten 
+	 * and the old text is returned.
+	 * If language is <code>null</code> the default language is used instead.
+	 *  
+	 * @param text the statement text
+	 * @param language the language of the statement text
+	 * @return the old statement text in the given language as LanguageString
+	 */
+	 public LanguageString addStatementText(String text, Language language){
+		if (language == null){
+			language = Language.DEFAULT();
+		}
+		if (this.statement == null){
+			setStatement(KeyStatement.NewInstance());
+		}
+		return getStatement().putLabel(text, language);
 	}
 
 	/**
@@ -374,6 +396,28 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	 */
 	public KeyStatement getQuestion() {
 		return question;
+	}
+	
+	/**
+	 * This is a convenience method to sets the question text for this node 
+	 * in the given language. <BR>
+	 * If no question exists yet a new question is created. <BR>
+	 * If a question text in the given language exists already it is overwritten 
+	 * and the old text is returned.
+	 * If language is <code>null</code> the default language is used instead.
+	 *  
+	 * @param text
+	 * @param language
+	 * @return
+	 */
+	 public LanguageString addQuestionText(String text, Language language){
+		if (language == null){
+			language = Language.DEFAULT();
+		}
+		if (this.question == null){
+			setQuestion(KeyStatement.NewInstance());
+		}
+		return getQuestion().putLabel(text, language);
 	}
 
 	/**
