@@ -1,0 +1,1 @@
+Please see http://wp5.e-taxonomy.eu/cdmlib/getting-started.html on instructions how to set up your development environment.

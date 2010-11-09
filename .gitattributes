@@ -1,6 +1,8 @@
 * text=auto !eol
 /INSTALL.TXT -text
 /LICENSE.TXT -text
+/LICENSE.txt -text
+/README.txt -text
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
