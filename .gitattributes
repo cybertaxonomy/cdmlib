@@ -1718,6 +1718,7 @@ cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
 /pom.xml -text
+src/changes/changes.xml -text
 src/docbkx/ReferenceDocumentation.xml -text
 src/docbkx/annotation-and-markers.xml -text
 src/docbkx/base-classes.xml -text
