@@ -6,7 +6,7 @@ If you do not have access to wp5.e-taxonomy.eu you can skip the following sectio
 For deployment of files via maven, we are using the scpexe url scheme which effectively uses an external ssh command. 
 Because we are using public/private key authentication on wp5.e-taxonomy.eu this is much easier to configure, test and debug.
 
-If you are deploying from Unix or have Cygwin installed you won't need to any additional configuration in your settings.xml file as everything will be taken from the environment. However, if your username in the remote system is different from local you will have to create the entry in your settings.xml stating the username on the remote system:
+If you are deploying from Unix or have Cygwin installed you won't need any additional configuration in your settings.xml file as everything will be taken from the environment. However, if your username in the remote system is different from local you will have to create the entry in your settings.xml stating the username on the remote system:
 
 <settings>
 	<servers>
