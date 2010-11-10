@@ -66,7 +66,7 @@
 	</organization>
 	<developers>
 		<developer>
-<!-- your SVN account id please! -->
+			<!-- your SVN account id please! -->
 			<id>ben.clark</id>
 			<name>
 				Ben Clark
@@ -81,10 +81,10 @@
 				<role>Architect</role>
 				<role>Java Developer</role>
 			</roles>
-			<url></url>
+			<url/>
 		</developer>
 		<developer>
-<!-- your SVN account id please! -->
+			<!-- your SVN account id please! -->
 			<id>n.hoffmann</id>
 			<name>
 				Niels Hoffmann
@@ -98,10 +98,10 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url></url>
+			<url/>
 		</developer>
 		<developer>
-<!-- your SVN account id please! -->
+			<!-- your SVN account id please! -->
 			<id>a.kohlbecker</id>
 			<name>
 				Andreas Kohlbecker
@@ -115,10 +115,10 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url></url>
+			<url/>
 		</developer>
 		<developer>
-<!-- your SVN account id please! -->
+			<!-- your SVN account id please! -->
 			<id>k.luther</id>
 			<name>
 				Katja Luther
@@ -132,10 +132,10 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url></url>
+			<url/>
 		</developer>
 		<developer>
-<!-- your SVN account id please! -->
+			<!-- your SVN account id please! -->
 			<id>a.mueller</id>
 			<name>
 				Andreas Müller
@@ -151,10 +151,10 @@
 				<role>Java Developer</role>
 				<role>Release Manager</role>
 			</roles>
-			<url></url>
+			<url/>
 		</developer>
 		<developer>
-<!-- your SVN account id please! -->
+			<!-- your SVN account id please! -->
 			<id>f.revilla</id>
 			<name>
 				Francisco Revilla	
@@ -168,10 +168,10 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url></url>
+			<url/>
 		</developer>
 	</developers>
-<!--contributors>
+	<!--contributors>
 		<contributor>
 			<name>Test-Contributor</name>
 		</contributor>
@@ -181,27 +181,27 @@
 		<url>http://dev.e-taxonomy.eu/trac/</url>
 	</issueManagement>
 	<ciManagement>
-	    <system>Hudson</system>
-	    <url>http://160.45.63.201/hudson</url>
+		<system>Hudson</system>
+		<url>http://160.45.63.201/hudson</url>
 	</ciManagement>
-<!-- **** REPOSITORIES **** -->
+	<!-- **** REPOSITORIES **** -->
 	<repositories>
-<!-- sun repository -->
+		<!-- sun repository -->
 		<repository>
 			<id>java.net</id>
 			<url>http://download.java.net/maven/1/</url>
 		</repository>
-<!-- the cdm internal repository -->
+		<!-- the cdm internal repository -->
 		<repository>
 			<id>EditRepository</id>
 			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
 		</repository>
-<!-- apache incubating repository -->
+		<!-- apache incubating repository -->
 		<repository>
 			<id>ApacheIncubating</id>
 			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
 		</repository>
-<!-- Neccessary for hibernate-envers -->
+		<!-- Neccessary for hibernate-envers -->
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -217,12 +217,12 @@
 			<name>JBoss Repository</name>
 			<url>http://repository.jboss.com/maven2</url>
 		</repository>
-<!-- codehaus mule repository needed for yourkit  -->
+		<!-- codehaus mule repository needed for yourkit  -->
 		<repository>
 			<id>CodehausMuleRepository</id>
 			<url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
 		</repository>
-<!-- current spring source repositories -->
+		<!-- current spring source repositories -->
 		<repository>
 			<id>SpringSource Enterprise Bundle Repository - External Bundle Milestones</id>
 			<url>http://repository.springsource.com/maven/bundles/milestone</url>
@@ -236,7 +236,7 @@
 			<url>http://repository.springsource.com/maven/bundles/external</url>
 		</repository>
 	</repositories>
-<!-- **** PLUGINS **** -->
+	<!-- **** PLUGINS **** -->
 	<build>
 		<plugins>
 			<plugin>
@@ -279,7 +279,7 @@
 				<version>1.0-beta-3</version>
 				<executions>
 					<execution>
-<!--<phase>deploy</phase>-->
+						<!--<phase>deploy</phase>-->
 						<goals>
 							<goal>create</goal>
 						</goals>
@@ -287,19 +287,14 @@
 				</executions>
 				<configuration>
 					<doCheck>false</doCheck>
-<!-- Only create the build number if there are no local modifications -->
+					<!-- Only create the build number if there are no local modifications -->
 					<doUpdate>false</doUpdate>
-<!-- automatically update the local svn copy -->
+					<!-- automatically update the local svn copy -->
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-<!-- 
-				Falling back to maven-site-plugin 2.0-beta-5 since
-                maven-site-plugin 2.0-beta-6 has this problem:
-				Embedded error: Unrecognised tag: 'site' (position: START_TAG seen <?xml
-                version="1.0" encoding="ISO-8859-1"?>\r\n<site>... @2:7) -->
 				<version>2.1.1</version>
 				<configuration>
 					<locales>en</locales>
@@ -308,6 +303,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -321,14 +317,27 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
 				<configuration>
-					<aggregate>true</aggregate>
 					<stylesheet>maven</stylesheet>
+					<quiet>true</quiet>
+					<detectLinks>true</detectLinks>
+					<failOnError>false</failOnError>
 				</configuration>
+				<executions>
+					<execution>
+						<id>aggregate</id>
+						<goals>
+							<goal>aggregate</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
@@ -360,8 +369,8 @@
 					<chunkedOutput>true</chunkedOutput>
 					<htmlStylesheet>resources/css/html.css</htmlStylesheet>
 					<xincludeSupported>true</xincludeSupported>
-<!--<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>-->
-<!-- if anyone can get the xsl-fo customization to work properly, then by all 
+					<!--<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>-->
+					<!-- if anyone can get the xsl-fo customization to work properly, then by all 
                means use it
             <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
           -->
@@ -371,35 +380,67 @@
 							<value>${pom.version}</value>
 						</entity>
 					</entities>
-<!--We want the final documentation and the required resources to end up in 
+					<!--We want the final documentation and the required resources to end up in 
               the right place-->
 					<postProcess>
 						<copy todir="target/site/reference">
 							<fileset dir="target/docbkx">
-								<include name="**/*.html"></include>
-								<include name="**/*.pdf"></include>
+								<include name="**/*.html"/>
+								<include name="**/*.pdf"/>
 							</fileset>
 						</copy>
 						<copy todir="target/site/reference/html">
 							<fileset dir="src/docbkx">
-								<include name="**/*.css"></include>
-								<include name="**/*.png"></include>
-								<include name="**/*.gif"></include>
-								<include name="**/*.jpg"></include>
+								<include name="**/*.css"/>
+								<include name="**/*.png"/>
+								<include name="**/*.gif"/>
+								<include name="**/*.jpg"/>
 							</fileset>
 						</copy>
 					</postProcess>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-3</version>
+				<configuration>
+					<fromDir>${project.build.directory}/docbkx/</fromDir>
+					<includes>**/*</includes>
+					<excludes/>
+					<url>scpexe://160.45.63.151</url>
+					<serverId>wp5.e-taxonomy.eu</serverId>
+					<toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${pom.version}</toDir>
+				</configuration>
+				<executions>
+					<execution>
+						<id>upload-reference-documentation</id>
+						<phase>site-deploy</phase>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
-<!--  -->
+		<!--  -->
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-scm</artifactId>
 				<version>1.0-alpha-5</version>
 			</extension>
-<!--
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+			<!--
 				<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh-external</artifactId>
@@ -416,7 +457,7 @@
 				<artifactId>maven-scm-provider-svnexe</artifactId>
 				<version>1.0</version>
 			</extension>
-<!-- WebDAV plugin to upload snapshots -->
+			<!-- WebDAV plugin to upload snapshots -->
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
@@ -427,33 +468,32 @@
 	<reporting>
 		<plugins>
 			<plugin>
-<!-- you will want to start by publishing your classes' Javadocs -->
+				<!-- you will want to start by publishing your classes' Javadocs -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
 				<configuration>
-					<links>
-						<link>http://java.sun.com/j2se/1.6.0/docs/api/</link>
-						<link>http://static.springframework.org/spring/docs/2.5.x/api/</link>
-						<link>http://www.hibernate.org/hib_docs/v3/api/</link>
-<!-- more libraries? -->
-					</links>
+					<detectLinks>true</detectLinks>
 				</configuration>
 			</plugin>
 			<plugin>
-<!-- this will generate an indexed and cross-referenced HTML version of your source code -->
+				<!-- this will generate an indexed and cross-referenced HTML version of your source code -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.2</version>
 			</plugin>
 			<plugin>
-<!-- if you use @todo tags to remind you of things to be done (which is a good coding practice), the taglist report will generate a list of all the items marked @todo or TODO -->
+				<!-- if you use @todo tags to remind you of things to be done (which is a good coding practice), the taglist report will generate a list of all the items marked @todo or TODO -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
 			</plugin>
 			<plugin>
-<!-- Test coverage can be a useful indication of the quality of your unit tests. It basically tells you how much of your code is actually run by your unit tests, which, in turn, can give you a good idea of the tests' quality -->
+				<!-- Test coverage can be a useful indication of the quality of your unit tests. It basically tells you how much of your code is actually run by your unit tests, which, in turn, can give you a good idea of the tests' quality -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-<!--
+				<version>2.4</version>
+				<!--
 					<executions>
 					<execution>
 					<id>clean</id>
@@ -465,7 +505,7 @@
 					</executions>
 				-->
 			</plugin>
-<!--			
+			<!--			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
@@ -483,18 +523,26 @@
 					</reportSet>
 				</reportSets>
 			</plugin>	-->
-<!-- The changes-maven-plugin plug-in uses a special XML file (src/changes/changes.xml) to track releases and changes in each release -->
-<!-- 
+			<!-- The changes-maven-plugin plug-in uses a special XML file (src/changes/changes.xml) to track releases and changes in each release -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changes-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.3</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
+			<!--
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			-->
-<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
-<!-- 
+			<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
+			<!-- 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>changelog-maven-plugin</artifactId>
@@ -502,7 +550,7 @@
 			-->
 		</plugins>
 	</reporting>
-<!--	 DISTRIBUTION MANAGEMENT -->
+	<!--	 DISTRIBUTION MANAGEMENT -->
 	<distributionManagement>
 		<site>
 			<id>wp5.e-taxonomy.eu</id>
@@ -517,7 +565,7 @@
 			<layout>default</layout>
 		</repository>
 	</distributionManagement>
-<!-- **** DEPENDENCIES **** -->
+	<!-- **** DEPENDENCIES **** -->
 	<dependencies>
 		<dependency>
 			<groupId>org.unitils</groupId>
@@ -584,7 +632,7 @@
 				<artifactId>cdmlib-print</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-<!--*********** JAXB********* -->
+			<!--*********** JAXB********* -->
 			<dependency>
 				<groupId>javax.xml.bind</groupId>
 				<artifactId>jaxb-api</artifactId>
@@ -620,13 +668,13 @@
 				<artifactId>jaxb-xjc</artifactId>
 				<version>2.1.6</version>
 			</dependency>
-<!-- ******* VARIOUS ******* -->
+			<!-- ******* VARIOUS ******* -->
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.15</version>
 			</dependency>
-<!-- hibernate 3.4 uses slf4j -->
+			<!-- hibernate 3.4 uses slf4j -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -757,7 +805,7 @@
 				<artifactId>sanselan</artifactId>
 				<version>0.97-incubator</version>
 			</dependency>
-<!-- joda-time -->
+			<!-- joda-time -->
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
@@ -863,7 +911,7 @@
 				<artifactId>dozer</artifactId>
 				<version>5.3.0</version>
 			</dependency>
-<!-- ******* XML ******* -->
+			<!-- ******* XML ******* -->
 			<dependency>
 				<groupId>xml-apis</groupId>
 				<artifactId>xml-apis</artifactId>
@@ -899,7 +947,7 @@
 				<artifactId>stax</artifactId>
 				<version>1.2.0</version>
 			</dependency>
-<!-- ******* HIBERNATE / EJB3 ******* -->
+			<!-- ******* HIBERNATE / EJB3 ******* -->
 			<dependency>
 				<groupId>javax.persistence</groupId>
 				<artifactId>persistence-api</artifactId>
@@ -965,7 +1013,7 @@
 				<artifactId>servlet-api</artifactId>
 				<version>2.5</version>
 			</dependency>
-<!-- ******* SPRING ******* -->
+			<!-- ******* SPRING ******* -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.core</artifactId>
@@ -1068,15 +1116,15 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-<!-- ******* SERVLET/JSP/JSF ******* -->
+			<!-- ******* SERVLET/JSP/JSF ******* -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>2.5</version>
 			</dependency>
-<!-- ******* DATABASES DRIVER ******* -->
+			<!-- ******* DATABASES DRIVER ******* -->
 			<dependency>
-<!-- SQL Server and Sybase -->
+				<!-- SQL Server and Sybase -->
 				<groupId>net.sourceforge.jtds</groupId>
 				<artifactId>jtds</artifactId>
 				<version>1.2.2</version>
@@ -1096,13 +1144,13 @@
 				<artifactId>hsqldb</artifactId>
 				<version>1.8.0.7</version>
 			</dependency>
-<!--for sqlserver2008 and sqlserver2005-->
+			<!--for sqlserver2008 and sqlserver2005-->
 			<dependency>
 				<groupId>com.microsoft.sqlserver</groupId>
 				<artifactId>jdbc4</artifactId>
 				<version>2.0</version>
 			</dependency>
-<!-- use SQL Server 2005 driver instead (com.microsoft.sqlserver/jdbc)
+			<!-- use SQL Server 2005 driver instead (com.microsoft.sqlserver/jdbc)
 	  	<dependency>
 	  		<groupId>com.microsoft.jdbcdriver</groupId>
 	  		<artifactId>mssqlserver</artifactId>
@@ -1139,13 +1187,13 @@
 				<artifactId>h2</artifactId>
 				<version>1.1.115</version>
 			</dependency>
-<!-- yourkit profiler api controller (used in ..)-->
+			<!-- yourkit profiler api controller (used in ..)-->
 			<dependency>
 				<groupId>com.yourkit</groupId>
 				<artifactId>yjp-controller-api-redist</artifactId>
 				<version>8.0.1</version>
 			</dependency>
-<!-- For Validation -->
+			<!-- For Validation -->
 			<dependency>
 				<groupId>javax.validation</groupId>
 				<artifactId>validation-api</artifactId>

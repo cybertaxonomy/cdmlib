@@ -1,49 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faqs xmlns="http://maven.apache.org/FML/1.0.1"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
-  title="Troubleshooting"
-  toplink="false">
-
-  <part id="general">
-    <title>General</title>
-
-    <faq id="whats-foo">
-      <question>
-        What is Foo?
+<faqs xmlns="http://maven.apache.org/FML/1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd" title="Troubleshooting" toplink="false">
+	<part id="maven">
+		<title>Maven</title>
+		<faq id="generic-errors">
+			<question>
+        Why do I get "... is not within its bound" errors when running maven install?
       </question>
-      <answer>
-        <p>some markup goes here</p>
-
-        <source>some source code</source>
-
-        <p>some markup goes here</p>
-      </answer>
-    </faq>
-
-    <faq id="whats-bar">
-      <question>
-        What is Bar?
-      </question>
-      <answer>
-        <p>some markup goes here</p>
-      </answer>
-    </faq>
-  </part>
-
-  <part id="install">
-
-    <title>Installation</title>
-
-    <faq id="how-install">
-      <question>
-        How do I install Foo?
-      </question>
-      <answer>
-        <p>some markup goes here</p>
-      </answer>
-    </faq>
-
-  </part>
-
+			<answer>
+				<p>For some unclear reasons we encountered problems using maven in combination with aspectj.
+		We did not yet resolve this problem but at least found a work-around:</p>
+				<ol>
+					<li>run <code>mvn clean</code> (probably not really needed)</li>
+					<li>open Eclipse IDE</li>
+					<li>make sure that cdmlib-model is converted to an AspcetJ project (see [#Eclipsesetup Eclipse setup] for detailed information) - sometimes it helps if you first remove AspectJ and then convert it again</li>
+					<li>run Project-clean</li>
+					<li>run <code>mvn install</code></li>
+				</ol>
+				<p>This seems to work at least on our computers as eclipse better compiles aspectj then maven does. So please first try the above if you encounter any compilation problems.</p>
+				<p>If it still does not work please try to install the newest eclipse aspectj plugin (for installation instructions see below).If it still does not work please let us know.</p>
+			</answer>
+		</faq>
+	</part>
 </faqs>

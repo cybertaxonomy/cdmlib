@@ -18,7 +18,7 @@
 			<item name="Details" href="overview.html"/>
 			<item name="FAQ" href="faq.html"/>
 			<item name="License" href="license.html"/>
-			<item name="Download" href="download.html"/>
+			<item name="Releases" href="changes-report.html"/>
 		</menu>
 		<menu name="Developer">
 			<item name="Getting started" href="getting-started.html"/>
