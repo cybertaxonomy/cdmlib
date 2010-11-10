@@ -17,5 +17,32 @@ If you are deploying from Unix or have Cygwin installed you won't need any addit
 	</servers>
 </settings>
 
+If your private key is protected with a pass phrase you may want to also add the following option:
+
+<settings>
+	<servers>
+		<server>
+			....
+			<passphrase>some_passphrase</passphrase>
+		</server>
+	</servers>
+</settings>
+
+Or you start the ssh-agent in advance. If you are using Cygwin you can add the following lines to your ~./.bashrc in order to optionally start the ssh-agent:
+
+#
+# Start the ssh-agent
+#
+echo "Start ssh-agent and add private ssh key? [y/n]"
+read START_SSH_AGENT
+
+if [ $START_SSH_AGENT = "y" -o $START_SSH_AGENT = "Y" ]; then 
+  eval `ssh-agent -s`
+  ssh-add
+fi
+
 
 Instructions on how to set this up for Windows can be found here: http://maven.apache.org/plugins/maven-deploy-plugin/examples/deploy-ssh-external.html
+
+
+
