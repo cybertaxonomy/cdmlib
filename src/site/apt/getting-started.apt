@@ -1,12 +1,8 @@
 Developing with the CDM Library
 
-  Table of Contents
+	<Table of Contents>
 
-	* {{{Integrating_the_CDM_Library_into_a_maven_project}Integrating the CDM Library into a maven project}}
-	
-	* {{{Spring_applications_with_the_CDM_Library}Spring applications with the CDM Library}}
-	
-	* {{{Developing_the_CDM_Library}Developing the CDM Library}}
+%{toc|section=0|fromDepth=2|toDepth=3}
 	
 
   <<Note:>> If you are not familiar with eclipse, maven or subversion please read the {{{http://dev.e-taxonomy.eu/trac/wiki/DeveloperApplications}developer applications document}} for brief introductions. Please see {{{./troubleshooting.html}Troubleshooting}} in case you run into problems or contact {{{mailto:editsupport@bgbm.org}editsupport@bgbm.org}}.

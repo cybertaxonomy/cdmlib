@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <faqs xmlns="http://maven.apache.org/FML/1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd" title="Troubleshooting" toplink="false">
+	<part id="eclipse">
+		<title>Eclipse</title>
+		<faq id="">
+			<question>"The method getTextContent() is undefined for the type Node" in cdmlib-io and/or cdmlib-model.</question>
+			<answer><p>This problem is due to some inconsistency between the <em>JRE System Library</em> and JAXB artifacts that got loaded by maven. In order to solve this you have to open the <em>Preferences</em> dialog for the respective project and open the <em>Java Build Path</em> section. In this section choose <em>Order and Export</em>. Locate <em>JRE System Library</em> and use the buttons on the right to move it up in the list, so it it is located directly beneath the projects source folders. Repeat this for all cdmlib projects where the error occurs.</p><p>You will definitely have to go through this procedure everytime you called <code>mvn eclipse:eclipse</code> as it will regenerate the .project file.</p></answer>
+		</faq>
+	</part>
+	
 	<part id="maven">
 		<title>Maven</title>
 		<faq id="generic-errors">
-			<question>
-        Why do I get "... is not within its bound" errors when running maven install?
-      </question>
+			<question>Why do I get "... is not within its bound" errors when running maven install?</question>
 			<answer>
-				<p>For some unclear reasons we encountered problems using maven in combination with aspectj.
-		We did not yet resolve this problem but at least found a work-around:</p>
-				<ol>
-					<li>run <code>mvn clean</code> (probably not really needed)</li>
-					<li>open Eclipse IDE</li>
-					<li>make sure that cdmlib-model is converted to an AspcetJ project (see [#Eclipsesetup Eclipse setup] for detailed information) - sometimes it helps if you first remove AspectJ and then convert it again</li>
-					<li>run Project-clean</li>
-					<li>run <code>mvn install</code></li>
-				</ol>
-				<p>This seems to work at least on our computers as eclipse better compiles aspectj then maven does. So please first try the above if you encounter any compilation problems.</p>
-				<p>If it still does not work please try to install the newest eclipse aspectj plugin (for installation instructions see below).If it still does not work please let us know.</p>
+				<p>For (unfortunately still) unclear reasons we encountered problems using generics.
+		We did not yet resolve this problem but at least found out that this problem does not occur when building with eclipse. 
+		So all you have to do is make sure your projects got compiled by eclipse. In order to do that you have to open the eclipse clean dialog by executing "Projects -> Clean...". In the resulting dialog either select all cdmlib projects or simply check the "Clean all projects" radiobutton. Eclipse will then clean the build directries and execute a new build. <strong>We are working on this and it should be removed in the very near future.</strong></p>
 			</answer>
 		</faq>
 	</part>
