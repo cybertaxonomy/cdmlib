@@ -6,17 +6,9 @@
         <version>1.0</version>
     </skin>
     <body>
-        <links>
-            <item name="CDM Library" href="http://wp5.e-taxonomy.eu/cdmlib/"/>
-            <item name="Taxonomic Editor" href="http://wp5.e-taxonomy.eu/taxeditor/"/>
-            <item name="CDM Server" href="http://wp5.e-taxonomy.eu/cdm-server/"/>
-            <item name="Dataportal" href="http://wp5.e-taxonomy.eu/portal/"/>
-            <item name="CDM Setups" href="http://wp5.e-taxonomy.eu/cdm-setups/"/>
-        </links>
         <menu name="General Information">
             <item name="Overview" href="index.html"/>
             <item name="Output Formats" href="formats.html"/>
-            <item name="License" href="license.html"/>
             <item name="Download" href="download.html"/>
         </menu>
         <menu name="Developer">
@@ -31,6 +23,7 @@
             <item name="Continuous Integration" href="integration.html"/>
             <item name="Issue Tracking" href="http://dev.e-taxonomy.eu/trac/"/>
             <item name="Source Repository" href="source-repository.html"/>
+            <item name="License" href="license.html"/>
         </menu>
     </body>
 </project>
