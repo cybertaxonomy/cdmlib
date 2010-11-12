@@ -426,13 +426,13 @@
 		<!--  -->
 		<extensions>
 			<!-- 
-			latest version is 1.0-beta-6, but does not work with maven-2.0.9 (running on build server)
+			latest version for wagon provider is 1.0-beta-6, but does not work with maven-2.0.9 (running on build server)
 			see http://jira.codehaus.org/browse/WAGON-228
 			-->
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-scm</artifactId>
-				<version>1.0-beta-2</version>
+				<version>1.0-alpha-5</version>
 			</extension>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
