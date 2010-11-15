@@ -3572,7 +3572,9 @@
         createdby_id integer,
         updatedby_id integer,
         lifestage_id integer,
-        sex_id integer,
+        sex_id integer,    
+        exsiccatum varchar(255),
+    	primarycollector_id integer,
         collection_id integer,
         derivationevent_id integer,
         storedunder_id integer,
@@ -3581,6 +3583,7 @@
         primary key (id),
         unique (uuid)
     );
+    
 
     create table SpecimenOrObservationBase_AUD (
         DTYPE varchar(31) not null,
@@ -3605,10 +3608,12 @@
         fieldnotes varchar(255),
         fieldnumber varchar(255),
         barcode varchar(255),
+        exsiccatum varchar(255),
         gatheringevent_id integer,
         accessionnumber varchar(255),
         catalognumber varchar(255),
         collectorsnumber varchar(255),
+        primarycollector_id integer,
         collection_id integer,
         derivationevent_id integer,
         storedunder_id integer,
@@ -7863,6 +7868,12 @@
 
     create index specimenOrObservationBaseTitleCacheIndex on SpecimenOrObservationBase (titleCache);
 
+    
+    alter table SpecimenOrObservationBase 
+        add constraint FK11CB3232F75F225E 
+        foreign key (primarycollector_id) 
+        references AgentBase;
+    
     alter table SpecimenOrObservationBase 
         add constraint FK21CA32727CC340C5 
         foreign key (storedunder_id) 

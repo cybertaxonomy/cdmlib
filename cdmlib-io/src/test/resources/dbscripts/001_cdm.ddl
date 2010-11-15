@@ -2884,7 +2884,7 @@
         datepublished_freetext varchar(255),
         datepublished_start varchar(255),
         title longvarchar,
-		referenceAbstract longvarchar,
+	referenceAbstract longvarchar,
         pages varchar(255),
         series varchar(255),
         volume varchar(255),
@@ -2933,7 +2933,7 @@
         datepublished_freetext varchar(255),
         datepublished_start varchar(255),
         title longvarchar,
-		referenceAbstract longvarchar,
+	referenceAbstract longvarchar,
         pages varchar(255),
         series varchar(255),
         volume varchar(255),
@@ -3409,8 +3409,10 @@
         fieldnotes varchar(255),
         fieldnumber varchar(255),
         barcode varchar(255),
-        createdby_id integer,
+        exsiccatum varchar(255),
+    	createdby_id integer,
         updatedby_id integer,
+        primarycollector_id integer,
         lifestage_id integer,
         sex_id integer,
         collection_id integer,
@@ -3444,6 +3446,8 @@
         fieldnotes varchar(255),
         fieldnumber varchar(255),
         barcode varchar(255),
+        exsiccatum varchar(255),
+    	primarycollector_id integer,
         gatheringevent_id integer,
         accessionnumber varchar(255),
         catalognumber varchar(255),
@@ -7474,6 +7478,11 @@
         add constraint FK21CA32724AAB411A 
         foreign key (derivationevent_id) 
         references DerivationEvent;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK11CB3232F75F225E 
+        foreign key (primarycollector_id) 
+        references AgentBase;
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA3272F95F225A 

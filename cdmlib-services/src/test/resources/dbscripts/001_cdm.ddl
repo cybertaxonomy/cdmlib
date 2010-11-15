@@ -3519,6 +3519,8 @@
         lifestage_id integer,
         sex_id integer,
         collection_id integer,
+        exsiccatum varchar(255),
+    	primarycollector_id integer,
         derivationevent_id integer,
         storedunder_id integer,
         preservation_id integer,
@@ -3550,6 +3552,8 @@
         accessionnumber varchar(255),
         catalognumber varchar(255),
         collectorsnumber varchar(255),
+        exsiccatum varchar(255),
+    	primarycollector_id integer,
         collection_id integer,
         derivationevent_id integer,
         storedunder_id integer,
@@ -7637,6 +7641,12 @@
         add constraint FK21CA32724AAB411A 
         foreign key (derivationevent_id) 
         references DerivationEvent;
+        
+        
+    alter table SpecimenOrObservationBase 
+        add constraint FK11CB3232F75F225E 
+        foreign key (primarycollector_id) 
+        references AgentBase;
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA3272F95F225A 
