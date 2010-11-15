@@ -23,9 +23,9 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MapTableCreator;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.SchemaUpdater_25_26;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.v25_26.SchemaUpdater_25_26;
 
 
 /**
