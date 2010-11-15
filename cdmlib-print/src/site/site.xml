@@ -15,7 +15,7 @@
             <item name="Getting started" href="getting-started.html"/>
             <item name="Writing Templates" href="writing-templates.html"/>
             <item name="Troubleshooting" href="troubleshooting.html"/>
-            <item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/PrintPublisher"/>
+            <item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/PrintPublisherDev"/>
         </menu>
         <menu name="Project">
             <item name="Mailing Lists" href="mail-lists.html"/>

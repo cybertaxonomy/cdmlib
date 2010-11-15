@@ -14,6 +14,7 @@ Generating printed publications from the CDM
 
   * full control over data and layout is returned to the user
     using so-called styles, similar to CSS (Cascading Style Sheets) used in XHTML documents, a layout may be specified for a class of elements. The styles approach allows the user to change the layout of the data in a consistent manner
+
   * by the use of macros, automation programs inside the word processor, it is possible to post process the data, e.g. deleting unwanted parts of the data
 
 *Special Case: Printed Publication of Taxonomic Names
