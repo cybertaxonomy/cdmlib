@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 		"key",
 		"children",
 		"sortIndex",
+		"nodeNumber",
 		"statement",
 		"question",
 		"feature",
@@ -147,6 +148,8 @@ public class PolytomousKeyNode extends VersionableEntity  {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private PolytomousKeyNode otherNode;
+	
+	private Integer nodeNumber;
     
     
 	//a modifying text may be a text like "an unusual form of", commenting the taxa
@@ -180,18 +183,34 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	//** ********************** CHILDREN ******************************/
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.description.IPolytomousKeyPart#getKey()
+	/**
+	 * @return
 	 */
 	public PolytomousKey getKey() {
 		return key;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.description.IPolytomousKeyPart#setKey(eu.etaxonomy.cdm.model.description.PolytomousKey)
+
+	/**
+	 * @param key
 	 */
 	public void setKey(PolytomousKey key) {
 		this.key = key;
 	}
+	
+
+	/**
+	 * The node number is the number of the node within the key. This corresponds to the
+	 * number for key choices in written keys.
+	 * @param nodeNumber
+	 */
+	public void setNodeNumber(Integer nodeNumber) {
+		this.nodeNumber = nodeNumber;
+	}
+
+	public Integer getNodeNumber() {
+		return nodeNumber;
+	}
+
 	
 	/** 
 	 * Returns the (ordered) list of feature nodes which are children nodes of
