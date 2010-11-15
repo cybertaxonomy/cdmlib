@@ -143,6 +143,16 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		TableDroper tableDroper = TableDroper.NewInstance(stepName, "featurenode_representation", INCLUDE_AUDIT);
 		stepList.add(tableDroper);
 		
+		//add exsiccatum
+		stepName = "Add exsiccatum to specimen";
+		ColumnAdder exsiccatumAdder = ColumnAdder.NewStringInstance(stepName, "SpecimenOrObservationBase", "exsiccatum", INCLUDE_AUDIT);
+		stepList.add(exsiccatumAdder);
+		
+		//add primary collector
+		stepName = "Add primary collector to field observation";
+		ColumnAdder primaryCollectorAdder = ColumnAdder.NewIntegerInstance(stepName, "SpecimenOrObservationBase", "primaryCollector_id", INCLUDE_AUDIT, false, "AgentBase");
+		stepList.add(primaryCollectorAdder);
+
 		
 		return stepList;
 	}
