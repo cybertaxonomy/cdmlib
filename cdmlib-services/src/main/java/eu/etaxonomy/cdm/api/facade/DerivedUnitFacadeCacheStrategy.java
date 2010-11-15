@@ -11,10 +11,15 @@ package eu.etaxonomy.cdm.api.facade;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -94,6 +99,19 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			TimePeriod gatheringPeriod = facade.getGatheringPeriod();
 			result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
 			
+			//collector (team) and field number
+			String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
+			result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
+			
+			//Exsiccatum
+			String exsiccatum = null;
+			try {
+				exsiccatum = facade.getExsiccatum();
+			} catch (MethodNotSupportedByDerivedUnitTypeException e) {
+				//NO exsiccatum if this facade doe not represent a specimen
+			}
+			result = CdmUtils.concat("; ", result, exsiccatum);
+			
 			//Herbarium & accession number
 			String code = getCode(facade);
 			String collectionData = CdmUtils.concat(" ", code, facade.getAccessionNumber());
@@ -113,6 +131,80 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		
 		
 		return result;
+	}
+
+
+
+	private String getCollectorAndFieldNumber(DerivedUnitFacade facade) {
+		String result = "";
+		AgentBase collector = facade.getCollector();
+		String fieldNumber = facade.getFieldNumber();
+		Person primaryCollector = facade.getPrimaryCollector();
+		if (collector == null){
+			return fieldNumber;
+		}else{
+			result = "";
+			Team collectorTeam;
+			if (collector.isInstanceOf(Person.class)){
+				collectorTeam = Team.NewInstance();
+				if (primaryCollector == null){
+					primaryCollector = CdmBase.deproxy(collector, Person.class);
+				}
+				collectorTeam.addTeamMember(primaryCollector);
+			} else if (collector.isInstanceOf(Team.class)){
+				collectorTeam = CdmBase.deproxy(collector, Team.class);
+			}else{
+				return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
+			}
+			int counter = 0;
+			int teamSize = collectorTeam.getTeamMembers().size();
+			boolean fieldNumberAdded = false;
+			for (Person member : collectorTeam.getTeamMembers()){
+				counter++;
+				String concatString = (counter >= teamSize)? " & " : ", "; 
+				result = CdmUtils.concat(concatString, result, getMemberPart(member) );
+				if (member.equals(primaryCollector)){
+					result = addFieldNumber(result, fieldNumber);
+					fieldNumberAdded = true;
+				}
+			}
+			if (! fieldNumberAdded){
+				result = addFieldNumber(result, fieldNumber);
+			}
+			return result;
+		}
+		
+	}
+
+
+
+	private String addFieldNumber(String result, String fieldNumber) {
+		result = CdmUtils.concat(" ", result, fieldNumber);
+		return result;
+	}
+
+
+
+	private String getMemberPart(Person member) {
+		if (! StringUtils.isBlank(member.getLastname())){
+			return member.getLastname();
+		}else{
+			return member.getTitleCache();
+		}
+	}
+
+
+
+	private boolean testPrimaryCollectorInCollectorTeam(AgentBase collector, Person primaryCollector) {
+		if (collector.isInstanceOf(Person.class)){
+			return collector.equals(primaryCollector);
+		}else if (collector.isInstanceOf(Team.class)){
+			Team collectorTeam = CdmBase.deproxy(collector, Team.class);
+			return collectorTeam.getTeamMembers().contains(primaryCollector);
+		}else{
+			logger.warn("Collector is not of type person or team");
+			return false;
+		}
 	}
 
 
