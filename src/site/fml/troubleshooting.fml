@@ -19,4 +19,14 @@
 			</answer>
 		</faq>
 	</part>
+	
+	<part id="log4j">
+		<title>Log4J</title>
+		<faq id="proxyWarnLog_breaks">
+			<question>My logfile is full with "ProxyWarnLog ... breaks ...".</question>
+			<answer>
+				<p>Please add <code>log4j.logger.org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog = error</code> to your log4j.properties file.</p>
+			</answer>
+		</faq>
+	</part>
 </faqs>

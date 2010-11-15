@@ -19,7 +19,7 @@
 			<item name="API" href="apidocs/index.html"/>
 			<item name="REST API" href="rest-api.html"/>
 			<item name="Troubleshooting" href="troubleshooting.html"/>
-			<item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmLibrary"/>
+			<item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryDev"/>
 		</menu>
 		<menu name="Project">
 			<item name="Mailing Lists" href="mail-lists.html"/>
