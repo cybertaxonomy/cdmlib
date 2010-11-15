@@ -11,15 +11,12 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -34,7 +31,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -44,9 +40,9 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -67,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 		"sortIndex",
 		"statement",
 		"question",
+		"feature",
 		"taxon",
 		"subkey",
 		"otherNode",
@@ -553,6 +550,15 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	 */
 	public void setOtherNode(PolytomousKeyNode otherNode) {
 		this.otherNode = otherNode;
+	}
+
+//	TODO
+	public void setFeature(Feature feature) {
+		this.feature = feature;
+	}
+
+	public Feature getFeature() {
+		return feature;
 	}
 
 	
