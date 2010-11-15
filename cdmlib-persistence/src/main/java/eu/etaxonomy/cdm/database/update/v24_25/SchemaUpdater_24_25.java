@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.SchemaUpdater_25_26;
+import eu.etaxonomy.cdm.database.update.v25_26.SchemaUpdater_25_26;
 
 /**
  * @author a.mueller

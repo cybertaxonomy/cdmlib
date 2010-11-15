@@ -957,8 +957,6 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MapTableCreato
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MnTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdater_25_26.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SequenceTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableCreator.java -text
@@ -968,6 +966,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBas
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/SchemaUpdater_24_25.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/SortIndexUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/TermUpdater_24_25.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v25_26/SchemaUpdater_25_26.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v25_26/SequenceTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v26_30/FeatureNodeTreeColumnUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v26_30/PolytomousKeyDataMover.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v26_30/SchemaUpdater_26_30.java -text

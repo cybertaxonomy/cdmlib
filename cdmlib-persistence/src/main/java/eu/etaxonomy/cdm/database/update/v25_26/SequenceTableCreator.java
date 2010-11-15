@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.database.update;
+package eu.etaxonomy.cdm.database.update.v25_26;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -21,6 +21,7 @@ import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 /**
  * Creates the table needed by the {@link org.hibernate.id.enhanced.TableGenerator}
@@ -90,7 +91,7 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 				"  `" + SEGMENT_COLUMN_NAME + "` varchar(255) NOT NULL," +
 				"  `" + VALUE_COLUMN_NAME + "` bigint(20) default NULL," +
 				"  PRIMARY KEY  (`" + SEGMENT_COLUMN_NAME + "`)" +
-				") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+				");";
 		}else{
 			throw new RuntimeException("Database type " + datasource.getDatabaseType() + " is currently not supported by the updater");
 		}

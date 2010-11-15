@@ -8,13 +8,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.database.update;
+package eu.etaxonomy.cdm.database.update.v25_26;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
 
 /**
