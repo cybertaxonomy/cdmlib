@@ -75,7 +75,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			strCountry = repCountry == null ? null: repCountry.getText();
 			result = CdmUtils.concat(", ", result, strCountry);
 			
-			// FIXME hasGatheringEvent needed;
 			//locality
 			result = CdmUtils.concat(", ", result, facade.getLocalityText());
 			
@@ -162,7 +161,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			for (Person member : collectorTeam.getTeamMembers()){
 				counter++;
 				String concatString = (counter >= teamSize)? " & " : ", "; 
-				result = CdmUtils.concat(concatString, result, getMemberPart(member) );
+				result = CdmUtils.concat(concatString, result, getMemberString(member) );
 				if (member.equals(primaryCollector)){
 					result = addFieldNumber(result, fieldNumber);
 					fieldNumberAdded = true;
@@ -185,9 +184,18 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 
 
-	private String getMemberPart(Person member) {
-		if (! StringUtils.isBlank(member.getLastname())){
-			return member.getLastname();
+	/**
+	 * Strategy to format a collector team member name
+	 * @param member
+	 * @return
+	 */
+	private String getMemberString(Person member) {
+		if (StringUtils.isNotBlank(member.getLastname())){
+			String result = member.getLastname();
+			if  (StringUtils.isNotBlank(member.getFirstname())){
+				result = member.getFirstname().substring(0,1) + ". " + result;
+			}
+			return result;
 		}else{
 			return member.getTitleCache();
 		}

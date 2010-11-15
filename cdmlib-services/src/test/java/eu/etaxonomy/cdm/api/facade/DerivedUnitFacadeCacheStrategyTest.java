@@ -137,7 +137,9 @@ public class DerivedUnitFacadeCacheStrategyTest {
 		fieldObservation.setLifeStage(lifeStage);
 		primaryCollector = Person.NewTitledInstance("Kilian");
 		collector.addTeamMember(primaryCollector);
-		Person secondCollector = Person.NewTitledInstance("Muller");
+		Person secondCollector = Person.NewInstance();
+		secondCollector.setFirstname("Andreas");
+		secondCollector.setLastname("Muller");
 		collector.addTeamMember(secondCollector);
 		Person thirdCollector = Person.NewTitledInstance("Kohlbecker");
 		collector.addTeamMember(thirdCollector);
@@ -176,7 +178,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1\"N, 12\u00B018'E (WGS84), sand dunes, 05.05.2005, Kilian 5678, Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1\"N, 12\u00B018'E (WGS84), sand dunes, 05.05.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
