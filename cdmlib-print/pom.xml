@@ -6,15 +6,36 @@
 		<version>3.0</version>
 		<relativePath>pom.xml</relativePath>
 	</parent>
-	
 	<modelVersion>4.0.0</modelVersion>
-	
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-print</artifactId>
 	<packaging>jar</packaging>
-	<name>CDM Print</name>
-	
-	<url>http://maven.apache.org</url>
+	<name>CDM Print Publisher</name>
+	<description>EDIT CDM Print Publishing Framework</description>
+	<scm>
+		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/</connection>
+		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/</developerConnection>
+		<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-print/</url>
+	</scm>
+	<developers>
+		<developer>
+			<!-- your SVN account id please! -->
+			<id>n.hoffmann</id>
+			<name>
+				Niels Hoffmann
+			</name>
+			<email>n.hoffmann [at] bgbm.org</email>
+			<organization>
+				Botanic Garden Botanical Museum Berlin
+			</organization>
+			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+			<timezone>+1</timezone>
+			<roles>
+				<role>Java Developer</role>
+			</roles>
+			<url></url>
+		</developer>
+	</developers>
 	<dependencies>
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>

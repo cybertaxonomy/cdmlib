@@ -36,6 +36,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FieldObservation", propOrder = {
     "fieldNumber",
+    "primaryCollector",
     "fieldNotes",
     "gatheringEvent"
 })
@@ -66,6 +68,15 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String fieldNumber;
+	
+	@XmlElement(name = "PrimaryCollector")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+    @Cascade( { CascadeType.SAVE_UPDATE })
+    @IndexedEmbedded(depth = 2)
+    @Valid
+	private Person primaryCollector;
 	
 	@XmlElement(name = "FieldNotes")
 	@Field(index=Index.TOKENIZED)
@@ -90,6 +101,8 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 		return new FieldObservation();
 	}
 	
+//****************************** CONSTRUCTOR **************************************/
+	
 	/**
 	 * Constructor
 	 */
@@ -97,6 +110,8 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 		super();
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldObservation>();
 	}
+	
+// ************************ GETTER / SETTER *******************************************
 
 	public GatheringEvent getGatheringEvent() {
     	return gatheringEvent;
@@ -114,6 +129,12 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 		}
 	}
 
+	/**
+	 * The collectors field number. If the collector is a team the field number
+	 * is taken from the field book of the primary collector.
+	 * @see #primaryCollector
+	 * @return
+	 */
 	public String getFieldNumber() {
 		return fieldNumber;
 	}
@@ -122,6 +143,21 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 		this.fieldNumber = fieldNumber;
 	}
 
+
+	/**
+	 * The primary collector is the person who the field books belongs to.
+	 * So the field number is also taken from him (his field book).
+	 * @see #fieldNumber
+	 * @param primaryCollector
+	 */
+	public void setPrimaryCollector(Person primaryCollector) {
+		this.primaryCollector = primaryCollector;
+	}
+
+	public Person getPrimaryCollector() {
+		return primaryCollector;
+	}
+	
 	public String getFieldNotes() {
 		return fieldNotes;
 	}
@@ -168,4 +204,5 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 		}
 		
 	}
+
 }

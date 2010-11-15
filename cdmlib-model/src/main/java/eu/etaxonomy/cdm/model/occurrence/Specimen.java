@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,11 +23,14 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * A specimen is regarded as derived from an field observation, 
@@ -38,7 +42,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Specimen", propOrder = {
-		"preservation"
+		"preservation",
+		"exsiccatum"
 })
 @XmlRootElement(name = "Specimen")
 @Entity
@@ -55,6 +60,14 @@ public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<S
 	@ManyToOne(fetch = FetchType.LAZY)
 	private PreservationMethod preservation;
 	
+	
+	@XmlElement(name = "Exsiccatum")
+	@NullOrNotEmpty
+	@Field(index=Index.TOKENIZED)
+	@Size(max = 255)
+    private String exsiccatum;
+	
+	
 	/**
 	 * Factory method
 	 * @return
@@ -70,6 +83,8 @@ public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<S
 		super();
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Specimen>();
 	}
+
+//***************************** GETTER / SETTER **************************************	
 	
 	public PreservationMethod getPreservation(){
 		return this.preservation;
@@ -77,6 +92,15 @@ public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<S
 	
 	public void setPreservation(PreservationMethod preservation){
 		this.preservation = preservation;
+	}
+
+
+	public void setExsiccatum(String exsiccatum) {
+		this.exsiccatum = exsiccatum;
+	}
+
+	public String getExsiccatum() {
+		return exsiccatum;
 	}
 	
 	
@@ -105,6 +129,7 @@ public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<S
 			return null;
 		}
 	}
+
 	
 
 }
