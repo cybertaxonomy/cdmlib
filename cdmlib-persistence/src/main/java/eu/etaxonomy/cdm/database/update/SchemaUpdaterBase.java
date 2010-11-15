@@ -30,7 +30,8 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 	private String targetSchemaVersion;
 
 
-	protected static boolean INCLUDE_AUDIT = true;
+	public static boolean INCLUDE_AUDIT = true;
+	protected static boolean INCLUDE_CDM_BASE = true;
 	
 	private List<ISchemaUpdaterStep> list;
 	
@@ -119,15 +120,7 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 		
 		
 		for (ISchemaUpdaterStep step : list){
-			try {
-				monitor.subTask(step.getStepName());
-				Integer termId = step.invoke(datasource, monitor);
-				result &= (termId != null);
-				monitor.worked(1);
-			} catch (Exception e) {
-				monitor.warning("Exception occurred while updating schema", e);
-				throw e;
-			}
+			result = handleSingleStep(datasource, monitor, result, step);
 		}
 		// TODO schema version gets updated even if something went utterly wrong while executing the steps
 		// I don't think we want this to happen
@@ -136,6 +129,23 @@ public abstract class SchemaUpdaterBase implements ISchemaUpdater {
 		return result;
 		
 		
+	}
+
+	private boolean handleSingleStep(ICdmDataSource datasource,	IProgressMonitor monitor, boolean result, ISchemaUpdaterStep step)
+			throws Exception {
+		try {
+			monitor.subTask(step.getStepName());
+			Integer invokeResult = step.invoke(datasource, monitor);
+			result &= (invokeResult != null);
+			for (ISchemaUpdaterStep innerStep : step.getInnerSteps()){
+				result &= handleSingleStep(datasource, monitor, result, innerStep);
+			}
+			monitor.worked(1);
+		} catch (Exception e) {
+			monitor.warning("Exception occurred while updating schema", e);
+			throw e;
+		}
+		return result;
 	}
 
 	

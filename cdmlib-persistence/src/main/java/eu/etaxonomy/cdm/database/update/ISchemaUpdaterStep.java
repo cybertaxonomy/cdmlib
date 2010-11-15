@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -19,5 +20,7 @@ public interface ISchemaUpdaterStep {
 	public void setStepName(String stepName);
 
 	public String getStepName();
+
+	public List<ISchemaUpdaterStep> getInnerSteps();
 
 }

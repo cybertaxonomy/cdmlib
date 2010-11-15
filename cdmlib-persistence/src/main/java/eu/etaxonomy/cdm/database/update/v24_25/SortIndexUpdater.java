@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.database.update;
+package eu.etaxonomy.cdm.database.update.v24_25;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +15,9 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 /**
  * @author a.mueller

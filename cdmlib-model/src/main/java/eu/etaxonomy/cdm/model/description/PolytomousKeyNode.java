@@ -122,7 +122,12 @@ public class PolytomousKeyNode extends VersionableEntity  {
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	private KeyStatement question;
 
-    
+	@XmlElement(name = "Feature")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+	private Feature feature;
+	
  	@XmlElement(name = "Taxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")

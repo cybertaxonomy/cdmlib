@@ -7,12 +7,18 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.database.update;
+package eu.etaxonomy.cdm.database.update.v24_25;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SchemaUpdater_25_26;
 
 /**
  * @author a.mueller
@@ -45,7 +51,7 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpd
 	 */
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return new SchemaUpdater_25_26();
+		return SchemaUpdater_25_26.NewInstance();
 	}
 
 	/* (non-Javadoc)
@@ -65,7 +71,7 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpd
 		
 		//sortIndex on children in FeatureNode
 		stepName = "Add sort index on FeatureNode children";
-		ColumnAdder step = ColumnAdder.NewIntegerInstance(stepName, "FeatureNode", "sortindex", INCLUDE_AUDIT);
+		ColumnAdder step = ColumnAdder.NewIntegerInstance(stepName, "FeatureNode", "sortindex", INCLUDE_AUDIT, false, null);
 		stepList.add(step);
 		
 		//update sortindex on FeatureNode children
@@ -78,7 +84,7 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpd
 		
 		//add country to gathering event
 		stepName = "Add country column to gathering event";
-		step = ColumnAdder.NewIntegerInstance(stepName, "GatheringEvent", "country_id", INCLUDE_AUDIT);
+		step = ColumnAdder.NewIntegerInstance(stepName, "GatheringEvent", "country_id", INCLUDE_AUDIT, false, "DefinedTermBase");
 		stepList.add(step);
 
 		//add unplaced and excluded to taxon

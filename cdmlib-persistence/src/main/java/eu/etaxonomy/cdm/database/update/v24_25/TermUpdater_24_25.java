@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.database.update;
+package eu.etaxonomy.cdm.database.update.v24_25;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,9 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ITermUpdater;
+import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
+import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;

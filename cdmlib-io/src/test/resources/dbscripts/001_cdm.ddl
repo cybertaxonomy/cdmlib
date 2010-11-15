@@ -1522,20 +1522,6 @@
         primary key (REV, FeatureNode_id, InapplicableIf_id)
     );
 
-	create table FeatureNode_Question (
-        FeatureNode_id integer not null,
-        questions_id integer not null,
-        primary key (FeatureNode_id, questions_id)
-    );
-
-    create table FeatureNode_Question_AUD (
-        REV integer not null,
-        FeatureNode_id integer not null,
-        questions_id integer not null,
-        revtype tinyint,
-        primary key (REV, FeatureNode_id, questions_id)
-    );
-
     create table FeatureTree (
         id integer not null,
         created timestamp,
@@ -2839,6 +2825,7 @@
         parent_id integer,
         question_id integer,
         statement_id integer,
+        feature_id integer,
         taxon_id integer,
         subkey_id integer,
         othernode_id integer,
@@ -2860,6 +2847,7 @@
         parent_id integer,
         question_id integer,
         statement_id integer,
+        feature_id integer,
         taxon_id integer,
         subkey_id integer,
         othernode_id integer,

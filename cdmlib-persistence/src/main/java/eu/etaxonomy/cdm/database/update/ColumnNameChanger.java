@@ -23,24 +23,25 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class ColumnNameChanger extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ColumnNameChanger.class);
 	
 	private String tableName;
 	private String newColumnName;
 	private String oldColumnName;
 	private boolean includeAudTable;
+	private boolean isInteger; //TODO make enum
 	
-	public static final ColumnNameChanger NewInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null);
+	public static ColumnNameChanger NewIntegerInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
+		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, true);
 	}
 
-	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable, Object defaultValue) {
+	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable, Object defaultValue, boolean isInteger) {
 		super(stepName);
 		this.tableName = tableName;
 		this.newColumnName = newColumnName;
 		this.oldColumnName = oldColumnName;
 		this.includeAudTable = includeAudTable;
+		this.isInteger = isInteger;
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +70,7 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase implements ISchemaU
 			updateQuery = "ALTER TABLE @tableName ALTER COLUMN @oldColumnName RENAME TO @newColumnName";
 		}else if ( type.equals(DatabaseTypeEnum.MySQL)){
 			//FIXME MySQL column name changer
-			logger.warn("Changing column name not yet supported for MySQL");
+//			logger.warn("Changing column name not yet supported for MySQL");
 			updateQuery = "ALTER TABLE @tableName CHANGE COLUMN @oldColumnName @newColumnName @definition";
 		}else if ( type.equals(DatabaseTypeEnum.PostgreSQL) ){
 			updateQuery = "ALTER TABLE @tableName RENAME COLUMN @oldColumnName TO @newColumnName;";
@@ -81,9 +82,18 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase implements ISchemaU
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@oldColumnName", oldColumnName);
 		updateQuery = updateQuery.replace("@newColumnName", newColumnName);
+		updateQuery = updateQuery.replace("@definition", getDefinition());
 		datasource.executeUpdate(updateQuery);
 
 		return true;
+	}
+
+	private CharSequence getDefinition() {
+		if (isInteger){
+			return "integer";
+		}else{
+			throw new RuntimeException("Definition type not supported");
+		}
 	}
 
 }

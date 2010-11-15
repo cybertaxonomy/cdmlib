@@ -10,7 +10,10 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
@@ -25,7 +28,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterStepBase.class);
 	
-	private String stepName;
+	protected String stepName;
 		
 	
 //************************ CONSTRUCTOR ***********************************/
@@ -73,7 +76,19 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		}
 		return result;
 	}
-
 	
+	
+	public List<ISchemaUpdaterStep> getInnerSteps(){
+		return new ArrayList<ISchemaUpdaterStep>();
+	}
+
+	@Override
+	public String toString(){
+		if (StringUtils.isNotBlank(stepName)){
+			return stepName;
+		}else{
+			return super.toString();
+		}
+	}
 	
 }

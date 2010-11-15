@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
+
 /**
  * @author n.hoffmann
  * @created Oct 25, 2010
