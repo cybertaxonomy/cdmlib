@@ -1002,8 +1002,8 @@
         imagegallery bit not null,
         createdby_id integer,
         updatedby_id integer,
-        taxon_fk integer,
-        taxonName_fk integer,
+        taxon_id integer,
+        taxonname_id integer,
         primary key (id),
         unique (uuid)
     );
@@ -1026,8 +1026,8 @@
         imagegallery bit,
         createdby_id integer,
         updatedby_id integer,
-        taxon_fk integer,
-        taxonName_fk integer,
+        taxon_id integer,
+        taxonname_id integer,
         primary key (id, REV)
     );
 
@@ -1500,7 +1500,7 @@
         updatedby_id integer,
         featureTree_id integer not null,
         feature_id integer,
-        parent_fk integer,
+        parent_id integer,
         primary key (id),
         unique (uuid)
     );
@@ -1516,7 +1516,7 @@
         updatedby_id integer,
        	featureTree_id integer not null,
         feature_id integer,
-        parent_fk integer,
+        parent_id integer,
         primary key (id, REV)
     );
 
@@ -2252,17 +2252,17 @@
     );
 
     create table MediaKey_Taxon (
-        mediaKey_fk integer not null,
-        taxon_fk integer not null,
-        primary key (mediaKey_fk, taxon_fk)
+        mediaKey_id integer not null,
+        taxon_id integer not null,
+        primary key (mediaKey_id, taxon_id)
     );
 
     create table MediaKey_Taxon_AUD (
         REV integer not null,
-        mediaKey_fk integer not null,
-        taxon_fk integer not null,
+        mediaKey_id integer not null,
+        taxon_id integer not null,
         revtype tinyint,
-        primary key (REV, mediaKey_fk, taxon_fk)
+        primary key (REV, mediaKey_id, taxon_id)
     );
 
     create table MediaRepresentation (
@@ -2563,17 +2563,17 @@
     );
 
     create table MultiAccessKey_Taxon (
-        multiAccessKey_fk integer not null,
-        taxon_fk integer not null,
-        primary key (multiAccessKey_fk, taxon_fk)
+        multiAccessKey_id integer not null,
+        taxon_id integer not null,
+        primary key (multiAccessKey_id, taxon_id)
     );
 
     create table MultiAccessKey_Taxon_AUD (
         REV integer not null,
-        multiAccessKey_fk integer not null,
-        taxon_fk integer not null,
+        multiAccessKey_id integer not null,
+        taxon_id integer not null,
         revtype tinyint,
-        primary key (REV, multiAccessKey_fk, taxon_fk)
+        primary key (REV, multiAccessKey_id, taxon_id)
     );
 
     create table NameRelationship (
@@ -2956,17 +2956,17 @@
     );
 
     create table PolytomousKey_Taxon (
-        polytomousKey_fk integer not null,
-        taxon_fk integer not null,
-        primary key (polytomousKey_fk, taxon_fk)
+        polytomousKey_id integer not null,
+        taxon_id integer not null,
+        primary key (polytomousKey_id, taxon_id)
     );
 
     create table PolytomousKey_Taxon_AUD (
         REV integer not null,
-        polytomousKey_fk integer not null,
-        taxon_fk integer not null,
+        polytomousKey_id integer not null,
+        taxon_id integer not null,
         revtype tinyint,
-        primary key (REV, polytomousKey_fk, taxon_fk)
+        primary key (REV, polytomousKey_id, taxon_id)
     );
     
         
@@ -3967,7 +3967,7 @@
         taxonomicchildrencount integer,
         createdby_id integer,
         updatedby_id integer,
-        taxonName_fk integer,
+        name_id integer,
         sec_id integer,
         taxonomicparentcache_id integer,
         primary key (id),
@@ -3994,7 +3994,7 @@
         usenamecache bit,
         createdby_id integer,
         updatedby_id integer,
-        taxonName_fk integer,
+        name_id integer,
         sec_id integer,
         taxonstatusunknown bit,
         unplaced bit,
@@ -5836,12 +5836,12 @@
 
     alter table DescriptionBase 
         add constraint FKFF4D58CDDE9A3DE3 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table DescriptionBase 
         add constraint FKFF4D58CDDA93512F 
-        foreign key (taxonName_fk) 
+        foreign key (taxonname_id) 
         references TaxonNameBase;
 
     alter table DescriptionBase 
@@ -6331,7 +6331,7 @@
 
     alter table FeatureNode 
         add constraint FK4CEED9F8E0AD2C03 
-        foreign key (parent_fk) 
+        foreign key (parent_id) 
         references FeatureNode;
 
     alter table FeatureNode 
@@ -6921,12 +6921,12 @@
 
     alter table MediaKey_Taxon 
         add constraint FKC00C3966815C793 
-        foreign key (mediaKey_fk) 
+        foreign key (mediaKey_id) 
         references Media;
 
     alter table MediaKey_Taxon 
         add constraint FKC00C3966DE9A3DE3 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table MediaKey_Taxon_AUD 
@@ -7191,12 +7191,12 @@
 
     alter table MultiAccessKey_Taxon 
         add constraint FKCC7A356DB64A7AD3 
-        foreign key (multiAccessKey_fk) 
+        foreign key (multiAccessKey_id) 
         references WorkingSet;
 
     alter table MultiAccessKey_Taxon 
         add constraint FKCC7A356DDE9A3DE3 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table MultiAccessKey_Taxon_AUD 
@@ -7426,12 +7426,12 @@
 
     alter table PolytomousKey_Taxon 
         add constraint FK8DA4E8E389D9775 
-        foreign key (polytomousKey_fk) 
+        foreign key (polytomousKey_id) 
         references PolytomousKey;
 
     alter table PolytomousKey_Taxon 
         add constraint FK8DA4E8E3DE9A3DE3 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table PolytomousKey_Taxon_AUD 
@@ -8255,7 +8255,7 @@
 
     alter table TaxonBase 
         add constraint FK9249B49BDA93512F 
-        foreign key (taxonName_fk) 
+        foreign key (name_id) 
         references TaxonNameBase;
 
     alter table TaxonBase 

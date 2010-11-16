@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
+import eu.etaxonomy.cdm.database.update.v26_30.TermUpdater_25_30;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -104,7 +105,7 @@ public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
 	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_25_30.NewInstance();
 	}
 
 	/* (non-Javadoc)

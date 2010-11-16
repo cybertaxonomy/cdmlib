@@ -95,7 +95,7 @@ public class FeatureNode extends VersionableEntity {
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
 //    @IndexColumn(name="sortIndex", base = 0)
     @Cascade(CascadeType.SAVE_UPDATE)
-	@JoinColumn(name="parent_fk" /*, insertable=false, updatable=false, nullable=false*/)
+	@JoinColumn(name="parent_id" /*, insertable=false, updatable=false, nullable=false*/)
 	private FeatureNode parent;
     
     @XmlElementWrapper(name = "Children")

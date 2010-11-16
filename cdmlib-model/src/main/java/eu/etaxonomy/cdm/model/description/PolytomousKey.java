@@ -94,8 +94,8 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 	        name="PolytomousKey_Taxon",
-	        joinColumns=@JoinColumn(name="polytomousKey_fk"),
-	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
+	        joinColumns=@JoinColumn(name="polytomousKey_id"),
+	        inverseJoinColumns=@JoinColumn(name="taxon_id")
 	)
 	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();

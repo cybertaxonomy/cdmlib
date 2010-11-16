@@ -91,8 +91,8 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 	        name="MediaKey_Taxon",
-	        joinColumns=@JoinColumn(name="mediaKey_fk"),
-	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
+	        joinColumns=@JoinColumn(name="mediaKey_id"),
+	        inverseJoinColumns=@JoinColumn(name="taxon_id")
 	)
 	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();

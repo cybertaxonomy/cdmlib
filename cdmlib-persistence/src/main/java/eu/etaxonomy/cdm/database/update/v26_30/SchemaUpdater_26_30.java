@@ -250,6 +250,58 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "SpecimenOrObservationBase", "derivationevent_id", "derivedfrom_id", INCLUDE_AUDIT);
 		stepList.add(columnNameChanger);
 
+		//Rename taxonName_fk column in TaxonBase
+		stepName = "Rename taxonName_fk column in TaxonBase";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "TaxonBase", "taxonName_fk", "name_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename taxonName_fk column in DescriptionBase
+		stepName = "Rename taxonName_fk column in DescriptionBase";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "DescriptionBase", "taxonName_fk", "taxonName_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename taxon_fk column in DescriptionBase
+		stepName = "Rename taxon_fk column in DescriptionBase";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "DescriptionBase", "taxon_fk", "taxon_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename parent_fk column in FeatureNode
+		stepName = "Rename parent_fk column in FeatureNode";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "FeatureNode", "parent_fk", "parent_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename polytomousKey_fk column in PolytomousKey_Taxon
+		stepName = "Rename polytomousKey_fk column in PolytomousKey_Taxon";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "PolytomousKey_Taxon", "polytomousKey_fk", "polytomousKey_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename taxon_fk column in PolytomousKey_Taxon
+		stepName = "Rename taxon_fk column in PolytomousKey_Taxon";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "PolytomousKey_Taxon", "taxon_fk", "taxon_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+
+		//Rename mediaKey_fk column in MediaKey_Taxon
+		stepName = "Rename mediaKey_fk column in MediaKey_Taxon";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "MediaKey_Taxon", "mediaKey_fk", "mediaKey_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename taxon_fk column in MediaKey_Taxon
+		stepName = "Rename taxon_fk column in MediaKey_Taxon";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "MediaKey_Taxon", "taxon_fk", "taxon_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+		
+
+		//Rename multiAccessKey_fk column in MultiAccessKey_Taxon
+		stepName = "Rename multiAccessKey_fk column in MultiAccessKey_Taxon";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "MultiAccessKey_Taxon", "multiAccessKey_fk", "multiAccessKey_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename taxon_fk column in MultiAccessKey_Taxon
+		stepName = "Rename taxon_fk column in MultiAccessKey_Taxon";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "MultiAccessKey_Taxon", "taxon_fk", "taxon_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
 		
 		//add the table hibernate_sequences
 		stepName = "Add the table hibernate_sequences to store the table specific sequences in";

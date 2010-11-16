@@ -98,7 +98,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="taxonName_fk")
+//	@JoinColumn(name="name_id")
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@NotNull(groups = Level2.class)
