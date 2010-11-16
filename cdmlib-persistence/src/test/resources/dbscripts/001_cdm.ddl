@@ -3686,19 +3686,19 @@
 
     create table SpecimenOrObservationBase_LanguageString (
         SpecimenOrObservationBase_id integer not null,
-        description_id integer not null,
-        description_mapkey_id integer not null,
-        primary key (SpecimenOrObservationBase_id, description_mapkey_id),
-        unique (description_id)
+        definition_id integer not null,
+        definition_mapkey_id integer not null,
+        primary key (SpecimenOrObservationBase_id, definition_mapkey_id),
+        unique (definition_id)
     );
 
     create table SpecimenOrObservationBase_LanguageString_AUD (
         REV integer not null,
         SpecimenOrObservationBase_id integer not null,
-        description_id integer not null,
-        description_mapkey_id integer not null,
+        definition_id integer not null,
+        definition_mapkey_id integer not null,
         revtype tinyint,
-        primary key (REV, SpecimenOrObservationBase_id, description_id, description_mapkey_id)
+        primary key (REV, SpecimenOrObservationBase_id, definition_id, definition_mapkey_id)
     );
 
     create table SpecimenOrObservationBase_Marker (
@@ -7988,12 +7988,12 @@
 
     alter table SpecimenOrObservationBase_LanguageString 
         add constraint FKCFAA931628459272 
-        foreign key (description_mapkey_id) 
+        foreign key (definition_mapkey_id) 
         references DefinedTermBase;
 
     alter table SpecimenOrObservationBase_LanguageString 
         add constraint FKCFAA93162BEBA58D 
-        foreign key (description_id) 
+        foreign key (definition_id) 
         references LanguageString;
 
     alter table SpecimenOrObservationBase_LanguageString 

@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 	"sex",
     "individualCount",
     "lifeStage",
-    "description",
+    "definition",
     "descriptions",
     "determinations",
     "derivationEvents"
@@ -120,7 +120,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@IndexedEmbedded
 	@NotNull
-	protected Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+	protected Map<Language,LanguageString> definition = new HashMap<Language,LanguageString>();
 	
 	// events that created derivedUnits from this unit
 	@XmlElementWrapper(name = "DerivationEvents")
@@ -293,18 +293,18 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	}
 
 	public Map<Language,LanguageString> getDefinition(){
-		return this.description;
+		return this.definition;
 	}
 	
 	public void addDefinition(LanguageString description){
-		this.description.put(description.getLanguage(),description);
+		this.definition.put(description.getLanguage(),description);
 	}
 	
 	public void addDefinition(String text, Language language){
-		this.description.put(language, LanguageString.NewInstance(text, language));
+		this.definition.put(language, LanguageString.NewInstance(text, language));
 	}
 	public void removeDefinition(Language lang){
-		this.description.remove(lang);
+		this.definition.remove(lang);
 	}
 	
 	/**
@@ -332,8 +332,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		result = (SpecimenOrObservationBase)super.clone();
 		
 		//defininion (description, languageString)
-		result.description = new HashMap<Language,LanguageString>();
-		for(LanguageString languageString : this.description.values()) {
+		result.definition = new HashMap<Language,LanguageString>();
+		for(LanguageString languageString : this.definition.values()) {
 			LanguageString newLanguageString = (LanguageString)languageString.clone();
 			result.addDefinition(newLanguageString);
 		} 

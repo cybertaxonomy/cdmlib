@@ -235,6 +235,16 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "TaxonNode", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
 		stepList.add(columnNameChanger);
 
+		//Rename description_id column in SpecimenOrObservationBase_LanguageString
+		stepName = "Rename description column in SpecimenOrObservationBase_LanguageString";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "SpecimenOrObservationBase_LanguageString", "description_id", "definition_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename description_mapkey_id column in SpecimenOrObservationBase_LanguageString
+		stepName = "Rename description column in SpecimenOrObservationBase_LanguageString";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "SpecimenOrObservationBase_LanguageString", "description_mapkey_id", "definition_mapkey_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+		
 		
 		
 		//add the table hibernate_sequences
