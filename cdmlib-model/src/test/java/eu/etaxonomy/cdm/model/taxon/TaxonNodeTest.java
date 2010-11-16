@@ -42,8 +42,8 @@ public class TaxonNodeTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeTest.class);
 	private static String viewName1;
-	private static TaxonomicTree taxonomicView1;
-	private static TaxonomicTree taxonomicView2;
+	private static Classification taxonomicView1;
+	private static Classification taxonomicView2;
 	private static Taxon taxon1;
 	private static Taxon taxon2;
 	private static Taxon taxon3;
@@ -75,8 +75,8 @@ public class TaxonNodeTest {
 	public void setUp() throws Exception {
 		viewName1 = "Greuther, 1993";
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		taxonomicView1 = TaxonomicTree.NewInstance(viewName1);
-		taxonomicView2 = TaxonomicTree.NewInstance("Test View 2");
+		taxonomicView1 = Classification.NewInstance(viewName1);
+		taxonomicView2 = Classification.NewInstance("Test View 2");
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		taxonName1 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
@@ -101,7 +101,7 @@ public class TaxonNodeTest {
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonNode#NewInstance(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonomicTree)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonNode#NewInstance(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification)}.
 	 */
 	@Test
 	public void testNewTaxonTaxonomicView() {
@@ -110,7 +110,7 @@ public class TaxonNodeTest {
 		
 		assertNotNull("test node should not be null", testNode);
 		assertEquals(taxon1,testNode.getTaxon());
-		assertEquals(taxonomicView1,testNode.getTaxonomicTree());
+		assertEquals(taxonomicView1,testNode.getClassification());
 		assertTrue("taxon1 must become part of taxonomicView1", taxonomicView1.isTaxonInTree(taxon1));
 	}
 
@@ -235,10 +235,10 @@ public class TaxonNodeTest {
 	@Test
 	public void testMoveTaxonNodeToOtherTree(){
 		TaxonNode node = taxonomicView1.addChildTaxon(taxon1, null, null, null);
-		assertEquals("The node should be in the classification we added it to", taxonomicView1, node.getTaxonomicTree());
+		assertEquals("The node should be in the classification we added it to", taxonomicView1, node.getClassification());
 		
 		TaxonNode movedNode = taxonomicView2.addChildNode(node, null, null, null);
-		assertEquals("The node should be in the classification we moved it to", taxonomicView2, movedNode.getTaxonomicTree());
+		assertEquals("The node should be in the classification we moved it to", taxonomicView2, movedNode.getClassification());
 		assertEquals("The old tree should be empty now", 0, taxonomicView1.getChildNodes().size());
 	}
 	
@@ -248,7 +248,7 @@ public class TaxonNodeTest {
 		TaxonNode node2 = node1.addChildTaxon(taxon3, null, null, null);
 		
 		assertEquals("The node should have exactly one child", 1, node1.getChildNodes().size());
-		assertEquals("The child is not in the correct tree", taxonomicView1, node2.getTaxonomicTree());
+		assertEquals("The child is not in the correct tree", taxonomicView1, node2.getClassification());
 		assertEquals("The Classification should contain exactly two nodes", 2, taxonomicView1.getAllNodes().size());
 		
 		TaxonNode node3 = taxonomicView2.addChildTaxon(taxon3, null, null, null);
@@ -258,13 +258,13 @@ public class TaxonNodeTest {
 		
 		assertEquals("Old node should not have child nodes", 0, node1.getChildNodes().size());
 		assertEquals("Old tree should contain only one node now", 1, taxonomicView1.getAllNodes().size());
-		assertEquals("Moved node not in expected tree", taxonomicView2, node2.getTaxonomicTree());
+		assertEquals("Moved node not in expected tree", taxonomicView2, node2.getClassification());
 		assertEquals("Count of nodes in new tree:", 2, taxonomicView2.getAllNodes().size());
 		
 	}
 	
 	/**
-	 * Basically tests setTaxonomicTreeRecursively(TaxonomicTree) which is a private method
+	 * Basically tests #setClassificationRecursively(Classification) which is a private method
 	 */
 	@Test
 	public void testMoveTaxonNodesRecursivelyToOtherTaxonNodeInDifferentTree(){
@@ -276,9 +276,9 @@ public class TaxonNodeTest {
 		taxonomicView2.addChildNode(node1, null, null, null);
 		
 		assertEquals("Old tree should be empty:", 0, taxonomicView1.getAllNodes().size());
-		assertEquals("Moved node not in expected tree:", taxonomicView2, node1.getTaxonomicTree());
-		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node2.getTaxonomicTree());
-		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node3.getTaxonomicTree());
+		assertEquals("Moved node not in expected tree:", taxonomicView2, node1.getClassification());
+		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node2.getClassification());
+		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node3.getClassification());
 		
 		assertEquals("Count of nodes in new tree:", 3, taxonomicView2.getAllNodes().size());
 		

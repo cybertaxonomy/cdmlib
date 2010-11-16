@@ -38,11 +38,11 @@ import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -52,8 +52,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree, ITaxonomicTreeDao> implements ITaxonTreeService {
-	private static final Logger logger = Logger.getLogger(TaxonTreeServiceImpl.class);
+public class ClassificationServiceImpl extends IdentifiableServiceBase<Classification, IClassificationDao> implements IClassificationService {
+	private static final Logger logger = Logger.getLogger(ClassificationServiceImpl.class);
 
 	@Autowired
 	private ITaxonNodeDao taxonNodeDao;
@@ -70,10 +70,10 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#loadTaxonNodeByTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.UUID, java.util.List)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadTaxonNodeByTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.UUID, java.util.List)
 	 */
-	public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID taxonomicTreeUuid, List<String> propertyPaths){
-		TaxonomicTree tree = dao.load(taxonomicTreeUuid);
+	public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID classificationUuid, List<String> propertyPaths){
+		Classification tree = dao.load(classificationUuid);
 		TaxonNode node = tree.getNode(taxon);
 	
 		return loadTaxonNode(node.getUuid(), propertyPaths);
@@ -90,11 +90,11 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#loadRankSpecificRootNodes(eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadRankSpecificRootNodes(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
 	 */
-	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
+	public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, List<String> propertyPaths){
 		
-		List<TaxonNode> rootNodes = dao.loadRankSpecificRootNodes(taxonomicTree, rank, propertyPaths);
+		List<TaxonNode> rootNodes = dao.loadRankSpecificRootNodes(classification, rank, propertyPaths);
 		
 		//sort nodes by TaxonName
 		Collections.sort(rootNodes, taxonNodeComparator);
@@ -109,7 +109,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
      * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
 	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
+	 * move to classification service
 	 */
 	public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
 		
@@ -138,10 +138,10 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#loadTreeBranchToTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadTreeBranchToTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
 	 */
-	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank, List<String> propertyPaths){
-		TaxonomicTree tree = dao.load(taxonomicTree.getUuid());
+	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank, List<String> propertyPaths){
+		Classification tree = dao.load(classification.getUuid());
 		taxon = (Taxon) taxonDao.load(taxon.getUuid());
 		TaxonNode node = tree.getNode(taxon);
 		if(node == null){
@@ -153,7 +153,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List)
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
 			List<String> propertyPaths) {
@@ -166,10 +166,10 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, java.util.List)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List)
 	 */
-	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths){
-		TaxonomicTree tree = dao.load(taxonomicTree.getUuid());
+	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, Classification classification, List<String> propertyPaths){
+		Classification tree = dao.load(classification.getUuid());
 		taxon = (Taxon) taxonDao.load(taxon.getUuid());
 		
 		TaxonNode node = tree.getNode(taxon);
@@ -184,7 +184,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#getTaxonNodeByUuid(java.util.UUID)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#getTaxonNodeByUuid(java.util.UUID)
 	 */
 	public TaxonNode getTaxonNodeByUuid(UUID uuid) {
 		return taxonNodeDao.findByUuid(uuid);
@@ -192,7 +192,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#getTreeNodeByUuid(java.util.UUID)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#getTreeNodeByUuid(java.util.UUID)
 	 */
 	public ITreeNode getTreeNodeByUuid(UUID uuid){
 		ITreeNode treeNode = taxonNodeDao.findByUuid(uuid);
@@ -203,41 +203,39 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		return treeNode;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#listTaxonomicTrees(java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#listClassifications(java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
 	 */
-	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<Classification> listClassifications(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return dao.list(limit, start, orderHints, propertyPaths);
 	}	
 	
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#getTaxonomicTreeByUuid(java.util.UUID)
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#getClassificationByUuid(java.util.UUID)
 	 */
-	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid){
+	public Classification getClassificationByUuid(UUID uuid){
 		return dao.findByUuid(uuid);
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#removeTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#removeTaxonNode(eu.etaxonomy.cdm.model.taxon.Classification)
 	 */
 	public UUID removeTaxonNode(TaxonNode taxonNode) {
 		return taxonNodeDao.delete(taxonNode);
 	}
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#removeTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#removeTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
 	 */
 	public UUID removeTreeNode(ITreeNode treeNode) {
-		if(treeNode instanceof TaxonomicTree){
-			return dao.delete((TaxonomicTree) treeNode);
+		if(treeNode instanceof Classification){
+			return dao.delete((Classification) treeNode);
 		}else if(treeNode instanceof TaxonNode){
 			return taxonNodeDao.delete((TaxonNode)treeNode);
 		}
 		return null;
 	}
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.Classification)
 	 */
 	public UUID saveTaxonNode(TaxonNode taxonNode) {
 		return taxonNodeDao.save(taxonNode);
@@ -245,7 +243,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#saveTaxonNodeAll(java.util.Collection)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#saveTaxonNodeAll(java.util.Collection)
 	 */
 	public Map<UUID, TaxonNode> saveTaxonNodeAll(
 			Collection<TaxonNode> taxonNodeCollection) {
@@ -253,11 +251,11 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#saveTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#saveTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
 	 */
 	public UUID saveTreeNode(ITreeNode treeNode) {
-		if(treeNode instanceof TaxonomicTree){
-			return dao.save((TaxonomicTree) treeNode);
+		if(treeNode instanceof Classification){
+			return dao.save((Classification) treeNode);
 		}else if(treeNode instanceof TaxonNode){
 			return taxonNodeDao.save((TaxonNode)treeNode);
 		}
@@ -270,22 +268,22 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.Classification)
 	 */
-	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
-		return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree);
+	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification) {
+		return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IdentifiableServiceBase#getUuidAndTitleCache()
 	 */
 	@Override
-	public List<UuidAndTitleCache<TaxonomicTree>> getUuidAndTitleCache() {
+	public List<UuidAndTitleCache<Classification>> getUuidAndTitleCache() {
 		return dao.getUuidAndTitleCache();
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List, int, int, int, java.lang.String[])
+	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List, int, int, int, java.lang.String[])
 	 */
 	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(
 			TaxonNode taxonNode, List<String> propertyPaths, int size,
@@ -329,7 +327,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		
 	}
 	
-	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
+	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, Classification taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
 		TaxonNode node = taxTree.getNode(taxon);
 		
 		return getAllMediaForChildNodes(node, propertyPaths, size, height, widthOrDuration, mimeTypes);
@@ -343,7 +341,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
 	 */
 	@Autowired
-	protected void setDao(ITaxonomicTreeDao dao) {
+	protected void setDao(IClassificationDao dao) {
 		this.dao = dao;
 	}
 
@@ -352,7 +350,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	 */
 	@Override
 	public void updateTitleCache() {
-		Class<TaxonomicTree> clazz = TaxonomicTree.class;
+		Class<Classification> clazz = Classification.class;
 		super.updateTitleCache(clazz, null, null);
 	}
 }

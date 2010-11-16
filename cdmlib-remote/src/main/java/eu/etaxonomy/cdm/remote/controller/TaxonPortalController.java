@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
@@ -103,7 +103,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private IOccurrenceService occurrenceService;
 	
 	@Autowired
-	private ITaxonTreeService taxonTreeService;
+	private IClassificationService classificationService;
 	
 	@Autowired
 	private ITaxonService taxonService;
@@ -130,7 +130,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	private static final List<String> TAXON_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
 			"taxonNodes.$",
-			"taxonNodes.taxonomicTree.$",
+			"taxonNodes.classification.$",
 			"taxonNodes.childNodes.$"
 			});
 	
@@ -224,7 +224,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	});
 	
 	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-			"taxonNodes.taxonomicTree"
+			"taxonNodes.classification"
 	});
 	
 	
@@ -276,7 +276,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *            always compares the query string with the beginning of a name.
 	 *            - <i>required parameter</i>
 	 * @param treeUuid
-	 *            the {@link UUID} of a {@link TaxonomicTree} to which the
+	 *            the {@link UUID} of a {@link Classification} to which the
 	 *            search is to be restricted. - <i>optional parameter</i>
 	 * @param areas
 	 *            restrict the search to a set of geographic {@link NamedArea}s.
@@ -339,8 +339,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
 		config.setNamedAreas(areas);
 		if(treeUuid != null){
-			TaxonomicTree taxonomicTree = taxonTreeService.find(treeUuid);
-			config.setTaxonomicTree(taxonomicTree);
+			Classification classification = classificationService.find(treeUuid);
+			config.setClassification(classification);
 		}
 			
 		return (Pager<IdentifiableEntity>) service.findTaxaAndNames(config);
@@ -698,7 +698,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			node = iterator.next();
 			//überprüfen, ob der TaxonNode zum aktuellen Baum gehört.
 			
-			node = taxonTreeService.loadTaxonNode(node, TAXONNODE_WITHTAXON_INIT_STRATEGY);
+			node = classificationService.loadTaxonNode(node, TAXONNODE_WITHTAXON_INIT_STRATEGY);
 			Set<TaxonNode> children = node.getChildNodes();
 			Taxon childTaxon;
 			for (TaxonNode child : children){

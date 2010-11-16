@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 
 /**
@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @version 1.0
  */
 @Component
-public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<RelationshipBase> {
-	private static final Logger logger = Logger.getLogger(BerlinModelTaxonomicTreeExport.class);
+public class BerlinModelClassificationExport extends BerlinModelExportBase<RelationshipBase> {
+	private static final Logger logger = Logger.getLogger(BerlinModelClassificationExport.class);
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "RelPTaxon";
@@ -44,7 +44,7 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	private static final Class<? extends CdmBase> standardMethodParameter = TaxonNode.class;
 
 
-	public BerlinModelTaxonomicTreeExport(){
+	public BerlinModelClassificationExport(){
 		super();
 	}
 	
@@ -82,7 +82,7 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	}
 	
 	protected boolean doInvoke(BerlinModelExportState state){
-		if (state.getConfig().isUseTaxonomicTree() == false){
+		if (state.getConfig().isUseClassification() == false){
 			return true;
 		}
 		
@@ -93,13 +93,13 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 			
 			TransactionStatus txStatus = startTransaction(true);
 			
-			List<TaxonomicTree> list = getTaxonTreeService().list(null,10000000,0,null,null);
+			List<Classification> list = getClassificationService().list(null,10000000,0,null,null);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;
-			for (TaxonomicTree tree : list){
+			for (Classification tree : list){
 				for (TaxonNode node : tree.getAllNodes()){
 					if (node.isTopmostNode()){
 						continue;

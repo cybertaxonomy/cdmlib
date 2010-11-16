@@ -210,7 +210,7 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonBase"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNode"/>
-      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonomicTree"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
       <!-- View Package -->

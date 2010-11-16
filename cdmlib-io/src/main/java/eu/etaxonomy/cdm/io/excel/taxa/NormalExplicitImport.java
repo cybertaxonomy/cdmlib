@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -423,7 +423,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		Reference sec = state.getConfig().getSourceReference();
 		
 //		Reference sec = parentTaxon.getSec();
-		TaxonomicTree tree = state.getTree(sec);
+		Classification tree = state.getTree(sec);
 		if (tree == null){
 			tree = makeTree(state, sec);
 		}

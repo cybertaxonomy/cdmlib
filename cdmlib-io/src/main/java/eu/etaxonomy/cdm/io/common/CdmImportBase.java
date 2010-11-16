@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
@@ -57,22 +57,22 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
 	private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
-	protected TaxonomicTree makeTree(STATE state, Reference reference){
+	protected Classification makeTree(STATE state, Reference reference){
 		Reference ref = CdmBase.deproxy(reference, Reference.class);
-		String treeName = "TaxonTree (Import)";
+		String treeName = "Classification (Import)";
 		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
 		}
-		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
+		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(ref);
 		
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
 		if (state.countTrees() < 1 ){
-			tree.setUuid(config.getTaxonomicTreeUuid());
+			tree.setUuid(config.getClassificationUuid());
 		}
-		getTaxonTreeService().save(tree);
+		getClassificationService().save(tree);
 		state.putTree(ref, tree);
 		return tree;
 	}
@@ -88,21 +88,21 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param ref
 	 * @return
 	 */
-	protected TaxonomicTree makeTreeMemSave(STATE state, Reference ref){
-		String treeName = "TaxonTree (Import)";
+	protected Classification makeTreeMemSave(STATE state, Reference ref){
+		String treeName = "Classification (Import)";
 		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
 		}
-		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
+		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(ref);
 		
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
 		if (state.countTrees() < 1 ){
-			tree.setUuid(config.getTaxonomicTreeUuid());
+			tree.setUuid(config.getClassificationUuid());
 		}
-		getTaxonTreeService().save(tree);
+		getClassificationService().save(tree);
 		state.putTreeUuid(ref, tree);
 		return tree;
 	}

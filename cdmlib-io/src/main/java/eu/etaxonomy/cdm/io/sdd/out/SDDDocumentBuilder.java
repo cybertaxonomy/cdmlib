@@ -392,7 +392,7 @@ public class SDDDocumentBuilder {
 		buildPublications(dataset);
 		buildMediaObjects(dataset);
 		buildCharacterTrees(dataset);
-		buildTaxonomicTrees(dataset);
+		buildClassifications(dataset);
 		buildGeographicAreas(dataset);
 		buildSpecimens(dataset);
 	}
@@ -1148,7 +1148,7 @@ public class SDDDocumentBuilder {
 		}
 	}
 	
-	public void buildTaxonomicTrees(ElementImpl dataset) throws ParseException {
+	public void buildClassifications(ElementImpl dataset) throws ParseException {
 
 		if (cdmSource.getTaxa() != null) {
 			ElementImpl elTaxonHierarchies = new ElementImpl(document, "TaxonHierarchies");

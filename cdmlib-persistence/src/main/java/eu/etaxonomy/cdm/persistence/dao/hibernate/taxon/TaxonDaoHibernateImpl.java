@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
@@ -239,17 +239,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
 	 */
-	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths) {
 				
 		boolean doCount = false;
-		Query query = prepareTaxaByName(clazz, "nameCache", queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
+		Query query = prepareTaxaByName(clazz, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		if (query != null){
 			List<TaxonBase> results = query.list();
-			//results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
+			//results.addAll (prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			//TaxonComparatorSearch comp = new TaxonComparatorSearch();
 			//Collections.sort(results, comp);
@@ -261,13 +261,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByCommonName(java.lang.String, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByCommonName(java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
 	 */
-	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
+	public List<TaxonBase> getTaxaByCommonName(String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths) {
 			boolean doCount = false;	
-			Query query = prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
+			Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 			if (query != null){
 				List<TaxonBase> results = query.list();
 				defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -282,7 +282,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * @param clazz
 	 * @param searchField the field in TaxonNameBase to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
 	 * @param queryString
-	 * @param taxonomicTree TODO
+	 * @param classification TODO
 	 * @param matchMode
 	 * @param namedAreas
 	 * @param pageSize
@@ -290,9 +290,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * @param doCount
 	 * @return
 	 * 
-	 * FIXME implement taxontree restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
+	 * FIXME implement classification restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
 	 */
-	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String searchField, String queryString, TaxonomicTree taxonomicTree,
+	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String searchField, String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
 
 		//TODO ? checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, Reference sec)");
@@ -319,7 +319,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		String taxonSubselect = null;
 		String synonymSubselect = null;
 		
-		if(taxonomicTree != null){
+		if(classification != null){
 			
 			if(doAreaRestriction){
 				
@@ -331,7 +331,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join t.taxonNodes as tn "+
 					" where" +
 					" e.area.uuid in (:namedAreasUuids) AND" +
-					" tn.taxonomicTree = :taxonomicTree" +
+					" tn.classification = :classification" +
 					" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString";
 				
 				
@@ -345,7 +345,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join s.name sn"+ 
 					" where" +
 					" e.area.uuid in (:namedAreasUuids) AND" +
-					" tn.taxonomicTree = :taxonomicTree" +
+					" tn.classification = :classification" +
 					" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 				
 			} else {
@@ -355,7 +355,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join t.name n " +
 					" join t.taxonNodes as tn "+
 					" where" +
-					" tn.taxonomicTree = :taxonomicTree" +
+					" tn.classification = :classification" +
 					" AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 				
 				synonymSubselect = "select s.id from" +
@@ -365,7 +365,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join sr.relatedFrom s" + // the synonyms
 					" join s.name sn"+ 
 					" where" +
-					" tn.taxonomicTree = :taxonomicTree" +
+					" tn.classification = :classification" +
 					" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 			}	
 		} else {
@@ -425,8 +425,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			if(doAreaRestriction){
 				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
 			}	
-			if(taxonomicTree != null){
-				subTaxon.setParameter("taxonomicTree", taxonomicTree);
+			if(classification != null){
+				subTaxon.setParameter("classification", classification);
 			}
 		} else if(clazz.equals(Synonym.class)){
 			// find synonyms
@@ -435,8 +435,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			if(doAreaRestriction){
 				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
 			}		
-			if(taxonomicTree != null){
-				subSynonym.setParameter("taxonomicTree", taxonomicTree);
+			if(classification != null){
+				subSynonym.setParameter("classification", classification);
 			}
 		} else {
 			// find taxa and synonyms
@@ -446,9 +446,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
 				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
 			}
-			if(taxonomicTree != null){
-				subTaxon.setParameter("taxonomicTree", taxonomicTree);
-				subSynonym.setParameter("taxonomicTree", taxonomicTree);
+			if(classification != null){
+				subTaxon.setParameter("classification", classification);
+				subSynonym.setParameter("classification", classification);
 			}
 		}
 		
@@ -530,7 +530,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return query;
 	}
 
-	private Query prepareTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
+	private Query prepareTaxaByCommonName(String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount){
 				
 		String hql= "from Taxon t " +
@@ -555,11 +555,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.Reference, java.util.Set)
 	 */
-	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
 		MatchMode matchMode, Set<NamedArea> namedAreas) {
 		
 		boolean doCount = true;
-		Query query = prepareTaxaByName(clazz, "nameCache", queryString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
+		Query query = prepareTaxaByName(clazz, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount);
 		if (query != null) {
 			return (Long)query.uniqueResult();
 		}
@@ -718,10 +718,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, int, int, boolean)
 	 */
-	public List<TaxonBase> findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, TaxonomicTree taxonomicTree, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
+	public List<TaxonBase> findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
 	
 		boolean doCount = false;
-		Query query = prepareTaxaByName(clazz, "titleCache", queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
+		Query query = prepareTaxaByName(clazz, "titleCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		if (query != null){
 			List<TaxonBase> results = query.list();
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -1177,13 +1177,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.Classification)
 	 */
-	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
+	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification) {
 
-		int taxonomicTreeId = taxonomicTree.getId();
+		int classificationId = classification.getId();
 		
-		String queryString = "SELECT nodes.uuid, taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.taxonomictree_id = " + taxonomicTreeId;
+		String queryString = "SELECT nodes.uuid, taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
 		
 		List<Object[]> result = getSession().createSQLQuery(queryString).list();
 				
@@ -1260,14 +1260,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public List<TaxonBase> getTaxaByCommonName(String queryString,
-			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Classification classification, MatchMode matchMode,
 			Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	
-	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree){
+	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree){
 		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
 		
 		inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF()));
@@ -1293,7 +1293,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return taxonName;
 	}
 
-	public List<Synonym> createInferredSynonyms(Taxon taxon, TaxonomicTree tree, SynonymRelationshipType type){
+	public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type){
 		List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
 		List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<Synonym>();
 
@@ -1311,7 +1311,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			HashMap<String, String> synonymsGenus = new HashMap<String, String>(); // Changed this to be able to store the idInSource to a genusName
 			List<String> synonymsEpithet = new ArrayList<String>();
 			
-			if (node.getTaxonomicTree().equals(tree)){
+			if (node.getClassification().equals(tree)){
 				if (!node.isTopmostNode()){
 				TaxonNode parent = (TaxonNode)node.getParent();
 				parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
@@ -1809,10 +1809,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
 	public long countTaxaByCommonName(String searchString,
-			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Classification classification, MatchMode matchMode,
 			Set<NamedArea> namedAreas) {
 		boolean doCount = true;
-		Query query = prepareTaxaByCommonName(searchString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
+		Query query = prepareTaxaByCommonName(searchString, classification, matchMode, namedAreas, null, null, doCount);
 		if (query != null && !query.list().isEmpty()) {
 			Object o = query.uniqueResult();
 			if(o != null) {

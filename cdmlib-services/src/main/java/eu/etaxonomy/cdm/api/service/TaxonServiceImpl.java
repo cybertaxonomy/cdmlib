@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -457,12 +457,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if(configurator.getPageSize() != null){ // no point counting if we need all anyway
 				numberTaxaResults = 
 					dao.countTaxaByName(clazz, 
-						configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
+						configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
 						configurator.getNamedAreas());
 			}
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
 				taxa = dao.getTaxaByName(clazz, 
-					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
+					configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
 					configurator.getPageNumber(), propertyPath);
 			}
@@ -502,10 +502,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			taxa = null;
 			numberTaxaResults = 0;
 			if(configurator.getPageSize() != null){// no point counting if we need all anyway
-				numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas());
+				numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 			}
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			}
 			if(taxa != null){
 				results.addAll(taxa);
@@ -548,13 +548,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return this.dao.countAllRelationships();
 	}
 
-	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree,
+	public List<Synonym> createAllInferredSynonyms(Classification tree,
 			Taxon taxon) {
 		
 		return this.dao.createAllInferredSynonyms(taxon, tree);
 	}
 
-	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type) {
+	public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type) {
 		
 		return this.dao.createInferredSynonyms(taxon, tree, type);
 	}

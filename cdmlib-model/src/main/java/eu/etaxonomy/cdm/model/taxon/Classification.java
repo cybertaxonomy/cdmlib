@@ -21,7 +21,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -50,19 +49,19 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaxonomicTree", propOrder = {
+@XmlType(name = "Classification", propOrder = {
     "name",
     "rootNodes",
     "reference",
     "microReference"
 })
-@XmlRootElement(name = "TaxonomicTree")
+@XmlRootElement(name = "Classification")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonomicTree")
-public class TaxonomicTree extends IdentifiableEntity implements IReferencedEntity, ITreeNode{
+@Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
+public class Classification extends IdentifiableEntity implements IReferencedEntity, ITreeNode{
 	private static final long serialVersionUID = -753804821474209635L;
-	private static final Logger logger = Logger.getLogger(TaxonomicTree.class);
+	private static final Logger logger = Logger.getLogger(Classification.class);
 	
 	@XmlElement(name = "Name")
 	@OneToOne(fetch = FetchType.LAZY)
@@ -100,30 +99,30 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 //	private AlternativeViewRoot alternativeViewRoot;
 	
 	
-	public static TaxonomicTree NewInstance(String name){
+	public static Classification NewInstance(String name){
 		return NewInstance(name, null, Language.DEFAULT());
 	}
 	
-	public static TaxonomicTree NewInstance(String name, Language language){
+	public static Classification NewInstance(String name, Language language){
 		return NewInstance(name, null, language);
 	}
 	
-	public static TaxonomicTree NewInstance(String name, Reference reference){
+	public static Classification NewInstance(String name, Reference reference){
 		return NewInstance(name, reference, Language.DEFAULT());
 	}
 	
-	public static TaxonomicTree NewInstance(String name, Reference reference, Language language){
-		return new TaxonomicTree(name, reference, language);
+	public static Classification NewInstance(String name, Reference reference, Language language){
+		return new Classification(name, reference, language);
 	}
 	
-	protected TaxonomicTree(String name, Reference reference, Language language){
+	protected Classification(String name, Reference reference, Language language){
 		this();
 		LanguageString langName = LanguageString.NewInstance(name, language);
 		setName(langName);
 		setReference(reference);
 	}
 	
-	protected TaxonomicTree(){
+	protected Classification(){
 		super();
 	}
 	
@@ -177,13 +176,13 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		boolean result = false;
 		
 		if(!rootNodes.contains(node)){
-			throw new IllegalArgumentException("TaxonNode is a not a root node of this taxonomic tree");
+			throw new IllegalArgumentException("TaxonNode is a not a root node of this classification");
 		}
 		
 		result = rootNodes.remove(node);
 
 		node.setParent(null);
-		node.setTaxonomicTree(null);
+		node.setClassification(null);
 		
 		return result;
 	}
@@ -205,7 +204,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		if (! getChildNodes().contains(topmostNode)){
 			throw new IllegalArgumentException("root node to be added as child must already be root node within this tree");
 		}
-		if (otherNode.getTaxonomicTree() == null || ! otherNode.getTaxonomicTree().equals(this)){
+		if (otherNode.getClassification() == null || ! otherNode.getClassification().equals(this)){
 			throw new IllegalArgumentException("other node must already be node within this tree");
 		}
 		if (otherNode.equals(topmostNode)){
@@ -236,7 +235,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			return null;
 		}
 		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
-			if (taxonNode.getTaxonomicTree().equals(this)){
+			if (taxonNode.getClassification().equals(this)){
 				return taxonNode;
 			}
 		}
@@ -264,10 +263,10 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			return null;
 		}
 		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
-			if (taxonNode.getTaxonomicTree().equals(this)){
+			if (taxonNode.getClassification().equals(this)){
 				if (this.getChildNodes().contains(taxonNode)){
 					if (taxonNode.getParentTreeNode() instanceof TaxonNode){
-						logger.warn("A topmost node should have a TaxonomicTree as parent but actually has a TaxonNode parent");
+						logger.warn("A topmost node should have a Classification as parent but actually has a TaxonNode parent");
 					}
 					return taxonNode;
 				}
@@ -293,7 +292,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 	
 	/**
-	 * Relates two taxa as parent-child nodes within a taxonomic tree. <BR>
+	 * Relates two taxa as parent-child nodes within a classification. <BR>
 	 * If the taxa are not yet part of the tree they are added to it.<Br>
 	 * If the child taxon is a topmost node still it is added as child and deleted from the rootNode set.<Br>
 	 * If the child is a child of another parent already an IllegalStateException is thrown because a child can have only 
@@ -374,7 +373,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 
 	/**
-	 * Returns a set containing all nodes in this taxonomic tree.
+	 * Returns a set containing all nodes in this classification.
 	 * 
 	 * Caution: Use this method with care. It can be very time and resource consuming and might
 	 * run into OutOfMemoryExceptions for big trees. 

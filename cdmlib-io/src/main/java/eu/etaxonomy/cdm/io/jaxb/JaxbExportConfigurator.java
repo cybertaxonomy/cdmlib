@@ -44,7 +44,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	private boolean doHomotypicalGroups = true;
 
 	private boolean doTypeDesignations = true;
-	private boolean doTaxonomicTreeData = true;
+	private boolean doClassificationData = true;
 	
 	
 	
@@ -105,11 +105,11 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 		this.doFeatureData = doFeatureData;
 	}
 
-	public boolean isDoTaxonomicTreeData() {
-		return doTaxonomicTreeData;
+	public boolean isDoClassificationData() {
+		return doClassificationData;
 	}
-	public void setDoTaxonomicTreeData(boolean doTaxonomicTreeData) {
-		this.doTaxonomicTreeData = doTaxonomicTreeData;
+	public void setDoClassificationData(boolean doClassificationData) {
+		this.doClassificationData = doClassificationData;
 	}
 	public boolean isDoDescriptions() {
 		return doDescriptions;

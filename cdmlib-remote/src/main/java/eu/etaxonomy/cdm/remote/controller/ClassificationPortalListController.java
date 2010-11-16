@@ -27,19 +27,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
- * The TaxonomicTreeController class is a Spring MVC Controller.
+ * The ClassificationController class is a Spring MVC Controller.
  * <p>
  * The syntax of the mapped service URIs contains the the {datasource-name} path element.
  * The available {datasource-name}s are defined in a configuration file which
@@ -51,10 +51,10 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  * @date 20.03.2009
  */
 @Controller
-public class TaxonomicTreePortalListController extends BaseListController<TaxonomicTree,ITaxonTreeService> {
+public class ClassificationPortalListController extends BaseListController<Classification,IClassificationService> {
 	
 	
-	private static final List<String> TAXONTREE_INIT_STRATEGY = Arrays.asList(new String[]{
+	private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
 			"reference.authorTeam"
 	});
 	
@@ -64,16 +64,16 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 			});
 	
 
-	public static final Logger logger = Logger.getLogger(TaxonomicTreePortalListController.class);
+	public static final Logger logger = Logger.getLogger(ClassificationPortalListController.class);
 
 	private ITaxonService taxonService;
 	
-	private ITaxonTreeService service;
+	private IClassificationService service;
 	
 	private ITermService termService;
 	
 	@Autowired
-	public void setService(ITaxonTreeService service) {
+	public void setService(IClassificationService service) {
 		this.service = service; 
 	}
 	
@@ -97,21 +97,21 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	
 	
 	/**
-	 * Lists all available {@link TaxonomicTree}s.
+	 * Lists all available {@link Classification}s.
 	 * <p>
-	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxontree</b>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;classification</b>
 	 * 
 	 * @param request
 	 * @param response
-	 * @return a list of {@link TaxonomicTree}s initialized by
-	 *         the {@link #TAXONTREE_INIT_STRATEGY}
+	 * @return a list of {@link Classification}s initialized by
+	 *         the {@link #CLASSIFICATION_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = { "/portal/taxonTree" }, method = RequestMethod.GET)
-	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
+	@RequestMapping(value = { "/portal/classification" }, method = RequestMethod.GET)
+	public List<Classification> getClassifications(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		logger.info("getTaxonomicTrees() " + request.getServletPath());
-		return service.list(null, null, null,null, TAXONTREE_INIT_STRATEGY);
+		logger.info("getClassification() " + request.getServletPath());
+		return service.list(null, null, null,null, CLASSIFICATION_INIT_STRATEGY);
 	}
 	
 	
@@ -122,7 +122,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 * @throws IOException
 	 */
 	@RequestMapping(
-			value = {"/portal/taxonTree/{treeUuid}/childNodes"},
+			value = {"/portal/classification/{treeUuid}/childNodes"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodes(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -135,7 +135,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	
 	
 	@RequestMapping(
-			value = {"/portal/taxonTree/{treeUuid}/childNodesAt/{rankUuid}"},
+			value = {"/portal/classification/{treeUuid}/childNodesAt/{rankUuid}"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodesAtRank(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -145,14 +145,14 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 			) throws IOException {
 		
 		logger.info("getChildNodesAtRank() " + request.getServletPath());
-		TaxonomicTree tree = null;
+		Classification tree = null;
 		Rank rank = null;
 		if(treeUuid != null){
 			// get view and rank
 			tree = service.find(treeUuid);
 			
 			if(tree == null) {
-				response.sendError(404 , "TaxonomicTree not found using " + treeUuid );
+				response.sendError(404 , "Classification not found using " + treeUuid );
 				return null;
 			}
 		}
@@ -165,14 +165,14 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 
 
 	/**
-	 * Lists all child-{@link TaxonNode}s of the specified {@link Taxon} in the {@link TaxonomicTree}. The
+	 * Lists all child-{@link TaxonNode}s of the specified {@link Taxon} in the {@link Classification}. The
 	 * a given {@link Rank} is ignored in this method but for consistency reasons it has been allowed to included it into the URI. 
 	 * <p>
-	 * URI: <b>&#x002F;portal&#x002F;taxontree&#x002F;{treeUuid}&#x002F;childNodesOf&#x002F;{taxonUuid}</b>
+	 * URI: <b>&#x002F;portal&#x002F;classification&#x002F;{treeUuid}&#x002F;childNodesOf&#x002F;{taxonUuid}</b>
 	 * <p>
      * <b>URI elements:</b>
      * <ul>
-     * <li><b>{tree-uuid}</b> identifies the {@link TaxonomicTree} by its UUID - <i>required</i>.
+     * <li><b>{tree-uuid}</b> identifies the {@link Classification} by its UUID - <i>required</i>.
      * <li><b>{taxon-uuid}</b> identifies the {@link Taxon} by its UUID. - <i>required</i>.
      * </ul>
 	 * 
@@ -182,7 +182,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/portal/taxonTree/{treeUuid}/childNodesOf/{taxonUuid}"}, 
+			value = {"/portal/classification/{treeUuid}/childNodesOf/{taxonUuid}"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildNodesOfTaxon(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -191,7 +191,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 			HttpServletResponse response) throws IOException {
 		logger.info("getChildNodesOfTaxon() " + request.getServletPath());
 		
-		TaxonomicTree tree = service.find(treeUuid);
+		Classification tree = service.find(treeUuid);
 		Taxon taxon = (Taxon) taxonService.load(taxonUuid);
 		List<TaxonNode> childs = service.loadChildNodesOfTaxon(taxon, tree, NODE_INIT_STRATEGY);
 		return childs;
@@ -201,11 +201,11 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	/**
 	 * Provides path of {@link TaxonNode}s from the base node to the node of the specified taxon.
 	 * <p>
-	 * URI:<b>&#x002F;portal&#x002F;taxontree&#x002F;{treeUuid}&#x002F;pathFrom&#x002F;{taxonUuid}&#x002F;toRank&#x002F;{rankUuid}</b>
+	 * URI:<b>&#x002F;portal&#x002F;classification&#x002F;{treeUuid}&#x002F;pathFrom&#x002F;{taxonUuid}&#x002F;toRank&#x002F;{rankUuid}</b>
 	 * <p>
      * <b>URI elements:</b>
      * <ul>
-     * <li><b>{treeUuid}</b> identifies the {@link TaxonomicTree} by its UUID - <i>required</i>.
+     * <li><b>{treeUuid}</b> identifies the {@link Classification} by its UUID - <i>required</i>.
      * <li><b>{taxonUuid}</b> identifies the {@link Rank}
      * <li><b>{rankUuid}</b> identifies the {@link Taxon} by its UUID. - <i>required</i>.
      * </ul>
@@ -216,7 +216,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/portal/taxonTree/{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"}, 
+			value = {"/portal/classification/{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathFromTaxonToRank(
 			@PathVariable("treeUuid") UUID treeUuid,
@@ -226,7 +226,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 			HttpServletResponse response) throws IOException {
 		logger.info("getPathFromTaxonToRank() " + request.getServletPath());
 		
-		TaxonomicTree tree = service.find(treeUuid);
+		Classification tree = service.find(treeUuid);
 		Rank rank = findRank(rankUuid);
 		Taxon taxon = (Taxon) taxonService.load(taxonUuid);
 		
@@ -236,11 +236,11 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	/**
 	 * Provides path of {@link TaxonNode}s from the base node to the node of the specified taxon.
 	 * <p>
-	 * URI:<b>&#x002F;portal&#x002F;taxontree&#x002F;{treeUuid}&#x002F;pathFrom&#x002F;{taxonUuid}</b>
+	 * URI:<b>&#x002F;portal&#x002F;classification&#x002F;{treeUuid}&#x002F;pathFrom&#x002F;{taxonUuid}</b>
 	 * <p>
      * <b>URI elements:</b>
      * <ul>
-     * <li><b>{treeUuid}</b> identifies the {@link TaxonomicTree} by its UUID - <i>required</i>.
+     * <li><b>{treeUuid}</b> identifies the {@link Classification} by its UUID - <i>required</i>.
      * <li><b>{rankUuid}</b> identifies the {@link Taxon} by its UUID. - <i>required</i>.
      * </ul>
 	 * 
@@ -250,7 +250,7 @@ public class TaxonomicTreePortalListController extends BaseListController<Taxono
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/portal/taxonTree/{treeUuid}/pathFrom/{taxonUuid}"}, 
+			value = {"/portal/classification/{treeUuid}/pathFrom/{taxonUuid}"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathFromTaxon(
 			@PathVariable("treeUuid") UUID treeUuid,

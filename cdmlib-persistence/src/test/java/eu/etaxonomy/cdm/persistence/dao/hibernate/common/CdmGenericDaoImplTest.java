@@ -159,7 +159,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -453,7 +453,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Taxon.class, 
 				TaxonBase.class, 
 				TaxonNode.class, 
-				TaxonomicTree.class, 
+				Classification.class, 
 				TaxonRelationship.class, 
 				TaxonRelationshipType.class 
 				//Contact.class, 

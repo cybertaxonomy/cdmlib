@@ -30,7 +30,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:element name="TaxonRelationshipType" type="taxon:TaxonRelationshipType"/>
 
-  <xs:element name="TaxonomicTree" type="taxon:TaxonomicTree"/>
+  <xs:element name="Classification" type="taxon:Classification"/>
 
   <xs:complexType name="Taxon">
     <xs:complexContent>
@@ -99,7 +99,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
         <xs:sequence>
           <xs:element name="taxon" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="parent" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="taxonomicTree" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="classification" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="childNodes" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -116,7 +116,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="TaxonomicTree">
+  <xs:complexType name="Classification">
     <xs:complexContent>
       <xs:extension base="common:IdentifiableEntity">
         <xs:sequence>

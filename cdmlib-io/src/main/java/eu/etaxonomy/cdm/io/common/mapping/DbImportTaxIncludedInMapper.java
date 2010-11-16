@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
@@ -172,7 +172,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	/**
 	 * TODO copied from BM import. May be more generic
 	 * @param state
-	 * @param taxonTreeMap
+	 * @param classificationMap
 	 * @param treeRefFk
 	 * @param child
 	 * @param parent
@@ -181,25 +181,25 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 * @return
 	 */
 	
-	public static final String TAXONOMIC_TREE_NAMESPACE = "TaxonomicTree";
+	public static final String TAXONOMIC_TREE_NAMESPACE = "Classification";
 	
-	private boolean makeTaxonomicallyIncluded(STATE state, Integer treeRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
+	private boolean makeTaxonomicallyIncluded(STATE state, Integer classificationRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
 		String treeKey;
 		UUID treeUuid;
-		if (treeRefFk == null){
+		if (classificationRefFk == null){
 			treeKey = "1";  // there is only one tree and it gets the key '1'
-			treeUuid = state.getConfig().getTaxonomicTreeUuid();
+			treeUuid = state.getConfig().getClassificationUuid();
 		}else{
-			treeKey =String.valueOf(treeRefFk);
+			treeKey =String.valueOf(classificationRefFk);
 			treeUuid = state.getTreeUuidByTreeKey(treeKey);
 		}
-		TaxonomicTree tree = (TaxonomicTree)state.getRelatedObject(TAXONOMIC_TREE_NAMESPACE, treeKey);
+		Classification tree = (Classification)state.getRelatedObject(TAXONOMIC_TREE_NAMESPACE, treeKey);
 		if (tree == null){
-			ITaxonTreeService service = state.getCurrentIO().getTaxonTreeService();
-			tree = service.getTaxonomicTreeByUuid(treeUuid);
+			IClassificationService service = state.getCurrentIO().getClassificationService();
+			tree = service.getClassificationByUuid(treeUuid);
 			if (tree == null){
-				String treeName = state.getConfig().getTaxonomicTreeName();
-				tree = TaxonomicTree.NewInstance(treeName);
+				String treeName = state.getConfig().getClassificationName();
+				tree = Classification.NewInstance(treeName);
 				tree.setUuid(treeUuid);
 				//FIXME tree reference
 				//tree.setReference(ref);
@@ -211,27 +211,6 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		TaxonNode childNode = tree.addParentChild(parent, child, citation, microCitation);
 		return (childNode != null);
 	}
-	
-//	
-//	private boolean makeTaxonomicallyIncluded_OLD(STATE state, Integer treeRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
-//		Map<Integer, TaxonomicTree> taxonTreeMap = state.getPartitionTaxonTreeMap();
-//		
-//		
-//		TaxonomicTree tree = taxonTreeMap.get(treeRefFk);
-//		if (tree == null){
-//			UUID treeUuid = state.getTreeUuidByTreeKey(treeRefFk);
-//			tree = state.getCurrentImport().getTaxonTreeService().getTaxonomicTreeByUuid(treeUuid);
-//			if (tree == null){
-//				//FIXME FIXME FIXME
-//				String treeName = "TaxonTree - No Name";
-//				tree = TaxonomicTree.NewInstance(treeName);
-//				//tree.setReference(ref);
-//				//throw new IllegalStateException("Tree for ToTaxon reference does not exist.");
-//			}
-//			taxonTreeMap.put(treeRefFk, tree);
-//		}
-//		return tree.addParentChild(parent, child, citation, microCitation);
-//	}
 	
 	
 	/**

@@ -83,7 +83,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author h.fradin
@@ -136,7 +136,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
 	private Set<FeatureTree> featureTrees = new HashSet<FeatureTree>();
-	private Set<TaxonomicTree> taxonomicTrees = new HashSet<TaxonomicTree>();
+	private Set<Classification> classifications = new HashSet<Classification>();
 
 	private Rights copyright = null;
 
@@ -624,8 +624,8 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		for (FeatureTree featureTree : featureTrees) {
 			getFeatureTreeService().save(featureTree);
 		}
-		for (TaxonomicTree taxonomicTree : taxonomicTrees) {
-			getTaxonTreeService().save(taxonomicTree);
+		for (Classification classification : classifications) {
+			getClassificationService().save(classification);
 		}
 		for (Specimen specimen : specimens.values()) {
 			getOccurrenceService().save(specimen);
@@ -1834,10 +1834,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				try {
 					Element elRepresentation = elTaxonHierarchy.getChild("Representation",sddNamespace);
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
-						TaxonomicTree taxonomicTree =  TaxonomicTree.NewInstance(label);
-						importRepresentation(elTaxonHierarchy, sddNamespace, taxonomicTree, "", sddConfig);
+						Classification classification =  Classification.NewInstance(label);
+						importRepresentation(elTaxonHierarchy, sddNamespace, classification, "", sddConfig);
 					
-						Set<TaxonNode> root = taxonomicTree.getChildNodes();
+						Set<TaxonNode> root = classification.getChildNodes();
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 						
@@ -1859,13 +1859,13 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 									}
 								}
 								else {
-									TaxonNode tn = taxonomicTree.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
+									TaxonNode tn = classification.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
 									taxonNodes.put(idN,tn);
 								}
 							}
 						}
 
-						taxonomicTrees.add(taxonomicTree);
+						classifications.add(classification);
 					}
 
 				catch (Exception e) {

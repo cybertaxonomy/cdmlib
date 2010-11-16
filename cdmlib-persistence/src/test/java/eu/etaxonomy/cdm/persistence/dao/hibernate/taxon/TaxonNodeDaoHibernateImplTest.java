@@ -26,11 +26,11 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class TaxonNodeDaoHibernateImplTest extends
@@ -40,7 +40,7 @@ public class TaxonNodeDaoHibernateImplTest extends
 	private ITaxonNodeDao taxonNodeDao;
 	
 	@SpringBeanByType
-	private ITaxonomicTreeDao taxonomicTreeDao;
+	private IClassificationDao classificationDao;
 	
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
@@ -66,25 +66,25 @@ public class TaxonNodeDaoHibernateImplTest extends
 	@DataSet
 	public void testInit() {
 		assertNotNull("Instance of ITaxonDao expected",taxonNodeDao);
-		assertNotNull("Instance of IReferenceDao expected",taxonomicTreeDao);
+		assertNotNull("Instance of IReferenceDao expected",classificationDao);
 	}	
 	
 	@Test
 	@DataSet
 	public void testFindByUuid() {
 		TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid1);
-		TaxonomicTree.class.getDeclaredConstructors();
+		Classification.class.getDeclaredConstructors();
 		assertNotNull("findByUuid should return a taxon node", taxonNode);
 	}
 	
 	@Test
 	@DataSet
-	public void testTaxonomicTree() {
-		TaxonomicTree taxonTree =  taxonomicTreeDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+	public void testClassification() {
+		Classification classification =  classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
 		
-		assertNotNull("findByUuid should return a taxon tree", taxonTree);
-		assertNotNull("taxonomic tree should have a name",taxonTree.getName());
-		assertEquals("taxonomic tree should have a name which is 'Name'",taxonTree.getName().getText(),"Name");
+		assertNotNull("findByUuid should return a taxon tree", classification);
+		assertNotNull("classification should have a name",classification.getName());
+		assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
 		TaxonNode taxNode = (TaxonNode) taxonNodeDao.findByUuid(uuid1);
 		TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.findByUuid(uuid2);
 		Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
@@ -93,12 +93,9 @@ public class TaxonNodeDaoHibernateImplTest extends
 		
 	
 		for (TaxonNode rootNode : rootNodes){
-			taxonTree.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
+			classification.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
 		}
-		
-		//taxonTree.addChildNode(taxNode, taxNode.getReference(), taxNode.getMicroReference(), taxNode.getSynonymToBeUsed());
-		
-		//old: taxonTree.setRootNodes(rootNodes);
+
 		taxNode.addChildNode(taxNode2, null, null,null);
 		
 		Taxon taxon2 = taxNode2.getTaxon();
@@ -114,9 +111,9 @@ public class TaxonNodeDaoHibernateImplTest extends
 		taxa = taxonDao.getAllTaxonBases(10, 0);
 		assertEquals("there should be only one taxon left", 4, taxa.size());
 		
-		taxonomicTreeDao.delete(taxonTree);
-		taxonTree = taxonomicTreeDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
-		assertEquals("The tree should be null", null, taxonTree);
+		classificationDao.delete(classification);
+		classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+		assertEquals("The tree should be null", null, classification);
 		
 		
 	}

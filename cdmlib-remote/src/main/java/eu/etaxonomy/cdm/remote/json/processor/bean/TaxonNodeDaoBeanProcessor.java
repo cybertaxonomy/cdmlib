@@ -48,7 +48,7 @@ public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 			ranklabel = node.getTaxon().getName().getRank().getLabel();
 		}
 		json.element("rankLabel", ranklabel, jsonConfig);
-		//json.element("treeUuid", node.getTaxonomicTree().getUuid(), jsonConfig);
+		//json.element("treeUuid", node.getClassification().getUuid(), jsonConfig);
 		
 		return json;
 	}

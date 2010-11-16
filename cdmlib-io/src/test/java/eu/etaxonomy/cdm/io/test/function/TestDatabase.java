@@ -81,7 +81,7 @@ public class TestDatabase {
     }
     
 	/**
-	 * This method constructs a small sample taxonomic tree to test JAXB marshaling.
+	 * This method constructs a small sample classification to test JAXB marshaling.
 	 * The sample tree contains four taxa. The root taxon has two children taxa, and
 	 * there is one "free" taxon without a parent and children.
 	 */

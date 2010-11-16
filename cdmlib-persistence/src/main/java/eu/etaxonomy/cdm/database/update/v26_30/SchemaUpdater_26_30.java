@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
 
 
@@ -154,6 +155,88 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		ColumnAdder primaryCollectorAdder = ColumnAdder.NewIntegerInstance(stepName, "SpecimenOrObservationBase", "primaryCollector_id", INCLUDE_AUDIT, false, "AgentBase");
 		stepList.add(primaryCollectorAdder);
 
+		
+		//taxonomic tree -> classification
+		stepName = "Rename taxonomic tree to classification";
+		TableNameChanger tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+		
+		//TaxonomicTree_Annotation -> classification_Annotation
+		stepName = "Rename TaxonomicTree_Annotation to Classification_Annotation";
+		tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree_Annotation", "Classification_Annotation", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+		
+		stepName = "Rename taxonomicTree_id column in Classification_Annotation";
+		ColumnNameChanger columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "Classification_Annotation", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+		
+		
+		//TaxonomicTree_Credit -> classification_Credit
+		stepName = "Rename TaxonomicTree_Credit to Classification_Credit";
+		tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree_Credit", "Classification_Credit", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+
+		stepName = "Rename taxonomicTree_id column in Classification_Credit";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "Classification_Credit", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+		
+		
+		//TaxonomicTree_Extension -> classification_Extension
+		stepName = "Rename TaxonomicTree_Extension to Classification_Extension";
+		tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree_Extension", "Classification_Extension", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+
+		stepName = "Rename taxonomicTree_id column in Classification_Extension";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "Classification_Extension", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		
+		//TaxonomicTree_Marker -> classification_Marker
+		stepName = "Rename TaxonomicTree_Marker to Classification_Marker";
+		tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree_Marker", "Classification_Marker", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+
+		stepName = "Rename taxonomicTree_id column in Classification_Marker";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "Classification_Marker", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		
+		//TaxonomicTree_OriginalSourceBase -> classification_OriginalSourceBase
+		stepName = "Rename TaxonomicTree_OriginalSourceBase to Classification_OriginalSourceBase";
+		tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree_OriginalSourceBase", "Classification_OriginalSourceBase", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+
+		stepName = "Rename taxonomicTree_id column in Classification_OriginalSourceBase";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "Classification_OriginalSourceBase", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		
+		//TaxonomicTree_Rights -> classification_Rights
+		stepName = "Rename TaxonomicTree_Rights to Classification_Rights";
+		tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree_Rights", "Classification_Rights", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+
+		stepName = "Rename taxonomicTree_id column in Classification_Rights";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "Classification_Rights", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		
+		//TaxonomicTree_TaxonNode -> classification_TaxonNode
+		stepName = "Rename TaxonomicTree_TaxonNode to Classification_TaxonNode";
+		tableNameChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree_TaxonNode", "Classification_TaxonNode", INCLUDE_AUDIT);
+		stepList.add(tableNameChanger);
+
+		stepName = "Rename taxonomicTree_id column in Classification_TaxonNode";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "Classification_TaxonNode", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		//Rename taxonomictree column in TaxonNode
+		stepName = "Rename taxonomicTree_id column in TaxonNode";
+		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "TaxonNode", "taxonomicTree_id", "classification_id", INCLUDE_AUDIT);
+		stepList.add(columnNameChanger);
+
+		
+		
 		//add the table hibernate_sequences
 		stepName = "Add the table hibernate_sequences to store the table specific sequences in";
 		SequenceTableCreator step = SequenceTableCreator.NewInstance(stepName);

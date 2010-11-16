@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -64,7 +64,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> getRootTaxa(Reference sec);
 	
@@ -75,7 +75,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * 
 	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 
@@ -86,7 +86,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param withMisapplications if false taxa that have at least one misapplied name relationship in which they are
 	 * the misapplied name are not returned.<Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> getRootTaxa(Reference sec, boolean onlyWithChildren, boolean withMisapplications);
 
@@ -103,7 +103,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 *            {@link BeanInitializer#initialize(Object, List)}. <Br>
 	 *            Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
 	
@@ -365,14 +365,14 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param type
 	 * @return
 	 */
-	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type);
+	public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type);
 	/**
 	 * returns a list of all inferred synonyms (inferred epithet, inferred genus and potential combination) concerning the taxon
 	 * @param tree
 	 * @param taxon
 	 * @return
 	 */
-	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree, Taxon taxon);
+	public List<Synonym> createAllInferredSynonyms(Classification tree, Taxon taxon);
 	
 	public int countAllRelationships();
 	

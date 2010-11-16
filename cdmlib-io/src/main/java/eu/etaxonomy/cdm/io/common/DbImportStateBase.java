@@ -16,7 +16,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
@@ -27,9 +27,8 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
 	private RelatedObjectsHelper relatedObjectsHelper = new RelatedObjectsHelper();;
-	//holds the taxonTrees needed for this partition, the key is a value that differentiate classifications
+	//holds the classifications needed for this partition, the key is a value that differentiate classifications
 	//like the taxons reference (secundum)
-	private Map<Integer, TaxonomicTree> partitionTaxonTreeMap = new HashMap<Integer, TaxonomicTree>();
 	
 	
 	/**
@@ -69,23 +68,6 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects) {
 		relatedObjectsHelper.setRelatedObjects(relatedObjects);
 	}
-
-
-
-//	/**
-//	 * @param curentTaxonTreeMap the curentTaxonTreeMap to set
-//	 */
-//	public void setPartitionTaxonTreeMap(Map<Integer, TaxonomicTree> partitionTaxonTreeMap) {
-//		this.partitionTaxonTreeMap = partitionTaxonTreeMap;
-//	}
-//
-//	/**
-//	 * @return the curentTaxonTreeMap
-//	 */
-//	public Map<Integer, TaxonomicTree> getPartitionTaxonTreeMap() {
-//		return partitionTaxonTreeMap;
-//	}
-//	
 
 	
 }

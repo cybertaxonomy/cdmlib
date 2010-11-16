@@ -161,7 +161,7 @@
         <class>eu.etaxonomy.cdm.model.taxon.TaxonNode</class>
         <class>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</class>
         <class>eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType</class>
-        <class>eu.etaxonomy.cdm.model.taxon.TaxonomicTree</class>
+        <class>eu.etaxonomy.cdm.model.taxon.Classification</class>
         <!-- View Package -->
         <class>eu.etaxonomy.cdm.model.view.View</class>
         <class>eu.etaxonomy.cdm.model.view.AuditEvent</class>

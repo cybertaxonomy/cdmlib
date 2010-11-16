@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.babadshanjan
@@ -335,14 +335,14 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			ret = false;
 		}
 		
-		if (jaxbImpConfig.isDoTaxonomicTreeData() == true) {
-			logger.error("# Taxonomic Tree");
+		if (jaxbImpConfig.isDoClassificationData() == true) {
+			logger.error("# Classification");
 			
 			Collection<TaxonNode> nodes = dataSet.getTaxonNodes();
-			Collection<TaxonomicTree> taxonTrees = dataSet.getTaxonomicTrees();
-			getTaxonTreeService().saveTaxonNodeAll(nodes);
-			for (TaxonomicTree tree: taxonTrees){
-				getTaxonTreeService().saveOrUpdate(tree);
+			Collection<Classification> classifications = dataSet.getClassifications();
+			getClassificationService().saveTaxonNodeAll(nodes);
+			for (Classification tree: classifications){
+				getClassificationService().saveOrUpdate(tree);
 			}
 		}
 		

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -65,8 +65,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	//@Qualifier("taxonService")
 	private ITaxonService taxonService;
 	@Autowired
-	//@Qualifier("taxonTreeService")
-	private ITaxonTreeService taxonTreeService;
+	//@Qualifier("classificationService")
+	private IClassificationService classificationService;
 	@Autowired
 	//@Qualifier("referenceService")
 	private IReferenceService referenceService;
@@ -166,10 +166,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTaxonTreeService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getClassificationService()
 	 */
-	public ITaxonTreeService getTaxonTreeService() {
-		return this.taxonTreeService;
+	public IClassificationService getClassificationService() {
+		return this.classificationService;
 	}
 	
 	public ITaxonNodeService getTaxonNodeService(){

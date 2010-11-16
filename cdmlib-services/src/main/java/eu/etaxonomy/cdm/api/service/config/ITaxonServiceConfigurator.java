@@ -16,7 +16,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -50,9 +50,9 @@ public interface ITaxonServiceConfigurator {
 
 	public void setMatchMode(MatchMode matchMode);
 
-	public TaxonomicTree getTaxonomicTree();
+	public Classification getClassification();
 	
-	public void setTaxonomicTree(TaxonomicTree taxonomicTree);
+	public void setClassification(Classification classification);
 	
 	public Integer getPageSize();
 

@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
- * the opinion of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} can build a taxonomic tree).
+ * the opinion of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} can build a classification).
  * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.<BR>
  * Splitting taxa in "accepted/correct" and {@link Synonym "synonyms"} makes it easier to handle
  * particular relationships between ("accepted/correct") taxa on the one hand
@@ -135,7 +135,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	private Taxon taxonomicParentCache;
 	
 	
@@ -150,7 +150,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 
 	//cached number of taxonomic children
 	@XmlElement(name = "TaxonomicChildrenCount")
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	private int taxonomicChildrenCount;
 	
 // ************* CONSTRUCTORS *************/	
@@ -469,7 +469,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * The taxon relationship will also be removed from one of both sets
 	 * belonging to the second taxon involved. Furthermore the inherited RelatedFrom and
 	 * RelatedTo attributes of the given taxon relationship will be nullified.<P>
-	 * If the taxon relationship concerns the taxonomic tree possible
+	 * If the taxon relationship concerns the classification possible
 	 * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
 	 * {@link #getTaxonomicChildrenCount() childrens} will be stored.
 	 *
@@ -513,7 +513,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * source nor the target of the taxon relationship match with <i>this</i> taxon
 	 * no addition will be carried out. The taxon relationship will also be
 	 * added to the second taxon involved in the given relationship.<P>
-	 * If the taxon relationship concerns the taxonomic tree possible
+	 * If the taxon relationship concerns the classification possible
 	 * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
 	 * {@link #getTaxonomicChildrenCount() childrens} will be stored.
 	 * 
@@ -595,7 +595,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to <i>this</i> taxon.
 	 * The taxon relationship will also be added to the set of taxon
 	 * relationships to the second taxon involved in the created relationship.<P>
-	 * If the taxon relationship concerns the taxonomic tree possible
+	 * If the taxon relationship concerns the classification possible
 	 * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
 	 * {@link #getTaxonomicChildrenCount() childrens} will be stored.
 	 * 
@@ -695,7 +695,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			#getTaxonomicParent()
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public void addTaxonomicChild(Taxon child, Reference citation, String microcitation){
 		if (child == null){
 			throw new NullPointerException("Child Taxon is 'null'");
@@ -712,7 +712,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * of {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to the child taxon.
 	 * Furthermore the inherited RelatedFrom and RelatedTo attributes of the
 	 * taxon relationship will be nullified.<P>
-	 * Since the taxon relationship concerns the taxonomic tree modifications
+	 * Since the taxon relationship concerns the classification modifications
 	 * of the number of {@link #getTaxonomicChildrenCount() childrens} for <i>this</i> taxon and
 	 * of the {@link #getTaxonomicParent() parent taxon} for the child taxon will be stored.
 	 *
@@ -726,7 +726,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    			eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * 
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use classification/TaxonNode instead
 	public void removeTaxonomicChild(Taxon child){
 		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
 		for (TaxonRelationship taxRel : taxRels ){
@@ -739,7 +739,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	/** 
 	 * Returns the taxon which is the next higher taxon (parent) of <i>this</i> taxon
-	 * within the taxonomic tree and which is stored in the
+	 * within the classification and which is stored in the
 	 * TaxonomicParentCache attribute. Each taxon can have only one parent taxon.
 	 * The child taxon and the parent taxon play the source respectively the
 	 * target role in one {@link TaxonRelationship taxon relationship} with
@@ -752,7 +752,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getRelationsFromThisTaxon()
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public Taxon getTaxonomicParent() {
 		return this.taxonomicParentCache;
 	}
@@ -761,7 +761,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * Sets the taxononomic parent of <i>this</i> taxon to null.
 	 * Note that this method does not handle taxonomic relationships.
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public void nullifyTaxonomicParent() {
 		this.taxonomicParentCache = null;
 	}
@@ -776,7 +776,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * The taxon relationship will also be added to the set of
 	 * {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging to the second taxon
 	 * (parent) involved in the new relationship.<P>
-	 * Since the taxon relationship concerns the taxonomic tree modifications
+	 * Since the taxon relationship concerns the classification modifications
 	 * of the {@link #getTaxonomicParent() parent taxon} for <i>this</i> taxon and of the number of
 	 * {@link #getTaxonomicChildrenCount() childrens} for the child taxon will be stored.
 	 * 
@@ -792,7 +792,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			#getRelationsToThisTaxon()
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public void setTaxonomicParent(Taxon newParent, Reference citation, String microcitation){
 		//remove previously existing parent relationship!!!
 		Taxon oldParent = this.getTaxonomicParent();
@@ -810,7 +810,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 
 	/** 
 	 * Returns the set of taxa which have <i>this</i> taxon as next higher taxon
-	 * (parent) within the taxonomic tree. Each taxon can have several child
+	 * (parent) within the classification. Each taxon can have several child
 	 * taxa. The child taxon and the parent taxon play the source respectively
 	 * the target role in one {@link TaxonRelationship taxon relationship} with
 	 * {@link TaxonRelationshipType taxon relationship type} "taxonomically included in".
@@ -823,7 +823,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see  #getRelationsToThisTaxon()
 	 */
 	@Transient
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
 		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
@@ -839,7 +839,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	/** 
 	 * Returns the number of taxa which have <i>this</i> taxon as next higher taxon
-	 * (parent) within the taxonomic tree and the number of which is stored in
+	 * (parent) within the classification and the number of which is stored in
 	 * the TaxonomicChildrenCount attribute. Each taxon can have several child
 	 * taxa. The child taxon and the parent taxon play the source respectively
 	 * the target role in one {@link TaxonRelationship taxon relationship} with
@@ -850,7 +850,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see  #getTaxonomicChildren()
 	 * @see  #getRelationsToThisTaxon()
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public int getTaxonomicChildrenCount(){
 		return taxonomicChildrenCount;
 	}	
@@ -858,24 +858,24 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	/**
 	 * @see  #getTaxonomicChildrenCount()
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public void setTaxonomicChildrenCount(int taxonomicChildrenCount) {
 		this.taxonomicChildrenCount = taxonomicChildrenCount;
 	}
 
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> taxon has at least one
-	 * taxonomic child taxon within the taxonomic tree (true) or not (false).
+	 * taxonomic child taxon within the classification (true) or not (false).
 	 * 
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getTaxonomicChildren()
 	 */
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	public boolean hasTaxonomicChildren(){
 		return this.taxonomicChildrenCount > 0;
 	}
 
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	private int computeTaxonomicChildrenCount(){
 		int count = 0;
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){

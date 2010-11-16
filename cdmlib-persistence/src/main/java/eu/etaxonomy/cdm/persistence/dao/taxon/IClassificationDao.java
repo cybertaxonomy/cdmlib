@@ -13,14 +13,14 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 /**
  * @author a.mueller
  *
  */
-public interface ITaxonomicTreeDao extends IIdentifiableDao<TaxonomicTree> {
+public interface IClassificationDao extends IIdentifiableDao<Classification> {
 	
 	/**
 	 * Loads all TaxonNodes of the specified tree for a given Rank.
@@ -28,11 +28,11 @@ public interface ITaxonomicTreeDao extends IIdentifiableDao<TaxonomicTree> {
 	 * Rank the node associated with the next lower Rank is taken as root node.
 	 * If the <code>rank</code> is null the absolute root nodes will be returned.
 	 *
-	 * @param taxonomicTree
+	 * @param classification
 	 * @param rank may be null
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths);
+	public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, List<String> propertyPaths);
 
 }

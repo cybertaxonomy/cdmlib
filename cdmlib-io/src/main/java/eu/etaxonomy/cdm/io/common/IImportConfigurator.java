@@ -192,13 +192,13 @@ public interface IImportConfigurator extends IIoConfigurator {
 	
 	
  	/**
- 	 * If this import implicitly represents a taxonomic tree in the destination CDM database
- 	 * one can define the taxonomic tree's uuid here. The congrete import class must support this
+ 	 * If this import implicitly represents a classification in the destination CDM database
+ 	 * one can define the classification's uuid here. The congrete import class must support this
  	 * functionality otherwise it will have no effect.
  	 * @return
  	 */
- 	public UUID getTaxonomicTreeUuid();
-	public void setTaxonomicTreeUuid(UUID treeUuid);
+ 	public UUID getClassificationUuid();
+	public void setClassificationUuid(UUID treeUuid);
 
 	/**
  	 * If one wants do define the uuid of the accepted taxa (except for missaplied names) this can be

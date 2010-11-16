@@ -34,7 +34,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -67,7 +67,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	ITaxonService taxonService;
 	
 	@SpringBeanByType
-	ITaxonTreeService taxonTreeService;
+	IClassificationService classificationService;
 
 	private IImportConfigurator configurator;
 	
@@ -94,9 +94,9 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
-		List<TaxonomicTree> treeList = taxonTreeService.list(null, null,null,null,null);
-		assertEquals("Number of taxonomic trees should be 1", 1, treeList.size());
-		TaxonomicTree tree = treeList.get(0);
+		List<Classification> treeList = classificationService.list(null, null,null,null,null);
+		assertEquals("Number of classifications should be 1", 1, treeList.size());
+		Classification tree = treeList.get(0);
 		Set<TaxonNode> rootNodes = tree.getChildNodes();
 		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
 		TaxonNode rootNode = rootNodes.iterator().next();

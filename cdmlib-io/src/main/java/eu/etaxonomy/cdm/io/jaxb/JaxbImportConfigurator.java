@@ -53,7 +53,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	private boolean doHomotypicalGroups = true;
 
 	private boolean doTypeDesignations = true;
-	private boolean doTaxonomicTreeData = true;
+	private boolean doClassificationData = true;
 
 	
 	
@@ -216,8 +216,8 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		this.doTypeDesignations = doTypeDesignations;
 	}
 
-	public boolean isDoTaxonomicTreeData() {
-		return this.doTaxonomicTreeData;
+	public boolean isDoClassificationData() {
+		return this.doClassificationData;
 	}
 	
 	

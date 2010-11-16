@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.babadshanjan
@@ -56,8 +56,8 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 //	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the taxonomic tree are not found.
+	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
+	 * Taxa that are not part of the classification are not found.
 	 * 
 	 * @param exImpConfig
 	 * @param dbname
@@ -136,7 +136,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		int occurrencesRows = numberOfRows;
 		int mediaRows = numberOfRows;
 		int featureDataRows = numberOfRows;
-		int taxonomicTreeDataRows = numberOfRows;
+		int classificationDataRows = numberOfRows;
 		int languageDataRows = numberOfRows;
 		int termVocabularyRows = numberOfRows;
 		int homotypicalGroupRows = numberOfRows;
@@ -272,21 +272,21 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			
 			dataSet.setFeatureTrees(getFeatureTreeService().list(null,null,null,null,null));
 		}
-		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {
-			if (taxonomicTreeDataRows == 0) { taxonomicTreeDataRows = MAX_ROWS; }
-			logger.info("# Taxonomic Tree");
+		if (jaxbExpConfig.isDoClassificationData() == true) {
+			if (classificationDataRows == 0) { classificationDataRows = MAX_ROWS; }
+			logger.info("# Classification");
 			
 			
-			List<TaxonomicTree> taxTrees = new ArrayList<TaxonomicTree>();
-			taxTrees= getTaxonTreeService().list(null,taxonomicTreeDataRows, 0, null, null);
+			List<Classification> taxTrees = new ArrayList<Classification>();
+			taxTrees= getClassificationService().list(null,classificationDataRows, 0, null, null);
 			
-			List<TaxonomicTree> taxTreesdeproxy = new ArrayList<TaxonomicTree>();
-			for (TaxonomicTree taxTree : taxTrees){
+			List<Classification> taxTreesdeproxy = new ArrayList<Classification>();
+			for (Classification taxTree : taxTrees){
 				HibernateProxyHelper.deproxy(taxTree);
 				taxTreesdeproxy.add(taxTree);
 			}
 			List<TaxonNode> taxNodes = new ArrayList<TaxonNode>();
-			taxNodes= getTaxonTreeService().getAllNodes();
+			taxNodes= getClassificationService().getAllNodes();
 			List<TaxonNode> taxNodesdeproxy = new ArrayList<TaxonNode>();
 			for (TaxonNode taxNode : taxNodes){
 				HibernateProxyHelper.deproxy(taxNode);
@@ -294,7 +294,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			}
 			
 			dataSet.setTaxonNodes(taxNodesdeproxy);
-			dataSet.setTaxonomicTrees(taxTreesdeproxy );
+			dataSet.setClassifications(taxTreesdeproxy );
 		}
 		//TODO: FIXME!!!!!
 		dataSet.setLanguageStrings(null);

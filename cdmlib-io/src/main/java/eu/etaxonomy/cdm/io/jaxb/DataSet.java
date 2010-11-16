@@ -102,7 +102,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.babadshanjan
@@ -120,7 +120,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 	    "featureTrees",
 	    "polytomousKeys",
 	    "taxonNodes",
-	    "taxonomicTrees",
+	    "classifications",
 	    "taxonomicNames",
 	    "homotypicalGroups",
 	    "taxonBases",
@@ -210,9 +210,9 @@ public class DataSet {
     protected List<PolytomousKey> polytomousKeys = new ArrayList<PolytomousKey>();
     
     
-    @XmlElementWrapper(name = "TaxonomicTrees")
-    @XmlElement(name = "TaxonomicTree", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<TaxonomicTree> taxonomicTrees = new ArrayList<TaxonomicTree>();
+    @XmlElementWrapper(name = "Classifications")
+    @XmlElement(name = "Classification", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
+    protected List<Classification> classifications = new ArrayList<Classification>();
     
     @XmlElementWrapper(name = "TaxonNodes")
     @XmlElement(name = "TaxonNodes", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -546,8 +546,8 @@ public class DataSet {
      *     {@link List<FeatureTree> }
      *     
      */
-    public void setTaxonomicTrees(List<TaxonomicTree> value) {
-    	this.taxonomicTrees = value;
+    public void setClassifications(List<Classification> value) {
+    	this.classifications = value;
     }
     
     
@@ -559,8 +559,8 @@ public class DataSet {
      *     {@link List<FeatureTree> }
      *     
      */
-    public List<TaxonomicTree> getTaxonomicTrees() {
-        return taxonomicTrees;
+    public List<Classification> getClassifications() {
+        return classifications;
     }
     /**
      * Sets the value of the featureTrees property.

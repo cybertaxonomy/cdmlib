@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
@@ -82,7 +82,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * where the taxonBase.name.nameCache property matches the String queryString.
 	 * @param clazz
 	 * @param queryString
-	 * @param taxonomicTree TODO
+	 * @param classification TODO
 	 * @param matchMode
 	 * @param namedAreas TODO
 	 * @param pageSize
@@ -90,13 +90,13 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param propertyPaths TODO
 	 * @return list of found taxa
 	 */
-	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
 	 * @param clazz
 	 * @param queryString
-	 * @param taxonomicTree TODO
+	 * @param classification TODO
 	 * @param matchMode
 	 * @param namedAreas
 	 * @param pageSize
@@ -104,7 +104,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param propertyPaths
 	 * @return
 	 */
-	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
 			
 			MatchMode matchMode, Set<NamedArea> namedAreas);
 	
@@ -174,7 +174,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * </strong>
 	 * @param queryString
 	 *            the taqxon Name to search for
-	 * @param taxonomicTree TODO
+	 * @param classification TODO
 	 * @param matchMode
 	 * @param namedAreas TODO
 	 * @param pageNumber
@@ -182,16 +182,16 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param onlyAcccepted
 	 * @return
 	 */
-	public List<TaxonBase> findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, TaxonomicTree taxonomicTree, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
+	public List<TaxonBase> findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
-	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
+	public List<TaxonBase> getTaxaByCommonName(String queryString, Classification classification,
 	MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 	Integer pageNumber, List<String> propertyPaths);
 
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> getRootTaxa(Reference sec);
 
@@ -204,7 +204,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship. 
 	 * <Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
 	
@@ -230,7 +230,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 *            {@link BeanInitializer#initialize(Object, List)}. <Br>
 	 *            Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> 
 	getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);
@@ -379,35 +379,35 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * 
 	 * @return
 	 */
-	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
+	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
 	/**
-	 * creates all inferred synonyms for the species in the tree and insert it to the database
+	 * Creates all inferred synonyms for the species in the tree and insert it to the database
 	 * @param tree
 	 * @return List of inferred synonyms
 	 */
-	//public List<Synonym> insertAllInferredSynonymy(TaxonomicTree tree);
+	//public List<Synonym> insertAllInferredSynonymy(Classification tree);
 	
 	/**
-	 * creates all inferred synonyms for the taxon in the taxonomic tree, but do not insert it to the database
+	 * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
 	 * @param taxon
 	 * @param tree
 	 * @return list of inferred synonyms
 	 */
-	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree);
+	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree);
 	/**
-	 * creates the specified inferred synonyms for the taxon in the taxonomic tree, but do not insert it to the database
+	 * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
 	 * @param taxon
 	 * @param tree
 	 * @return list of inferred synonyms
 	 */
-	public List<Synonym> createInferredSynonyms(Taxon taxon, TaxonomicTree tree, SynonymRelationshipType type);
+	public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type);
 
 	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
 	public String getPhylumName(TaxonNameBase name);
 
 	public long countTaxaByCommonName(String searchString,
-			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Classification classification, MatchMode matchMode,
 			Set<NamedArea> namedAreas);
 	
 	public long deleteSynonymRelationships(Synonym syn);

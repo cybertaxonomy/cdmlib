@@ -104,12 +104,6 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpd
 		step = ColumnAdder.NewStringInstance(stepName, "SpecimenOrObservationBase", "barcode", INCLUDE_AUDIT);
 		stepList.add(step);
 
-		
-//		//rename taxonomicTree -> classification
-//		stepName = "Rename taxonomic tree into classification";
-//		TableNameChanger tableChanger = TableNameChanger.NewInstance(stepName, "TaxonomicTree", "Classification", INCLUDE_AUDIT);
-//		stepList.add(tableChanger);
-		
 		return stepList;
 	}
 }

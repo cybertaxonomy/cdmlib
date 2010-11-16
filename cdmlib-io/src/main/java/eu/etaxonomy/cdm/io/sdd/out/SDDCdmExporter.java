@@ -60,8 +60,8 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the taxonomic tree are not found.
+	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
+	 * Taxa that are not part of the classification are not found.
 	 * 
 	 * @param exImpConfig
 	 * @param dbname
