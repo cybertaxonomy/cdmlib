@@ -3418,7 +3418,7 @@
         lifestage_id integer,
         sex_id integer,
         collection_id integer,
-        derivationevent_id integer,
+        derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
         gatheringevent_id integer,
@@ -3455,7 +3455,7 @@
         catalognumber varchar(255),
         collectorsnumber varchar(255),
         collection_id integer,
-        derivationevent_id integer,
+        derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
         primary key (id, REV)
@@ -7478,7 +7478,7 @@
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA32724AAB411A 
-        foreign key (derivationevent_id) 
+        foreign key (derivedfrom_id) 
         references DerivationEvent;
 
     alter table SpecimenOrObservationBase 

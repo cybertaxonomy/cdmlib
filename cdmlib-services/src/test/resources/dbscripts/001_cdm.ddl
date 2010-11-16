@@ -3523,7 +3523,7 @@
         collection_id integer,
         exsiccatum varchar(255),
     	primarycollector_id integer,
-        derivationevent_id integer,
+        derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
         gatheringevent_id integer,
@@ -3557,7 +3557,7 @@
         exsiccatum varchar(255),
     	primarycollector_id integer,
         collection_id integer,
-        derivationevent_id integer,
+        derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
         fieldnotes varchar(255),
@@ -7641,7 +7641,7 @@
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA32724AAB411A 
-        foreign key (derivationevent_id) 
+        foreign key (derivedfrom_id) 
         references DerivationEvent;
         
         
