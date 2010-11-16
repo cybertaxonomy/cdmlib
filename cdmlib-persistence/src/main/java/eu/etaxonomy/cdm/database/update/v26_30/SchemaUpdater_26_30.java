@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
-import eu.etaxonomy.cdm.database.update.v25_26.SchemaUpdater_25_26;
+import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
 
 
 /**
@@ -38,8 +38,8 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_26_30.class);
-//	private static final String startSchemaVersion = "2.5.0.0.201009211255";
-	private static final String startSchemaVersion = "2.6.0.0.201010231255";
+	private static final String startSchemaVersion = "2.5.0.0.201009211255";
+//	private static final String startSchemaVersion = "2.6.0.0.201010231255";
 	private static final String endSchemaVersion = "3.0.0.0.201011090000";
 	
 // ********************** FACTORY METHOD *******************************************
@@ -105,7 +105,7 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 
 		//Polytomous key node
 		stepName = "Create PolytomousKeyNode tables";
-		tableCreator = TableCreator.NewInstance(stepName, "PolytomousKeyNode", new String[]{"sortindex", "key_id", "othernode_id", "question_id", "statement_id", "feature_id", "subkey_id" , "taxon_id", "parent_id"}, new String[]{"int", "int", "int", "int","int", "int", "int", "int", "int"}, new String[]{null, "PolytomousKey", "PolytomousKeyNode", "KeyStatement", "KeyStatement", "DefinedTermBase", "PolytomousKey" , "TaxonBase", "PolytomousKeyNode"}, INCLUDE_AUDIT, INCLUDE_CDM_BASE);
+		tableCreator = TableCreator.NewInstance(stepName, "PolytomousKeyNode", new String[]{"nodeNumber", "sortindex", "key_id", "othernode_id", "question_id", "statement_id", "feature_id", "subkey_id" , "taxon_id", "parent_id"}, new String[]{"int", "int", "int", "int", "int","int", "int", "int", "int", "int"}, new String[]{null, null, "PolytomousKey", "PolytomousKeyNode", "KeyStatement", "KeyStatement", "DefinedTermBase", "PolytomousKey" , "TaxonBase", "PolytomousKeyNode"}, INCLUDE_AUDIT, INCLUDE_CDM_BASE);
 		stepList.add(tableCreator);
 
 		//modifying text
@@ -118,7 +118,7 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		ColumnNameChanger colChanger = ColumnNameChanger.NewIntegerInstance(stepName, "PolytomousKey_NamedArea", "FeatureTree_id", "PolytomousKey_id", INCLUDE_AUDIT);
 		stepList.add(colChanger);
 		
-		//rename named area featureTree_id
+		//rename polytomouskey_scope featureTree_id
 		stepName = "Rename polytomouskey_scope.featureTree_id -> polytomouskey_id";
 		colChanger = ColumnNameChanger.NewIntegerInstance(stepName, "PolytomousKey_Scope", "FeatureTree_id", "PolytomousKey_id", INCLUDE_AUDIT);
 		stepList.add(colChanger);
@@ -133,15 +133,16 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		ColumnRemover colRemover = ColumnRemover.NewInstance(stepName, "FeatureTree", "DTYPE", INCLUDE_AUDIT);
 		stepList.add(colRemover);
 		
-		//remove DTYPE from feature tree
+		//remove feature node taxon column
 		stepName = "Remove feature node taxon column";
 		colRemover = ColumnRemover.NewInstance(stepName, "FeatureNode", "taxon_id", INCLUDE_AUDIT);
 		stepList.add(colRemover);
 
-		//Remove representa
-		stepName = "Remove feature node taxon column";
-		TableDroper tableDroper = TableDroper.NewInstance(stepName, "featurenode_representation", INCLUDE_AUDIT);
-		stepList.add(tableDroper);
+		//Remove featureNode_representation
+		stepName = "Remove FeatureNode_representation MN";
+		TableDroper tableDropper = TableDroper.NewInstance(stepName, "featurenode_representation", INCLUDE_AUDIT);
+		stepList.add(tableDropper);
+		
 		
 		//add exsiccatum
 		stepName = "Add exsiccatum to specimen";
@@ -153,6 +154,10 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		ColumnAdder primaryCollectorAdder = ColumnAdder.NewIntegerInstance(stepName, "SpecimenOrObservationBase", "primaryCollector_id", INCLUDE_AUDIT, false, "AgentBase");
 		stepList.add(primaryCollectorAdder);
 
+		//add the table hibernate_sequences
+		stepName = "Add the table hibernate_sequences to store the table specific sequences in";
+		SequenceTableCreator step = SequenceTableCreator.NewInstance(stepName);
+		stepList.add(step);
 		
 		return stepList;
 	}
@@ -170,7 +175,7 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 	 */
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
-		return SchemaUpdater_25_26.NewInstance();
+		return SchemaUpdater_24_25.NewInstance();
 	}
 
 }

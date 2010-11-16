@@ -149,7 +149,7 @@ public class PolytomousKeyNode extends VersionableEntity  {
     @ManyToOne(fetch = FetchType.LAZY)
 	private PolytomousKeyNode otherNode;
 	
-	private Integer nodeNumber;
+	private Integer nodeNumber = 0;
     
     
 	//a modifying text may be a text like "an unusual form of", commenting the taxa
@@ -171,12 +171,42 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	}
 
 	/** 
-	 * Creates a new empty feature node instance.
-	 * 
-	 * @see #NewInstance(Feature)
+	 * Creates a new empty polytomous key node instance.
 	 */
 	public static PolytomousKeyNode NewInstance(){
 		return new PolytomousKeyNode();
+	}
+	
+	/** 
+	 * Creates a new empty polytomous key node instance and sets the node number to 0.
+	 */
+	public static PolytomousKeyNode NewRootInstance(){
+		PolytomousKeyNode result = new PolytomousKeyNode();
+		result.setNodeNumber(0);
+		return result;
+	}
+
+	/** 
+	 * Creates a new polytomous key node instance.
+	 * 
+	 */
+	public static PolytomousKeyNode NewInstance(String statement){
+		PolytomousKeyNode result = new PolytomousKeyNode();
+		result.setStatement(KeyStatement.NewInstance(statement));
+		return result;
+	}
+	
+	/** 
+	 * Creates a new polytomous key node instance.
+	 * 
+	 */
+	public static PolytomousKeyNode NewInstance(String statement, String question, Taxon taxon, Feature feature){
+		PolytomousKeyNode result = new PolytomousKeyNode();
+		result.setTaxon(taxon);
+		result.setStatement(KeyStatement.NewInstance(statement));
+		result.setQuestion(KeyStatement.NewInstance(question));
+		result.setFeature(feature);
+		return result;
 	}
 
 	
@@ -201,15 +231,18 @@ public class PolytomousKeyNode extends VersionableEntity  {
 	/**
 	 * The node number is the number of the node within the key. This corresponds to the
 	 * number for key choices in written keys.
-	 * @param nodeNumber
 	 */
-	public void setNodeNumber(Integer nodeNumber) {
-		this.nodeNumber = nodeNumber;
-	}
-
 	public Integer getNodeNumber() {
 		return nodeNumber;
 	}
+	
+	/**
+	 * Is computed automatically and therefore should not be set by the user.
+	 */
+	private void setNodeNumber(Integer nodeNumber) {
+		this.nodeNumber = nodeNumber;
+	}
+
 
 	
 	/** 
@@ -253,10 +286,6 @@ public class PolytomousKeyNode extends VersionableEntity  {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
 		
-//		if (child.getParent() != null){
-//			child.getParent().removeChild(child);
-//		}
-//		child.setParent(this);
 		children.add(index, child);
 		child.setKey(this.getKey());
 		//TODO workaround (see sortIndex doc)
@@ -264,8 +293,29 @@ public class PolytomousKeyNode extends VersionableEntity  {
 			children.get(i).sortIndex = i;
 		}
 		child.sortIndex = index;
+		updateNodeNumber();
 		
 	}
+	private void updateNodeNumber() {
+		int nodeNumber = 0;
+		PolytomousKeyNode root = getKey().getRoot();
+		root.setNodeNumber(nodeNumber++);
+		nodeNumber = updateChildNodeNumbers(nodeNumber, root);
+		
+	}
+
+	private int updateChildNodeNumbers(int nodeNumber, PolytomousKeyNode parent) {
+		if (parent.isLeaf()){
+			parent.setNodeNumber(null);
+		}else{
+			for (PolytomousKeyNode child : parent.getChildren()){
+				child.setNodeNumber(nodeNumber++);
+				nodeNumber = updateChildNodeNumbers(nodeNumber, child);
+			}
+		}
+		return nodeNumber;
+	}
+
 	/** 
 	 * Removes the given polytomous key node from the list of {@link #getChildren() children}
 	 * of <i>this</i> polytomous key node.
@@ -308,7 +358,7 @@ public class PolytomousKeyNode extends VersionableEntity  {
 		}
 			child.sortIndex = null;
 		}
-		
+		updateNodeNumber();
 	}
 
 	/** 

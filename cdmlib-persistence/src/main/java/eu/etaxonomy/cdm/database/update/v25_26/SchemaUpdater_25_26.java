@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
+import eu.etaxonomy.cdm.database.update.v26_30.SequenceTableCreator;
 
 /**
  * @author n.hoffmann

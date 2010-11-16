@@ -97,7 +97,7 @@ public class TableCreator extends SchemaUpdaterStepBase implements ISchemaUpdate
 				ColumnAdder adder = ColumnAdder.NewStringInstance(this.getStepName(), this.tableName, this.columnNames.get(i), length, includeAudTable);
 				this.columnAdders.add(adder);
 			}else if ("tinyint".equals(columnTypes.get(i)) ){
-				ColumnAdder adder = ColumnAdder.NewIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull, null);
+				ColumnAdder adder = ColumnAdder.NewTinyIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 				this.columnAdders.add(adder);
 			}
 		}
@@ -172,7 +172,7 @@ public class TableCreator extends SchemaUpdaterStepBase implements ISchemaUpdate
 		if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
 			updateQuery += " ENGINE=MYISAM DEFAULT CHARSET=utf8 ";
 		}
-		System.out.println(updateQuery);
+		logger.debug(updateQuery);
 		datasource.executeUpdate(updateQuery);
 		createForeignKeys(tableName, isAudit, datasource, monitor);
 		return true;
@@ -260,6 +260,7 @@ public class TableCreator extends SchemaUpdaterStepBase implements ISchemaUpdate
 		updateQuery = updateQuery.replace("@attribute", attribute + idSuffix);
 		updateQuery = updateQuery.replace("@referencedTable", referencedTable);
 		
+		logger.debug(updateQuery);
 		datasource.executeUpdate(updateQuery);
 	}
 

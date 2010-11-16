@@ -9,8 +9,10 @@
 */
 package eu.etaxonomy.cdm.database.update.v26_30;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
@@ -72,91 +74,190 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 	}
 
 
-	private void moveQuestions(String featureNodeTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, boolean isAudit) {
-		// move representations
-		String languageStringTable = "LanguageString" +  (isAudit ? "_AUD" : "");
-		String representationTable = "Representation" + (isAudit ? "_AUD" : "");
-		String oldMnTable = "featuretree_representation" + (isAudit ? "_AUD" : "");
-		String newMnTable = "KeyStatement_LanguageString" + (isAudit ? "_AUD" : "");
-		String keyStatementTable = "KeyStatement" + (isAudit ? "_AUD" : "");
-		String audit = "";
-		String rAudit = "";
+	private void moveQuestions(String featureNodeTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, boolean isAudit) throws SQLException {
+		String aud = "";
+		String audValue = "";
+		String audParam = "";
 		if (isAudit){
-			audit = ", REV, revtype";
-			rAudit = ", r.REV, r.revtype";
+			aud = "_AUD";
+			audValue = ",@REV, @revtype";
+			audParam = ", REV, revtype";
+		}
+		//For each Question 
+		String questionSql = " SELECT * " + 
+			" FROM FeatureNode_Representation@_aud mn INNER JOIN Representation@_aud r ON mn.questions_id = r.id ";
+		questionSql = questionSql.replace("@_aud", aud);
+		ResultSet rs = datasource.executeQuery(questionSql);
+		while (rs.next()){
+			
+			//Created KeyStatement
+			String updateQuery = " INSERT INTO KeyStatement@_aud (id, created, updated, createdby_id, updatedby_id @audParam)" + 
+				" VALUES (@id, @createdWhen, @updatedWhen, @createdby_id, @updatedby_id @audValue)";
+			updateQuery = updateQuery.replace("@audValue", audValue);
+			updateQuery = updateQuery.replace("@id", rs.getObject("FeatureNode_id").toString()); //use feature node id for key statement id 
+			updateQuery = updateQuery.replace("@createdWhen", nullSafeString(rs.getString("created")));
+			updateQuery = updateQuery.replace("@updatedWhen", nullSafeString((rs.getString("updated"))));
+			updateQuery = updateQuery.replace("@createdby_id", nullSafe(rs.getObject("createdby_id")));
+			updateQuery = updateQuery.replace("@updatedby_id", nullSafe(rs.getObject("updatedby_id")));
+			if (isAudit){
+				updateQuery = updateQuery.replace("@REV", nullSafe(rs.getObject("r.REV")));
+				updateQuery = updateQuery.replace("@revtype", nullSafe(rs.getObject("r.revtype")));
+			}
+			updateQuery = updateQuery.replace("@_aud", aud);
+			updateQuery = updateQuery.replace("@audParam", audParam);
+			datasource.executeUpdate(updateQuery);
+			
+			//create entry in Language String
+			updateQuery = " INSERT INTO LanguageString@_aud (id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @audParam) " + 
+				" VALUES (@id, @createdWhen, @uuid, @updatedWhen, @text, @createdby_id, @updatedby_id, @language_id @audValue)";
+			updateQuery = updateQuery.replace("@audValue", audValue);
+			updateQuery = updateQuery.replace("@id", rs.getObject("id").toString());
+			updateQuery = updateQuery.replace("@createdWhen", nullSafeString(rs.getString("created")));
+			updateQuery = updateQuery.replace("@updatedWhen", nullSafeString(rs.getString("updated")));
+			updateQuery = updateQuery.replace("@createdby_id", nullSafe(rs.getObject("createdby_id")));
+			updateQuery = updateQuery.replace("@updatedby_id", nullSafe(rs.getObject("updatedby_id")));
+			updateQuery = updateQuery.replace("@uuid", nullSafeString(rs.getString("uuid")));
+			updateQuery = updateQuery.replace("@text", nullSafeString(rs.getString("text")));
+			updateQuery = updateQuery.replace("@language_id", nullSafe(rs.getObject("language_id")));
+			if (isAudit){
+				updateQuery = updateQuery.replace("@REV", nullSafe(rs.getObject("r.REV")));
+				updateQuery = updateQuery.replace("@revtype", nullSafe(rs.getObject("r.revtype")));
+			}
+			updateQuery = updateQuery.replace("@_aud", aud);
+			updateQuery = updateQuery.replace("@audParam", audParam);
+			datasource.executeUpdate(updateQuery);
+					
+			//create entry in KeyStatement_LanguageString
+			updateQuery = " INSERT INTO KeyStatement_LanguageString@_aud (KeyStatement_id, label_id, label_mapkey_id @audParam) " + 
+				" VALUES (@keystatement_id, @languagestring_id, @language_id @audValue) ";
+			updateQuery = updateQuery.replace("@audValue", audValue);
+			updateQuery = updateQuery.replace("@keystatement_id", nullSafe(rs.getObject("FeatureNode_id")));
+			updateQuery = updateQuery.replace("@languagestring_id", nullSafe(rs.getObject("id")));
+			updateQuery = updateQuery.replace("@language_id", nullSafe(rs.getObject("language_id")));
+			if (isAudit){
+				updateQuery = updateQuery.replace("@REV", nullSafe(rs.getObject("r.REV")));
+				updateQuery = updateQuery.replace("@revtype", nullSafe(rs.getObject("r.revtype")));
+			}
+			updateQuery = updateQuery.replace("@_aud", aud);
+			updateQuery = updateQuery.replace("@audParam", audParam);
+			datasource.executeUpdate(updateQuery);
+			
+			//link polytomouskeynode statement to KeyStatement
+			updateQuery = " UPDATE PolytomousKeyNode@_aud " + 
+					" SET statement_id = id " + 
+					" WHERE id = @id ";
+			updateQuery = updateQuery.replace("@id", nullSafe(rs.getObject("FeatureNode_id")));
+			updateQuery = updateQuery.replace("@_aud", aud);
+			datasource.executeUpdate(updateQuery);
+			
 		}
 		
-		
-		String updateQuery = "INSERT INTO @languageStringTable (id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @audit) " + 
-				" SELECT id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @rAudit " +
-				" FROM @representationTable r INNER JOIN @oldMnTable fr ON fr.representations_id = r.id " + 
-				" WHERE (1=1) ";
-		updateQuery = updateQuery.replace("@languageStringTable", languageStringTable);
-		updateQuery = updateQuery.replace("@representationTable", representationTable);
-		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
-		updateQuery = updateQuery.replace("@audit", audit);
-		updateQuery = updateQuery.replace("@nAudit", rAudit);
-		System.out.println(updateQuery);
-		datasource.executeUpdate(updateQuery);
-		
-		//key statement
-		updateQuery = "INSERT INTO @keyStatementTable (id, created, uuid, updated, createdby_id, updatedby_id @audit) " + 
-			" SELECT r.id, r.created, r.uuid, r.updated, r.createdby_id, r.updatedby_id @rAudit " + 
-			" FROM @oldMnTable mn INNER JOIN representationTable r ";
-		updateQuery = updateQuery.replace("@keyStatementTable", keyStatementTable);
-		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
-		updateQuery = updateQuery.replace("@audit", audit);
-		updateQuery = updateQuery.replace("@rAudit", rAudit);
-		
-		System.out.println(updateQuery);
-		datasource.executeUpdate(updateQuery);
+			
 		
 		
-		//move relation
-		updateQuery = "INSERT INTO @newMnTable (KeyStatement_id, label_id, label_mapkey_id @audit) " + 
-			" SELECT FeatureNode_id, questions_id @audit, language_id " +
-			" FROM @oldMnTable fr INNER JOIN @representationTable r " + 
-			" WHERE (1=1) ";
-		updateQuery = updateQuery.replace("@audit", audit);
-		updateQuery = updateQuery.replace("@representationTable", representationTable);
-		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
-		updateQuery = updateQuery.replace("@newMnTable", newMnTable);
-		System.out.println(updateQuery);
-		datasource.executeUpdate(updateQuery);
-		
-		//link polytoumous key node statement to keyStatement
-		updateQuery = "UPDATE @polytomousKeyNodeTable pkn" + 
-			" SET statement_id = (SELECT r.id FROM @representationTable r WHERE r.id = pkn.statement_id) " + 
-			" WHERE pkn.id ";
+//		// move representations
+//		String languageStringTable = "LanguageString" +  (isAudit ? "_AUD" : "");
+//		String representationTable = "Representation" + (isAudit ? "_AUD" : "");
+//		String oldMnTable = "featuretree_representation" + (isAudit ? "_AUD" : "");
+//		String newMnTable = "KeyStatement_LanguageString" + (isAudit ? "_AUD" : "");
+//		String keyStatementTable = "KeyStatement" + (isAudit ? "_AUD" : "");
+//		String audit = "";
+//		String rAudit = "";
+//		if (isAudit){
+//			audit = ", REV, revtype";
+//			rAudit = ", r.REV, r.revtype";
+//		}
+//		
+//		
+//		String updateQuery = "INSERT INTO @languageStringTable (id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @audit) " + 
+//				" SELECT id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @rAudit " +
+//				" FROM @representationTable r INNER JOIN @oldMnTable fr ON fr.representations_id = r.id " + 
+//				" WHERE (1=1) ";
+//		updateQuery = updateQuery.replace("@languageStringTable", languageStringTable);
+//		updateQuery = updateQuery.replace("@representationTable", representationTable);
+//		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
+//		updateQuery = updateQuery.replace("@audit", audit);
+//		updateQuery = updateQuery.replace("@nAudit", rAudit);
+//		System.out.println(updateQuery);
+//		datasource.executeUpdate(updateQuery);
+//		
+//		//key statement
+//		audit = "";
+//		rAudit = "";
+//		updateQuery = "INSERT INTO @keyStatementTable (id, created, uuid, updated, createdby_id, updatedby_id @audit) " + 
+//			" SELECT r.id, r.created, r.uuid, r.updated, r.createdby_id, r.updatedby_id @rAudit " + 
+//			" FROM @oldMnTable mn INNER JOIN representationTable r ";
+//		updateQuery = updateQuery.replace("@keyStatementTable", keyStatementTable);
+//		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
+//		updateQuery = updateQuery.replace("@audit", audit);
+//		updateQuery = updateQuery.replace("@rAudit", rAudit);
+//		
+//		System.out.println(updateQuery);
+//		datasource.executeUpdate(updateQuery);
+//		
+//		
+//		//move relation
+//		audit = "";
+//		updateQuery = "INSERT INTO @newMnTable (KeyStatement_id, label_id, label_mapkey_id @audit) " + 
+//			" SELECT FeatureNode_id, questions_id @audit, language_id " +
+//			" FROM @oldMnTable fr INNER JOIN @representationTable r " + 
+//			" WHERE (1=1) ";
+//		updateQuery = updateQuery.replace("@audit", audit);
+//		updateQuery = updateQuery.replace("@representationTable", representationTable);
+//		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
+//		updateQuery = updateQuery.replace("@newMnTable", newMnTable);
+//		System.out.println(updateQuery);
+//		datasource.executeUpdate(updateQuery);
+//		
+//		//link polytoumous key node statement to keyStatement
+//		updateQuery = "UPDATE @polytomousKeyNodeTable pkn" + 
+//			" SET statement_id = (SELECT r.id FROM @representationTable r WHERE r.id = pkn.statement_id) " + 
+//			" WHERE pkn.id ";
 		
 	}
 	
+	private String nullSafeString(Object object){
+		if (object == null){
+			return "NULL";
+		}else{
+			String result = object.toString().replace("'", "''");
+			return "'" + result + "'";
+		}
+	}
+
+	private String nullSafe(Object object) {
+		if (object == null){
+			return "NULL";
+		}else{
+			return object.toString();
+		}
+	}
 
 	private void deleteOldData(ICdmDataSource datasource, boolean isAudit) {
 		String updateQuery; 
 		String featureNodeTable = "FeatureNode" +  (isAudit ? "_AUD" : "");
 		String featureTreeTable = "FeatureTree" + (isAudit ? "_AUD" : "");
 		String representationTable = "Representation" + (isAudit ? "_AUD" : "");
-		String oldMnTable = "featuretree_representation" + (isAudit ? "_AUD" : "");
+		String oldMnTable = "featurenode_representation" + (isAudit ? "_AUD" : "");
 		
 //		statements
-		updateQuery = " DELETE FROM @representationTable WHERE id IN (SELECT question_id FROM @oldMnTable)";
+		updateQuery = " DELETE FROM @representationTable WHERE id IN (SELECT questions_id FROM @oldMnTable)";
 		updateQuery = updateQuery.replace("@representationTable", representationTable);
 		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
-		System.out.println(updateQuery);
+		logger.debug(updateQuery);
 		datasource.executeUpdate(updateQuery);
 		
 //		feature nodes
-		updateQuery = " DELETE FROM @featureNodeTable WHERE id IN (SELECT fn.id FROM @featureNodeTable fn INNER JOIN @featureTreeTable t ON fn.featuretree_id = t.id WHERE t.DTYPE = 'PolytomousKey' )";
+		updateQuery = " DELETE FROM @featureNodeTable WHERE featuretree_id IN (SELECT t.id FROM @featureTreeTable t WHERE t.DTYPE = 'PolytomousKey' )";
 		updateQuery = updateQuery.replace("@featureNodeTable", featureNodeTable);
 		updateQuery = updateQuery.replace("@featureTreeTable", featureTreeTable);
-		System.out.println(updateQuery);
+		logger.debug(updateQuery);
 		datasource.executeUpdate(updateQuery);
 		
 		//trees
-		updateQuery = " DELETE FROM @featureTreeTable t WHERE t.DTYPE = 'PolytomousKey' " ;
+		updateQuery = " DELETE FROM @featureTreeTable WHERE DTYPE = 'PolytomousKey' " ;
 		updateQuery = updateQuery.replace("@featureTreeTable", featureTreeTable);
-		System.out.println(updateQuery);
+		logger.debug(updateQuery);
 		datasource.executeUpdate(updateQuery);
 		
 		
@@ -184,7 +285,7 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		}
 		updateQuery = updateQuery.replace("@audit", audit);
 		updateQuery = updateQuery.replace("@nAudit", nAudit);
-		System.out.println(updateQuery);
+		logger.debug(updateQuery);
 		datasource.executeUpdate(updateQuery);
 	}
 
@@ -243,7 +344,7 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			audit = ", REV, revtype";
 		}
 		updateQuery = updateQuery.replace("@audit", audit);
-		System.out.println(updateQuery);
+		logger.debug(updateQuery);
 		datasource.executeUpdate(updateQuery);
 	}
 

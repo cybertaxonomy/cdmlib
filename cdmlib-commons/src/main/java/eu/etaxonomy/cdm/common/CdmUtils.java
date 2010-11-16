@@ -167,6 +167,14 @@ public class CdmUtils {
 		return (value == null ? "" : value);
 	}
 
+	/**
+	 * Returns value if value is not <code>null</code>. Returns defaultValue if value is <code>null</code>.
+	 * @param value
+	 * @return
+	 */
+	static public String Nz(String value, String defaultValue){
+		return (value == null ? defaultValue : value);
+	}
 	
 	/**
 	 * Returns value if value is not <code>null</code>. Returns 0 if value is <code>null</code>.

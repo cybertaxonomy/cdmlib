@@ -1,13 +1,27 @@
+// $Id$
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.database.update;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
-public interface ISchemaUpdater {
+/**
+ * @author a.mueller
+ * @date 09.2010
+ *
+ */
+public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 
 	/**
 	 * Invokes this CDM schema updater and updates the schema up to the current CDM
-	 * schema vesion. Throws an exception if this updaters target version does
+	 * schema version. Throws an exception if this updater's target version does
 	 * not equal the current CDM schema version.
 	 * @param datasource the datasource
 	 * @param monitor the progress monitor and event listener
@@ -29,29 +43,7 @@ public interface ISchemaUpdater {
 	 * @throws Exception 
 	 */
 	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;
-	
-	/**
-	 * Returns the previous CDM schema updater
-	 * @return
-	 */
-	public ISchemaUpdater getPreviousUpdater();
-
-	/**
-	 * Returns the next CDM schema updater
-	 * 
-	 * @return
-	 */
-	public ISchemaUpdater getNextUpdater();
-
-	/**
-	 * Returns the number of steps to run to update the datasource
-	 * to the schema this schema updater is updating to.
-	 * This includes needed steps in previous updaters.
-	 * @see #getPreviousUpdater()
-	 * @return number of steps
-	 */
-	int countSteps(ICdmDataSource datasource);
 
 	public String getTargetVersion();
-	
+
 }

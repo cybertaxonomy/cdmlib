@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 13.09.2010
  *
  */
-public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
+public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterStepBase.class);
 	
 	protected String stepName;

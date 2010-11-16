@@ -47,7 +47,7 @@ public class MapTableCreator extends TableCreator {
 		String result = "";
 		if (! isAudit){
 			result = getFirstIdColumn() + ",";
-			result = getMapKeyColumn() + ",";
+			result += getMapKeyColumn() + ",";
 		}else{
 			result = "REV, " + primaryKey(false) + ",";
 			result += getSecondIdColumn() + ",";

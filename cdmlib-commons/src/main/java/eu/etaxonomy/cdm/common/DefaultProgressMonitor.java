@@ -50,7 +50,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 	 */
 	@Override
 	public void done() {
-		logger.info(taskName + "Done");
+		logger.info(taskName + "...Done");
 	}
 
 	/* (non-Javadoc)

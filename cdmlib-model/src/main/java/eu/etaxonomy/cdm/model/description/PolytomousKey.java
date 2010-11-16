@@ -37,6 +37,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.tool.hbm2x.StringUtils;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -148,7 +149,7 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	 */
 	protected PolytomousKey() {
 		super();
-		root = PolytomousKeyNode.NewInstance();
+		root = PolytomousKeyNode.NewRootInstance();
 		root.setKey(this);
 	}
 	
@@ -333,9 +334,7 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 		}
 		
 		PolytomousKeyNode root = this.getRoot();
-		IntegerObject no = new IntegerObject();
-		no.inc();
-		strPrint += printNode(root, "  ", no, "Root", stream);
+		strPrint += printNode(root, null, "  ", stream);
 		return strPrint;
 	}
 
@@ -349,42 +348,73 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	 * @param stream
 	 * @return
 	 */
-	private String printNode(PolytomousKeyNode node, String identation, IntegerObject no, String myNumber, PrintStream stream) {
-		int myInt = no.number;
-		String result = identation + myNumber + ". ";
+	private String printNode(PolytomousKeyNode node, PolytomousKeyNode parent2, String identation, PrintStream stream) {
+		String separator = ", ";
+		
+		String result = identation + node.getNodeNumber() + ". ";
 		if (node != null){
-			if (! node.isLeaf()){
-				if (node.getStatement() != null){
-					String statement = node.getStatement().getLabelText(Language.DEFAULT());
-					result +=  ( statement == null ? "" : (statement))  ;
-				}
-			}else{
-				PolytomousKeyNode leaf = node;
-				if (leaf.getTaxon() != null){
-					String taxonSeparator = ", ";
-					result += ": ";
-					String strTaxon = "";
-					if (leaf.getTaxon().getName() != null){
-						strTaxon = leaf.getTaxon().getName().getTitleCache() ;
-					}else{
-						strTaxon = leaf.getTaxon().getTitleCache() ;
+			//key choice
+			String question = null;
+			String feature = null;
+			if (node.getQuestion() != null){
+				question = node.getQuestion().getLabelText(Language.DEFAULT());
+			}
+			if (node.getFeature() != null){
+				feature = node.getFeature().getLabel(Language.DEFAULT());
+			}
+			result +=  CdmUtils.concat(" - ", question, feature) + "\n" ; ;
+			
+			//Leads
+			char nextCounter = 'a';
+			for (PolytomousKeyNode child: node.getChildren()){
+				String leadNumber = String.valueOf(nextCounter++);
+				if (child.getStatement() != null){
+					String statement = child.getStatement().getLabelText(Language.DEFAULT());
+					result +=  identation + "  " + leadNumber + ") " + ( statement == null ? "" : (statement));
+					result += " ... ";
+					// child node
+					if (! child.isLeaf()){
+						result += child.getNodeNumber() + separator;
+					}
+					//taxon
+					if (child.getTaxon() != null){
+						String strTaxon = "";
+						if (child.getTaxon().getName() != null){
+							strTaxon = child.getTaxon().getName().getTitleCache() ;
+						}else{
+							strTaxon = child.getTaxon().getTitleCache() ;
+						}
+						result +=  strTaxon + separator;
+					}
+					//subkey
+					if (child.getSubkey() != null){
+						String subkey = child.getSubkey().getTitleCache();
+						result += subkey + separator;
+					}
+					//other node
+					if (child.getOtherNode() != null){
+						PolytomousKeyNode otherNode = child.getOtherNode();
+						String otherNodeString = null;
+						if (child.getKey().equals(otherNode.getKey())){
+							otherNodeString = String.valueOf(otherNode.getNodeNumber());
+						}else{
+							otherNodeString = otherNode.getKey() + " " + otherNode.getNodeNumber();
+						}
+						result += otherNodeString + separator;
 					}
 					
-					result +=  strTaxon + taxonSeparator ;
-					result = StringUtils.chompLast(result, taxonSeparator);
+					result = StringUtils.chompLast(result, separator);
+					result += "\n"; 
 				}
 			}
-			result += "\n";
+
 			if (stream != null){
 				stream.print(result);
 			}
-			char nextCounter = 'a';
-			if (! node.getChildren().isEmpty()){
-				no.inc();
-			}
 			for (PolytomousKeyNode child : node.getChildren()){
-				String nextNumber = myInt + String.valueOf(nextCounter++);
-				result += printNode(child, identation + "  ", no, nextNumber, stream);
+				if (! child.isLeaf()){
+					result += printNode(child, node, identation + "", stream);
+				}
 			}
 		}
 		return result;

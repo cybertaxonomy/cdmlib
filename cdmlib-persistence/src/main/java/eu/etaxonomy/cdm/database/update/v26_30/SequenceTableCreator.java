@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.database.update.v25_26;
+package eu.etaxonomy.cdm.database.update.v26_30;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;

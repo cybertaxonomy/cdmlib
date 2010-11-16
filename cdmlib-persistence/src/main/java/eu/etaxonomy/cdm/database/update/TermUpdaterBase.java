@@ -24,159 +24,39 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
  * @date 10.09.2010
  *
  */
-public abstract class TermUpdaterBase implements ITermUpdater {
+public abstract class TermUpdaterBase extends UpdaterBase<SingleTermUpdater, ITermUpdater> implements ITermUpdater {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 	protected static final UUID uuidFeatureVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
 	
-	private List<SingleTermUpdater> list;
-	private String startTermVersion;
-	private String targetTermVersion;
-	
-	
-	
 	protected TermUpdaterBase(String startTermVersion, String targetTermVersion){
-		this.startTermVersion = startTermVersion;
-		this.targetTermVersion = targetTermVersion;
+		this.startVersion = startTermVersion;
+		this.targetVersion = targetTermVersion;
 		list = getUpdaterList();
 	}
 	
-
 	@Override
-	public int countSteps(ICdmDataSource datasource){
-		int result = 0;
-		//TODO test if previous updater is needed
-		if (getPreviousUpdater() != null){
-			result += getPreviousUpdater().countSteps(datasource);
-		}
-		result += list.size();
-		return result;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
-	 */
-	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
-		String currentLibraryTermVersion = CdmMetaData.getTermsVersion();
-		return invoke(currentLibraryTermVersion, datasource, monitor);
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
-	 */
-	@Override
-	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
-		boolean result = true;
-		
-		String datasourceSchemaVersion;
-		try {
-			datasourceSchemaVersion = getCurrentVersion(datasource, monitor);
-		} catch (SQLException e1) {
-			monitor.warning("SQLException", e1);
-			return false;
-		}
-		
-		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceSchemaVersion, monitor);
-		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
-		boolean isAfterMyTargetVersion = isAfterMyTargetVersion(targetVersion, monitor);
-		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
-		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceSchemaVersion, monitor);
-		
-
-		if (! isDatasourceBeforeMyTargetVersion){
-			String warning = "Target version ("+targetVersion+") is not before updater target version ("+this.targetTermVersion+"). Nothing to update.";
-			monitor.warning(warning);
-			return true;
-		}
-		
-		if (isAfterMyStartVersion){
-			String warning = "Database version is higher than updater start version";
-			RuntimeException exeption = new RuntimeException(warning);
-			monitor.warning(warning, exeption);
-			throw exeption;
-		}
-		
-		if (isBeforeMyStartVersion){
-			if (getPreviousUpdater() == null){
-				String warning = "Database version is before updater version but no previous version updater exists";
-				RuntimeException exeption = new RuntimeException(warning);
-				monitor.warning(warning, exeption);
-				throw exeption;
-			}
-			result &= getPreviousUpdater().invoke(startTermVersion, datasource, monitor);
-		}
-
-		
-		if (isBeforeMyTargetVersion){
-			String warning = "Target version ("+targetVersion+") is lower than updater target version ("+this.targetTermVersion+")";
-			RuntimeException exeption = new RuntimeException(warning);
-			monitor.warning(warning, exeption);
-			throw exeption;
-		}
-
-		
-		
-		for (SingleTermUpdater step : list){
-			try {
-				monitor.subTask(step.getStepName());
-				Integer stepResult = step.invoke(datasource, monitor);
-				result &= (stepResult != null);
-				monitor.worked(1);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				monitor.warning("Exception occurred while updating schema", e);
-				result = false;
-			}
-		}
-		
-		// TODO term version gets updated even if something went utterly wrong while executing the steps
-		// I don't think we want this to happen
-		updateTermVersion(datasource, monitor);
-
-		return result;
-	}
-	
-	private void updateTermVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	protected void updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		int intSchemaVersion = 1;
-		String sqlUpdateSchemaVersion = "UPDATE CdmMetaData SET value = '" + this.targetTermVersion + "' WHERE propertyname = " +  intSchemaVersion;
+		String sqlUpdateSchemaVersion = "UPDATE CdmMetaData SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
 		try {
 			datasource.executeUpdate(sqlUpdateSchemaVersion);
 		} catch (Exception e) {
 			monitor.warning("Error when trying to set new schemaversion: ", e);
 			throw new SQLException(e);
 		}
-	
-}
+	}
 	
 	protected abstract List<SingleTermUpdater> getUpdaterList();
 
-	protected boolean isAfterMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
-		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, startTermVersion, depth, monitor);
-		return compareResult > 0;
-	}
-
-	protected boolean isBeforeMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
-		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, startTermVersion, depth, monitor);
-		return compareResult < 0;
-	}
-
-	protected boolean isAfterMyTargetVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
-		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, targetTermVersion, depth, monitor);
-		return compareResult > 0;
-	}
-
-	protected boolean isBeforeMyTargetVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
-		int depth = 4;
-		int compareResult = CdmMetaData.compareVersion(dataSourceSchemaVersion, targetTermVersion, depth, monitor);
-		return compareResult < 0;
-	}
 	
+	@Override
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
+		String currentLibrarySchemaVersion = CdmMetaData.getTermsVersion();
+		return invoke(currentLibrarySchemaVersion, datasource, monitor);
+	}
 
+	@Override
 	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		int intSchemaVersion = 1;
 		try {
@@ -200,22 +80,6 @@ public abstract class TermUpdaterBase implements ITermUpdater {
 		}
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getNextUpdater()
-	 */
-	@Override
-	public abstract ITermUpdater getNextUpdater();
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getPreviousUpdater()
-	 */
-	@Override
-	public abstract ITermUpdater getPreviousUpdater();
 
-	
-	@Override
-	public String getTargetVersion() {
-		return this.targetTermVersion;
-	}
 }

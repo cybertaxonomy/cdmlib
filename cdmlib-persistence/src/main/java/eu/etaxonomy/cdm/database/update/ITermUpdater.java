@@ -1,9 +1,23 @@
+// $Id$
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.database.update;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
-public interface ITermUpdater {
+/**
+ * @author a.mueller
+ * @date 09.2010
+ *
+ */
+public interface ITermUpdater extends IUpdater<ITermUpdater>{
 
 	/**
 	 * Invokes this CDM term updater and updates the schema up to the current CDM
@@ -27,28 +41,8 @@ public interface ITermUpdater {
 	 * @throws Exception 
 	 */
 	boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;	
-	
-	/**
-	 * Returns the previous CDM term updater
-	 * @return
-	 */
-	public ITermUpdater getPreviousUpdater();
 
-	/**
-	 * Returns the next CDM term updater
-	 * @return
-	 */
-	public ITermUpdater getNextUpdater();
 
-	/**
-	 * Returns the number of steps to run to update the datasource
-	 * to the term version this term updater is updating to.
-	 * This includes needed steps in previous updaters.
-	 * @see #getPreviousUpdater()
-	 * @return number of steps
-	 */
-	int countSteps(ICdmDataSource datasource);
-
-	String getTargetVersion();
+	public String getTargetVersion();
 	
 }
