@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.database.update.v24_25.TermUpdater_24_25;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 
 /**
  * @author a.mueller
@@ -55,16 +56,27 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 	@Override
 	protected List<SingleTermUpdater> getUpdaterList() {
 		List<SingleTermUpdater> list = new ArrayList<SingleTermUpdater>();
+
+		// cf.
+		UUID uuidTerm = DeterminationModifier.uuidConfer;
+		String description = "Confer";
+		String label = "confer";
+		String abbrev = "cf.";
+		String dtype = DeterminationModifier.class.getSimpleName();
+		UUID uuidVocabulary = UUID.fromString("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77");
+		UUID uuidAfterTerm = null ; //UUID.fromString("");
+		list.add( SingleTermUpdater.NewInstance("Add 'confer (cf.)' determination modifier", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
+
 		
-//		// comb. illeg.
-//		UUID uuidTerm = UUID.fromString("d901d455-4e01-45cb-b653-01a840b97eed");
-//		String description = "Combination Illegitimate";
-//		String label = "Combination Illegitimate";
-//		String abbrev = "comb. illeg.";
-//		String dtype = NomenclaturalStatusType.class.getSimpleName();
-//		UUID uuidVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");
-//		UUID uuidAfterTerm = UUID.fromString("f858e619-7b7f-4225-913b-880a2143ec83");
-//		list.add( SingleTermUpdater.NewInstance("Add comb. illeg. status", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
+		// aff.
+		uuidTerm = DeterminationModifier.uuidAffinis;
+		description = "Affinis";
+		label = "affinis";
+		abbrev = "aff.";
+		dtype = DeterminationModifier.class.getSimpleName();
+		uuidVocabulary = UUID.fromString("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77");
+		uuidAfterTerm = DeterminationModifier.uuidConfer;
+		list.add( SingleTermUpdater.NewInstance("Add 'affinis (aff.)' determination modifier", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
 //		
 //		//Habitat
 //		uuidTerm = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");

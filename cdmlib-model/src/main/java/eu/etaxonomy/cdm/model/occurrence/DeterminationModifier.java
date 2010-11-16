@@ -24,6 +24,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Modifier;
 
 /**
@@ -42,7 +43,8 @@ public class DeterminationModifier extends Modifier {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);
 
-	private static final UUID uuidUnknown = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	public static final UUID uuidConfer = UUID.fromString("20db670a-2db2-49cc-bbdd-eace33694b7f");
+	public static final UUID uuidAffinis = UUID.fromString("128f0b54-73e2-4efb-bfda-a6243185a562");
 
 	protected static Map<UUID, DeterminationModifier> termMap = null;		
 	
@@ -80,6 +82,25 @@ public class DeterminationModifier extends Modifier {
 
 	
 //************************** METHODS ********************************
+	
+	protected static DeterminationModifier getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;
+		}else{
+			return (DeterminationModifier)termMap.get(uuid);
+		}
+	}
+
+	
+	public static final DeterminationModifier AFFINIS(){
+		return getTermByUuid(uuidAffinis);
+	}
+
+	public static final DeterminationModifier CONFER(){
+		return getTermByUuid(uuidConfer);
+	}
+
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
