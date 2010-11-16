@@ -24,29 +24,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.CdDvd;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IInProceedings;
 import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.IReport;
 import eu.etaxonomy.cdm.model.reference.IThesis;
-import eu.etaxonomy.cdm.model.reference.InProceedings;
-import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.Map;
-import eu.etaxonomy.cdm.model.reference.Patent;
-import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.Proceedings;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.model.reference.Report;
-import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -59,28 +44,10 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
 @Repository
 @Qualifier("referenceDaoHibernateImpl")
 public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase> implements IReferenceDao {
-		
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceDaoHibernateImpl.class);
 
 	public ReferenceDaoHibernateImpl() {
 		super(ReferenceBase.class);
-		indexedClasses = new Class[15];
-		indexedClasses[0] = Article.class;
-		indexedClasses[1] = Patent.class;
-		indexedClasses[2] = PersonalCommunication.class;
-		indexedClasses[3] = BookSection.class;
-		indexedClasses[4] = InProceedings.class;
-		indexedClasses[5] = CdDvd.class;
-		indexedClasses[6] = Database.class;
-		indexedClasses[7] = Generic.class;
-		indexedClasses[8] = Journal.class;
-		indexedClasses[9] = Map.class;
-		indexedClasses[10] = WebPage.class;
-		indexedClasses[11] = Book.class;
-		indexedClasses[12] = Proceedings.class;
-		indexedClasses[13] = Report.class;
-		indexedClasses[14] = Thesis.class;
 	}
 
 	@Override
