@@ -147,7 +147,7 @@
         <class>eu.etaxonomy.cdm.model.reference.PrintedUnitBase</class>
         <class>eu.etaxonomy.cdm.model.reference.PrintSeries</class>
         <class>eu.etaxonomy.cdm.model.reference.Proceedings</class>
-        <class>eu.etaxonomy.cdm.model.reference.ReferenceBase</class>
+        <class>eu.etaxonomy.cdm.model.reference.Reference</class>
         <class>eu.etaxonomy.cdm.model.reference.Report</class>
         <class>eu.etaxonomy.cdm.model.reference.SectionBase</class>
         <class>eu.etaxonomy.cdm.model.reference.Thesis</class>

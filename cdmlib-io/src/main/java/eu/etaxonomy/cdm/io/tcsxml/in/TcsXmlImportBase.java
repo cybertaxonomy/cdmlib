@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
@@ -219,8 +219,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 	
 	
-	protected ReferenceBase makeAccordingTo(Element elAccordingTo, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
-		ReferenceBase result = null;
+	protected Reference makeAccordingTo(Element elAccordingTo, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
+		Reference result = null;
 		if (elAccordingTo != null){
 			String childName = "AccordingToDetailed";
 			boolean obligatory = false;
@@ -242,8 +242,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 	
 	
-	private ReferenceBase makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
-		ReferenceBase result = null;
+	private Reference makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
+		Reference result = null;
 		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
 		if (elAccordingToDetailed != null){
 			//AuthorTeam
@@ -256,7 +256,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			childName = "PublishedIn";
 			obligatory = false;
 			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			result = makeReferenceType(elPublishedIn, ReferenceBase.class, referenceMap, success);
+			result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
 			
 			//MicroReference
 			childName = "MicroReference";

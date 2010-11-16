@@ -23,7 +23,7 @@
         </agent:Person>
     </Agents>
     <References>
-        <reference:ReferenceBase id="1" uuid="urn-uuid-818946e6-351b-456b-91cd-6d03eca32026" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Article">
+        <reference:Reference id="1" uuid="urn-uuid-818946e6-351b-456b-91cd-6d03eca32026" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Article">
             <common:TitleCache>Godfray, 2002</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
@@ -36,8 +36,8 @@
                 <common:Start>2002-05-02</common:Start>
                 <common:End>2002-05-02</common:End>
             </reference:DatePublished>
-        </reference:ReferenceBase>
-        <reference:ReferenceBase id="2" uuid="urn-uuid-b29ebbae-03c4-4162-ad33-34ede873b233" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Journal">
+        </reference:Reference>
+        <reference:Reference id="2" uuid="urn-uuid-b29ebbae-03c4-4162-ad33-34ede873b233" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Journal">
             <common:TitleCache>Nature</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
@@ -47,8 +47,8 @@
                 <common:Start>1869-11-04</common:Start>
                 <common:End>2008-01-17</common:End>
             </reference:DatePublished>
-        </reference:ReferenceBase>
-        <reference:ReferenceBase id="3" uuid="urn-uuid-09e7c521-5f9b-4223-a13f-042f74a99d8f" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Book">
+        </reference:Reference>
+        <reference:Reference id="3" uuid="urn-uuid-09e7c521-5f9b-4223-a13f-042f74a99d8f" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Book">
             <common:TitleCache>Darwin, 1859</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
@@ -58,8 +58,8 @@
                 <common:Start>1859-11-24</common:Start>
                 <common:End>1859-11-24</common:End>
             </reference:DatePublished>            
-        </reference:ReferenceBase>
-        <reference:ReferenceBase id="4" uuid="urn-uuid-60b73f57-ebe9-43b4-aedf-05608be0497b" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Book">
+        </reference:Reference>
+        <reference:Reference id="4" uuid="urn-uuid-60b73f57-ebe9-43b4-aedf-05608be0497b" parsingProblem="0" problemStarts="-1" problemEnds="-1" type="Book">
             <common:TitleCache>Darwin, 2005</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
@@ -71,6 +71,6 @@
             </reference:DatePublished>
             <reference:Editor>Edward O. Wilson</reference:Editor>
             <reference:ISBN>9780393061345</reference:ISBN> 
-        </reference:ReferenceBase>
+        </reference:Reference>
     </References>
 </DataSet>

@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -129,9 +129,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		try {
 			updateProgress(state, "Importing data for unit: " + dataHolder.unitID);
 			
-//			ReferenceBase sec = Database.NewInstance();
+//			Reference sec = Database.NewInstance();
 //			sec.setTitleCache("XML DATA");
-			ReferenceBase sec = config.getTaxonReference();
+			Reference sec = config.getTaxonReference();
 
 			//create facade
 			DerivedUnitFacade derivedUnitFacade = getFacade(dataHolder);
@@ -1035,7 +1035,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void handleIdentifications(Abcd206ImportConfigurator config, DerivedUnitFacade facade, ReferenceBase sec, Abcd206DataHolder dataHolder){
+	private void handleIdentifications(Abcd206ImportConfigurator config, DerivedUnitFacade facade, Reference sec, Abcd206DataHolder dataHolder){
 		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -1109,7 +1109,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			
 			for (String strReference : dataHolder.referenceList){
 				
-				ReferenceBase reference = ReferenceFactory.newGeneric();
+				Reference reference = ReferenceFactory.newGeneric();
 				reference.setTitleCache(strReference, true);
 				determinationEvent.addReference(reference);
 			}
@@ -1135,7 +1135,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(facade.innerDerivedUnit());
 				individualsAssociation.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
-				for(ReferenceBase citation : determinationEvent.getReferences()){
+				for(Reference citation : determinationEvent.getReferences()){
 					individualsAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
 				}
 				taxonDescription.addElement(individualsAssociation);

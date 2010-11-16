@@ -97,7 +97,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 
 	/**
 	 * Test method for
-	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
 	 * .
 	 */
 	@Test
@@ -107,7 +107,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 
 	/**
 	 * Test method for
-	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)}
 	 * .
 	 */
 	@Test

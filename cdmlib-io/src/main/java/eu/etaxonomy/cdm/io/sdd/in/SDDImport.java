@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -105,7 +105,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,String> locations = new HashMap<String,String>();
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
-	private Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
+	private Map<String,Reference> publications = new HashMap<String,Reference>();
 	private Map<String,State> states = new HashMap<String,State>();
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
@@ -121,9 +121,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
-	private Set<ReferenceBase> sources = new HashSet<ReferenceBase>();
-	private ReferenceBase sec = ReferenceFactory.newDatabase();
-	private ReferenceBase sourceReference = null;
+	private Set<Reference> sources = new HashSet<Reference>();
+	private Reference sec = ReferenceFactory.newDatabase();
+	private Reference sourceReference = null;
 
 	private Language datasetLanguage = null;
 
@@ -371,9 +371,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				if (ve instanceof TaxonDescription) {
 					TaxonDescription td = (TaxonDescription) ve;
 					if (td.getDescriptionSources().size() > 0) {
-						this.associateImageWithCdmBase(ref,(ReferenceBase) td.getDescriptionSources().toArray()[0]);
+						this.associateImageWithCdmBase(ref,(Reference) td.getDescriptionSources().toArray()[0]);
 					} else {
-						ReferenceBase descriptionSource = ReferenceFactory.newGeneric();
+						Reference descriptionSource = ReferenceFactory.newGeneric();
 						sources.add(descriptionSource);
 						td.addDescriptionSource(descriptionSource);
 						this.associateImageWithCdmBase(ref,descriptionSource);
@@ -591,7 +591,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
-				ReferenceBase publication = publications.get(citations.get(ref));
+				Reference publication = publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
 					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
@@ -613,11 +613,11 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		}
 		saveFeatures();
 		
-		for (ReferenceBase publication : publications.values()){
+		for (Reference publication : publications.values()){
 			getReferenceService().save(publication); 
 		}
 		
-		for (ReferenceBase source : sources){
+		for (Reference source : sources){
 			getReferenceService().save(source); 
 		}
 
@@ -1494,7 +1494,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				try {
 
 					String idP = elPublication.getAttributeValue("id");
-					ReferenceBase publication = ReferenceFactory.newArticle();
+					Reference publication = ReferenceFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
 
 					publications.put(idP,publication);
@@ -1583,10 +1583,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 									//											dtb.addMedia(me);
 									//										}
 									//									}
-								} else if (lcb.get(k) instanceof ReferenceBase) {
-									ReferenceBase rb = (ReferenceBase) lcb.get(k);
-									//} else if (lcb.get(0) instanceof ReferenceBase) {
-									//ReferenceBase rb = (ReferenceBase) lcb.get(0);
+								} else if (lcb.get(k) instanceof Reference) {
+									Reference rb = (Reference) lcb.get(k);
+									//} else if (lcb.get(0) instanceof Reference) {
+									//Reference rb = (Reference) lcb.get(0);
 									// rb.setTitleCache(label);
 									//									if (rb!=null) {
 									//										if (k == 0) {

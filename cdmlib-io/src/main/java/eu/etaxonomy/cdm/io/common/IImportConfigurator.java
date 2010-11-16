@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -148,7 +148,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 * reference with the name of the XML file should be returned value
 	 * @return
 	 */
-	public ReferenceBase getSourceReference();
+	public Reference getSourceReference();
 
 	
 	/**
@@ -160,7 +160,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 
 	//public abstract void setSource(Object url);
 
-	public void setSourceReference(ReferenceBase sourceReference);
+	public void setSourceReference(Reference sourceReference);
 
 	public String getSourceReferenceTitle();
 

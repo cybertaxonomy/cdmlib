@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class either retrieves a defined Term from the database or creates and saves it in the database.
@@ -66,7 +66,7 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 			TERM definedTerm = getDefinedTermIfExist(rs);
 			if (definedTerm == null){
 				definedTerm = createDefinedTerm(rs);
-				ReferenceBase citation = null;
+				Reference citation = null;
 				getState().getCurrentIO().addOriginalSource(rs, definedTerm, dbIdAttribute, objectToCreateNamespace, citation);
 				
 				UUID transformerUuid = getUuidFromTransformer(rs);

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -75,11 +75,11 @@ public class TaxonComparatorTest {
 		logger.debug("start testCompare");
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		
-		ReferenceBase sec = refFactory.newBook();
+		Reference sec = refFactory.newBook();
 		
-		ReferenceBase ref1 = refFactory.newBook();
-		ReferenceBase ref2 = refFactory.newBook();
-		ReferenceBase ref3 = refFactory.newBook();
+		Reference ref1 = refFactory.newBook();
+		Reference ref2 = refFactory.newBook();
+		Reference ref3 = refFactory.newBook();
 		Calendar cal1 = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		Calendar cal3 = Calendar.getInstance();

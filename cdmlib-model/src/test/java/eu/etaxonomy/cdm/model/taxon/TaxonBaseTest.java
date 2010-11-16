@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class TaxonBaseTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonBaseTest.class);
 	
-	private ReferenceBase sec;
+	private Reference sec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
@@ -128,7 +128,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#setSec(eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#setSec(eu.etaxonomy.cdm.model.reference.Reference)}.
 	 */
 	@Test
 	public final void testSetSec() {

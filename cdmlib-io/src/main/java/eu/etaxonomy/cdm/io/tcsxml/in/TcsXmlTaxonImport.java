@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -117,9 +117,9 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	}
 	
 	
-	protected static final ReferenceBase unknownSec(){
+	protected static final Reference unknownSec(){
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		ReferenceBase result = refFactory.newGeneric();
+		Reference result = refFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
 		return result;
 	}
@@ -130,7 +130,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		logger.info("start make TaxonConcepts ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
 		
 		ITaxonService taxonService = getTaxonService();
@@ -190,7 +190,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 				childName = "AccordingTo";
 				obligatory = false;
 				Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-				ReferenceBase sec = makeAccordingTo(elAccordingTo, referenceMap, success);
+				Reference sec = makeAccordingTo(elAccordingTo, referenceMap, success);
 				elementList.add(childName.toString());
 				// TODO may sec be null?
 				if (sec == null){

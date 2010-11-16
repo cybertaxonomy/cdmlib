@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * abstract class for all objects that may have a reference
@@ -53,7 +53,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private ReferenceBase citation;
+	private Reference citation;
 
     @XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
@@ -66,7 +66,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	}
 
 
-	public ReferencedEntityBase(ReferenceBase citation, String citationMicroReference,
+	public ReferencedEntityBase(Reference citation, String citationMicroReference,
 			String originalNameString) {
 		super();
 		this.citationMicroReference = citationMicroReference;
@@ -89,10 +89,10 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 	}
 
-	public ReferenceBase getCitation(){
+	public Reference getCitation(){
 		return this.citation;
 	}
-	public void setCitation(ReferenceBase citation) {
+	public void setCitation(Reference citation) {
 		this.citation = citation;
 	}
 	

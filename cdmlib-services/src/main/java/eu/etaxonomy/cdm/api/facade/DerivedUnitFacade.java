@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -1679,7 +1679,7 @@ public class DerivedUnitFacade {
 	 * @param originalNameString
 	 * @return
 	 */
-	public IdentifiableSource addSource(ReferenceBase reference, String microReference, String originalNameString){
+	public IdentifiableSource addSource(Reference reference, String microReference, String originalNameString){
 		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
 		source.setOriginalNameString(originalNameString);
 		derivedUnit.addSource(source);

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 /**
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @created 29.06.2008
  * @version 1.0
  */
-public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T>{
+public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T>{
 	private static final long serialVersionUID = -725290113353165022L;
 
 	@SuppressWarnings("unused")

@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -86,7 +86,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private ReferenceBase reference;
+	private Reference reference;
 	
 	@XmlElement(name = "microReference")
 	private String microReference;
@@ -108,15 +108,15 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return NewInstance(name, null, language);
 	}
 	
-	public static TaxonomicTree NewInstance(String name, ReferenceBase reference){
+	public static TaxonomicTree NewInstance(String name, Reference reference){
 		return NewInstance(name, reference, Language.DEFAULT());
 	}
 	
-	public static TaxonomicTree NewInstance(String name, ReferenceBase reference, Language language){
+	public static TaxonomicTree NewInstance(String name, Reference reference, Language language){
 		return new TaxonomicTree(name, reference, language);
 	}
 	
-	protected TaxonomicTree(String name, ReferenceBase reference, Language language){
+	protected TaxonomicTree(String name, Reference reference, Language language){
 		this();
 		LanguageString langName = LanguageString.NewInstance(name, language);
 		setName(langName);
@@ -129,9 +129,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
 	 */
-	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation,
+	public TaxonNode addChildNode(TaxonNode childNode, Reference citation,
 			String microCitation, Synonym synonymToBeUsed) {
 		
 		childNode.setParentTreeNode(this);
@@ -144,9 +144,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
 	 */
-	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation,
+	public TaxonNode addChildTaxon(Taxon taxon, Reference citation,
 			String microCitation, Synonym synonymToBeUsed) {
 		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
 	}
@@ -197,7 +197,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @param microReference
 	 * @throws IllegalArgumentException
 	 */
-	public void makeTopmostNodeChildOfOtherNode(TaxonNode topmostNode, TaxonNode otherNode, ReferenceBase ref, String microReference)
+	public void makeTopmostNodeChildOfOtherNode(TaxonNode topmostNode, TaxonNode otherNode, Reference ref, String microReference)
 				throws IllegalArgumentException{
 		if (otherNode == null){
 			throw new NullPointerException("other node must not be null");
@@ -276,7 +276,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return null;
 	}
 
-	private boolean handleCitationOverwrite(TaxonNode childNode, ReferenceBase citation, String microCitation){
+	private boolean handleCitationOverwrite(TaxonNode childNode, Reference citation, String microCitation){
 		if (citation != null){
 			if (childNode.getReference() != null && ! childNode.getReference().equals(citation)){
 				logger.warn("ReferenceForParentChildRelation will be overwritten");
@@ -308,7 +308,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @return the childNode
 	 * @throws IllegalStateException If the child is a child of another parent already
 	 */
-	public TaxonNode addParentChild (Taxon parent, Taxon child, ReferenceBase citation, String microCitation)
+	public TaxonNode addParentChild (Taxon parent, Taxon child, Reference citation, String microCitation)
 			throws IllegalStateException{
 		try {
 			if (parent == null || child == null){
@@ -361,7 +361,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	
 	
 	@Transient
-	public ReferenceBase getCitation() {
+	public Reference getCitation() {
 		return reference;
 	}
 	
@@ -400,11 +400,11 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		this.rootNodes = rootNodes;
 	}
 
-	public ReferenceBase getReference() {
+	public Reference getReference() {
 		return reference;
 	}
 
-	public void setReference(ReferenceBase reference) {
+	public void setReference(Reference reference) {
 		this.reference = reference;
 	}
 	

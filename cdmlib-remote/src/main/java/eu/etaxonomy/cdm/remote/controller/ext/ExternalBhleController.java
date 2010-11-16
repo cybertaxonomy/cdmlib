@@ -26,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
 import eu.etaxonomy.cdm.ext.sru.SruServiceWrapper;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * The ExternalGeoController class is a Spring MVC Controller.
@@ -71,7 +71,7 @@ public class ExternalBhleController {
 		logger.info("doSearchRetrieve( " + "query=\"" + ObjectUtils.toString(cqlQuery) + "\")");
 		ModelAndView mv = new ModelAndView();
 		
-		List<ReferenceBase> referenceList = sruServiceWrapper.doSearchRetrieve(cqlQuery, "dc");
+		List<Reference> referenceList = sruServiceWrapper.doSearchRetrieve(cqlQuery, "dc");
 		
 		mv.addObject(referenceList);
 		return mv;

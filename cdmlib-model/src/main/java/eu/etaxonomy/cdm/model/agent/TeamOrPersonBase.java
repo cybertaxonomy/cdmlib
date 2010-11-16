@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The abstract class for such {@link AgentBase agents} ({@link Person persons} or {@link Team teams}) who might also be used
- * for authorship of {@link eu.etaxonomy.cdm.model.reference.ReferenceBase references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
+ * for authorship of {@link eu.etaxonomy.cdm.model.reference.Reference references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
  * 
  * @author a.mueller
  * @version 1.0

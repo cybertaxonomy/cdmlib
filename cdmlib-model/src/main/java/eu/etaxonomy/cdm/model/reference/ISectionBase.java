@@ -36,12 +36,12 @@ public interface ISectionBase extends IReferenceBase {
 	 * Returns the in-reference of this reference.
 	 * E.g. if this reference is a book section the according book is returned
 	 */
-	public ReferenceBase getInReference();
+	public Reference getInReference();
 	
 	/**
 	 * Sets the in-reference of this reference.
 	 * E.g. if this reference is a book section the according book is set via this
 	 * method.
 	 */
-	public void setInReference(ReferenceBase referenceBase);
+	public void setInReference(Reference reference);
 }

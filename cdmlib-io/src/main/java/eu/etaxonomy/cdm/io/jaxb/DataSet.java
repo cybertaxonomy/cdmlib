@@ -95,7 +95,7 @@ import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -242,9 +242,9 @@ public class DataSet {
     
     @XmlElementWrapper(name = "References")
     @XmlElements({
-    	@XmlElement(name = "ReferenceBase", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = ReferenceBase.class)
+    	@XmlElement(name = "Reference", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Reference.class)
     })
-    protected List<ReferenceBase> references = new ArrayList<ReferenceBase>();
+    protected List<Reference> references = new ArrayList<Reference>();
 
     @XmlElementWrapper(name = "TypeDesignations")
     @XmlElements({
@@ -494,10 +494,10 @@ public class DataSet {
      * 
      * @return
      *     possible object is
-     *     {@link List<ReferenceBase> }
+     *     {@link List<Reference> }
      *     
      */
-    public List<ReferenceBase> getReferences() {
+    public List<Reference> getReferences() {
         return references;
     }
 
@@ -506,10 +506,10 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<ReferenceBase> }
+     *     {@link List<Reference> }
      *     
      */
-    public void setReferences(List<ReferenceBase> value) {
+    public void setReferences(List<Reference> value) {
         this.references = value;
     }
 

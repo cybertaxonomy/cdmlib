@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author m.doering
@@ -75,7 +75,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	 * @param citation
 	 * @param citationMicroReference
 	 */
-	protected RelationshipBase(FROM from, TO to, TYPE type, ReferenceBase citation, String citationMicroReference) {
+	protected RelationshipBase(FROM from, TO to, TYPE type, Reference citation, String citationMicroReference) {
 		super(citation, citationMicroReference, null);
 		setRelatedFrom(from);
 		setRelatedTo(to);

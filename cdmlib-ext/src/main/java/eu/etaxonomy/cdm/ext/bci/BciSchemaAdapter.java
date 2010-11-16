@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.kohlbecker
  * @date 25.08.2010
  */
-public class BciSchemaAdapter extends SchemaAdapterBase<ReferenceBase>{
+public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 	
 
 
@@ -73,7 +73,7 @@ public class BciSchemaAdapter extends SchemaAdapterBase<ReferenceBase>{
 	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getCmdEntities(java.io.Reader)
 	 */
 	@Override
-	public List<ReferenceBase> getCmdEntities(InputStream inputStream) {
+	public List<Reference> getCmdEntities(InputStream inputStream) {
 
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 	    factory.setNamespaceAware(true);
@@ -114,9 +114,9 @@ public class BciSchemaAdapter extends SchemaAdapterBase<ReferenceBase>{
 		private static final String DC_PUBLISHER = "dc:publisher";
 		private static final String DC_DATE = "dc:date";
 		
-		List<ReferenceBase> referenceList = new ArrayList<ReferenceBase>();
+		List<Reference> referenceList = new ArrayList<Reference>();
 
-		ReferenceBase referenceBase = null;
+		Reference reference = null;
 		
 		String dcFieldName = null;
 		
@@ -130,7 +130,7 @@ public class BciSchemaAdapter extends SchemaAdapterBase<ReferenceBase>{
 				logger.debug("Start Element :" + qName + "; " + uri);
 				
 				if (qName.equals(DC_DC)) {
-					referenceBase = ReferenceFactory.newGeneric();
+					reference = ReferenceFactory.newGeneric();
 				} else {
 					dcFieldName = qName;
 				}
@@ -142,12 +142,12 @@ public class BciSchemaAdapter extends SchemaAdapterBase<ReferenceBase>{
 				throws SAXException {
 
 			if (uri.equals(nameSpace)) {
-				if(referenceBase != null) {
+				if(reference != null) {
 					logger.debug("End Element :" + qName + "; " + uri);
 					
 					if (qName.equals(DC_DC)) {
-						referenceList.add(referenceBase);
-						referenceBase = null;
+						referenceList.add(reference);
+						reference = null;
 					} else {
 						dcFieldName = null;
 					}
@@ -160,22 +160,22 @@ public class BciSchemaAdapter extends SchemaAdapterBase<ReferenceBase>{
 		public void characters(char ch[], int start, int length)
 				throws SAXException {
 
-			if(referenceBase != null && dcFieldName != null){
+			if(reference != null && dcFieldName != null){
 				String text = new String(ch, start, length);
 				logger.debug("Characters : " + text);
 				if(dcFieldName.equals(DC_TITLE)){
-					referenceBase.setTitleCache(text, true);
+					reference.setTitleCache(text, true);
 				}
 				if(dcFieldName.equals(DC_DATE)){
-					referenceBase.setDatePublished(TimePeriod.parseString(text));
+					reference.setDatePublished(TimePeriod.parseString(text));
 				}
 				if(dcFieldName.equals(DC_PUBLISHER)){
-					referenceBase.setPublisher(text);
+					reference.setPublisher(text);
 				}
 				if(dcFieldName.equals(DC_CREATOR)){
 					TeamOrPersonBase authorTeam = new Team();
 					authorTeam.setTitleCache(text, true);
-					referenceBase.setAuthorTeam(authorTeam);
+					reference.setAuthorTeam(authorTeam);
 				}
 				
 			}

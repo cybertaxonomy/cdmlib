@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
  * from basionym relationship. The scientific name including author strings and
  * maybe year can be stored as a string in the inherited {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
- * The year itself is an information obtained from the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase#getYear() nomenclatural reference}.
+ * The year itself is an information obtained from the {@link eu.etaxonomy.cdm.model.reference.Reference#getYear() nomenclatural reference}.
  * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
  * <P>
  * This class corresponds partially to: <ul>
@@ -277,7 +277,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    #NewInstance(Rank, HomotypicalGroup)
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, Reference, String, HomotypicalGroup)
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -299,7 +299,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    #NewInstance(Rank)
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, Reference, String, HomotypicalGroup)
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -316,7 +316,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #NonViralName(Rank, HomotypicalGroup)
-	 * @see #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
+	 * @see #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, Reference, String, HomotypicalGroup)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -337,7 +337,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @param	rank  the rank to be assigned to <i>this</i> non viral taxon name
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> non viral taxon name belongs
 	 * @see 	#NonViralName()
-	 * @see		#NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
+	 * @see		#NonViralName(Rank, String, String, String, String, TeamOrPersonBase, Reference, String, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
@@ -352,7 +352,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
-	 * its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase nomenclatural reference} and
+	 * its {@link eu.etaxonomy.cdm.model.reference.Reference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
 	 * non viral taxon names belonging to this homotypical group.
@@ -387,7 +387,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		setSpecificEpithet(specificEpithet);
 		setInfraSpecificEpithet(infraSpecificEpithet);
 		setCombinationAuthorTeam(combinationAuthorTeam);
-		setNomenclaturalReference((ReferenceBase)nomenclaturalReference);
+		setNomenclaturalReference((Reference)nomenclaturalReference);
 		this.setNomenclaturalMicroReference(nomenclMicroRef);
 	}
 	

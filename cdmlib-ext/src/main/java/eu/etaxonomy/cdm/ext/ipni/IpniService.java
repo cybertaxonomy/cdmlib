@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -284,10 +284,10 @@ public class IpniService  implements IIpniService{
         return null;
     }
 
-	private List<ReferenceBase> buildPublicationList( InputStream content, ICdmApplicationConfiguration services, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<Reference> buildPublicationList( InputStream content, ICdmApplicationConfiguration services, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServicePublicationConfigurator config = (IpniServicePublicationConfigurator)iConfig;
 		
-		List<ReferenceBase> result = new ArrayList<ReferenceBase>(); 
+		List<Reference> result = new ArrayList<Reference>(); 
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 		
 		String headerLine = reader.readLine();
@@ -295,7 +295,7 @@ public class IpniService  implements IIpniService{
 		
 		String line = reader.readLine();
 		while (StringUtils.isNotBlank(line)){
-			ReferenceBase reference = getPublicationFromLine(line, parameterMap, services, config);
+			Reference reference = getPublicationFromLine(line, parameterMap, services, config);
 			result.add(reference);
 			line = reader.readLine();
 		}
@@ -311,7 +311,7 @@ public class IpniService  implements IIpniService{
 	 * @param config
 	 * @return
 	 */
-	private ReferenceBase getPublicationFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig, IpniServicePublicationConfigurator config) {
+	private Reference getPublicationFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig, IpniServicePublicationConfigurator config) {
 		//fill value map
 		String[] splits = line.split("%");
 		
@@ -321,7 +321,7 @@ public class IpniService  implements IIpniService{
 		}
 		
 		//create reference object
-		ReferenceBase ref = ReferenceFactory.newGeneric();
+		Reference ref = ReferenceFactory.newGeneric();
 		
 		//reference
 		if (config.isUseAbbreviationAsTitle() == true){
@@ -365,7 +365,7 @@ public class IpniService  implements IIpniService{
 
 
 		//source
-		ReferenceBase citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(appConfig);
 		ref.addSource(valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
 
 		
@@ -438,7 +438,7 @@ public class IpniService  implements IIpniService{
 		name.setCombinationAuthorTeam(Team.NewTitledInstance(valueMap.get(PUBLISHING_AUTHOR), valueMap.get(PUBLISHING_AUTHOR)));
 		
 		//publication
-		ReferenceBase ref = ReferenceFactory.newGeneric();
+		Reference ref = ReferenceFactory.newGeneric();
 		ref.setTitleCache(valueMap.get(PUBLICATION));
 		TimePeriod datePublished = TimePeriod.parseString(valueMap.get(PUBLICATION_YEAR_FULL));
 		name.setNomenclaturalReference(ref);
@@ -537,7 +537,7 @@ public class IpniService  implements IIpniService{
 		
 		
 		//source
-		ReferenceBase citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(appConfig);
 		name.addSource(valueMap.get(ID), "Name", citation, valueMap.get(VERSION));
 		
 		
@@ -660,7 +660,7 @@ public class IpniService  implements IIpniService{
 		person.setFirstname(valueMap.get(DEFAULT_AUTHOR_FORENAME));
 		person.setLastname(valueMap.get(DEFAULT_AUTHOR_SURNAME));
 		
-		ReferenceBase citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(appConfig);
 		
 		//id, version
 		person.addSource(valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
@@ -687,8 +687,8 @@ public class IpniService  implements IIpniService{
 	}
 
 	
-	private ReferenceBase getIpniCitation(ICdmApplicationConfiguration appConfig) {
-		ReferenceBase ipniReference;
+	private Reference getIpniCitation(ICdmApplicationConfiguration appConfig) {
+		Reference ipniReference;
 		if (appConfig != null){
 			ipniReference = appConfig.getReferenceService().find(uuidIpni);
 			if (ipniReference == null){
@@ -705,8 +705,8 @@ public class IpniService  implements IIpniService{
 	/**
 	 * @return
 	 */
-	private ReferenceBase getNewIpniReference() {
-		ReferenceBase ipniReference;
+	private Reference getNewIpniReference() {
+		Reference ipniReference;
 		ipniReference = ReferenceFactory.newDatabase();
 		ipniReference.setTitleCache("The International Plant Names Index (IPNI)");
 		return ipniReference;
@@ -827,7 +827,7 @@ public class IpniService  implements IIpniService{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.ext.IIpniService#getPublications(java.lang.String, java.lang.String, boolean, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration)
 	 */
-	public List<ReferenceBase> getPublications(String title, String abbreviation, ICdmApplicationConfiguration services, IpniServicePublicationConfigurator config){
+	public List<Reference> getPublications(String title, String abbreviation, ICdmApplicationConfiguration services, IpniServicePublicationConfigurator config){
 //		http://www.uk.ipni.org/ipni/advPublicationSearch.do?find_title=Spe*plant*&find_abbreviation=&output_format=normal&query_type=by_query&back_page=publicationsearch
 //		http://www.uk.ipni.org/ipni/advPublicationSearch.do?find_title=*Hortus+Britannicus*&find_abbreviation=&output_format=delimited-classic&output_format=delimited
 		
@@ -842,7 +842,7 @@ public class IpniService  implements IIpniService{
 						"&find_abbreviation=" + abbreviation +
 						"&output_format=" + DelimitedFormat.CLASSIC.parameter;
 		
-		List<ReferenceBase> result = (List)queryService(request, services, getServiceUrl(IIpniService.PUBLICATION_SERVICE_URL), config, ServiceType.PUBLICATION);
+		List<Reference> result = (List)queryService(request, services, getServiceUrl(IIpniService.PUBLICATION_SERVICE_URL), config, ServiceType.PUBLICATION);
 		return result;
 	}
 

@@ -8,7 +8,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -38,7 +38,7 @@ public enum SetSpec {
 	TAXON_DESCRIPTION("taxonDescription","Descriptions of taxonomic concepts",TaxonDescription.class,null),
 	TAXON_NAME_DESCRIPTION("taxonNameDescription","Descriptions of scientific names",TaxonNameDescription.class,null),
 	SPECIMEN_DESCRIPTION("specimenDescription","Descriptions of specimens and occurrences",SpecimenDescription.class,null),
-	REFERENCE("reference","Any kind of Reference",ReferenceBase.class,null);
+	REFERENCE("reference","Any kind of Reference",Reference.class,null);
 
 	private String spec;
 	private String name;

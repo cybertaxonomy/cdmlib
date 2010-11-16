@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -73,7 +73,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		logger.info("start make taxon relations ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 
@@ -148,7 +148,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	private int makeTaxonRelationshipAssertion(
 			TcsXmlImportState state, 
 			MapWrapper<TaxonBase> taxonMap,
-			MapWrapper<ReferenceBase> referenceMap,
+			MapWrapper<Reference> referenceMap,
 			Set<TaxonBase> taxonStore, 
 			Element elDataSet, 
 			Namespace tcsNamespace, 
@@ -173,7 +173,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			childName = "AccordingTo";
 			obligatory = true;
 			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonRelationshipAssertion, childName, tcsNamespace, obligatory);
-			ReferenceBase ref = makeAccordingTo(elAccordingTo, referenceMap, success);
+			Reference ref = makeAccordingTo(elAccordingTo, referenceMap, success);
 			
 			childName = "FromTaxonConcept";
 			obligatory = true;
@@ -240,7 +240,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						success.setValue(false);
 					}else{
 						Taxon taxonTo = (Taxon)toTaxon;
-						ReferenceBase citation = null;
+						Reference citation = null;
 						String microReference = null;
 						if (relType instanceof SynonymRelationshipType){
 							SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
@@ -336,7 +336,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return result;
 	}
 
-	private void makeTaxonRelationship(TcsXmlImportState state, TaxonRelationshipType relType, TaxonBase fromTaxon, Taxon taxonTo, ReferenceBase citation, String microReference, ResultWrapper<Boolean> success){
+	private void makeTaxonRelationship(TcsXmlImportState state, TaxonRelationshipType relType, TaxonBase fromTaxon, Taxon taxonTo, Reference citation, String microReference, ResultWrapper<Boolean> success){
 		TaxonRelationshipType taxRelType = (TaxonRelationshipType)relType;
 		if (! (fromTaxon instanceof Taxon )){
 			logger.warn("TaxonBase fromTaxon " + /*strTaxonAbout +*/ "is not of Type 'Taxon'. Relationship is not added.");
@@ -351,8 +351,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		}
 	}
 	
-	private boolean makeTaxonomicallyIncluded(TcsXmlImportState state, Taxon toTaxon, Taxon fromTaxon, ReferenceBase citation, String microCitation){
-		ReferenceBase sec = toTaxon.getSec();
+	private boolean makeTaxonomicallyIncluded(TcsXmlImportState state, Taxon toTaxon, Taxon fromTaxon, Reference citation, String microCitation){
+		Reference sec = toTaxon.getSec();
 		TaxonomicTree tree = state.getTree(sec);
 		if (tree == null){
 			tree = makeTree(state, sec);

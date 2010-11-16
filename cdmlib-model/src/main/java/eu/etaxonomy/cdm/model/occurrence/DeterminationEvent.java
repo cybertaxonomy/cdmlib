@@ -38,7 +38,7 @@ import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -90,7 +90,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<ReferenceBase> setOfReferences = new HashSet<ReferenceBase>();
+	private Set<Reference> setOfReferences = new HashSet<Reference>();
 
 	
 	
@@ -167,15 +167,15 @@ public class DeterminationEvent extends EventBase {
 		this.preferredFlag = preferredFlag;
 	}
 	
-	public Set<ReferenceBase> getReferences() {
+	public Set<Reference> getReferences() {
 		return setOfReferences;
 	}
 
-	public void setReferences(Set<ReferenceBase> references) {
+	public void setReferences(Set<Reference> references) {
 		this.setOfReferences = references;
 	}
 	
-	public void addReference(ReferenceBase reference) {
+	public void addReference(Reference reference) {
 		this.setOfReferences.add(reference);
 	}
 	

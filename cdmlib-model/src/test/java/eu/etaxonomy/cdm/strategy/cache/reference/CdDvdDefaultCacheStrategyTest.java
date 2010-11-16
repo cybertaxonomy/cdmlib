@@ -21,19 +21,19 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.ICdDvd;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 public class CdDvdDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CdDvdDefaultCacheStrategyTest.class);
 
-	ReferenceBase cdDvd;
+	Reference cdDvd;
 	String title;
 	String publisher;
 	String place;
 	TimePeriod publicationDate;
-	CdDvdDefaultCacheStrategy<ReferenceBase> instance;
+	CdDvdDefaultCacheStrategy<Reference> instance;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

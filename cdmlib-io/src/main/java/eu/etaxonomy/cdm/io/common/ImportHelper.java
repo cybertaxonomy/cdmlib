@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  *
@@ -48,7 +48,7 @@ public class ImportHelper {
 	
 	
 
-	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, long sourceId, String namespace){
+	public static boolean setOriginalSource(IdentifiableEntity idEntity, Reference sourceReference, long sourceId, String namespace){
 		return setOriginalSource(idEntity, sourceReference, String.valueOf(sourceId), namespace);
 	}
 	
@@ -59,7 +59,7 @@ public class ImportHelper {
 	 * @param sourceId
 	 * @return
 	 */
-	public static boolean setOriginalSource(ISourceable sourceable, ReferenceBase sourceReference, String sourceId, String namespace){
+	public static boolean setOriginalSource(ISourceable sourceable, Reference sourceReference, String sourceId, String namespace){
 		IOriginalSource originalSource;
 		if (HibernateProxyHelper.isInstanceOf(sourceable, IdentifiableEntity.class)){
 			originalSource = IdentifiableSource.NewInstance(sourceId, namespace, sourceReference, null);

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -56,7 +56,7 @@ public class TestTaxonFunction {
 		
 		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		ReferenceBase sec = refFactory.newBook();
+		Reference sec = refFactory.newBook();
 		sec.setTitleCache("ConceptRef", true);
 		
 		//root
@@ -102,7 +102,7 @@ public class TestTaxonFunction {
 			initDatabase();
 		}
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", DbSchemaValidation.VALIDATE);
-		ReferenceBase sec = cdmApp.getReferenceService().find(getRefUuid());
+		Reference sec = cdmApp.getReferenceService().find(getRefUuid());
 		List<Taxon> rootList = cdmApp.getTaxonService().getRootTaxa(sec, CdmFetch.NO_FETCH(), false);
 		for (Taxon taxon:rootList){
 			System.out.println(taxon);

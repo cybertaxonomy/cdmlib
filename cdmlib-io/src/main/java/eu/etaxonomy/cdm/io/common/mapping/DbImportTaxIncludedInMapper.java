@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -109,7 +109,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		String toId = String.valueOf(rs.getObject(toAttribute));
 		String alternativeToId = String.valueOf(rs.getObject(alternativeAttribute));
 
-		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute, citationNamespace);
+		Reference citation = (Reference)getRelatedObject(rs, citationAttribute, citationNamespace);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);
@@ -183,7 +183,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	
 	public static final String TAXONOMIC_TREE_NAMESPACE = "TaxonomicTree";
 	
-	private boolean makeTaxonomicallyIncluded(STATE state, Integer treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
+	private boolean makeTaxonomicallyIncluded(STATE state, Integer treeRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
 		String treeKey;
 		UUID treeUuid;
 		if (treeRefFk == null){
@@ -213,7 +213,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	}
 	
 //	
-//	private boolean makeTaxonomicallyIncluded_OLD(STATE state, Integer treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
+//	private boolean makeTaxonomicallyIncluded_OLD(STATE state, Integer treeRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
 //		Map<Integer, TaxonomicTree> taxonTreeMap = state.getPartitionTaxonTreeMap();
 //		
 //		

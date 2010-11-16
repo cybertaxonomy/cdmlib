@@ -34,82 +34,82 @@ public class ReferenceFactory {
 		return new ReferenceFactory();
 	}
 	
-	public static ReferenceBase newArticle(){
-		ReferenceBase<ArticleDefaultCacheStrategy> article = new ReferenceBase(ReferenceType.Article);
+	public static Reference newArticle(){
+		Reference<ArticleDefaultCacheStrategy> article = new Reference(ReferenceType.Article);
 		article.setCacheStrategy(ReferenceType.Article.getCacheStrategy());
 		return article;
 	}
 
-	public static ReferenceBase newJournal(){
-		ReferenceBase<JournalDefaultCacheStrategy<ReferenceBase>> journal = new ReferenceBase(ReferenceType.Journal);
+	public static Reference newJournal(){
+		Reference<JournalDefaultCacheStrategy<Reference>> journal = new Reference(ReferenceType.Journal);
 		journal.setCacheStrategy(ReferenceType.Journal.getCacheStrategy());
 		return journal;
 	}
 	
-	public static ReferenceBase newBook(){
-		ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>> book = new ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Book);
+	public static Reference newBook(){
+		Reference<BookDefaultCacheStrategy<Reference>> book = new Reference<BookDefaultCacheStrategy<Reference>>(ReferenceType.Book);
 		book.setCacheStrategy(ReferenceType.Book.getCacheStrategy());
 		return book;
 	}
 	
-	public static ReferenceBase newThesis(){
-		ReferenceBase<ThesisDefaultCacheStrategy<ReferenceBase>> thesis = new ReferenceBase<ThesisDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Thesis);
+	public static Reference newThesis(){
+		Reference<ThesisDefaultCacheStrategy<Reference>> thesis = new Reference<ThesisDefaultCacheStrategy<Reference>>(ReferenceType.Thesis);
 		thesis.setCacheStrategy(ReferenceType.Thesis.getCacheStrategy());
 		return thesis;
 	}
 	
-	public static ReferenceBase newInProceedings(){
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> inProceedings = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.InProceedings);
+	public static Reference newInProceedings(){
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> inProceedings = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.InProceedings);
 		inProceedings.setCacheStrategy(ReferenceType.InProceedings.getCacheStrategy());
 		return inProceedings;
 	}
 	
-	public static ReferenceBase newProceedings(){
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> proceedings = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Proceedings);
+	public static Reference newProceedings(){
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> proceedings = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.Proceedings);
 		proceedings.setCacheStrategy(ReferenceType.Proceedings.getCacheStrategy());
 		return proceedings;
 	}
 	
-	public static ReferenceBase newBookSection(){
-		ReferenceBase<BookSectionDefaultCacheStrategy<ReferenceBase>> bookSection = new ReferenceBase<BookSectionDefaultCacheStrategy<ReferenceBase>>(ReferenceType.BookSection);
+	public static Reference newBookSection(){
+		Reference<BookSectionDefaultCacheStrategy<Reference>> bookSection = new Reference<BookSectionDefaultCacheStrategy<Reference>>(ReferenceType.BookSection);
 		bookSection.setCacheStrategy(ReferenceType.BookSection.getCacheStrategy());
 		return bookSection;
 	}
 	
-	public static ReferenceBase newCdDvd(){
-		ReferenceBase<CdDvdDefaultCacheStrategy<ReferenceBase>> cdDvd= new ReferenceBase<CdDvdDefaultCacheStrategy<ReferenceBase>>(ReferenceType.CdDvd);
+	public static Reference newCdDvd(){
+		Reference<CdDvdDefaultCacheStrategy<Reference>> cdDvd= new Reference<CdDvdDefaultCacheStrategy<Reference>>(ReferenceType.CdDvd);
 		cdDvd.setCacheStrategy(ReferenceType.CdDvd.getCacheStrategy());
 		return cdDvd;
 	}
 	
-	public static ReferenceBase newGeneric(){
-		ReferenceBase generic = new ReferenceBase<GenericDefaultCacheStrategy>(ReferenceType.Generic);
+	public static Reference newGeneric(){
+		Reference generic = new Reference<GenericDefaultCacheStrategy>(ReferenceType.Generic);
 		generic.setCacheStrategy(ReferenceType.Generic.getCacheStrategy());
 		return generic;
 	}
 	
-	public static ReferenceBase newMap(){
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> map = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Map);
+	public static Reference newMap(){
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> map = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.Map);
 		map.setCacheStrategy(ReferenceType.Map.getCacheStrategy());
 		return map;
 		
 	}
 	
-	public static ReferenceBase newReport(){
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> report = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Report);
+	public static Reference newReport(){
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> report = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.Report);
 		report.setCacheStrategy(ReferenceType.Report.getCacheStrategy());
 		return report;
 		
 	}
 	
-	public static ReferenceBase newWebPage(){
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> webPage = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.WebPage);
+	public static Reference newWebPage(){
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> webPage = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.WebPage);
 		webPage.setCacheStrategy(ReferenceType.WebPage.getCacheStrategy());
 		return webPage;
 	}
 	
-	public static ReferenceBase newDatabase(){
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> db = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Database);
+	public static Reference newDatabase(){
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> db = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.Database);
 		db.setCacheStrategy(ReferenceType.Database.getCacheStrategy());
 		return db;
 	}
@@ -118,8 +118,8 @@ public class ReferenceFactory {
 	/** 
 	 * Creates a new empty print series instance.
 	 */
-	public static ReferenceBase newPrintSeries() {
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> refBase = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.PrintSeries);
+	public static Reference newPrintSeries() {
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> refBase = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.PrintSeries);
 		refBase.setCacheStrategy(ReferenceType.PrintSeries.getCacheStrategy());
 		return refBase;
 	}
@@ -127,24 +127,24 @@ public class ReferenceFactory {
 	/** 
 	 * Creates a new print series instance with a given title string.
 	 */
-	public static ReferenceBase newPrintSeries(String series) {
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> refBase = newPrintSeries();
+	public static Reference newPrintSeries(String series) {
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> refBase = newPrintSeries();
 		refBase.setCacheStrategy(ReferenceType.PrintSeries.getCacheStrategy());
 		return refBase;
 	}
 
-	public ReferenceBase newBookSection(ReferenceBase book, Person partAuthor,
+	public Reference newBookSection(Reference book, Person partAuthor,
 			String sectionTitle, String pages) {
-		ReferenceBase bookSection = newBookSection();
+		Reference bookSection = newBookSection();
 		bookSection.setAuthorTeam(partAuthor);
 		bookSection.setTitle(sectionTitle);
 		bookSection.setPages(pages);
 		return bookSection;
 	}
 
-	public static ReferenceBase newArticle(ReferenceBase inJournal, Person partAuthor,
+	public static Reference newArticle(Reference inJournal, Person partAuthor,
 			String title, String pages, String series, String volume, TimePeriod datePublished) {
-		ReferenceBase article = newArticle();
+		Reference article = newArticle();
 		article.setInReference(inJournal);
 		article.setAuthorTeam(partAuthor);
 		article.setTitle(title);
@@ -160,7 +160,7 @@ public class ReferenceFactory {
 	 * @param referenceType
 	 * @return
 	 */
-	public static ReferenceBase newReference(ReferenceType referenceType) {
+	public static Reference newReference(ReferenceType referenceType) {
 		if (referenceType == null){
 			return null;
 		}
@@ -203,14 +203,14 @@ public class ReferenceFactory {
 		}
 	}
 
-	public static ReferenceBase newPersonalCommunication() {
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> personalCommunication = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.PersonalCommunication);
+	public static Reference newPersonalCommunication() {
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> personalCommunication = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.PersonalCommunication);
 		personalCommunication.setCacheStrategy(ReferenceType.PersonalCommunication.getCacheStrategy());
 		return personalCommunication;
 	}
 
-	public static ReferenceBase newPatent() {
-		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> patent = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Patent);
+	public static Reference newPatent() {
+		Reference<ReferenceBaseDefaultCacheStrategy<Reference>> patent = new Reference<ReferenceBaseDefaultCacheStrategy<Reference>>(ReferenceType.Patent);
 		patent.setCacheStrategy(ReferenceType.Patent.getCacheStrategy());
 		return patent;
 	}

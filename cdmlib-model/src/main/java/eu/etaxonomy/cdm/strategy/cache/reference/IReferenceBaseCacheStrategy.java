@@ -9,16 +9,16 @@
 
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
- * A reference cache rendering strategy for all subclasses of ReferenceBase.
+ * A reference cache rendering strategy for all subclasses of Reference.
  * @author a.mueller
  *
- * @param <T> The concrete ReferenceBase class this strategy applies for
+ * @param <T> The concrete Reference class this strategy applies for
  */
-public interface IReferenceBaseCacheStrategy<T extends ReferenceBase> extends IIdentifiableEntityCacheStrategy<T> {
+public interface IReferenceBaseCacheStrategy<T extends Reference> extends IIdentifiableEntityCacheStrategy<T> {
 	
 	/**
 	 * Returns a short version of the reference, suitable for citation (e.g. ${authorname}, ${year})

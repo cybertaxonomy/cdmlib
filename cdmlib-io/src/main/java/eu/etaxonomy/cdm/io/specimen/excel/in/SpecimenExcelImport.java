@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -224,7 +224,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void setTaxonNameBase(SpecimenExcelImportConfigurator config, DerivedUnitBase derivedThing, ReferenceBase sec){
+	private void setTaxonNameBase(SpecimenExcelImportConfigurator config, DerivedUnitBase derivedThing, Reference sec){
 		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -273,7 +273,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 			determinationEvent.setPreferredFlag(preferredFlag);
 //			no reference in the GBIF INDEX
 //			for (int l=0;l<this.referenceList.size();l++){
-//			ReferenceBase reference = new Generic();
+//			Reference reference = new Generic();
 //			reference.setTitleCache(this.referenceList.get(l));
 //			determinationEvent.addReference(reference);
 //			}
@@ -351,7 +351,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 		
 		tx = startTransaction();
 		try {
-			ReferenceBase sec = config.getTaxonReference();
+			Reference sec = config.getTaxonReference();
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING

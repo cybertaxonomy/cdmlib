@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -82,14 +82,14 @@ public class RefDetailMapper extends DbSingleAttributeExportMapperBase<BerlinMod
 	protected Object getValue(CdmBase cdmBase) {
 		String value = (String)super.getValue(cdmBase);
 		boolean isBoolean = false;
-		ReferenceBase<?> ref = (ReferenceBase<?>)ImportHelper.getValue(cdmBase, this.cdmRefAttributeString, isBoolean, true);
+		Reference<?> ref = (Reference<?>)ImportHelper.getValue(cdmBase, this.cdmRefAttributeString, isBoolean, true);
 		Object result = makeRefDetail(value, ref);
 //		getState().getConfig().getCdmAppController().commitTransaction(tx);
 		return result;
 	}
 
 	
-	protected Integer makeRefDetail(String microRef, ReferenceBase<?> ref){
+	protected Integer makeRefDetail(String microRef, Reference<?> ref){
 		if (ref == null){
 			if (microRef == null || microRef.trim().equals("")){
 				return null;		

@@ -13,9 +13,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class BookDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
+public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(BookDefaultCacheStrategy.class);
 	
 	private String prefixEdition = "ed.";
@@ -41,7 +41,7 @@ public class BookDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDe
 	 * @return
 	 */
 	public static BookDefaultCacheStrategy NewInstance(){
-		return new BookDefaultCacheStrategy<ReferenceBase>();
+		return new BookDefaultCacheStrategy<Reference>();
 	}
 	
 	/**

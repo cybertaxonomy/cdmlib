@@ -71,7 +71,7 @@ public class TestTaxonServices {
 //		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
 //		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 //
-//		ReferenceBase citation;
+//		Reference citation;
 //		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 //		citation = refFactory.newBook();
 //		AgentBase linne = appCtr.getAgentService().find(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));

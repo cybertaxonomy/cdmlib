@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -88,15 +88,15 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		
 		//nom reference map
 		String nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
-		Class cdmClass = ReferenceBase.class;
+		Class cdmClass = Reference.class;
 		idSet = new HashSet<String>();
-		Map<String, ReferenceBase> nomRefMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+		Map<String, Reference> nomRefMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 		
 		//biblio reference map
 		nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-		cdmClass = ReferenceBase.class;
+		cdmClass = Reference.class;
 //		idSet = new HashSet<String>();
-		Map<String, ReferenceBase> biblioRefMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+		Map<String, Reference> biblioRefMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 		
 		ResultSet rs = source.getResultSet(getTaxonomicTreeQuery()) ;
 		int i = 0;
@@ -108,7 +108,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				
 				Object ptRefFkObj = rs.getObject("PTRefFk");
 				String ptRefFk= String.valueOf(ptRefFkObj);
-				ReferenceBase<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
+				Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
 				
 				rs.getString("RefCache");
 				String treeName = "TaxonTree - No Name";
@@ -191,8 +191,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
 		Map<Integer, TaxonomicTree> taxonTreeMap = new HashMap<Integer, TaxonomicTree>();
-		Map<String, ReferenceBase> biblioRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, ReferenceBase> nomRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+		Map<String, Reference> biblioRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, Reference> nomRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
 
 		ResultSet rs = partitioner.getResultSet();
 			
@@ -216,7 +216,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				TaxonBase taxon2 = taxonMap.get(String.valueOf(taxon2Id));
 				
 				String refFk = String.valueOf(relRefFkObj);
-				ReferenceBase citation = getReferenceOnlyFromMaps(biblioRefMap,	nomRefMap, refFk);
+				Reference citation = getReferenceOnlyFromMaps(biblioRefMap,	nomRefMap, refFk);
 				
 				String microcitation = null; //does not exist in RelPTaxon
 	
@@ -368,16 +368,16 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			
 			//nom reference map
 			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomReferenceMap);
 
 			//biblio reference map
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 
 		} catch (SQLException e) {
@@ -386,7 +386,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		return result;
 	}
 	
-	private SynonymRelationship getSynRel (int relQualifierFk, Taxon toTaxon, Synonym synonym, ReferenceBase citation, String microcitation){
+	private SynonymRelationship getSynRel (int relQualifierFk, Taxon toTaxon, Synonym synonym, Reference citation, String microcitation){
 		SynonymRelationship result;
 		if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||
 				relQualifierFk == TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF ||
@@ -443,7 +443,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 	}
 	
-	private TaxonNode makeTaxonomicallyIncluded(BerlinModelImportState state, Map<Integer, TaxonomicTree> taxonTreeMap, int treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
+	private TaxonNode makeTaxonomicallyIncluded(BerlinModelImportState state, Map<Integer, TaxonomicTree> taxonTreeMap, int treeRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
 		TaxonomicTree tree = taxonTreeMap.get(treeRefFk);
 		if (tree == null){
 			UUID treeUuid = state.getTreeUuidByIntTreeKey(treeRefFk);

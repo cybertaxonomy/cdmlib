@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -83,7 +83,7 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	/** 
 	 * Class constructor: creates a new empty synonym instance.
 	 * 
-	 * @see 	#Synonym(TaxonNameBase, ReferenceBase)
+	 * @see 	#Synonym(TaxonNameBase, Reference)
 	 */
 	//TODO should be private, but still produces Spring init errors
 	public Synonym(){
@@ -92,14 +92,14 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	
 	/** 
 	 * Class constructor: creates a new synonym instance with
-	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
-	 * @see    					Synonym#Synonym(TaxonNameBase, ReferenceBase)
+	 * @see    					Synonym#Synonym(TaxonNameBase, Reference)
 	 */
-	public Synonym(TaxonNameBase taxonNameBase, ReferenceBase sec){
+	public Synonym(TaxonNameBase taxonNameBase, Reference sec){
 		super(taxonNameBase, sec);
 		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
 	}
@@ -108,14 +108,14 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 
 	/** 
 	 * Creates a new synonym instance with
-	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
-	 * @see    					#Synonym(TaxonNameBase, ReferenceBase)
+	 * @see    					#Synonym(TaxonNameBase, Reference)
 	 */
-	public static Synonym NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
+	public static Synonym NewInstance(TaxonNameBase taxonName, Reference sec){
 		Synonym result = new Synonym(taxonName, sec);
 		return result;
 	}

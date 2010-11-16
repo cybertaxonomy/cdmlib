@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -289,7 +289,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						if (parentTaxon != null) {
 							//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 							
-							ReferenceBase citation = state.getConfig().getSourceReference();
+							Reference citation = state.getConfig().getSourceReference();
 							String microCitation = null;
 							Taxon childTaxon = taxon;
 							success &= makeParent(state, parentTaxon, childTaxon, citation, microCitation);
@@ -385,7 +385,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 
 		//Create the taxon
-		ReferenceBase sec = state.getConfig().getSourceReference();
+		Reference sec = state.getConfig().getSourceReference();
 		// Create the status
 		nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
 		if (validMarkers.contains(nameStatus)){
@@ -418,11 +418,11 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 	}
 
-	private boolean makeParent(TaxonExcelImportState state, Taxon parentTaxon, Taxon childTaxon, ReferenceBase citation, String microCitation){
+	private boolean makeParent(TaxonExcelImportState state, Taxon parentTaxon, Taxon childTaxon, Reference citation, String microCitation){
 		boolean success = true;
-		ReferenceBase sec = state.getConfig().getSourceReference();
+		Reference sec = state.getConfig().getSourceReference();
 		
-//		ReferenceBase sec = parentTaxon.getSec();
+//		Reference sec = parentTaxon.getSec();
 		TaxonomicTree tree = state.getTree(sec);
 		if (tree == null){
 			tree = makeTree(state, sec);

@@ -179,7 +179,7 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Specimen"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
       <!-- Reference Package -->
-      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>
       <!--
       <mapping class="eu.etaxonomy.cdm.model.reference.Article"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Book"/>

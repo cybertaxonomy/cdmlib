@@ -50,13 +50,13 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
- * the opinion of the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} can build a taxonomic tree).
+ * the opinion of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} can build a taxonomic tree).
  * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.<BR>
  * Splitting taxa in "accepted/correct" and {@link Synonym "synonyms"} makes it easier to handle
  * particular relationships between ("accepted/correct") taxa on the one hand
@@ -163,14 +163,14 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	/** 
 	 * Class constructor: creates a new (accepted/correct) taxon instance with
-	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
-	 * @see    					TaxonBase#TaxonBase(TaxonNameBase, ReferenceBase)
+	 * @see    					TaxonBase#TaxonBase(TaxonNameBase, Reference)
 	 */
-	public Taxon(TaxonNameBase taxonNameBase, ReferenceBase sec){
+	public Taxon(TaxonNameBase taxonNameBase, Reference sec){
 		super(taxonNameBase, sec);
 		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
 	}
@@ -179,28 +179,28 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 
 	/** 
 	 * Creates a new (accepted/correct) taxon instance with
-	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
-	 * @see    					#Taxon(TaxonNameBase, ReferenceBase)
+	 * @see    					#Taxon(TaxonNameBase, Reference)
 	 */
-	public static Taxon NewInstance(TaxonNameBase taxonNameBase, ReferenceBase sec){
+	public static Taxon NewInstance(TaxonNameBase taxonNameBase, Reference sec){
 		Taxon result = new Taxon(taxonNameBase, sec);
 		return result;
 	}
 
 	/** 
 	 * Creates a new taxon instance with an unknown status (accepted/synonym) and with
-	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
-	 * @see    					#Taxon(TaxonNameBase, ReferenceBase)
+	 * @see    					#Taxon(TaxonNameBase, Reference)
 	 */
-	public static Taxon NewUnknownStatusInstance(TaxonNameBase taxonNameBase, ReferenceBase sec){
+	public static Taxon NewUnknownStatusInstance(TaxonNameBase taxonNameBase, Reference sec){
 		Taxon result = new Taxon(taxonNameBase, sec);
 		result.setTaxonStatusUnknown(true);
 		return result;
@@ -331,9 +331,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * 							synonym relationships set
 	 * @see    	   				#getSynonymRelations()
 	 * @see    	   				#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    	   				#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   				#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-	 * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
 	 */
 	protected void addSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.add(synonymRelation);
@@ -518,7 +518,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * {@link #getTaxonomicChildrenCount() childrens} will be stored.
 	 * 
 	 * @param rel  the taxon relationship to be added to one of <i>this</i> taxon's taxon relationships sets
-	 * @see    	   #addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
+	 * @see    	   #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
 	 * @see    	   #getTaxonRelations()
 	 * @see    	   #getRelationsFromThisTaxon()
 	 * @see    	   #getRelationsToThisTaxon()
@@ -611,7 +611,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			#getTaxonomicParent()
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
-	public TaxonRelationship addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
+	public TaxonRelationship addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, Reference citation, String microcitation) {
 		return new TaxonRelationship(this, toTaxon, type, citation, microcitation);
 	}
 	/**
@@ -626,13 +626,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param microcitation			the string with the details describing the exact localisation within the reference
 	 * @return 
 	 * @see    	   					#getMisappliedNames()
-	 * @see    	   					#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
+	 * @see    	   					#addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
 	 * @see    	   					#addTaxonRelation(TaxonRelationship)
 	 * @see    	   					#getTaxonRelations()
 	 * @see    	   					#getRelationsFromThisTaxon()
 	 * @see    	   					#getRelationsToThisTaxon()
 	 */
-	public TaxonRelationship addMisappliedName(Taxon misappliedNameTaxon, ReferenceBase citation, String microcitation) {
+	public TaxonRelationship addMisappliedName(Taxon misappliedNameTaxon, Reference citation, String microcitation) {
 		return misappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), citation, microcitation);
 	}
 
@@ -686,8 +686,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param child			the taxon which plays the source role (child) in the new taxon relationship
 	 * @param citation		the reference source for the new taxon relationship
 	 * @param microcitation	the string with the details describing the exact localisation within the reference
-	 * @see    	   			#setTaxonomicParent(Taxon, ReferenceBase, String)
-	 * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
+	 * @see    	   			#setTaxonomicParent(Taxon, Reference, String)
+	 * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
 	 * @see    	   			#addTaxonRelation(TaxonRelationship)
 	 * @see    	   			#getTaxonRelations()
 	 * @see    	   			#getRelationsFromThisTaxon()
@@ -696,7 +696,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
 	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
-	public void addTaxonomicChild(Taxon child, ReferenceBase citation, String microcitation){
+	public void addTaxonomicChild(Taxon child, Reference citation, String microcitation){
 		if (child == null){
 			throw new NullPointerException("Child Taxon is 'null'");
 		}else{
@@ -747,7 +747,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
 	 * than the rank of the taxon name used as a child taxon.
 	 * 
-	 * @see  #setTaxonomicParent(Taxon, ReferenceBase, String)
+	 * @see  #setTaxonomicParent(Taxon, Reference, String)
 	 * @see  #getTaxonomicChildren()
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getRelationsFromThisTaxon()
@@ -785,7 +785,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param microcitation	the string with the details describing the exact localisation within the reference
 	 * @see    	   			#removeTaxonRelation(TaxonRelationship)
 	 * @see    	   			#getTaxonomicParent()
-	 * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
 	 * @see    	   			#addTaxonRelation(TaxonRelationship)
 	 * @see    	   			#getTaxonRelations()
 	 * @see    	   			#getRelationsFromThisTaxon()
@@ -793,7 +793,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
 	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
-	public void setTaxonomicParent(Taxon newParent, ReferenceBase citation, String microcitation){
+	public void setTaxonomicParent(Taxon newParent, Reference citation, String microcitation){
 		//remove previously existing parent relationship!!!
 		Taxon oldParent = this.getTaxonomicParent();
 		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
@@ -818,7 +818,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * than the rank of the taxon name used as a child taxon.
 	 * 
 	 * @see  #getTaxonomicParent()
-	 * @see  #addTaxonomicChild(Taxon, ReferenceBase, String)
+	 * @see  #addTaxonomicChild(Taxon, Reference, String)
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getRelationsToThisTaxon()
 	 */
@@ -992,7 +992,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * 
 	 * @see  #getTaxonRelations()
 	 * @see  #getRelationsToThisTaxon()
-	 * @see  #addMisappliedName(Taxon, ReferenceBase, String)
+	 * @see  #addMisappliedName(Taxon, Reference, String)
 	 */
 	@Transient
 	public Set<Taxon> getMisappliedNames(){
@@ -1025,7 +1025,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    #getSynonymNames()
 	 * @see    #getSynonymRelations()
 	 * @see    #addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    #addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    #addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
@@ -1047,7 +1047,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    #getSynonymNames()
 	 * @see    #getSynonymRelations()
 	 * @see    #addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    #addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    #addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
@@ -1067,7 +1067,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    #getSynonymsSortedByType()
 	 * @see    #getSynonymRelations()
 	 * @see    #addSynonymName(TaxonNameBase, SynonymRelationshipType)
-	 * @see    #addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    #addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
@@ -1094,13 +1094,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * 						relationship to be added
 	 * @return 				the created synonym relationship
 	 * @see    	   			#addSynonymRelation(SynonymRelationship)
-	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
-	 * @see    	   			#addHomotypicSynonym(Synonym, ReferenceBase, String)
-	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, ReferenceBase, String)
+	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
+	 * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
+	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
 	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, ReferenceBase, String)
+	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
 	 * @see    	   			#getSynonymRelations()
 	 * @see    				#removeSynonym(Synonym)
 	 * @see    	   			Synonym#getSynonymRelations()
@@ -1111,7 +1111,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	/**
 	 * Creates a new {@link SynonymRelationship synonym relationship} (with the given {@link Synonym synonym},
 	 * with the given {@link SynonymRelationshipType synonym relationship type} and with the
-	 * {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} on which the relationship assertion is based),
+	 * {@link eu.etaxonomy.cdm.model.reference.Reference reference source} on which the relationship assertion is based),
 	 * returns it and adds it to the set of {@link #getSynonymRelations() synonym relationships}
 	 * assigned to <i>this</i> taxon. The new synonym relationship will also be
 	 * added to the set of {@link Synonym#getSynonymRelations() synonym relationships} belonging to the synonym
@@ -1126,18 +1126,18 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param microcitation	the string with the details describing the exact localisation within the reference
 	 * @return 				the created synonym relationship
 	 * @see    	   			#addSynonymRelation(SynonymRelationship)
-	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
-	 * @see    	   			#addHomotypicSynonym(Synonym, ReferenceBase, String)
-	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, ReferenceBase, String)
+	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
+	 * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
+	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
 	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, ReferenceBase, String)
+	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
 	 * @see    	   			#getSynonymRelations()
 	 * @see    				#removeSynonym(Synonym)
 	 * @see    	   			Synonym#getSynonymRelations()
 	 */
-	public SynonymRelationship addSynonym(Synonym synonym, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference){
+	public SynonymRelationship addSynonym(Synonym synonym, SynonymRelationshipType synonymType, Reference citation, String citationMicroReference){
 		SynonymRelationship synonymRelationship = new SynonymRelationship(synonym, this, synonymType, citation, citationMicroReference);
 		return synonymRelationship;
 	}
@@ -1158,14 +1158,14 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param synonymType	the synonym relationship category of the synonym
 	 * 						relationship to be added
 	 * @return 				the created synonym relationship
-	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymRelation(SynonymRelationship)
-	 * @see    	   			#addHomotypicSynonym(Synonym, ReferenceBase, String)
-	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, ReferenceBase, String)
+	 * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
+	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
 	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, ReferenceBase, String)
+	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
 	 * @see    	   			#getSynonymRelations()
 	 * @see    				#removeSynonym(Synonym)
 	 * @see    	   			Synonym#getSynonymRelations()
@@ -1176,7 +1176,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	/**
 	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym, with the given 
-	 * {@link SynonymRelationshipType synonym relationship type} and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source}
+	 * {@link SynonymRelationshipType synonym relationship type} and with the {@link eu.etaxonomy.cdm.model.reference.Reference reference source}
 	 * on which the relationship assertion is based), returns the relationship
 	 * and adds it to the set of {@link #getSynonymRelations() synonym relationships} assigned
 	 * to <i>this</i> taxon. The new synonym will have the same {@link TaxonBase#getSec() concept reference}
@@ -1192,19 +1192,19 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param citation		the reference source for the new synonym relationship
 	 * @param microcitation	the string with the details describing the exact localisation within the reference
 	 * @return 				the created synonym relationship
-	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymRelation(SynonymRelationship)
-	 * @see    	   			#addHomotypicSynonym(Synonym, ReferenceBase, String)
-	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, ReferenceBase, String)
+	 * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
+	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
 	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, ReferenceBase, String)
+	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
 	 * @see    	   			#getSynonymRelations()
 	 * @see    				#removeSynonym(Synonym)
 	 * @see    	   			Synonym#getSynonymRelations()
 	 */
-	public SynonymRelationship addSynonymName(TaxonNameBase synonymName, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference){
+	public SynonymRelationship addSynonymName(TaxonNameBase synonymName, SynonymRelationshipType synonymType, Reference citation, String citationMicroReference){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
 		return addSynonym(synonym, synonymType, citation, citationMicroReference);
 	}
@@ -1224,14 +1224,14 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param synonymName	the taxon name to be used as an heterotypic synonym
 	 * 						to be added to <i>this</i> taxon's set of synonyms
 	 * @return 				the created synonym relationship
-	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, ReferenceBase, String)
+	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
 	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymRelation(SynonymRelationship)
-	 * @see    	   			#addHomotypicSynonym(Synonym, ReferenceBase, String)
-	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, ReferenceBase, String)
+	 * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
+	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
 	 * @see    	   			#getSynonymRelations()
 	 * @see    				#removeSynonym(Synonym)
 	 * @see    	   			Synonym#getSynonymRelations()
@@ -1244,7 +1244,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym, with the 
 	 * {@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of" relationship type}
-	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source}
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.Reference reference source}
 	 * on which the relationship assertion is based), returns the relationship
 	 * and adds it to the set of {@link #getSynonymRelations() synonym relationships} assigned
 	 * to <i>this</i> taxon. The new synonym will have the same {@link TaxonBase#getSec() concept reference}
@@ -1263,18 +1263,18 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * 							within the reference
 	 * @return 					the created synonym relationship
 	 * @see    	   				#addHeterotypicSynonymName(TaxonNameBase)
-	 * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
 	 * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType)
 	 * @see    	   				#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    	   				#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   				#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   				#addSynonymRelation(SynonymRelationship)
-	 * @see    	   				#addHomotypicSynonym(Synonym, ReferenceBase, String)
-	 * @see    	   				#addHomotypicSynonymName(TaxonNameBase, ReferenceBase, String)
+	 * @see    	   				#addHomotypicSynonym(Synonym, Reference, String)
+	 * @see    	   				#addHomotypicSynonymName(TaxonNameBase, Reference, String)
 	 * @see    	   				#getSynonymRelations()
 	 * @see    					#removeSynonym(Synonym)
 	 * @see    	   				Synonym#getSynonymRelations()
 	 */
-	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName, HomotypicalGroup homotypicalGroup, ReferenceBase citation, String microCitation){
+	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName, HomotypicalGroup homotypicalGroup, Reference citation, String microCitation){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
 		if (homotypicalGroup != null){
 			homotypicalGroup.addTypifiedName(synonymName);
@@ -1286,7 +1286,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym, with the 
 	 * {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of" relationship type})
-	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source}
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.Reference reference source}
 	 * on which the relationship assertion is based), returns the relationship
 	 * and adds it to the set of {@link #getSynonymRelations() synonym relationships} assigned
 	 * to <i>this</i> taxon. The new synonym will have the same {@link TaxonBase#getSec() concept reference}
@@ -1303,19 +1303,19 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param microcitation	the string with the details describing the exact localisation
 	 * 						within the reference
 	 * @return 				the created synonym relationship
-	 * @see    	   			#addHomotypicSynonym(Synonym, ReferenceBase, String)
-	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
+	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
 	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymRelation(SynonymRelationship)
 	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, ReferenceBase, String)
+	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
 	 * @see    	   			#getSynonymRelations()
 	 * @see    				#removeSynonym(Synonym)
 	 * @see    	   			Synonym#getSynonymRelations()
 	 */
-	public SynonymRelationship addHomotypicSynonymName(TaxonNameBase synonymName, ReferenceBase citation, String microCitation){
+	public SynonymRelationship addHomotypicSynonymName(TaxonNameBase synonymName, Reference citation, String microCitation){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
 		return addHomotypicSynonym(synonym, citation, microCitation);
 	}
@@ -1323,7 +1323,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	/**
 	 * Creates a new {@link SynonymRelationship synonym relationship} (with the given {@link Synonym synonym},
 	 * with the {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of" relationship type}
-	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} on which the relationship
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.Reference reference source} on which the relationship
 	 * assertion is based), returns it and adds it to the set of
 	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> taxon.
 	 * Furthermore the new synonym relationship will be added to the set of
@@ -1338,19 +1338,19 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param citation		the reference source for the new synonym relationship
 	 * @param microcitation	the string with the details describing the exact localisation within the reference
 	 * @return 				the created synonym relationship
-	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, ReferenceBase, String)
+	 * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
 	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
-	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
 	 * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
 	 * @see    	   			#addSynonymRelation(SynonymRelationship)
 	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, ReferenceBase, String)
+	 * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
 	 * @see    	   			#getSynonymRelations()
 	 * @see    				#removeSynonym(Synonym)
 	 * @see    	   			Synonym#getSynonymRelations()
 	 */
-	public SynonymRelationship addHomotypicSynonym(Synonym synonym, ReferenceBase citation, String microCitation){
+	public SynonymRelationship addHomotypicSynonym(Synonym synonym, Reference citation, String microCitation){
 	if (this.getName() != null){
 			if (this.getName().getHomotypicalGroup().getTypifiedNames().isEmpty()){
 				this.getName().getHomotypicalGroup().getTypifiedNames().add(this.getName());
@@ -1376,7 +1376,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @param  synonym  the synonym involved in the synonym relationship which should be deleted
 	 * @see     		#getSynonymRelations()
 	 * @see     		#addSynonym(Synonym, SynonymRelationshipType)
-	 * @see     		#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see     		#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see 			#removeSynonymRelation(SynonymRelationship)
 	 */
 	public void removeSynonym(Synonym synonym){
@@ -1421,7 +1421,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	/**
 	 * Retrieves the ordered list (depending on the date of publication) of
-	 * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * as for <i>this</i> taxon) under the condition that the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}
 	 * of these synonyms and the taxon name of <i>this</i> taxon belong to the
 	 * same {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group}.
@@ -1431,7 +1431,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see			#getSynonyms()
 	 * @see			#getHomotypicSynonymyGroups()
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
-	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(ReferenceBase)
+	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(Reference)
 	 */
 	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
@@ -1444,7 +1444,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	/**
 	 * Retrieves the ordered list (depending on the date of publication) of
-	 * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * as for <i>this</i> taxon) under the condition that these synonyms and
 	 * <i>this</i> taxon are involved in {@link SynonymRelationship synonym relationships} with an
 	 * "is homotypic synonym of" {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() synonym relationship type}.

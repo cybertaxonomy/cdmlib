@@ -71,7 +71,7 @@ public interface IGeneric extends IPublicationBase, INomenclaturalReference, IVo
 	 * Sets the inreference.
 	 * @param inReference
 	 */
-	public void setInReference(ReferenceBase inReference);
+	public void setInReference(Reference inReference);
 
 	void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy);
 	

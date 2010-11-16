@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -151,15 +151,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	
 	/**
 	 * Test method for
-	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)}
 	 * .
 	 */
 	@Test
 	@DataSet
 	public void testGetRootTaxa() {
-		ReferenceBase sec1 = referenceDao.findById(1);
+		Reference sec1 = referenceDao.findById(1);
 		assert sec1 != null : "sec1 must exist";
-		ReferenceBase sec2 = referenceDao.findById(2);
+		Reference sec2 = referenceDao.findById(2);
 		assert sec2 != null : "sec2 must exist";
 
 		List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
@@ -207,12 +207,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}.
 	 */
 	@Test
 	@DataSet
 	public void testGetTaxaByName() {
-		ReferenceBase sec = referenceDao.findById(1);
+		Reference sec = referenceDao.findById(1);
 		assert sec != null : "sec must exist";
 
 		List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
@@ -251,7 +251,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	}	
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
 	 * restricting the search by a set of Areas.
 	 */
 	@SuppressWarnings("unchecked")
@@ -420,7 +420,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 12);
 //	FIXME implement test for search in specific taxontree 		
-//		ReferenceBase reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
+//		Reference reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
 //		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, null, null);
 //		assertEquals(numberOfTaxa, 2);
 	}

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -73,7 +73,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 	
 	private String getDescriptionTitle(TaxonXImportState state){
 		String result = "Untitled";
-		ReferenceBase<?> ref = state.getModsReference();
+		Reference<?> ref = state.getModsReference();
 		if (ref != null){
 			result = ref.getTitle();
 			if ( CdmUtils.isEmpty(result)){
@@ -102,7 +102,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 			return false;
 		}
 		
-		ReferenceBase modsReference = state.getModsReference();
+		Reference modsReference = state.getModsReference();
 		if (modsReference == null){
 			modsReference = state.getConfig().getSourceReference();
 		}

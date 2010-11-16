@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
@@ -374,8 +374,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    	nameToBeFilled.addParsingProblems(ref.getParsingProblem());
 	    }
 	    
-	    ReferenceBase nomRef;
-		if ( (nomRef = (ReferenceBase)nameToBeFilled.getNomenclaturalReference()) != null ){
+	    Reference nomRef;
+		if ( (nomRef = (Reference)nameToBeFilled.getNomenclaturalReference()) != null ){
 			nomRef.setAuthorTeam((TeamOrPersonBase)nameToBeFilled.getCombinationAuthorTeam());
 		}
 	}
@@ -466,7 +466,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if (ref.hasProblem()){
 			ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference,true);
 		}
-		nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
+		nameToBeFilled.setNomenclaturalReference((Reference)ref);
 		int end = Math.min(strReference.length(), ref.getProblemEnds());
 		ref.setProblemEnds(end);
 	}
@@ -485,7 +485,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		ref.setProblemEnds(strReference.length());
 		ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
 		nameToBeFilled.addParsingProblem(ParserProblem.CheckDetailOrYear);
-		nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
+		nameToBeFilled.setNomenclaturalReference((Reference)ref);
 		return ref;
 	}
 		
@@ -591,10 +591,10 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		
 		if (nomRef.getType().equals(ReferenceType.BookSection)){
 			handleBookSectionYear((IBookSection)nomRef, datePublished);
-		}else if (nomRef instanceof ReferenceBase){
-			((ReferenceBase)nomRef).setDatePublished(datePublished);	
+		}else if (nomRef instanceof Reference){
+			((Reference)nomRef).setDatePublished(datePublished);	
 		}else{
-			throw new ClassCastException("nom Ref is not of type ReferenceBase but " + (nomRef == null? "(null)" : nomRef.getClass()));
+			throw new ClassCastException("nom Ref is not of type Reference but " + (nomRef == null? "(null)" : nomRef.getClass()));
 		}
 		return result;	
 	}
@@ -644,19 +644,19 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 	
 	
-	private ReferenceBase parseArticle(String reference){
+	private Reference parseArticle(String reference){
 		//if (articlePatter)
 		//(type, author, title, volume, editor, series;
-		ReferenceBase result = ReferenceFactory.newArticle();
+		Reference result = ReferenceFactory.newArticle();
 		reference = makeVolume(result, reference);
-		ReferenceBase inJournal = ReferenceFactory.newJournal();
+		Reference inJournal = ReferenceFactory.newJournal();
 		inJournal.setTitle(reference);
 		result.setInReference(inJournal);
 		return result;
 	}
 	
-	private ReferenceBase parseBookSection(String reference){
-		ReferenceBase result = ReferenceFactory.newBookSection();
+	private Reference parseBookSection(String reference){
+		Reference result = ReferenceFactory.newBookSection();
 		String[] parts = reference.split(referenceAuthorSeparator, 2);
 		if (parts.length != 2){
 			logger.warn("Unexpected number of parts");

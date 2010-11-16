@@ -55,7 +55,7 @@ public class ReferenceIdentity extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
-	private Set<ReferenceBase> references;
+	private Set<Reference> references;
 	
 	@XmlElement(name = "PreferredLongForm")
 	@XmlIDREF
@@ -63,7 +63,7 @@ public class ReferenceIdentity extends VersionableEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	//@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private ReferenceBase preferredLongForm;
+	private Reference preferredLongForm;
 
 
 	@XmlElement(name = "PreferredAbbreviation")
@@ -72,13 +72,13 @@ public class ReferenceIdentity extends VersionableEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	//@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private ReferenceBase preferredAbbreviation;
+	private Reference preferredAbbreviation;
 	
 	
 	/**
 	 * @return the references
 	 */
-	public Set<ReferenceBase> getReferences() {
+	public Set<Reference> getReferences() {
 		return references;
 	}
 
@@ -88,7 +88,7 @@ public class ReferenceIdentity extends VersionableEntity {
 //	 * @param reference
 //	 * @return
 //	 */
-//	public boolean addReference(ReferenceBase reference){
+//	public boolean addReference(Reference reference){
 //		if (reference == null){
 //			return false;
 //		}
@@ -98,7 +98,7 @@ public class ReferenceIdentity extends VersionableEntity {
 //		return this.references.add(reference);
 //	}
 //	
-//	public boolean removeReference(ReferenceBase reference){
+//	public boolean removeReference(Reference reference){
 //		if (reference == null){
 //			return false;
 //		}
@@ -110,28 +110,28 @@ public class ReferenceIdentity extends VersionableEntity {
 	/**
 	 * @return the preferredLongForm
 	 */
-	public ReferenceBase getPreferredLongForm() {
+	public Reference getPreferredLongForm() {
 		return preferredLongForm;
 	}
 
 	/**
 	 * @param preferredLongForm the preferredLongForm to set
 	 */
-	public void setPreferredLongForm(ReferenceBase preferredLongForm) {
+	public void setPreferredLongForm(Reference preferredLongForm) {
 		this.preferredLongForm = preferredLongForm;
 	}
 
 	/**
 	 * @return the preferredAbbreviation
 	 */
-	public ReferenceBase getPreferredAbbreviation() {
+	public Reference getPreferredAbbreviation() {
 		return preferredAbbreviation;
 	}
 
 	/**
 	 * @param preferredAbbreviation the preferredAbbreviation to set
 	 */
-	public void setPreferredAbbreviation(ReferenceBase preferredAbbreviation) {
+	public void setPreferredAbbreviation(Reference preferredAbbreviation) {
 		this.preferredAbbreviation = preferredAbbreviation;
 	}
 	

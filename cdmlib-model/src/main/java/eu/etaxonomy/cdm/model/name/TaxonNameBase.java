@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -231,7 +231,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@Cascade({CascadeType.SAVE_UPDATE})
 	@CacheUpdate(noUpdate ="titleCache")
 	@IndexedEmbedded
-	private ReferenceBase nomenclaturalReference;
+	private Reference nomenclaturalReference;
 	
 // ************* CONSTRUCTORS *************/	
 	/** 
@@ -401,7 +401,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
-	public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+	public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
 		if (toName == null){
 			throw new NullPointerException("Null is not allowed as name for a name relationship");
 		}
@@ -443,7 +443,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
-	public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+	public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
 		fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
 	}
 
@@ -701,7 +701,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  					#getBasionym()
 	 * @see  					#addBasionym(TaxonNameBase)
 	 */
-	public NameRelationship addBasionym(T basionym, ReferenceBase citation, String microcitation, String ruleConsidered){
+	public NameRelationship addBasionym(T basionym, Reference citation, String microcitation, String ruleConsidered){
 		if (basionym != null){
 			return basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
 		}else{
@@ -722,7 +722,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  					#addBasionym(TaxonNameBase)
 	 */
 	//TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
-	public void addReplacedSynonym(T replacedSynonym, ReferenceBase citation, String microcitation, String ruleConsidered){
+	public void addReplacedSynonym(T replacedSynonym, Reference citation, String microcitation, String ruleConsidered){
 		if (replacedSynonym != null){
 			replacedSynonym.addRelationshipToName(this, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, ruleConsidered);
 		}
@@ -775,14 +775,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * requirements as specified by the corresponding {@link NomenclaturalCode nomenclatural code}.
 	 *
 	 * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
-	 * @see 	eu.etaxonomy.cdm.model.reference.ReferenceBase
+	 * @see 	eu.etaxonomy.cdm.model.reference.Reference
 	 */
 	public INomenclaturalReference getNomenclaturalReference(){
 		return this.nomenclaturalReference;
 	}
 	/**
 	 * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
-	 * The corresponding {@link eu.etaxonomy.cdm.model.reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
+	 * The corresponding {@link eu.etaxonomy.cdm.model.reference.Reference.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
 	 * as it is obviously used for nomenclatural purposes.
 	 *
 	 * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
@@ -793,7 +793,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 			if(!INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 				throw new IllegalArgumentException("Parameter nomenclaturalReference is not assignable from INomenclaturalReference");
 			}
-			this.nomenclaturalReference = (ReferenceBase)nomenclaturalReference;
+			this.nomenclaturalReference = (Reference)nomenclaturalReference;
 		} else {
 			this.nomenclaturalReference = null;
 		}
@@ -1001,7 +1001,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
 	public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies, 
-				ReferenceBase citation, 
+				Reference citation, 
 				String citationMicroReference, 
 				String originalNameString, 
 				NameTypeDesignationStatus status,
@@ -1033,7 +1033,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
 	public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies, 
-				ReferenceBase citation, 
+				Reference citation, 
 				String citationMicroReference, 
 				String originalNameString,
 				NameTypeDesignationStatus status,
@@ -1082,7 +1082,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 */
 	public SpecimenTypeDesignation addSpecimenTypeDesignation(Specimen typeSpecimen, 
 				SpecimenTypeDesignationStatus status, 
-				ReferenceBase citation, 
+				Reference citation, 
 				String citationMicroReference, 
 				String originalNameString, 
 				boolean isNotDesignated, 
@@ -1181,7 +1181,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see #getNomenclaturalReference()
 	 */
 	@Transient
-	public ReferenceBase getCitation(){
+	public Reference getCitation(){
 		//TODO What is the purpose of this method differing from the getNomenclaturalReference method? 
 		logger.warn("getCitation not yet implemented");
 		return null;
@@ -1232,7 +1232,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * In this context a taxon base means the use of a taxon name by a reference
 	 * either as a {@link eu.etaxonomy.cdm.model.taxon.Taxon taxon} ("accepted/correct" name) or
 	 * as a (junior) {@link eu.etaxonomy.cdm.model.taxon.Synonym synonym}.
-	 * A taxon name can be used by several distinct {@link eu.etaxonomy.cdm.model.reference.ReferenceBase references} but only once
+	 * A taxon name can be used by several distinct {@link eu.etaxonomy.cdm.model.reference.Reference references} but only once
 	 * within a taxonomic treatment (identified by one reference).
 	 *
 	 * @see	#getTaxa()

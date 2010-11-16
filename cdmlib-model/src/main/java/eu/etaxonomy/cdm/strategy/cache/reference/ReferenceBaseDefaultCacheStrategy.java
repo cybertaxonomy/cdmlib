@@ -14,14 +14,14 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 /**
  * @author a.mueller
  * @version 1.0
  * @created 08-Aug-2008 22:06:45
  */
-public class ReferenceBaseDefaultCacheStrategy<T extends ReferenceBase> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
+public class ReferenceBaseDefaultCacheStrategy<T extends Reference> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceBaseDefaultCacheStrategy.class);
 	

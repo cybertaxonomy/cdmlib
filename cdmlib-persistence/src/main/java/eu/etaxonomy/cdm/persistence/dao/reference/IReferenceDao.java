@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.reference;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
@@ -20,35 +20,35 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
  * @author a.mueller
  *
  */
-public interface IReferenceDao extends IIdentifiableDao<ReferenceBase>, ITitledDao<ReferenceBase> {
+public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<Reference> {
 	
-	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle();
+	public List<UuidAndTitleCache<Reference>> getUuidAndTitle();
 	
 	/**
 	 * TODO candidate for harmonization: rename to listAllReferencesForPublishing
 	 * @return all references marked with publish-flag
 	 */
-	public List<ReferenceBase> getAllReferencesForPublishing();
+	public List<Reference> getAllReferencesForPublishing();
 	
 	/**
 	 * TODO candidate for harmonization: rename to listAllNotNomenclaturalReferencesForPublishing
 	 * @return all references not used as nomenclatural reference with publish flag
 	 */
-	public List<ReferenceBase> getAllNotNomenclaturalReferencesForPublishing();
+	public List<Reference> getAllNotNomenclaturalReferencesForPublishing();
 	
 	/**
 	 * TODO candidate for harmonization: rename to listNomenclaturalReferences
 	 * @return
 	 */
-	public List<ReferenceBase> getAllNomenclaturalReferences();
+	public List<Reference> getAllNomenclaturalReferences();
 
 	/**
 	 * recursively finds all references where the <code>referenceBase</code> given as parameter 
-	 * is the {@link ReferenceBase.getInReference inReference}.
-	 * @param referenceBase
+	 * is the {@link Reference.getInReference inReference}.
+	 * @param reference
 	 * @return
 	 */
-	public List<ReferenceBase> getSubordinateReferences(ReferenceBase referenceBase);
+	public List<Reference> getSubordinateReferences(Reference reference);
 	
 	/**
 	 * searches for taxa using the following relations:
@@ -60,10 +60,10 @@ public interface IReferenceDao extends IIdentifiableDao<ReferenceBase>, ITitledD
 	 * <li>taxon.name.descriptions.descriptionSources</li>
 	 * </ul>
 	 * 
-	 * @param referenceBase
+	 * @param reference
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths);
+	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths);
 	
 }

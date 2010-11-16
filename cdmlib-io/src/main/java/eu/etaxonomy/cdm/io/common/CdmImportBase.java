@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
@@ -57,8 +57,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
 	private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
-	protected TaxonomicTree makeTree(STATE state, ReferenceBase reference){
-		ReferenceBase ref = CdmBase.deproxy(reference, ReferenceBase.class);
+	protected TaxonomicTree makeTree(STATE state, Reference reference){
+		Reference ref = CdmBase.deproxy(reference, Reference.class);
 		String treeName = "TaxonTree (Import)";
 		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
@@ -80,7 +80,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 	/**
 	 * Alternative memory saving method variant of
-	 * {@link #makeTree(STATE state, ReferenceBase ref)} which stores only the
+	 * {@link #makeTree(STATE state, Reference ref)} which stores only the
 	 * UUID instead of the full tree in the <code>ImportStateBase</code> by 
 	 * using <code>state.putTreeUuid(ref, tree);</code>
 	 * 
@@ -88,7 +88,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param ref
 	 * @return
 	 */
-	protected TaxonomicTree makeTreeMemSave(STATE state, ReferenceBase ref){
+	protected TaxonomicTree makeTreeMemSave(STATE state, Reference ref){
 		String treeName = "TaxonTree (Import)";
 		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
@@ -275,7 +275,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, ReferenceBase citation) throws SQLException {
+	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation) throws SQLException {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable)cdmBase;
@@ -295,7 +295,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	/**
-	 * @see #addOriginalSource(CdmBase, Object, String, ReferenceBase)
+	 * @see #addOriginalSource(CdmBase, Object, String, Reference)
 	 * @param rs
 	 * @param cdmBase
 	 * @param dbIdAttribute
@@ -303,7 +303,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, ReferenceBase citation) throws SQLException {
+	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, Reference citation) throws SQLException {
 		Object id = rs.getObject(dbIdAttribute);
 		addOriginalSource(cdmBase, id, namespace, citation);
 	}

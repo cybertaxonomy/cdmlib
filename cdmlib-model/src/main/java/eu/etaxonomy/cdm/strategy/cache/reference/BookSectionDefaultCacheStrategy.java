@@ -17,9 +17,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
+public class BookSectionDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
 	
 	public static final String UNDEFINED_BOOK = "- undefined book -";
@@ -64,11 +64,11 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 		if (bookSection == null || bookSection.getInReference() == null){
 			return null;
 		}
-		ReferenceBase inBook = bookSection.getInReference();
+		Reference inBook = bookSection.getInReference();
 		String result;
 		//use booksection's publication date if it exists
 		if (bookSection.getDatePublished() != null && bookSection.getDatePublished().getStart() != null){
-			BookDefaultCacheStrategy<ReferenceBase> bookStrategy = BookDefaultCacheStrategy.NewInstance();
+			BookDefaultCacheStrategy<Reference> bookStrategy = BookDefaultCacheStrategy.NewInstance();
 			result =  bookStrategy.getNomRefTitleWithoutYearAndAuthor(inBook);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, bookSection);
@@ -133,7 +133,7 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 		return result;
 	}
 	
-	private String getBookAuthorPart(ReferenceBase book, String seperator){
+	private String getBookAuthorPart(Reference book, String seperator){
 		if (book == null){
 			return "";
 		}
@@ -147,7 +147,7 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.NomRefDefaultCacheStrategyBase#getNomRefTitleWithoutYearAndAuthor(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.NomRefDefaultCacheStrategyBase#getNomRefTitleWithoutYearAndAuthor(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
 	@Override
 	protected String getNomRefTitleWithoutYearAndAuthor(T reference) {

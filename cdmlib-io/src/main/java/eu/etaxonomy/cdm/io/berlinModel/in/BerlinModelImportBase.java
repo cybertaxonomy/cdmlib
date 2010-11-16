@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -383,14 +383,14 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	 * @param nomRefFk
 	 * @return
 	 */
-	protected ReferenceBase getReferenceFromMaps(
-			Map<String, ReferenceBase> firstDetailMap,
-			Map<String, ReferenceBase> secondDetailMap, 
-			Map<String, ReferenceBase> firstRefMap,
-			Map<String, ReferenceBase> secondRefMap,
+	protected Reference getReferenceFromMaps(
+			Map<String, Reference> firstDetailMap,
+			Map<String, Reference> secondDetailMap, 
+			Map<String, Reference> firstRefMap,
+			Map<String, Reference> secondRefMap,
 			String nomRefDetailFk,
 			String nomRefFk) {
-		ReferenceBase ref = null;
+		Reference ref = null;
 		ref = getReferenceDetailFromMaps(firstDetailMap, secondDetailMap, nomRefDetailFk);
 		if (ref == null){
 			ref = getReferenceOnlyFromMaps(firstRefMap, secondRefMap, nomRefFk);
@@ -406,11 +406,11 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	 * @param nomRefFk
 	 * @return
 	 */
-	protected ReferenceBase getReferenceOnlyFromMaps(
-			Map<String, ReferenceBase> firstRefMap,
-			Map<String, ReferenceBase> secondRefMap,
+	protected Reference getReferenceOnlyFromMaps(
+			Map<String, Reference> firstRefMap,
+			Map<String, Reference> secondRefMap,
 			String nomRefFk) {
-		ReferenceBase ref = null;
+		Reference ref = null;
 		if (firstRefMap != null){
 			ref = firstRefMap.get(nomRefFk);
 		}else{
@@ -435,8 +435,8 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	 * @param nomRefDetailFk 
 	 * @return
 	 */
-	private ReferenceBase getReferenceDetailFromMaps(Map<String, ReferenceBase> firstDetailMap, Map<String, ReferenceBase> secondDetailMap, String nomRefDetailFk) {
-		ReferenceBase result = null;
+	private Reference getReferenceDetailFromMaps(Map<String, Reference> firstDetailMap, Map<String, Reference> secondDetailMap, String nomRefDetailFk) {
+		Reference result = null;
 		if (nomRefDetailFk != null){
 			//get ref
 			if (firstDetailMap != null){

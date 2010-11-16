@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -95,7 +95,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends DbIm
 		String toId = String.valueOf(rs.getObject(toAttribute));
 		
 		//TODO cast
-		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
+		Reference citation = (Reference)getRelatedObject(rs, citationAttribute);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);

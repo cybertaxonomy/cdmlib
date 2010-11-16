@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.tcsxml;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 public interface ITcsXmlPlaceholderClass {
 
@@ -20,6 +20,6 @@ public interface ITcsXmlPlaceholderClass {
 			TcsXmlImportConfigurator tcsConfig, Element elMetaDataDetailed);
 
 	public abstract boolean makePublicationDetailed(TcsXmlImportConfigurator tcsConfig, 
-			Element elPublicationDetailed, ReferenceBase publication);
+			Element elPublicationDetailed, Reference publication);
 
 }

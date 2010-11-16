@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -26,19 +26,19 @@ public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonXImportState.class);
 
-	private ReferenceBase<?> modsReference;
+	private Reference<?> modsReference;
 	
 	/**
 	 * @return the modsReference
 	 */
-	public ReferenceBase<?> getModsReference() {
+	public Reference<?> getModsReference() {
 		return modsReference;
 	}
 
 	/**
 	 * @param modsReference the modsReference to set
 	 */
-	public void setModsReference(ReferenceBase<?> modsReference) {
+	public void setModsReference(Reference<?> modsReference) {
 		this.modsReference = modsReference;
 	}
 

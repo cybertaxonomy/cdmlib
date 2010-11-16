@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -105,17 +105,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec) {
+	public List<Taxon> getRootTaxa(Reference sec) {
 		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true, false);
 	}
 		
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.Reference, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
-	public List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths) {
-		checkNotInPriorView("TaxonDaoHibernateImpl.getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications)");
+	public List<Taxon> getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications)");
 		if (onlyWithChildren == null){
 			onlyWithChildren = true;
 		}
@@ -174,27 +174,27 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
+	public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
 		return getRootTaxa(null, sec, cdmFetch, onlyWithChildren, withMisapplications, null);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
+	public List<TaxonBase> getTaxaByName(String queryString, Reference sec) {
 		
 		return getTaxaByName(queryString, true, sec);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, java.lang.Boolean, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, java.lang.Boolean, eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
-		checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, ReferenceBase sec)");
+	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, Reference sec) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, Reference sec)");
 		
         Criteria criteria = null;
 		if (accepted == true) {
@@ -295,7 +295,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String searchField, String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
 
-		//TODO ? checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec)");
+		//TODO ? checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, Reference sec)");
 
 		String hqlQueryString = matchMode.queryStringFrom(queryString);
 		
@@ -553,7 +553,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.util.Set)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.Reference, java.util.Set)
 	 */
 	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
 		MatchMode matchMode, Set<NamedArea> namedAreas) {
@@ -593,10 +593,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //	}
 
 //	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.Reference)
 //	 */
 //	public Integer countTaxaByName(String queryString, 
-//			MatchMode matchMode, SelectMode selectMode, ReferenceBase sec) {
+//			MatchMode matchMode, SelectMode selectMode, Reference sec) {
 //
 //		Long count = countTaxaByName(queryString, matchMode, selectMode, sec, null);
 //		return count.intValue();
@@ -1346,7 +1346,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							String idInSource = getIdInSource(syn);
 							
 							// Determine the sourceReference
-							ReferenceBase sourceReference = syn.getSec();
+							Reference sourceReference = syn.getSec();
 							
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
@@ -1373,7 +1373,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 								IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredEpithetOf", syn.getSec(), null);
 								
 								// Add the citation
-								ReferenceBase citation = getCitation(syn);
+								Reference citation = getCitation(syn);
 								if (citation != null) {
 									originalSource.setCitation(citation);
 									inferredEpithet.addSource(originalSource);
@@ -1422,7 +1422,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 							String idInSource = getIdInSource(syn);
 							
 							// Determine the sourceReference
-							ReferenceBase sourceReference = syn.getSec();
+							Reference sourceReference = syn.getSec();
 
 							synName = syn.getName();
 							ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
@@ -1443,7 +1443,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 								IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredGenusOf", syn.getSec(), null);
 								
 								// Add the citation
-								ReferenceBase citation = getCitation(syn);
+								Reference citation = getCitation(syn);
 								if (citation != null) {
 									originalSource.setCitation(citation);
 									inferredGenus.addSource(originalSource);
@@ -1479,7 +1479,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 						
 					}else if (type.equals(SynonymRelationshipType.POTENTIAL_COMBINATION_OF())){
 						
-						ReferenceBase sourceReference = null; // TODO: Determination of sourceReference is redundant
+						Reference sourceReference = null; // TODO: Determination of sourceReference is redundant
 						
 						for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
 							TaxonNameBase synName;
@@ -1613,8 +1613,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * Returns the citation for a given Synonym.
 	 * @param syn
 	 */
-	private ReferenceBase getCitation(Synonym syn) {
-		ReferenceBase citation = null;
+	private Reference getCitation(Synonym syn) {
+		Reference citation = null;
 		Set<IdentifiableSource> sources = syn.getSources();
 		if (sources.size() == 1) {
 			IdentifiableSource source = sources.iterator().next();
@@ -1744,9 +1744,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<TaxonNameBase> findIdenticalNamesNew(List<String> propertyPaths){
 		
 		//Hole die beiden Source_ids von "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
-		Query query = getSession().createQuery("Select id from ReferenceBase where titleCache like 'Fauna Europaea database'");
+		Query query = getSession().createQuery("Select id from Reference where titleCache like 'Fauna Europaea database'");
 		List<String> secRefFauna = query.list();
-		query = getSession().createQuery("Select id from ReferenceBase where titleCache like 'ERMS'");
+		query = getSession().createQuery("Select id from Reference where titleCache like 'ERMS'");
 		List<String> secRefErms = query.list();
 		//Query query = getSession().createQuery("select tmb2.nameCache from ZoologicalName tmb, TaxonBase tb1, ZoologicalName tmb2, TaxonBase tb2 where tmb.id != tmb2.id and tb1.name = tmb and tb2.name = tmb2 and tmb.nameCache = tmb2.nameCache and tb1.sec != tb2.sec");
 		//Get all names of fauna europaea

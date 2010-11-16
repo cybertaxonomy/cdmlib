@@ -4,10 +4,10 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class ReferenceBaseBeanProcessor extends
-		AbstractCdmBeanProcessor<ReferenceBase> {
+		AbstractCdmBeanProcessor<Reference> {
 
 	@Override
 	public List<String> getIgnorePropNames() {
@@ -16,7 +16,7 @@ public class ReferenceBaseBeanProcessor extends
 	}
 
 	@Override
-	public JSONObject processBeanSecondStep(ReferenceBase bean,
+	public JSONObject processBeanSecondStep(Reference bean,
 			JSONObject json, JsonConfig jsonConfig) {
 		return json;
 	}

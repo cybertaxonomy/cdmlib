@@ -55,7 +55,7 @@
     </mapping>
     
     <mapping>
-        <class-a>eu.etaxonomy.cdm.model.reference.ReferenceBase</class-a>
+        <class-a>eu.etaxonomy.cdm.model.reference.Reference</class-a>
         <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc</class-b>
         <field custom-converter-id="timePeriodConverter">
             <a>datePublished</a>

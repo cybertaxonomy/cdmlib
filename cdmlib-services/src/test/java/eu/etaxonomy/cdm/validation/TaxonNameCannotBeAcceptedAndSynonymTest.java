@@ -24,7 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -52,8 +52,8 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest 
     private Taxon taxon1;
     private Taxon taxon2;
     private Synonym synonym;
-    private ReferenceBase sec1;
-    private ReferenceBase sec2;
+    private Reference sec1;
+    private Reference sec2;
 	
 	@Before
 	public void setUp() {

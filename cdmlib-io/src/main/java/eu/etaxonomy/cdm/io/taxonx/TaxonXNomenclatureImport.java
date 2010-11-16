@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -193,7 +193,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 
 	
 	private boolean doSpecimenType(TaxonXImportConfigurator config, Element elType, Element elTypeLoc, TaxonNameBase taxonName){
-		ReferenceBase citation = null;
+		Reference citation = null;
 		String citationMicroReference = null;
 		String originalNameString = null;
 		boolean isNotDesignated = true;
@@ -392,7 +392,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 
 	
 	private boolean doNameTypeDesignation(TaxonNameBase name, TaxonNameBase type, NameTypeDesignationStatus status/*, boolean isLectoType*/){
-		ReferenceBase citation = null;
+		Reference citation = null;
 		String citationMicroReference = null;
 		String originalNameString = null;
 		boolean addToAllHomotypicNames = true;
@@ -516,7 +516,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 					if (taxonBase != null){
 						TaxonNameBase<?, ?> taxonName = taxonBase.getName();
 						if (taxonName != null){
-							ReferenceBase citation = null;
+							Reference citation = null;
 							String citationMicroReference = null;
 							String originalNameString = null;
 							boolean isNotDesignated = true;

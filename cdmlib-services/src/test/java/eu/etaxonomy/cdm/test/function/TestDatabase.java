@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -105,7 +105,7 @@ public class TestDatabase {
 //			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
 //		botanicalName.getTitleCache();
 		
-		Taxon taxon1 = Taxon.NewInstance(botanicalName,(ReferenceBase)journal);
+		Taxon taxon1 = Taxon.NewInstance(botanicalName,(Reference)journal);
 		appCtr.getTaxonService().save(taxon1);
 		BotanicalName homotypName = BotanicalName.NewInstance(Rank.SUBGENUS(), botanicalName.getHomotypicalGroup());
 		homotypName.setGenusOrUninomial("Subgenus");
@@ -145,7 +145,7 @@ public class TestDatabase {
 		IJournal journal = refFactory.newJournal();
 		journal.setTitleCache("Afro+Doc", true);
 		
-		Taxon taxon = Taxon.NewInstance(botanicalName,(ReferenceBase)journal);
+		Taxon taxon = Taxon.NewInstance(botanicalName,(Reference)journal);
 		appCtr.getTaxonService().save(taxon);
 		
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance();

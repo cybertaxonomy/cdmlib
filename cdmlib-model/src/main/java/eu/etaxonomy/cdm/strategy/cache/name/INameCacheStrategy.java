@@ -27,7 +27,7 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	/**
 	 * Returns an array of name tokens that together make up the full name
 	 * a token can be a String (for name parts), Rank, AuthorTeam (for entire authorship string), 
-	 * Date or ReferenceBase
+	 * Date or Reference
 	 * Example: ["Abies","alba",Rank.SUBSPECIES,"alpina",AuthorTeam("Greuther (L.)")]
 	 * 
 	 * @param taxonNameBase

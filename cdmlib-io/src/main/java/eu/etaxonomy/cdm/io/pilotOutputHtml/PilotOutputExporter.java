@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -169,8 +169,8 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 		}
 
 		if (pilotOutputExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
-			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
-			logger.info("# ReferenceBase: " + referenceBaseRows);
+			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(Reference.class); }
+			logger.info("# Reference: " + referenceBaseRows);
 			sddDataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));
 		}
 

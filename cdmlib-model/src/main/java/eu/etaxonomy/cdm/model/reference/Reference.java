@@ -101,17 +101,17 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 //    ,"fullReference",
 //    "abbreviatedReference"
 })
-@XmlRootElement(name = "ReferenceBase")
+@XmlRootElement(name = "Reference")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
 @javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
 //@InReference(groups = Level2.class)
-//public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
-public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReferenceBase, Cloneable {
+//public abstract class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
+public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReferenceBase, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
-	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
+	private static final Logger logger = Logger.getLogger(Reference.class);
 	
 	@XmlAttribute(name ="type")
 	@Column(name="refType")
@@ -164,14 +164,14 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @Field(index=Index.TOKENIZED)
     @NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
+	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.isbn.message}") 
 	protected String isbn;
     
 	@XmlElement(name = "ISSN")
 	@Field(index=Index.TOKENIZED)
 	@NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.issn.message}") 
+	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.issn.message}") 
 	protected String issn;
 	
     @XmlElement(name = "SeriesPart")
@@ -223,7 +223,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
     //@InReference(groups=Level2.class)
-   	protected ReferenceBase inReference;
+   	protected Reference inReference;
     
 //    @XmlElement(name = "FullReference")
 //    @XmlIDREF
@@ -231,7 +231,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //    @ManyToOne(fetch = FetchType.LAZY)
 ////    @IndexedEmbedded
 //    @Cascade(CascadeType.SAVE_UPDATE)
-//    protected ReferenceBase fullReference;
+//    protected Reference fullReference;
 //    
 //    @XmlElement(name = "AbbreviatedReference")
 //    @XmlIDREF
@@ -239,7 +239,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //    @ManyToOne(fetch = FetchType.LAZY)
 ////    @IndexedEmbedded
 //    @Cascade(CascadeType.SAVE_UPDATE)
-//    protected ReferenceBase abbreviatedReference;
+//    protected Reference abbreviatedReference;
     
     
 //********************************************************/    
@@ -263,7 +263,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	@NullOrNotEmpty
 	@Length(max = 255)
-	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.uri.message}") 
+	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
 	private String uri;
 	
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
@@ -306,13 +306,13 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @Match(MatchMode.IGNORE)
 	private boolean cacheStrategyRectified = false; 
     
-    protected ReferenceBase(){
+    protected Reference(){
 		super();
 		this.type = ReferenceType.Generic;
 		this.cacheStrategy =(S)this.type.getCacheStrategy();
 	}
     
-	protected ReferenceBase(ReferenceType type) {
+	protected Reference(ReferenceType type) {
 		this.type = type;
 		this.cacheStrategy =(S) type.getCacheStrategy();
 	}
@@ -428,11 +428,11 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		this.school = school;
 	}
 
-	public ReferenceBase getInReference() {
+	public Reference getInReference() {
 		return inReference;
 	}
 
-	public void setInReference(ReferenceBase inReference) {
+	public void setInReference(Reference inReference) {
 		this.inReference = inReference;
 	}	
 
@@ -577,7 +577,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //	 * @see #getAbbreviatedReference()
 //	 * @return the full reference
 //	 */
-//	public ReferenceBase getFullReference() {
+//	public Reference getFullReference() {
 //		return fullReference;
 //	}
 //
@@ -585,7 +585,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //	 * @see #getFullReference()
 //	 * @param fullReference
 //	 */
-//	public void setFullReference(ReferenceBase fullReference) {
+//	public void setFullReference(Reference fullReference) {
 //		this.fullReference = fullReference;
 //	}
 //
@@ -599,7 +599,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //	 * @see #getFullReference()
 //	 * @return the full reference
 //	 */
-//	public ReferenceBase getAbbreviatedReference() {
+//	public Reference getAbbreviatedReference() {
 //		return abbreviatedReference;
 //	}
 //
@@ -608,7 +608,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //	 * @param abbreviatedReference
 //	 * 
 //	 */
-//	public void setAbbreviatedReference(ReferenceBase abbreviatedReference) {
+//	public void setAbbreviatedReference(Reference abbreviatedReference) {
 //		this.abbreviatedReference = abbreviatedReference;
 //	}
 	
@@ -840,7 +840,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //	@Override
 //	public String generateTitle(){
 //		if (cacheStrategy == null){
-//			logger.warn("No CacheStrategy defined for ReferenceBase: " + this.getUuid());
+//			logger.warn("No CacheStrategy defined for Reference: " + this.getUuid());
 //			return null;
 //		}else{
 //			return cacheStrategy.getTitleCache(this);
@@ -870,7 +870,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 //	 * Returns the set of all identical references. Same as getReferenceIdentity().getReferences()
 //	 * @return
 //	 */
-//	public Set<ReferenceBase> identicalReferences(){
+//	public Set<Reference> identicalReferences(){
 //		return referenceIdentity.getReferences();
 //	}
 	
@@ -887,7 +887,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	@Override
 	public Object clone() {
 		try {
-			ReferenceBase result = (ReferenceBase)super.clone();
+			Reference result = (Reference)super.clone();
 			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
 			//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
 			return result;
@@ -1019,7 +1019,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 
 	public void setInJournal(IJournal journal) {
-		this.inReference = (ReferenceBase<JournalDefaultCacheStrategy<ReferenceBase>>) journal;
+		this.inReference = (Reference<JournalDefaultCacheStrategy<Reference>>) journal;
 		
 	}
 
@@ -1030,7 +1030,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 	
 	public void setInSeries(IPrintSeries inSeries) {
-		this.inReference = (ReferenceBase<IReferenceBaseCacheStrategy<ReferenceBase>>) inSeries;
+		this.inReference = (Reference<IReferenceBaseCacheStrategy<Reference>>) inSeries;
 	}
 
 	@Transient // prevent from being serialized by webservice
@@ -1040,7 +1040,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 
 	public void setInBook(IBook book) {
-		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) book;
+		this.inReference = (Reference<BookDefaultCacheStrategy<Reference>>) book;
 	}
 	
 	@Transient // prevent from being serialized by webservice
@@ -1050,7 +1050,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 	
 	public void setInProceedings(IProceedings proceeding) {
-		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) proceeding;
+		this.inReference = (Reference<BookDefaultCacheStrategy<Reference>>) proceeding;
 	}
 
 	//public void setCacheStrategy(S cacheStrategy){

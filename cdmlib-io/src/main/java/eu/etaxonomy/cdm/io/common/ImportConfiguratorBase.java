@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -72,7 +72,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	private Object sourceSecId = -1;
 	
 	private SOURCE source;
-	protected ReferenceBase sourceReference;
+	protected Reference sourceReference;
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 	
@@ -245,11 +245,11 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
-	public abstract ReferenceBase getSourceReference();
+	public abstract Reference getSourceReference();
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReference(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public void setSourceReference(ReferenceBase sourceReference) {
+	public void setSourceReference(Reference sourceReference) {
 		this.sourceReference = sourceReference;
 	}
 	/* (non-Javadoc)

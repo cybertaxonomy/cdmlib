@@ -15,7 +15,7 @@ import org.jdom.Element;
 import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
 import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -43,9 +43,9 @@ public class IEndnotePlaceholderClass implements ITcsXmlPlaceholderClass {
 	}
 
 	/* (non-Javadoc)
-	 * @see tcsxml.ITcsXmlPlaceholderClass#makePublicationDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see tcsxml.ITcsXmlPlaceholderClass#makePublicationDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element, eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public boolean makePublicationDetailed(TcsXmlImportConfigurator tcsConfig, Element elPublicationDetailed, ReferenceBase publication){
+	public boolean makePublicationDetailed(TcsXmlImportConfigurator tcsConfig, Element elPublicationDetailed, Reference publication){
 		if (tcsConfig == null){
 			return false;
 		}

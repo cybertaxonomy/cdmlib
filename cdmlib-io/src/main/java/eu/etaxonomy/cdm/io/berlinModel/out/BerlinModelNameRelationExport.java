@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -161,7 +161,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		}	
 	}
 	
-	private boolean invokeIsHomotypic(BerlinModelExportState state, BerlinModelExportMapping mapping, TaxonNameBase fromName, TaxonNameBase toName, ReferenceBase refId, String microCitation) throws SQLException{
+	private boolean invokeIsHomotypic(BerlinModelExportState state, BerlinModelExportMapping mapping, TaxonNameBase fromName, TaxonNameBase toName, Reference refId, String microCitation) throws SQLException{
 		try{
 			logger.info(fromName.getTitleCache() + "->" + toName.getTitleCache());
 			String maxQuery = " SELECT max(relNameId) as max FROM relName ";

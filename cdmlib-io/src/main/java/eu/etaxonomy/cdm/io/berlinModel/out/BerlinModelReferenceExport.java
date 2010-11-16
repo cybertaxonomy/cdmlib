@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.reference.IInProceedings;
 import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
 /*import eu.etaxonomy.cdm.model.reference.InProceedings;
 import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;*/
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 //import eu.etaxonomy.cdm.model.reference.Thesis;
 
@@ -47,13 +47,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  * @version 1.0
  */
 @Component
-public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceBase> {
+public class BerlinModelReferenceExport extends BerlinModelExportBase<Reference> {
 	private static final Logger logger = Logger.getLogger(BerlinModelReferenceExport.class);
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "Reference";
 	private static final String pluralString = "references";
-	private static final Class<? extends CdmBase> standardMethodParameter = ReferenceBase.class;
+	private static final Class<? extends CdmBase> standardMethodParameter = Reference.class;
 
 	public BerlinModelReferenceExport(){
 		super();
@@ -126,13 +126,13 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 			
 			TransactionStatus txStatus = startTransaction(true);
 			
-			List<ReferenceBase> list = getReferenceService().list(null,100000000, 0,null,null);
+			List<Reference> list = getReferenceService().list(null,100000000, 0,null,null);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;
-			for (ReferenceBase<?> ref : list){
+			for (Reference<?> ref : list){
 				doCount(count++, modCount, pluralString);
 				success &= mapping.invoke(ref);
 			}
@@ -142,7 +142,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 			Connection con = state.getConfig().getDestination().getConnection();
 			PreparedStatement stmt = con.prepareStatement(inRefSql);
 			count = 0;
-			for (ReferenceBase<?> ref : list){
+			for (Reference<?> ref : list){
 				doCount(count++, modCount, "inReferences");
 				success &= invokeInRef(ref, state, stmt);
 			}
@@ -158,11 +158,11 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		}
 	}
 
-	protected boolean invokeInRef(ReferenceBase ref, BerlinModelExportState state, PreparedStatement stmt) {
+	protected boolean invokeInRef(Reference ref, BerlinModelExportState state, PreparedStatement stmt) {
 		if (ref == null){
 			return true;
 		}else{
-			ReferenceBase<?> inRef = getInRef(ref);
+			Reference<?> inRef = getInRef(ref);
 			if (inRef == null){
 				return true;
 			}else{
@@ -182,16 +182,16 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		}
 	}
 
-	private ReferenceBase<?> getInRef(ReferenceBase<?> ref){
-		ReferenceBase<?> inRef;
+	private Reference<?> getInRef(Reference<?> ref){
+		Reference<?> inRef;
 		if (ref.getType().equals(ReferenceType.Article)){
-			return (ReferenceBase)((IArticle)ref).getInJournal();
+			return (Reference)((IArticle)ref).getInJournal();
 		}else if (ref.getType().equals(ReferenceType.BookSection)){
-			return (ReferenceBase)((IBookSection)ref).getInBook();
+			return (Reference)((IBookSection)ref).getInBook();
 		}else if (ref.getType().equals(ReferenceType.InProceedings)){
-			return (ReferenceBase) ((IInProceedings)ref).getInProceedings();
+			return (Reference) ((IInProceedings)ref).getInProceedings();
 		}else if (ref.getType().equals(ReferenceType.PrintedUnitBase)){
-			return (ReferenceBase)((IPrintedUnitBase)ref).getInSeries();
+			return (Reference)((IPrintedUnitBase)ref).getInSeries();
 		}else{
 			return null;
 		}
@@ -229,13 +229,13 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Integer getRefCategoryFk(ReferenceBase<?> ref){
+	private static Integer getRefCategoryFk(Reference<?> ref){
 		return BerlinModelTransformer.ref2refCategoryId(ref);
 	}
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getRefCache(ReferenceBase<?> ref){
+	private static String getRefCache(Reference<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return ref.getTitleCache();
 		}else{
@@ -245,7 +245,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getNomRefCache(ReferenceBase<?> ref){
+	private static String getNomRefCache(Reference<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return ref.getTitleCache();
 		}else{
@@ -266,7 +266,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getNomTitleAbbrev(ReferenceBase<?> ref){
+	private static String getNomTitleAbbrev(Reference<?> ref){
 		
 		if (/*ref.isNomenclaturallyRelevant() &&*/ ref.getTitle() != null && ref.getTitle().length() <=80){
 			return ref.getTitle();
@@ -279,7 +279,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getRefAuthorString(ReferenceBase<?> ref){
+	private static String getRefAuthorString(Reference<?> ref){
 		if (ref == null){
 			return null;
 		}else{
@@ -290,7 +290,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Boolean getPreliminaryFlag(ReferenceBase<?> ref){
+	private static Boolean getPreliminaryFlag(Reference<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return true;
 		}else{
@@ -300,7 +300,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Boolean getThesisFlag(ReferenceBase<?> ref){
+	private static Boolean getThesisFlag(Reference<?> ref){
 		if (ref.getType().equals(ReferenceType.Thesis)){
 			return true;
 		}else{

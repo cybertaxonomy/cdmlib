@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -86,7 +86,7 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 		CdmBase fromObject = getRelatedObject(rs, fromAttribute);
 		CdmBase toObject = getRelatedObject(rs, toAttribute);
 		//TODO cast
-		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
+		Reference citation = (Reference)getRelatedObject(rs, citationAttribute);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);

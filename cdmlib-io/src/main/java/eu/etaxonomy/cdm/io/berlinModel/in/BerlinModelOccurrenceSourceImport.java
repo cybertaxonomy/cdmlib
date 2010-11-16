@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -131,7 +131,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
     			}
     			if (distribution != null){
     				Integer refId = sourceNumberRefIdMap.get(sourceNumber);
-    				ReferenceBase ref = getReference(refId, state);
+    				Reference ref = getReference(refId, state);
 
     				if (ref != null){
     					DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
@@ -203,16 +203,16 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 			
 			//nom reference map
 			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomReferenceMap);
 
 			//biblio reference map
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 
 
@@ -295,10 +295,10 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 
 	
 
-	private ReferenceBase getReference(Integer refId, BerlinModelImportState state) {
-		ReferenceBase<?> ref = (ReferenceBase)state.getRelatedObject(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE, String.valueOf(refId));
+	private Reference getReference(Integer refId, BerlinModelImportState state) {
+		Reference<?> ref = (Reference)state.getRelatedObject(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE, String.valueOf(refId));
 		if (ref == null){
-			ref = (ReferenceBase)state.getRelatedObject(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE, String.valueOf(refId));;
+			ref = (Reference)state.getRelatedObject(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE, String.valueOf(refId));;
 		}
 		return ref;
 	}

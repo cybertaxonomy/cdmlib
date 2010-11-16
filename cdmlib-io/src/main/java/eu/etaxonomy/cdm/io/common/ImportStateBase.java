@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
@@ -45,7 +45,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	private Map<Object,TaxonomicTree> treeMap = new HashMap<Object,TaxonomicTree>();
 
-	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
+	private Map<Reference,UUID> treeUuidMap = new HashMap<Reference,UUID>();
 
 	private Map<String,UUID> taxonomicTreeKeyUuidMap = new HashMap<String,UUID>();
 	
@@ -67,10 +67,10 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		stores.put(ICdmIO.USER_STORE, new MapWrapper<User>(service));
 		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<Person>(service));
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
-		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
+		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
@@ -124,11 +124,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	/**
 	 * @return the treeUuid
 	 */
-	public UUID getTreeUuid(ReferenceBase ref) {
+	public UUID getTreeUuid(Reference ref) {
 		return treeUuidMap.get(ref);
 	}
 
-	public void putTreeUuid(ReferenceBase ref, TaxonomicTree tree) {
+	public void putTreeUuid(Reference ref, TaxonomicTree tree) {
 		if (tree != null &&  tree.getUuid() != null){
 			this.treeUuidMap.put(ref, tree.getUuid());
 		}

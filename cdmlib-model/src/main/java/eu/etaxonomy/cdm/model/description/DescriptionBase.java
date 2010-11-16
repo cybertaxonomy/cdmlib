@@ -36,7 +36,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -83,7 +83,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	@XmlIDREF
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)  //FIXME what is the difference between this and IdentifiableEntity.sources
-	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
+	private Set<Reference> descriptionSources = new HashSet<Reference>();
 	
 	@XmlElementWrapper(name = "DescriptiveSystem")
 	@XmlElement(name = "Feature")
@@ -165,26 +165,26 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	}
 
 	/**
-	 * Returns the set of {@link ReferenceBase references} used as sources for <i>this</i> description as a
+	 * Returns the set of {@link Reference references} used as sources for <i>this</i> description as a
 	 * whole. More than one source can be used for a general description without
 	 * assigning for each data element of the description one of those sources. 
 	 * 
-	 * @see    #addDescriptionSource(ReferenceBase)
-	 * @see    #removeDescriptionSource(ReferenceBase)
+	 * @see    #addDescriptionSource(Reference)
+	 * @see    #removeDescriptionSource(Reference)
 	 */
-	public Set<ReferenceBase> getDescriptionSources() {
+	public Set<Reference> getDescriptionSources() {
 		return this.descriptionSources;
 	}
 	
 	/**
-	 * Adds an existing {@link ReferenceBase reference} to the set of
+	 * Adds an existing {@link Reference reference} to the set of
 	 * {@link #getDescriptionSources() references} used as sources for <i>this</i>
 	 * description.
 	 * 
 	 * @param descriptionSource	the reference source to be added to <i>this</i> description
 	 * @see    	   				#getDescriptionSources()
 	 */
-	public void addDescriptionSource(ReferenceBase descriptionSource) {
+	public void addDescriptionSource(Reference descriptionSource) {
 		this.descriptionSources.add(descriptionSource);
 	}
 	
@@ -194,9 +194,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 *
 	 * @param  descriptionSource	the reference source which should be deleted
 	 * @see     		  			#getDescriptionSources()
-	 * @see     		  			#addDescriptionSource(ReferenceBase)
+	 * @see     		  			#addDescriptionSource(Reference)
 	 */
-	public void removeDescriptionSource(ReferenceBase descriptionSource) {
+	public void removeDescriptionSource(Reference descriptionSource) {
 		this.descriptionSources.remove(descriptionSource);
 	}
 

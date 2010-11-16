@@ -17,7 +17,7 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class View extends CdmBase implements IReferencedEntity{
 	private String description;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private ReferenceBase reference;
+	private Reference reference;
 	@OneToMany(fetch = FetchType.LAZY)
 	private Set<View> superViews = new HashSet<View>();
 	@Transient
@@ -64,15 +64,15 @@ public class View extends CdmBase implements IReferencedEntity{
 	}
 
 	@Transient
-	public ReferenceBase getCitation() {
+	public Reference getCitation() {
 		return getReference();
 	}
 
-	public ReferenceBase getReference() {
+	public Reference getReference() {
 		return reference;
 	}
 
-	public void setReference(ReferenceBase reference) {
+	public void setReference(Reference reference) {
 		this.reference = reference;
 	}
 	

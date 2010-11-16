@@ -36,14 +36,14 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
 
 /**
- * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} in a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+ * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} in a {@link eu.etaxonomy.cdm.model.reference.Reference reference}
  * or within a taxonomic view/treatment either as a {@link Taxon taxon}
  * ("accepted" respectively "correct" name) or as a (junior) {@link Synonym synonym}.
  * Within a taxonomic view/treatment or a reference a taxon name can be used
@@ -112,7 +112,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
     @NotNull(groups = Level2.class)
-	private ReferenceBase sec;
+	private Reference sec;
 
 	
 	@XmlElement(name = "AppendedPhrase")
@@ -126,7 +126,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	/** 
 	 * Class constructor: creates a new empty (abstract) taxon.
 	 * 
-	 * @see 	#TaxonBase(TaxonNameBase, ReferenceBase)
+	 * @see 	#TaxonBase(TaxonNameBase, Reference)
 	 */
 	protected TaxonBase(){
 		super();
@@ -134,14 +134,14 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	
 	/** 
 	 * Class constructor: creates a new (abstract) taxon with the
-	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
 	 * @see    #TaxonBase()
 	 */
-	protected TaxonBase(TaxonNameBase taxonNameBase, ReferenceBase sec){
+	protected TaxonBase(TaxonNameBase taxonNameBase, Reference sec){
 		super();
 		if (taxonNameBase != null){
 			this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);  
@@ -154,7 +154,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	/**
 	 * Generates and returns the string with the full scientific name (including
 	 * authorship) of the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i>
-	 * (abstract) taxon as well as the title of the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} using
+	 * (abstract) taxon as well as the title of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} using
 	 * this taxon name. This string may be stored in the inherited
 	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
 	 * This method overrides the generic and inherited generateTitle() method
@@ -229,18 +229,18 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	}
 
 	/** 
-	 * Returns the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} of <i>this</i> (abstract) taxon.
+	 * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference reference} of <i>this</i> (abstract) taxon.
 	 * This is the reference or the treatment using the {@link TaxonNameBase taxon name}
 	 * in <i>this</i> (abstract) taxon.
 	 */
-	public ReferenceBase getSec() {
+	public Reference getSec() {
 		return sec;
 	}
 
 	/**
 	 * @see  #getSec()
 	 */
-	public void setSec(ReferenceBase sec) {
+	public void setSec(Reference sec) {
 		this.sec = sec;
 	}
 	

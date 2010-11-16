@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 
@@ -227,7 +227,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 		result.setName(collectionName);
 		
 		//id, citation
-		ReferenceBase citation = getBciCitation(appConfig);
+		Reference citation = getBciCitation(appConfig);
 		result.addSource(id, null, citation, null);
 		
 		
@@ -241,8 +241,8 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 	}
 
 
-	private ReferenceBase getBciCitation(ICdmApplicationConfiguration appConfig) {
-		ReferenceBase bciReference;
+	private Reference getBciCitation(ICdmApplicationConfiguration appConfig) {
+		Reference bciReference;
 		if (appConfig != null){
 			bciReference = appConfig.getReferenceService().find(uuidBci);
 			if (bciReference == null){
@@ -259,8 +259,8 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 	/**
 	 * @return
 	 */
-	private ReferenceBase getNewBciReference() {
-		ReferenceBase bciReference;
+	private Reference getNewBciReference() {
+		Reference bciReference;
 		bciReference = ReferenceFactory.newDatabase();
 		bciReference.setTitleCache("Biodiversity Collection Index (BCI))");
 		return bciReference;

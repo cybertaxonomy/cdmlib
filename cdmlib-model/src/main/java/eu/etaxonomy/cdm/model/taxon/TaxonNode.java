@@ -36,7 +36,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -100,7 +100,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private ReferenceBase referenceForParentChildRelation;
+	private Reference referenceForParentChildRelation;
 	
 	@XmlElement(name = "microReference")
 	private String microReferenceForParentChildRelation;
@@ -148,9 +148,9 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 //************************ METHODS **************************/
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
 	 */
-	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed) {
+	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation, Synonym synonymToBeUsed) {
 		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
  			throw new IllegalArgumentException("Taxon may not be in a taxonomic view twice: " + taxon == null? "(null)" : taxon.getTitleCache());
 		}
@@ -164,7 +164,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 * @param childNode the taxon node to be moved to the new parent
 	 * @return the child node in the state of having a new parent
 	 */
-	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
+	public TaxonNode addChildNode(TaxonNode childNode, Reference reference, String microReference, Synonym synonymToBeUsed){
 		
 		// check if this node is a descendant of the childNode 
 		if(childNode.getParentTreeNode() != this && childNode.isAncestor(this)){
@@ -396,14 +396,14 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 * 
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getReference()
 	 */
-	public ReferenceBase getReference() {
+	public Reference getReference() {
 		return referenceForParentChildRelation;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setReference(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public void setReference(ReferenceBase reference) {
+	public void setReference(Reference reference) {
 		this.referenceForParentChildRelation = reference;
 	}
 	

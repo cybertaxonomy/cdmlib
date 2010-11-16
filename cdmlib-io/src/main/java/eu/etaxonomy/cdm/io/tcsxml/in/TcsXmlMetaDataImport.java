@@ -56,7 +56,7 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<Tcs
 		String childName;
 		boolean obligatory;
 		
-//		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+//		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)stores.get(ICdmIO.REFERENCE_STORE);
 		
 		TcsXmlImportConfigurator config = state.getConfig();
 		Element elDataSet = getDataSetElement(config);

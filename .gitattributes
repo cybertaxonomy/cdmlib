@@ -660,7 +660,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ISectionBase.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IThesis.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IVolumeReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IWebPage.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Reference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceFactory.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceIdentity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceType.java -text

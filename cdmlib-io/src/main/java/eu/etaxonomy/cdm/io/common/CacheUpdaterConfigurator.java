@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -360,7 +360,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	}
 
 	@Override
-	public ReferenceBase getSourceReference() {
+	public Reference getSourceReference() {
 		//not needed here
 		return null;
 	}

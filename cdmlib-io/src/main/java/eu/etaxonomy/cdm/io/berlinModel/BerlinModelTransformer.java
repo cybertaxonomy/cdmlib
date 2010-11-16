@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.reference.ISectionBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -535,7 +535,7 @@ public final class BerlinModelTransformer {
 //		public static int T_STATUS_ORPHANED = 6;
 	}
 		
-	public static Integer ref2refCategoryId (ReferenceBase<?> ref){
+	public static Integer ref2refCategoryId (Reference<?> ref){
 		if (ref == null){
 			return null;
 		}

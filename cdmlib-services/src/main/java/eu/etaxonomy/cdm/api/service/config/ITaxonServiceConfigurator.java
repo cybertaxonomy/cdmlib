@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -79,9 +79,9 @@ public interface ITaxonServiceConfigurator {
 	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath);
 	
 	@Deprecated
-	public ReferenceBase getSec();
+	public Reference getSec();
 	@Deprecated
-	public void setSec(ReferenceBase sec);
+	public void setSec(Reference sec);
 
 	public List<String> getSynonymPropertyPath();
 	

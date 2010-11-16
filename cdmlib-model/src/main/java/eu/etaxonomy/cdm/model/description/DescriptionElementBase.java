@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -362,9 +362,9 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
 	 */
-	public DescriptionElementSource addSource(String id, String idNamespace, ReferenceBase citation, String microCitation) {
+	public DescriptionElementSource addSource(String id, String idNamespace, Reference citation, String microCitation) {
 		if (id == null && idNamespace == null && citation == null && microCitation == null){
 			return null;
 		}
@@ -373,7 +373,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 		return source;
 	}
 	
-	public void addSource(String id, String idNamespace, ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+	public void addSource(String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
 		DescriptionElementSource newSource = DescriptionElementSource.NewInstance(id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
 		addSource(newSource);
 	}
@@ -410,7 +410,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	@Deprecated
 	public void setCitationMicroReference(String citationMicroReference){
 		if (this.sources.size() < 1){
-			ReferenceBase citation = null;
+			Reference citation = null;
 			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, citationMicroReference));
 		}else if (this.sources.size() > 1){
 			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
@@ -425,7 +425,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 */ 
 	@Transient
 	@Deprecated
-	public ReferenceBase getCitation(){
+	public Reference getCitation(){
 		if (this.sources.size() < 1){
 			return null;
 		}else{
@@ -439,7 +439,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 * If more than one source exists an IllegalStateException is thrown
 	 **/
 	@Deprecated
-	public void setCitation(ReferenceBase citation) {
+	public void setCitation(Reference citation) {
 		if (this.sources.size() < 1){
 			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
 		}else if (this.sources.size() > 1){

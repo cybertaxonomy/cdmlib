@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IPrintSeries;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -119,7 +119,7 @@ public class DefaultMatchStrategyTest {
 		book1.setParsingProblem(hasProblem1);
 		lsid1 = new LSID("authority1", "namespace1", "object1", "revision1");
 		book1.setLsid(lsid1);
-		((ReferenceBase) book1).setNomenclaturallyRelevant(false);
+		((Reference) book1).setNomenclaturallyRelevant(false);
 		
 		book2 = refFactory.newBook();
 		book2.setAuthorTeam(team2);
@@ -133,7 +133,7 @@ public class DefaultMatchStrategyTest {
 		book2.setParsingProblem(hasProblem2);
 		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
 		book2.setLsid(lsid2);
-		((ReferenceBase) book2).setNomenclaturallyRelevant(true);
+		((Reference) book2).setNomenclaturallyRelevant(true);
 		
 	}
 
@@ -151,9 +151,9 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertNotNull(matchStrategy);
-		Assert.assertEquals(ReferenceBase.class, matchStrategy.getMatchClass());
+		Assert.assertEquals(Reference.class, matchStrategy.getMatchClass());
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Test
 	public void testGetMatchMode() {
-		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertEquals("Match mode for isbn should be MatchMode.EQUAL_", MatchMode.EQUAL, matchStrategy.getMatchMode("isbn"));
 		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
 	}
@@ -173,7 +173,7 @@ public class DefaultMatchStrategyTest {
 	public void testGetSetMatchMode() {
 		//legal value
 		try {
-			matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+			matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 			matchStrategy.setMatchMode("edition", MatchMode.EQUAL_REQUIRED);
 			Assert.assertEquals("Match mode for edition should be", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("edition"));
 		} catch (MatchException e1) {
@@ -197,10 +197,10 @@ public class DefaultMatchStrategyTest {
 
 	@Test
 	public void testInvokeCache() throws MatchException {
-		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1));
 		
-		IBook bookClone = (IBook) ((ReferenceBase) book1).clone();
+		IBook bookClone = (IBook) ((Reference) book1).clone();
 		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 		book1.setTitleCache("cache1",true);
 		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
@@ -237,10 +237,10 @@ public class DefaultMatchStrategyTest {
 	
 	@Test
 	public void testInvokeReferences() throws MatchException {
-		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1));
 		
-		IBook bookClone = (IBook) ((ReferenceBase) book1).clone();
+		IBook bookClone = (IBook) ((Reference) book1).clone();
 		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 		bookClone.setTitle("Any title");
 		Assert.assertFalse("Books with differing titles should not match", matchStrategy.invoke(book1, bookClone));
@@ -256,7 +256,7 @@ public class DefaultMatchStrategyTest {
 		
 		bookClone.setInSeries(printSeries2);
 		Assert.assertFalse("Cloned book with differing print series should not match", matchStrategy.invoke(book1, bookClone));
-		IPrintSeries seriesClone = (IPrintSeries)((ReferenceBase)printSeries1).clone();
+		IPrintSeries seriesClone = (IPrintSeries)((Reference)printSeries1).clone();
 		bookClone.setInSeries(seriesClone);
 		Assert.assertTrue("Cloned book with cloned bookSeries should match", matchStrategy.invoke(book1, bookClone));
 		seriesClone.setTitle("Another title");
@@ -298,7 +298,7 @@ public class DefaultMatchStrategyTest {
 		section2.setPages("22-33");
 		
 		
-		IMatchStrategy bookSectionMatchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		IMatchStrategy bookSectionMatchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertTrue("Equal BookSections should match", bookSectionMatchStrategy.invoke(section1, section2));
 		section2.setInBook(bookTitle2);
 		Assert.assertTrue("Matching books should result in matching book sections", bookSectionMatchStrategy.invoke(section1, section2));
@@ -308,7 +308,7 @@ public class DefaultMatchStrategyTest {
 		bookTitle2.setPages(null);
 		Assert.assertTrue("Matching books should result in matching book sections", bookSectionMatchStrategy.invoke(section1, section2));
 		printSeries2.setTitle("A new series title");
-		IMatchStrategy printSeriesMatchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		IMatchStrategy printSeriesMatchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertFalse("Print series with differing titles should not match", printSeriesMatchStrategy.invoke(printSeries1, printSeries2));
 		bookTitle1.setInSeries(printSeries1);
 		bookTitle2.setInSeries(printSeries2);
@@ -321,7 +321,7 @@ public class DefaultMatchStrategyTest {
 		
 		person1.setPrefix("pre1");
 		person2.setPrefix("pre2");
-		book2= (IBook) ((ReferenceBase) book1).clone();
+		book2= (IBook) ((Reference) book1).clone();
 		
 		Assert.assertTrue("Equal books should match", matchStrategy.invoke(book1, book2));
 		

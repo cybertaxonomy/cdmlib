@@ -149,7 +149,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -232,8 +232,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	@Test
 	@Ignore
 	public void testDelete(){
-		ReferenceBase ref1 = ReferenceFactory.newBook();
-		ReferenceBase ref2 = ReferenceFactory.newBook();
+		Reference ref1 = ReferenceFactory.newBook();
+		Reference ref2 = ReferenceFactory.newBook();
 		Annotation annotation = Annotation.NewInstance("Anno1", null);
 		ref1.addAnnotation(annotation);
 		cdmGenericDao.saveOrUpdate(ref1);
@@ -265,8 +265,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 		
-		ReferenceBase article1 = ReferenceFactory.newArticle();
-		ReferenceBase article2 = ReferenceFactory.newArticle();
+		Reference article1 = ReferenceFactory.newArticle();
+		Reference article2 = ReferenceFactory.newArticle();
 		
 		
 		name1.setNomenclaturalReference(article1);
@@ -446,7 +446,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				PreservationMethod.class, 
 				Specimen.class, 
 				SpecimenOrObservationBase.class, 
-				ReferenceBase.class, 
+				Reference.class, 
 				Synonym.class, 
 				SynonymRelationship.class, 
 				SynonymRelationshipType.class, 
@@ -498,7 +498,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	public void testGetReferencingObjectsCdmBase() {
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
-		ReferenceBase ref1 = ReferenceFactory.newArticle();
+		Reference ref1 = ReferenceFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
@@ -510,7 +510,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		taxonDao.save(taxon);
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
-//		ReferenceBase ref1 = referenceService.findByUuid(uuid);
+//		Reference ref1 = referenceService.findByUuid(uuid);
 		
 	
 		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(ref1);
@@ -586,8 +586,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		ZoologicalName zooName1 = ZoologicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("ZoologicalName1", true);
 
-		ReferenceBase article1 = ReferenceFactory.newArticle();
-		ReferenceBase article2 = ReferenceFactory.newArticle();
+		Reference article1 = ReferenceFactory.newArticle();
+		Reference article2 = ReferenceFactory.newArticle();
 		
 		
 		name1.setNomenclaturalReference(article1);
@@ -715,7 +715,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		BotanicalName name3 = BotanicalName.NewInstance(Rank.SPECIES());
 		name3.setTitleCache("BotanicalName3", true);
 		
-		ReferenceBase database = ReferenceFactory.newDatabase();
+		Reference database = ReferenceFactory.newDatabase();
 		
 		Taxon taxon1 = Taxon.NewInstance(name1, database);
 		Taxon taxon2 = Taxon.NewInstance(name2, database);
@@ -789,8 +789,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		agentDao.save(team1);
 		agentDao.save(team2);
 		agentDao.save(team3);
-		cdmGenericDao.save((ReferenceBase)book1);
-		cdmGenericDao.save((ReferenceBase)book2);
+		cdmGenericDao.save((Reference)book1);
+		cdmGenericDao.save((Reference)book2);
 				
 		cdmGenericDao.merge(team2, team3, null);
 		
@@ -895,11 +895,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		book2.setTitle(title2);
 		book3.setTitle(title1);
 		
-		cdmGenericDao.saveOrUpdate((ReferenceBase)book1);
-		cdmGenericDao.saveOrUpdate((ReferenceBase)book2);
-		cdmGenericDao.saveOrUpdate((ReferenceBase)book3);
+		cdmGenericDao.saveOrUpdate((Reference)book1);
+		cdmGenericDao.saveOrUpdate((Reference)book2);
+		cdmGenericDao.saveOrUpdate((Reference)book3);
 		
-		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		
 		try {
 			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
@@ -933,16 +933,16 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			section3.setInBook(book1);
 			section3.setTitle("SecTitle");
 			section3.setPages("22-33");
-			cdmGenericDao.saveOrUpdate((ReferenceBase)section1);
-			cdmGenericDao.saveOrUpdate((ReferenceBase)section2);
-			cdmGenericDao.saveOrUpdate((ReferenceBase)section3);
+			cdmGenericDao.saveOrUpdate((Reference)section1);
+			cdmGenericDao.saveOrUpdate((Reference)section2);
+			cdmGenericDao.saveOrUpdate((Reference)section3);
 			
 			List<IBookSection> sectionResult = cdmGenericDao.findMatching(section3, null);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, sectionResult.size());
 			Assert.assertSame("Resultlist entry must be section1", section1, sectionResult.get(0));
-			section2.setInBook(book2 = (IBook)((ReferenceBase) book1).clone());
-			cdmGenericDao.saveOrUpdate((ReferenceBase)book2);
-			cdmGenericDao.saveOrUpdate((ReferenceBase)book1);
+			section2.setInBook(book2 = (IBook)((Reference) book1).clone());
+			cdmGenericDao.saveOrUpdate((Reference)book2);
+			cdmGenericDao.saveOrUpdate((Reference)book1);
 			
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
@@ -1002,8 +1002,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		book1.setAuthorTeam(team1);
 		
 		
-		IBook book2 = (IBook) ((ReferenceBase)book1).clone();
-		IBook book3 = (IBook) ((ReferenceBase)book1).clone();
+		IBook book2 = (IBook) ((Reference)book1).clone();
+		IBook book3 = (IBook) ((Reference)book1).clone();
 		
 //		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 //		book1.setTitleCache("cache1");
@@ -1019,14 +1019,14 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 //		bookClone.setEdition(null);
 //		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
 
-		cdmGenericDao.saveOrUpdate((ReferenceBase)book1);
-		cdmGenericDao.saveOrUpdate((ReferenceBase)book2);
-		cdmGenericDao.saveOrUpdate((ReferenceBase)book3);
+		cdmGenericDao.saveOrUpdate((Reference)book1);
+		cdmGenericDao.saveOrUpdate((Reference)book2);
+		cdmGenericDao.saveOrUpdate((Reference)book3);
 		cdmGenericDao.saveOrUpdate(team1);
 		cdmGenericDao.saveOrUpdate(team2);
 		
 		
-		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
+		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		
 		try {
 			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);

@@ -17,7 +17,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -44,7 +44,7 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		botName.setGenusOrUninomial("Genus");
 		botName.setSpecificEpithet("species");
 		
-		ReferenceBase sec = ReferenceFactory.newGeneric();
+		Reference sec = ReferenceFactory.newGeneric();
 		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);

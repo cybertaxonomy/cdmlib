@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -186,8 +186,8 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		
 
 		if (jaxbExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
-			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
-			logger.info("# ReferenceBase: " + referenceBaseRows);
+			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(Reference.class); }
+			logger.info("# Reference: " + referenceBaseRows);
 			dataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));
 		}
 		

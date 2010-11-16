@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -52,7 +52,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param sec
 	 * @return
 	 */
-	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec);
+	public List<TaxonBase> getTaxaByName(String name, Reference sec);
 	
 	/** 
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
@@ -61,7 +61,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param sec
 	 * @return
 	 */
-	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec);
+	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, Reference sec);
 
 	/** 
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
@@ -193,7 +193,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return The List<Taxon> of root taxa.
 	 * @deprecated obsolete when using taxonomicTree
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec);
+	public List<Taxon> getRootTaxa(Reference sec);
 
 	
 	/**
@@ -206,7 +206,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return The List<Taxon> of root taxa.
 	 * @deprecated obsolete when using taxonomicTree
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
+	public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
 	
 	
 	/**
@@ -233,7 +233,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public List<Taxon> 
-	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);
+	getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);
 
 		/**
 	 * TODO necessary? 

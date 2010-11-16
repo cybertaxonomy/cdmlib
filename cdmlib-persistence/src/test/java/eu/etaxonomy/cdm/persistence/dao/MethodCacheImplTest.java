@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -21,7 +21,7 @@ public class MethodCacheImplTest {
 	private BotanicalName botanicalName;
 
 	IMethodCache methodCache;
-	private ReferenceBase nomenclaturalReference;
+	private Reference nomenclaturalReference;
 	
 	@Before
 	public void setUp() throws Exception {

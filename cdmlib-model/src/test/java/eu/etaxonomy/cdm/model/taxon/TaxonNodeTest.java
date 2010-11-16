@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 //import eu.etaxonomy.cdm.model.reference.Book;
 //import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -50,9 +50,9 @@ public class TaxonNodeTest {
 	private static TaxonNameBase<?,?> taxonName1;
 	private static TaxonNameBase<?,?> taxonName2;
 	private static TaxonNameBase<?,?> taxonName3;
-	private static ReferenceBase ref1;
-	private static ReferenceBase ref2;
-	private static ReferenceBase ref3;
+	private static Reference ref1;
+	private static Reference ref2;
+	private static Reference ref3;
 	private static Synonym syn1;
 	/**
 	 * @throws java.lang.Exception
@@ -115,7 +115,7 @@ public class TaxonNodeTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonNode#addChild(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonNode#addChild(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)}.
 	 */
 	@Test
 	public void testAddChild() {

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -115,7 +115,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		List<? extends AgentBase> agents;
 		List<DefinedTermBase> terms;
 		List<User> users;
-		List<ReferenceBase> references;
+		List<Reference> references;
 		List<TaxonNameBase> taxonomicNames;
 		List<DescriptionBase> descriptions;
 		List<TypeDesignationBase> typeDesignations;

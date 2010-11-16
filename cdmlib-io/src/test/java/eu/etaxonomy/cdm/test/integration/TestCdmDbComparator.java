@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.babadshanjan
@@ -145,7 +145,7 @@ public class TestCdmDbComparator {
 //			"OriginalSource_Annotation", 
 //			"OriginalSource_Marker", 
 //			"Person_Keyword", 
-			"ReferenceBase", 
+			"Reference", 
 //			"ReferenceBase_Annotation", 
 //			"ReferenceBase_Extension", 
 //			"ReferenceBase_Marker", 
@@ -455,7 +455,7 @@ public class TestCdmDbComparator {
 		//List<NameRelationship> nameRelationships = appCtr.getNameService().getAllNameRelationships(MAX_ROWS, 0);
 		List<NomenclaturalStatus> nomenclaturalStatus = appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0);
 		//List<OriginalSource> originalSources = appCtr.getNameService().getAllOriginalSources(MAX_ROWS, 0);
-		List<ReferenceBase> referenceBases = appCtr.getReferenceService().list(null,MAX_ROWS, 0,null,null);
+		List<Reference> references = appCtr.getReferenceService().list(null,MAX_ROWS, 0,null,null);
 		List<Representation> representations = appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0);
 		List<SpecimenOrObservationBase> specimenOrObservationBases = appCtr.getOccurrenceService().list(null,MAX_ROWS, 0,null,null);
 		//List<SynonymRelationship> synonymRelationships = appCtr.getTaxonService().getAllSynonymRelationships(MAX_ROWS, 0);

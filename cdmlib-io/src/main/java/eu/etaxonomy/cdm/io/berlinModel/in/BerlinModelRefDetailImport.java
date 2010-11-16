@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -104,8 +104,8 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 		logger.info("start make " + getPluralString() + " ...");
 		
 		BerlinModelImportConfigurator config = state.getConfig(); 
-		Map<Integer, ReferenceBase> biblioRefDetailsToSave = new HashMap<Integer, ReferenceBase>();
-		Map<Integer, ReferenceBase> nomRefDetailsToSave =  new HashMap<Integer, ReferenceBase>();
+		Map<Integer, Reference> biblioRefDetailsToSave = new HashMap<Integer, Reference>();
+		Map<Integer, Reference> nomRefDetailsToSave =  new HashMap<Integer, Reference>();
 		
 		ResultSet rs = partitioner.getResultSet();
 		
@@ -121,7 +121,7 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 				//nomRef
 				String fullNomRefCache = rs.getString("fullNomRefCache"); 
 				if ( CdmUtils.isNotEmpty(fullNomRefCache) ){
-					ReferenceBase genericReference = refFactory.newGeneric();
+					Reference genericReference = refFactory.newGeneric();
 					genericReference.setTitleCache(fullNomRefCache, true);
 					nomRefDetailsToSave.put(refDetailId, genericReference);
 					//year
@@ -134,7 +134,7 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 				//biblioRef
 				String fullRefCache = rs.getString("fullRefCache"); 
 				if ( CdmUtils.isNotEmpty(fullRefCache) && ! fullRefCache.equals(fullNomRefCache)){
-					ReferenceBase genericReference = refFactory.newGeneric();
+					Reference genericReference = refFactory.newGeneric();
 					genericReference.setTitleCache(fullRefCache, true);
 					biblioRefDetailsToSave.put(refDetailId, genericReference);
 					//year
@@ -147,7 +147,7 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 			//save and store in map
 			logger.info("Save nomenclatural preliminary references (" + refCounter.nomRefCount + ")");
 			partitioner.startDoSave();
-			Collection<ReferenceBase> col = nomRefDetailsToSave.values();
+			Collection<Reference> col = nomRefDetailsToSave.values();
 			getReferenceService().save(col);
 			logger.info("Save bibliographical preliminary references (" + refCounter.biblioRefCount +")");
 			getReferenceService().save(biblioRefDetailsToSave.values());

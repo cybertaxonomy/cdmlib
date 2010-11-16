@@ -26,7 +26,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * The class representing a hybrid relationship between one of the {@link BotanicalName parents}
@@ -104,7 +104,7 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 	 * @param fromName			the taxon name to be set as source for the new hybrid relationship
 	 * @param type				the relationship type to be assigned to the new hybrid relationship
 	 * @param ruleConsidered	the string indicating the article of the ICBN for the hybrid taxon name
-	 * @see						#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, ReferenceBase, String, String)
+	 * @see						#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, Reference, String, String)
 	 * @see						BotanicalName#addHybridRelationship(HybridRelationship)
 	 */
 	protected HybridRelationship(NonViralName hybridName, NonViralName parentName, HybridRelationshipType type, String ruleConsidered) {
@@ -113,7 +113,7 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 	
 	/**
 	 * Class constructor: creates a new hybrid relationship instance including
-	 * its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and adds it to the respective 
+	 * its {@link eu.etaxonomy.cdm.model.reference.Reference reference source} and adds it to the respective 
 	 *{@link BotanicalName#getHybridRelationships() botanical taxon name relation sets} of both involved names.
 	 * 
 	 * @param toName				the taxon name to be set as target for the new hybrid relationship
@@ -125,7 +125,7 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 	 * @see							#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String)
 	 * @see							BotanicalName#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(NonViralName  hybridName, NonViralName parentName, HybridRelationshipType type, ReferenceBase citation, String citationMicroReference, String ruleConsidered) {
+	protected HybridRelationship(NonViralName  hybridName, NonViralName parentName, HybridRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
 		super(parentName, hybridName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}	

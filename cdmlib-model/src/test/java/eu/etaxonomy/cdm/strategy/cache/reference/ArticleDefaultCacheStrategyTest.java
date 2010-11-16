@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -123,7 +123,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setVolume("34");
 		article1.setSeries("ser. 2");
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
-		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getNomRefTitleWithoutYearAndAuthor((ReferenceBase)article1));
+		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getNomRefTitleWithoutYearAndAuthor((Reference)article1));
 	}
 	
 	@Test 
@@ -137,7 +137,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setAuthorTeam(articleAuthor);
 		article1.setVolume("18");
 		article1.setDatePublished(TimePeriod.NewInstance(1943));
-		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((ReferenceBase)article1));
+		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((Reference)article1));
 	}
 	
 }
