@@ -1747,4 +1747,5 @@ src/site/apt/rest-api.apt -text
 src/site/fml/faq.fml -text
 src/site/fml/troubleshooting.fml -text
 src/site/resources/images/cdmlib-arch4.png -text
+src/site/resources/images/cdmlib_overview.png -text
 src/site/site.xml -text
