@@ -27,8 +27,6 @@
     </url>
   </scm>
   
-  <url>http://maven.apache.org</url>
-  
   <dependencies>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
