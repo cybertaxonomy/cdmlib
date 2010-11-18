@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.database.update.v26_30;
+package eu.etaxonomy.cdm.database.update.v25_30;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -291,12 +291,12 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 
 	private void movePolytomousKeyMns(String featureTreeTableName, String polytomousKeyTableName, ICdmDataSource datasource, boolean isAudit) {
 		//PolytomousKey MN update
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "annotation", null, datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "credit", null, datasource, isAudit, true);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "extension", null, datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "marker", null, datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "originalsourcebase", "sources", datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "rights", "rights", datasource, isAudit, false);
+		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Annotation", null, datasource, isAudit, false);
+		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Credit", null, datasource, isAudit, true);
+		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Extension", null, datasource, isAudit, false);
+		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Marker", null, datasource, isAudit, false);
+		updateMnTables(featureTreeTableName, polytomousKeyTableName, "OriginalSourceBase", "Sources", datasource, isAudit, false);
+		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Rights", "Rights", datasource, isAudit, false);
 	}
 
 	private void movePolytomousKey(String featureTreeTableName,

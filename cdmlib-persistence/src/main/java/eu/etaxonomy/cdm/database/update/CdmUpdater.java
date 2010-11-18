@@ -17,8 +17,8 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
 import eu.etaxonomy.cdm.database.update.v24_25.TermUpdater_24_25;
-import eu.etaxonomy.cdm.database.update.v26_30.SchemaUpdater_26_30;
-import eu.etaxonomy.cdm.database.update.v26_30.TermUpdater_25_30;
+import eu.etaxonomy.cdm.database.update.v25_30.SchemaUpdater_25_30;
+import eu.etaxonomy.cdm.database.update.v25_30.TermUpdater_25_30;
 
 /**
  * @author a.mueller
@@ -80,7 +80,7 @@ public class CdmUpdater {
 	 * @return
 	 */
 	private ISchemaUpdater getCurrentSchemaUpdater() {
-		return SchemaUpdater_26_30.NewInstance();
+		return SchemaUpdater_25_30.NewInstance();
 //		return SchemaUpdater_25_26.NewInstance();
 	}
 

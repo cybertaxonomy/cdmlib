@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.database.update.v26_30;
+package eu.etaxonomy.cdm.database.update.v25_30;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,26 +34,26 @@ import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
  * @created Nov 08, 2010
  * @version 1.0
  */
-public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
+public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SchemaUpdater_26_30.class);
+	private static final Logger logger = Logger.getLogger(SchemaUpdater_25_30.class);
 	private static final String startSchemaVersion = "2.5.0.0.201009211255";
 //	private static final String startSchemaVersion = "2.6.0.0.201010231255";
 	private static final String endSchemaVersion = "3.0.0.0.201011090000";
 	
 // ********************** FACTORY METHOD *******************************************
 	
-	public static SchemaUpdater_26_30 NewInstance(){
-		return new SchemaUpdater_26_30();
+	public static SchemaUpdater_25_30 NewInstance(){
+		return new SchemaUpdater_25_30();
 	}
 	
 	/**
 	 * @param startSchemaVersion
 	 * @param endSchemaVersion
 	 */
-	protected SchemaUpdater_26_30() {
+	protected SchemaUpdater_25_30() {
 		super(startSchemaVersion, endSchemaVersion);
 	}
 	
@@ -69,7 +69,7 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		//add feature tree attribute to feature node table
 		stepName = "Add feature tree addtribue to feature node";
 		//TODO defaultValue & not null
-		ColumnAdder featureTreeColAdder = ColumnAdder.NewIntegerInstance(stepName, "featureNode", "featuretree_id", INCLUDE_AUDIT, false, "FeatureTree");
+		ColumnAdder featureTreeColAdder = ColumnAdder.NewIntegerInstance(stepName, "FeatureNode", "FeatureTree_id", INCLUDE_AUDIT, false, "FeatureTree");
 		stepList.add(featureTreeColAdder);
 		
 		//compute feature tree column
@@ -301,7 +301,6 @@ public class SchemaUpdater_26_30 extends SchemaUpdaterBase {
 		stepName = "Rename taxon_fk column in MultiAccessKey_Taxon";
 		columnNameChanger = ColumnNameChanger.NewIntegerInstance(stepName, "MultiAccessKey_Taxon", "taxon_fk", "taxon_id", INCLUDE_AUDIT);
 		stepList.add(columnNameChanger);
-
 		
 		//add the table hibernate_sequences
 		stepName = "Add the table hibernate_sequences to store the table specific sequences in";
