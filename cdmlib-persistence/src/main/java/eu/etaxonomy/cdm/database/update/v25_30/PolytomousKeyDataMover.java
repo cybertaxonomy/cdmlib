@@ -238,7 +238,7 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		String featureNodeTable = "FeatureNode" +  (isAudit ? "_AUD" : "");
 		String featureTreeTable = "FeatureTree" + (isAudit ? "_AUD" : "");
 		String representationTable = "Representation" + (isAudit ? "_AUD" : "");
-		String oldMnTable = "featurenode_representation" + (isAudit ? "_AUD" : "");
+		String oldMnTable = "FeatureNode_Representation" + (isAudit ? "_AUD" : "");
 		
 //		statements
 		updateQuery = " DELETE FROM @representationTable WHERE id IN (SELECT questions_id FROM @oldMnTable)";
