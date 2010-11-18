@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */ 
 
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Reader;
 import java.io.Serializable;
@@ -33,6 +33,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
 import com.ibm.wsdl.factory.WSDLFactoryImpl;
+
+import eu.etaxonomy.cdm.model.common.LSIDWSDLLocator;
 
 /**
  * UserType which allows persistence of a wsdl definition - used to persist the 

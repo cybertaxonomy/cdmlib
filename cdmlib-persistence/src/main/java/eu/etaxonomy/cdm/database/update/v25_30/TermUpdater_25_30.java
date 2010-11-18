@@ -20,8 +20,6 @@ import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v24_25.TermUpdater_24_25;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 
 /**

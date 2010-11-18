@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileOutputStream;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -51,11 +52,13 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Class clazz = TaxonNameBase.class;
 		int stepSize = 2;
 		nameService.updateTitleCache(clazz, stepSize, null);
+
 //		TaxonNameBase name = nameService.find(UUID.fromString("5d74500b-9fd5-4d18-b9cd-cc1c8a372fec"));
+//		System.out.println(name.getRank().getLabel());
 //		setComplete();
 //		endTransaction();
 //		try {
-//			printDataSet(new FileOutputStream("C:\\tmp\\test.xml"), new String[]{"TaxonNameBase"});
+//			printDataSet(System.out, new String[]{"TaxonNameBase", "DefinedTermBase","Representation"});
 //		} catch(Exception e) { 
 //			logger.warn(e);
 //		} 

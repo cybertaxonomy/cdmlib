@@ -1698,6 +1698,12 @@
         primary key (id),
         unique (authority)
     );
+	
+	create table hibernate_sequences (
+		sequence_name varchar(255),
+		next_val integer,
+		primary key (sequence_name)
+	);
 
     create table HomotypicalGroup (
         id integer not null,
