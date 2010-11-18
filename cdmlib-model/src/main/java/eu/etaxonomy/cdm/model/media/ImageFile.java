@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.media;
 
 
+import java.net.URI;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -49,16 +51,16 @@ public class ImageFile extends MediaRepresentationPart {
 	@XmlElement(name = "Width")
 	private int width;
 
-	public static ImageFile NewInstance(String uri, Integer size){
+	public static ImageFile NewInstance(URI uri, Integer size){
 		logger.debug("NewInstance");
 		return new ImageFile(uri, size);
 	}
 	
-	public static ImageFile NewInstance(String uri, Integer size, Integer height, Integer width){
+	public static ImageFile NewInstance(URI uri, Integer size, Integer height, Integer width){
 		return new ImageFile(uri, size, height, width);
 	}
 	
-	public static ImageFile NewInstance(String uri, Integer size, ImageMetaData imageMetaData){
+	public static ImageFile NewInstance(URI uri, Integer size, ImageMetaData imageMetaData){
 		return new ImageFile(uri, size, imageMetaData.getHeight(), imageMetaData.getWidth());
 	}
 	
@@ -74,7 +76,7 @@ public class ImageFile extends MediaRepresentationPart {
 	 * @param width the width of the image file
 	 * @return
 	 */
-	public static Media NewMediaInstance(DateTime mediaCreated, AgentBase artist, String uri, String mimeType, String suffix, Integer size, Integer height, Integer width){
+	public static Media NewMediaInstance(DateTime mediaCreated, AgentBase artist, URI uri, String mimeType, String suffix, Integer size, Integer height, Integer width){
 		Media media = Media.NewInstance();
 		media.setMediaCreated(mediaCreated);
 		media.setArtist(artist);
@@ -92,11 +94,11 @@ public class ImageFile extends MediaRepresentationPart {
 		super();
 	}
 	
-	protected ImageFile(String uri, Integer size){
+	protected ImageFile(URI uri, Integer size){
 		super(uri, size);
 	}
 	
-	protected ImageFile(String uri, Integer size, Integer height, Integer width){
+	protected ImageFile(URI uri, Integer size, Integer height, Integer width){
 		super(uri, size);
 		if (height != null){
 			this.setHeight(height);

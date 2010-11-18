@@ -11,6 +11,9 @@
 package eu.etaxonomy.cdm.model.media;
 
 import static org.junit.Assert.*;
+
+import java.net.URI;
+
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
@@ -45,8 +48,9 @@ public class MediaTest {
 	private final String germanDescription = "media1Desc2";
 	private Rights rights1;
 	private LanguageString languageString2;
-	private String uriString1 = "Path to image 1";
-	private String uriString2 = "Path to image 2";
+	private static URI uriString1;
+	private static URI uriString2;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -54,6 +58,14 @@ public class MediaTest {
 	public static void setUpBeforeClass() throws Exception {
 		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
 		termInitializer.initialize();
+		try {
+			uriString1 = new URI("http://Pathtoimage1/");
+			uriString2 = new URI("http://Path_to_image_2/");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail("Error in URI syntax");
+		}
+		
 	}
 
 	/**

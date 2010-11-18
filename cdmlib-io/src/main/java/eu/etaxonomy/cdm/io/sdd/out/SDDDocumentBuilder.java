@@ -531,7 +531,7 @@ public class SDDDocumentBuilder {
 						for (Iterator<MediaRepresentationPart> mrp = lmrp.iterator();mrp.hasNext();){
 							MediaRepresentationPart mediareppart = mrp.next();
 							ElementImpl elLink = new ElementImpl(document, "Link");
-							elLink.setAttribute("href",mediareppart.getUri());
+							elLink.setAttribute("href",mediareppart.getUri().toString());
 							elLinks.appendChild(elLink);
 						}
 					}
@@ -1278,7 +1278,7 @@ public class SDDDocumentBuilder {
 						for (Iterator<MediaRepresentationPart> mrp = lmrp.iterator();mrp.hasNext();){
 								MediaRepresentationPart mediareppart = mrp.next();
 								ElementImpl elSource = new ElementImpl(document, "Source");
-								elSource.setAttribute("href",mediareppart.getUri());
+								elSource.setAttribute("href",mediareppart.getUri().toString());
 								elMediaObject.appendChild(elSource);
 							}
 					}

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -439,21 +440,17 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	private TaxonDescription makeImage(BerlinModelImportState state, String fact, Media media, Set<TaxonDescription> descriptionSet, Taxon taxon) {
 		TaxonDescription taxonDescription = null;
 		Reference sourceRef = state.getConfig().getSourceReference();
-		String uri = fact;
 		Integer size = null; 
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-		URL url;
+		URI uri;
 		try {
-			url = new URL(fact.trim());
-		} catch (MalformedURLException e) {
-			logger.warn("Malformed URL. Image could not be imported: " + CdmUtils.Nz(uri));
+			uri = new URI(fact.trim());
+		} catch (URISyntaxException e) {
+			logger.warn("URISyntaxException. Image could not be imported: " + fact);
 			return null;
 		}
 		try {
-			imageMetaData.readMetaData(url.toURI(), 0);
-		}
-		catch(URISyntaxException e){
-			logger.error("URISyntaxException reading image metadata." , e);
+			imageMetaData.readMetaData(uri, 0);
 		} catch (IOException e) {
 			logger.error("IOError reading image metadata." , e);
 		} catch (HttpException e) {

@@ -441,7 +441,8 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 						if (imd != null){
 							System.out.println("image not null");
 							representation = MediaRepresentation.NewInstance();
-							imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);
+							URI uri = new URI(this.multimediaObjects.get(i));
+							imf = ImageFile.NewInstance(uri, null, imd);
 							representation.addRepresentationPart(imf);
 							media = Media.NewInstance();
 							media.addRepresentation(representation);

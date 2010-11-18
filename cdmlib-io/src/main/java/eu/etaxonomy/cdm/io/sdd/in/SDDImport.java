@@ -409,8 +409,8 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 					//TODO
 					String rel = elLink.getAttributeValue("rel");
 					String href = elLink.getAttributeValue("href");
-
-					mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
+					URI uri = new URI(href);
+					mr.addRepresentationPart(MediaRepresentationPart.NewInstance(uri, null));
 					link.addRepresentation(mr);
 					ime.addMedia(link);
 
@@ -1549,7 +1549,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 								URL url = new URL(href);
 								
 								imageMetaData.readMetaData(url.toURI(), 0);
-								image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
+								image = ImageFile.NewInstance(url.toURI(), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
 							}
@@ -1560,7 +1560,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
 							imageMetaData.readMetaData(new URI(fi), 0); //file
-							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
+							image = ImageFile.NewInstance(file.toURI(), null, imageMetaData);
 						}
 						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 						representation.addRepresentationPart(image);

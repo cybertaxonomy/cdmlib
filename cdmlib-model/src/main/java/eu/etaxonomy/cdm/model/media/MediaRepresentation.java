@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.media;
 
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,8 +119,8 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	 * Returns <code>null</code> if uri is empty
 	 * @return
 	 */
-	public static MediaRepresentation NewInstance(String mimeType, String suffix, String uri, Integer size){
-		if (CdmUtils.isEmpty(uri)){
+	public static MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size){
+		if (CdmUtils.isEmpty(uri.toString())){
 			return null;
 		}
 		MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, size);

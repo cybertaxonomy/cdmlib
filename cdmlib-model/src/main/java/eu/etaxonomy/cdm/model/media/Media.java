@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -145,7 +146,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	 * Returns <code>null</code> if uri is empty
 	 * @return Media
 	 */
-	public static Media NewInstance(String uri, Integer size, String mimeType, String suffix){
+	public static Media NewInstance(URI uri, Integer size, String mimeType, String suffix){
 		MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size);
 		if (representation == null){
 			return null;

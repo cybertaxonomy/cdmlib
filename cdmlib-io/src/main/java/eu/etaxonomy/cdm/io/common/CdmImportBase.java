@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -380,23 +382,29 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return null;
 		} else {
 			ImageMetaData imd = ImageMetaData.newInstance();
+			URI uri;
 			try {
-				if (readDataFromUrl){
-					URL url = new URL(multimediaObject);
-					imd.readMetaData(url.toURI(), 0);
+				uri = new URI(multimediaObject);
+				try {
+					if (readDataFromUrl){
+						imd.readMetaData(uri, 0);
+					}
+				} catch (Exception e) {
+					String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
+					logger.warn(message);
 				}
-			} catch (Exception e) {
-				String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
+				ImageFile imf = ImageFile.NewInstance(uri, null, imd);
+				MediaRepresentation representation = MediaRepresentation.NewInstance();
+				representation.setMimeType(imd.getMimeType());
+				representation.addRepresentationPart(imf);
+				Media media = Media.NewInstance();
+				media.addRepresentation(representation);
+				return media;
+			} catch (URISyntaxException e1) {
+				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  multimediaObject;
 				logger.warn(message);
+				return null;
 			}
-			ImageFile imf = ImageFile.NewInstance(multimediaObject, null, imd);
-			MediaRepresentation representation = MediaRepresentation.NewInstance();
-			representation.setMimeType(imd.getMimeType());
-			representation.addRepresentationPart(imf);
-			Media media = Media.NewInstance();
-			media.addRepresentation(representation);
-				
-			return media;
 		}
 	}
 

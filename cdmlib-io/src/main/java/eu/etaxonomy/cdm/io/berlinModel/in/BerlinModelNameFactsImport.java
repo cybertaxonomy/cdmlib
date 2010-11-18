@@ -15,6 +15,8 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_P
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -314,28 +316,35 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 		//end png
         //pdf 
         String urlStringPdf = mediaUrlString + "pdf/" + nameFact + "." + suffixPdf; 
-        file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf); 
-        MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf); 
-        if (file.exists()){  
-                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(urlStringPdf, size)); 
-        }else{ 
-                fileExists = true; 
-                int pdfCount = 0; 
-                while (fileExists){ 
-                        pdfCount++; 
-                        urlStringPdf = mediaUrlString + "pdf/" + nameFact + "00" + pdfCount + "." + suffixPdf; 
-                        file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf); 
-                         
-                        if (file.exists()){  
-                                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(urlStringPdf, size)); 
-                        }else{ 
-                                fileExists = false; 
-                        } 
-                } 
-        }  
-        if(representationPdf.getParts().size() > 0){
-        	media.addRepresentation(representationPdf);
-        }
+        URI uriPdf;
+		try {
+			uriPdf = new URI(urlStringPdf);
+			file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf); 
+	        MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf); 
+	        if (file.exists()){  
+	                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(uriPdf, size)); 
+	        }else{ 
+	                fileExists = true; 
+	                int pdfCount = 0; 
+	                while (fileExists){ 
+	                        pdfCount++; 
+	                        urlStringPdf = mediaUrlString + "pdf/" + nameFact + "00" + pdfCount + "." + suffixPdf; 
+	                        file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf); 
+	                         
+	                        if (file.exists()){  
+	                                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(uriPdf, size)); 
+	                        }else{ 
+	                                fileExists = false; 
+	                        } 
+	                } 
+	        }
+			if(representationPdf.getParts().size() > 0){
+	        	media.addRepresentation(representationPdf);
+	        }
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			logger.error("URISyntaxException" + urlStringPdf);
+		}
         //end pdf 
 		
 		if(logger.isDebugEnabled()){
@@ -352,15 +361,23 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		URI uri;
 		try {
-			imageMetaData.readMetaData(file.toURI(), 0);
-		} catch (IOException e) {
-			logger.error("IOError reading image metadata." , e);
-		} catch (HttpException e) {
-			logger.error("HttpException reading image metadata." , e);
+			uri = new URI(imageUri);
+			try {
+				imageMetaData.readMetaData(uri, 0);
+			} catch (IOException e) {
+				logger.error("IOError reading image metadata." , e);
+			} catch (HttpException e) {
+				logger.error("HttpException reading image metadata." , e);
+			}
+			ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);
+			return image;
+		} catch (URISyntaxException e1) {
+			logger.warn("URISyntaxException: " + imageUri);
+			return null;
 		}
-		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
-		return image;
+		
 	}
 
 	

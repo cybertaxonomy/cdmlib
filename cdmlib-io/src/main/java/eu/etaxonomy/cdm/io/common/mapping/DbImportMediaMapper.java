@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -62,12 +64,26 @@ public class DbImportMediaMapper extends DbImportMultiAttributeMapperBase<Descri
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public DescriptionElementBase invoke(ResultSet rs, DescriptionElementBase element) throws SQLException {
-		String uri1 = getStringDbValue(rs, dbFirstUriAttribute);
-		String uri2 = getStringDbValue(rs, dbSecondUriAttribute);
+		String uri1String = getStringDbValue(rs, dbFirstUriAttribute);
+		String uri2String = getStringDbValue(rs, dbSecondUriAttribute);
 		Integer size = null;
 		String mimeType = null;
 		String suffix = null;
 		
+		URI uri1 = null;
+		try {
+			uri1 = new URI(uri1String);
+		} catch (URISyntaxException e) {
+			String warning = "URISyntaxException when trying to convert first uri string: " + uri1String;
+			logger.error(warning);
+		}
+		URI uri2 = null;
+		try {
+			uri2 = new URI(uri2String);
+		} catch (URISyntaxException e) {
+			String warning = "URISyntaxException when trying to convert first uri string: " + uri1String;
+			logger.error(warning);
+		}
 		Media media = Media.NewInstance(uri1, size, mimeType, suffix);
 		if (media != null){
 			MediaRepresentation secondRepresentation = MediaRepresentation.NewInstance(mimeType, suffix, uri2, size);

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -225,11 +227,13 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				Integer typeDesignationFk = rs.getInt("typeDesignationFk");
 				Integer collectionFk = rs.getInt("collectionFk");
 				String filename = rs.getString("filename");
+				
 				String figurePhrase = rs.getString("figurePhrase");
 				
 				String mimeType = null; //"image/jpg";
 				String suffix = null; //"jpg";
-				Media media = ImageFile.NewMediaInstance(null, null, filename, mimeType, suffix, null, null, null);
+				java.net.URI uri = new URI(filename);
+				Media media = ImageFile.NewMediaInstance(null, null, uri, mimeType, suffix, null, null, null);
 				if (figurePhrase != null) {
 					media.addAnnotation(Annotation.NewDefaultLanguageInstance(figurePhrase));
 				}
@@ -250,6 +254,9 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			}
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
+			return false;
+		} catch (URISyntaxException e) {
+			logger.error("URISyntaxException:" +  e);
 			return false;
 		}
 			

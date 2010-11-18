@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -214,7 +216,14 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			for (String protologue : taxonLight.getProtologues()){
 				TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
 				this.getNameDescription(taxonBase.getName()).addElement(textData);
-				textData.addMedia(Media.NewInstance(protologue, null, null, null));
+				URI uri;
+				try {
+					uri = new URI(protologue);
+					textData.addMedia(Media.NewInstance(uri, null, null, null));
+				} catch (URISyntaxException e) {
+					String warning = "URISyntaxException when trying to convert to URI: " + protologue;
+					logger.error(warning);
+				}	
 			}
 
 			//media

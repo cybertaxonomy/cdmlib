@@ -76,13 +76,10 @@ public class MediaController extends AnnotatableController<Media, IMediaService>
 		try {
 			if (mediaRep instanceof MediaRepresentation){
 				MediaRepresentation medRep = (MediaRepresentation) mediaRep;
-				String uriString = medRep.getParts().get(0).getUri();
-				result = service.getImageMetaData(new URI(uriString), 3000);
+				URI uri = medRep.getParts().get(0).getUri();
+				result = service.getImageMetaData(uri, 3000);
 				mv.addObject(result);
 			}
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

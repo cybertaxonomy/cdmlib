@@ -9,10 +9,13 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -109,7 +112,12 @@ public class TestSpecimen {
 		
 		
 		Media media = Media.NewInstance();
-		String uri = "http://131.130.131.9/database/img/imgBrowser.php?ID=50599";
+		URI uri = null;
+		try {
+			uri = new URI("http://131.130.131.9/database/img/imgBrowser.php?ID=50599");
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 		String mimeType = null;
 		Integer size = null;
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(mimeType, "jpg");
