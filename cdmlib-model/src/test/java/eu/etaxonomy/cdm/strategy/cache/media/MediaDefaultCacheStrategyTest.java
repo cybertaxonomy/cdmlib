@@ -76,9 +76,14 @@ public class MediaDefaultCacheStrategyTest {
 			e.printStackTrace();
 			Assert.fail("URI syntax exception");
 		}
-		
-		
-		
+	}
+	
+	@Test 
+	public void testHandleEmptyUri(){
+		Media media = Media.NewInstance();
+		MediaRepresentation representation;
+		representation = MediaRepresentation.NewInstance(null, null, null, 0);
+		media.addRepresentation(representation);
 	}
 	
 }

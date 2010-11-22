@@ -115,12 +115,12 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	
 	/**
 	 * Factory method which creates a new media representation and adds a media representation part
-	 * for the <code>uri</code> and the given size.
+	 * for the {@link URI uri} and the given size.
 	 * Returns <code>null</code> if uri is empty
 	 * @return
 	 */
 	public static MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size){
-		if (CdmUtils.isEmpty(uri.toString())){
+		if (uri == null || CdmUtils.isEmpty(uri.toString())){
 			return null;
 		}
 		MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, size);

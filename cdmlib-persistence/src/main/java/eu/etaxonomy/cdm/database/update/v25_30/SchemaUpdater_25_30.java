@@ -139,7 +139,7 @@ public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 		stepList.add(colRemover);
 
 		//Remove featureNode_representation
-		stepName = "Remove FeatureNode_representation MN";
+		stepName = "Remove FeatureNode_Representation MN";
 		TableDroper tableDropper = TableDroper.NewInstance(stepName, "FeatureNode_Representation", INCLUDE_AUDIT);
 		stepList.add(tableDropper);
 		
