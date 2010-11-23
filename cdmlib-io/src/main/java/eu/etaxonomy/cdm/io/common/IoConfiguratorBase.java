@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.NullProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 
@@ -187,6 +188,6 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	}
 	
 	public IProgressMonitor getProgressMonitor(){
-		return this.progressMonitor;
+		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 	}
 }
