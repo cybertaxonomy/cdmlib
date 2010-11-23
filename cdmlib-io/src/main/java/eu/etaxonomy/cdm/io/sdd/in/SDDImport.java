@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -80,10 +80,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author h.fradin
@@ -161,8 +161,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		
 		TransactionStatus ts = startTransaction();
 		SDDImportConfigurator sddConfig = state.getConfig();
-
+		IProgressMonitor progressMonitor = sddConfig.getProgressMonitor();
+				
 		logger.info("start Datasets ...");
+		
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
 		Element root = sddConfig.getSourceRoot();
 		Namespace sddNamespace = sddConfig.getSddNamespace();
@@ -175,12 +177,15 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 		//for each Dataset
 		logger.info("start Dataset ...");
+		progressMonitor.beginTask("Importing SDD data", elDatasets.size());
 		for (Element elDataset : elDatasets){
 			success &= importDataset(elDataset, sddNamespace, state);			
-			if ((++i % modCount) == 0){ logger.info("dataset(s) handled: " + i);}
-			logger.info(i + " dataset(s) handled");
+//			if ((++i % modCount) == 0){ logger.info("dataset(s) handled: " + i);}
+//			logger.info(i + " dataset(s) handled");
+			progressMonitor.worked(1);
 		}
 		commitTransaction(ts);
+		progressMonitor.done();
 		logger.info("End of transaction");
 		return success;
 	}
