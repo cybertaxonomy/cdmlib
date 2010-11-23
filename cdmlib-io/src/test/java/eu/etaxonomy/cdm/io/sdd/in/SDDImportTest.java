@@ -12,21 +12,14 @@ package eu.etaxonomy.cdm.io.sdd.in;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.sdd.in.SDDImport;
-import eu.etaxonomy.cdm.io.sdd.in.SDDImportConfigurator;
-import eu.etaxonomy.cdm.io.sdd.in.SDDImportState;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -36,7 +29,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 
 
-@Ignore
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
@@ -49,7 +41,7 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	
 	@Before
 	public void setUp() throws URISyntaxException {
-		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
+		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.xml");
 		configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
 	}
 	
