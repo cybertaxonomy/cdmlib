@@ -81,7 +81,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 @Configurable
-public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements Iterable<Taxon>, IRelated<RelationshipBase>{
+public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements IRelated<RelationshipBase>{
 	private static final long serialVersionUID = -584946869762749006L;
 	private static final Logger logger = Logger.getLogger(Taxon.class);
 
@@ -897,17 +897,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		return computeMisapliedNameRelations() > 0;
 	}
 	
-	
-	/**
-	 * See {@link #isMisapplication()}.
-	 * @deprecated use {@link #isMisapplication()} instead 
-	 */
-	@Deprecated
-	@Transient
-	public boolean isMisappliedName(){
-		return isMisapplication();
-	}
-	
 	/**
 	 * Counts the number of misaplied names relationships where this taxon represents the
 	 * misaplied name for another taxon.
@@ -1389,35 +1378,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		}
 	}
 	
-	/** 
-	 * Returns an {@link java.lang.Iterable#iterator() iterator} over the set of taxa which
-	 * are {@link #getTaxonomicChildren() taxonomic children} of <i>this</i> taxon.
-	 * 
-	 * @see #getTaxonomicChildren()
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Deprecated
-	public Iterator<Taxon> iterator() {
-		return new TaxonIterator(this.getTaxonomicChildren());
-	}
-	/**
-	 * inner iterator class for the iterable interface
-	 * @author m.doering
-	 *
-	 */
-	@Deprecated
-	private class TaxonIterator implements Iterator<Taxon> {
-		   private Taxon[] items;
-		   private int i= 0;
-		   public TaxonIterator(Set<Taxon> items) {
-		      // check for null being passed in etc.
-		      this.items= items.toArray(new Taxon[0]);
-		   }
-		   // interface implementation
-		   public boolean hasNext() { return i < items.length; }
-		   public Taxon next() { return items[i++]; }
-		   public void remove() { throw new UnsupportedOperationException(); }
-	}
 	
 	/**
 	 * Retrieves the ordered list (depending on the date of publication) of

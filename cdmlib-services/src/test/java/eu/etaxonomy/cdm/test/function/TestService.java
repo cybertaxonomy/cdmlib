@@ -112,7 +112,7 @@ public class TestService {
 		List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
 		for (Taxon rt: taxa){
 			logger.info("Root taxon: "+ rt.toString());
-			for (Taxon child: rt){
+			for (Taxon child: rt.getTaxonomicChildren()){
 				logger.info("Child: "+ child.toString());
 				logger.info("  Child.higherTaxon: "+ child.getTaxonomicParent().toString());
 				for (Synonym synonym: child.getSynonyms()){

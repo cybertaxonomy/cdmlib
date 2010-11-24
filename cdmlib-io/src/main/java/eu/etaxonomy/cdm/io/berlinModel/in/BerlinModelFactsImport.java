@@ -286,10 +286,10 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 						if (isImage){
 							textData.addMedia(media);
-							textData.setType(Feature.IMAGE());
+							textData.setFeature(Feature.IMAGE());
 						}else{
 							textData.putText(fact, Language.DEFAULT());
-							textData.setType(feature);
+							textData.setFeature(feature);
 						}
 						
 						//reference

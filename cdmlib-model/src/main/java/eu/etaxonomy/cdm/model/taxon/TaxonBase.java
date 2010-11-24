@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -277,24 +276,5 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	public void setUseNameCache(boolean useNameCache) {
 		this.useNameCache = useNameCache;
 	}
-
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> (abstract) taxon
-	 * might be saved (true) or not (false). An (abstract) taxon is meaningful
-	 * as long as both its {@link #getName() taxon name} and its {@link #getSec() reference}
-	 * exist (are not "null").
-	 * FIXME This should be part of a more generic validation architecture
-	 */
-	@Deprecated
-	@Transient
-	public boolean isSaveable(){
-		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){
-			return false;
-		}else{
-			this.toString();
-			return true;
-		}
-	}
-	
 
 }

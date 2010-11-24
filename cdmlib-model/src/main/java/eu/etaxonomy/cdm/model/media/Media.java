@@ -287,12 +287,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	}
 
 	//************* Descriptions
-	
-	@Deprecated // will be removed in next release; use getAllDescriptions instead
-	public Map<Language,LanguageString> getDescription(){
-		return getAllDescriptions();
-	}
-	
+
 	public Map<Language,LanguageString> getAllDescriptions(){
 		if(this.description == null) {
 			this.description = new HashMap<Language,LanguageString>();

@@ -15,8 +15,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import com.sun.xml.internal.fastinfoset.vocab.Vocabulary;
-
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SingleTermUpdater;

@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -165,18 +164,7 @@ public class TextData extends DescriptionElementBase {
     public LanguageString getLanguageText(Language language){
     	return multilanguageText.get(language);
     }
-    
-    /**
-     * @deprecated Method name is misleading. Use {@link #getLanguageText(Language)} instead.
-     */
-    @Deprecated
-    public LanguageString getMultilanguageText(Language language){
-    	return multilanguageText.get(language);
-    }
-    public void setMultilanguageText(Map<Language,LanguageString> multilanguageText) {
-    	this.multilanguageText = multilanguageText;
-    }
-
+ 
 	/** 
 	 * Returns the text string in the given {@link Language language} with the content
 	 * of <i>this</i> text data.

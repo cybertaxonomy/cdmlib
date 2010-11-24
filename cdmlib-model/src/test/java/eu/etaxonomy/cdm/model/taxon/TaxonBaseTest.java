@@ -9,11 +9,13 @@
  
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +25,6 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -136,18 +137,6 @@ public class TaxonBaseTest extends EntityTestBase {
 		freeT.setSec(sec);
 		assertNotNull(freeT.getSec());
 		assertSame(freeT.getSec(), sec);
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#isSaveable()}.
-	 */
-	@Test
-	public final void testIsSaveable() {
-		assertFalse(freeT.isSaveable());
-		assertTrue(taxon1.isSaveable());
-		assertFalse(freeT.isSaveable());
-		freeT.setSec(sec);
-		assertFalse(freeT.isSaveable());
 	}
 
 }
