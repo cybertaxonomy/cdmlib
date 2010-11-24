@@ -78,6 +78,12 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 */
 	@PostConstruct
 	@Override
+	public void initialize() {
+		super.initialize();
+	}
+	
+
+	@Override
 	public void doInitialize(){
 		logger.info("PersistentTermInitializer initialize start ...");
 		if (omit){

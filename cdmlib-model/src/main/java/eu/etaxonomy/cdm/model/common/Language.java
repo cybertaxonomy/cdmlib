@@ -611,6 +611,8 @@ public class Language extends DefinedTermBase<Language> {
 	@Override
 	public void resetTerms(){
 		termMap = null;
+		defaultLanguage = null;
+		csvLanguage = null;
 	}
 
 	
@@ -1115,7 +1117,6 @@ public class Language extends DefinedTermBase<Language> {
 	public static final Language ZUNI(){/*@*/ return getTermByUuid(uuidZuni);/*@*/}
 	public static final Language NO_LINGUISTIC_CONTENT(){/*@*/ return getTermByUuid(uuidNoLinguisticContent);/*@*/}
 	public static final Language ZAZA_DIMILI_DIMLI_KIRDKI_KIRMANJKI_ZAZAKI(){/*@*/ return getTermByUuid(uuidZaza_Dimili_Dimli_Kirdki_Kirmanjki_Zazaki);/*@*/}
-	
 	
 	private static Language defaultLanguage = null;  //is set in setDefaultTerms()
 	private static Language csvLanguage = null;  //is set in setDefaultTerms()
