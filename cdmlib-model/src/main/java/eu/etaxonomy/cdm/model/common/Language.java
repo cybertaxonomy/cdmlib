@@ -28,8 +28,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-
 import au.com.bytecode.opencsv.CSVWriter;
 
 /**
@@ -535,8 +533,12 @@ public class Language extends DefinedTermBase<Language> {
 	private static final UUID uuidZulu = UUID.fromString("1f8d4fcb-e888-4ac6-8113-63fe7ea77180");
 	private static final UUID uuidZuni = UUID.fromString("d8ce3c47-243b-4a09-835b-01918829a2e7");
 	private static final UUID uuidNoLinguisticContent = UUID.fromString("fb85de23-0e3c-4042-b56b-71ec3c7566cf");
-	private static final UUID uuidZaza_Dimili_Dimli_Kirdki_Kirmanjki_Zazaki = UUID.fromString("e4bf2ec8-4c1a-4ece-9df1-4890a7f18457");
+	public static final UUID uuidZaza_Dimili_Dimli_Kirdki_Kirmanjki_Zazaki = UUID.fromString("e4bf2ec8-4c1a-4ece-9df1-4890a7f18457");
 
+	public static final UUID uuidUnknownLanguage = UUID.fromString("3d05ab93-2d92-400d-a3dd-fc8dcc5f8203");
+	public static final UUID uuidOriginalLanguage = UUID.fromString("42b893f3-16dd-417d-aa92-96cf6c695ca1");
+	
+	
 	protected static Map<UUID, Language> termMap = null;		
 
 	public static Language NewInstance(){
@@ -1117,6 +1119,8 @@ public class Language extends DefinedTermBase<Language> {
 	public static final Language ZUNI(){/*@*/ return getTermByUuid(uuidZuni);/*@*/}
 	public static final Language NO_LINGUISTIC_CONTENT(){/*@*/ return getTermByUuid(uuidNoLinguisticContent);/*@*/}
 	public static final Language ZAZA_DIMILI_DIMLI_KIRDKI_KIRMANJKI_ZAZAKI(){/*@*/ return getTermByUuid(uuidZaza_Dimili_Dimli_Kirdki_Kirmanjki_Zazaki);/*@*/}
+	public static final Language UNKNOWN_LANGUAGE() {/*@*/ return getTermByUuid(uuidUnknownLanguage);/*@*/}
+	public static final Language ORIGINAL_LANGUAGE() {/*@*/ return getTermByUuid(uuidOriginalLanguage);/*@*/}
 	
 	private static Language defaultLanguage = null;  //is set in setDefaultTerms()
 	private static Language csvLanguage = null;  //is set in setDefaultTerms()
@@ -1177,8 +1181,8 @@ public class Language extends DefinedTermBase<Language> {
 			    DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish));
 		    }
 		
-		    newInstance.setIso639_1(csvLine.get(5).trim());
 		    newInstance.setIso639_2(csvLine.get(4).trim());
+		    newInstance.setIso639_1(csvLine.get(5).trim());
 		    //TODO could replace with generic validation
 		    if(iso639_1 != null && iso639_1.length() > 2){
 			    logger.warn("Iso639-1: "+ newInstance.getIso639_1() +" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
@@ -1201,8 +1205,8 @@ public class Language extends DefinedTermBase<Language> {
 		line[1] = language.getUri();
 		line[2] = language.getLabel(Language.CSV_LANGUAGE());
 		line[3] = language.getDescription(Language.CSV_LANGUAGE());
-		line[4] = language.getIso639_1();
-		line[5] = language.getIso639_2();
+		line[4] = language.getIso639_2();
+		line[5] = language.getIso639_1();
 		writer.writeNext(line);
 	}
 
@@ -1244,7 +1248,9 @@ public class Language extends DefinedTermBase<Language> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Language> termVocabulary) {
-		termMap = new HashMap<UUID, Language>();
+		if (termMap == null){  //there are 2 language vocabularies now
+			termMap = new HashMap<UUID, Language>();
+		}
 		for (Language term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), (Language)term);
 		}

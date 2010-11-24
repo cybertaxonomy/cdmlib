@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * @date 10.09.2010
  *
  */
-public class SingleTermUpdater extends SchemaUpdaterStepBase {
+public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	

@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public enum VocabularyEnum {
 
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
+	UndefinedLanguage("7fd1e6d0-2e76-4dfa-bad9-2673dd042c28", Language.class),
 	Continent("e72cbcb6-58f8-4201-9774-15d0c6abc128", Continent.class),
 	WaterbodyOrCountry("006b1870-7347-4624-990f-e5ed78484a1a", WaterbodyOrCountry.class),
 	Rank("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b", Rank.class),

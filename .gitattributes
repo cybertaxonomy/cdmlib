@@ -814,6 +814,7 @@ cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TdwgArea.csv -text
 cdmlib-model/src/main/resources/terms/TextFormat.csv -text
+cdmlib-model/src/main/resources/terms/UndefinedLanguage.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
 cdmlib-model/src/main/resources/update/update_r2.1.2.2_r2.4.1.2.mysql.sql -text
 cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -text
@@ -831,6 +832,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializerT
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefinedTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/ExtensionTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/IdentifiableEntityTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/LanguageTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/MarkerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/MarkerTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermBaseTest.java -text
@@ -935,6 +937,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/DatabaseTypeNo
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdaterStep.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdaterStep.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/IUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MapTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MnTableCreator.java -text
@@ -947,6 +950,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableDroper.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableNameChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UpdaterBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/VocabularyCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/SchemaUpdater_24_25.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/SortIndexUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/TermUpdater_24_25.java -text

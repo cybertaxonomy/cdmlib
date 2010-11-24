@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
+import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v25_30.TermUpdater_25_30;
@@ -53,8 +54,8 @@ public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
 	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
 	 */
 	@Override
-	protected List<SingleTermUpdater> getUpdaterList() {
-		List<SingleTermUpdater> list = new ArrayList<SingleTermUpdater>();
+	protected List<ITermUpdaterStep> getUpdaterList() {
+		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
 		
 		// comb. illeg.
 		UUID uuidTerm = UUID.fromString("d901d455-4e01-45cb-b653-01a840b97eed");

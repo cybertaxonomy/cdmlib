@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
  * @date 10.09.2010
  *
  */
-public abstract class TermUpdaterBase extends UpdaterBase<SingleTermUpdater, ITermUpdater> implements ITermUpdater {
+public abstract class TermUpdaterBase extends UpdaterBase<ITermUpdaterStep, ITermUpdater> implements ITermUpdater {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 	protected static final UUID uuidFeatureVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
@@ -47,7 +47,7 @@ public abstract class TermUpdaterBase extends UpdaterBase<SingleTermUpdater, ITe
 		}
 	}
 	
-	protected abstract List<SingleTermUpdater> getUpdaterList();
+	protected abstract List<ITermUpdaterStep> getUpdaterList();
 
 	
 	@Override
