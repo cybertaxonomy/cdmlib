@@ -67,7 +67,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 				Hibernate.initialize(((IThesis)reference).getSchool());
 			} else if(reference.getType().equals(ReferenceType.Report)) {
 				Hibernate.initialize(((IReport)reference).getInstitution());
-			} else if(reference.getType().equals(ReferenceType.PrintedUnitBase)) {
+			} else if(reference.getType().isPrintedUnit()) {
 				Hibernate.initialize(((IPrintedUnitBase)reference).getInSeries());
 			}
 			fullTextSession.index(reference);

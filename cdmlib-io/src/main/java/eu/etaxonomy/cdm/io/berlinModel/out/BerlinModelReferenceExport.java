@@ -190,7 +190,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<Reference>
 			return (Reference)((IBookSection)ref).getInBook();
 		}else if (ref.getType().equals(ReferenceType.InProceedings)){
 			return (Reference) ((IInProceedings)ref).getInProceedings();
-		}else if (ref.getType().equals(ReferenceType.PrintedUnitBase)){
+		}else if (ref.getType().isPrintedUnit()){
 			return (Reference)((IPrintedUnitBase)ref).getInSeries();
 		}else{
 			return null;
