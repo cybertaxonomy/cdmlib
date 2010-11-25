@@ -41,7 +41,7 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	
 	@Before
 	public void setUp() throws URISyntaxException {
-		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.xml");
+		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
 		configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
 	}
 	
