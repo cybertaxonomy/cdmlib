@@ -44,11 +44,9 @@
 		    <entry key="eu.etaxonomy.cdm.model.reference.Reference">
 	          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
 	        </entry>
- 
 	        <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor"/>
-          </entry>
-
+            </entry>
 		  </map>
 		</property>
 		<property name="jsonPropertyFilter">
@@ -116,6 +114,9 @@
 				<entry key="java.util.Map">
 				    <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
 				</entry>
+			    <entry key="java.net.URI">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+                </entry>     
 			</map>
 		</property>
 		<property name="ignoreDefaultExcludes" value="true" />
@@ -186,6 +187,9 @@
                 <entry key="java.util.Map">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
                 </entry>
+                <entry key="java.net.URI">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+                </entry>    
 			</map>
 		</property>
 		<property name="ignoreDefaultExcludes" value="true" />
@@ -318,6 +322,9 @@
                 <entry key="java.util.Map">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
                 </entry>
+                <entry key="java.net.URI">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+                </entry>    
 			</map>
 		</property>
 		<property name="ignoreDefaultExcludes" value="true" />

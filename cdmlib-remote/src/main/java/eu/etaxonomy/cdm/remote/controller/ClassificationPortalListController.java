@@ -26,27 +26,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * The ClassificationController class is a Spring MVC Controller.
- * <p>
- * The syntax of the mapped service URIs contains the the {datasource-name} path element.
- * The available {datasource-name}s are defined in a configuration file which
- * is loaded by the {@link UpdatableRoutingDataSource}. If the
- * UpdatableRoutingDataSource is not being used in the actual application
- * context any arbitrary {datasource-name} may be used.
- * <p>
  * @author a.kohlbecker
  * @date 20.03.2009
  */
