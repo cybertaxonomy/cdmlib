@@ -75,7 +75,6 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	@Test
 	@DataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
 	@ExpectedDataSet
-	@Ignore
 	public void testPersistMultiLanguageString(){
 //		int count = descriptionElementDao.count(TextData.class);
 //		Assert.assertTrue("There must exist TextData", count > 0);
@@ -93,7 +92,8 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 			boolean equal = lang.equals(eng);
 			System.out.println(equal);
 		}
-		
+		//An Niels: verstehst du das ?
+		boolean contains = multiLangText.keySet().contains(eng);
 		LanguageString englishText = multiLangText.get(eng);
 		Assert.assertNotNull("English text should exist", englishText);
 		Assert.assertEquals("The English text should be correct", "Praesent vitae turpis vitae sapien sodales sagittis.", englishText.getText());
