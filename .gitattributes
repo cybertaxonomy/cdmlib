@@ -655,7 +655,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IPrintSeries.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IPrintedUnitBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IProceedings.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IPublicationBase.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IReferenceBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IReport.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ISectionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IThesis.java -text

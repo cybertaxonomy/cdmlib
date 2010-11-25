@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
  * <li> Reference according to the ABCD schema
  * </ul>
  */
-public interface IReferenceBase extends IIdentifiableEntity, IParsable, IMergable, IMatchable{
+public interface IReference extends IIdentifiableEntity, IParsable, IMergable, IMatchable{
 
 	/**
 	 * Returns the reference type

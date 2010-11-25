@@ -17,4 +17,18 @@ package eu.etaxonomy.cdm.model.reference;
  */ 
  public interface IWebPage extends IPublicationBase {
 
+	 
+		/**
+		 * Returns this websites inReference (e.g. the underlying database).
+		 * @return the inReference
+		 */
+		public Reference getInReference();
+		
+		
+		/**
+		 * Sets this websites inreference (e.g. the underlying database) 
+		 * @param inReference The inReference.
+		 */
+		public void setInReference(Reference inReference);
+ 
 }
