@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
+
 /**
  * @author a.mueller
  * @created 08.06.2009
