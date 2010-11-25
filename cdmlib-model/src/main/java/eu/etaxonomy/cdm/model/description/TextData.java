@@ -155,6 +155,17 @@ public class TextData extends DescriptionElementBase {
 	}
     
     /**
+     * Sets the multilanguage text. 
+	 * The different {@link LanguageString language strings} (texts) contained in the
+	 * multilanguage text should all have the same meaning.
+     * 
+     * @param multilanguageText
+     */
+    public void setMultilanguageText(Map<Language,LanguageString> multilanguageText) {
+    	this.multilanguageText = multilanguageText;
+    }
+    
+    /**
      * Returns the multilanguage text with the content of <i>this</i> text data for
      * a specific language.
      * 
