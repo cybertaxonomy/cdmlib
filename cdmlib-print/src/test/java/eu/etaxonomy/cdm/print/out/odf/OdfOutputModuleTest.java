@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher.out.odf;
+package eu.etaxonomy.cdm.print.out.odf;
 
 import java.io.File;
 import java.io.InputStream;

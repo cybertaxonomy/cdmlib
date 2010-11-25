@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.printpublisher;
+package eu.etaxonomy.cdm.print;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.print.Transformator;
 import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
-import eu.etaxonomy.printpublisher.out.odf.OdfOutputModuleTest;
+import eu.etaxonomy.cdm.print.out.odf.OdfOutputModuleTest;
 
 /**
  * @author n.hoffmann
