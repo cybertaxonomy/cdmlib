@@ -211,7 +211,7 @@ public class WorkingSet extends AnnotatableEntity {
 	public FeatureTree getDescriptiveSystem() {
 		return descriptiveSystem;
 	}
-	protected void setDescriptiveSystem(FeatureTree descriptiveSystem) {
+	public void setDescriptiveSystem(FeatureTree descriptiveSystem) {
 		this.descriptiveSystem = descriptiveSystem;
 	}
 	
