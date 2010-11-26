@@ -94,6 +94,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		}
 		//An Niels: verstehst du das ?
 		boolean contains = multiLangText.keySet().contains(eng);
+		String et = doubleLanguageTextData.getText(eng);
 		LanguageString englishText = multiLangText.get(eng);
 		Assert.assertNotNull("English text should exist", englishText);
 		Assert.assertEquals("The English text should be correct", "Praesent vitae turpis vitae sapien sodales sagittis.", englishText.getText());
