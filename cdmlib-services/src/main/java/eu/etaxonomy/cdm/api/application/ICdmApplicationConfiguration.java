@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -122,6 +123,12 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public IService<CdmBase> getMainService();
+	
+	
+	/**
+	 * @return
+	 */
+	public IWorkingSetService getWorkingSetService();
 	
 	/**
 	 * @return

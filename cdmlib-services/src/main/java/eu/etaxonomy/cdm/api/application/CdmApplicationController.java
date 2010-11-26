@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.common.NullProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -401,6 +402,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	
 	public final IService<CdmBase> getMainService(){
 		return configuration.getMainService();
+	}
+	
+	public final IWorkingSetService getWorkingSetService(){
+		return configuration.getWorkingSetService();
 	}
 	
 	public final ConversationHolder NewConversation(){

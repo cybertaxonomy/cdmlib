@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -122,6 +123,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 //	@Autowired
 	//@Qualifier("mainService")
 	private IService<CdmBase> mainService;
+
+	@Autowired
+	private IWorkingSetService workingSetService;
 	
 	/**
 	 * 
@@ -302,5 +306,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 */
 	public IPolytomousKeyService getPolytomousKeyService(){
 		return polytomousKeyService;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getWorkingSetService()
+	 */
+	@Override
+	public IWorkingSetService getWorkingSetService() {
+		return workingSetService;
 	}
 }
