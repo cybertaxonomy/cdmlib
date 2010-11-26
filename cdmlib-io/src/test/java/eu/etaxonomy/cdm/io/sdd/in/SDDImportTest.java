@@ -15,6 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,7 +35,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
-	SDDImport sddDescriptionIo;
+	SDDImport sddImport;
 	
 	@SpringBeanByType
 	INameService nameService;
@@ -43,18 +45,19 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	@Before
 	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
+		Assert.assertNotNull(url);
 		configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
 	}
 	
 	@Test
 	public void testInit() {
-		assertNotNull("sddDescriptionIo should not be null",sddDescriptionIo);
+		assertNotNull("sddImport should not be null", sddImport);
 		assertNotNull("nameService should not be null", nameService);
 	}
 	
 	@Test
 	public void testDoInvoke() {
-		sddDescriptionIo.doInvoke(new SDDImportState(configurator));
+		sddImport.doInvoke(new SDDImportState(configurator));
 		this.setComplete();
 		this.endTransaction();
 		assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
