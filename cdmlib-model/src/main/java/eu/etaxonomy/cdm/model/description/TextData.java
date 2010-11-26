@@ -173,6 +173,13 @@ public class TextData extends DescriptionElementBase {
      * @return
      */
     public LanguageString getLanguageText(Language language){
+    	//work around for the strange problem that contains does not work correctly
+    	//see DescriptionElementDaoHibernateTest
+    	for (Map.Entry<Language, LanguageString> entry : multilanguageText.entrySet()){
+    		if (entry.getKey().equals(language)){
+    			return entry.getValue();
+    		}
+    	}
     	return multilanguageText.get(language);
     }
  
@@ -184,7 +191,7 @@ public class TextData extends DescriptionElementBase {
 	 * @see				#getMultilanguageText(Language)
 	 */ 
 	public String getText(Language language) {
-		LanguageString languageString = multilanguageText.get(language);
+		LanguageString languageString = getLanguageText(language);
 		if (languageString == null){
 			return null;
 		}else{
