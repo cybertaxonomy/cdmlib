@@ -69,13 +69,13 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		logger.warn("Not yet implemented");
 	}
 	
+	
 	/**
 	 * See #2114
 	 */
 	@Test
-	@DataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
-	@ExpectedDataSet
-	public void testPersistMultiLanguageString(){
+	@DataSet // (value="DescriptionElementDaoHibernateImplTest.xml")
+	public void testRetrieveMultiLanguageString(){
 //		int count = descriptionElementDao.count(TextData.class);
 //		Assert.assertTrue("There must exist TextData", count > 0);
 		
@@ -83,29 +83,36 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		TextData doubleLanguageTextData = (TextData)descriptionElementDao.findByUuid(uuidDobuleTextData);
 		Map<Language, LanguageString> multiLangText = doubleLanguageTextData.getMultilanguageText();
 		Assert.assertEquals("There should be exactly 2 languageText in the multilanguageText", 2, multiLangText.size());
-//		Assert.assertTrue("The language should be English", multiLangText.containsKey(Language.ENGLISH()));
+		Assert.assertTrue("The language should be English", multiLangText.containsKey(Language.ENGLISH()));
 		Language eng = Language.ENGLISH();
-		System.out.println("English: " + eng.getLabel() + "("+ eng.getId() + ", " + eng.getUuid() + ")");
-
-		for (Language lang: multiLangText.keySet()){
-			System.out.println(lang.getLabel() + "("+ lang.getId() + ", " + lang.getUuid() + ")");
-			boolean equal = lang.equals(eng);
-			System.out.println(equal);
-		}
-		//An Niels: verstehst du das ?
-		boolean contains = multiLangText.keySet().contains(eng);
-		String et = doubleLanguageTextData.getText(eng);
+//		System.out.println("English: " + eng.getLabel() + "("+ eng.getId() + ", " + eng.getUuid() + ")");
+//
+//		for (Language lang: multiLangText.keySet()){
+//			System.out.println(lang.getLabel() + "("+ lang.getId() + ", " + lang.getUuid() + ")");
+//			boolean equal = lang.equals(eng);
+//			System.out.println(equal);
+//		}
+//		boolean contains = multiLangText.keySet().contains(eng);
+//		String et = doubleLanguageTextData.getText(eng);
 		LanguageString englishText = multiLangText.get(eng);
 		Assert.assertNotNull("English text should exist", englishText);
 		Assert.assertEquals("The English text should be correct", "Praesent vitae turpis vitae sapien sodales sagittis.", englishText.getText());
 		LanguageString czechText = multiLangText.get(Language.CZECH());
 		Assert.assertNotNull("Czech", czechText);
 		Assert.assertEquals("The Czech text should be correct", "A Czech translation for Praesent ...", czechText.getText());
-		
-		
+	}
+	
+	/**
+	 * See #2114
+	 */
+	@Test
+	@DataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
+	@ExpectedDataSet
+	public void testPersistMultiLanguageString(){
+	
 		//test write
 		TextData singleLanguageTextData = (TextData)descriptionElementDao.findByUuid(uuidSingleTextData);
-		multiLangText = singleLanguageTextData.getMultilanguageText();
+		Map<Language, LanguageString> multiLangText = singleLanguageTextData.getMultilanguageText();
 		Assert.assertEquals("There should be exactly 1 languageText in the multilanguageText", 1, multiLangText.size());
 		Assert.assertTrue("The language should be English", multiLangText.containsKey(Language.ENGLISH()));
 		singleLanguageTextData.putText("Ein test auf deutsch", Language.GERMAN());
@@ -118,12 +125,11 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		
 		descriptionElementDao.saveOrUpdate(singleLanguageTextData);
 		
-		
-		
+			
 		setComplete();
 		endTransaction();
 		try {
-			printDataSet(System.out, new String[]{"LanguageString", "DescriptionElementBase", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING", "DEFINEDTERMBASE"});
+			printDataSet(System.out, new String[]{"LanguageString", "DescriptionElementBase", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING"});
 		} catch(Exception e) { 
 			logger.warn(e);
 		} 
