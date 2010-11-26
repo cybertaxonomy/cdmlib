@@ -398,6 +398,158 @@
         primary key (CDM_VIEW_id, superviews_id),
         unique (superviews_id)
     );
+    
+    
+    create table Classification (
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        microreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        name_id integer,
+        reference_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+
+    create table Classification_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        microreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        name_id integer,
+        reference_id integer,
+        primary key (id, REV)
+    );
+
+    create table Classification_Annotation (
+        Classification_id integer not null,
+        annotations_id integer not null,
+        primary key (Classification_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Classification_Annotation_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, annotations_id)
+    );
+
+    create table Classification_Credit (
+        Classification_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        primary key (Classification_id, sortIndex),
+        unique (credits_id)
+    );
+
+    create table Classification_Credit_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, credits_id, sortIndex)
+    );
+
+    create table Classification_Extension (
+        Classification_id integer not null,
+        extensions_id integer not null,
+        primary key (Classification_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table Classification_Extension_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, extensions_id)
+    );
+
+    create table Classification_Marker (
+        Classification_id integer not null,
+        markers_id integer not null,
+        primary key (Classification_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Classification_Marker_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, markers_id)
+    );
+
+    create table Classification_OriginalSourceBase (
+        Classification_id integer not null,
+        sources_id integer not null,
+        primary key (Classification_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table Classification_OriginalSourceBase_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, sources_id)
+    );
+
+    create table Classification_Rights (
+        Classification_id integer not null,
+        rights_id integer not null,
+        primary key (Classification_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table Classification_Rights_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, rights_id)
+    );
+
+    create table Classification_TaxonNode (
+        Classification_id integer not null,
+        rootnodes_id integer not null,
+        primary key (Classification_id, rootnodes_id),
+        unique (rootnodes_id)
+    );
+
+    create table Classification_TaxonNode_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        rootnodes_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, rootnodes_id)
+    );
+
 
     create table Collection (
         id integer not null,
@@ -4478,156 +4630,6 @@
         markers_id integer not null,
         revtype tinyint,
         primary key (REV, TaxonRelationship_id, markers_id)
-    );
-
-    create table Classification (
-        id integer not null,
-        created timestamp,
-        uuid varchar(36),
-        updated timestamp,
-        lsid_authority varchar(255),
-        lsid_lsid varchar(255),
-        lsid_namespace varchar(255),
-        lsid_object varchar(255),
-        lsid_revision varchar(255),
-        protectedtitlecache bit not null,
-        titleCache varchar(255),
-        microreference varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        name_id integer,
-        reference_id integer,
-        primary key (id),
-        unique (uuid)
-    );
-
-    create table Classification_AUD (
-        id integer not null,
-        REV integer not null,
-        revtype tinyint,
-        created timestamp,
-        uuid varchar(36),
-        updated timestamp,
-        lsid_authority varchar(255),
-        lsid_lsid varchar(255),
-        lsid_namespace varchar(255),
-        lsid_object varchar(255),
-        lsid_revision varchar(255),
-        protectedtitlecache bit,
-        titleCache varchar(255),
-        microreference varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        name_id integer,
-        reference_id integer,
-        primary key (id, REV)
-    );
-
-    create table Classification_Annotation (
-        Classification_id integer not null,
-        annotations_id integer not null,
-        primary key (Classification_id, annotations_id),
-        unique (annotations_id)
-    );
-
-    create table Classification_Annotation_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        annotations_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, annotations_id)
-    );
-
-    create table Classification_Credit (
-        Classification_id integer not null,
-        credits_id integer not null,
-        sortIndex integer not null,
-        primary key (Classification_id, sortIndex),
-        unique (credits_id)
-    );
-
-    create table Classification_Credit_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        credits_id integer not null,
-        sortIndex integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, credits_id, sortIndex)
-    );
-
-    create table Classification_Extension (
-        Classification_id integer not null,
-        extensions_id integer not null,
-        primary key (Classification_id, extensions_id),
-        unique (extensions_id)
-    );
-
-    create table Classification_Extension_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        extensions_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, extensions_id)
-    );
-
-    create table Classification_Marker (
-        Classification_id integer not null,
-        markers_id integer not null,
-        primary key (Classification_id, markers_id),
-        unique (markers_id)
-    );
-
-    create table Classification_Marker_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        markers_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, markers_id)
-    );
-
-    create table Classification_OriginalSourceBase (
-        Classification_id integer not null,
-        sources_id integer not null,
-        primary key (Classification_id, sources_id),
-        unique (sources_id)
-    );
-
-    create table Classification_OriginalSourceBase_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        sources_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, sources_id)
-    );
-
-    create table Classification_Rights (
-        Classification_id integer not null,
-        rights_id integer not null,
-        primary key (Classification_id, rights_id),
-        unique (rights_id)
-    );
-
-    create table Classification_Rights_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        rights_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, rights_id)
-    );
-
-    create table Classification_TaxonNode (
-        Classification_id integer not null,
-        rootnodes_id integer not null,
-        primary key (Classification_id, rootnodes_id),
-        unique (rootnodes_id)
-    );
-
-    create table Classification_TaxonNode_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        rootnodes_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, rootnodes_id)
     );
 
     create table TermVocabulary (
