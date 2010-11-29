@@ -302,7 +302,16 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	public int hashCode() {
 		   int hashCode = 7;
 		   if(this.getUuid() != null) {
-		       return 29 * hashCode + this.getUuid().hashCode();
+			   //this unfortunately leads to errors when loading maps via hibernate
+			   //as hibernate computes hash values for CdmBase objects used as key at 
+			   // a time when the uuid is not yet loaded from the database. Therefore 
+			   //the hash values later change and give wrong results when retrieving
+			   //data from the map (map.get(key) returns null, though there is an entry
+			   //for key in the map.
+			   //see further comments in #2114 
+//		       int result = 29 * hashCode + this.getUuid().hashCode();
+		       int result = 29 * hashCode + Integer.valueOf(this.getId()).hashCode();
+			   return result;
 		   } else {
 			   return 29 * hashCode;
 		   }
