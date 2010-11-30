@@ -39,7 +39,13 @@ public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(node.getTaxon().getName());
 		json.element("taggedTitle", taggedTitle, jsonConfig);
 		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
-		json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
+		//Sec can be null (web services can return null for sec)
+		//comparation made for avoding view exceptions
+		if (node.getTaxon().getSec() == null){
+			json.element("secUuid", "null");
+		}else{
+			json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
+		}	
 		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
 		json.element("unplaced", node.getTaxon().isUnplaced());
 		json.element("excluded", node.getTaxon().isExcluded());
