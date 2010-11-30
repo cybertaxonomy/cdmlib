@@ -158,9 +158,9 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	
 	
 	/** 
-	 * Returns the topmost {@link FeatureNode feature node} (root node) of <i>this</i>
-	 * feature tree. The root node does not have any parent. Since feature nodes
-	 * recursively point to their child nodes the complete feature tree is
+	 * Returns the topmost {@link PolytomousKeyNode polytomous key node} (root node) of <i>this</i>
+	 * polytomous key. The root node does not have any parent. Since polytomous key nodes
+	 * recursively point to their child nodes the complete polytomous key is
 	 * defined by its root node.
 	 */
 	public PolytomousKeyNode getRoot() {
