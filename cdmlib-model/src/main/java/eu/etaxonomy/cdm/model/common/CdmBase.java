@@ -309,8 +309,8 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 			   //data from the map (map.get(key) returns null, though there is an entry
 			   //for key in the map.
 			   //see further comments in #2114 
-//		       int result = 29 * hashCode + this.getUuid().hashCode();
-		       int result = 29 * hashCode + Integer.valueOf(this.getId()).hashCode();
+		       int result = 29 * hashCode + this.getUuid().hashCode();
+//		       int shresult = 29 * hashCode + Integer.valueOf(this.getId()).hashCode();
 			   return result;
 		   } else {
 			   return 29 * hashCode;

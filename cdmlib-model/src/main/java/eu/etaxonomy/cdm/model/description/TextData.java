@@ -144,26 +144,29 @@ public class TextData extends DescriptionElementBase {
 	}
 
 	/** 
-	 * Returns the multilanguage text with the content of <i>this</i> text data. 
+	 * Returns a copy of the multilanguage text with the content of <i>this</i> text data. 
 	 * The different {@link LanguageString language strings} (texts) contained in the
 	 * multilanguage text should all have the same meaning.
 	 * 
 	 * @see	#getText(Language)
 	 */
     public Map<Language, LanguageString> getMultilanguageText() {
-		return multilanguageText;
+		HashMap<Language, LanguageString> result = new HashMap<Language, LanguageString>();
+		result.putAll(multilanguageText);
+		return result;
+//    	return multilanguageText;
 	}
     
-    /**
-     * Sets the multilanguage text. 
-	 * The different {@link LanguageString language strings} (texts) contained in the
-	 * multilanguage text should all have the same meaning.
-     * 
-     * @param multilanguageText
-     */
-    public void setMultilanguageText(Map<Language,LanguageString> multilanguageText) {
-    	this.multilanguageText = multilanguageText;
-    }
+//    /**
+//     * Sets the multilanguage text. 
+//	 * The different {@link LanguageString language strings} (texts) contained in the
+//	 * multilanguage text should all have the same meaning.
+//     * 
+//     * @param multilanguageText
+//     */
+//    private void setMultilanguageText(Map<Language,LanguageString> multilanguageText) {
+//    	this.multilanguageText = multilanguageText;
+//    }
     
     /**
      * Returns the multilanguage text with the content of <i>this</i> text data for
@@ -173,7 +176,9 @@ public class TextData extends DescriptionElementBase {
      * @return
      */
     public LanguageString getLanguageText(Language language){
-    	//work around for the strange problem that contains does not work correctly
+    	//work around for the problem that contains does not work correctly in persisted maps.
+    	//This is because the persisted uuid is not present when loading the map key and
+    	//therefore the hash code for language is not computed correctly
     	//see DescriptionElementDaoHibernateTest and #2114
 //    	for (Map.Entry<Language, LanguageString> entry : multilanguageText.entrySet()){
 //    		if (entry.getKey() != null){
@@ -187,7 +192,8 @@ public class TextData extends DescriptionElementBase {
 //    		}
 //    	}
 //    	return null;
-    	return multilanguageText.get(language);
+    	//old
+    	return getMultilanguageText().get(language);
     }
  
 	/** 
@@ -221,7 +227,7 @@ public class TextData extends DescriptionElementBase {
 	 * @return
 	 */
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
-		return MultilanguageTextHelper.getPreferredLanguageString(multilanguageText, languages);
+		return MultilanguageTextHelper.getPreferredLanguageString(getMultilanguageText(), languages);
 	}
 	
 	/**
@@ -237,8 +243,24 @@ public class TextData extends DescriptionElementBase {
 	 * @see    	   		#putText(LanguageString)
 	 */
 	public LanguageString putText(String text, Language language) {
-		LanguageString result = this.multilanguageText.put(language , LanguageString.NewInstance(text, language));
+		fixHashMapHibernateBug();
+		//** end workaround
+		LanguageString languageString = multilanguageText.get(language);
+		if (languageString != null){
+			languageString.setText(text);
+		}else{
+			languageString = LanguageString.NewInstance(text, language);
+		}
+		LanguageString result = this.multilanguageText.put(language , languageString);
 		return (result == null ? null : result);
+	}
+
+	private void fixHashMapHibernateBug() {
+		//workaround for key problem
+		HashMap<Language, LanguageString> tmp = new HashMap<Language, LanguageString>();
+		tmp.putAll(multilanguageText);
+		multilanguageText.clear();
+		multilanguageText.putAll(tmp);
 	}
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
@@ -272,6 +294,7 @@ public class TextData extends DescriptionElementBase {
 	 * @see     		#getMultilanguageText()
 	 */
 	public LanguageString removeText(Language language) {
+		fixHashMapHibernateBug();		
 		return this.multilanguageText.remove(language);
 	}
 	
@@ -300,6 +323,34 @@ public class TextData extends DescriptionElementBase {
 	 */
 	public void setFormat(TextFormat format) {
 		this.format = format;
+	}
+	
+	/**
+	 * @see {@link java.util.Map#containsKey(Object)}
+	 * @param language
+	 * @return
+	 */
+	public boolean containsKey(Language language){
+		return getMultilanguageText().containsKey(language);
+	}
+	
+	/**
+	 * @see {@link java.util.Map#containsValue(Object)}
+	 * @param languageString
+	 * @return
+	 */
+	public boolean containsValue(LanguageString languageString){
+		return getMultilanguageText().containsValue(languageString);
+	}
+	
+	
+	/**
+	 * Returns the number of languages available for this text data.
+	 * @see {@link java.util.Map#size()}
+	 * @return
+	 */
+	public int size(){
+		return this.multilanguageText.size();
 	}
 
 }

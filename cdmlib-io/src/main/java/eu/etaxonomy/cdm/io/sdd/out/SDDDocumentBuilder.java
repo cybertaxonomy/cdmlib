@@ -986,8 +986,7 @@ public class SDDDocumentBuilder {
 		Feature feature = textData.getFeature();
 		buildReference(feature, characters, REF, textChar, "c", charactersCount);
 		Map<Language,LanguageString> multilanguageText = textData.getMultilanguageText();
-		for (Iterator<Language> l = multilanguageText.keySet().iterator() ; l.hasNext() ;){
-			Language language = l.next();
+		for (Language language : multilanguageText.keySet()){
 			LanguageString languageString = multilanguageText.get(language);
 			buildContent(textChar,languageString);
 		}

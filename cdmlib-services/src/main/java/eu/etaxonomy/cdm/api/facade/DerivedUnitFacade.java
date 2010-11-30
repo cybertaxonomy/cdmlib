@@ -1114,6 +1114,11 @@ public class DerivedUnitFacade {
 //		LanguageString languageString = getEcologyAll().getPreferredLanguageString(languages);
 //		return languageString.getText();
 //	}
+	/**
+	 * Returns a copy of the multilanguage text holding the ecology data.
+	 * @see {@link TextData#getMultilanguageText()}
+	 * @return
+	 */
 	@Transient
 	public Map<Language, LanguageString> getEcologyAll(){
 		if (ecology == null){
@@ -1179,6 +1184,11 @@ public class DerivedUnitFacade {
 //		LanguageString languageString = getPlantDescriptionAll().getPreferredLanguageString(languages);
 //		return languageString.getText();
 //	}
+	/**
+	 * Returns a copy of the multilanguage text holding the description data.
+	 * @see {@link TextData#getMultilanguageText()}
+	 * @return
+	 */
 	@Transient
 	public Map<Language, LanguageString> getPlantDescriptionAll(){
 		if (plantDescription == null){
