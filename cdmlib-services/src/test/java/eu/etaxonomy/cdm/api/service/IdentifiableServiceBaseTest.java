@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.FileOutputStream;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -58,7 +57,8 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 //		setComplete();
 //		endTransaction();
 //		try {
-//			printDataSet(System.out, new String[]{"TaxonNameBase", "DefinedTermBase","Representation"});
+//			printDataSet(System.out, new String[]{"TaxonNameBase","DefinedTermBase"});
+////		printDataSet(new FileOutputStream("C:\\tmp\\test.xml"), new String[]{"TaxonNameBase"});
 //		} catch(Exception e) { 
 //			logger.warn(e);
 //		} 
