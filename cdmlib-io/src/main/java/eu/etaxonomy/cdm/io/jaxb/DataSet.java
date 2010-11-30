@@ -199,7 +199,7 @@ public class DataSet {
         
     @XmlElementWrapper(name = "FeatureTrees")
     @XmlElements({
-      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class),
+      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
     protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
     
