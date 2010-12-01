@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -64,9 +64,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec);
+	public List<Taxon> getRootTaxa(Reference sec);
 	
 
 	/**
@@ -75,9 +75,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * 
 	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
+	public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent.
@@ -86,9 +86,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param withMisapplications if false taxa that have at least one misapplied name relationship in which they are
 	 * the misapplied name are not returned.<Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications);
+	public List<Taxon> getRootTaxa(Reference sec, boolean onlyWithChildren, boolean withMisapplications);
 
 	/**
 	 * Computes all Taxon instances which name is of a certain Rank.
@@ -103,9 +103,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 *            {@link BeanInitializer#initialize(Object, List)}. <Br>
 	 *            Default: true.
 	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using taxonomicTree
+	 * @deprecated obsolete when using classification
 	 */
-	public List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
+	public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
 	
 	/**
 	 * Computes all relationships.
@@ -129,7 +129,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param sec the taxons sec reference
 	 * @return a list of taxa matching the name and the sec reference 
 	 */
-	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
+	public List<TaxonBase> searchTaxaByName(String name, Reference sec);
 		
 	/**
 	 * Changes an accepted taxon to a synonym of another taxon. 
@@ -147,7 +147,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 * 				the newly created synonym
 	 */
-	public Synonym changeAcceptedTaxonToSynonym (TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
+	public Synonym changeAcceptedTaxonToSynonym (TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymType, Reference citation, String citationMicroReference);
 	
 	/**
 	 * Swaps given synonym and accepted taxon. 
@@ -192,7 +192,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 * 				the newly created concept
 	 */
-	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, ReferenceBase citation, String microcitation);
+	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference citation, String microcitation);
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
@@ -365,14 +365,14 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param type
 	 * @return
 	 */
-	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type);
+	public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type);
 	/**
 	 * returns a list of all inferred synonyms (inferred epithet, inferred genus and potential combination) concerning the taxon
 	 * @param tree
 	 * @param taxon
 	 * @return
 	 */
-	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree, Taxon taxon);
+	public List<Synonym> createAllInferredSynonyms(Classification tree, Taxon taxon);
 	
 	public int countAllRelationships();
 	

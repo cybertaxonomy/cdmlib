@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This mapper creates an description element source that is added to the according description element.
@@ -138,7 +138,7 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	 * @throws SQLException
 	 */
 	private void addCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
-		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, referenceNamespace, dbReferenceFkAttribute);
+		Reference citation = (Reference)getRelatedObject(rs, referenceNamespace, dbReferenceFkAttribute);
 		source.setCitation(citation);
 	}
 

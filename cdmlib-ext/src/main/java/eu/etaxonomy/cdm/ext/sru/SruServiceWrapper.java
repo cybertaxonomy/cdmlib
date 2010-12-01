@@ -24,7 +24,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @date 24.08.2010
  *
  */
-public class SruServiceWrapper extends ServiceWrapperBase<ReferenceBase> {
+public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 	
 	private String sruVersion = "1.1";
 	
@@ -41,11 +41,11 @@ public class SruServiceWrapper extends ServiceWrapperBase<ReferenceBase> {
 	 * @param recordSchema
 	 * @return
 	 */
-	public List<ReferenceBase> doSearchRetrieve(String cqlQuery, String recordSchema){
+	public List<Reference> doSearchRetrieve(String cqlQuery, String recordSchema){
 		
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		
-		SchemaAdapterBase<ReferenceBase> schemaAdapter = schemaAdapterMap.get(recordSchema);
+		SchemaAdapterBase<Reference> schemaAdapter = schemaAdapterMap.get(recordSchema);
 		if(schemaAdapter == null){
 			logger.error("No SchemaAdapter found for " + recordSchema);
 		}

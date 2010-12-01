@@ -395,6 +395,155 @@
         primary key (CDM_VIEW_id, superviews_id),
         unique (superviews_id)
     );
+    
+        create table Classification (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        microreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        name_id integer,
+        reference_id integer,
+        primary key (id)
+    );
+
+    create table Classification_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        microreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        name_id integer,
+        reference_id integer,
+        primary key (id, REV)
+    );
+
+    create table Classification_Annotation (
+        Classification_id integer not null,
+        annotations_id integer not null,
+        primary key (Classification_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Classification_Annotation_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, annotations_id)
+    );
+
+    create table Classification_Credit (
+        Classification_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        primary key (Classification_id, sortIndex),
+        unique (credits_id)
+    );
+
+    create table Classification_Credit_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, credits_id, sortIndex)
+    );
+
+    create table Classification_Extension (
+        Classification_id integer not null,
+        extensions_id integer not null,
+        primary key (Classification_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table Classification_Extension_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, extensions_id)
+    );
+
+    create table Classification_Marker (
+        Classification_id integer not null,
+        markers_id integer not null,
+        primary key (Classification_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Classification_Marker_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, markers_id)
+    );
+
+    create table Classification_OriginalSourceBase (
+        Classification_id integer not null,
+        sources_id integer not null,
+        primary key (Classification_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table Classification_OriginalSourceBase_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, sources_id)
+    );
+
+    create table Classification_Rights (
+        Classification_id integer not null,
+        rights_id integer not null,
+        primary key (Classification_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table Classification_Rights_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, rights_id)
+    );
+
+    create table Classification_TaxonNode (
+        Classification_id integer not null,
+        rootnodes_id integer not null,
+        primary key (Classification_id, rootnodes_id),
+        unique (rootnodes_id)
+    );
+
+    create table Classification_TaxonNode_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        rootnodes_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, rootnodes_id)
+    );
 
     create table Collection (
         id integer not null,
@@ -973,8 +1122,8 @@
         imagegallery bit not null,
         createdby_id integer,
         updatedby_id integer,
-        taxon_fk integer,
-        taxonName_fk integer,
+        taxon_id integer,
+        taxonName_id integer,
         primary key (id)
     );
 
@@ -996,8 +1145,8 @@
         imagegallery bit,
         createdby_id integer,
         updatedby_id integer,
-        taxon_fk integer,
-        taxonName_fk integer,
+        taxon_id integer,
+        taxonName_id integer,
         primary key (id, REV)
     );
 
@@ -1473,10 +1622,10 @@
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
+        featureTree_id integer not null,
         feature_id integer,
-        parent_fk integer,
-		taxon_id integer,
-        primary key (id)
+        parent_id integer,
+	primary key (id)
     );
 
     create table FeatureNode_AUD (
@@ -1488,12 +1637,13 @@
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
+        featureTree_id integer not null,
         feature_id integer,
-        parent_fk integer,
+        parent_id integer,
         primary key (id, REV)
     );
 
-	create table FeatureNode_DefinedTermBase_OnlyApplicable (
+    create table FeatureNode_DefinedTermBase_OnlyApplicable (
         FeatureNode_id integer not null,
         OnlyApplicable_id integer not null,
         primary key (FeatureNode_id, OnlyApplicable_id)
@@ -1507,7 +1657,7 @@
         primary key (REV, FeatureNode_id, OnlyApplicable_id)
     );
 
-	create table FeatureNode_DefinedTermBase_InapplicableIf (
+    create table FeatureNode_DefinedTermBase_InapplicableIf (
         FeatureNode_id integer not null,
         InapplicableIf_id integer not null,
         primary key (FeatureNode_id, InapplicableIf_id)
@@ -1519,20 +1669,6 @@
         InapplicableIf_id integer not null,
         revtype tinyint,
         primary key (REV, FeatureNode_id, InapplicableIf_id)
-    );
-
-	create table FeatureNode_Question (
-        FeatureNode_id integer not null,
-        questions_id integer not null,
-        primary key (FeatureNode_id, questions_id)
-    );
-
-    create table FeatureNode_Question_AUD (
-        REV integer not null,
-        FeatureNode_id integer not null,
-        questions_id integer not null,
-        revtype tinyint,
-        primary key (REV, FeatureNode_id, questions_id)
     );
 
     create table FeatureTree (
@@ -1711,6 +1847,12 @@
         primary key (id),
         unique (authority)
     );
+	
+	create table hibernate_sequences (
+		sequence_name varchar(255),
+		next_val integer,
+		primary key (sequence_name)
+	);
 
     create table HomotypicalGroup (
         id integer not null,
@@ -1884,6 +2026,48 @@
         person_id integer,
         primary key (id, REV)
     );
+    
+              
+    create table KeyStatement (
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+    
+    create table KeyStatement_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+      );
+      
+     create table KeyStatement_LanguageString (
+        keyStatement_id integer not null,
+        label_id integer not null,
+        label_mapkey_id integer not null,
+        primary key (keyStatement_id, label_mapkey_id),
+        unique (label_id)
+    );
+
+    create table KeyStatement_LanguageString_AUD (
+        REV integer not null,
+        keyStatement_id integer not null,
+        label_id integer not null,
+        label_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, keyStatement_id, label_id, label_mapkey_id)
+    );
+
 
     create table LSIDAuthority (
         id integer not null,
@@ -2064,17 +2248,17 @@
     );
 
     create table MediaKey_CoveredTaxon (
-        mediaKey_fk integer not null,
-        coveredTaxon_fk integer not null,
-        primary key (mediaKey_fk, coveredTaxon_fk)
+        mediaKey_id integer not null,
+        coveredTaxon_id integer not null,
+        primary key (mediaKey_id, coveredTaxon_id)
     );
 
     create table MediaKey_CoveredTaxon_AUD (
         REV integer not null,
-        mediaKey_fk integer not null,
-        coveredTaxon_fk integer not null,
+        mediaKey_id integer not null,
+        coveredTaxon_id integer not null,
         revtype tinyint,
-        primary key (REV, mediaKey_fk, coveredTaxon_fk)
+        primary key (REV, mediaKey_id, coveredTaxon_id)
     );
 
     create table MediaKey_NamedArea (
@@ -2106,17 +2290,17 @@
     );
 
     create table MediaKey_Taxon (
-        mediaKey_fk integer not null,
-        taxon_fk integer not null,
-        primary key (mediaKey_fk, taxon_fk)
+        mediaKey_id integer not null,
+        taxon_id integer not null,
+        primary key (mediaKey_id, taxon_id)
     );
 
     create table MediaKey_Taxon_AUD (
         REV integer not null,
-        mediaKey_fk integer not null,
-        taxon_fk integer not null,
+        mediaKey_id integer not null,
+        taxon_id integer not null,
         revtype tinyint,
-        primary key (REV, mediaKey_fk, taxon_fk)
+        primary key (REV, mediaKey_id, taxon_id)
     );
 
     create table MediaRepresentation (
@@ -2315,17 +2499,17 @@
     );
 
     create table MultiAccessKey_CoveredTaxon (
-        multiAccessKey_fk integer not null,
-        coveredTaxon_fk integer not null,
-        primary key (multiAccessKey_fk, coveredTaxon_fk)
+        multiAccessKey_id integer not null,
+        coveredTaxon_id integer not null,
+        primary key (multiAccessKey_id, coveredTaxon_id)
     );
 
     create table MultiAccessKey_CoveredTaxon_AUD (
         REV integer not null,
-        multiAccessKey_fk integer not null,
-        coveredTaxon_fk integer not null,
+        multiAccessKey_id integer not null,
+        coveredTaxon_id integer not null,
         revtype tinyint,
-        primary key (REV, multiAccessKey_fk, coveredTaxon_fk)
+        primary key (REV, multiAccessKey_id, coveredTaxon_id)
     );
 
     create table MultiAccessKey_NamedArea (
@@ -2357,17 +2541,17 @@
     );
 
     create table MultiAccessKey_Taxon (
-        multiAccessKey_fk integer not null,
-        taxon_fk integer not null,
-        primary key (multiAccessKey_fk, taxon_fk)
+        multiAccessKey_id integer not null,
+        taxon_id integer not null,
+        primary key (multiAccessKey_id, taxon_id)
     );
 
     create table MultiAccessKey_Taxon_AUD (
         REV integer not null,
-        multiAccessKey_fk integer not null,
-        taxon_fk integer not null,
+        multiAccessKey_id integer not null,
+        taxon_id integer not null,
         revtype tinyint,
-        primary key (REV, multiAccessKey_fk, taxon_fk)
+        primary key (REV, multiAccessKey_id, taxon_id)
     );
 
     create table NameRelationship (
@@ -2584,20 +2768,6 @@
         primary key (PermissionGroup_id, grantedauthorities_id)
     );
 
-    create table Person_Keyword (
-        person_fk integer not null,
-        keyword_fk integer not null,
-        primary key (person_fk, keyword_fk)
-    );
-
-    create table Person_Keyword_AUD (
-        REV integer not null,
-        person_fk integer not null,
-        keyword_fk integer not null,
-        revtype tinyint,
-        primary key (REV, person_fk, keyword_fk)
-    );
-
     create table PublicationBase_Publisher_AUD (
         REV integer not null,
         Reference_id integer not null,
@@ -2607,61 +2777,233 @@
         primary key (REV, Reference_id, id, sortIndex)
     );
 
-    create table PolytomousKey_CoveredTaxon (
-        polytomousKey_fk integer not null,
-        coveredTaxon_fk integer not null,
-        primary key (polytomousKey_fk, coveredTaxon_fk)
+     
+   create table PolytomousKey (
+       	id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        root_id integer,
+        primary key (id),
+        unique (uuid)
     );
 
-    create table PolytomousKey_CoveredTaxon_AUD (
+   create table PolytomousKey_AUD (
+       	id integer not null,
         REV integer not null,
-        polytomousKey_fk integer not null,
-        coveredTaxon_fk integer not null,
         revtype tinyint,
-        primary key (REV, polytomousKey_fk, coveredTaxon_fk)
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        root_id integer,
+        primary key (id, REV)
+    );
+
+    create table PolytomousKey_Annotation (
+        PolytomousKey_id integer not null,
+        annotations_id integer not null,
+        primary key (PolytomousKey_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table PolytomousKey_Annotation_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, annotations_id)
+    );
+
+    create table PolytomousKey_Credit (
+        PolytomousKey_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        primary key (PolytomousKey_id, sortIndex),
+        unique (credits_id)
+    );
+
+    create table PolytomousKey_Credit_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, credits_id, sortIndex)
+    );
+
+    create table PolytomousKey_Extension (
+        PolytomousKey_id integer not null,
+        extensions_id integer not null,
+        primary key (PolytomousKey_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table PolytomousKey_Extension_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, extensions_id)
+    );
+
+    create table PolytomousKey_Marker (
+        PolytomousKey_id integer not null,
+        markers_id integer not null,
+        primary key (PolytomousKey_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table PolytomousKey_Marker_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, markers_id)
     );
 
     create table PolytomousKey_NamedArea (
         PolytomousKey_id integer not null,
-        geographicalScope_id integer not null,
-        primary key (PolytomousKey_id, geographicalScope_id)
+        geographicalscope_id integer not null,
+        primary key (PolytomousKey_id, geographicalscope_id)
     );
 
     create table PolytomousKey_NamedArea_AUD (
         REV integer not null,
         PolytomousKey_id integer not null,
-        geographicalScope_id integer not null,
+        geographicalscope_id integer not null,
         revtype tinyint,
-        primary key (REV, PolytomousKey_id, geographicalScope_id)
+        primary key (REV, PolytomousKey_id, geographicalscope_id)
+    );
+    
+    create table PolytomousKey_OriginalSourceBase (
+        PolytomousKey_id integer not null,
+        sources_id integer not null,
+        primary key (PolytomousKey_id, sources_id),
+        unique (sources_id)
     );
 
+    create table PolytomousKey_OriginalSourceBase_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, sources_id)
+    );
+
+    create table PolytomousKey_Rights (
+        PolytomousKey_id integer not null,
+        rights_id integer not null,
+        primary key (PolytomousKey_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table PolytomousKey_Rights_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, rights_id)
+    );
+    
     create table PolytomousKey_Scope (
         PolytomousKey_id integer not null,
-        scopes_id integer not null,
-        primary key (PolytomousKey_id, scopes_id)
+        scoperestrictions_id integer not null,
+        primary key (PolytomousKey_id, scoperestrictions_id)
     );
 
     create table PolytomousKey_Scope_AUD (
         REV integer not null,
         PolytomousKey_id integer not null,
-        scopes_id integer not null,
+        scoperestrictions_id integer not null,
         revtype tinyint,
-        primary key (REV, PolytomousKey_id, scopes_id)
+        primary key (REV, PolytomousKey_id, scoperestrictions_id)
     );
 
     create table PolytomousKey_Taxon (
-        polytomousKey_fk integer not null,
-        taxon_fk integer not null,
-        primary key (polytomousKey_fk, taxon_fk)
+        polytomousKey_id integer not null,
+        taxon_id integer not null,
+        primary key (polytomousKey_id, taxon_id)
     );
 
     create table PolytomousKey_Taxon_AUD (
         REV integer not null,
-        polytomousKey_fk integer not null,
-        taxon_fk integer not null,
+        polytomousKey_id integer not null,
+        taxon_id integer not null,
         revtype tinyint,
-        primary key (REV, polytomousKey_fk, taxon_fk)
+        primary key (REV, polytomousKey_id, taxon_id)
     );
+    
+        
+    create table PolytomousKeyNode (
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        nodenumber integer,
+        sortindex integer,
+        createdby_id integer,
+        updatedby_id integer,
+        key_id integer,
+        parent_id integer,
+        question_id integer,
+        statement_id integer,
+        feature_id integer,
+        taxon_id integer,
+        subkey_id integer,
+        othernode_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+
+    create table PolytomousKeyNode_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        nodenumber integer,
+	sortindex integer,
+        createdby_id integer,
+        updatedby_id integer,
+        key_id integer,
+        parent_id integer,
+        question_id integer,
+        statement_id integer,
+        feature_id integer,
+        taxon_id integer,
+        subkey_id integer,
+        othernode_id integer,
+        primary key (id, REV)
+    );
+     
+    create table PolytomousKeyNode_PolytomousKeyNode_AUD(
+    	id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        parent_id integer, 
+        sortIndex integer
+    )
     
     create table Reference (
         DTYPE varchar(31) not null,
@@ -2685,7 +3027,7 @@
         datepublished_freetext varchar(255),
         datepublished_start varchar(255),
         title longvarchar,
-		referenceAbstract longvarchar,
+	referenceAbstract longvarchar,
         pages varchar(255),
         series varchar(255),
         volume varchar(255),
@@ -2734,7 +3076,7 @@
         datepublished_freetext varchar(255),
         datepublished_start varchar(255),
         title longvarchar,
-		referenceAbstract longvarchar,
+	referenceAbstract longvarchar,
         pages varchar(255),
         series varchar(255),
         volume varchar(255),
@@ -3210,12 +3552,14 @@
         fieldnotes varchar(255),
         fieldnumber varchar(255),
         barcode varchar(255),
-        createdby_id integer,
+        exsiccatum varchar(255),
+    	createdby_id integer,
         updatedby_id integer,
+        primarycollector_id integer,
         lifestage_id integer,
         sex_id integer,
         collection_id integer,
-        derivationevent_id integer,
+        derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
         gatheringevent_id integer,
@@ -3245,12 +3589,14 @@
         fieldnotes varchar(255),
         fieldnumber varchar(255),
         barcode varchar(255),
+        exsiccatum varchar(255),
+    	primarycollector_id integer,
         gatheringevent_id integer,
         accessionnumber varchar(255),
         catalognumber varchar(255),
         collectorsnumber varchar(255),
         collection_id integer,
-        derivationevent_id integer,
+        derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
         primary key (id, REV)
@@ -3319,21 +3665,21 @@
 
     create table SpecimenOrObservationBase_LanguageString (
         SpecimenOrObservationBase_id integer not null,
-        description_id integer not null,
-        description_mapkey_id integer not null,
-        primary key (SpecimenOrObservationBase_id, description_mapkey_id),
-        unique (description_id)
+        definition_id integer not null,
+        definition_mapkey_id integer not null,
+        primary key (SpecimenOrObservationBase_id, definition_mapkey_id),
+        unique (definition_id)
     );
 
     create table SpecimenOrObservationBase_LanguageString_AUD (
         REV integer not null,
         SpecimenOrObservationBase_id integer not null,
-        description_id integer not null,
-        description_mapkey_id integer not null,
+        definition_id integer not null,
+        definition_mapkey_id integer not null,
         revtype tinyint,
-        primary key (REV, SpecimenOrObservationBase_id, description_id, description_mapkey_id)
+        primary key (REV, SpecimenOrObservationBase_id, definition_id, definition_mapkey_id)
     );
-
+    
     create table SpecimenOrObservationBase_Marker (
         SpecimenOrObservationBase_id integer not null,
         markers_id integer not null,
@@ -3597,7 +3943,7 @@
         taxonomicchildrencount integer,
         createdby_id integer,
         updatedby_id integer,
-        taxonName_fk integer,
+        name_id integer,
         sec_id integer,
         taxonomicparentcache_id integer,
         primary key (id)
@@ -3623,7 +3969,7 @@
         useNameCache bit,
         createdby_id integer,
         updatedby_id integer,
-        taxonName_fk integer,
+        name_id integer,
         sec_id integer,
         taxonstatusunknown bit,
         unplaced bit,
@@ -3997,7 +4343,7 @@
         referenceforparentchildrelation_id integer,
         synonymtobeused_id integer,
         taxon_id integer,
-        taxonomictree_id integer,
+        classification_id integer,
         primary key (id)
     );
 
@@ -4016,7 +4362,7 @@
         referenceforparentchildrelation_id integer,
         synonymtobeused_id integer,
         taxon_id integer,
-        taxonomictree_id integer,
+        classification_id integer,
         primary key (id, REV)
     );
 
@@ -4116,10 +4462,11 @@
         primary key (REV, TaxonRelationship_id, markers_id)
     );
 
-    create table TaxonomicTree (
+    create table TermVocabulary (
+        DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -4128,161 +4475,12 @@
         lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
-        microreference varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        name_id integer,
-        reference_id integer,
-        primary key (id)
-    );
-
-    create table TaxonomicTree_AUD (
-        id integer not null,
-        REV integer not null,
-        revtype tinyint,
-        created timestamp,
-        uuid varchar(255),
-        updated timestamp,
-        lsid_authority varchar(255),
-        lsid_lsid varchar(255),
-        lsid_namespace varchar(255),
-        lsid_object varchar(255),
-        lsid_revision varchar(255),
-        protectedtitlecache bit,
-        titleCache varchar(255),
-        microreference varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        name_id integer,
-        reference_id integer,
-        primary key (id, REV)
-    );
-
-    create table TaxonomicTree_Annotation (
-        TaxonomicTree_id integer not null,
-        annotations_id integer not null,
-        primary key (TaxonomicTree_id, annotations_id),
-        unique (annotations_id)
-    );
-
-    create table TaxonomicTree_Annotation_AUD (
-        REV integer not null,
-        TaxonomicTree_id integer not null,
-        annotations_id integer not null,
-        revtype tinyint,
-        primary key (REV, TaxonomicTree_id, annotations_id)
-    );
-
-    create table TaxonomicTree_Credit (
-        TaxonomicTree_id integer not null,
-        credits_id integer not null,
-        sortIndex integer not null,
-        primary key (TaxonomicTree_id, sortIndex),
-        unique (credits_id)
-    );
-
-    create table TaxonomicTree_Credit_AUD (
-        REV integer not null,
-        TaxonomicTree_id integer not null,
-        credits_id integer not null,
-        sortIndex integer not null,
-        revtype tinyint,
-        primary key (REV, TaxonomicTree_id, credits_id, sortIndex)
-    );
-
-    create table TaxonomicTree_Extension (
-        TaxonomicTree_id integer not null,
-        extensions_id integer not null,
-        primary key (TaxonomicTree_id, extensions_id),
-        unique (extensions_id)
-    );
-
-    create table TaxonomicTree_Extension_AUD (
-        REV integer not null,
-        TaxonomicTree_id integer not null,
-        extensions_id integer not null,
-        revtype tinyint,
-        primary key (REV, TaxonomicTree_id, extensions_id)
-    );
-
-    create table TaxonomicTree_Marker (
-        TaxonomicTree_id integer not null,
-        markers_id integer not null,
-        primary key (TaxonomicTree_id, markers_id),
-        unique (markers_id)
-    );
-
-    create table TaxonomicTree_Marker_AUD (
-        REV integer not null,
-        TaxonomicTree_id integer not null,
-        markers_id integer not null,
-        revtype tinyint,
-        primary key (REV, TaxonomicTree_id, markers_id)
-    );
-
-    create table TaxonomicTree_OriginalSourceBase (
-        TaxonomicTree_id integer not null,
-        sources_id integer not null,
-        primary key (TaxonomicTree_id, sources_id),
-        unique (sources_id)
-    );
-
-    create table TaxonomicTree_OriginalSourceBase_AUD (
-        REV integer not null,
-        TaxonomicTree_id integer not null,
-        sources_id integer not null,
-        revtype tinyint,
-        primary key (REV, TaxonomicTree_id, sources_id)
-    );
-
-    create table TaxonomicTree_Rights (
-        TaxonomicTree_id integer not null,
-        rights_id integer not null,
-        primary key (TaxonomicTree_id, rights_id),
-        unique (rights_id)
-    );
-
-    create table TaxonomicTree_Rights_AUD (
-        REV integer not null,
-        TaxonomicTree_id integer not null,
-        rights_id integer not null,
-        revtype tinyint,
-        primary key (REV, TaxonomicTree_id, rights_id)
-    );
-
-    create table TaxonomicTree_TaxonNode (
-        TaxonomicTree_id integer not null,
-        rootnodes_id integer not null,
-        primary key (TaxonomicTree_id, rootnodes_id),
-        unique (rootnodes_id)
-    );
-
-    create table TaxonomicTree_TaxonNode_AUD (
-        REV integer not null,
-        TaxonomicTree_id integer not null,
-        rootnodes_id integer not null,
-        revtype tinyint,
-        primary key (REV, TaxonomicTree_id, rootnodes_id)
-    );
-
-    create table TermVocabulary (
-        DTYPE varchar(31) not null,
-        id integer not null,
-        created timestamp,
-        uuid varchar(255),
-        updated timestamp,
         uri varchar(255),
         termsourceuri varchar(255),
         createdby_id integer,
         updatedby_id integer,
-       	protectedtitlecache bit not null,
-        titlecache varchar(255),
-		lsid_authority varchar(255),
-        lsid_lsid varchar(255),
-        lsid_namespace varchar(255),
-        lsid_object varchar(255),
-        lsid_revision varchar(255),
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TermVocabulary_AUD (
@@ -4291,20 +4489,97 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
-        uri varchar(255),
-        termsourceuri varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-	    protectedtitlecache bit not null,
-        titlecache varchar(255),
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        uri varchar(255),
+        termsourceuri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
         primary key (id, REV)
+    );
+
+    create table TermVocabulary_Annotation (
+        TermVocabulary_id integer not null,
+        annotations_id integer not null,
+        primary key (TermVocabulary_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table TermVocabulary_Annotation_AUD (
+        REV integer not null,
+        TermVocabulary_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, TermVocabulary_id, annotations_id)
+    );
+
+    create table TermVocabulary_Credit (
+        TermVocabulary_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        primary key (TermVocabulary_id, sortIndex),
+        unique (credits_id)
+    );
+
+    create table TermVocabulary_Credit_AUD (
+        REV integer not null,
+        TermVocabulary_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        revtype tinyint,
+        primary key (REV, TermVocabulary_id, credits_id, sortIndex)
+    );
+
+    create table TermVocabulary_Extension (
+        TermVocabulary_id integer not null,
+        extensions_id integer not null,
+        primary key (TermVocabulary_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table TermVocabulary_Extension_AUD (
+        REV integer not null,
+        TermVocabulary_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, TermVocabulary_id, extensions_id)
+    );
+
+    create table TermVocabulary_Marker (
+        TermVocabulary_id integer not null,
+        markers_id integer not null,
+        primary key (TermVocabulary_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table TermVocabulary_Marker_AUD (
+        REV integer not null,
+        TermVocabulary_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, TermVocabulary_id, markers_id)
+    );
+
+    create table TermVocabulary_OriginalSourceBase (
+        TermVocabulary_id integer not null,
+        sources_id integer not null,
+        primary key (TermVocabulary_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table TermVocabulary_OriginalSourceBase_AUD (
+        REV integer not null,
+        TermVocabulary_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, TermVocabulary_id, sources_id)
     );
 
     create table TermVocabulary_Representation (
@@ -4321,6 +4596,22 @@
         revtype tinyint,
         primary key (REV, TermVocabulary_id, representations_id)
     );
+
+    create table TermVocabulary_Rights (
+        TermVocabulary_id integer not null,
+        rights_id integer not null,
+        primary key (TermVocabulary_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table TermVocabulary_Rights_AUD (
+        REV integer not null,
+        TermVocabulary_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, TermVocabulary_id, rights_id)
+    );
+
 
     create table TypeDesignationBase (
         DTYPE varchar(31) not null,
@@ -5316,7 +5607,7 @@
 
     alter table DescriptionBase 
         add constraint FKFF4D58CDDA93512F 
-        foreign key (taxonName_fk) 
+        foreign key (taxonName_id) 
         references TaxonNameBase;
 
     alter table DescriptionBase 
@@ -5326,7 +5617,7 @@
 
     alter table DescriptionBase 
         add constraint FKFF4D58CDDE9A3DE3 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table DescriptionBase_AUD 
@@ -5801,13 +6092,18 @@
 
     alter table FeatureNode 
         add constraint FK4CEED9F8E0AD2C03 
-        foreign key (parent_fk) 
+        foreign key (parent_id) 
         references FeatureNode;
 
     alter table FeatureNode 
         add constraint FK4CEED9F84FF2DB2C 
         foreign key (createdby_id) 
         references UserAccount;
+
+    alter table FeatureNode 
+        add constraint FK4CEED9F8DE9A3E39 
+        foreign key (featureTree_id) 
+        references FeatureTree;
 
     alter table FeatureNode 
         add constraint FK4CEED9F84220AFEB 
@@ -5854,21 +6150,6 @@
         foreign key (REV) 
         references AuditEvent;
 */
-	alter table FeatureNode_Question 
-        add constraint FK9B1410F03C6A411A
-        foreign key (FeatureNode_id) 
-        references FeatureNode;
-
-    alter table FeatureNode_Question 
-        add constraint FK8D2234F48AF8471C
-        foreign key (questions_id) 
-        references Representation;
-
-    alter table FeatureNode_Question_AUD 
-        add constraint FK72595A8589344fD6 
-        foreign key (REV) 
-        references AuditEvent;
-
     alter table FeatureTree 
         add constraint FK4CF19F944FF2DB2C 
         foreign key (createdby_id) 
@@ -6271,12 +6552,12 @@
 
    alter table MediaKey_CoveredTaxon 
         add constraint FKBE4F76E1FC8AD42E 
-        foreign key (mediaKey_fk) 
+        foreign key (mediaKey_id) 
         references Media;
 
     alter table MediaKey_CoveredTaxon 
         add constraint FK6372785CAB2B4887 
-        foreign key (coveredTaxon_fk)
+        foreign key (coveredTaxon_id)
         references TaxonBase;
 
     alter table MediaKey_CoveredTaxon_AUD 
@@ -6316,12 +6597,12 @@
 
     alter table MediaKey_Taxon 
         add constraint FKD847ADDC996CD055 
-        foreign key (mediaKey_fk) 
+        foreign key (mediaKey_id) 
         references Media;
 
     alter table MediaKey_Taxon 
         add constraint FKD847ADDCDE9A3DE3 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table MediaKey_Taxon_AUD 
@@ -6511,12 +6792,12 @@
 
 	alter table MultiAccessKey_CoveredTaxon 
         add constraint FK07E64A1DC70F4783 
-        foreign key (multiAccessKey_fk) 
+        foreign key (multiAccessKey_id) 
         references WorkingSet;
 
     alter table MultiAccessKey_CoveredTaxon 
         add constraint FK92B0DBED084C3C5B 
-        foreign key (coveredTaxon_fk) 
+        foreign key (coveredTaxon_id) 
         references TaxonBase;
 
     alter table MultiAccessKey_CoveredTaxon_AUD 
@@ -6556,12 +6837,12 @@
 
     alter table MultiAccessKey_Taxon 
         add constraint FKAE92842CCDAF4814 
-        foreign key (multiAccessKey_fk) 
+        foreign key (multiAccessKey_id) 
         references WorkingSet;
 
     alter table MultiAccessKey_Taxon 
         add constraint FKB29E6E958FD00045 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table MultiAccessKey_Taxon_AUD 
@@ -6759,40 +7040,10 @@
         foreign key (grantedauthorities_id) 
         references GrantedAuthorityImpl;
 
-    alter table Person_Keyword 
-        add constraint FK5F559EFF13A443BE 
-        foreign key (keyword_fk) 
-        references DefinedTermBase;
-
-    alter table Person_Keyword 
-        add constraint FK5F559EFFAAC1B7CA 
-        foreign key (person_fk) 
-        references AgentBase;
-
-    alter table Person_Keyword_AUD 
-        add constraint FK6D8C355034869AAE 
-        foreign key (REV) 
-        references AuditEvent;
-
-	alter table PolytomousKey_CoveredTaxon 
-        add constraint FK5D10620561FE4E83 
-        foreign key (polytomousKey_fk) 
-        references FeatureTree;
-
-    alter table PolytomousKey_CoveredTaxon 
-        add constraint FKB92FB32E5339CF05 
-        foreign key (coveredTaxon_fk) 
-        references TaxonBase;
-
-    alter table PolytomousKey_CoveredTaxon_AUD 
-        add constraint FKF6E40B9726674EEE 
-        foreign key (REV) 
-        references AuditEvent;
-
     alter table PolytomousKey_NamedArea 
         add constraint FKB3A8962EBDE6AA88 
         foreign key (PolytomousKey_id) 
-        references FeatureTree;
+        references PolytomousKey;
 
     alter table PolytomousKey_NamedArea 
         add constraint FK7A13F2876AE348D0 
@@ -6807,11 +7058,11 @@
     alter table PolytomousKey_Scope 
         add constraint FKC0AA0A4F46A84CA5 
         foreign key (PolytomousKey_id) 
-        references FeatureTree;
+        references PolytomousKey;
 
     alter table PolytomousKey_Scope 
         add constraint FK95F6137239A78EF4 
-        foreign key (scopes_id) 
+        foreign key (scoperestrictions_id) 
         references DefinedTermBase;
 
     alter table PolytomousKey_Scope_AUD 
@@ -6821,12 +7072,12 @@
 
     alter table PolytomousKey_Taxon 
         add constraint FK94EBDAF65411052A 
-        foreign key (polytomousKey_fk) 
-        references FeatureTree;
+        foreign key (polytomousKey_id) 
+        references PolytomousKey;
 
     alter table PolytomousKey_Taxon 
         add constraint FK890257C0688940C2 
-        foreign key (taxon_fk) 
+        foreign key (taxon_id) 
         references TaxonBase;
 
     alter table PolytomousKey_Taxon_AUD
@@ -7297,8 +7548,13 @@
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA32724AAB411A 
-        foreign key (derivationevent_id) 
+        foreign key (derivedfrom_id) 
         references DerivationEvent;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK11CB3232F75F225E 
+        foreign key (primarycollector_id) 
+        references AgentBase;
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA3272F95F225A 
@@ -7382,12 +7638,12 @@
 
     alter table SpecimenOrObservationBase_LanguageString 
         add constraint FKCFAA93162BEBA58D 
-        foreign key (description_id) 
+        foreign key (definition_id) 
         references LanguageString;
 
     alter table SpecimenOrObservationBase_LanguageString 
         add constraint FKCFAA931628459272 
-        foreign key (description_mapkey_id) 
+        foreign key (definition_mapkey_id) 
         references DefinedTermBase;
 
     alter table SpecimenOrObservationBase_LanguageString_AUD 
@@ -7634,7 +7890,7 @@
 
     alter table TaxonBase 
         add constraint FK9249B49BDA93512F 
-        foreign key (taxonName_fk) 
+        foreign key (name_id) 
         references TaxonNameBase;
 
     alter table TaxonBase 
@@ -7971,8 +8227,8 @@
 
     alter table TaxonNode 
         add constraint FK924F5BCCD019B239 
-        foreign key (taxonomictree_id) 
-        references TaxonomicTree;
+        foreign key (classification_id) 
+        references Classification;
 
     alter table TaxonNode 
         add constraint FK924F5BCC215EDF26 
@@ -8089,132 +8345,132 @@
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree 
+    alter table Classification 
         add constraint FKE333A2E7765B124B 
         foreign key (reference_id) 
         references Reference;
 
-    alter table TaxonomicTree 
+    alter table Classification 
         add constraint FKE333A2E74FF2DB2C 
         foreign key (createdby_id) 
         references UserAccount;
 
-    alter table TaxonomicTree 
+    alter table Classification 
         add constraint FKE333A2E777E2F09E 
         foreign key (name_id) 
         references LanguageString;
 
-    alter table TaxonomicTree 
+    alter table Classification 
         add constraint FKE333A2E7BC5DA539 
         foreign key (updatedby_id) 
         references UserAccount;
 
-    alter table TaxonomicTree_AUD 
+    alter table Classification_AUD 
         add constraint FK976053834869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree_Annotation 
+    alter table Classification_Annotation 
         add constraint FKE5DF73A7D019B239 
-        foreign key (TaxonomicTree_id) 
-        references TaxonomicTree;
+        foreign key (Classification_id) 
+        references Classification;
 
-    alter table TaxonomicTree_Annotation 
+    alter table Classification_Annotation 
         add constraint FKE5DF73A71E403E0B 
         foreign key (annotations_id) 
         references Annotation;
 
-    alter table TaxonomicTree_Annotation_AUD 
+    alter table Classification_Annotation_AUD 
         add constraint FK3C4B75F834869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree_Credit 
+    alter table Classification_Credit 
         add constraint FK23C2F71D019B239 
-        foreign key (TaxonomicTree_id) 
-        references TaxonomicTree;
+        foreign key (Classification_id) 
+        references Classification;
 
-    alter table TaxonomicTree_Credit 
+    alter table Classification_Credit 
         add constraint FK23C2F7132D1B9F 
         foreign key (credits_id) 
         references Credit;
 
-    alter table TaxonomicTree_Credit_AUD 
+    alter table Classification_Credit_AUD 
         add constraint FK20F13CC234869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree_Extension 
+    alter table Classification_Extension 
         add constraint FKCD1EA4C7927DE9DF 
         foreign key (extensions_id) 
         references Extension;
 
-    alter table TaxonomicTree_Extension 
+    alter table Classification_Extension 
         add constraint FKCD1EA4C7D019B239 
-        foreign key (TaxonomicTree_id) 
-        references TaxonomicTree;
+        foreign key (Classification_id) 
+        references Classification;
 
-    alter table TaxonomicTree_Extension_AUD 
+    alter table Classification_Extension_AUD 
         add constraint FK204D171834869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree_Marker 
+    alter table Classification_Marker 
         add constraint FK126318B2D019B239 
-        foreign key (TaxonomicTree_id) 
-        references TaxonomicTree;
+        foreign key (Classification_id) 
+        references Classification;
 
-    alter table TaxonomicTree_Marker 
+    alter table Classification_Marker 
         add constraint FK126318B2777265A1 
         foreign key (markers_id) 
         references Marker;
 
-    alter table TaxonomicTree_Marker_AUD 
+    alter table Classification_Marker_AUD 
         add constraint FK850F9D8334869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree_OriginalSourceBase 
+    alter table Classification_OriginalSourceBase 
         add constraint FK447A09C43BAB2414 
         foreign key (sources_id) 
         references OriginalSourceBase;
 
-    alter table TaxonomicTree_OriginalSourceBase 
+    alter table Classification_OriginalSourceBase 
         add constraint FK447A09C4D019B239 
-        foreign key (TaxonomicTree_id) 
-        references TaxonomicTree;
+        foreign key (Classification_id) 
+        references Classification;
 
-    alter table TaxonomicTree_OriginalSourceBase_AUD 
+    alter table Classification_OriginalSourceBase_AUD 
         add constraint FK143B59534869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree_Rights 
+    alter table Classification_Rights 
         add constraint FK1B57064FD019B239 
-        foreign key (TaxonomicTree_id) 
-        references TaxonomicTree;
+        foreign key (Classification_id) 
+        references Classification;
 
-    alter table TaxonomicTree_Rights 
+    alter table Classification_Rights 
         add constraint FK1B57064FC13F7B21 
         foreign key (rights_id) 
         references Rights;
 
-    alter table TaxonomicTree_Rights_AUD 
+    alter table Classification_Rights_AUD 
         add constraint FKF0E974A034869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicTree_TaxonNode 
+    alter table Classification_TaxonNode 
         add constraint FKC7EC474D019B239 
-        foreign key (TaxonomicTree_id) 
-        references TaxonomicTree;
+        foreign key (Classification_id) 
+        references Classification;
 
-    alter table TaxonomicTree_TaxonNode 
+    alter table Classification_TaxonNode 
         add constraint FKC7EC47418929176 
         foreign key (rootnodes_id) 
         references TaxonNode;
 
-    alter table TaxonomicTree_TaxonNode_AUD 
+    alter table Classification_TaxonNode_AUD 
         add constraint FK6E0B984534869AAE 
         foreign key (REV) 
         references AuditEvent;

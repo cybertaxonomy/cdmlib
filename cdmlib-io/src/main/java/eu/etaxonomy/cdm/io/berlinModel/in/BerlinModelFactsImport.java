@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -175,12 +176,12 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		BerlinModelImportConfigurator config = state.getConfig();
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
-		Map<String, ReferenceBase> biblioRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, ReferenceBase> nomRefMap = (Map<String, ReferenceBase>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+		Map<String, Reference> biblioRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, Reference> nomRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
 
 		ResultSet rs = partitioner.getResultSet();
 		
-			ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+			Reference<?> sourceRef = state.getConfig().getSourceReference();
 			
 		try{
 			int i = 0;
@@ -285,14 +286,14 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 						if (isImage){
 							textData.addMedia(media);
-							textData.setType(Feature.IMAGE());
+							textData.setFeature(Feature.IMAGE());
 						}else{
 							textData.putText(fact, Language.DEFAULT());
-							textData.setType(feature);
+							textData.setFeature(feature);
 						}
 						
 						//reference
-						ReferenceBase citation = null;
+						Reference citation = null;
 						String factRefFk = String.valueOf(factRefFkObj);
 						if (factRefFkObj != null){
 							citation = getReferenceOnlyFromMaps(
@@ -396,30 +397,30 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 
 			//nom reference map
 			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomReferenceMap);
 
 			//biblio reference map
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 			
 			//nom refDetail map
 			nameSpace = BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = refDetailIdSet;
-			Map<String, ReferenceBase> nomRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> nomRefDetailMap= (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomRefDetailMap);
 			
 			//biblio refDetail map
 			nameSpace = BerlinModelRefDetailImport.BIBLIO_REFDETAIL_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = refDetailIdSet;
-			Map<String, ReferenceBase> biblioRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> biblioRefDetailMap= (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioRefDetailMap);
 	
 		} catch (SQLException e) {
@@ -438,22 +439,18 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	 */
 	private TaxonDescription makeImage(BerlinModelImportState state, String fact, Media media, Set<TaxonDescription> descriptionSet, Taxon taxon) {
 		TaxonDescription taxonDescription = null;
-		ReferenceBase sourceRef = state.getConfig().getSourceReference();
-		String uri = fact;
+		Reference sourceRef = state.getConfig().getSourceReference();
 		Integer size = null; 
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-		URL url;
+		URI uri;
 		try {
-			url = new URL(fact.trim());
-		} catch (MalformedURLException e) {
-			logger.warn("Malformed URL. Image could not be imported: " + CdmUtils.Nz(uri));
+			uri = new URI(fact.trim());
+		} catch (URISyntaxException e) {
+			logger.warn("URISyntaxException. Image could not be imported: " + fact);
 			return null;
 		}
 		try {
-			imageMetaData.readMetaData(url.toURI(), 0);
-		}
-		catch(URISyntaxException e){
-			logger.error("URISyntaxException reading image metadata." , e);
+			imageMetaData.readMetaData(uri, 0);
 		} catch (IOException e) {
 			logger.error("IOError reading image metadata." , e);
 		} catch (HttpException e) {

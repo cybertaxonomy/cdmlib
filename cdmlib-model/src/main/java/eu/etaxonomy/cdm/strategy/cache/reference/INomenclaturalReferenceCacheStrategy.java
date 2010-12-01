@@ -10,15 +10,15 @@
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * A reference cache rendering strategy for all subclasses implementing INomenclaturalReference.
  * @author a.mueller
  *
- * @param <T> The concrete ReferenceBase class this strategy applies for
+ * @param <T> The concrete Reference class this strategy applies for
  */
-public interface INomenclaturalReferenceCacheStrategy<T extends ReferenceBase> extends IReferenceBaseCacheStrategy<T> {
+public interface INomenclaturalReferenceCacheStrategy<T extends Reference> extends IReferenceBaseCacheStrategy<T> {
 	
 	
 	/**
@@ -43,7 +43,7 @@ public interface INomenclaturalReferenceCacheStrategy<T extends ReferenceBase> e
 	
 	/**
 	 * Returns a formatted string containing the entire citation used for
-	 * nomenclatural purposes based on the {@link ReferenceBase reference} supplied - including
+	 * nomenclatural purposes based on the {@link Reference reference} supplied - including
 	 * (abbreviated) title  but not authors - and on the given details.<BR>
 	 * The returned string is build according to the corresponding
 	 * {@link INomenclaturalReferenceCacheStrategy cache strategy}.

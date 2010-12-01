@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -99,7 +99,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	private boolean doZoologicalName = true;
 	private boolean doCultivarPlantName = true;
 	
-	private boolean doTaxonomicTree = true;
+	private boolean doClassification = true;
 	
 	//TermBase
 	private boolean doFeatureTree = true;
@@ -154,7 +154,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 			doZoologicalName = false;
 			doCultivarPlantName = false;
 			
-			doTaxonomicTree = false;
+			doClassification = false;
 			
 			//TermBase
 			doFeatureTree = false;
@@ -328,11 +328,11 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	public boolean isDoCultivarPlantName() {
 		return doCultivarPlantName;
 	}
-	public void setDoTaxonomicTree(boolean doTaxonomicTree) {
-		this.doTaxonomicTree = doTaxonomicTree;
+	public void setDoClassification(boolean doClassification) {
+		this.doClassification = doClassification;
 	}
-	public boolean isDoTaxonomicTree() {
-		return doTaxonomicTree;
+	public boolean isDoClassification() {
+		return doClassification;
 	}
 	public void setDoFeatureTree(boolean doFeatureTree) {
 		this.doFeatureTree = doFeatureTree;
@@ -360,7 +360,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	}
 
 	@Override
-	public ReferenceBase getSourceReference() {
+	public Reference getSourceReference() {
 		//not needed here
 		return null;
 	}

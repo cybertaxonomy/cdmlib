@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.net.URI;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -23,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -46,11 +49,13 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Audited
 public class MediaRepresentationPart extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -1674422508643785796L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
 
 	// where the media file is stored
 	@XmlElement(name = "URI")
-	private String uri;
+	@Type(type="uriUserType")
+	private URI uri;
 
 	// in bytes
 	@XmlElement(name = "Size")
@@ -70,7 +75,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	 * 
 	 * @return
 	 */
-	public static MediaRepresentationPart NewInstance(String uri, Integer size) {
+	public static MediaRepresentationPart NewInstance(URI uri, Integer size) {
 		MediaRepresentationPart result = new MediaRepresentationPart(uri, size);
 		return result;
 	}
@@ -85,7 +90,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	/**
 	 * 
 	 */
-	protected MediaRepresentationPart(String uri, Integer size) {
+	protected MediaRepresentationPart(URI uri, Integer size) {
 		this();
 		this.setUri(uri);
 		this.setSize(size);
@@ -105,7 +110,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		this.mediaRepresentation = mediaRepresentation;
 	}
 
-	public String getUri() {
+	public URI getUri() {
 		return this.uri;
 	}
 
@@ -114,7 +119,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	 * @param uri
 	 *            uri
 	 */
-	public void setUri(String uri) {
+	public void setUri(URI uri) {
 		this.uri = uri;
 	}
 

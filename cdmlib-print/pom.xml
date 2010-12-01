@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>cdmlib-parent</artifactId>
 		<groupId>eu.etaxonomy</groupId>
-		<version>2.5</version>
+		<version>3.0</version>
 		<relativePath>pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -33,7 +33,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url></url>
+			<url>http://www.bgbm.org/bgbm/staff/wiss/HoffmannN/default.htm</url>
 		</developer>
 	</developers>
 	<dependencies>

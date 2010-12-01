@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author n.hoffmann
@@ -27,8 +27,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @version 1.0
  */
 @Controller
-@RequestMapping(value = {"/classifications"})
-public class ClassificationListController extends BaseListController<TaxonomicTree,ITaxonTreeService> {
+@RequestMapping(value = {"/classification"})
+public class ClassificationListController extends BaseListController<Classification,IClassificationService> {
 	
 	private static final Logger logger = Logger
 			.getLogger(ClassificationListController.class);
@@ -44,7 +44,7 @@ public class ClassificationListController extends BaseListController<TaxonomicTr
 	 */
 	@Override
 	@Autowired
-	public void setService(ITaxonTreeService service) {
+	public void setService(IClassificationService service) {
 		this.service = service;
 	}
 		

@@ -9,21 +9,11 @@
 
 package eu.etaxonomy.cdm.persistence.dao.description;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import org.hibernate.LockMode;
-import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.Grouping;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * A read-only interface to allow querying across all IIdentificationKey instances, regardless of type

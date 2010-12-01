@@ -90,12 +90,14 @@
       <mapping class="eu.etaxonomy.cdm.model.description.Feature"/>
       <mapping class="eu.etaxonomy.cdm.model.description.FeatureNode"/>
       <mapping class="eu.etaxonomy.cdm.model.description.FeatureTree"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.KeyStatement"/>
       <mapping class="eu.etaxonomy.cdm.model.description.MediaKey"/>
       <mapping class="eu.etaxonomy.cdm.model.description.IndividualsAssociation"/>
       <mapping class="eu.etaxonomy.cdm.model.description.MeasurementUnit"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Modifier"/>
       <mapping class="eu.etaxonomy.cdm.model.description.MultiAccessKey"/>
       <mapping class="eu.etaxonomy.cdm.model.description.PolytomousKey"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.PolytomousKeyNode"/>
       <mapping class="eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.description.PresenceTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.description.QuantitativeData"/>
@@ -177,7 +179,7 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Specimen"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
       <!-- Reference Package -->
-      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>
       <!--
       <mapping class="eu.etaxonomy.cdm.model.reference.Article"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Book"/>
@@ -208,7 +210,7 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonBase"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNode"/>
-      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonomicTree"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
       <!-- View Package -->

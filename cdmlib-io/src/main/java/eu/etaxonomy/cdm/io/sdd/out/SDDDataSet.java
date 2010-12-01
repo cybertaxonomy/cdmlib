@@ -91,7 +91,7 @@ import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -217,9 +217,9 @@ public class SDDDataSet {
     protected List<SpecimenOrObservationBase> occurrences;
     
     @XmlElementWrapper(name = "References")
-   	@XmlElement(name = "Reference", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = ReferenceBase.class)
+   	@XmlElement(name = "Reference", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Reference.class)
 
-    protected List<ReferenceBase> references;
+    protected List<Reference> references;
 
     @XmlElementWrapper(name = "ReferencedEntities")
     @XmlElements({
@@ -277,7 +277,7 @@ public class SDDDataSet {
 		terms = new ArrayList<DefinedTermBase>();
 		termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
 		occurrences = new ArrayList<SpecimenOrObservationBase>();
-		references = new ArrayList<ReferenceBase>();
+		references = new ArrayList<Reference>();
 		referencedEntities = new ArrayList<ReferencedEntityBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();
@@ -440,10 +440,10 @@ public class SDDDataSet {
      * 
      * @return
      *     possible object is
-     *     {@link List<ReferenceBase> }
+     *     {@link List<Reference> }
      *     
      */
-    public List<ReferenceBase> getReferences() {
+    public List<Reference> getReferences() {
         return references;
     }
 
@@ -452,10 +452,10 @@ public class SDDDataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<ReferenceBase> }
+     *     {@link List<Reference> }
      *     
      */
-    public void setReferences(List<ReferenceBase> value) {
+    public void setReferences(List<Reference> value) {
         this.references = value;
     }
 

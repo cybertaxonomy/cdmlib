@@ -50,7 +50,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 	 */
 	@Override
 	public void done() {
-		logger.info(taskName + "Done");
+		logger.info(taskName + "...Done");
 	}
 
 	/* (non-Javadoc)
@@ -106,9 +106,9 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 	 * @see eu.etaxonomy.cdm.common.IProgressMonitor#warning(java.lang.String, java.lang.Exception)
 	 */
 	@Override
-	public void warning(String warning, Throwable exeption) {
+	public void warning(String warning, Throwable exception) {
 		logger.warn(warning);
-		exeption.printStackTrace();
+		exception.printStackTrace();
 	}
 
 	public float getPercentage(){

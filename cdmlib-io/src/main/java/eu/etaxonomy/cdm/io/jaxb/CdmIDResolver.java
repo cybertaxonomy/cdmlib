@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public class CdmIDResolver extends IDResolver {
@@ -177,7 +177,7 @@ public class CdmIDResolver extends IDResolver {
 					  return resolveObject(uuid, targetType, occurrenceService);
 				  } else if(Collection.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, collectionService);
-				  } else if(ReferenceBase.class.isAssignableFrom(targetType)) {
+				  } else if(Reference.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, referenceService);
 				  } else if(TaxonBase.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, taxonService);

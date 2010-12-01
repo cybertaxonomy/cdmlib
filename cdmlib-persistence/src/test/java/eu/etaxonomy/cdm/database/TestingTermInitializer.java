@@ -54,8 +54,14 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 		this.dataSource = dataSource;
 	}
 	
-    @Override
+
     @PostConstruct
+	@Override
+	public void initialize() {
+		super.initialize();
+	}
+	
+    @Override
 	public void doInitialize(){
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 		IDatabaseConnection connection = null;

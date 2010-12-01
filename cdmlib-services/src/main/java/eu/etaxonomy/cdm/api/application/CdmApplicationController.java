@@ -36,18 +36,21 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.common.NullProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -325,8 +328,8 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		return configuration.getTaxonService();
 	}
 	
-	public final ITaxonTreeService getTaxonTreeService(){
-		return configuration.getTaxonTreeService();
+	public final IClassificationService getClassificationService(){
+		return configuration.getClassificationService();
 	}
 	
 	public final ITaxonNodeService getTaxonNodeService(){
@@ -387,10 +390,22 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	
 	public final IVocabularyService getVocabularyService(){
 		return configuration.getVocabularyService();
-	}	
+	}
+	
+	public final IIdentificationKeyService getIdentificationKeyService(){
+		return configuration.getIdentificationKeyService();
+	}
+
+	public final IPolytomousKeyService getPolytomousKeyService(){
+		return configuration.getPolytomousKeyService();
+	}
 	
 	public final IService<CdmBase> getMainService(){
 		return configuration.getMainService();
+	}
+	
+	public final IWorkingSetService getWorkingSetService(){
+		return configuration.getWorkingSetService();
 	}
 	
 	public final ConversationHolder NewConversation(){

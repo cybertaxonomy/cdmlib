@@ -78,8 +78,8 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 	        name="MultiAccessKey_Taxon",
-	        joinColumns=@JoinColumn(name="multiAccessKey_fk"),
-	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
+	        joinColumns=@JoinColumn(name="multiAccessKey_id"),
+	        inverseJoinColumns=@JoinColumn(name="taxon_id")
 	)
 	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();

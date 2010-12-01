@@ -18,6 +18,6 @@ package eu.etaxonomy.cdm.model.reference;
  * <li> the term "Communication" from PublicationTypeTerm according to the TDWG ontology
  * </ul>
  */
-public interface IPersonalCommunication extends IReferenceBase{
+public interface IPersonalCommunication extends IReference{
 
 }

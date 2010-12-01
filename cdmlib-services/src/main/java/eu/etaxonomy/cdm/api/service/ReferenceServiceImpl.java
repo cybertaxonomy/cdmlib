@@ -20,14 +20,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,IReferenceDao> implements IReferenceService {
+public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IReferenceDao> implements IReferenceService {
 	
 	static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
 
@@ -43,7 +43,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 	 */
 	@Override
 	public void updateTitleCache() {
-		Class<ReferenceBase> clazz = ReferenceBase.class;
+		Class<Reference> clazz = Reference.class;
 		super.updateTitleCache(clazz, null, null);
 	}
 
@@ -52,24 +52,24 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		this.dao = dao;
 	}
 
-	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle() {
+	public List<UuidAndTitleCache<Reference>> getUuidAndTitle() {
 		
 		return dao.getUuidAndTitle();
 	}
 	
-	public List<ReferenceBase> getAllReferencesForPublishing(){
+	public List<Reference> getAllReferencesForPublishing(){
 		return dao.getAllNotNomenclaturalReferencesForPublishing();
 	}
 
-	public List<ReferenceBase> getAllNomenclaturalReferences() {
+	public List<Reference> getAllNomenclaturalReferences() {
 		
 		return dao.getAllNomenclaturalReferences();
 	}
 
 	@Override
-	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths) {
+	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
 		
-		List<TaxonBase> taxonList = dao.listCoveredTaxa(referenceBase, includeSubordinateReferences, propertyPaths);
+		List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, propertyPaths);
 		
 		return taxonList;
 	}

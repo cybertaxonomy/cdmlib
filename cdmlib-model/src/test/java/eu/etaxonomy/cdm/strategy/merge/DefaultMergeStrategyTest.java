@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 //import eu.etaxonomy.cdm.model.reference.PrintSeries;
 //import eu.etaxonomy.cdm.model.reference.Thesis;
@@ -62,22 +62,22 @@ public class DefaultMergeStrategyTest {
 	private static final Logger logger = Logger.getLogger(DefaultMergeStrategyTest.class);
 
 	private DefaultMergeStrategy bookMergeStrategy;
-	private ReferenceBase book1;
+	private Reference book1;
 	private String editionString1 ="Ed.1";
 	private String volumeString1 ="Vol.1";
 	private Team team1;
-	private ReferenceBase printSeries1;
+	private Reference printSeries1;
 	private Annotation annotation1;
 	private String title1 = "Title1";
 	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
 	private int hasProblem1 = 1;
 	private LSID lsid1;
 	
-	private ReferenceBase book2;
+	private Reference book2;
 	private String editionString2 ="Ed.2";
 	private String volumeString2 ="Vol.2";
 	private Team team2;
-	private ReferenceBase printSeries2;
+	private Reference printSeries2;
 	private Annotation annotation2;
 	private String annotationString2;
 	private String title2 = "Title2";
@@ -88,7 +88,7 @@ public class DefaultMergeStrategyTest {
 	private ReferenceFactory refFactory;
 	
 	
-	private ReferenceBase book3;
+	private Reference book3;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -112,7 +112,7 @@ public class DefaultMergeStrategyTest {
 	@Before
 	public void setUp() throws Exception {
 		refFactory = ReferenceFactory.newInstance();
-		bookMergeStrategy = DefaultMergeStrategy.NewInstance(ReferenceBase.class);
+		bookMergeStrategy = DefaultMergeStrategy.NewInstance(Reference.class);
 		team1 = Team.NewInstance();
 		team1.setTitleCache("Team1", true);
 		team2 = Team.NewInstance();
@@ -167,7 +167,7 @@ public class DefaultMergeStrategyTest {
 	@Test
 	public void testNewInstance() {
 		Assert.assertNotNull(bookMergeStrategy);
-		Assert.assertEquals(ReferenceBase.class, bookMergeStrategy.getMergeClass());
+		Assert.assertEquals(Reference.class, bookMergeStrategy.getMergeClass());
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class DefaultMergeStrategyTest {
 	 */
 	@Test
 	public void testInvokeReferences() throws MergeException {
-		INomenclaturalReferenceCacheStrategy<ReferenceBase> cacheStrategy1 = (INomenclaturalReferenceCacheStrategy<ReferenceBase>)book1.getCacheStrategy();
+		INomenclaturalReferenceCacheStrategy<Reference> cacheStrategy1 = (INomenclaturalReferenceCacheStrategy<Reference>)book1.getCacheStrategy();
 		int id = book1.getId();
 		UUID uuid = book1.getUuid();
 		try {
@@ -302,12 +302,12 @@ public class DefaultMergeStrategyTest {
 		Institution school1 = Institution.NewInstance();
 		Institution school2 = Institution.NewInstance();
 		
-		ReferenceBase thesis1 = refFactory.newThesis();
+		Reference thesis1 = refFactory.newThesis();
 		thesis1.setSchool(school1);
 		//Thesis thesis1 = Thesis.NewInstance(school1);
-		ReferenceBase thesis2 = refFactory.newThesis();
+		Reference thesis2 = refFactory.newThesis();
 		thesis2.setSchool(school2);
-		DefaultMergeStrategy thesisStrategy = DefaultMergeStrategy.NewInstance(ReferenceBase.class);
+		DefaultMergeStrategy thesisStrategy = DefaultMergeStrategy.NewInstance(Reference.class);
 		
 		thesisStrategy.setMergeMode("school", MergeMode.SECOND);
 		thesisStrategy.invoke(thesis1, thesis2);

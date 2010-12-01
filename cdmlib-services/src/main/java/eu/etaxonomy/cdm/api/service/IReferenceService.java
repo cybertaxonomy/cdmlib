@@ -14,17 +14,17 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
-public interface IReferenceService extends IIdentifiableEntityService<ReferenceBase> {
+public interface IReferenceService extends IIdentifiableEntityService<Reference> {
 	
 	/**
-	 * Returns a Paged List of ReferenceBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * Returns a Paged List of Reference instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
 	 * 
-	 * @param clazz filter the results by class (or pass null to return all ReferenceBase instances)
+	 * @param clazz filter the results by class (or pass null to return all Reference instances)
 	 * @param queryString
 	 * @param pageSize The maximum number of references returned (can be null for all matching references)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
@@ -33,10 +33,10 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 *            include *-to-one properties like createdBy.username or
 	 *            authorTeam.persistentTitleCache
 	 * @param propertyPaths properties to be initialized
-	 * @return a Pager ReferenceBase instances
+	 * @return a Pager Reference instances
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
-	public Pager<ReferenceBase> search(Class<? extends ReferenceBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<Reference> search(Class<? extends Reference> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Returns a map that holds uuid, titleCache pairs of all references in the current database
@@ -44,19 +44,19 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 * @return 
 	 * 			a <code>Map</code> containing uuid and titleCache of references
 	 */
-	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle();
+	public List<UuidAndTitleCache<Reference>> getUuidAndTitle();
 	
 	/**
 	 * TODO candidate for harmonization: rename to listForPublishing
 	 * @return
 	 */
-	public List<ReferenceBase> getAllReferencesForPublishing();
+	public List<Reference> getAllReferencesForPublishing();
 	
 	/**
 	 * TODO candidate for harmonization: rename to listNomenclaturalReferences
 	 * @return
 	 */
-	public List<ReferenceBase> getAllNomenclaturalReferences();
+	public List<Reference> getAllNomenclaturalReferences();
 
 	/**
 	 * returns
@@ -75,10 +75,10 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 * <li>taxon.name.descriptions.descriptionSources</li>
 	 * </ul>
 	 * 
-	 * @param referenceBase
+	 * @param reference
 	 * @param includeSubordinateReferences TODO
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths);
+	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths);
 }

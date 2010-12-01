@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -212,31 +212,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	protected void setInDescription(DescriptionBase inDescription) {
 		this.inDescription = inDescription;
 	}
-
-	/**
-	 * Does exactly the same as getFeature().
-	 * @author ben.clark
-	 * FIXME Is there a need to have two methods with different names which do the same thing?
-	 * 
-	 * @see #getFeature() 
-	 */
-	@Transient
-	@Deprecated //will be removed in version 3. 
-	public Feature getType(){
-		return this.getFeature();
-	}
-	
-	/**
-	 * Does exactly the same as setFeature(Feature).
-	 * 
-	 * @param type	the feature to be described or measured
-	 * @see 		#setFeature(Feature) 
-	 * @see 		#getFeature() 
-	 */
-	@Deprecated  //will be removed in version 3
-	public void setType(Feature type){
-		this.setFeature(type);
-	}
 	
 	/** 
 	 * Returns the {@link Feature feature} <i>this</i> description element is for.
@@ -362,9 +337,9 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
 	 */
-	public DescriptionElementSource addSource(String id, String idNamespace, ReferenceBase citation, String microCitation) {
+	public DescriptionElementSource addSource(String id, String idNamespace, Reference citation, String microCitation) {
 		if (id == null && idNamespace == null && citation == null && microCitation == null){
 			return null;
 		}
@@ -373,7 +348,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 		return source;
 	}
 	
-	public void addSource(String id, String idNamespace, ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+	public void addSource(String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
 		DescriptionElementSource newSource = DescriptionElementSource.NewInstance(id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
 		addSource(newSource);
 	}
@@ -384,134 +359,42 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	public void removeSource(DescriptionElementSource source) {
 		this.sources.remove(source);
 	}
-
 	
-	/**
-	 * Gets the citation micro reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 * @return
-	 */
-	@Transient
-	@Deprecated
-	public String getCitationMicroReference(){
-		if (this.sources.size() < 1){
-			return null;
-		}else{
-			return this.sources.iterator().next().getCitationMicroReference();
-		}
-	}
+//	
+//	/**
+//	 * Sets the citation micro reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+//	 * It will be removed in v2.3
+//	 * If more than one source exists an IllegalStateException is thrown
+//	 **/
+//	@Transient
+//	@Deprecated
+//	public void setCitationMicroReference(String citationMicroReference){
+//		if (this.sources.size() < 1){
+//			Reference citation = null;
+//			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, citationMicroReference));
+//		}else if (this.sources.size() > 1){
+//			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
+//		}else{
+//			this.sources.iterator().next().setCitationMicroReference(citationMicroReference);
+//		}
+//	}
+//	
+//	/**
+//	 * Sets the citation of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+//	 * It will be removed in v2.3
+//	 * If more than one source exists an IllegalStateException is thrown
+//	 **/
+//	@Deprecated
+//	public void setCitation(Reference citation) {
+//		if (this.sources.size() < 1){
+//			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
+//		}else if (this.sources.size() > 1){
+//			throw new IllegalStateException("When adding a citation via the setCitation method there must be only one source available");
+//		}else{
+//			this.sources.iterator().next().setCitation(citation);
+//		}
+//	}
 	
-	/**
-	 * Sets the citation micro reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 * If more than one source exists an IllegalStateException is thrown
-	 **/
-	@Transient
-	@Deprecated
-	public void setCitationMicroReference(String citationMicroReference){
-		if (this.sources.size() < 1){
-			ReferenceBase citation = null;
-			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, citationMicroReference));
-		}else if (this.sources.size() > 1){
-			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
-		}else{
-			this.sources.iterator().next().setCitationMicroReference(citationMicroReference);
-		}
-	}
-
-	/**
-	 * Gets the citation of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 */ 
-	@Transient
-	@Deprecated
-	public ReferenceBase getCitation(){
-		if (this.sources.size() < 1){
-			return null;
-		}else{
-			return this.sources.iterator().next().getCitation();
-		}
-	}
-	
-	/**
-	 * Sets the citation of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 * If more than one source exists an IllegalStateException is thrown
-	 **/
-	@Deprecated
-	public void setCitation(ReferenceBase citation) {
-		if (this.sources.size() < 1){
-			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
-		}else if (this.sources.size() > 1){
-			throw new IllegalStateException("When adding a citation via the setCitation method there must be only one source available");
-		}else{
-			this.sources.iterator().next().setCitation(citation);
-		}
-	}
-	
-	
-	/**
-	 * Gets the original name string of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 * @return
-	 */
-	@Transient
-	@Deprecated
-	public String getOriginalNameString(){
-		if (this.sources.size() < 1){
-			return null;
-		}else{
-			return this.sources.iterator().next().getOriginalNameString();
-		}
-	}
-	
-	/**
-	 * Sets the original name string of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 * If more than one source exists an IllegalStateException is thrown
-	 **/
-	@Transient
-	@Deprecated
-	public void setOriginalNameString(String originalNameString){
-		if (this.sources.size() < 1){
-			this.addSource(DescriptionElementSource.NewInstance(null, null, null, null, null, originalNameString));
-		}else if (this.sources.size() > 1){
-			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
-		}else{
-			this.sources.iterator().next().setOriginalNameString(originalNameString);
-		}
-	}
-	
-
-	/**
-	 * Gets the name used in source of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 */ 
-	@Transient
-	@Deprecated
-	public TaxonNameBase getNameUsedInReference(){
-		if (this.sources.size() < 1){
-			return null;
-		}else{
-			return this.sources.iterator().next().getNameUsedInSource();
-		}
-	}
-	
-	/**
-	 * Sets the name used in reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-	 * It will be removed in v2.3
-	 * If more than one source exists an IllegalStateException is thrown
-	 **/
-	@Deprecated
-	public void setNameUsedInReference(TaxonNameBase nameUsedInSource) {
-		if (this.sources.size() < 1){
-			this.addSource(DescriptionElementSource.NewInstance(null, null, null, null, nameUsedInSource, null));
-		}else if (this.sources.size() > 1){
-			throw new IllegalStateException("When adding a citation via the setCitation method there must be only one source available");
-		}else{
-			this.sources.iterator().next().setNameUsedInSource(nameUsedInSource);
-		}
-	}
 
 //************************** CLONE **********************************************************/	
 	

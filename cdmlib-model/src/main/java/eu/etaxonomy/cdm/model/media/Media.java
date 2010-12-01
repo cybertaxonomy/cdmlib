@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -79,6 +80,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends IdentifiableEntity implements Cloneable {
 	private static final long serialVersionUID = -1927421567263473658L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Media.class);
 
     // TODO once hibernate annotations support custom collection type
@@ -144,7 +146,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	 * Returns <code>null</code> if uri is empty
 	 * @return Media
 	 */
-	public static Media NewInstance(String uri, Integer size, String mimeType, String suffix){
+	public static Media NewInstance(URI uri, Integer size, String mimeType, String suffix){
 		MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size);
 		if (representation == null){
 			return null;
@@ -285,12 +287,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	}
 
 	//************* Descriptions
-	
-	@Deprecated // will be removed in next release; use getAllDescriptions instead
-	public Map<Language,LanguageString> getDescription(){
-		return getAllDescriptions();
-	}
-	
+
 	public Map<Language,LanguageString> getAllDescriptions(){
 		if(this.description == null) {
 			this.description = new HashMap<Language,LanguageString>();

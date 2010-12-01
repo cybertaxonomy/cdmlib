@@ -13,9 +13,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class GenericDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class GenericDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(GenericDefaultCacheStrategy.class);
 	
 

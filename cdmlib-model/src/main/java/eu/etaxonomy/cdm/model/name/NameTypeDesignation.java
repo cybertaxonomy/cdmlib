@@ -26,7 +26,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * The class representing a typification of a {@link TaxonNameBase taxon name} with a {@link Rank rank}
@@ -89,7 +89,7 @@ implements ITypeDesignation {
 	/** 
 	 * Class constructor: creates a new empty name type designation.
 	 * 
-	 * @see	#NameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean)
+	 * @see	#NameTypeDesignation(TaxonNameBase, Reference, String, String, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation() {
 	}
@@ -97,7 +97,7 @@ implements ITypeDesignation {
 
 	/**
 	 * Class constructor: creates a new name type designation instance
-	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and eventually
+	 * (including its {@link eu.etaxonomy.cdm.model.reference.Reference reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation).
 	 * 
@@ -113,10 +113,10 @@ implements ITypeDesignation {
 	 * 								<i>this</i> name type designation
 	 * @see							#NameTypeDesignation()
 	 * @see							TypeDesignationBase#isNotDesignated()
-	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
+	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, Reference, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonNameBase typeName, NameTypeDesignationStatus status,
-			ReferenceBase citation, String citationMicroReference, String originalNameString) {
+			Reference citation, String citationMicroReference, String originalNameString) {
 		super(citation, citationMicroReference, originalNameString);
 		this.setTypeName(typeName);
 		this.setTypeStatus(status);
@@ -124,7 +124,7 @@ implements ITypeDesignation {
 
 	/**
 	 * Class constructor: creates a new name type designation instance
-	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and eventually
+	 * (including its {@link eu.etaxonomy.cdm.model.reference.Reference reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation).
 	 * 
@@ -140,10 +140,10 @@ implements ITypeDesignation {
 	 * 								<i>this</i> name type designation
 	 * @see							#NameTypeDesignation()
 	 * @see							TypeDesignationBase#isNotDesignated()
-	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
+	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, Reference, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(	TaxonNameBase typeName, 
-									ReferenceBase citation, 
+									Reference citation, 
 									String citationMicroReference,
 									String originalNameString, 
 									NameTypeDesignationStatus status, 
@@ -221,7 +221,7 @@ implements ITypeDesignation {
 	 * Returns the boolean value "true" if the use of the species {@link TaxonNameBase taxon name}
 	 * as the type for <i>this</i> taxon name type designation was posterior to the
 	 * publication of the typified taxon name. In this case the taxon name type
-	 * designation should have a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} that is different to the
+	 * designation should have a {@link eu.etaxonomy.cdm.model.reference.Reference reference} that is different to the
 	 * {@link TaxonNameBase#getNomenclaturalReference() nomenclatural reference} of the typified taxon name.
 	 *  
 	 * @see   ReferencedEntityBase#getCitation()

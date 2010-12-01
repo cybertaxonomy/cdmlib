@@ -91,7 +91,11 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			}			
 			addJsonElement(json, jsonConfig, "storedUnder", bean.getStoredUnder());
 			addJsonElement(json, jsonConfig, "collectorsNumber", bean.getCollectorsNumber());
-			addJsonElement(json, jsonConfig, "exsiccatum", bean.getExsiccatum());
+			try {
+				addJsonElement(json, jsonConfig, "exsiccatum", bean.getExsiccatum());
+			} catch (MethodNotSupportedByDerivedUnitTypeException e) {
+				/* Skip - Only supported by specimen and fossils */
+			}
 			addJsonElement(json, jsonConfig, "sources", bean.getSources());
 			addJsonElement(json, jsonConfig, "collection", bean.getCollection());
 			if(Hibernate.isInitialized(bean.innerDerivedUnit().getDerivedFrom().getDerivatives())){

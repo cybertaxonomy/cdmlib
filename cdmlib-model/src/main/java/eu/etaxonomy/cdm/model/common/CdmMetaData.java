@@ -13,14 +13,12 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 
 /**
@@ -49,7 +47,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = "2.5.0.0.201009211255";
+	private static final String dbSchemaVersion = "3.0.0.0.201011090000";
 	
 
 	/**
@@ -80,7 +78,7 @@ public class CdmMetaData extends CdmBase{
 	 * 
 	 * The last number represents the date of change.
 	 */
-	private static final String termsVersion = "2.5.0.0.201009211255";
+	private static final String termsVersion = "3.0.0.0.201011170000";
 	
 	
 	public enum MetaDataPropertyName{

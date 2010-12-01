@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -336,10 +336,10 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
 		
 		conversationHolder1.bind();
-		ReferenceBase reference1 = referenceService.find(referenceUuid1);
+		Reference reference1 = referenceService.find(referenceUuid1);
 		assertSame("This should be the sec", taxonBase1.getSec(), reference1);
 		
-		ReferenceBase reference2 = referenceService.find(referenceUuid2);
+		Reference reference2 = referenceService.find(referenceUuid2);
 		taxonBase1.setSec(reference2);		
 		taxonService.save(taxonBase1);
 		conversationHolder1.commit();
@@ -366,7 +366,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// get a taxon
 		TaxonBase taxonBase = taxonService.find(taxonUuid1);
 		// get a reference
-		ReferenceBase reference = referenceService.find(referenceUuid2);
+		Reference reference = referenceService.find(referenceUuid2);
 		// make sure 
 		assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
 		// set the reference as the taxons new sec
@@ -382,7 +382,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// load the same taxon in a different session
 		TaxonBase taxonBaseInSecondTransaction = taxonService.find(taxonUuid1);
 		// load the reference
-		ReferenceBase referenceInSecondTransaction = referenceService.find(referenceUuid2);
+		Reference referenceInSecondTransaction = referenceService.find(referenceUuid2);
 		// we assume that
 		assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
 		assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);		
@@ -400,7 +400,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// get a taxon
 		TaxonBase taxonBase = taxonService.find(taxonUuid1);
 		// get a reference
-		ReferenceBase reference = referenceService.find(referenceUuid2);
+		Reference reference = referenceService.find(referenceUuid2);
 		// make sure 
 		assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
 		// set the reference as the taxons new sec
@@ -416,7 +416,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// load the same taxon in a different session
 		TaxonBase taxonBaseInSecondTransaction = taxonService.find(taxonUuid1);
 		// load the reference
-		ReferenceBase referenceInSecondTransaction = referenceService.find(referenceUuid2);
+		Reference referenceInSecondTransaction = referenceService.find(referenceUuid2);
 		// we assume that
 		assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
 		assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);		
@@ -435,7 +435,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// get a taxon
 		TaxonBase taxonBase = taxonService.find(taxonUuid1);
 		// get a reference
-		ReferenceBase reference = referenceService.find(referenceUuid2);
+		Reference reference = referenceService.find(referenceUuid2);
 		// make sure 
 		assertTrue(! taxonBase.getSec().equals(reference));
 		assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
@@ -522,7 +522,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 		TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
-		ReferenceBase reference = referenceService.find(referenceUuid2);
+		Reference reference = referenceService.find(referenceUuid2);
 		taxonBase1.setSec(reference);
 		taxonService.save(taxonBase1);
 		conversationHolder1.commit();

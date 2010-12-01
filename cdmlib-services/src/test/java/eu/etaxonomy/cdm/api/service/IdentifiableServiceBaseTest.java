@@ -51,8 +51,9 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Class clazz = TaxonNameBase.class;
 		int stepSize = 2;
 		nameService.updateTitleCache(clazz, stepSize, null);
-		
+
 //		TaxonNameBase name = nameService.find(UUID.fromString("5d74500b-9fd5-4d18-b9cd-cc1c8a372fec"));
+//		System.out.println(name.getRank().getLabel());
 //		setComplete();
 //		endTransaction();
 //		try {

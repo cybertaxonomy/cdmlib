@@ -27,7 +27,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent;
@@ -93,7 +93,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	/**
 	 * Class constructor: creates a new taxon relationship instance (with the
 	 * given "accepted/correct" {@link Taxon taxa}, the given {@link SynonymRelationshipType synonym relationship type}
-	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} on which the relationship
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.Reference reference source} on which the relationship
 	 * assertion is based). Moreover the new taxon relationship will be added to
 	 * the respective sets of taxon relationships assigned to both taxa.
 	 * 
@@ -104,7 +104,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @see 							eu.etaxonomy.cdm.model.common.RelationshipBase
 	 */
-	protected TaxonRelationship(Taxon from, Taxon to, TaxonRelationshipType type, ReferenceBase citation, String citationMicroReference) {
+	protected TaxonRelationship(Taxon from, Taxon to, TaxonRelationshipType type, Reference citation, String citationMicroReference) {
 		super(from, to, type, citation, citationMicroReference);
 	}
 	

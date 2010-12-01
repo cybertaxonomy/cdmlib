@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -146,7 +146,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                                  }
                            }
                      }
-                     ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+                     Reference<?> sourceRef = state.getConfig().getSourceReference();
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
                      if (tdwgAreas.size() == 0){
@@ -265,7 +265,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @param taxonMap
 	 * @return
 	 */
-	private TaxonDescription getTaxonDescription(int newTaxonId, int oldTaxonId, TaxonDescription oldDescription, Map<String, TaxonBase> taxonMap, int occurrenceId, ReferenceBase<?> sourceSec){
+	private TaxonDescription getTaxonDescription(int newTaxonId, int oldTaxonId, TaxonDescription oldDescription, Map<String, TaxonBase> taxonMap, int occurrenceId, Reference<?> sourceSec){
 		TaxonDescription result = null;
 		if (oldDescription == null || newTaxonId != oldTaxonId){
 			TaxonBase taxonBase = taxonMap.get(String.valueOf(newTaxonId));

@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -32,7 +32,7 @@ public interface ITreeNode extends IAnnotatableEntity {
 	 * @param synonymToBeUsed
 	 * @return the child node 
 	 */
-	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
+	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation, Synonym synonymToBeUsed);
 	
 	/**
 	 * Adds a taxon as a child of the ITreeNode
@@ -43,7 +43,7 @@ public interface ITreeNode extends IAnnotatableEntity {
 	 * @param synonymToBeUsed
 	 * @return the child node
 	 */
-	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
+	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation, Synonym synonymToBeUsed);
 	
 	/**
 	 * Whether this TreeNode has child nodes attached
@@ -65,7 +65,7 @@ public interface ITreeNode extends IAnnotatableEntity {
 	/**
 	 * @return the citation for the parent child relationship or the tree itself
 	 */
-	public ReferenceBase getReference();
+	public Reference getReference();
 	
 	public Set<TaxonNode> getChildNodes();
 	

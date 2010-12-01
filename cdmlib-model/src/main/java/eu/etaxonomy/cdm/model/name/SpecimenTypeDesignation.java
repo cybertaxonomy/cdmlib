@@ -29,7 +29,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * The class representing a typification of one or several {@link TaxonNameBase taxon names} by a
@@ -72,7 +72,7 @@ implements ITypeDesignation {
 	
 //	/**
 //	 * Creates a new specimen type designation instance
-//	 * (including its {@link reference.ReferenceBase reference source} and eventually
+//	 * (including its {@link reference.Reference reference source} and eventually
 //	 * the taxon name string originally used by this reference when establishing
 //	 * the former designation) and adds it to the corresponding 
 //	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type designation set} of the
@@ -83,12 +83,12 @@ implements ITypeDesignation {
 //	 * @param citation				the reference source for the new designation
 //	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 //	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
-//	 * @see							#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, ReferenceBase, String, String)
+//	 * @see							#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, Reference, String, String)
 //	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
 //	 * @see							occurrence.DerivedUnitBase
 //	 */
 //	protected static SpecimenTypeDesignation NewInstance2(DerivedUnitBase specimen, TypeDesignationStatus status,
-//			ReferenceBase citation, String citationMicroReference, String originalNameString){
+//			Reference citation, String citationMicroReference, String originalNameString){
 //		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
 //		return specTypeDesig;
 //	}
@@ -99,7 +99,7 @@ implements ITypeDesignation {
 	 * Class constructor: creates a new empty specimen type designation.
 	 * 
 	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, SpecimenTypeDesignationStatus,
-	 * ReferenceBase, String, String, boolean)
+	 * Reference, String, String, boolean)
 	 */
 	protected SpecimenTypeDesignation(){
 	}
@@ -110,7 +110,7 @@ implements ITypeDesignation {
 	
 	/**
 	 * Class constructor: creates a new specimen type designation instance
-	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and 
+	 * (including its {@link eu.etaxonomy.cdm.model.reference.Reference reference source} and 
 	 * eventually the taxon name string originally used by this reference when 
 	 * establishing the former designation).
 	 * 
@@ -125,11 +125,11 @@ implements ITypeDesignation {
 	 * @param isNotDesignated		the boolean flag indicating whether there is no specimen type at all for 
 	 * 								<i>this</i> specimen type designation
 	 * @see							#SpecimenTypeDesignation()
-	 * @see							TaxonNameBase#addSpecimenTypeDesignation(Specimen, SpecimenTypeDesignationStatus, ReferenceBase, String, String, boolean, boolean)
+	 * @see							TaxonNameBase#addSpecimenTypeDesignation(Specimen, SpecimenTypeDesignationStatus, Reference, String, String, boolean, boolean)
 	 * @see							TypeDesignationBase#isNotDesignated()
 	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase
 	 */
-	protected SpecimenTypeDesignation(DerivedUnitBase specimen, SpecimenTypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, 
+	protected SpecimenTypeDesignation(DerivedUnitBase specimen, SpecimenTypeDesignationStatus status, Reference citation, String citationMicroReference, 
 			String originalNameString, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeSpecimen(specimen);

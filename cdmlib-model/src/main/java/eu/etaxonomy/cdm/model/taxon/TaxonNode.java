@@ -19,7 +19,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,7 +35,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -47,7 +46,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlType(name = "TaxonNode", propOrder = {
     "taxon",
     "parent",
-    "taxonomicTree",
+    "classification",
     "childNodes",
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
@@ -78,14 +77,14 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	private TaxonNode parent;
 	
 	
-	@XmlElement(name = "taxonomicTree")
+	@XmlElement(name = "classification")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	
 //	TODO @NotNull // avoids creating a UNIQUE key for this field
-	private TaxonomicTree taxonomicTree;
+	private Classification classification;
 	
 	@XmlElementWrapper(name = "childNodes")
 	@XmlElement(name = "childNode")
@@ -100,7 +99,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private ReferenceBase referenceForParentChildRelation;
+	private Reference referenceForParentChildRelation;
 	
 	@XmlElement(name = "microReference")
 	private String microReferenceForParentChildRelation;
@@ -125,13 +124,13 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	/**
 	 * to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
 	 * @param taxon
-	 * @param taxonomicTree
-	 * @deprecated setting of taxonomic tree is handled in the addTaxonNode() method,
+	 * @param classification
+	 * @deprecated setting of classification is handled in the addTaxonNode() method,
 	 * use TaxonNode(taxon) instead
 	 */
-	protected TaxonNode (Taxon taxon, TaxonomicTree taxonomicTree){
+	protected TaxonNode (Taxon taxon, Classification classification){
 		this(taxon);
-		setTaxonomicTree(taxonomicTree);
+		setClassification(classification);
 	}
 	
 	/**
@@ -148,10 +147,10 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 //************************ METHODS **************************/
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
 	 */
-	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed) {
-		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
+	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation, Synonym synonymToBeUsed) {
+		if (this.getClassification().isTaxonInTree(taxon)){
  			throw new IllegalArgumentException("Taxon may not be in a taxonomic view twice: " + taxon == null? "(null)" : taxon.getTitleCache());
 		}
 		
@@ -164,7 +163,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 * @param childNode the taxon node to be moved to the new parent
 	 * @return the child node in the state of having a new parent
 	 */
-	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
+	public TaxonNode addChildNode(TaxonNode childNode, Reference reference, String microReference, Synonym synonymToBeUsed){
 		
 		// check if this node is a descendant of the childNode 
 		if(childNode.getParentTreeNode() != this && childNode.isAncestor(this)){
@@ -181,18 +180,18 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	}
 	
 	/**
-	 * Sets this nodes taxonomic tree. Updates taxonomic tree of child nodes recursively
+	 * Sets this nodes classification. Updates classification of child nodes recursively
 	 * 
 	 * If the former and the actual tree are equal() this method does nothing
 	 * 
 	 * @param newTree
 	 */
 	@Transient
-	private void setTaxonomicTreeRecursively(TaxonomicTree newTree) {
-		if(! newTree.equals(this.getTaxonomicTree())){
-			this.setTaxonomicTree(newTree);
+	private void setClassificationRecursively(Classification newTree) {
+		if(! newTree.equals(this.getClassification())){
+			this.setClassification(newTree);
 			for(TaxonNode childNode : this.getChildNodes()){
-				childNode.setTaxonomicTreeRecursively(newTree);
+				childNode.setClassificationRecursively(newTree);
 			}
 		}
 	}
@@ -225,7 +224,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	}
 	
 	/**
-	 * Removes the child node from this node. Sets the parent and the taxonomic tree of the child 
+	 * Removes the child node from this node. Sets the parent and the classification of the child 
 	 * node to null
 	 * 
 	 * @param childNode
@@ -247,7 +246,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 			throw new IllegalStateException("children count must not be negative ");
 		}
 		childNode.setParent(null);
-		childNode.setTaxonomicTree(null);
+		childNode.setClassification(null);
 		
 		return result;
 	}
@@ -260,7 +259,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 */
 	public boolean delete(){
 		if(isTopmostNode()){
-			return taxonomicTree.deleteChildNode(this);
+			return classification.deleteChildNode(this);
 		}else{
 			return getParent().deleteChildNode(this);
 		}		
@@ -280,7 +279,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	@Transient
 	public ITreeNode getParentTreeNode() {
 		if(isTopmostNode())
-			return getTaxonomicTree();
+			return getClassification();
 		return parent;
 	}
 	
@@ -299,7 +298,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 * @see setParentTreeNode(ITreeNode)
 	 */
 	protected void setParent(ITreeNode parent) {
-		if(parent instanceof TaxonomicTree){
+		if(parent instanceof Classification){
 			this.parent = null;
 			return;
 		}
@@ -308,7 +307,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	
 	/**
 	 * Sets the parent of this taxon node to the given parent. Cleans up references to 
-	 * old parents and sets the taxonomic tree to the new parents taxonomic tree 
+	 * old parents and sets the classification to the new parents classification 
 	 * 
 	 * @param parent
 	 */
@@ -319,16 +318,16 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 		if(formerParent instanceof TaxonNode){  //child was a child itself
 			((TaxonNode) formerParent).removeChildNode(this);		
 		}
-		else if((formerParent instanceof TaxonomicTree) && ! formerParent.equals(parent)){ //child was root in old tree
-			((TaxonomicTree) formerParent).removeChildNode(this);
+		else if((formerParent instanceof Classification) && ! formerParent.equals(parent)){ //child was root in old tree
+			((Classification) formerParent).removeChildNode(this);
 		}		
 		
 		// set the new parent
 		setParent(parent);
 
-		// set the taxonomic tree to the parents taxonomic tree		
-		TaxonomicTree classification = (parent instanceof TaxonomicTree) ? (TaxonomicTree) parent : ((TaxonNode) parent).getTaxonomicTree();
-		setTaxonomicTreeRecursively(classification);
+		// set the classification to the parents classification		
+		Classification classification = (parent instanceof Classification) ? (Classification) parent : ((TaxonNode) parent).getClassification();
+		setClassificationRecursively(classification);
 		
 		// add this node to the parent child nodes
 		parent.getChildNodes().add(this);
@@ -340,16 +339,16 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 		}
 	}
 	
-	public TaxonomicTree getTaxonomicTree() {
-		return taxonomicTree;
+	public Classification getClassification() {
+		return classification;
 	}
 	/**
 	 * THIS METHOD SHOULD NOT BE CALLED!
 	 * invisible part of the bidirectional relationship, for public use TaxonomicView.addRoot() or TaxonNode.addChild()
-	 * @param taxonomicTree
+	 * @param classification
 	 */
-	protected void setTaxonomicTree(TaxonomicTree taxonomicTree) {
-		this.taxonomicTree = taxonomicTree;
+	protected void setClassification(Classification classification) {
+		this.classification = classification;
 	}
 	
 	public Set<TaxonNode> getChildNodes() {
@@ -396,14 +395,14 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 * 
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getReference()
 	 */
-	public ReferenceBase getReference() {
+	public Reference getReference() {
 		return referenceForParentChildRelation;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setReference(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public void setReference(ReferenceBase reference) {
+	public void setReference(Reference reference) {
 		this.referenceForParentChildRelation = reference;
 	}
 	
@@ -450,7 +449,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	}
 	
 	/**
-	 * Whether this TaxonNode is a direct child of the taxonomic tree TreeNode
+	 * Whether this TaxonNode is a direct child of the classification TreeNode
 	 * @return
 	 */
 	@Transient

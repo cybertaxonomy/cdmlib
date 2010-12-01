@@ -23,15 +23,14 @@ public class IdentificationKeyDaoHibernateImplTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	IIdentificationKeyDao identificationKeyDao;
 	
-
 	@Before
 	public void setUp() {
 		
 	}
 	
-	
 	@Test
 	public void testCountByDistribution() {
 		identificationKeyDao.list(null, null, null);
 	}
+
 }

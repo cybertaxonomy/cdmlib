@@ -24,29 +24,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.CdDvd;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IInProceedings;
 import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.IReport;
 import eu.etaxonomy.cdm.model.reference.IThesis;
-import eu.etaxonomy.cdm.model.reference.InProceedings;
-import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.Map;
-import eu.etaxonomy.cdm.model.reference.Patent;
-import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.Proceedings;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.model.reference.Report;
-import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -58,36 +43,18 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
  */
 @Repository
 @Qualifier("referenceDaoHibernateImpl")
-public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase> implements IReferenceDao {
-		
-	@SuppressWarnings("unused")
+public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> implements IReferenceDao {
 	private static final Logger logger = Logger.getLogger(ReferenceDaoHibernateImpl.class);
 
 	public ReferenceDaoHibernateImpl() {
-		super(ReferenceBase.class);
-		indexedClasses = new Class[15];
-		indexedClasses[0] = Article.class;
-		indexedClasses[1] = Patent.class;
-		indexedClasses[2] = PersonalCommunication.class;
-		indexedClasses[3] = BookSection.class;
-		indexedClasses[4] = InProceedings.class;
-		indexedClasses[5] = CdDvd.class;
-		indexedClasses[6] = Database.class;
-		indexedClasses[7] = Generic.class;
-		indexedClasses[8] = Journal.class;
-		indexedClasses[9] = Map.class;
-		indexedClasses[10] = WebPage.class;
-		indexedClasses[11] = Book.class;
-		indexedClasses[12] = Proceedings.class;
-		indexedClasses[13] = Report.class;
-		indexedClasses[14] = Thesis.class;
+		super(Reference.class);
 	}
 
 	@Override
 	public void rebuildIndex() {
 		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		
-		for(ReferenceBase reference : list(null,null)) { // re-index all agents
+		for(Reference reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorTeam());
 			
 			if(reference.getType().equals(ReferenceType.Article)) {
@@ -100,7 +67,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 				Hibernate.initialize(((IThesis)reference).getSchool());
 			} else if(reference.getType().equals(ReferenceType.Report)) {
 				Hibernate.initialize(((IReport)reference).getInstitution());
-			} else if(reference.getType().equals(ReferenceType.PrintedUnitBase)) {
+			} else if(reference.getType().isPrintedUnit()) {
 				Hibernate.initialize(((IPrintedUnitBase)reference).getInSeries());
 			}
 			fullTextSession.index(reference);
@@ -108,8 +75,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		fullTextSession.flushToIndexes();
 	}
 
-	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle(){
-		List<UuidAndTitleCache<ReferenceBase>> list = new ArrayList<UuidAndTitleCache<ReferenceBase>>();
+	public List<UuidAndTitleCache<Reference>> getUuidAndTitle(){
+		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
 		
 		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
@@ -117,15 +84,15 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		List<Object[]> result = query.list();
 		
 		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<ReferenceBase>(type, (UUID) object[0], (String) object[1]));
+			list.add(new UuidAndTitleCache<Reference>(type, (UUID) object[0], (String) object[1]));
 		}
 		
 		return list;
 	}
 	
 	@Override
-	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitleCache() {
-		List<UuidAndTitleCache<ReferenceBase>> list = new ArrayList<UuidAndTitleCache<ReferenceBase>>();
+	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache() {
+		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
 		
 		Query query = session.createQuery("select " +
@@ -134,14 +101,14 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		List<Object[]> result = query.list();
 		
 		for(Object[] object : result){
-			UuidAndTitleCache<ReferenceBase> uuidAndTitleCache;
+			UuidAndTitleCache<Reference> uuidAndTitleCache;
 			String referenceTitle = (String) object[1];
 			
 			if(referenceTitle != null){							
 				String teamTitle = (String) object[2];
 				referenceTitle = ReferenceBaseDefaultCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
 				
-				list.add(new UuidAndTitleCache<ReferenceBase>(ReferenceBase.class, (UUID) object[0], referenceTitle));
+				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0], referenceTitle));
 			}else{
 				logger.error("title cache of reference is null. UUID: " + object[0]);
 			}
@@ -150,8 +117,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		return list;
 	}
 	
-	public List<ReferenceBase> getAllReferencesForPublishing(){
-		List<ReferenceBase> references = getSession().createQuery("Select r from ReferenceBase r "+
+	public List<Reference> getAllReferencesForPublishing(){
+		List<Reference> references = getSession().createQuery("Select r from Reference r "+
 				"where r.id IN "+
 					"(Select m.markedObj.id from Marker m where "+
 						"m.markerType.id = "+
@@ -159,34 +126,34 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		return references;
 	}
 	
-	public List<ReferenceBase> getAllNotNomenclaturalReferencesForPublishing(){
+	public List<Reference> getAllNotNomenclaturalReferencesForPublishing(){
 		
-		List<ReferenceBase> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
-		String queryString = "from ReferenceBase b where b not in (:referenceList) and b in (:publish)" ;
+		List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
+		String queryString = "from Reference b where b not in (:referenceList) and b in (:publish)" ;
 		Query referenceQuery = getSession().createQuery(queryString).setParameterList("referenceList", references);
 		referenceQuery.setParameterList("publish", getAllReferencesForPublishing());
-		List<ReferenceBase> resultRefernces =referenceQuery.list();
+		List<Reference> resultRefernces =referenceQuery.list();
 				
 		return resultRefernces;
 	}
 	
-	public List<ReferenceBase> getAllNomenclaturalReferences() {
-		List<ReferenceBase> references = getSession().createQuery(
+	public List<Reference> getAllNomenclaturalReferences() {
+		List<Reference> references = getSession().createQuery(
 				"select t.nomenclaturalReference from TaxonNameBase t").list();
 		return references;
 	}
 
 	@Override
-	public List<ReferenceBase> getSubordinateReferences(
-			ReferenceBase referenceBase) {
+	public List<Reference> getSubordinateReferences(
+			Reference reference) {
 		
-		List<ReferenceBase> references = new ArrayList();
-		List<ReferenceBase> subordinateReferences = new ArrayList();
+		List<Reference> references = new ArrayList();
+		List<Reference> subordinateReferences = new ArrayList();
 		
-		Query query = getSession().createQuery("select r from ReferenceBase r where r.inReference = (:reference)");
-		query.setParameter("reference", referenceBase);
+		Query query = getSession().createQuery("select r from Reference r where r.inReference = (:reference)");
+		query.setParameter("reference", reference);
 		references.addAll(query.list());
-		for(ReferenceBase ref : references){
+		for(Reference ref : references){
 			subordinateReferences.addAll(getSubordinateReferences(ref));
 		}
 		references.addAll(subordinateReferences);
@@ -194,7 +161,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 	}
 
 	@Override
-	public List<TaxonBase> listCoveredTaxa(ReferenceBase referenceBase, boolean includeSubordinateReferences, List<String> propertyPaths) {
+	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
 		
 		/*
 		 * <li>taxon.name.nomenclaturalreference</li>
@@ -206,10 +173,10 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		
 		//TODO implement search in nameDescriptions
 		List<TaxonBase> taxonBaseList = new ArrayList<TaxonBase>();
-		Set<ReferenceBase> referenceSet = new HashSet<ReferenceBase>();
-		referenceSet.add(referenceBase);
+		Set<Reference> referenceSet = new HashSet<Reference>();
+		referenceSet.add(reference);
 		if(includeSubordinateReferences){
-			referenceSet.addAll(getSubordinateReferences(referenceBase));
+			referenceSet.addAll(getSubordinateReferences(reference));
 		}
 
 	

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -61,7 +61,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	private INomenclaturalAuthor exAuthor;
 	private INomenclaturalAuthor basAuthor;
 	private INomenclaturalAuthor exBasAuthor;
-	private ReferenceBase citationRef;
+	private Reference citationRef;
 	private ReferenceFactory refFactory;
 	
 	@BeforeClass
@@ -185,7 +185,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	
 	@Test
 	public void testCacheListener() {
-		ReferenceBase ref = refFactory.newGeneric();
+		Reference ref = refFactory.newGeneric();
 		ref.setTitleCache("GenericRef",true);
 		this.subSpeciesName.setNomenclaturalReference(ref);
 		Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
@@ -283,7 +283,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		
 		
 		//ref + nomRef
-		ReferenceBase book = refFactory.newBook();
+		Reference book = refFactory.newBook();
 		book.setTitle("Booktitle");
 		Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
 		subSpeciesName.setNomenclaturalReference(book);

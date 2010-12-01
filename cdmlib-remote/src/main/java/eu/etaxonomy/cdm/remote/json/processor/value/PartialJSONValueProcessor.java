@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.Partial;
 import org.joda.time.format.ISODateTimeFormat;
 
-import eu.etaxonomy.cdm.model.common.PartialUserType;
+import eu.etaxonomy.cdm.hibernate.PartialUserType;
 
 /**
  * Partial time as four digit year, two digit month of year, and two digit day of month (yyyy-MM-dd).

@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,10 +39,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * The class for tree nodes within a {@link FeatureTree feature tree} structure.
@@ -59,14 +57,15 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureNode", propOrder = {
+		"featureTree",
 		"feature",
 		"parent",
 		"children",
 		"sortIndex",
 		"onlyApplicableIf",
-		"inapplicableIf",
-		"questions",
-		"taxon"
+		"inapplicableIf"
+//		,"questions",
+//		,"taxon"
 })
 @XmlRootElement(name = "FeatureNode")
 @Entity
@@ -74,7 +73,17 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class FeatureNode extends VersionableEntity {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 	
-    @XmlElement(name = "Feature")
+    //This is the main key a node belongs to. Although other keys may also reference
+	//<code>this</code> node, a node usually belongs to a given key.
+	@XmlElement(name = "FeatureTree")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+    @NotNull
+	private FeatureTree featureTree;
+	
+	@XmlElement(name = "Feature")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -86,7 +95,7 @@ public class FeatureNode extends VersionableEntity {
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
 //    @IndexColumn(name="sortIndex", base = 0)
     @Cascade(CascadeType.SAVE_UPDATE)
-	@JoinColumn(name="parent_fk" /*, insertable=false, updatable=false, nullable=false*/)
+	@JoinColumn(name="parent_id" /*, insertable=false, updatable=false, nullable=false*/)
 	private FeatureNode parent;
     
     @XmlElementWrapper(name = "Children")
@@ -127,25 +136,18 @@ public class FeatureNode extends VersionableEntity {
 	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
 	private Set<State> inapplicableIf = new HashSet<State>();
 
-	@XmlElementWrapper(name = "Questions")
-	@XmlElement(name = "Question")
-    @OneToMany(fetch=FetchType.EAGER)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
-	private Set<Representation> questions = new HashSet<Representation>();
-
-	@XmlElement(name = "Taxon")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
-	private Taxon taxon;
-	
-	/** 
-	 * Class constructor: creates a new empty feature node instance.
-	 */
-	protected FeatureNode() {
-		super();
-	}
+//	@XmlElementWrapper(name = "Questions")
+//	@XmlElement(name = "Question")
+//    @OneToMany(fetch=FetchType.EAGER)
+//	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+//	private Set<Representation> questions = new HashSet<Representation>();
+//
+//	@XmlElement(name = "Taxon")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "IDREF")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@Cascade(CascadeType.SAVE_UPDATE)
+//	private Taxon taxon;
 
 	/** 
 	 * Creates a new empty feature node instance.
@@ -169,6 +171,25 @@ public class FeatureNode extends VersionableEntity {
 		return result;
 	}
 
+	
+	/** 
+	 * Class constructor: creates a new empty feature node instance.
+	 */
+	protected FeatureNode() {
+		super();
+	}
+
+	
+//*************************** TREE ************************************/	
+
+	public FeatureTree getFeatureTree() {
+		return featureTree;
+	}
+
+	protected void setFeatureTree(FeatureTree featureTree) {
+		this.featureTree = featureTree;
+	}
+	
 	//** ********************** FEATURE ******************************/
 
 	/** 
@@ -255,11 +276,12 @@ public class FeatureNode extends VersionableEntity {
 			child.getParent().removeChild(child);
 		}
 		child.setParent(this);
+		child.setFeatureTree(this.getFeatureTree());
 		children.add(index, child);
 		//TODO workaround (see sortIndex doc)
 		for(int i = 0; i < children.size(); i++){
 			children.get(i).sortIndex = i;
-	}
+		}
 		child.sortIndex = index;
 	}
 	/** 
@@ -301,7 +323,7 @@ public class FeatureNode extends VersionableEntity {
 				childAt.sortIndex = i;
 		}
 			child.sortIndex = null;
-	}
+		}
 	}
 
 	/** 
@@ -447,36 +469,36 @@ public class FeatureNode extends VersionableEntity {
 		this.inapplicableIf.remove(inapplicableState);
 	}
 	
-	//** ********************** QUESTIONS ******************************/
-
-	/** 
-	 * Returns the {@link Representation question} formulation that
-	 * corresponds to <i>this</i> feature node and the corresponding
-	 * {@link Feature feature} in case it is part of a 
-	 * {@link PolytomousKey polytomous key}.
-	 */
-	public Set<Representation> getQuestions() {
-		return this.questions;
-	}
-
-	public void addQuestion(Representation question) {
-		this.questions.add(question);
-	}
-
-	public void removeQuestion(Representation question) {
-		this.questions.remove(question);
-	}
-
-	@Transient
-	public Representation getQuestion(Language lang) {
-		for (Representation question : questions){
-			Language reprLanguage = question.getLanguage();
-			if (reprLanguage != null && reprLanguage.equals(lang)){
-				return question;
-			}
-		}
-		return null;
-	}
+//	//** ********************** QUESTIONS ******************************/
+//
+//	/** 
+//	 * Returns the {@link Representation question} formulation that
+//	 * corresponds to <i>this</i> feature node and the corresponding
+//	 * {@link Feature feature} in case it is part of a 
+//	 * {@link PolytomousKey polytomous key}.
+//	 */
+//	public Set<Representation> getQuestions() {
+//		return this.questions;
+//	}
+//
+//	public void addQuestion(Representation question) {
+//		this.questions.add(question);
+//	}
+//
+//	public void removeQuestion(Representation question) {
+//		this.questions.remove(question);
+//	}
+//
+//	@Transient
+//	public Representation getQuestion(Language lang) {
+//		for (Representation question : questions){
+//			Language reprLanguage = question.getLanguage();
+//			if (reprLanguage != null && reprLanguage.equals(lang)){
+//				return question;
+//			}
+//		}
+//		return null;
+//	}
 	
 	/**
 	 * Returns all features that are contained in this node or a child node
@@ -497,24 +519,25 @@ public class FeatureNode extends VersionableEntity {
 		
 		return features;
 	}
-	
-	//** ********************** TAXON ******************************/
-	
-	/** 
-	 * Returns the {@link Taxon taxon} <i>this</i> terminal node is
-	 * associated with.
-	 */
-	public Taxon getTaxon() {
-		return taxon;
-	}
 
-	/**
-	 * Assigns the given taxon to <i>this</i> feature node.
-	 * 
-	 * @param	taxon	the taxon to be set 
-	 * @see				#getTaxon() 
-	 */
-	public void setTaxon(Taxon taxon) {
-		this.taxon = taxon;
-	}
+	
+//	//** ********************** TAXON ******************************/
+//	
+//	/** 
+//	 * Returns the {@link Taxon taxon} <i>this</i> terminal node is
+//	 * associated with.
+//	 */
+//	public Taxon getTaxon() {
+//		return taxon;
+//	}
+//
+//	/**
+//	 * Assigns the given taxon to <i>this</i> feature node.
+//	 * 
+//	 * @param	taxon	the taxon to be set 
+//	 * @see				#getTaxon() 
+//	 */
+//	public void setTaxon(Taxon taxon) {
+//		this.taxon = taxon;
+//	}
 }

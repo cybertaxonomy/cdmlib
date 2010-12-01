@@ -29,7 +29,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -406,7 +406,7 @@ public class TaxonNameBaseTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#addNameTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, java.lang.String, boolean, boolean)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#addNameTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, java.lang.String, boolean, boolean)}.
 	 */
 	@Test
 	public void testAddNameTypeDesignation() {
@@ -446,7 +446,7 @@ public class TaxonNameBaseTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#addSpecimenTypeDesignation(eu.etaxonomy.cdm.model.occurrence.Specimen, eu.etaxonomy.cdm.model.name.TypeDesignationStatus, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, java.lang.String, boolean)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#addSpecimenTypeDesignation(eu.etaxonomy.cdm.model.occurrence.Specimen, eu.etaxonomy.cdm.model.name.TypeDesignationStatus, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, java.lang.String, boolean)}.
 	 */
 	@Test
 	public void testAddSpecimenTypeDesignationSpecimenTypeDesignationStatusReferenceBaseStringStringBoolean() {

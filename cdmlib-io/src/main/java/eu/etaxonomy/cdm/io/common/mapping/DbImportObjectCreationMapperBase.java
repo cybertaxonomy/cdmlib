@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -104,7 +104,7 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 			String strId = String.valueOf(id);
 			String idNamespace = this.objectToCreateNamespace;
 			//FIXME
-			ReferenceBase citation = null;
+			Reference citation = null;
 			//importMapperHelper.getState().getConfig()xxx;
 			String microCitation = null;
 			if (cdmBase instanceof IdentifiableEntity){

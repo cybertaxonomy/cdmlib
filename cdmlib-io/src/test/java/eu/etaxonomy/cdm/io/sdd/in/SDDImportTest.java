@@ -12,10 +12,10 @@ package eu.etaxonomy.cdm.io.sdd.in;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,10 +23,6 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.sdd.in.SDDImport;
-import eu.etaxonomy.cdm.io.sdd.in.SDDImportConfigurator;
-import eu.etaxonomy.cdm.io.sdd.in.SDDImportState;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -35,12 +31,11 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @version 1.0
  */
 
-
-@Ignore
+@Ignore // we ignore this test at the moment because it does not run with maven
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
-	SDDImport sddDescriptionIo;
+	SDDImport sddImport;
 	
 	@SpringBeanByType
 	INameService nameService;
@@ -50,18 +45,19 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	@Before
 	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
+		Assert.assertNotNull(url);
 		configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
 	}
 	
 	@Test
 	public void testInit() {
-		assertNotNull("sddDescriptionIo should not be null",sddDescriptionIo);
+		assertNotNull("sddImport should not be null", sddImport);
 		assertNotNull("nameService should not be null", nameService);
 	}
 	
 	@Test
 	public void testDoInvoke() {
-		sddDescriptionIo.doInvoke(new SDDImportState(configurator));
+		sddImport.doInvoke(new SDDImportState(configurator));
 		this.setComplete();
 		this.endTransaction();
 		assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));

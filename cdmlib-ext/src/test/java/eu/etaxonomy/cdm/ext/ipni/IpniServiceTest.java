@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -151,11 +151,11 @@ public class IpniServiceTest {
 	public void testPublications(){
 		ICdmApplicationConfiguration services = null;
 		IpniServicePublicationConfigurator config = null;
-		List<ReferenceBase> refList = service1.getPublications("Species Plantarum, Edition 3", "Sp. Pl.", services, config);
+		List<Reference> refList = service1.getPublications("Species Plantarum, Edition 3", "Sp. Pl.", services, config);
 		//20009158-1%1.2%Pinaceae%%N%Abies%%N%alba%apennina%subsp.%Brullo, Scelsi & Spamp.%%Brullo, Scelsi & Spamp.%Abies alba subsp. apennina%Vegetaz. Aspromonte%41 (2001)%2001%%%%%%Italy%tax. nov.
 
 		Assert.assertEquals("There should be exactly 1 result for 'Species Plantarum, Edition 3'", 1, refList.size());
-		ReferenceBase ref = refList.get(0);
+		Reference ref = refList.get(0);
 		//title cache
 		//the author title may be improved in future
 		Assert.assertEquals("Title Cache should be 'Linnaeus, Carl, Species Plantarum, Edition 3'", "Linnaeus, Carl, Species Plantarum, Edition 3. 1764", ref.getTitleCache());
@@ -170,7 +170,7 @@ public class IpniServiceTest {
 		Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorTeam().getTitleCache());
 		
 		
-//		for (ReferenceBase ref : refList){
+//		for (Reference ref : refList){
 //			System.out.println(ref.getTitleCache());
 //		}
 

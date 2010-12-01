@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.model.reference;
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "SubReference".
  */
-public interface ISectionBase extends IReferenceBase {
+public interface ISectionBase extends IReference {
 	
 	/**
 	 * Returns the pages this reference covers in its in-reference.
@@ -36,12 +36,12 @@ public interface ISectionBase extends IReferenceBase {
 	 * Returns the in-reference of this reference.
 	 * E.g. if this reference is a book section the according book is returned
 	 */
-	public ReferenceBase getInReference();
+	public Reference getInReference();
 	
 	/**
 	 * Sets the in-reference of this reference.
 	 * E.g. if this reference is a book section the according book is set via this
 	 * method.
 	 */
-	public void setInReference(ReferenceBase referenceBase);
+	public void setInReference(Reference reference);
 }

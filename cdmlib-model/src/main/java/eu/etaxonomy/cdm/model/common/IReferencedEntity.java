@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -20,6 +20,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 public interface IReferencedEntity {
 
-	public ReferenceBase getCitation();
+	public Reference getCitation();
 
 }

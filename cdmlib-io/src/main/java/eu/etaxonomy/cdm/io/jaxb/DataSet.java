@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
@@ -96,30 +95,14 @@ import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-//import eu.etaxonomy.cdm.model.reference.Article;
-//import eu.etaxonomy.cdm.model.reference.Book;
-//import eu.etaxonomy.cdm.model.reference.BookSection;
-//import eu.etaxonomy.cdm.model.reference.CdDvd;
-//import eu.etaxonomy.cdm.model.reference.Database;
-//import eu.etaxonomy.cdm.model.reference.Generic;
-//import eu.etaxonomy.cdm.model.reference.InProceedings;
-//import eu.etaxonomy.cdm.model.reference.Journal;
-//import eu.etaxonomy.cdm.model.reference.Map;
-//import eu.etaxonomy.cdm.model.reference.Patent;
-//import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
-//import eu.etaxonomy.cdm.model.reference.PrintSeries;
-//import eu.etaxonomy.cdm.model.reference.Proceedings;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-//import eu.etaxonomy.cdm.model.reference.Report;
-//import eu.etaxonomy.cdm.model.reference.Thesis;
-//import eu.etaxonomy.cdm.model.reference.WebPage;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.babadshanjan
@@ -135,8 +118,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 	    "references",
 	    "typeDesignations",
 	    "featureTrees",
+	    "polytomousKeys",
 	    "taxonNodes",
-	    "taxonomicTrees",
+	    "classifications",
 	    "taxonomicNames",
 	    "homotypicalGroups",
 	    "taxonBases",
@@ -160,7 +144,6 @@ public class DataSet {
     	@XmlElement(name = "Feature", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = Feature.class),
     	@XmlElement(name = "HybridRelationshipType", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = HybridRelationshipType.class),
     	@XmlElement(name = "InstitutionType", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = InstitutionType.class),
-//        @XmlElement(name = "Keyword", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Keyword.class),
     	@XmlElement(name = "Language", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Language.class),
     	@XmlElement(name = "MarkerType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = MarkerType.class),
     	@XmlElement(name = "MeasurementUnit", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = MeasurementUnit.class),
@@ -216,14 +199,20 @@ public class DataSet {
         
     @XmlElementWrapper(name = "FeatureTrees")
     @XmlElements({
-      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class),
-      @XmlElement(name = "PolytomousKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PolytomousKey.class)
+      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
     protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
     
-    @XmlElementWrapper(name = "TaxonomicTrees")
-    @XmlElement(name = "TaxonomicTree", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<TaxonomicTree> taxonomicTrees = new ArrayList<TaxonomicTree>();
+    @XmlElementWrapper(name = "PolytomousKeys")
+    @XmlElements({
+      @XmlElement(name = "PolytomousKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PolytomousKey.class)
+    })
+    protected List<PolytomousKey> polytomousKeys = new ArrayList<PolytomousKey>();
+    
+    
+    @XmlElementWrapper(name = "Classifications")
+    @XmlElement(name = "Classification", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
+    protected List<Classification> classifications = new ArrayList<Classification>();
     
     @XmlElementWrapper(name = "TaxonNodes")
     @XmlElement(name = "TaxonNodes", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -253,25 +242,9 @@ public class DataSet {
     
     @XmlElementWrapper(name = "References")
     @XmlElements({
-    	@XmlElement(name = "ReferenceBase", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = ReferenceBase.class)
-//    	@XmlElement(name = "Article", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Article.class),
-//    	@XmlElement(name = "Book", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Book.class),
-//    	@XmlElement(name = "BookSection", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = BookSection.class),
-//    	@XmlElement(name = "CdDvd", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = CdDvd.class),
-//    	@XmlElement(name = "Database", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Database.class),
-//    	@XmlElement(name = "Generic", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Generic.class),
-//    	@XmlElement(name = "InProceedings", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = InProceedings.class),
-//    	@XmlElement(name = "Journal", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Journal.class),
-//    	@XmlElement(name = "Map", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Map.class),
-//    	@XmlElement(name = "Patent", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Patent.class),
-//    	@XmlElement(name = "PersonalCommunication", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = PersonalCommunication.class),
-//    	@XmlElement(name = "PrintSeries", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = PrintSeries.class),
-//    	@XmlElement(name = "Proceedings", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Proceedings.class),
-//    	@XmlElement(name = "Report", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Report.class),
-//    	@XmlElement(name = "Thesis", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Thesis.class),
-//    	@XmlElement(name = "WebPage", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = WebPage.class)
+    	@XmlElement(name = "Reference", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Reference.class)
     })
-    protected List<ReferenceBase> references = new ArrayList<ReferenceBase>();
+    protected List<Reference> references = new ArrayList<Reference>();
 
     @XmlElementWrapper(name = "TypeDesignations")
     @XmlElements({
@@ -521,10 +494,10 @@ public class DataSet {
      * 
      * @return
      *     possible object is
-     *     {@link List<ReferenceBase> }
+     *     {@link List<Reference> }
      *     
      */
-    public List<ReferenceBase> getReferences() {
+    public List<Reference> getReferences() {
         return references;
     }
 
@@ -533,10 +506,10 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<ReferenceBase> }
+     *     {@link List<Reference> }
      *     
      */
-    public void setReferences(List<ReferenceBase> value) {
+    public void setReferences(List<Reference> value) {
         this.references = value;
     }
 
@@ -551,6 +524,19 @@ public class DataSet {
     public List<FeatureTree> getFeatureTrees() {
         return featureTrees;
     }
+    
+
+    /**
+     * Gets the value of the polytomousKeys property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<PolytomousKey> }
+     *     
+     */
+    public List<PolytomousKey> getPolytomousKeys() {
+        return polytomousKeys;
+    }
 
     /**
      * Sets the value of the featureTrees property.
@@ -560,8 +546,8 @@ public class DataSet {
      *     {@link List<FeatureTree> }
      *     
      */
-    public void setTaxonomicTrees(List<TaxonomicTree> value) {
-    	this.taxonomicTrees = value;
+    public void setClassifications(List<Classification> value) {
+    	this.classifications = value;
     }
     
     
@@ -573,8 +559,8 @@ public class DataSet {
      *     {@link List<FeatureTree> }
      *     
      */
-    public List<TaxonomicTree> getTaxonomicTrees() {
-        return taxonomicTrees;
+    public List<Classification> getClassifications() {
+        return classifications;
     }
     /**
      * Sets the value of the featureTrees property.
@@ -611,6 +597,18 @@ public class DataSet {
      */
     public void setFeatureTrees(List<FeatureTree> value) {
     	this.featureTrees = value;
+    }
+    
+    /**
+     * Sets the value of the polytomousKeys property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<PolytomousKey> }
+     *     
+     */
+    public void setPolytomousKeys(List<PolytomousKey> value) {
+    	this.polytomousKeys = value;
     }
     
     /**

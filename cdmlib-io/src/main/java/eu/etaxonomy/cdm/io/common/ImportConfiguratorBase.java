@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -59,20 +59,20 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	
 	private Map<Integer, Feature>  featureMap = new HashMap<Integer, Feature>();
 
-	 /* The taxonomic tree name for the first taxonomic tree.
+	 /* The classification name for the first classification.
 	  * Needs only to be defined if the import does not handle the naming 
 	  * itself (e.g. by using the taxon sec. reference title cache)
 	  */
-	private String taxonomicTreeName = "Taxon tree - no name";
+	private String classificationName = "Classification - no name";
 	
-	private UUID  taxonomicTreeUuid = UUID.randomUUID();
+	private UUID  classificationUuid = UUID.randomUUID();
 	//uuid of concept reference
 	private UUID  secUuid = UUID.randomUUID();
 	
 	private Object sourceSecId = -1;
 	
 	private SOURCE source;
-	protected ReferenceBase sourceReference;
+	protected Reference sourceReference;
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 	
@@ -245,11 +245,11 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
-	public abstract ReferenceBase getSourceReference();
+	public abstract Reference getSourceReference();
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReference(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public void setSourceReference(ReferenceBase sourceReference) {
+	public void setSourceReference(Reference sourceReference) {
 		this.sourceReference = sourceReference;
 	}
 	/* (non-Javadoc)
@@ -299,13 +299,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTreeUuid()
 	 */
-	public UUID getTaxonomicTreeUuid() {
-		return taxonomicTreeUuid;
+	public UUID getClassificationUuid() {
+		return classificationUuid;
 	}
 
 
-	public void setTaxonomicTreeUuid(UUID treeUuid) {
-		this.taxonomicTreeUuid = treeUuid;
+	public void setClassificationUuid(UUID classificationUuid) {
+		this.classificationUuid = classificationUuid;
 	}
 	
 	/* (non-Javadoc)
@@ -385,20 +385,20 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	}
 
 	/**
-	 * The taxonomic tree name for the first taxonomic tree.
+	 * The classification name for the first classification.
 	 * Needs only to be defined if the import does not handle the naming 
 	 * itself (e.g. by using the taxon sec. reference title cache)
-	 * @param taxonomicTreeName the taxonomicTreeName to set
+	 * @param classificationName the classificationName to set
 	 */
-	public void setTaxonomicTreeName(String taxonomicTreeName) {
-		this.taxonomicTreeName = taxonomicTreeName;
+	public void setClassificationName(String classificationName) {
+		this.classificationName = classificationName;
 	}
 
 	/**
-	 * @return the taxonomicTreeName
+	 * @return the classificationName
 	 */
-	public String getTaxonomicTreeName() {
-		return taxonomicTreeName;
+	public String getClassificationName() {
+		return classificationName;
 	}
 
 

@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.media.IMediaDocumented;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
@@ -104,14 +104,14 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
-	private ReferenceBase publishedIn;
+	private Reference publishedIn;
 	
 	@XmlElementWrapper(name = "Citations")
 	@XmlElement(name = "Citation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch = FetchType.LAZY)
-	private Set<ReferenceBase> citations = new HashSet<ReferenceBase>();
+	private Set<Reference> citations = new HashSet<Reference>();
 	
 	@XmlElementWrapper(name = "GenBankAccessions")
 	@XmlElement(name = "GenBankAccession")
@@ -146,24 +146,24 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 		this.locus = locus;
 	}
 
-	public ReferenceBase getPublishedIn(){
+	public Reference getPublishedIn(){
 		return this.publishedIn;
 	}
 	
-	public void setPublishedIn(ReferenceBase publishedIn){
+	public void setPublishedIn(Reference publishedIn){
 		this.publishedIn = publishedIn;
 	}
 
-	public Set<ReferenceBase> getCitations() {
+	public Set<Reference> getCitations() {
 		return citations;
 	}
-	protected void setCitations(Set<ReferenceBase> citations) {
+	protected void setCitations(Set<Reference> citations) {
 		this.citations = citations;
 	}
-	public void addCitation(ReferenceBase citation) {
+	public void addCitation(Reference citation) {
 		this.citations.add(citation);
 	}
-	public void removeCitation(ReferenceBase citation) {
+	public void removeCitation(Reference citation) {
 		this.citations.remove(citation);
 	}
 
@@ -256,7 +256,7 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 		this.citationMicroReference = citationMicroReference;
 	}
 
-	public ReferenceBase getCitation(){
+	public Reference getCitation(){
 		return publishedIn;
 	}
 }

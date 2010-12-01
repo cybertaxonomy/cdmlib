@@ -23,7 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.remote.controller.AbstractOaiPmhController;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
 
 @Controller
 @RequestMapping(value = "/reference/oai", params = "verb")
-public class ReferenceOaiPmhController extends AbstractOaiPmhController<ReferenceBase, IReferenceService> {
+public class ReferenceOaiPmhController extends AbstractOaiPmhController<Reference, IReferenceService> {
 
 	@Override
 	protected List<String> getPropertyPaths() {
@@ -92,9 +92,9 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 			LSID identifier, MetadataPrefix metadataPrefix)
 			throws IdDoesNotExistException {
 		
-		AuditEventRecord<ReferenceBase> auditEventRecord = obtainCdmEntity(identifier);
-		ReferenceBase referenceBase = auditEventRecord.getAuditableObject();
-		List<TaxonBase> list = service.listCoveredTaxa(referenceBase, true, TAXON_INIT_STRATEGY);
+		AuditEventRecord<Reference> auditEventRecord = obtainCdmEntity(identifier);
+		Reference reference = auditEventRecord.getAuditableObject();
+		List<TaxonBase> list = service.listCoveredTaxa(reference, true, TAXON_INIT_STRATEGY);
 		return list;
 	}
     

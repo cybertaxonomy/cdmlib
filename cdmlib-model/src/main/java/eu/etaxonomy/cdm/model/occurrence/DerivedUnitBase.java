@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "collection",
     "catalogNumber",
     "storedUnder",
-    "derivationEvent",
+    "derivedFrom",
     "accessionNumber",
     "collectorsNumber",
     "barcode"
@@ -107,7 +107,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded(depth = 4)
-	private DerivationEvent derivationEvent;
+	private DerivationEvent derivedFrom;
 
 	/**
 	 * Constructor
@@ -141,14 +141,14 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 
 
 	public DerivationEvent getDerivedFrom() {
-		return derivationEvent;
+		return derivedFrom;
 	}
 	
 	public void setDerivedFrom(DerivationEvent derivedFrom){
 		if (getDerivedFrom() != null){
 			getDerivedFrom().getDerivatives().remove(derivedFrom);
 		}
-		this.derivationEvent = derivedFrom;
+		this.derivedFrom = derivedFrom;
 		if (derivedFrom != null){
 			derivedFrom.addDerivative(this);
 		}
@@ -226,7 +226,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		//collection
 		result.setCollection(this.collection);
 		//derivedFrom
-		result.setDerivedFrom(this.derivationEvent);
+		result.setDerivedFrom(this.derivedFrom);
 		//storedUnder
 		result.setStoredUnder(this.storedUnder);
 		//no changes to: accessionNumber, catalogNumber, collectorsNumber

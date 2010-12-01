@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -90,7 +90,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * FIXME Candidate for harmonization
 	 * rename searchByName ? 
 	 */
-	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
+	public List<TaxonBase> searchTaxaByName(String name, Reference sec) {
 		return dao.getTaxaByName(name, sec);
 	}
 	
@@ -117,21 +117,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	/**
 	 * FIXME Candidate for harmonization
-	 * merge with getRootTaxa(ReferenceBase sec, ..., ...)
+	 * merge with getRootTaxa(Reference sec, ..., ...)
 	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec){
+	public List<Taxon> getRootTaxa(Reference sec){
 		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true);
 	}
 
 	/**
 	 * FIXME Candidate for harmonization
-	 * merge with getRootTaxa(ReferenceBase sec, ..., ...)
+	 * merge with getRootTaxa(Reference sec, ..., ...)
 	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, boolean)
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren) {
+	public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren) {
 		if (cdmFetch == null){
 			cdmFetch = CdmFetch.NO_FETCH();
 		}
@@ -140,19 +140,19 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	
 	/**
  	 * FIXME Candidate for harmonization
-	 * merge with getRootTaxa(ReferenceBase sec, ..., ...)
+	 * merge with getRootTaxa(Reference sec, ..., ...)
 	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, boolean, boolean)
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren,
+	public List<Taxon> getRootTaxa(Reference sec, boolean onlyWithChildren,
 			boolean withMisapplications) {
 		return dao.getRootTaxa(sec, null, onlyWithChildren, withMisapplications);
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.Reference, boolean, boolean)
 	 */
-	public List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren,
+	public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,
 			boolean withMisapplications, List<String> propertyPaths) {
 		return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications, propertyPaths);
 	}
@@ -179,7 +179,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
 	@Transactional(readOnly = false)
-	public Synonym changeAcceptedTaxonToSynonym(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, ReferenceBase citation, String citationMicroReference) {
+	public Synonym changeAcceptedTaxonToSynonym(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) {
 
 		// TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
 		// in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -289,7 +289,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return newAcceptedTaxon;
 	}
 	
-	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, ReferenceBase citation, String microcitation){
+	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference citation, String microcitation){
 		
 		// Get name from synonym
 		TaxonNameBase<?, ?> synonymName = synonym.getName();
@@ -457,12 +457,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if(configurator.getPageSize() != null){ // no point counting if we need all anyway
 				numberTaxaResults = 
 					dao.countTaxaByName(clazz, 
-						configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
+						configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
 						configurator.getNamedAreas());
 			}
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
 				taxa = dao.getTaxaByName(clazz, 
-					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
+					configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
 					configurator.getPageNumber(), propertyPath);
 			}
@@ -502,10 +502,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			taxa = null;
 			numberTaxaResults = 0;
 			if(configurator.getPageSize() != null){// no point counting if we need all anyway
-				numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas());
+				numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 			}
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			}
 			if(taxa != null){
 				results.addAll(taxa);
@@ -548,13 +548,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return this.dao.countAllRelationships();
 	}
 
-	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree,
+	public List<Synonym> createAllInferredSynonyms(Classification tree,
 			Taxon taxon) {
 		
 		return this.dao.createAllInferredSynonyms(taxon, tree);
 	}
 
-	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type) {
+	public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type) {
 		
 		return this.dao.createInferredSynonyms(taxon, tree, type);
 	}

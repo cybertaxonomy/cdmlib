@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 //import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -41,7 +41,7 @@ public class DatabaseInitialiser {
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		IJournal sec = refFactory.newJournal();
 		NonViralName nvName = BotanicalName.NewInstance(Rank.SPECIES());
-		Taxon tax = Taxon.NewInstance(nvName, (ReferenceBase)sec);
+		Taxon tax = Taxon.NewInstance(nvName, (Reference)sec);
 		//BotanicalName ve = nm.getNextVersion();
 		nvName.setNameCache(speciesname);
 		nvName.setTitleCache(speciesname, true);

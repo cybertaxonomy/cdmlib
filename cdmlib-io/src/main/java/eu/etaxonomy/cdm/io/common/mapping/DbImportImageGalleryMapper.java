@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
@@ -131,10 +133,17 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 		}else {
 			element = elements.iterator().next();
 		}
-		String uri = dbValue;
+		String uriString = dbValue;
 		Integer size = null;
 		String mimeType = null;
 		String suffix = null;
+		URI uri = null;
+		try {
+			uri = new URI(uriString);
+		} catch (URISyntaxException e) {
+			String warning = "URISyntaxException when trying to convert first uri string: " + uriString;
+			logger.error(warning);
+		}
 		Media media = Media.NewInstance(uri, size, mimeType, suffix);
 		element.addMedia(media);
 		return taxon;

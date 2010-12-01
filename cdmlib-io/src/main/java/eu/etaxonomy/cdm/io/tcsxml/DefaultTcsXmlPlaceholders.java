@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -45,9 +45,9 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 	}
 
 	/* (non-Javadoc)
-	 * @see tcsxml.ITcsXmlPlaceholderClass#makePublicationDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see tcsxml.ITcsXmlPlaceholderClass#makePublicationDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element, eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public boolean makePublicationDetailed(TcsXmlImportConfigurator config, Element elPublicationDetailed, ReferenceBase publication){
+	public boolean makePublicationDetailed(TcsXmlImportConfigurator config, Element elPublicationDetailed, Reference publication){
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		if (config == null){
 			return false;

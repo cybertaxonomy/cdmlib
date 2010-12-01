@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.strategy.cache.media;
 
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,7 +25,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -53,24 +56,34 @@ public class MediaDefaultCacheStrategyTest {
 	@Test
 	public void testGetTitleCache(){
 		
+		try {
+			Media media = Media.NewInstance();
+			media.addTitle("My best media", Language.DEFAULT());
+			Assert.assertEquals("Wrong title cache for media", "My best media", media.getTitleCache());
+			
+			media = Media.NewInstance();
+			Assert.assertTrue("Wrong title cache for media", media.getTitleCache().startsWith("- empty"));
+			
+			MediaRepresentation representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/myFileName.jpg"), 0);
+			media.addRepresentation(representation);
+			Assert.assertEquals("Wrong title cache for media", "myFileName.jpg", media.getTitleCache());
+			media.removeRepresentation(representation);
+			
+			representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/"), 0);
+			media.addRepresentation(representation);
+			Assert.assertEquals("Wrong title cache for media", "www.abc.de/", media.getTitleCache());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail("URI syntax exception");
+		}
+	}
+	
+	@Test 
+	public void testHandleEmptyUri(){
 		Media media = Media.NewInstance();
-		media.addTitle("My best media", Language.DEFAULT());
-		Assert.assertEquals("Wrong title cache for media", "My best media", media.getTitleCache());
-		
-		media = Media.NewInstance();
-		Assert.assertTrue("Wrong title cache for media", media.getTitleCache().startsWith("- empty"));
-		
-		MediaRepresentation representation = MediaRepresentation.NewInstance(null, null, "www.abc.de/myFileName.jpg", 0);
+		MediaRepresentation representation;
+		representation = MediaRepresentation.NewInstance(null, null, null, 0);
 		media.addRepresentation(representation);
-		Assert.assertEquals("Wrong title cache for media", "myFileName.jpg", media.getTitleCache());
-		media.removeRepresentation(representation);
-		
-		representation = MediaRepresentation.NewInstance(null, null, "www.abc.de/", 0);
-		media.addRepresentation(representation);
-		Assert.assertEquals("Wrong title cache for media", "www.abc.de/", media.getTitleCache());
-		
-		
-		
 	}
 	
 }

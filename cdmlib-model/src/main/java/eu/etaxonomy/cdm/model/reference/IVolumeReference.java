@@ -17,7 +17,7 @@ package eu.etaxonomy.cdm.model.reference;
  * @version 1.0
  * @created 24-Nov-2008 21:06:29
  */
-public interface IVolumeReference extends IReferenceBase {
+public interface IVolumeReference extends IReference {
 
 	/**
 	 * Returns the volume of a reference.

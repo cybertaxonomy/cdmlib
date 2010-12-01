@@ -19,9 +19,9 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 
 @Component
@@ -63,11 +63,11 @@ private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> claz
 				DescriptionBase.class, IdentifiableMediaEntity.class, 
 				Media.class, Sequence.class,
 				TaxonBase.class, TaxonNameBase.class,
-				TaxonomicTree.class, TermBase.class
+				Classification.class, TermBase.class
 				});
 		handleClassList(list);
 	}else if (clazz.isAssignableFrom(IdentifiableMediaEntity.class)){
-		List list = Arrays.asList(new Class[]{AgentBase.class, Collection.class, ReferenceBase.class, SpecimenOrObservationBase.class});
+		List list = Arrays.asList(new Class[]{AgentBase.class, Collection.class, Reference.class, SpecimenOrObservationBase.class});
 		handleClassList(list);
 	}else if (clazz.isAssignableFrom(TermBase.class)){
 		List list = Arrays.asList(new Class[]{DefinedTermBase.class, FeatureTree.class, TermVocabulary.class });
@@ -107,7 +107,7 @@ private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> claz
 				getAgentService().updateTitleCache((Class) clazz);
 			}else if (Collection.class.isAssignableFrom(clazz)){
 				getCollectionService().updateTitleCache((Class) clazz);
-			}else if (ReferenceBase.class.isAssignableFrom(clazz)){
+			}else if (Reference.class.isAssignableFrom(clazz)){
 				getReferenceService().updateTitleCache((Class) clazz);
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
 				getReferenceService().updateTitleCache((Class) clazz);
@@ -122,8 +122,8 @@ private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> claz
 				getNameService().updateTitleCache((Class) clazz);
 			}
 			//TaxonNameBase
-			else if (TaxonomicTree.class.isAssignableFrom(clazz)){
-				getTaxonTreeService().updateTitleCache((Class) clazz);
+			else if (Classification.class.isAssignableFrom(clazz)){
+				getClassificationService().updateTitleCache((Class) clazz);
 			}
 			//unknown class
 			else {

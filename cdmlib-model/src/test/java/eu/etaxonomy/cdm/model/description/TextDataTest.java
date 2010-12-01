@@ -9,20 +9,20 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -70,7 +70,7 @@ public class TextDataTest {
 	public void testNewInstance() {
 		assertNotNull(textDataLeer);
 		assertNotNull(textDataLeer.getMultilanguageText());
-		assertEquals(0, textDataLeer.getMultilanguageText().size());
+		assertEquals(0, textDataLeer.size());
 		assertEquals(0, textDataLeer.countLanguages());
 		assertNull(textDataLeer.getFormat());
 	}
@@ -82,7 +82,7 @@ public class TextDataTest {
 	public void testNewInstanceStringLanguageTextFormat() {
 		assertNotNull(textData1);
 		assertNotNull(textData1.getMultilanguageText());
-		assertEquals(1, textData1.getMultilanguageText().size());
+		assertEquals(1, textData1.size());
 		assertEquals(1, textData1.countLanguages());
 		LanguageString languageString = LanguageString.NewInstance("testText", Language.DEFAULT());
 //		assertEquals("testText", textData1.getMultilanguageText().getText(Language.DEFAULT()));
@@ -138,22 +138,21 @@ public class TextDataTest {
 		assertNotNull(textData1.getPreferredLanguageString(preferredLanguages));
 	}
 	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#setMultilanguageText()}.
-	 */
-	@Test
-	public void testSetMultilanguageText() {
-		MultilanguageText multilanguageText = MultilanguageText.NewInstance();
-		assertFalse(multilanguageText.equals(textData1.getMultilanguageText()));
-		Map<Language, LanguageString> texts = textData1.getMultilanguageText();
-		System.out.println(texts.size());
-		LanguageString text = texts.get(Language.DEFAULT());
-		text.setText("This is a test");
-		System.out.println(texts.size());
-		textData1.getMultilanguageText().clear();
-		assertNotNull(textData1.getMultilanguageText());
-		assertEquals(0, textData1.getMultilanguageText().size());
-	}
+//	/**
+//	 * 
+//	Test method for {@link eu.etaxonomy.cdm.model.description.TextData#setMultilanguageText()}.
+//	 */
+//	@Test
+//	public void testSetMultilanguageText() {
+//		MultilanguageText multilanguageText = MultilanguageText.NewInstance();
+//		assertFalse(multilanguageText.equals(textData1.getMultilanguageText()));
+//		Map<Language, LanguageString> texts = textData1.getMultilanguageText();
+//		LanguageString text = texts.get(Language.DEFAULT());
+//		text.setText("This is a test");
+//		textData1.getMultilanguageText().clear();
+//		assertNotNull(textData1.getMultilanguageText());
+//		assertEquals(0, textData1.getMultilanguageText().size());
+//	}
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#addText(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
@@ -164,9 +163,8 @@ public class TextDataTest {
 		assertNull(textDataLeer.putText("francais", Language.FRENCH()));
 		textDataLeer.putText("nothing", null);
 		textDataLeer.putText(null, Language.CHINESE());
-		assertNotNull(textDataLeer.getMultilanguageText());
-		assertEquals(4 , textDataLeer.getMultilanguageText().size());
-		assertEquals("xx", textDataLeer.putText("deutsch", Language.GERMAN()).getText() );
+		assertEquals(4 , textDataLeer.size());
+		assertEquals("deutsch", textDataLeer.putText("deutsch", Language.GERMAN()).getText() );
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
 		assertEquals("deutsch", textDataLeer.getText(Language.GERMAN()));
 		assertEquals("francais", textDataLeer.getText(Language.FRENCH()));

@@ -29,7 +29,7 @@ import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
@@ -80,34 +80,34 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 	
-	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation){
+	public static DescriptionElementSource NewInstance(String id, String idNamespace, Reference citation){
 		DescriptionElementSource result = NewInstance(id, idNamespace);
 		result.setCitation(citation);		
 		return result;
 	}
 
-	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microCitation){
+	public static DescriptionElementSource NewInstance(String id, String idNamespace, Reference citation, String microCitation){
 		DescriptionElementSource result = NewInstance(id, idNamespace);
 		result.setCitation(citation);
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
 	
-	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+	public static DescriptionElementSource NewInstance(String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
 		DescriptionElementSource result = NewInstance(id, idNamespace, citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
 		result.setOriginalNameString(originalNameString);
 		return result;
 	}
 	
-	public static DescriptionElementSource NewInstance(ReferenceBase citation, String microCitation){
+	public static DescriptionElementSource NewInstance(Reference citation, String microCitation){
 		DescriptionElementSource result = NewInstance();
 		result.setCitation(citation);
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
 
-	public static DescriptionElementSource NewInstance(ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+	public static DescriptionElementSource NewInstance(Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
 		DescriptionElementSource result = NewInstance(citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
 		result.setOriginalNameString(originalNameString);

@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.model.reference;
 
 /**
  * This base interface represents all different kind of published 
- * {@link IReferenceBase references} which constitute a physical 
+ * {@link IReference references} which constitute a physical 
  * or virtual unit. A reference is a published
  * reference if it can be consulted by the general public.
  */
-public interface IPublicationBase extends IReferenceBase {
+public interface IPublicationBase extends IReference {
 	
 	/**
 	 * Returns the publisher string for this reference

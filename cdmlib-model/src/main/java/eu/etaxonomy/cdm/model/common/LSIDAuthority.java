@@ -32,6 +32,7 @@ import org.hibernate.annotations.TypeDefs;
 
 import com.ibm.lsid.MalformedLSIDException;
 
+import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
 import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)

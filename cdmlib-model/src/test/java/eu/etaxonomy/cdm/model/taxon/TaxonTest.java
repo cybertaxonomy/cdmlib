@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -38,8 +38,8 @@ public class TaxonTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonTest.class);
 
 	
-	private ReferenceBase sec;
-	private ReferenceBase misSec;
+	private Reference sec;
+	private Reference misSec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
@@ -181,7 +181,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#NewInstance(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#NewInstance(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference)}.
 	 */
 	@Test
 	public void testNewInstance() {
@@ -197,7 +197,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference)}.
 	 */
 	@Test
 	public void testTaxonTaxonNameBaseReferenceBase() {
@@ -353,7 +353,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addTaxonRelation(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addTaxonRelation(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	public void testAddTaxonRelationTaxonTaxonRelationshipTypeReferenceBaseString() {
@@ -361,7 +361,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addMisappliedName(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addMisappliedName(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	public void testAddMisappliedName() {
@@ -403,7 +403,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	public void testAddSynonymSynonymSynonymRelationshipTypeReferenceBaseString() {
@@ -419,7 +419,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	public void testAddSynonymNameTaxonNameBaseSynonymRelationshipTypeReferenceBaseString() {
@@ -435,7 +435,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHeterotypicSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.HomotypicalGroup, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHeterotypicSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.HomotypicalGroup, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	public void testAddHeterotypicSynonymNameTaxonNameBaseHomotypicalGroupReferenceBaseString() {
@@ -443,7 +443,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHomotypicSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHomotypicSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	public void testAddHomotypicSynonymName() {
@@ -451,7 +451,7 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHomotypicSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHomotypicSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	public void testAddHomotypicSynonym() {

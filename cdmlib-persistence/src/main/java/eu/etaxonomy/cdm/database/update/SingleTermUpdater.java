@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * @date 10.09.2010
  *
  */
-public class SingleTermUpdater extends SchemaUpdaterStepBase {
+public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	
@@ -180,6 +180,9 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	private String getOrderIndex(ICdmDataSource datasource, int vocId, IProgressMonitor monitor) throws SQLException {
 		ResultSet rs;
 		Integer intOrderIndex = null;
+		if (uuidAfterTerm == null){
+			return "1";
+		}
 		String sqlOrderIndex = " SELECT orderindex FROM DefinedTermBase WHERE uuid = '"+uuidAfterTerm+"' AND vocabulary_id = "+vocId+"";
 		rs = datasource.executeQuery(sqlOrderIndex);
 		if (rs.next()){

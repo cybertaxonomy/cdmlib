@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -88,7 +88,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	 */
 	private void addSource(ResultSet rs, ELEMENT element) throws SQLException {
 		String microCitation = getStringDbValue(rs, dbMicroCitationAttribute);
-		ReferenceBase citation = (ReferenceBase) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
+		Reference citation = (Reference) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
 		element.addSource(null, null, citation, microCitation);
 	}
 

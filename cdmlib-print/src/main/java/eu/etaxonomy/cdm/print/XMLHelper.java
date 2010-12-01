@@ -27,7 +27,7 @@ public class XMLHelper {
 	private static final Logger logger = Logger.getLogger(XMLHelper.class);
 	
 	public enum EntityType{
-		CLASSIFICATION("TaxonomicTree"), 
+		CLASSIFICATION("Classification"), 
 		TAXON_NODE("TaxonNode"),
 		EMPTY("");
 		

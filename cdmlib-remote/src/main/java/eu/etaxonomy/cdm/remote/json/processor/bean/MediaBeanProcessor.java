@@ -97,15 +97,15 @@ public class MediaBeanProcessor extends AbstractCdmBeanProcessor<Media> {
 		}
 		
 		// description
-		if(Hibernate.isInitialized(media.getDescription())){
-			langString = MultilanguageTextHelper.getPreferredLanguageString(media.getDescription(), languages);
+		if(Hibernate.isInitialized(media.getAllDescriptions())){
+			langString = MultilanguageTextHelper.getPreferredLanguageString(media.getAllDescriptions(), languages);
 			if(langString != null){
 				if(langString.getText() != null && langString.getText().length() != 0){
 					json.element("description_L10n", langString.getText());
 				} 
 			}
 			if(!replaceDescription){
-				json.element("description", media.getDescription(), jsonConfig);
+				json.element("description", media.getAllDescriptions(), jsonConfig);
 			}
 		} else {
 			logger.debug("description of media not initialized  " + media.getUuid().toString());

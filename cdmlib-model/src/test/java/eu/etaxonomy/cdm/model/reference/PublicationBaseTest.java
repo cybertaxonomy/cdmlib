@@ -98,7 +98,7 @@ public class PublicationBaseTest {
 		IJournal journal = ReferenceFactory.newJournal();
 		publicationBase2.setInJournal(journal);
 		//TODO: to validate it, the object has to be saved to the db
-		IBookSection booksection = ((ReferenceBase)publicationBase2).castReferenceToBookSection();
+		IBookSection booksection = ((Reference)publicationBase2).castReferenceToBookSection();
 		
 		
 	}

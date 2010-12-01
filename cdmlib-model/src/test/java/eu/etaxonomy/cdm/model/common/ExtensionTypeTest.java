@@ -23,8 +23,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * @author a.mueller

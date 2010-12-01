@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -97,7 +97,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	protected boolean doInvoke(TcsRdfImportState state){
 		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)state.getStore(ICdmIO.TEAM_STORE);
 
 		String tcsElementName;
@@ -163,7 +163,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						}
 					}
 					if (state.getConfig().isPublishReferences()){
-						((ReferenceBase)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+						((Reference)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
 					}
 				}
 						

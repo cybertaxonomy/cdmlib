@@ -59,7 +59,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	protected static Map<UUID, TaxonRelationshipType> termMap = null;		
 	
-	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
+	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
@@ -165,7 +165,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * Returns the taxon relationship type "is taxonomically included in". This
 	 * indicates that the {@link TaxonRelationship#getFromTaxon() source taxon}
 	 * in such a {@link TaxonRelationship taxon relationship} has the target {@link Taxon taxon}
-	 * as immediate next higher parent within the taxonomic tree. Generally
+	 * as immediate next higher parent within the classification. Generally
 	 * the {@link Taxon#getSec() concept reference} of both taxa are the same
 	 * except if the concept reference follows the taxonomical opinion of
 	 * another reference.<BR>

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -73,7 +73,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		String childName;
 		boolean obligatory;
 	
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		IReferenceService referenceService = getReferenceService();
 		
 		TcsXmlImportConfigurator config = state.getConfig();
@@ -108,7 +108,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 
 			String simple = elSimple.getTextNormalize();
 			
-			ReferenceBase reference = refFactory.newGeneric();
+			Reference reference = refFactory.newGeneric();
 			reference.setTitleCache(simple, true);
 
 			childName = "PublicationDetailed";

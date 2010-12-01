@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 public class WorkingSetService extends
 		AnnotatableServiceBase<WorkingSet, IWorkingSetDao> implements IWorkingSetService {
 

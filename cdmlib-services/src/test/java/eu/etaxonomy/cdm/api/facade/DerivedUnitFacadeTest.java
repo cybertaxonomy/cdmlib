@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -871,7 +871,7 @@ public class DerivedUnitFacadeTest {
 	@Test
 	public void testAddGetRemoveSource(){
 		Assert.assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
-	    ReferenceBase reference = ReferenceFactory.newBook();
+	    Reference reference = ReferenceFactory.newBook();
 		IdentifiableSource source1 = specimenFacade.addSource(reference, "54", "myName");
 		Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
 		IdentifiableSource source2 = IdentifiableSource.NewInstance("1", "myTable");
@@ -879,7 +879,7 @@ public class DerivedUnitFacadeTest {
 		Assert.assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
 		specimenFacade.removeSource(source1);
 		Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
-		ReferenceBase reference2 = ReferenceFactory.newJournal();
+		Reference reference2 = ReferenceFactory.newJournal();
 		IdentifiableSource sourceNotUsed = specimenFacade.addSource(reference2, null, null);
 		specimenFacade.removeSource(sourceNotUsed);	
 		Assert.assertEquals("One source should still exist", 1, specimenFacade.getSources().size());

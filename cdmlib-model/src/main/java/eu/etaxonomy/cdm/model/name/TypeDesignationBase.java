@@ -32,7 +32,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * The (abstract) class representing a typification of one or several {@link TaxonNameBase taxon names}.<BR>
@@ -98,7 +98,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	/** 
 	 * Class constructor: creates a new empty type designation.
 	 * 
-	 * @see	#TypeDesignationBase(ReferenceBase, String, String, Boolean)
+	 * @see	#TypeDesignationBase(Reference, String, String, Boolean)
 	 */
 	protected TypeDesignationBase(){
 		super();
@@ -106,7 +106,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	
 	/**
 	 * Class constructor: creates a new type designation
-	 * (including its {@link ReferenceBase reference source} and eventually
+	 * (including its {@link Reference reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation).
 	 * 
@@ -117,13 +117,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	 * @see							#isNotDesignated()
 	 * @see							TaxonNameBase#getTypeDesignations()
 	 */
-	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString) {
+	protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString) {
 		this(citation, citationMicroReference, originalNameString, false);
 	}
 
 	/**
 	 * Class constructor: creates a new type designation
-	 * (including its {@link ReferenceBase reference source} and eventually
+	 * (including its {@link Reference reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation).
 	 * 
@@ -136,7 +136,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	 * @see							#isNotDesignated()
 	 * @see							TaxonNameBase#getTypeDesignations()
 	 */
-	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString, boolean notDesignated){
+	protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
 		super(citation, citationMicroReference, originalNameString);
 		this.notDesignated = notDesignated;
 	}

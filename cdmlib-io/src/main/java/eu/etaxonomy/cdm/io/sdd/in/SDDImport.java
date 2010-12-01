@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -78,12 +78,12 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author h.fradin
@@ -105,7 +105,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,String> locations = new HashMap<String,String>();
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
-	private Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
+	private Map<String,Reference> publications = new HashMap<String,Reference>();
 	private Map<String,State> states = new HashMap<String,State>();
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
@@ -121,9 +121,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
-	private Set<ReferenceBase> sources = new HashSet<ReferenceBase>();
-	private ReferenceBase sec = ReferenceFactory.newDatabase();
-	private ReferenceBase sourceReference = null;
+	private Set<Reference> sources = new HashSet<Reference>();
+	private Reference sec = ReferenceFactory.newDatabase();
+	private Reference sourceReference = null;
 
 	private Language datasetLanguage = null;
 
@@ -136,7 +136,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
 	private Set<FeatureTree> featureTrees = new HashSet<FeatureTree>();
-	private Set<TaxonomicTree> taxonomicTrees = new HashSet<TaxonomicTree>();
+	private Set<Classification> classifications = new HashSet<Classification>();
 
 	private Rights copyright = null;
 
@@ -161,8 +161,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		
 		TransactionStatus ts = startTransaction();
 		SDDImportConfigurator sddConfig = state.getConfig();
-
+		IProgressMonitor progressMonitor = sddConfig.getProgressMonitor();
+				
 		logger.info("start Datasets ...");
+		
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
 		Element root = sddConfig.getSourceRoot();
 		Namespace sddNamespace = sddConfig.getSddNamespace();
@@ -175,12 +177,15 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 		//for each Dataset
 		logger.info("start Dataset ...");
+		progressMonitor.beginTask("Importing SDD data", elDatasets.size());
 		for (Element elDataset : elDatasets){
 			success &= importDataset(elDataset, sddNamespace, state);			
-			if ((++i % modCount) == 0){ logger.info("dataset(s) handled: " + i);}
-			logger.info(i + " dataset(s) handled");
+//			if ((++i % modCount) == 0){ logger.info("dataset(s) handled: " + i);}
+//			logger.info(i + " dataset(s) handled");
+			progressMonitor.worked(1);
 		}
 		commitTransaction(ts);
+		progressMonitor.done();
 		logger.info("End of transaction");
 		return success;
 	}
@@ -371,9 +376,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				if (ve instanceof TaxonDescription) {
 					TaxonDescription td = (TaxonDescription) ve;
 					if (td.getDescriptionSources().size() > 0) {
-						this.associateImageWithCdmBase(ref,(ReferenceBase) td.getDescriptionSources().toArray()[0]);
+						this.associateImageWithCdmBase(ref,(Reference) td.getDescriptionSources().toArray()[0]);
 					} else {
-						ReferenceBase descriptionSource = ReferenceFactory.newGeneric();
+						Reference descriptionSource = ReferenceFactory.newGeneric();
 						sources.add(descriptionSource);
 						td.addDescriptionSource(descriptionSource);
 						this.associateImageWithCdmBase(ref,descriptionSource);
@@ -409,8 +414,8 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 					//TODO
 					String rel = elLink.getAttributeValue("rel");
 					String href = elLink.getAttributeValue("href");
-
-					mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
+					URI uri = new URI(href);
+					mr.addRepresentationPart(MediaRepresentationPart.NewInstance(uri, null));
 					link.addRepresentation(mr);
 					ime.addMedia(link);
 
@@ -591,7 +596,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
-				ReferenceBase publication = publications.get(citations.get(ref));
+				Reference publication = publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
 					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
@@ -613,19 +618,19 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		}
 		saveFeatures();
 		
-		for (ReferenceBase publication : publications.values()){
+		for (Reference publication : publications.values()){
 			getReferenceService().save(publication); 
 		}
 		
-		for (ReferenceBase source : sources){
+		for (Reference source : sources){
 			getReferenceService().save(source); 
 		}
 
 		for (FeatureTree featureTree : featureTrees) {
 			getFeatureTreeService().save(featureTree);
 		}
-		for (TaxonomicTree taxonomicTree : taxonomicTrees) {
-			getTaxonTreeService().save(taxonomicTree);
+		for (Classification classification : classifications) {
+			getClassificationService().save(classification);
 		}
 		for (Specimen specimen : specimens.values()) {
 			getOccurrenceService().save(specimen);
@@ -1494,7 +1499,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				try {
 
 					String idP = elPublication.getAttributeValue("id");
-					ReferenceBase publication = ReferenceFactory.newArticle();
+					Reference publication = ReferenceFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
 
 					publications.put(idP,publication);
@@ -1549,7 +1554,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 								URL url = new URL(href);
 								
 								imageMetaData.readMetaData(url.toURI(), 0);
-								image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
+								image = ImageFile.NewInstance(url.toURI(), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
 							}
@@ -1560,7 +1565,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
 							imageMetaData.readMetaData(new URI(fi), 0); //file
-							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
+							image = ImageFile.NewInstance(file.toURI(), null, imageMetaData);
 						}
 						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 						representation.addRepresentationPart(image);
@@ -1583,10 +1588,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 									//											dtb.addMedia(me);
 									//										}
 									//									}
-								} else if (lcb.get(k) instanceof ReferenceBase) {
-									ReferenceBase rb = (ReferenceBase) lcb.get(k);
-									//} else if (lcb.get(0) instanceof ReferenceBase) {
-									//ReferenceBase rb = (ReferenceBase) lcb.get(0);
+								} else if (lcb.get(k) instanceof Reference) {
+									Reference rb = (Reference) lcb.get(k);
+									//} else if (lcb.get(0) instanceof Reference) {
+									//Reference rb = (Reference) lcb.get(0);
 									// rb.setTitleCache(label);
 									//									if (rb!=null) {
 									//										if (k == 0) {
@@ -1834,10 +1839,10 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				try {
 					Element elRepresentation = elTaxonHierarchy.getChild("Representation",sddNamespace);
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
-						TaxonomicTree taxonomicTree =  TaxonomicTree.NewInstance(label);
-						importRepresentation(elTaxonHierarchy, sddNamespace, taxonomicTree, "", sddConfig);
+						Classification classification =  Classification.NewInstance(label);
+						importRepresentation(elTaxonHierarchy, sddNamespace, classification, "", sddConfig);
 					
-						Set<TaxonNode> root = taxonomicTree.getChildNodes();
+						Set<TaxonNode> root = classification.getChildNodes();
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 						
@@ -1859,13 +1864,13 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 									}
 								}
 								else {
-									TaxonNode tn = taxonomicTree.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
+									TaxonNode tn = classification.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
 									taxonNodes.put(idN,tn);
 								}
 							}
 						}
 
-						taxonomicTrees.add(taxonomicTree);
+						classifications.add(classification);
 					}
 
 				catch (Exception e) {

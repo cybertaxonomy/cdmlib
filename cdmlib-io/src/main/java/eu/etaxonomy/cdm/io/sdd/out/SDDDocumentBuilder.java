@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -109,7 +109,7 @@ public class SDDDocumentBuilder {
 	private Map<TaxonDescription,String> codedDescriptions = new HashMap<TaxonDescription,String>();
 	private Map<Media,String> medias = new HashMap<Media,String>();
 	private Map<State,String> states = new HashMap<State,String>();
-	private Map<ReferenceBase, String> articles = new HashMap<ReferenceBase, String>();
+	private Map<Reference, String> articles = new HashMap<Reference, String>();
 	private Map<VersionableEntity, String> featuretrees = new HashMap<VersionableEntity, String>();
 	private Map<Modifier, String> modifiers = new HashMap<Modifier, String>();
 	private Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode,String>();
@@ -267,11 +267,11 @@ public class SDDDocumentBuilder {
 
 		buildTechnicalMetadata(baselement);
 
-		List<ReferenceBase> references = cdmSource.getReferences();
-		Iterator<ReferenceBase> iterator = references.iterator();
+		List<Reference> references = cdmSource.getReferences();
+		Iterator<Reference> iterator = references.iterator();
 		IDatabase d = refFactory.newDatabase();
 		while (iterator.hasNext()) {
-			ReferenceBase reference = (ReferenceBase) iterator.next();
+			Reference reference = (Reference) iterator.next();
 			if (reference.getType().equals(ReferenceType.Database)) {
 				buildDataset(baselement, reference);
 			}
@@ -351,12 +351,12 @@ public class SDDDocumentBuilder {
 		//create TechnicalMetadata
 		ElementImpl technicalMetadata = new ElementImpl(document, TECHNICAL_METADATA);
 		//select different databases associated to different descriptions TODO
-		List<ReferenceBase> references = cdmSource.getReferences();
-		Iterator<ReferenceBase> iterator = references.iterator();
+		List<Reference> references = cdmSource.getReferences();
+		Iterator<Reference> iterator = references.iterator();
 		boolean database = false;
 		IDatabase d = refFactory.newDatabase();
 		while ((iterator.hasNext()) && (!database)) {
-			ReferenceBase reference = (ReferenceBase) iterator.next();
+			Reference reference = (Reference) iterator.next();
 			if (reference.getType().equals(ReferenceType.Database)) {
 				d = reference;
 			}
@@ -392,13 +392,13 @@ public class SDDDocumentBuilder {
 		buildPublications(dataset);
 		buildMediaObjects(dataset);
 		buildCharacterTrees(dataset);
-		buildTaxonomicTrees(dataset);
+		buildClassifications(dataset);
 		buildGeographicAreas(dataset);
 		buildSpecimens(dataset);
 	}
 
 	/**
-	 * Builds a Representation element using a ReferenceBase
+	 * Builds a Representation element using a Reference
 	 */
 	public void buildRepresentation(ElementImpl element, IDatabase reference) throws ParseException {
 
@@ -407,7 +407,7 @@ public class SDDDocumentBuilder {
 		element.appendChild(representation);
 		buildLabel(representation, reference.getTitleCache());
 
-		Set<Annotation> annotations = ((ReferenceBase)reference).getAnnotations();
+		Set<Annotation> annotations = ((Reference)reference).getAnnotations();
 		Iterator iterator = annotations.iterator();
 		String detailText = null;
 		if (iterator.hasNext()) {
@@ -421,7 +421,7 @@ public class SDDDocumentBuilder {
 			representation.appendChild(detail);
 		}
 
-		Set<Media> rm = ((ReferenceBase)reference).getMedia();
+		Set<Media> rm = ((Reference)reference).getMedia();
 
 		if (rm != null && rm.size() > 0) {
 			ElementImpl mediaObject;
@@ -531,7 +531,7 @@ public class SDDDocumentBuilder {
 						for (Iterator<MediaRepresentationPart> mrp = lmrp.iterator();mrp.hasNext();){
 							MediaRepresentationPart mediareppart = mrp.next();
 							ElementImpl elLink = new ElementImpl(document, "Link");
-							elLink.setAttribute("href",mediareppart.getUri());
+							elLink.setAttribute("href",mediareppart.getUri().toString());
 							elLinks.appendChild(elLink);
 						}
 					}
@@ -585,10 +585,10 @@ public class SDDDocumentBuilder {
 
 		//  <DateModified>2006-04-08T00:00:00</DateModified>
 
-		if (((ReferenceBase)database).getUpdated() != null) {
+		if (((Reference)database).getUpdated() != null) {
 			ElementImpl dateModified = new ElementImpl(document, DATE_MODIFIED);
 
-			DateTime c = ((ReferenceBase)database).getUpdated();
+			DateTime c = ((Reference)database).getUpdated();
 			DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
 
 			String date = fmt.print(c);
@@ -822,9 +822,9 @@ public class SDDDocumentBuilder {
 				}
 		}
 
-		Set<ReferenceBase> descriptionSources = taxonDescription.getDescriptionSources();
-		for (Iterator<ReferenceBase> rb = descriptionSources.iterator() ; rb.hasNext() ;){
-			ReferenceBase descriptionSource = rb.next();
+		Set<Reference> descriptionSources = taxonDescription.getDescriptionSources();
+		for (Iterator<Reference> rb = descriptionSources.iterator() ; rb.hasNext() ;){
+			Reference descriptionSource = rb.next();
 			if (descriptionSource.getType().equals(ReferenceType.Article)) {
 
 				ElementImpl citation = new ElementImpl(document, CITATION);
@@ -986,8 +986,7 @@ public class SDDDocumentBuilder {
 		Feature feature = textData.getFeature();
 		buildReference(feature, characters, REF, textChar, "c", charactersCount);
 		Map<Language,LanguageString> multilanguageText = textData.getMultilanguageText();
-		for (Iterator<Language> l = multilanguageText.keySet().iterator() ; l.hasNext() ;){
-			Language language = l.next();
+		for (Language language : multilanguageText.keySet()){
 			LanguageString languageString = multilanguageText.get(language);
 			buildContent(textChar,languageString);
 		}
@@ -1148,7 +1147,7 @@ public class SDDDocumentBuilder {
 		}
 	}
 	
-	public void buildTaxonomicTrees(ElementImpl dataset) throws ParseException {
+	public void buildClassifications(ElementImpl dataset) throws ParseException {
 
 		if (cdmSource.getTaxa() != null) {
 			ElementImpl elTaxonHierarchies = new ElementImpl(document, "TaxonHierarchies");
@@ -1278,7 +1277,7 @@ public class SDDDocumentBuilder {
 						for (Iterator<MediaRepresentationPart> mrp = lmrp.iterator();mrp.hasNext();){
 								MediaRepresentationPart mediareppart = mrp.next();
 								ElementImpl elSource = new ElementImpl(document, "Source");
-								elSource.setAttribute("href",mediareppart.getUri());
+								elSource.setAttribute("href",mediareppart.getUri().toString());
 								elMediaObject.appendChild(elSource);
 							}
 					}
@@ -1295,7 +1294,7 @@ public class SDDDocumentBuilder {
 			boolean editorial = false;
 			for (int i = 0; i < cdmSource.getReferences().size(); i++) {
 				ElementImpl elPublication = new ElementImpl(document, "Publication");
-				ReferenceBase publication = cdmSource.getReferences().get(i);
+				Reference publication = cdmSource.getReferences().get(i);
 					Set<Annotation> annotations = publication.getAnnotations();
 					for (Iterator<Annotation> a = annotations.iterator() ; a.hasNext() ;){
 						Annotation annotation = a.next();

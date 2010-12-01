@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -61,8 +61,8 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the taxonomic tree are not found.
+	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
+	 * Taxa that are not part of theclassification are not found.
 	 * 
 	 * @param exImpConfig
 	 * @param dbname
@@ -170,8 +170,8 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		}
 
 		if (sddExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
-			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
-			logger.info("# ReferenceBase: " + referenceBaseRows);
+			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(Reference.class); }
+			logger.info("# Reference: " + referenceBaseRows);
 			sddDataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));
 		}
 

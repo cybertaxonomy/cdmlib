@@ -68,7 +68,7 @@ public class CdmImporterTest  extends CdmTransactionalIntegrationTest{
 			//System.out.println(e);
 			//logger.error(e);
 			for(StackTraceElement ste : e.getStackTrace()) {
-				//logger.error(ste);
+				logger.error(ste);
 			}
 			fail("No exception expected in database validation method");
 		} 

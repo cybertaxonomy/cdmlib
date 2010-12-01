@@ -27,7 +27,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializer.class);
 	protected ITermLoader termLoader = new TermLoader();
 	
-	public final void initialize() {
+	public void initialize() {
 		termLoader.unloadAllTerms();
 		doInitialize();
 	}

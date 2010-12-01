@@ -9,10 +9,13 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -38,7 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 //import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -54,7 +57,7 @@ public class TestSpecimen {
 	public void testSpecimen(){
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		logger.info("Create test taxon ...");
-		ReferenceBase sec = refFactory.newDatabase();
+		Reference sec = refFactory.newDatabase();
 		String fullNameString = "Acanthostyles saucechicoensis (Hieron.) R.M. King & H. Rob.";
 		BotanicalName botanicalName = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(fullNameString);
 		Taxon taxon = Taxon.NewInstance(botanicalName, sec);
@@ -109,7 +112,12 @@ public class TestSpecimen {
 		
 		
 		Media media = Media.NewInstance();
-		String uri = "http://131.130.131.9/database/img/imgBrowser.php?ID=50599";
+		URI uri = null;
+		try {
+			uri = new URI("http://131.130.131.9/database/img/imgBrowser.php?ID=50599");
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 		String mimeType = null;
 		Integer size = null;
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(mimeType, "jpg");

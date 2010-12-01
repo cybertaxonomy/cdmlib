@@ -149,7 +149,7 @@
       <mapping class="eu.etaxonomy.cdm.model.reference.PrintedUnitBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.PrintSeries"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Proceedings"/>
-      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Report"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.SectionBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.StrictReferenceBase"/>

@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -104,14 +104,14 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	    sec.setTitleCache("sec.titleCache", true);
 	    sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
 	    
-		taxon = Taxon.NewInstance(name, (ReferenceBase)sec);
+		taxon = Taxon.NewInstance(name, (Reference)sec);
 		taxon.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
 		taxon.setUpdated(new DateTime(2005, 12, 25, 12, 0, 0, 0));
 		taxon.setTitleCache("titleCache", true);
 		taxon.setLsid(lsid);
 
 		for(int i = 0; i < 10; i++) {
-			Taxon child = Taxon.NewInstance(name, (ReferenceBase)sec);
+			Taxon child = Taxon.NewInstance(name, (Reference)sec);
 			child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:" + (2 + i )));
 			taxon.addTaxonomicChild(child, null,null);
 		}
@@ -141,7 +141,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	@Test
 	public void testDeepMapping() {
 		for(int i = 0; i < 3; i++) {
-			Synonym synonym = Synonym.NewInstance(name,(ReferenceBase)sec);
+			Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
 			taxon.addSynonym(synonym,new SynonymRelationshipType());
 		}
 		TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
@@ -165,7 +165,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testLazyInitializationExceptionWithProxy() throws Exception {
-		IBook proxy = getUninitializedDetachedProxy(ReferenceBase.class,(ReferenceBase)sec);
+		IBook proxy = getUninitializedDetachedProxy(Reference.class,(Reference)sec);
 		assert !Hibernate.isInitialized(proxy);
 		Field secField = TaxonBase.class.getDeclaredField("sec");
 		secField.setAccessible(true);

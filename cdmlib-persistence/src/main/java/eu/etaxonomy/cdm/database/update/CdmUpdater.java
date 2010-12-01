@@ -15,6 +15,8 @@ import eu.etaxonomy.cdm.common.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.v25_30.SchemaUpdater_25_30;
+import eu.etaxonomy.cdm.database.update.v25_30.TermUpdater_25_30;
 
 /**
  * @author a.mueller
@@ -24,7 +26,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class CdmUpdater {
 	private static final Logger logger = Logger.getLogger(CdmUpdater.class);
 	
-
+	public static CdmUpdater NewInstance(){
+		return new CdmUpdater();
+	}
+	
 	/**
 	 * @param datasource
 	 * @param monitor may be <code>null</code>
@@ -40,8 +45,8 @@ public class CdmUpdater {
 		// TODO do we really always update the terms??
 		ITermUpdater currentTermUpdater = getCurrentTermUpdater();
 		
-		int steps = currentSchemaUpdater.countSteps(datasource);
-		steps += currentTermUpdater.countSteps(datasource);
+		int steps = currentSchemaUpdater.countSteps(datasource, monitor);
+		steps += currentTermUpdater.countSteps(datasource, monitor);
 		
 		String taskName = "Update to schema version " + currentSchemaUpdater.getTargetVersion() + " and to term version " + currentTermUpdater.getTargetVersion(); //+ currentSchemaUpdater.getVersion();
 		monitor.beginTask(taskName, steps);
@@ -65,7 +70,7 @@ public class CdmUpdater {
 	}
 	
 	private ITermUpdater getCurrentTermUpdater() {
-		return TermUpdater_24_25.NewInstance();
+		return TermUpdater_25_30.NewInstance();
 	}
 
 	/**
@@ -73,8 +78,7 @@ public class CdmUpdater {
 	 * @return
 	 */
 	private ISchemaUpdater getCurrentSchemaUpdater() {
-		return SchemaUpdater_24_25.NewInstance();
-//		return SchemaUpdater_25_26.NewInstance();
+		return SchemaUpdater_25_30.NewInstance();
 	}
 
 	/**

@@ -23,14 +23,14 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
@@ -64,7 +64,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	public boolean doInvoke(TcsRdfImportState state){ 
 	
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		logger.info("start makeTaxonRelationships ...");
 		boolean success =true;
 
@@ -169,7 +169,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 					success = false;
 				}else{
 					Taxon taxonTo = (Taxon)toTaxon;
-					ReferenceBase citation = null;
+					Reference citation = null;
 					String microReference = null;
 					if (relType instanceof SynonymRelationshipType){
 						success &= makeSynRelType((SynonymRelationshipType)relType, taxonTo, fromTaxon, citation, microReference);
@@ -200,7 +200,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	}
 	
 	
-	private boolean makeSynRelType(SynonymRelationshipType synRelType, Taxon taxonTo, TaxonBase fromTaxon, ReferenceBase citation, String microReference){
+	private boolean makeSynRelType(SynonymRelationshipType synRelType, Taxon taxonTo, TaxonBase fromTaxon, Reference citation, String microReference){
 		boolean success = true;
 		if (! (fromTaxon instanceof Synonym )){
 			logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
@@ -224,14 +224,14 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		return success;
 	}
 	
-	private boolean makeTaxonRelType(TaxonRelationshipType relType, TcsRdfImportState state, Taxon taxonTo, TaxonBase fromTaxon, String strTaxonAbout, ReferenceBase citation, String microReference){
+	private boolean makeTaxonRelType(TaxonRelationshipType relType, TcsRdfImportState state, Taxon taxonTo, TaxonBase fromTaxon, String strTaxonAbout, Reference citation, String microReference){
 		boolean success = true;
 		if (! (fromTaxon instanceof Taxon )){
 			logger.warn("TaxonBase fromTaxon " + strTaxonAbout + " is not of Type 'Taxon'. Relationship is not added.");
 			success = false;
 		}else{
 			Taxon taxonFrom = (Taxon)fromTaxon;
-			if (state.getConfig().isUseTaxonomicTree() && relType.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
+			if (state.getConfig().isUseClassification() && relType.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				success &= makeTaxonomicallyIncluded(state, taxonTo, taxonFrom, citation, microReference);
 			}else{
 				taxonFrom.addTaxonRelation(taxonTo, relType, citation, microReference);
@@ -240,9 +240,9 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		return success;
 	}
 	
-	private boolean makeTaxonomicallyIncluded(TcsRdfImportState state, Taxon toTaxon, Taxon fromTaxon, ReferenceBase citation, String microCitation){
-		ReferenceBase sec = toTaxon.getSec();
-		TaxonomicTree tree = state.getTree(sec);
+	private boolean makeTaxonomicallyIncluded(TcsRdfImportState state, Taxon toTaxon, Taxon fromTaxon, Reference citation, String microCitation){
+		Reference sec = toTaxon.getSec();
+		Classification tree = state.getTree(sec);
 		if (tree == null){
 			tree = makeTree(state, sec);
 		}

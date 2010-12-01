@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -54,7 +54,7 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 	public boolean doInvoke(TcsRdfImportState state){
 		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		
 		String tcsElementName;
 		Namespace tcsNamespace;
@@ -119,7 +119,7 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 				}
 				String ruleConcidered = null; //TODO
 				String microCitation = null; //TODO;
-				ReferenceBase citation = null; //TODO;
+				Reference citation = null; //TODO;
 				fromName.addBasionym(basionym, citation, microCitation, ruleConcidered);
 				nameStore.add(fromName);
 

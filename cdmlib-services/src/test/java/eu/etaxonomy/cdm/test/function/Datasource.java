@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -199,7 +199,7 @@ public class Datasource {
 			name.setNameCache(nameCache);
 			name.setTitleCache(nameCache, true);
 			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			ReferenceBase ref = refFactory.newGeneric();
+			Reference ref = refFactory.newGeneric();
 			ref.setTitleCache("mySec", true);
 			Taxon taxon = Taxon.NewInstance(name, ref);
 			TaxonDescription description = TaxonDescription.NewInstance();

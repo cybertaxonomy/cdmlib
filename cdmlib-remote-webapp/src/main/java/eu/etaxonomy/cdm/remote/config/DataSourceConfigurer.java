@@ -106,9 +106,9 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 		XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
 		DataSource dataSource = beanFactory.getBean(beanName, DataSource.class);
 		if(dataSource instanceof ComboPooledDataSource){
-			logger.info("DataSourceBean '" + beanName + "is a ComboPooledDataSource [URL:" + ((ComboPooledDataSource)dataSource).getJdbcUrl()+ "]");
+			logger.info("DataSourceBean '" + beanName + "' is a ComboPooledDataSource [URL:" + ((ComboPooledDataSource)dataSource).getJdbcUrl()+ "]");
 		} else {
-			logger.error("DataSourceBean '" + beanName + "IS NOT a ComboPooledDataSource");
+			logger.error("DataSourceBean '" + beanName + "' IS NOT a ComboPooledDataSource");
 		}
 		return dataSource;
 	}

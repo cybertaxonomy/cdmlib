@@ -21,18 +21,21 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -55,7 +58,7 @@ public interface ICdmApplicationConfiguration {
 	/**
 	 * @return
 	 */
-	public ITaxonTreeService getTaxonTreeService();
+	public IClassificationService getClassificationService();
 	
 	/**
 	 * 
@@ -121,6 +124,12 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public IService<CdmBase> getMainService();
 	
+	
+	/**
+	 * @return
+	 */
+	public IWorkingSetService getWorkingSetService();
+	
 	/**
 	 * @return
 	 */
@@ -161,5 +170,14 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public IVocabularyService getVocabularyService();
-		
+	
+	/**
+	 * @return
+	 */
+	public IIdentificationKeyService getIdentificationKeyService();
+	
+	/**
+	 * @return
+	 */
+	public IPolytomousKeyService getPolytomousKeyService();
 }

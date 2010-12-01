@@ -83,6 +83,7 @@ public class FeatureTree extends TermBase {
 	protected FeatureTree() {
 		super();
 		root = FeatureNode.NewInstance();
+		root.setFeatureTree(this);
 	}
 
 	/** 

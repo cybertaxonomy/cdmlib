@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,9 +47,9 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
@@ -57,22 +59,22 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
 	private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
-	protected TaxonomicTree makeTree(STATE state, ReferenceBase reference){
-		ReferenceBase ref = CdmBase.deproxy(reference, ReferenceBase.class);
-		String treeName = "TaxonTree (Import)";
+	protected Classification makeTree(STATE state, Reference reference){
+		Reference ref = CdmBase.deproxy(reference, Reference.class);
+		String treeName = "Classification (Import)";
 		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
 		}
-		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
+		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(ref);
 		
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
 		if (state.countTrees() < 1 ){
-			tree.setUuid(config.getTaxonomicTreeUuid());
+			tree.setUuid(config.getClassificationUuid());
 		}
-		getTaxonTreeService().save(tree);
+		getClassificationService().save(tree);
 		state.putTree(ref, tree);
 		return tree;
 	}
@@ -80,7 +82,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 	/**
 	 * Alternative memory saving method variant of
-	 * {@link #makeTree(STATE state, ReferenceBase ref)} which stores only the
+	 * {@link #makeTree(STATE state, Reference ref)} which stores only the
 	 * UUID instead of the full tree in the <code>ImportStateBase</code> by 
 	 * using <code>state.putTreeUuid(ref, tree);</code>
 	 * 
@@ -88,21 +90,21 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param ref
 	 * @return
 	 */
-	protected TaxonomicTree makeTreeMemSave(STATE state, ReferenceBase ref){
-		String treeName = "TaxonTree (Import)";
+	protected Classification makeTreeMemSave(STATE state, Reference ref){
+		String treeName = "Classification (Import)";
 		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
 		}
-		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
+		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(ref);
 		
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
 		if (state.countTrees() < 1 ){
-			tree.setUuid(config.getTaxonomicTreeUuid());
+			tree.setUuid(config.getClassificationUuid());
 		}
-		getTaxonTreeService().save(tree);
+		getClassificationService().save(tree);
 		state.putTreeUuid(ref, tree);
 		return tree;
 	}
@@ -275,7 +277,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, ReferenceBase citation) throws SQLException {
+	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation) throws SQLException {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable)cdmBase;
@@ -295,7 +297,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	/**
-	 * @see #addOriginalSource(CdmBase, Object, String, ReferenceBase)
+	 * @see #addOriginalSource(CdmBase, Object, String, Reference)
 	 * @param rs
 	 * @param cdmBase
 	 * @param dbIdAttribute
@@ -303,7 +305,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, ReferenceBase citation) throws SQLException {
+	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, Reference citation) throws SQLException {
 		Object id = rs.getObject(dbIdAttribute);
 		addOriginalSource(cdmBase, id, namespace, citation);
 	}
@@ -380,23 +382,29 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return null;
 		} else {
 			ImageMetaData imd = ImageMetaData.newInstance();
+			URI uri;
 			try {
-				if (readDataFromUrl){
-					URL url = new URL(multimediaObject);
-					imd.readMetaData(url.toURI(), 0);
+				uri = new URI(multimediaObject);
+				try {
+					if (readDataFromUrl){
+						imd.readMetaData(uri, 0);
+					}
+				} catch (Exception e) {
+					String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
+					logger.warn(message);
 				}
-			} catch (Exception e) {
-				String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
+				ImageFile imf = ImageFile.NewInstance(uri, null, imd);
+				MediaRepresentation representation = MediaRepresentation.NewInstance();
+				representation.setMimeType(imd.getMimeType());
+				representation.addRepresentationPart(imf);
+				Media media = Media.NewInstance();
+				media.addRepresentation(representation);
+				return media;
+			} catch (URISyntaxException e1) {
+				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  multimediaObject;
 				logger.warn(message);
+				return null;
 			}
-			ImageFile imf = ImageFile.NewInstance(multimediaObject, null, imd);
-			MediaRepresentation representation = MediaRepresentation.NewInstance();
-			representation.setMimeType(imd.getMimeType());
-			representation.addRepresentationPart(imf);
-			Media media = Media.NewInstance();
-			media.addRepresentation(representation);
-				
-			return media;
 		}
 	}
 

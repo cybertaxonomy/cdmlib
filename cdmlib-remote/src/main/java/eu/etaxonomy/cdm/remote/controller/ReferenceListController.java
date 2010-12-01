@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * TODO write controller documentation
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @Controller
 @RequestMapping(value = {"/reference"})
-public class ReferenceListController extends BaseListController<ReferenceBase, IReferenceService> {
+public class ReferenceListController extends BaseListController<Reference, IReferenceService> {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -38,9 +38,9 @@ public class TaxonGenerator {
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.", true);
-		ReferenceBase sec = refFactory.newDatabase();
+		Reference sec = refFactory.newDatabase();
 		sec.setTitleCache("Flora lunaea", true);
-		ReferenceBase citationRef = refFactory.newBook();
+		Reference citationRef = refFactory.newBook();
 		citationRef.setTitleCache("Sp. lunarum", true);
 		
         //genus taxon with Name, combinationAuthor, 

@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 @Controller
 @RequestMapping(value = {"/reference/{uuid}"})
-public class ReferenceController extends AnnotatableController<ReferenceBase, IReferenceService>
+public class ReferenceController extends AnnotatableController<Reference, IReferenceService>
 {
 	
 	private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -88,7 +88,7 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 			HttpServletResponse response,
 			@RequestParam(value = "microReference", required = false) String microReference)throws IOException {
 		ModelAndView mv = new ModelAndView();
-		ReferenceBase rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
+		Reference rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
 		if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
 			String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
 			mv.addObject(nomRefCit);
@@ -107,7 +107,7 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 				HttpServletRequest request, 
 				HttpServletResponse response) {
 		ModelAndView mv = new ModelAndView();
-		ReferenceBase rb = service.load(uuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
+		Reference rb = service.load(uuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
 		if(rb.getAuthorTeam() != null){
 			mv.addObject(rb.getAuthorTeam());
 		}

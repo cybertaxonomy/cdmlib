@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -53,7 +53,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	private boolean doHomotypicalGroups = true;
 
 	private boolean doTypeDesignations = true;
-	private boolean doTaxonomicTreeData = true;
+	private boolean doClassificationData = true;
 
 	
 	
@@ -186,7 +186,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
 	@Override
-	public ReferenceBase getSourceReference() {
+	public Reference getSourceReference() {
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
@@ -216,8 +216,8 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		this.doTypeDesignations = doTypeDesignations;
 	}
 
-	public boolean isDoTaxonomicTreeData() {
-		return this.doTaxonomicTreeData;
+	public boolean isDoClassificationData() {
+		return this.doClassificationData;
 	}
 	
 	

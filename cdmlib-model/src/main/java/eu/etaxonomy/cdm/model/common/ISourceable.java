@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
  
 public interface ISourceable<T extends IOriginalSource> {
@@ -37,7 +37,7 @@ public interface ISourceable<T extends IOriginalSource> {
 	 * @param citation
 	 * @param microCitation
 	 */
-	public T addSource(String id, String idNamespace, ReferenceBase citation, String microCitation);
+	public T addSource(String id, String idNamespace, Reference citation, String microCitation);
 		
 
 	/**

@@ -170,7 +170,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		
 		for(Media media : list(null,null)) { // re-index all media
 			Hibernate.initialize(media.getTitle());
-			Hibernate.initialize(media.getDescription());
+			Hibernate.initialize(media.getAllDescriptions());
 			Hibernate.initialize(media.getArtist());
 			fullTextSession.index(media);
 		}

@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -92,8 +92,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 		BerlinModelImportConfigurator config = state.getConfig();
 		Set<TaxonNameBase> nameToSave = new HashSet<TaxonNameBase>();
 		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
-		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+		Map<String, Reference> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, Reference> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
 
 			
 		ResultSet rs = partitioner.getResultSet();
@@ -117,7 +117,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				TaxonNameBase nameTo = nameMap.get(String.valueOf(name2Id));
 				
 				
-				ReferenceBase<?> citation = null;
+				Reference<?> citation = null;
 				if (relRefFkObj != null){
 					String relRefFk = String.valueOf(relRefFkObj);
 					//get nomRef
@@ -178,7 +178,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	private boolean handleNameRelationship(boolean success,
 				BerlinModelImportConfigurator config, int name1Id, int name2Id,
 				int relQualifierFk, String notes, TaxonNameBase nameFrom,
-				TaxonNameBase nameTo, ReferenceBase<?> citation,
+				TaxonNameBase nameTo, Reference<?> citation,
 				String microcitation, String rule) {
 		AnnotatableEntity nameRelationship = null;
 		if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
@@ -283,30 +283,30 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 
 			//nom reference map
 			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomReferenceMap);
 
 			//biblio reference map
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 	
 			//nom refDetail map
 			nameSpace = BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = refDetailIdSet;
-			Map<String, ReferenceBase> nomRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> nomRefDetailMap= (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomRefDetailMap);
 			
 			//biblio refDetail map
 			nameSpace = BerlinModelRefDetailImport.BIBLIO_REFDETAIL_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = refDetailIdSet;
-			Map<String, ReferenceBase> biblioRefDetailMap= (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> biblioRefDetailMap= (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioRefDetailMap);
 
 		} catch (SQLException e) {

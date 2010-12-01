@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -216,8 +216,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 					if (entityCacheStrategy == null){
 						entityCacheStrategy = entity.getCacheStrategy();
 						//FIXME find out why the wrong cache strategy is loaded here, see #1876 
-						if (entity instanceof ReferenceBase){
-							entityCacheStrategy = ReferenceFactory.newReference(((ReferenceBase)entity).getType()).getCacheStrategy();
+						if (entity instanceof Reference){
+							entityCacheStrategy = ReferenceFactory.newReference(((Reference)entity).getType()).getCacheStrategy();
 						}
 					}
 					entity.setCacheStrategy(entityCacheStrategy);

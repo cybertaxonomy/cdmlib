@@ -27,7 +27,7 @@ public class OdfOutputModule extends AbstractPublishOutputModule {
 	private static final Logger logger = Logger
 		.getLogger(OdfOutputModule.class);
 	
-	public static String STYLESHEET_RESOURCE_DEFAULT = "/eu/etaxonomy/printpublisher/out/odf/cdmToOdfText.xsl";
+	public static String STYLESHEET_RESOURCE_DEFAULT = "/eu/etaxonomy/cdm/print/out/odf/cdmToOdfText.xsl";
 	
 	private DocumentCreator documentCreator;
 	private Transformator transformator;

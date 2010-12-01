@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -250,21 +249,26 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		}
 		elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
 		
+		DescriptionElementBase element34 = null;
 		for (DescriptionElementBase descElB: elements){
 			if (descElB instanceof TextData){
 				Map<Language, LanguageString> multiLanguage = ((TextData)descElB).getMultilanguageText();
 				LanguageString defaultString = multiLanguage.get(Language.DEFAULT());
-				
+				//???
+			}
+			if (descElB.getId() == 34){
+				element34 = descElB;
 			}
 		}
 		
-		assertNotNull("getDescriptionElements should return a List");
+		assertNotNull("getDescriptionElements should return a List", elements);
 		assertFalse("getDescriptionElements should not be empty",elements.isEmpty());
 		assertEquals("getDescriptionElement should return 2 elements",2,elements.size());
-		assertTrue("ReferencedEntityBase.citation should be initialized",Hibernate.isInitialized(elements.get(0).getCitation()));
-		assertTrue("DescriptionElementBase.feature should be initialized",Hibernate.isInitialized(elements.get(0).getFeature()));
-		assertTrue("DescriptionElementBase.media should be initialized",Hibernate.isInitialized(elements.get(0).getMedia()));
-		assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(((TextData)elements.get(0)).getMultilanguageText()));
+		assertNotNull("Description Element with ID 34 should be part of the list",element34);
+		assertTrue("ReferencedEntityBase.citation should be initialized",Hibernate.isInitialized(element34.getSources().iterator().next().getCitation()));
+		assertTrue("DescriptionElementBase.feature should be initialized",Hibernate.isInitialized(element34.getFeature()));
+		assertTrue("DescriptionElementBase.media should be initialized",Hibernate.isInitialized(element34.getMedia()));
+		assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(((TextData)element34).getMultilanguageText()));
 	}
 	
 	@Test

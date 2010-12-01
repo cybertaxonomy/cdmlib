@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
@@ -70,7 +70,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		if (elTaxonHeader != null){
 			Element elMods = elTaxonHeader.getChild("mods", nsMods);
 			if (elMods != null){
-				ReferenceBase<?> ref = refFactory.newGeneric();
+				Reference<?> ref = refFactory.newGeneric();
 				//TitleInfo
 				Element elTitleInfo = elMods.getChild("titleInfo", nsMods);
 				if (elTitleInfo != null){
@@ -122,7 +122,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	 * @param elModsName
 	 * @param ref
 	 */
-	private boolean makeOriginInfo(Element elOriginInfo, ReferenceBase<?> ref) {
+	private boolean makeOriginInfo(Element elOriginInfo, Reference<?> ref) {
 		Namespace nsMods = elOriginInfo.getNamespace();
 		List<Content> contentList = elOriginInfo.getContent();
 		
@@ -169,7 +169,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	//THIS implementation is against the mods semantics but supports the current
 	//format for palmae taxonX files
 	//The later has to be changed and this part has to be adapted
-	private boolean makeModsName(Element elModsName, ReferenceBase<?> ref) {
+	private boolean makeModsName(Element elModsName, Reference<?> ref) {
 		int UNPARSED = 0;
 		int PARSED = 1;
 		Namespace nsMods = elModsName.getNamespace();
@@ -226,7 +226,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	 * @param elTitleInfo
 	 * @param ref
 	 */
-	private boolean makeTitleInfo(Element elTitleInfo, ReferenceBase<?> ref) {
+	private boolean makeTitleInfo(Element elTitleInfo, Reference<?> ref) {
 		Namespace nsMods = elTitleInfo.getNamespace();
 		List<Content> contentList = elTitleInfo.getContent();
 		

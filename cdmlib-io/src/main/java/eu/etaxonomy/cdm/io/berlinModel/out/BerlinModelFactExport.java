@@ -204,8 +204,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	@SuppressWarnings("unused")
 	private static String getFact(TextData textData){
 //		Map<Language, LanguageString> map = textData.getMultilanguageText();
-		Language preferredLanguage = null;
-
+		
 		String result = textData.getText(Language.DEFAULT());
 		if (result == null){
 			Map<Language, LanguageString> map = textData.getMultilanguageText();

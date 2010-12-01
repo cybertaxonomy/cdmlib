@@ -15,6 +15,8 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_P
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +45,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -91,12 +93,12 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 		BerlinModelImportConfigurator config = state.getConfig();
 		Set<TaxonNameBase> nameToSave = new HashSet<TaxonNameBase>();
 		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
-		Map<String, ReferenceBase> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, ReferenceBase> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+		Map<String, Reference> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, Reference> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
 
 		ResultSet rs = partitioner.getResultSet();
 		
-		ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+		Reference<?> sourceRef = state.getConfig().getSourceReference();
 		try {
 			int i = 0;
 			//for each reference
@@ -114,13 +116,13 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				
 				TaxonNameBase taxonNameBase = nameMap.get(String.valueOf(nameId));
 				String nameFactRefFk = String.valueOf(nameFactRefFkObj);
-				ReferenceBase citation = getReferenceOnlyFromMaps(biblioRefMap, 
+				Reference citation = getReferenceOnlyFromMaps(biblioRefMap, 
 						nomRefMap, nameFactRefFk);
 				
 				if (taxonNameBase != null){
 					//PROTOLOGUE
 					if (category.equalsIgnoreCase(NAME_FACT_PROTOLOGUE)){
-						//ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
+						//Reference ref = (Reference)taxonNameBase.getNomenclaturalReference();
 						//ref = Book.NewInstance();
 						try{
 							Media media = getMedia(nameFact, config.getMediaUrl(), config.getMediaPath());
@@ -214,16 +216,16 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 
 			//nom reference map
 			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> nomReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomReferenceMap);
 
 			//biblio reference map
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = ReferenceBase.class;
+			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, ReferenceBase> biblioReferenceMap = (Map<String, ReferenceBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 
 
@@ -314,28 +316,35 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 		//end png
         //pdf 
         String urlStringPdf = mediaUrlString + "pdf/" + nameFact + "." + suffixPdf; 
-        file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf); 
-        MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf); 
-        if (file.exists()){  
-                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(urlStringPdf, size)); 
-        }else{ 
-                fileExists = true; 
-                int pdfCount = 0; 
-                while (fileExists){ 
-                        pdfCount++; 
-                        urlStringPdf = mediaUrlString + "pdf/" + nameFact + "00" + pdfCount + "." + suffixPdf; 
-                        file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf); 
-                         
-                        if (file.exists()){  
-                                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(urlStringPdf, size)); 
-                        }else{ 
-                                fileExists = false; 
-                        } 
-                } 
-        }  
-        if(representationPdf.getParts().size() > 0){
-        	media.addRepresentation(representationPdf);
-        }
+        URI uriPdf;
+		try {
+			uriPdf = new URI(urlStringPdf);
+			file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf); 
+	        MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf); 
+	        if (file.exists()){  
+	                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(uriPdf, size)); 
+	        }else{ 
+	                fileExists = true; 
+	                int pdfCount = 0; 
+	                while (fileExists){ 
+	                        pdfCount++; 
+	                        urlStringPdf = mediaUrlString + "pdf/" + nameFact + "00" + pdfCount + "." + suffixPdf; 
+	                        file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf); 
+	                         
+	                        if (file.exists()){  
+	                                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(uriPdf, size)); 
+	                        }else{ 
+	                                fileExists = false; 
+	                        } 
+	                } 
+	        }
+			if(representationPdf.getParts().size() > 0){
+	        	media.addRepresentation(representationPdf);
+	        }
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			logger.error("URISyntaxException" + urlStringPdf);
+		}
         //end pdf 
 		
 		if(logger.isDebugEnabled()){
@@ -352,15 +361,23 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		URI uri;
 		try {
-			imageMetaData.readMetaData(file.toURI(), 0);
-		} catch (IOException e) {
-			logger.error("IOError reading image metadata." , e);
-		} catch (HttpException e) {
-			logger.error("HttpException reading image metadata." , e);
+			uri = new URI(imageUri);
+			try {
+				imageMetaData.readMetaData(uri, 0);
+			} catch (IOException e) {
+				logger.error("IOError reading image metadata." , e);
+			} catch (HttpException e) {
+				logger.error("HttpException reading image metadata." , e);
+			}
+			ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);
+			return image;
+		} catch (URISyntaxException e1) {
+			logger.warn("URISyntaxException: " + imageUri);
+			return null;
 		}
-		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
-		return image;
+		
 	}
 
 	

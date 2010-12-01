@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -54,7 +54,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	GatheringEvent gatheringEvent;
 	Integer absoluteElevation = 40;
 	Integer absoluteElevationError = 2;
-	AgentBase collector = Team.NewInstance();
+	Team collector = Team.NewInstance();
 	String collectingMethod = "Collection Method";
 	Integer distanceToGround = 22;
 	Integer distanceToSurface = 50;
@@ -65,15 +65,17 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	String ecology = "sand dunes";
 	String plantDescription = "flowers blue";
 	
-	String fieldNumber = "15p23B";
+	String fieldNumber = "5678";
 	String fieldNotes = "such a beautiful specimen";
-
+	Person primaryCollector;
+	
 	Integer individualCount = 1;
 	Stage lifeStage = Stage.NewInstance("A wonderful stage", "stage", "st");
 	Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
 	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
 	NamedArea country = WaterbodyOrCountry.GERMANY();
 	
+	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
 	TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
@@ -89,6 +91,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	DerivationEvent firstDerivationEvent;
 	FieldObservation firstFieldObject;
 	Media media1 = Media.NewInstance();
+	
 	
 //****************************** SET UP *****************************************/
 	
@@ -132,6 +135,15 @@ public class DerivedUnitFacadeCacheStrategyTest {
 		fieldObservation.setIndividualCount(individualCount);
 		fieldObservation.setSex(sex);
 		fieldObservation.setLifeStage(lifeStage);
+		primaryCollector = Person.NewTitledInstance("Kilian");
+		collector.addTeamMember(primaryCollector);
+		Person secondCollector = Person.NewInstance();
+		secondCollector.setFirstname("Andreas");
+		secondCollector.setLastname("Muller");
+		collector.addTeamMember(secondCollector);
+		Person thirdCollector = Person.NewTitledInstance("Kohlbecker");
+		collector.addTeamMember(thirdCollector);
+		fieldObservation.setPrimaryCollector(primaryCollector);
 
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
@@ -139,6 +151,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 		specimen.setCollectorsNumber(collectorsNumber);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
+		specimen.setExsiccatum(exsiccatum);
 
 		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
@@ -165,7 +178,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1\"N, 12\u00B018'E (WGS84), sand dunes, 05.05.2005 (B 8909756); flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1\"N, 12\u00B018'E (WGS84), sand dunes, 05.05.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");

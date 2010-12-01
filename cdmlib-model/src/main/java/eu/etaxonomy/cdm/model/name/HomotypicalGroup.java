@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 
@@ -357,7 +357,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see			TaxonNameBase#getTaxa()
 	 * @see			taxon.Synonym
 	 */
-	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
+	public List<Synonym> getSynonymsInGroup(Reference sec){
 		List<Synonym> result = new ArrayList();
 		for (TaxonNameBase<?, ?>name : this.getTypifiedNames()){
 			for (Synonym synonym : name.getSynonyms()){
@@ -385,7 +385,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
     	setGroupBasionym(basionymName, null, null, null);
     }	
     
-	public void setGroupBasionym(TaxonNameBase basionymName, ReferenceBase citation, String microCitation, String ruleConsidered) 
+	public void setGroupBasionym(TaxonNameBase basionymName, Reference citation, String microCitation, String ruleConsidered) 
     			throws IllegalArgumentException {
     	if (! typifiedNames.contains(basionymName)){
         	throw new IllegalArgumentException("Name to be set as basionym/original combination must be part of the homotypical group but is not");

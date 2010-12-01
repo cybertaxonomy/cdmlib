@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -48,7 +48,7 @@ public class TestModel {
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
-		ReferenceBase sec = refFactory.newJournal();
+		Reference sec = refFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
 		
 		logger.info("Create taxon objects...");
@@ -78,7 +78,7 @@ public class TestModel {
 	
 	public void testParentRelation(){
 		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		ReferenceBase ref = refFactory.newJournal();
+		Reference ref = refFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
@@ -88,7 +88,7 @@ public class TestModel {
 	}
 	
 	public void testDescription(){
-		ReferenceBase ref = refFactory.newJournal();
+		Reference ref = refFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(null, ref);
 		TaxonDescription desc = TaxonDescription.NewInstance();
 		taxon.addDescription(desc);

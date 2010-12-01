@@ -17,8 +17,8 @@ import java.util.Set;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -34,8 +34,8 @@ implements ITaxonServiceConfigurator {
 	private boolean doTaxaByCommonNames = false;
 	private boolean doNamesWithoutTaxa = false;
 	private String searchString;
-	private ReferenceBase sec = null;
-	private TaxonomicTree taxonomicTree = null;
+	private Reference sec = null;
+	private Classification classification = null;
 	private List<String> taxonPropertyPath;
 	private List<String> synonymPropertyPath;
 	private List<String> taxonNamePropertyPath;
@@ -120,20 +120,20 @@ implements ITaxonServiceConfigurator {
 		this.matchMode = matchMode;
 	}
 	
-	public ReferenceBase getSec() {
+	public Reference getSec() {
 		return sec;
 	}
 	
-	public void setSec(ReferenceBase sec) {
+	public void setSec(Reference sec) {
 		this.sec = sec;
 	}
 	
-	public TaxonomicTree getTaxonomicTree() {
-		return taxonomicTree;
+	public Classification getClassification() {
+		return classification;
 	}
 	
-	public void setTaxonomicTree(TaxonomicTree taxonomicTree) {
-		this.taxonomicTree = taxonomicTree;
+	public void setClassification(Classification classification) {
+		this.classification = classification;
 	}
 
 	public List<String> getTaxonPropertyPath() {

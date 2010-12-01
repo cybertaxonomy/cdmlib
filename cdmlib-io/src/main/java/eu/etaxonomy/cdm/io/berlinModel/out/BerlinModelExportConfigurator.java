@@ -48,7 +48,7 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 //				, BerlinModelTypesImport.class
 				, BerlinModelTaxonExport.class
 				, BerlinModelTaxonRelationExport.class
-				, BerlinModelTaxonomicTreeExport.class
+				, BerlinModelClassificationExport.class
 				, BerlinModelFactExport.class
 //				, BerlinModelOccurrenceImport.class
 		};

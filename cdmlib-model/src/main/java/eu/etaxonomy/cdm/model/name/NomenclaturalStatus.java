@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -81,7 +81,7 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	 * 
 	 * @see #NomenclaturalStatus()
 	 */
-	public static NomenclaturalStatus NewInstance(NomenclaturalStatusType nomStatusType, ReferenceBase citation, String microCitation){
+	public static NomenclaturalStatus NewInstance(NomenclaturalStatusType nomStatusType, Reference citation, String microCitation){
 		NomenclaturalStatus status = new NomenclaturalStatus();
 		status.setType(nomStatusType);
 		status.setCitation(citation);

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
@@ -39,7 +41,7 @@ public class AudioFile extends MediaRepresentationPart {
 	@XmlElement(name = "Duration")
 	private int duration;
 
-	public static AudioFile NewInstance(String uri, Integer size){
+	public static AudioFile NewInstance(URI uri, Integer size){
 		logger.debug("NewInstance");
 		return new AudioFile(uri, size);
 	}
@@ -62,7 +64,7 @@ public class AudioFile extends MediaRepresentationPart {
 	/**
 	 * Constructor
 	 */
-	protected AudioFile(String uri, Integer size) {
+	protected AudioFile(URI uri, Integer size) {
 		super(uri, size);
 	}
 	

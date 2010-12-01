@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 
 
 /**
- * The reference type is used to define the type of a {@link ReferenceBase reference}.<BR>
+ * The reference type is used to define the type of a {@link Reference reference}.<BR>
  * When changing the type of a reference one must be careful with handling attached information.
  * E.g. changing the type of a reference from article to book section requires to either exchange
  * the in reference or to change the type of the in reference which may have further consequences.
@@ -84,15 +84,7 @@ public enum ReferenceType {
 	Thesis("Thesis", ThesisDefaultCacheStrategy.class),
 	//15
 	@XmlEnumValue("Web Page")
-	WebPage("Web Page", ReferenceBaseDefaultCacheStrategy.class), 
-	//16
-	@XmlEnumValue("Printed Unit Base")
-	@Deprecated // all references are ReferenceBases this type should not longer be used. Use isPrintedUnit() for tests against this type instead.
-	PrintedUnitBase("Printed Unit Base", ReferenceBaseDefaultCacheStrategy.class), 
-	//17
-	@XmlEnumValue("Publication Base")
-	@Deprecated // all references are ReferenceBases this type should not longer be used. Use isPublication() for tests against this type instead.
-	PublicationBase("Publication Base", ReferenceBaseDefaultCacheStrategy.class);
+	WebPage("Web Page", ReferenceBaseDefaultCacheStrategy.class);
 	
 	
 	private String readableString;

@@ -14,15 +14,14 @@ import static org.junit.Assert.assertNotNull;
 import java.io.InputStreamReader;
 import java.net.URI;
 
-import org.junit.Test;
+import junitx.framework.Assert;
 
+import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class ReferenceTest {
 		
@@ -34,6 +33,8 @@ public class ReferenceTest {
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 			
+			Assert.assertNotEquals("Reference list should not be empty", 0, dataSet.getReferences().size());
+	        
 			IArticle article = (IArticle)dataSet.getReferences().get(0);	
 			assertNotNull("Article must not be null",article);
 			
@@ -51,10 +52,10 @@ public class ReferenceTest {
 			IArticle article = (IArticle)dataSet.getReferences().get(0);	
 			assertNotNull("Article must not be null",article);
 			
-			IJournal journal = ((ReferenceBase)article).castReferenceToJournal();
+			IJournal journal = ((Reference)article).castReferenceToJournal();
 			assertEquals("Journal", journal.getType().name());
 			
-			IGeneric generic = ((ReferenceBase)journal).castReferenceToGeneric();
+			IGeneric generic = ((Reference)journal).castReferenceToGeneric();
 			assertEquals("Generic", generic.getType().name());
 			
 			

@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 
 /**
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
  */
 @Controller
 @RequestMapping(value = {"/classification/{uuid}"})
-public class ClassificationController extends AnnotatableController<TaxonomicTree,ITaxonTreeService> {
+public class ClassificationController extends AnnotatableController<Classification,IClassificationService> {
 
 
 	private ITermService termService;
@@ -49,7 +49,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 	 */
 	@Override
 	@Autowired
-	public void setService(ITaxonTreeService service) {
+	public void setService(IClassificationService service) {
 		this.service = service;
 	}
 	
@@ -70,7 +70,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 		return Arrays.asList(new String[]{
 			"taxon.sec", 
 			"taxon.name",
-			"taxonomicTree"
+			"classification"
 	});}
 	
 	/**
@@ -100,7 +100,7 @@ public class ClassificationController extends AnnotatableController<TaxonomicTre
 			) throws IOException {
 		
 		logger.info("getChildNodesAtRank()");
-		TaxonomicTree tree = null;
+		Classification tree = null;
 		Rank rank = null;
 		if(classificationUuid != null){
 			// get view and rank

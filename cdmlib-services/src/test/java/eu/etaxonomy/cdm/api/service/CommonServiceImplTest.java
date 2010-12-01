@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -79,7 +79,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
-		ReferenceBase ref1 = refFactory.newArticle();
+		Reference ref1 = refFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
@@ -91,7 +91,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		
 		taxonService.save(taxon);
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
-//		ReferenceBase ref1 = referenceService.findByUuid(uuid);
+//		Reference ref1 = referenceService.findByUuid(uuid);
 		
 	
 		Set<CdmBase> referencedObjects = service.getReferencingObjects(ref1);

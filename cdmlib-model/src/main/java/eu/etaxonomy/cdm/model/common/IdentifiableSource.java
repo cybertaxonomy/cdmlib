@@ -24,7 +24,7 @@ import org.hibernate.annotations.Any;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
@@ -67,14 +67,14 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}
 	
-	public static IdentifiableSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microCitation){
+	public static IdentifiableSource NewInstance(String id, String idNamespace, Reference citation, String microCitation){
 		IdentifiableSource result = NewInstance(id, idNamespace);
 		result.setCitation(citation);
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
 
-	public static IdentifiableSource NewInstance(ReferenceBase citation, String microCitation){
+	public static IdentifiableSource NewInstance(Reference citation, String microCitation){
 		IdentifiableSource result = NewInstance();
 		result.setCitation(citation);
 		result.setCitationMicroReference(microCitation);

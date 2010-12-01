@@ -120,7 +120,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		logger.debug("created "+botName.getCreated());
 		logger.debug("updated: " +botName.getUpdated());
 //		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
-//		printDataSet(System.err, new String[]{"TaxonNameBase", "ReferenceBase"});
+//		printDataSet(System.err, new String[]{"TaxonNameBase", "Reference"});
 	}
 
 	/**

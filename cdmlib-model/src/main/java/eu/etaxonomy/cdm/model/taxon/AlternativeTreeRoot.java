@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -28,8 +28,8 @@ public class AlternativeTreeRoot extends TaxonNode {
 	private TaxonNode replacedTaxonNode; 
 	
 	
-	protected AlternativeTreeRoot(TaxonNode oldRoot, TaxonNode replacedTaxonNodeFromParentView, ReferenceBase reference, String microReference) {
-		super(oldRoot.getTaxon(), oldRoot.getTaxonomicTree());
+	protected AlternativeTreeRoot(TaxonNode oldRoot, TaxonNode replacedTaxonNodeFromParentView, Reference reference, String microReference) {
+		super(oldRoot.getTaxon(), oldRoot.getClassification());
 		this.setParent(replacedTaxonNodeFromParentView.getParentTreeNode());
 		this.setReplacedTaxonNode(replacedTaxonNodeFromParentView);
 	//	this.childNodes = oldRoot.getChildNodes());

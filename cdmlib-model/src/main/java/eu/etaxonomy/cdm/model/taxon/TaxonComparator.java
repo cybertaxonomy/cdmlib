@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class makes available a method to compare two {@link TaxonBase taxa} by
@@ -199,7 +199,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 					
 					result = (((ZoologicalName)name).getPublicationYear());
 				}else{
-					ReferenceBase ref = (ReferenceBase) name.getNomenclaturalReference();
+					Reference ref = (Reference) name.getNomenclaturalReference();
 					if (ref == null){
 						result = null;
 					}else{

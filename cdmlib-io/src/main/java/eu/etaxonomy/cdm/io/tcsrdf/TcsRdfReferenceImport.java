@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -122,7 +122,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 
 
 	
-	private boolean makeStandardMapper(Element parentElement, ReferenceBase ref, Set<String> omitAttributes){
+	private boolean makeStandardMapper(Element parentElement, Reference ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
@@ -142,7 +142,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return true;
 	}
 	
-	private boolean makeSingleAttributeMapper(CdmSingleAttributeXmlMapperBase mapper, Element parentElement, ReferenceBase ref, Set<String> omitAttributes){
+	private boolean makeSingleAttributeMapper(CdmSingleAttributeXmlMapperBase mapper, Element parentElement, Reference ref, Set<String> omitAttributes){
 		boolean result = true;
 		Object value = getValue(mapper, parentElement);
 		//write to destination
@@ -155,7 +155,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return result;
 	}
 	
-	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Element parentElement, ReferenceBase ref, Set<String> omitAttributes){
+	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Element parentElement, Reference ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
@@ -191,8 +191,8 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 	}
 	
 	protected boolean doInvoke(TcsRdfImportState state){
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> nomRefMap = (MapWrapper<Reference>)state.getStore(ICdmIO.NOMREF_STORE);
 		
 		TcsRdfImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
@@ -228,7 +228,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 			String strPubType = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
 			
 			try {
-				ReferenceBase<?> ref = TcsRdfTransformer.pubTypeStr2PubType(strPubType);
+				Reference<?> ref = TcsRdfTransformer.pubTypeStr2PubType(strPubType);
 				if (ref==null){
 					ref = refFactory.newGeneric();
 				}
@@ -256,7 +256,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				tcsElementName = "parentPublication";
 				tcsNamespace = publicationNamespace;
 				String strParent = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
-				ReferenceBase parent = referenceMap.get(strParent);
+				Reference parent = referenceMap.get(strParent);
 				if (parent != null){
 					if ((ref.getType().equals(ReferenceType.Article)) && (parent.getType().equals(ReferenceType.Journal))){
 						((IArticle)ref).setInJournal((IJournal)parent);
@@ -289,7 +289,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				tcsNamespace = publicationNamespace;
 				if (! CdmUtils.Nz(strTitle).trim().equals("")  || nomRefExists == false){
 					//TODO
-					ReferenceBase<?> biblioRef = (ReferenceBase<?>)ref.clone();
+					Reference<?> biblioRef = (Reference<?>)ref.clone();
 					biblioRef.setTitle(strTitle);
 					ImportHelper.setOriginalSource(biblioRef, config.getSourceReference(), strAbout, idNamespace);
 					referenceMap.put(strAbout, biblioRef);
@@ -313,7 +313,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		}
 		
 		//change conceptRef uuid
-		ReferenceBase sec = referenceMap.get(config.getSourceSecId());
+		Reference sec = referenceMap.get(config.getSourceSecId());
 		if (sec == null){
 			sec = nomRefMap.get(config.getSourceSecId());	
 		}

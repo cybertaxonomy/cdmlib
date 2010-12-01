@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -52,7 +52,7 @@ public class TestPersistence {
 		
 		logger.info("Create reference objects...");
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		ReferenceBase sec = refFactory.newJournal();
+		Reference sec = refFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
 		
 		logger.info("Create taxon objects...");

@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,12 +39,12 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -214,7 +216,14 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			for (String protologue : taxonLight.getProtologues()){
 				TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
 				this.getNameDescription(taxonBase.getName()).addElement(textData);
-				textData.addMedia(Media.NewInstance(protologue, null, null, null));
+				URI uri;
+				try {
+					uri = new URI(protologue);
+					textData.addMedia(Media.NewInstance(uri, null, null, null));
+				} catch (URISyntaxException e) {
+					String warning = "URISyntaxException when trying to convert to URI: " + protologue;
+					logger.error(warning);
+				}	
 			}
 
 			//media
@@ -289,7 +298,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						if (parentTaxon != null) {
 							//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 							
-							ReferenceBase citation = state.getConfig().getSourceReference();
+							Reference citation = state.getConfig().getSourceReference();
 							String microCitation = null;
 							Taxon childTaxon = taxon;
 							success &= makeParent(state, parentTaxon, childTaxon, citation, microCitation);
@@ -385,7 +394,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 
 		//Create the taxon
-		ReferenceBase sec = state.getConfig().getSourceReference();
+		Reference sec = state.getConfig().getSourceReference();
 		// Create the status
 		nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
 		if (validMarkers.contains(nameStatus)){
@@ -418,12 +427,12 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 	}
 
-	private boolean makeParent(TaxonExcelImportState state, Taxon parentTaxon, Taxon childTaxon, ReferenceBase citation, String microCitation){
+	private boolean makeParent(TaxonExcelImportState state, Taxon parentTaxon, Taxon childTaxon, Reference citation, String microCitation){
 		boolean success = true;
-		ReferenceBase sec = state.getConfig().getSourceReference();
+		Reference sec = state.getConfig().getSourceReference();
 		
-//		ReferenceBase sec = parentTaxon.getSec();
-		TaxonomicTree tree = state.getTree(sec);
+//		Reference sec = parentTaxon.getSec();
+		Classification tree = state.getTree(sec);
 		if (tree == null){
 			tree = makeTree(state, sec);
 		}

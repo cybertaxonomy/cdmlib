@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -81,7 +81,7 @@ public class TestDatabase {
     }
     
 	/**
-	 * This method constructs a small sample taxonomic tree to test JAXB marshaling.
+	 * This method constructs a small sample classification to test JAXB marshaling.
 	 * The sample tree contains four taxa. The root taxon has two children taxa, and
 	 * there is one "free" taxon without a parent and children.
 	 */
@@ -91,12 +91,12 @@ public class TestDatabase {
 	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
 	    //List<TermBase> terms = new ArrayList<TermBase>();
 	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
-	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
+	    List<Reference> references = new ArrayList<Reference>();
 	    List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
 	    List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
 	    List<AnnotatableEntity> homotypicalGroups;
 
-		ReferenceBase<?> citRef, sec;
+		Reference<?> citRef, sec;
 		BotanicalName name1, name2, name21, nameRoot1, nameFree, synName11, synName12, synName2, synNameFree;
 		BotanicalName nameRoot2, nameR2_1, nameR2_2;
 		Taxon child1, child2, child21, root1T, root2T, freeT;

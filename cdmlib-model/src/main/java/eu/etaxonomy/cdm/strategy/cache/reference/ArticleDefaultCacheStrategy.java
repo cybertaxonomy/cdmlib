@@ -15,9 +15,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
 	
 	public static final String UNDEFINED_JOURNAL = "- undefined journal -";

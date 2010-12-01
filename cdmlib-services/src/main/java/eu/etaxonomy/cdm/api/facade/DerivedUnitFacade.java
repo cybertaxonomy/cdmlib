@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -51,7 +52,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -1113,6 +1114,11 @@ public class DerivedUnitFacade {
 //		LanguageString languageString = getEcologyAll().getPreferredLanguageString(languages);
 //		return languageString.getText();
 //	}
+	/**
+	 * Returns a copy of the multilanguage text holding the ecology data.
+	 * @see {@link TextData#getMultilanguageText()}
+	 * @return
+	 */
 	@Transient
 	public Map<Language, LanguageString> getEcologyAll(){
 		if (ecology == null){
@@ -1178,6 +1184,11 @@ public class DerivedUnitFacade {
 //		LanguageString languageString = getPlantDescriptionAll().getPreferredLanguageString(languages);
 //		return languageString.getText();
 //	}
+	/**
+	 * Returns a copy of the multilanguage text holding the description data.
+	 * @see {@link TextData#getMultilanguageText()}
+	 * @return
+	 */
 	@Transient
 	public Map<Language, LanguageString> getPlantDescriptionAll(){
 		if (plantDescription == null){
@@ -1335,6 +1346,20 @@ public class DerivedUnitFacade {
 		getFieldObservation(true).setFieldNumber(fieldNumber);
 	}
 
+	//primary collector
+	@Transient
+	public Person getPrimaryCollector() {
+		if (! hasFieldObservation()){
+			return null;
+		}else{
+			return getFieldObservation(true).getPrimaryCollector();
+		}
+	}
+	public void setPrimaryCollector(Person primaryCollector) {
+		getFieldObservation(true).setPrimaryCollector(primaryCollector);
+	}
+	
+	
 	
 	//field notes
 	@Transient
@@ -1628,13 +1653,28 @@ public class DerivedUnitFacade {
 		return result;
 	}
 	@Transient
-	public String getExsiccatum() {
-		logger.warn("Exsiccatum method not yet supported. Needs model change");
-		return null;
+	public String getExsiccatum() throws MethodNotSupportedByDerivedUnitTypeException {
+		if (derivedUnit.isInstanceOf(Specimen.class)){
+			return CdmBase.deproxy(derivedUnit, Specimen.class).getExsiccatum();
+		}else{
+			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()){
+				throw new MethodNotSupportedByDerivedUnitTypeException("An exsiccatum is only available in derived units of type 'Specimen' or 'Fossil'");
+			}else{
+				return null;
+			}
+		}
 	}
 	
 	public void setExsiccatum(String exsiccatum) throws Exception{
-		throw new Exception("Exsiccatum method not yet supported. Needs model change");
+		if (derivedUnit.isInstanceOf(Specimen.class)){
+			CdmBase.deproxy(derivedUnit, Specimen.class).setExsiccatum(exsiccatum);
+		}else{
+			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()){
+				throw new MethodNotSupportedByDerivedUnitTypeException("An exsiccatum is only available in derived units of type 'Specimen' or 'Fossil'");
+			}else{
+				return;
+			}
+		}
 	}
 	
 	
@@ -1649,7 +1689,7 @@ public class DerivedUnitFacade {
 	 * @param originalNameString
 	 * @return
 	 */
-	public IdentifiableSource addSource(ReferenceBase reference, String microReference, String originalNameString){
+	public IdentifiableSource addSource(Reference reference, String microReference, String originalNameString){
 		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
 		source.setOriginalNameString(originalNameString);
 		derivedUnit.addSource(source);

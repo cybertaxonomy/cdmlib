@@ -28,24 +28,31 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
  * @created 21.05.2008
  * @version 1.0
+ */
+/**
+ * @author a.mueller
+ *
  */
 @Component
 public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfiguration {
@@ -59,8 +66,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	//@Qualifier("taxonService")
 	private ITaxonService taxonService;
 	@Autowired
-	//@Qualifier("taxonTreeService")
-	private ITaxonTreeService taxonTreeService;
+	//@Qualifier("classificationService")
+	private IClassificationService classificationService;
 	@Autowired
 	//@Qualifier("referenceService")
 	private IReferenceService referenceService;
@@ -107,9 +114,18 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IVocabularyService vocabularyService;
 	@Autowired
 	private ITaxonNodeService taxonNodeService;
+	@Autowired
+	private IIdentificationKeyService identificationKeyService;
+	@Autowired
+	private IPolytomousKeyService polytomousKeyService;
+
+	
 //	@Autowired
 	//@Qualifier("mainService")
 	private IService<CdmBase> mainService;
+
+	@Autowired
+	private IWorkingSetService workingSetService;
 	
 	/**
 	 * 
@@ -154,10 +170,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTaxonTreeService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getClassificationService()
 	 */
-	public ITaxonTreeService getTaxonTreeService() {
-		return this.taxonTreeService;
+	public IClassificationService getClassificationService() {
+		return this.classificationService;
 	}
 	
 	public ITaxonNodeService getTaxonNodeService(){
@@ -276,5 +292,27 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 */
 	public IVocabularyService getVocabularyService() {
 		return vocabularyService;
-	}	
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getIdentificationKeyService()
+	 */
+	public IIdentificationKeyService getIdentificationKeyService(){
+		return identificationKeyService;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPolytomousKeyService()
+	 */
+	public IPolytomousKeyService getPolytomousKeyService(){
+		return polytomousKeyService;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getWorkingSetService()
+	 */
+	@Override
+	public IWorkingSetService getWorkingSetService() {
+		return workingSetService;
+	}
 }

@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -97,8 +97,8 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> nomRefMap = (MapWrapper<Reference>)state.getStore(ICdmIO.NOMREF_STORE);
 		
 		String xmlElementName;
 		String xmlAttributeName;
@@ -158,7 +158,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			
 //			//FIXME
 //			String secId = "pub_999999";
-			ReferenceBase sec = referenceMap.get(strAccordingTo);
+			Reference sec = referenceMap.get(strAccordingTo);
 			if (sec == null){
 				sec = nomRefMap.get(strAccordingTo);
 			}

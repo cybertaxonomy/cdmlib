@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
@@ -65,7 +65,7 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
 	@Override
-	public ReferenceBase getSourceReference() {
+	public Reference getSourceReference() {
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");

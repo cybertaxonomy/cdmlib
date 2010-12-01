@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 @Component
 public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
@@ -57,7 +57,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		
 		logger.info("start make taxon name relations ...");
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
 

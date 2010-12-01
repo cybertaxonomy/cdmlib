@@ -27,7 +27,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author m.doering
@@ -54,13 +54,13 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private ReferenceBase citation;
+	private Reference citation;
 
-	public ReferenceBase getCitation(){
+	public Reference getCitation(){
 		return this.citation;
 	}
 	
-	public void setCitation(ReferenceBase citation){
+	public void setCitation(Reference citation){
 		this.citation = citation;
 	}
 

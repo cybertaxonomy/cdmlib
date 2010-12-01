@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
 	private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
-	int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
+	protected int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
 	protected Class<T> type;
 	
 	@Autowired

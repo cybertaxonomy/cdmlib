@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -148,7 +148,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 * reference with the name of the XML file should be returned value
 	 * @return
 	 */
-	public ReferenceBase getSourceReference();
+	public Reference getSourceReference();
 
 	
 	/**
@@ -160,7 +160,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 
 	//public abstract void setSource(Object url);
 
-	public void setSourceReference(ReferenceBase sourceReference);
+	public void setSourceReference(Reference sourceReference);
 
 	public String getSourceReferenceTitle();
 
@@ -192,13 +192,13 @@ public interface IImportConfigurator extends IIoConfigurator {
 	
 	
  	/**
- 	 * If this import implicitly represents a taxonomic tree in the destination CDM database
- 	 * one can define the taxonomic tree's uuid here. The congrete import class must support this
+ 	 * If this import implicitly represents a classification in the destination CDM database
+ 	 * one can define the classification's uuid here. The congrete import class must support this
  	 * functionality otherwise it will have no effect.
  	 * @return
  	 */
- 	public UUID getTaxonomicTreeUuid();
-	public void setTaxonomicTreeUuid(UUID treeUuid);
+ 	public UUID getClassificationUuid();
+	public void setClassificationUuid(UUID treeUuid);
 
 	/**
  	 * If one wants do define the uuid of the accepted taxa (except for missaplied names) this can be

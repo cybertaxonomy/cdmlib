@@ -26,7 +26,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup;
 
@@ -104,7 +104,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 * @param fromName			the taxon name to be set as source for the new name relationship
 	 * @param type				the relationship type to be assigned to the new name relationship
 	 * @param ruleConsidered	the string indicating the article of the nomenclatural code for the new name relationship
-	 * @see						#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, ReferenceBase, String, String)
+	 * @see						#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, Reference, String, String)
 	 * @see						TaxonNameBase#addNameRelationship(NameRelationship)
 	 * @see						TaxonNameBase#addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see						TaxonNameBase#addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
@@ -115,7 +115,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	
 	/**
 	 * Class constructor: creates a new name relationship instance including
-	 * its {@link  eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and adds it to the respective 
+	 * its {@link  eu.etaxonomy.cdm.model.reference.Reference reference source} and adds it to the respective 
 	 *{@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
 	 * 
 	 * @param toName				the taxon name to be set as target for the new name relationship
@@ -129,7 +129,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 * @see							TaxonNameBase#addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see							TaxonNameBase#addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	protected NameRelationship(TaxonNameBase  toName, TaxonNameBase fromName, NameRelationshipType type, ReferenceBase citation, String citationMicroReference, String ruleConsidered) {
+	protected NameRelationship(TaxonNameBase  toName, TaxonNameBase fromName, NameRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
 		super(fromName, toName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}

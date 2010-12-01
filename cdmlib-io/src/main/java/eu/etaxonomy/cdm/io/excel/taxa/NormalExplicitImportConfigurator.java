@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
@@ -69,7 +69,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
 	@Override
-	public ReferenceBase getSourceReference() {
+	public Reference getSourceReference() {
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");

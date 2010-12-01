@@ -18,13 +18,11 @@ import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -44,9 +42,9 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
 
 	public FeatureTreeDaoImpl() {
 		super(FeatureTree.class); 
-		indexedClasses = new Class[2];
+		indexedClasses = new Class[1];
 		indexedClasses[0] = FeatureTree.class;
-		indexedClasses[1] = PolytomousKey.class;
+//		indexedClasses[1] = PolytomousKey.class;
 	}
 	
 	public List<FeatureTree> list() {

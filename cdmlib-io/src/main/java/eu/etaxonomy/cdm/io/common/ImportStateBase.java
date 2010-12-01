@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
@@ -43,11 +43,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	
-	private Map<Object,TaxonomicTree> treeMap = new HashMap<Object,TaxonomicTree>();
+	private Map<Object,Classification> treeMap = new HashMap<Object,Classification>();
 
-	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
+	private Map<Reference,UUID> treeUuidMap = new HashMap<Reference,UUID>();
 
-	private Map<String,UUID> taxonomicTreeKeyUuidMap = new HashMap<String,UUID>();
+	private Map<String,UUID> classificationKeyUuidMap = new HashMap<String,UUID>();
 	
 	private IInputTransformer inputTransformer;
 
@@ -67,10 +67,10 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		stores.put(ICdmIO.USER_STORE, new MapWrapper<User>(service));
 		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<Person>(service));
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
-		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
+		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
@@ -104,14 +104,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	/**
 	 * @return the treeMap
 	 */
-	public TaxonomicTree getTree(Object ref) {
+	public Classification getTree(Object ref) {
 		return treeMap.get(ref);
 	}
 
 	/**
 	 * @param treeMap the treeMap to set
 	 */
-	public void putTree(Object ref, TaxonomicTree tree) {
+	public void putTree(Object ref, Classification tree) {
 		if (tree != null){
 			this.treeMap.put(ref, tree);
 		}
@@ -124,11 +124,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	/**
 	 * @return the treeUuid
 	 */
-	public UUID getTreeUuid(ReferenceBase ref) {
+	public UUID getTreeUuid(Reference ref) {
 		return treeUuidMap.get(ref);
 	}
 
-	public void putTreeUuid(ReferenceBase ref, TaxonomicTree tree) {
+	public void putTreeUuid(Reference ref, Classification tree) {
 		if (tree != null &&  tree.getUuid() != null){
 			this.treeUuidMap.put(ref, tree.getUuid());
 		}
@@ -142,27 +142,27 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	
 	/**
-	 * Adds a taxonomic tree uuid to the taxonomic tree uuid map,
-	 * which maps a key for the taxonomic tree to its UUID in the CDM
-	 * @param treeKeyId
-	 * @param tree
+	 * Adds a classification uuid to the classification uuid map,
+	 * which maps a key for the classification to its UUID in the CDM
+	 * @param classificationKeyId
+	 * @param classification
 	 */
-	public void putTaxonomicTreeUuidInt(int treeKeyId, TaxonomicTree tree) {
-		putTaxonomicTreeUuid(String.valueOf(treeKeyId), tree);
+	public void putClassificationUuidInt(int classificationKeyId, Classification classification) {
+		putClassificationUuid(String.valueOf(classificationKeyId), classification);
 	}
 
-	public void putTaxonomicTreeUuid(String treeKey, TaxonomicTree tree) {
+	public void putClassificationUuid(String treeKey, Classification tree) {
 		if (tree != null &&  tree.getUuid() != null){
-			this.taxonomicTreeKeyUuidMap.put(treeKey, tree.getUuid());
+			this.classificationKeyUuidMap.put(treeKey, tree.getUuid());
 		}
 	}
 	
 	public UUID getTreeUuidByIntTreeKey(int treeKey) {
-		return taxonomicTreeKeyUuidMap.get(String.valueOf(treeKey));
+		return classificationKeyUuidMap.get(String.valueOf(treeKey));
 	}
 	
 	public UUID getTreeUuidByTreeKey(String treeKey) {
-		return taxonomicTreeKeyUuidMap.get(treeKey);
+		return classificationKeyUuidMap.get(treeKey);
 	}
 	
 	

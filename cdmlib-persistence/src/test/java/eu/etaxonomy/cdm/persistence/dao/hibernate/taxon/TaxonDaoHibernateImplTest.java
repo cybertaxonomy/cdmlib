@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
@@ -77,7 +77,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private ITaxonDao taxonDao;
 	
 	@SpringBeanByType	
-	private ITaxonomicTreeDao taxonomicTreeDao;
+	private IClassificationDao classificationDao;
 	
 	@SpringBeanByType	
 	private IReferenceDao referenceDao;
@@ -101,7 +101,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private UUID southernAmericaUuid;
 	private UUID antarcticaUuid;
 
-	private UUID taxonomicTreeUuid;
+	private UUID classificationUuid;
 	
 
 	@Before
@@ -130,7 +130,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
 		antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
 		
-		taxonomicTreeUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
+		classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
 	}
 	
 	@After
@@ -151,15 +151,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	
 	/**
 	 * Test method for
-	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)}
 	 * .
 	 */
 	@Test
 	@DataSet
 	public void testGetRootTaxa() {
-		ReferenceBase sec1 = referenceDao.findById(1);
+		Reference sec1 = referenceDao.findById(1);
 		assert sec1 != null : "sec1 must exist";
-		ReferenceBase sec2 = referenceDao.findById(2);
+		Reference sec2 = referenceDao.findById(2);
 		assert sec2 != null : "sec2 must exist";
 
 		List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
@@ -207,12 +207,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}.
 	 */
 	@Test
 	@DataSet
 	public void testGetTaxaByName() {
-		ReferenceBase sec = referenceDao.findById(1);
+		Reference sec = referenceDao.findById(1);
 		assert sec != null : "sec must exist";
 
 		List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
@@ -251,7 +251,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	}	
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
 	 * restricting the search by a set of Areas.
 	 */
 	@SuppressWarnings("unchecked")
@@ -264,7 +264,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		//namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
 		//namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
 
-		TaxonomicTree taxonmicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
+		Classification taxonmicTree = classificationDao.findByUuid(classificationUuid);
 		
 		// prepare some synonym relation ships for some tests
 		Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
@@ -284,7 +284,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 		
-		// 2. searching for a taxon (Rethera) contained in a specific taxonomicTree
+		// 2. searching for a taxon (Rethera) contained in a specific classification
 		results = taxonDao.getTaxaByName(Taxon.class, "Rethera", taxonmicTree, MatchMode.BEGINNING, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
@@ -315,7 +315,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, TaxonomicTree taxonomicTree, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths)}
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths)}
 	 * restricting the search by a set of Areas.
 	 */
 	@SuppressWarnings("unchecked")
@@ -328,7 +328,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		//namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
 		//namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
 
-		TaxonomicTree taxonmicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
+		Classification classification = classificationDao.findByUuid(classificationUuid);
 		
 		// prepare some synonym relation ships for some tests
 		Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
@@ -348,8 +348,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 		
-		// 2. searching for a taxon (Rethera) contained in a specific taxonomicTree
-		results = taxonDao.findByNameTitleCache(Taxon.class, "Rethera Rothschild & Jordan, 1903", taxonmicTree, MatchMode.EXACT, namedAreas,
+		// 2. searching for a taxon (Rethera) contained in a specific classification
+		results = taxonDao.findByNameTitleCache(Taxon.class, "Rethera Rothschild & Jordan, 1903", classification, MatchMode.EXACT, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
@@ -419,8 +419,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assertEquals(numberOfTaxa, 3);
 		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 12);
-//	FIXME implement test for search in specific taxontree 		
-//		ReferenceBase reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
+//	FIXME implement test for search in specific classification 		
+//		Reference reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
 //		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, null, null);
 //		assertEquals(numberOfTaxa, 2);
 	}
@@ -871,9 +871,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     
     @Test
     @DataSet
-	public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(){
-    	TaxonomicTree taxonomicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
-		assertNotNull(taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree));
+	public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
+    	Classification classification = classificationDao.findByUuid(classificationUuid);
+		assertNotNull(taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification));
 	}
     
     @Test
@@ -928,7 +928,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonNodeDaoHibernateImplTest.xml")
     @Ignore
     public void testCreateInferredSynonymy(){
-    	TaxonomicTree tree = this.taxonomicTreeDao.findById(1);
+    	Classification tree = this.classificationDao.findById(1);
     	Taxon taxon = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	List <Synonym> synonyms = taxonDao.getAllSynonyms(null, null);
     	assertEquals("Number of synonyms should be 2",2,synonyms.size());

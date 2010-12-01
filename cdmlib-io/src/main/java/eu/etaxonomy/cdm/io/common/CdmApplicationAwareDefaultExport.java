@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -63,10 +63,10 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 
 	public CdmApplicationAwareDefaultExport(){
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase>(service));
-		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
+		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<Reference>(service));
+		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
