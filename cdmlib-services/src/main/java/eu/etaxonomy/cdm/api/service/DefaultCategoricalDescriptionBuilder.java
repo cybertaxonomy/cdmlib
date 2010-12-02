@@ -4,10 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -25,10 +23,10 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 			Set<Modifier> modifiers = stateData.getModifiers(); // the states and their according modifiers are simply written one after the other
 			for (Iterator<Modifier> mod = modifiers.iterator() ; mod.hasNext() ;){
 				Modifier modifier = mod.next();
-				CategoricalDescription.append(" " + modifier.getPreferredRepresentation(languages).getLabel());
+				CategoricalDescription.append(" " + getRightText(modifier.getPreferredRepresentation(languages)));
 			}
-			CategoricalDescription.append(" " + s.getPreferredRepresentation(languages).getLabel());
-			if (sd.hasNext()) CategoricalDescription.append(',');
+			CategoricalDescription.append(" " + getRightText(s.getPreferredRepresentation(languages)));
+			if (sd.hasNext()) CategoricalDescription.append(separator);
 			if (language==null) {
 				language = s.getPreferredRepresentation(languages).getLanguage(); // TODO What if there are different languages ?
 			}
@@ -41,22 +39,4 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 		return textData;
 	}
 
-	protected String buildFeature(Feature feature, boolean doItBetter){
-		if (feature==null || feature.getLabel()==null) return "";
-		else {
-			if (doItBetter) { // remove the text between brackets
-				String str= feature.getLabel();
-				StringBuilder strbuilder = new StringBuilder();
-				do	{
-					strbuilder.append(StringUtils.substringBefore(str, "<"));
-				}
-				while (!(str=StringUtils.substringAfter(str, ">")).equals(""));
-				return StringUtils.substringBeforeLast(strbuilder.toString()," ");
-			}
-			else{
-				String betterString = StringUtils.replaceChars(feature.getLabel(), "<>",""); // only remove the brackets
-				return StringUtils.substringBeforeLast(betterString," ");
-			}
-		}
-	}
 }
