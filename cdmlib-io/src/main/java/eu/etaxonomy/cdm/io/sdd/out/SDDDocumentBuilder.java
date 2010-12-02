@@ -36,7 +36,10 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.xml.sax.SAXException;
 
+import eu.etaxonomy.cdm.api.service.DeltaTextDataProcessor;
+import eu.etaxonomy.cdm.api.service.INaturalLanguageTextDataProcessor;
 import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator;
+import eu.etaxonomy.cdm.api.service.MicroFormatCategoricalDescriptionBuilder;
 import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -258,7 +261,7 @@ public class SDDDocumentBuilder {
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
 		if (natlang) {
-			buildIdentificationKey(baselement);
+			buildNaturalLanguageDescription(baselement);
 		}
 		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -286,13 +289,7 @@ public class SDDDocumentBuilder {
 		Set<TaxonDescription> descriptions = null;
 		TaxonDescription description = null;
 		FeatureTree featureTree = null;
-		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
-			Taxon taxon = (Taxon) tb.next();
-			if (taxon.generateTitle().contains("pauciflora")) { // write the name (or part of the name) of the taxon you want to import the descriptions
-				descriptions = taxon.getDescriptions();
-				description = descriptions.iterator().next();
-			}
-		}
+		
 		for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
 			VersionableEntity featu = cdmSource.getFeatureData().get(i);
 			if (featu instanceof FeatureTree){
@@ -302,21 +299,49 @@ public class SDDDocumentBuilder {
 				}
 			}
 		}
-		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
-//		MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
-//		natlgen.setQuantitativeDescriptionBuilder(micro);
-//		listTextData = natlgen.generateNaturalLanguageDescription(featureTree, description);
-//		for (Iterator<TextData> td = listTextData.iterator() ; td.hasNext();) {
-//			TextData textD = td.next();
-//			System.out.println(textD.getText(Language.DEFAULT()));
-//		}
-		String descriptionString = natlgen.generateStringNaturalLanguageDescription(featureTree, description, Language.DEFAULT());
-		System.out.println(descriptionString);
+		
+		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
+			Taxon taxon = (Taxon) tb.next();
+			//if (taxon.generateTitle().contains("Podospermum")) { // write the name (or part of the name) of the taxon you want to import the descriptions
+				descriptions = taxon.getDescriptions();
+				description = descriptions.iterator().next();
+				NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
+				Map<String,INaturalLanguageTextDataProcessor> processors = new HashMap<String,INaturalLanguageTextDataProcessor>();
+				processors.put("DiversityDescriptions",new DeltaTextDataProcessor());
+				natlgen.setElementProcessors(processors);
+				MicroFormatCategoricalDescriptionBuilder mfcdb = new MicroFormatCategoricalDescriptionBuilder();
+//				natlgen.setCategoricalDescriptionBuilder(mfcdb);
+//				String descriptionString = natlgen.generateStringNaturalLanguageDescription(featureTree, description, Language.DEFAULT());
+//				String descriptionString = natlgen.generateNaturalLanguageDescriptionStringTest(featureTree, description, Language.DEFAULT());
+				TextData descriptionTD = natlgen.generateSingleTextData(featureTree, description);
+//				System.out.println(taxon.generateTitle() + " : " + descriptionString);
+				System.out.println(taxon.generateTitle() + " : " + descriptionTD.getText(defaultLanguage));
+			//}
+		}
+		
+//		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
+//		String descriptionString = natlgen.generateStringNaturalLanguageDescription(featureTree, description, Language.DEFAULT());
+//		System.out.println(descriptionString);
 	}
 
 	// TO BE DELETED SOON
 	public void buildIdentificationKey(ElementImpl dataset) {
+		
+		FeatureTree featureTree=null;
+		for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
+			VersionableEntity featu = cdmSource.getFeatureData().get(i);
+			if (featu instanceof FeatureTree){
+				FeatureTree ft = (FeatureTree) featu;
+				if (ft.getLabel().contains("Ordre")) {
+					featureTree = ft;
+				}
+			}
+		}
+		
 		IdentificationKeyGenerator idkgen = new IdentificationKeyGenerator();
+		
+		idkgen.setDependencies(featureTree);
+		
 		Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 		List<Feature> featureList = new ArrayList<Feature>();
 		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
