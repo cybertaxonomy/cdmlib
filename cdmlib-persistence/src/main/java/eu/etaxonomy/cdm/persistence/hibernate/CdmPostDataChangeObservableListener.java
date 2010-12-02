@@ -10,7 +10,8 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.event.PostDeleteEvent;
@@ -69,7 +70,8 @@ public class CdmPostDataChangeObservableListener
 	/**
 	 * Observing objects 
 	 */
-	private Vector<ICdmPostDataChangeObserver> observers = new Vector<ICdmPostDataChangeObserver>();
+	private Set<ICdmPostDataChangeObserver> observers = new HashSet<ICdmPostDataChangeObserver>();
+	
 	
 	/**
 	 * Singleton instance
