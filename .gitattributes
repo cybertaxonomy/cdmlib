@@ -1568,6 +1568,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CommonServiceImpl.jav
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultQuantitativeDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DeltaTextDataProcessor.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeComparator.java -text
@@ -1611,6 +1612,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentificationKeyServ
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/LocationServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MarkerServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MediaServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaNodeComparator.java -text

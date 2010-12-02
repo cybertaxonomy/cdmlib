@@ -14,26 +14,15 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 
 public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeDescriptionBuilder {
+
 	
 	@Override
 	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit, List<Language> languages){
 		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
 		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
 		// booleans indicating whether a kind of value is present or not and the float that will eventually hold the value
-		boolean average = false;
-		float averagevalue = new Float(0);
-		boolean sd = false;
-		float sdvalue = new Float(0);
-		boolean min = false;
-		float minvalue = new Float(0);
-		boolean max = false;
-		float maxvalue = new Float(0);
-		boolean lowerb = false;
-		float lowerbvalue = new Float(0);
-		boolean upperb = false;
-		float upperbvalue = new Float(0);
 		
-		String unit = "(unknown unit)";
+		String unit = "";
 		if ((mUnit!=null)&&(mUnit.getLabel()!=null)){
 			unit = mUnit.getLabel();
 		}
@@ -54,32 +43,23 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		String space = " "; // should "space" be considered as a linking word and thus be stored in NaturalLanguageTerm.class ?
 		
 		// the booleans and floats are updated according to the presence or absence of values
-			if (measures.containsKey(StatisticalMeasure.AVERAGE())) {
-				average = true;
-				averagevalue = measures.get(StatisticalMeasure.AVERAGE());
-			}
-			if(measures.containsKey(StatisticalMeasure.STANDARD_DEVIATION())) {
-				sd = true;
-				sdvalue = measures.get(StatisticalMeasure.STANDARD_DEVIATION());
-			}
-			if (measures.containsKey(StatisticalMeasure.MIN())) {
-				min = true;
-				minvalue = measures.get(StatisticalMeasure.MIN());
-			}
-			if (measures.containsKey(StatisticalMeasure.MAX())) {
-				max = true;
-				maxvalue = measures.get(StatisticalMeasure.MAX());
-			}
-			if (measures.containsKey(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY())) {
-				lowerb = true;
-				lowerbvalue = measures.get(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
-			}
-			if (measures.containsKey(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY())) {
-				upperb = true;
-				upperbvalue = measures.get(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
-			}
-			
-			
+
+		Boolean max, min, upperb, lowerb, average, sd;
+		
+		String averagevalue = getValue(measures,StatisticalMeasure.AVERAGE());
+		if (averagevalue!=null) average=true; else average=false;
+		String sdvalue = getValue(measures,StatisticalMeasure.STANDARD_DEVIATION());
+		if (sdvalue!=null) sd=true; else sd=false;
+		String minvalue = getValue(measures,StatisticalMeasure.MIN());
+		if (minvalue!=null) min=true; else min=false;
+		String maxvalue = getValue(measures,StatisticalMeasure.MAX());
+		if (maxvalue!=null) max=true; else max=false;
+		String lowerbvalue = getValue(measures,StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
+		if (lowerbvalue!=null) lowerb=true; else lowerb=false;
+		String upperbvalue = getValue(measures,StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
+		if (upperbvalue!=null) upperb=true; else upperb=false;
+		
+		
 		// depending on the different associations of values, a sentence is built	
 		if (max && min) {
 			QuantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
@@ -120,6 +100,18 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		return textData;
 	}
 	
+	private String getValue(Map<StatisticalMeasure,Float> measures, Object key) {
+		Float floatValue;
+		Integer intValue;
+		if(measures.containsKey(key)) {
+			floatValue = measures.get(key);
+			intValue=floatValue.intValue();
+			if (floatValue.equals(intValue.floatValue())) return intValue.toString();
+			else return floatValue.toString();
+		}
+		else return null;
+	}
+	
 	protected String buildFeature(Feature feature, boolean doItBetter){
 		if (feature==null || feature.getLabel()==null) return "";
 		else {
@@ -134,7 +126,8 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			}
 			else{
 				String betterString = StringUtils.replaceChars(feature.getLabel(), "<>",""); // only remove the brackets
-				return StringUtils.substringBeforeLast(betterString," ");
+				return betterString;
+//				return StringUtils.substringBeforeLast(betterString," ");
 			}
 		}
 	}

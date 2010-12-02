@@ -19,13 +19,12 @@ import eu.etaxonomy.cdm.model.description.TextData;
 public interface INaturalLanguageTextDataProcessor {
 
 	/**
-	 * Applies some special proccessing to the text contained in the TextData or/and
+	 * Applies some special processing to the text contained in the TextData or/and
 	 * to the Feature label/representation
 	 * 
 	 * @param textData
 	 * @param previousTextData TODO
-	 * @return the modified TextData
 	 */
-	public TextData process(TextData textData, TextData previousTextData);
+	public void process(TextData textData, TextData previousTextData);
 	
 }
