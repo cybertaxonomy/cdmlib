@@ -13,8 +13,13 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 
+/**
+ * @author m.venin
+ *
+ */
 public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeDescriptionBuilder {
 
+	String space = " ";
 	
 	@Override
 	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit, List<Language> languages){
@@ -40,7 +45,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		String on_Average = nltOn_Average.getPreferredRepresentation(languages).getLabel();
 		NaturalLanguageTerm nltMore_Or_Less = NaturalLanguageTerm.MORE_OR_LESS();
 		String more_Or_Less = nltMore_Or_Less.getPreferredRepresentation(languages).getLabel();
-		String space = " "; // should "space" be considered as a linking word and thus be stored in NaturalLanguageTerm.class ?
+		
 		
 		// the booleans and floats are updated according to the presence or absence of values
 
@@ -71,7 +76,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			QuantitativeDescription.append(space + up_To + space + maxvalue + space + unit);
 		}
 		if ((max||min)&&(lowerb||upperb)) {
-			QuantitativeDescription.append(","); // merge with below ?
+			QuantitativeDescription.append(separator); // merge with below ?
 		}
 		if ((lowerb||upperb)&&(min||max)) {
 			QuantitativeDescription.append(space + most_Frequently);
@@ -86,7 +91,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			QuantitativeDescription.append(space + up_To + space + upperbvalue + space + unit);
 		}
 		if (((max||min)&&(average))||((lowerb||upperb)&&(average))) {
-			QuantitativeDescription.append(",");
+			QuantitativeDescription.append(separator);
 		}
 		if (average) {
 			QuantitativeDescription.append(space + averagevalue + space + unit + space + on_Average);
@@ -95,11 +100,22 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			}
 		}
 		textData.putText(QuantitativeDescription.toString(), languages.get(0)); // which language should be put here ?
-		textData.setFormat(TextFormat.NewInstance(null, "HTML",null )); // the data format is set (not yet real HTML)
+		textData.setFormat(TextFormat.NewInstance(null, "Text",null ));
 		
 		return textData;
 	}
 	
+	
+	
+	/**
+	 * Returns the value of a given type of measure as a String. If the value is an integer it is printed
+	 * as an integer instead of a float.
+	 * If no value of this type is present, returns null.
+	 * 
+	 * @param measures the map with the values
+	 * @param key the desired measure
+	 * @return
+	 */
 	private String getValue(Map<StatisticalMeasure,Float> measures, Object key) {
 		Float floatValue;
 		Integer intValue;
@@ -111,26 +127,5 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		}
 		else return null;
 	}
-	
-	protected String buildFeature(Feature feature, boolean doItBetter){
-		if (feature==null || feature.getLabel()==null) return "";
-		else {
-			if (doItBetter) { // remove the text between brackets
-				String str= feature.getLabel();
-				StringBuilder strbuilder = new StringBuilder();
-				do	{
-					strbuilder.append(StringUtils.substringBefore(str, "<"));
-				}
-				while (!(str=StringUtils.substringAfter(str, ">")).equals(""));
-				return StringUtils.substringBeforeLast(strbuilder.toString()," ");
-			}
-			else{
-				String betterString = StringUtils.replaceChars(feature.getLabel(), "<>",""); // only remove the brackets
-				return betterString;
-//				return StringUtils.substringBeforeLast(betterString," ");
-			}
-		}
-	}
-
 	
 }

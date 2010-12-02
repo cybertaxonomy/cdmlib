@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -20,7 +19,7 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
 			State s = stateData.getState();
-			Set<Modifier> modifiers = stateData.getModifiers(); // the states and their according modifiers are simply written one after the other
+			Set<Modifier> modifiers = stateData.getModifiers(); // the states and their according modifiers are simply concatenated one after the other
 			for (Iterator<Modifier> mod = modifiers.iterator() ; mod.hasNext() ;){
 				Modifier modifier = mod.next();
 				CategoricalDescription.append(" " + getRightText(modifier.getPreferredRepresentation(languages)));
@@ -28,7 +27,7 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 			CategoricalDescription.append(" " + getRightText(s.getPreferredRepresentation(languages)));
 			if (sd.hasNext()) CategoricalDescription.append(separator);
 			if (language==null) {
-				language = s.getPreferredRepresentation(languages).getLanguage(); // TODO What if there are different languages ?
+				language = s.getPreferredRepresentation(languages).getLanguage();
 			}
 		}
 		if (language==null) {
