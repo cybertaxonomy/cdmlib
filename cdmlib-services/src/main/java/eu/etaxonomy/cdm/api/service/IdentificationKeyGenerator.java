@@ -74,7 +74,7 @@ public class IdentificationKeyGenerator {
 	/**
 	 * Initializes the function buildBranches() with the starting parameters in order to build the key 
 	 */
-	private void Loop(){
+	private void loop(){
 		polytomousKey = PolytomousKey.NewInstance();
 		PolytomousKeyNode root = polytomousKey.getRoot();
 		buildBranches(root,features,taxa,false,-1);	
@@ -84,14 +84,17 @@ public class IdentificationKeyGenerator {
 	/**
 	 * Creates the key and prints it
 	 */
-	public void makeandprint(){
-		if (dependenciesON && dependenciesTree!=null) checkDependencies(dependenciesTree.getRoot());
-		Loop();
+	public PolytomousKey invoke(){
+		if (dependenciesON && dependenciesTree!=null){
+			checkDependencies(dependenciesTree.getRoot());
+		}
+		loop();
 		List<PolytomousKeyNode> rootlist = new ArrayList<PolytomousKeyNode>();
 		rootlist.add(polytomousKey.getRoot());
 //		String spaces = new String();
 //		printTree(rootlist,spaces);
 //		System.out.println(paths.toString());
+		return polytomousKey;
 	}
 	
 
@@ -114,11 +117,11 @@ public class IdentificationKeyGenerator {
 			// this map stores the thresholds giving the best dichotomy of taxa for the corresponding feature supporting quantitative data
 			Map<Feature,Float> quantitativeFeaturesThresholds = new HashMap<Feature,Float>();
 			// the scores of the different features are calculated, the thresholds in the same time
-			Map<Feature,Float> scoreMap = FeatureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
+			Map<Feature,Float> scoreMap = featureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
 			dependenciesScores(scoreMap,featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
 			// the feature with the best score becomes the one corresponding to the current node
 //			Feature winnerFeature = DefaultWinner(taxaCovered.size(), scoreMap);
-			Feature winnerFeature = LessStatesWinner(taxaCovered.size(), scoreMap, taxaCovered);
+			Feature winnerFeature = lessStatesWinner(taxaCovered.size(), scoreMap, taxaCovered);
 			// the feature is removed from the list of features available to build the next level of the tree
 			featuresLeft.remove(winnerFeature);
 			// this boolean indicates if the current father node has children or not (i.e. is a leaf or not) ; (a leaf has a "Question" element)
@@ -134,8 +137,11 @@ public class IdentificationKeyGenerator {
 				List<Set<TaxonDescription>> quantitativeStates = determineQuantitativeStates(threshold,winnerFeature,taxaCovered,unit);
 				for (i=0;i<2;i++) {
 					Set<TaxonDescription> newTaxaCovered = quantitativeStates.get(i);
-					if (i==0) sign = before; // the first element of the list corresponds to taxa before the threshold
-					else sign = after; // the second to those after
+					if (i==0){
+						sign = before; // the first element of the list corresponds to taxa before the threshold
+					} else {
+						sign = after; // the second to those after
+					}
 					if (newTaxaCovered.size()>0 && !((newTaxaCovered.size()==taxaCovered.size()) && mybool)){ // if the taxa are discriminated compared to those of the father node, a child is created
 						childrenExist = true;
 						PolytomousKeyNode son = PolytomousKeyNode.NewInstance();
@@ -173,7 +179,7 @@ public class IdentificationKeyGenerator {
 							// see below
 							Map<State,Set<State>> exclusions = new HashMap<State,Set<State>>();
 							// maps the different states of the winnerFeature to the list of states "incompatible" with it
-							FeatureScoreAndMerge(winnerFeature,taxaCovered,exclusions);
+							featureScoreAndMerge(winnerFeature,taxaCovered,exclusions);
 
 							Integer best=null;
 							int length;
@@ -247,7 +253,7 @@ public class IdentificationKeyGenerator {
 				}
 			}
 		}
-		Map<Feature,Float> newScoreMap = FeatureScores(pseudoFeaturesLeft, coveredTaxa, quantitativeFeaturesThresholds);
+		Map<Feature,Float> newScoreMap = featureScores(pseudoFeaturesLeft, coveredTaxa, quantitativeFeaturesThresholds);
 		for (Feature feature : featureDependencies.keySet()){
 			if (newScoreMap.containsKey(feature)){
 				for (Feature feature2 : featureDependencies.get(feature)){
@@ -359,7 +365,6 @@ public class IdentificationKeyGenerator {
 				List<State> newStates = childrenStatesMap.get(newTaxaCovered);
 				if (newStates==null) {
 					newStates = new ArrayList<State>();
-					
 					childrenStatesMap.put(newTaxaCovered,newStates);
 				}
 				newStates.add(featureState);
@@ -378,8 +383,9 @@ public class IdentificationKeyGenerator {
 					if (deb.getFeature().equals(feature)) {
 						List<StateData> stateDatas = ((CategoricalData)deb).getStates();
 						for (StateData sd : stateDatas) {
-							if (sd.getState().equals(featureState))
+							if (sd.getState().equals(featureState)){
 								newCoveredTaxa.add(td);
+							}
 						}
 					}
 				} 
@@ -389,9 +395,9 @@ public class IdentificationKeyGenerator {
 	}
 	
 	//change names ; merge with Default (Default takes the first one of the list)
-	private Feature LessStatesWinner(int nTaxa, Map<Feature,Float> scores, Set<TaxonDescription> taxaCovered){
+	private Feature lessStatesWinner(int nTaxa, Map<Feature,Float> scores, Set<TaxonDescription> taxaCovered){
 		if (nTaxa==1) return null;
-		float meanScore = DefaultMeanScore(nTaxa);
+		float meanScore = defaultMeanScore(nTaxa);
 		float bestScore = nTaxa*nTaxa;
 		List<Feature> bestFeatures = new ArrayList<Feature>();
 		Feature bestFeature = null;
@@ -405,8 +411,7 @@ public class IdentificationKeyGenerator {
 					bestFeatures.clear();
 					bestFeatures.add((Feature)pair.getKey());
 					bestScore = newScore;
-				}
-				else if (newScore==bestScore){
+				}else if (newScore==bestScore){
 					bestFeatures.add((Feature)pair.getKey());
 				}
 			}
@@ -419,13 +424,13 @@ public class IdentificationKeyGenerator {
 			int numberOfDifferentStates=-1;
 			for (Feature feature : bestFeatures){
 				if (feature.isSupportsCategoricalData()){
-				Set<State> differentStates = new HashSet<State>();
-				for (TaxonDescription td : taxaCovered){
-					Set<DescriptionElementBase> elements = td.getElements();
-					for (DescriptionElementBase deb : elements){
-						if (deb.isInstanceOf(CategoricalData.class)) {
-							CategoricalData catdat = (CategoricalData)deb;
-							if (catdat.getFeature().equals(feature)) {
+					Set<State> differentStates = new HashSet<State>();
+					for (TaxonDescription td : taxaCovered){
+						Set<DescriptionElementBase> elements = td.getElements();
+						for (DescriptionElementBase deb : elements){
+							if (deb.isInstanceOf(CategoricalData.class)) {
+								CategoricalData catdat = (CategoricalData)deb;
+								if (catdat.getFeature().equals(feature)) {
 									List<StateData> stateDatas = catdat.getStates();
 									for (StateData sd : stateDatas) {
 										differentStates.add(sd.getState());
@@ -434,23 +439,22 @@ public class IdentificationKeyGenerator {
 							}
 						} 
 					}
-				numberOfDifferentStates=differentStates.size();
-				}
-				else if (feature.isSupportsQuantitativeData()){
+					numberOfDifferentStates=differentStates.size();
+				}else if (feature.isSupportsQuantitativeData()){
 					numberOfDifferentStates=2;
 				}
 				if (lessStates==-1 || numberOfDifferentStates<lessStates){
 					lessStates=numberOfDifferentStates;
 					bestFeature = feature;
 				}
-				}
+			}
 			return bestFeature;
 		}
 	}
 	
-	private Feature DefaultWinner(int nTaxa, Map<Feature,Float> scores){
+	private Feature defaultWinner(int nTaxa, Map<Feature,Float> scores){
 		if (nTaxa==1) return null;
-		float meanScore = DefaultMeanScore(nTaxa);
+		float meanScore = defaultMeanScore(nTaxa);
 		float bestScore = nTaxa*nTaxa;
 		Feature feature = null;
 		Iterator it = scores.entrySet().iterator();
@@ -469,7 +473,7 @@ public class IdentificationKeyGenerator {
 	}
 	
 	// rutiliser et vrif si rien de trop <- FIXME please do not comment in french or at least use proper file encoding
-	private float DefaultMeanScore(int nTaxons){
+	private float defaultMeanScore(int nTaxons){
 		int i;
 		float score=0;
 		for (i=1;i<nTaxons;i++){
@@ -478,7 +482,7 @@ public class IdentificationKeyGenerator {
 		return score;
 	}
 	
-	private Map<Feature,Float> FeatureScores(List<Feature> featuresLeft, Set<TaxonDescription> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
+	private Map<Feature,Float> featureScores(List<Feature> featuresLeft, Set<TaxonDescription> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 		Map<Feature,Float> scoreMap = new HashMap<Feature,Float>();
 		for (Feature feature : featuresLeft){
 			if (feature.isSupportsCategoricalData()) {
@@ -511,10 +515,14 @@ public class IdentificationKeyGenerator {
 							StatisticalMeasure type = smv.getType();
 							// DONT FORGET sample size, MEAN etc
 							if (type.equals(StatisticalMeasure.MAX()) || type.equals(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) || type.equals(StatisticalMeasure.AVERAGE())) {
-								if (smv.getValue()>threshold) taxaAfter.add(td);
+								if (smv.getValue()>threshold){
+									taxaAfter.add(td);
+								}
 							}
 							if (type.equals(StatisticalMeasure.MIN()) || type.equals(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) || type.equals(StatisticalMeasure.AVERAGE())) {
-								if (smv.getValue()<=threshold) taxaBefore.add(td);
+								if (smv.getValue()<=threshold){
+									taxaBefore.add(td);
+								}
 							}
 						}
 					}
@@ -586,8 +594,12 @@ public class IdentificationKeyGenerator {
 			taxaBefore=0;
 			taxaAfter=0;
 			for (j=0;j<allValues.size()/2;j++) {
-				if (allValues.get(j*2+1)<=threshold) taxaBefore++;
-				if (allValues.get(j*2)>threshold) taxaAfter++;
+				if (allValues.get(j*2+1)<=threshold){
+					taxaBefore++;
+				}
+				if (allValues.get(j*2)>threshold){
+					taxaAfter++;
+				}
 			}
 			difference = Math.abs(taxaBefore-taxaAfter);
 			if (difference<differenceMin){
@@ -612,15 +624,19 @@ public class IdentificationKeyGenerator {
 			Set<DescriptionElementBase> elements1 = coveredTaxaArray[i].getElements();
 			DescriptionElementBase deb1 = null;
 			for (DescriptionElementBase deb : elements1){
-				if (deb.getFeature().equals(feature)) deb1 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+				if (deb.getFeature().equals(feature)){
+					deb1 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+				}
 			}
 			for (j=i+1 ; j< coveredTaxaArray.length ; j++){
 				Set<DescriptionElementBase> elements2 = coveredTaxaArray[j].getElements();
 				DescriptionElementBase deb2 = null;
 				for (DescriptionElementBase deb : elements2){
-					if (deb.getFeature().equals(feature)) deb2 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+					if (deb.getFeature().equals(feature)){
+						deb2 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+					}
 				}
-				power = DefaultPower(deb1,deb2);
+				power = defaultPower(deb1,deb2);
 				score = score + power;
 			}
 		}
@@ -649,7 +665,7 @@ public class IdentificationKeyGenerator {
 		}
 	}
 	
-	private float FeatureScoreAndMerge(Feature feature, Set<TaxonDescription> coveredTaxa, Map<State,Set<State>> exclusions){
+	private float featureScoreAndMerge(Feature feature, Set<TaxonDescription> coveredTaxa, Map<State,Set<State>> exclusions){
 		int i,j;
 		float score =0;
 		float power=0;
@@ -658,15 +674,19 @@ public class IdentificationKeyGenerator {
 			Set<DescriptionElementBase> elements1 = coveredTaxaArray[i].getElements();
 			DescriptionElementBase deb1 = null;
 			for (DescriptionElementBase deb : elements1){
-				if (deb.getFeature().equals(feature)) deb1 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+				if (deb.getFeature().equals(feature)){
+					deb1 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+				}
 			}
 			for (j=i+1 ; j< coveredTaxaArray.length ; j++){
 				Set<DescriptionElementBase> elements2 = coveredTaxaArray[j].getElements();
 				DescriptionElementBase deb2 = null;
 				for (DescriptionElementBase deb : elements2){
-					if (deb.getFeature().equals(feature)) deb2 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+					if (deb.getFeature().equals(feature)){
+						deb2 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+					}
 				}
-				power = DefaultPower(deb1,deb2);
+				power = defaultPower(deb1,deb2);
 				score = score + power;
 				if (power>0) // if there is no state in common between deb1 and deb2
 				{
@@ -674,10 +694,14 @@ public class IdentificationKeyGenerator {
 					CategoricalData cat2 = (CategoricalData)deb2;
 					for (StateData statedata1 : cat1.getStates()){
 						State state1 = statedata1.getState();
-						if (!exclusions.containsKey(state1)) exclusions.put(state1, new HashSet<State>());
+						if (!exclusions.containsKey(state1)){
+							exclusions.put(state1, new HashSet<State>());
+						}
 						for (StateData statedata2 : cat2.getStates()){
 							State state2 = statedata2.getState();
-							if (!exclusions.containsKey(state2)) exclusions.put(state2, new HashSet<State>());
+							if (!exclusions.containsKey(state2)){
+								exclusions.put(state2, new HashSet<State>());
+							}
 							exclusions.get(state1).add(state2);
 							exclusions.get(state2).add(state1);
 						}
@@ -688,17 +712,17 @@ public class IdentificationKeyGenerator {
 		return score;
 		}
 	
-	private float DefaultPower(DescriptionElementBase deb1, DescriptionElementBase deb2){
+	private float defaultPower(DescriptionElementBase deb1, DescriptionElementBase deb2){
 		if (deb1==null || deb2==null) {
 			return -1; //what if the two taxa don't have this feature in common ?
 		}
 		if ((deb1.isInstanceOf(CategoricalData.class))&&(deb2.isInstanceOf(CategoricalData.class))) {
-			return DefaultCategoricalPower((CategoricalData)deb1, (CategoricalData)deb2);
+			return defaultCategoricalPower((CategoricalData)deb1, (CategoricalData)deb2);
 		}
 		else return 0;
 	}
 	
-	private float DefaultCategoricalPower(CategoricalData deb1, CategoricalData deb2){
+	private float defaultCategoricalPower(CategoricalData deb1, CategoricalData deb2){
 		List<StateData> states1 = deb1.getStates();
 		List<StateData> states2 = deb2.getStates();
 		boolean bool = false;

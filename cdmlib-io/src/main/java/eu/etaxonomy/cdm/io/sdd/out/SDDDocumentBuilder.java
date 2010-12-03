@@ -363,7 +363,7 @@ public class SDDDocumentBuilder {
 		idkgen.setTaxa(descriptions);
 		logger.error("Start keys");
 		
-		idkgen.makeandprint();
+		idkgen.invoke();
 	}
 	//	#############
 	//	# BUILD DOM	#

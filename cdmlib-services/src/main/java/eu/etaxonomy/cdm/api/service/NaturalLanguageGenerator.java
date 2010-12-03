@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -33,6 +34,8 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 @Component
 public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(NaturalLanguageGenerator.class);
 
 	private String firstSeparator = ",";
 	private String secondSeparator = ".";
