@@ -372,13 +372,15 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 				
 				MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
 				naturalLanguageGenerator.setQuantitativeDescriptionBuilder(micro);
-				naturalLanguageDescriptionText = naturalLanguageGenerator.generateStringNaturalLanguageDescription(featureTree, ((TaxonDescription)description), lang);
+				//FXIME commented because it lead to compile errors -> Maxime please fix
+//				naturalLanguageDescriptionText = naturalLanguageGenerator.generateStringNaturalLanguageDescription(featureTree, ((TaxonDescription)description), lang);
 					
 			} else {
-				naturalLanguageDescriptionText = naturalLanguageGenerator.generateStringNaturalLanguageDescription(
-						featureTree, 
-						((TaxonDescription)description),
-						lang);				
+				//FXIME commented because it lead to compile errors -> Maxime please fix
+//				naturalLanguageDescriptionText = naturalLanguageGenerator.generateStringNaturalLanguageDescription(
+//						featureTree, 
+//						((TaxonDescription)description),
+//						lang);				
 			}
 
 			return naturalLanguageDescriptionText;
