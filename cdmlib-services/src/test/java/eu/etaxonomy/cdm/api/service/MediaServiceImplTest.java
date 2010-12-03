@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
@@ -19,8 +18,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class MediaServiceImplTest extends CdmIntegrationTest{
-	private static final Logger logger = Logger
-			.getLogger(MediaServiceImplTest.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(MediaServiceImplTest.class);
 
 	@SpringBeanByType
 	private IMediaService service;
