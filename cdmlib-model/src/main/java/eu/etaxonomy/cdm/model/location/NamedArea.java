@@ -39,9 +39,12 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -86,7 +89,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	 * @return
 	 */
 	public static NamedArea NewInstance(){
-		logger.debug("NewInstance");
 		return new NamedArea();
 	}
 
@@ -446,6 +448,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		return result;
 	}
 	
+// ******************* toString **********************************/	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
+	 */
 	public String toString(){
 		String result, label, level = "";
 		
@@ -456,5 +463,35 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		result = "[" + level + ", " + label + "]";
 		
 		return result;
+	}
+	
+	
+
+	/**
+	 * @param namedArea
+	 * @return
+	 */
+	protected static String labelWithLevel(NamedArea namedArea, Language language) {
+		NamedArea area = (NamedArea) HibernateProxyHelper.deproxy(namedArea);
+		
+		StringBuilder title = new StringBuilder();
+		Representation representation = area.getPreferredRepresentation(language);
+		if (representation != null){
+			title.append(representation.getDescription());
+			title.append(" - ");
+			title.append(area.getClass().getSimpleName());
+			if(area.getLevel() != null){
+				title.append(" - ");
+				Representation levelRepresentation = area.getLevel().getPreferredRepresentation(language);
+				if (levelRepresentation != null){
+					title.append(levelRepresentation.getLabel());
+				}
+			}
+			if(! CdmUtils.isEmpty(representation.getAbbreviatedLabel())){
+				title.append(" - ");
+				title.append(representation.getAbbreviatedLabel());
+			}
+		}
+		return title.toString();
 	}
 }
