@@ -473,7 +473,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	 * @param language the preferred language
 	 * @return
 	 */
-	protected static String labelWithLevel(NamedArea namedArea, Language language) {
+	public static String labelWithLevel(NamedArea namedArea, Language language) {
 		NamedArea area = (NamedArea) HibernateProxyHelper.deproxy(namedArea);
 		
 		StringBuilder title = new StringBuilder();
