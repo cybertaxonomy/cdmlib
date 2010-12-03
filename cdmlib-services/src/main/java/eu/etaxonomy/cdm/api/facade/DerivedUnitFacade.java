@@ -1625,6 +1625,9 @@ public class DerivedUnitFacade {
 		}
 		return this.derivedUnit.getTitleCache();
 	}
+	public boolean isProtectedTitleCache(){
+		return derivedUnit.isProtectedTitleCache();
+	}
 	public void setTitleCache(String titleCache, boolean isProtected) {
 		this.derivedUnit.setTitleCache(titleCache, isProtected);
 	}
