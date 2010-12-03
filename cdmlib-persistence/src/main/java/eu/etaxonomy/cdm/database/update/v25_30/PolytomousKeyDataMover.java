@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.database.update.v25_30;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -91,10 +92,11 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		while (rs.next()){
 			
 			//Created KeyStatement
-			String updateQuery = " INSERT INTO KeyStatement@_aud (id, created, updated, createdby_id, updatedby_id @audParam)" + 
-				" VALUES (@id, @createdWhen, @updatedWhen, @createdby_id, @updatedby_id @audValue)";
+			String updateQuery = " INSERT INTO KeyStatement@_aud (id, uuid, created, updated, createdby_id, updatedby_id @audParam)" + 
+				" VALUES (@id, @uuid, @createdWhen, @updatedWhen, @createdby_id, @updatedby_id @audValue)";
 			updateQuery = updateQuery.replace("@audValue", audValue);
 			updateQuery = updateQuery.replace("@id", rs.getObject("FeatureNode_id").toString()); //use feature node id for key statement id 
+			updateQuery = updateQuery.replace("@uuid", UUID.randomUUID().toString()); //use random uuid
 			updateQuery = updateQuery.replace("@createdWhen", nullSafeString(rs.getString("created")));
 			updateQuery = updateQuery.replace("@updatedWhen", nullSafeString((rs.getString("updated"))));
 			updateQuery = updateQuery.replace("@createdby_id", nullSafe(rs.getObject("createdby_id")));
