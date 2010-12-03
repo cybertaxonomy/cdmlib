@@ -468,7 +468,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 
 	/**
-	 * @param namedArea
+	 * Returns the label of the named area together with the area level label and the abbreviated label
+	 * @param namedArea the area
+	 * @param language the preferred language
 	 * @return
 	 */
 	protected static String labelWithLevel(NamedArea namedArea, Language language) {
