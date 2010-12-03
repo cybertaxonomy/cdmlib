@@ -360,15 +360,19 @@ public class EditGeoServiceUtilities {
 	}
 	
 	private static String getGeoServiceLayer(NamedAreaLevel level){
-		//TODO integrate into CDM 
-		if (level.equals(NamedAreaLevel.TDWG_LEVEL1())){
-			return "tdwg1";
-		}else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())){
-			return "tdwg2";
-		}if (level.equals(NamedAreaLevel.TDWG_LEVEL3())){
-			return "tdwg3";
-		}if (level.equals(NamedAreaLevel.TDWG_LEVEL4())){
-			return "tdwg4";
+		if (level != null) {
+			//TODO integrate into CDM 
+			if (level.equals(NamedAreaLevel.TDWG_LEVEL1())) {
+				return "tdwg1";
+			} else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())) {
+				return "tdwg2";
+			}
+			if (level.equals(NamedAreaLevel.TDWG_LEVEL3())) {
+				return "tdwg3";
+			}
+			if (level.equals(NamedAreaLevel.TDWG_LEVEL4())) {
+				return "tdwg4";
+			}
 		}
 		return "unknown";
 	}
