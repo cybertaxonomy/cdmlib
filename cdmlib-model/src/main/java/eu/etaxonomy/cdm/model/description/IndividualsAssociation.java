@@ -34,6 +34,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -62,7 +63,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class IndividualsAssociation extends DescriptionElementBase {
+public class IndividualsAssociation extends DescriptionElementBase implements IMultiLanguageTextHolder{
 	private static final long serialVersionUID = -4117554860254531809L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);

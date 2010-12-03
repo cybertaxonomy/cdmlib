@@ -21,9 +21,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "KeyStatement")
 @Entity
 @Audited
-public class KeyStatement extends VersionableEntity {
+public class KeyStatement extends VersionableEntity implements IMultiLanguageTextHolder{
 	private static final long serialVersionUID = 3771323100914695139L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(KeyStatement.class);

@@ -44,6 +44,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -76,7 +77,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> {
+public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> implements IMultiLanguageTextHolder{
 	
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	

@@ -38,6 +38,7 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -73,7 +74,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "FeatureNode")
 @Entity
 @Audited
-public class PolytomousKeyNode extends VersionableEntity  {
+public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PolytomousKeyNode.class);
     

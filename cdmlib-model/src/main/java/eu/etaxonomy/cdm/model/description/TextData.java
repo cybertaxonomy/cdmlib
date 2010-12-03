@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,6 +36,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
@@ -62,7 +64,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class TextData extends DescriptionElementBase {
+public class TextData extends DescriptionElementBase implements IMultiLanguageTextHolder{
 	private static final long serialVersionUID = -2165015581278282615L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TextData.class);
@@ -81,6 +83,8 @@ public class TextData extends DescriptionElementBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private TextFormat format;
+	@Transient
+	private boolean isHashMapHibernateBugFixed = false;
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -151,10 +155,12 @@ public class TextData extends DescriptionElementBase {
 	 * @see	#getText(Language)
 	 */
     public Map<Language, LanguageString> getMultilanguageText() {
-		HashMap<Language, LanguageString> result = new HashMap<Language, LanguageString>();
-		result.putAll(multilanguageText);
-		return result;
-//    	return multilanguageText;
+		fixHashMapHibernateBug();
+		
+//    	HashMap<Language, LanguageString> result = new HashMap<Language, LanguageString>();
+//		result.putAll(multilanguageText);
+//		return result;
+    	return multilanguageText;
 	}
     
 //    /**
@@ -257,10 +263,14 @@ public class TextData extends DescriptionElementBase {
 
 	private void fixHashMapHibernateBug() {
 		//workaround for key problem
-		HashMap<Language, LanguageString> tmp = new HashMap<Language, LanguageString>();
-		tmp.putAll(multilanguageText);
-		multilanguageText.clear();
-		multilanguageText.putAll(tmp);
+		if(! isHashMapHibernateBugFixed){
+			HashMap<Language, LanguageString> tmp = new HashMap<Language, LanguageString>();
+			tmp.putAll(multilanguageText);
+			multilanguageText.clear();
+			multilanguageText.putAll(tmp);
+
+			isHashMapHibernateBugFixed = true;
+		}
 	}
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}

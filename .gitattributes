@@ -482,6 +482,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ILoadableTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IMultiLanguageText.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IMultiLanguageTextHolder.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IOriginalSource.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IParsable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java -text

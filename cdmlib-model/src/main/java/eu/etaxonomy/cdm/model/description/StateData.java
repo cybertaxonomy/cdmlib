@@ -37,6 +37,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -65,7 +66,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "StateData")
 @Entity
 @Audited
-public class StateData extends VersionableEntity implements IModifiable{
+public class StateData extends VersionableEntity implements IModifiable, IMultiLanguageTextHolder{
 	private static final long serialVersionUID = -4380314126624505415L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StateData.class);

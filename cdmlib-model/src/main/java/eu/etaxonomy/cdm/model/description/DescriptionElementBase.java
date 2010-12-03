@@ -25,7 +25,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,6 +44,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -88,7 +88,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends AnnotatableEntity implements ISourceable<DescriptionElementSource>, IModifiable {
+public abstract class DescriptionElementBase extends AnnotatableEntity implements ISourceable<DescriptionElementSource>, IModifiable, IMultiLanguageTextHolder {
 	private static final long serialVersionUID = 5000910777835755905L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);

@@ -379,6 +379,19 @@ public class FeatureNode extends VersionableEntity {
 	public boolean isLeaf() {
 		return children.size() < 1;
 	}
+	
+	/**
+	 * Whether <code>this</code> node is the root node of the associated {@link FeatureTree feature tree}.
+	 * 
+	 * @return <code>true</code> if <code>this</code> is the feature trees root node, <code>false</code> if not
+	 */
+	@Transient
+	public boolean isRoot(){
+		if(getFeatureTree() != null){
+			return this.equals(getFeatureTree().getRoot());
+		}
+		return false;
+	}
 
 	/**
 	 * Returns the set of {@link State states} implying rendering the

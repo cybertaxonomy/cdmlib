@@ -48,6 +48,7 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -78,7 +79,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Indexed
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Media extends IdentifiableEntity implements Cloneable {
+public class Media extends IdentifiableEntity implements Cloneable, IMultiLanguageTextHolder {
 	private static final long serialVersionUID = -1927421567263473658L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Media.class);
