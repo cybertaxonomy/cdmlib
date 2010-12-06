@@ -3126,6 +3126,20 @@
         primary key (REV, polytomousKey_id, taxon_id)
     );
     
+    create table PolytomousKey_TaxonBase (
+        polytomousKey_id integer not null,
+        coveredtaxa_id integer not null,
+        primary key (polytomousKey_id, coveredtaxa_id)
+    );
+
+    create table PolytomousKey_TaxonBase_AUD (
+        REV integer not null,
+        polytomousKey_id integer not null,
+        coveredtaxa_id integer not null,
+        revtype tinyint,
+        primary key (REV, polytomousKey_id, coveredtaxa_id)
+    );
+    
         
     create table PolytomousKeyNode (
         id integer not null,
