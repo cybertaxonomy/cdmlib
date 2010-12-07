@@ -9,23 +9,21 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
-public class PolytomousKeyDaoHibernateImplTest extends CdmIntegrationTest {
+public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrationTest{
 
 	@SpringBeanByType
 	PolytomousKeyDaoImpl polytomousKeyDao;
@@ -74,6 +72,22 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmIntegrationTest {
 		
 //		printDataSet(System.out, new String[]{"PolytomousKeyNode", "KeyStatement", "KeyStatement_LanguageString", "LanguageString"});
 		System.out.println("End test1");
+	}
+	
+	@Test
+	public void testDeletePolyotomousKey(){
+		UUID uuid = UUID.fromString("bab66772-2c83-428a-bb6d-655d12ac6097");
+		PolytomousKey existingKey = polytomousKeyDao.findByUuid(uuid);
+		Assert.assertNotNull("",existingKey);
+		
+		polytomousKeyDao.delete(existingKey);
+		
+		setComplete(); endTransaction();
+		try {if (true){printDataSet(System.out, new String[]{"POLYTOMOUSKEY", "POLYTOMOUSKEYNODE"});}
+		} catch(Exception e) { logger.warn(e);} 
+		
+		PolytomousKey nonExistingKey = polytomousKeyDao.findByUuid(uuid);
+		Assert.assertNull("", nonExistingKey);		
 	}
 	
 	@Test
