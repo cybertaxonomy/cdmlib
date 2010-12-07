@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -50,7 +51,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -665,6 +665,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#moveSynonymToAnotherTaxon(eu.etaxonomy.cdm.model.taxon.SynonymRelationship, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
+	 */
+	@Override
+	public Taxon moveSynonymToAnotherTaxon(SynonymRelationship synonymRelation,
+			Taxon toTaxon, SynonymRelationshipType synonymRelationshipType, Reference reference, String referenceDetail) {
+		Taxon fromTaxon = synonymRelation.getAcceptedTaxon();
+		
+		fromTaxon.removeSynonymRelation(synonymRelation);
+		
+		toTaxon.addSynonym(synonymRelation.getSynonym(), synonymRelationshipType);
+		
+		return toTaxon;
 	}
 	
 	

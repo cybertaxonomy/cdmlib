@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -31,10 +32,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -193,6 +192,18 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * 				the newly created concept
 	 */
 	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference citation, String microcitation);
+	
+	
+	/**
+	 * Move a synonym to another taxon, effectively removing the old synonym relationship
+	 * 
+	 * @param synonymRelation
+	 * @param toTaxon
+	 * @param reference
+	 * @param referenceDetail
+	 * @return
+	 */
+	public Taxon moveSynonymToAnotherTaxon(SynonymRelationship synonymRelation, Taxon toTaxon, SynonymRelationshipType synonymRelationshipType, Reference reference, String referenceDetail);
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
