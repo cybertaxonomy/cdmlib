@@ -39,6 +39,7 @@ import org.xml.sax.SAXException;
 import eu.etaxonomy.cdm.api.service.DeltaTextDataProcessor;
 import eu.etaxonomy.cdm.api.service.INaturalLanguageTextDataProcessor;
 import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator;
+import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator2;
 import eu.etaxonomy.cdm.api.service.MicroFormatCategoricalDescriptionBuilder;
 import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
@@ -261,7 +262,7 @@ public class SDDDocumentBuilder {
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
 		if (natlang) {
-			buildNaturalLanguageDescription(baselement);
+			buildIdentificationKey(baselement);
 		}
 		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -338,9 +339,9 @@ public class SDDDocumentBuilder {
 			}
 		}
 		
-		IdentificationKeyGenerator idkgen = new IdentificationKeyGenerator();
+		IdentificationKeyGenerator2 idkgen = new IdentificationKeyGenerator2();
 		
-		idkgen.setDependencies(featureTree);
+//		idkgen.setDependencies(featureTree);
 		
 		Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 		List<Feature> featureList = new ArrayList<Feature>();
