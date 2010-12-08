@@ -164,16 +164,16 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		BeanDefinition datasourceBean = dataSource.getDatasourceBean();
 		datasourceBean.setAttribute("isLazy", false);
 		progressMonitor.subTask("Registering datasource.");
-		progressMonitor.worked(1);
 		applicationContext.registerBeanDefinition("dataSource", datasourceBean);
+		progressMonitor.worked(1);
 		
 		BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(dbSchemaValidation);
 		applicationContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
 		
 		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(applicationContext);
 		progressMonitor.subTask("Registering resources.");
+		xmlReader.loadBeanDefinitions(applicationContextResource);
 		progressMonitor.worked(1);
-		xmlReader.loadBeanDefinitions(applicationContextResource);		 
 		
 		//omitTerms
 		/*String initializerName = "persistentTermInitializer";
@@ -181,27 +181,27 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		MutablePropertyValues values = beanDef.getPropertyValues();
 		values.addPropertyValue("omit", omitTermLoading);*/
 		
-		progressMonitor.subTask("Connecting. This might take a while ...");
-		progressMonitor.worked(1);
+		progressMonitor.subTask("This might take a while ...");
 		applicationContext.refresh();
 		applicationContext.start();
+		progressMonitor.worked(1);
 		
 		progressMonitor.subTask("Cleaning up.");
-		progressMonitor.worked(1);
 		setApplicationContext(applicationContext);
+		progressMonitor.worked(1);
 		
 		//initialize user and metaData for new databases
 		int userCount = getUserService().count(User.class);
 		if (userCount == 0 ){
 			progressMonitor.subTask("Creating Admin User");
-			progressMonitor.worked(1);
 			createAdminUser();
+			progressMonitor.worked(1);
 		}
 		int metaDataCount = getCommonService().getCdmMetaData().size();
 		if (metaDataCount == 0){
 			progressMonitor.subTask("Creating Meta Data");
-			progressMonitor.worked(1);
 			createMetadata();
+			progressMonitor.worked(1);
 		}
 		progressMonitor.done();
 		return true;
@@ -306,11 +306,9 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		//TODO delete next row (was just for testing)
 		if (logger.isInfoEnabled()){
 			logger.info("Registered Beans: ");
-			progressMonitor.subTask("Registered Beans: ");
 			String[] beanNames = applicationContext.getBeanDefinitionNames();
 			for (String beanName : beanNames){
 				logger.info(beanName);
-				progressMonitor.subTask(beanName);
 			}
 		}
 		configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
