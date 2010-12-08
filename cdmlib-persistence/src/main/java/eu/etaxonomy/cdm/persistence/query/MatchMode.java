@@ -11,12 +11,15 @@
 package eu.etaxonomy.cdm.persistence.query;
 
 /**
+ * 
+ * 
  * @author a.babadshanjan
  * @created 03.03.2009
  * @version 1.0
  */
 public enum MatchMode {
 	EXACT("="),
+	LIKE("LIKE"),
 	BEGINNING("LIKE"),
 	ANYWHERE("LIKE"),
 	END("LIKE");
