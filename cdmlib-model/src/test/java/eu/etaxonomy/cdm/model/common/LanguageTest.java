@@ -3,16 +3,13 @@
  */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
 
-import org.apache.http.impl.EnglishReasonPhraseCatalog;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
@@ -41,11 +38,10 @@ public class LanguageTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.Language#toString()}.
 	 */
-	//tests needs to be adapted once the labels for languages are changed
 	@Test
 	public void testToString() {
 		Language lang = Language.ENGLISH();
-		Assert.assertEquals("English should return 'eng' by toString()", "eng", lang.toString());
+		Assert.assertEquals("English should return 'English' by toString()", "English", lang.toString());
 	}
 
 	/**
@@ -136,12 +132,11 @@ public class LanguageTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.Language#getLanguageByLabel(java.lang.String)}.
 	 */
-	//once the labels for languages are changed from iso 639-2 to textual labels this test must be adapted
 	@Test
 	public void testGetLanguageByLabel() {
-		Language lang = Language.getLanguageByLabel("eng"); 
-		Assert.assertNotNull("A language should be found for label 'eng'", lang);
-		Assert.assertEquals("Uuid of language 'eng' should be 'e9f8cdb7-6819-44e8-95d3-e2d0690c3523'", Language.uuidEnglish, lang.getUuid());
+		Language lang = Language.getLanguageByLabel("English"); 
+		Assert.assertNotNull("A language should be found for label 'English'", lang);
+		Assert.assertEquals("Uuid of language 'English' should be 'e9f8cdb7-6819-44e8-95d3-e2d0690c3523'", Language.uuidEnglish, lang.getUuid());
 	}
 
 }
