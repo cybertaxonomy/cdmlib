@@ -39,7 +39,6 @@ import org.xml.sax.SAXException;
 import eu.etaxonomy.cdm.api.service.DeltaTextDataProcessor;
 import eu.etaxonomy.cdm.api.service.INaturalLanguageTextDataProcessor;
 import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator;
-import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator2;
 import eu.etaxonomy.cdm.api.service.MicroFormatCategoricalDescriptionBuilder;
 import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
@@ -339,7 +338,7 @@ public class SDDDocumentBuilder {
 			}
 		}
 		
-		IdentificationKeyGenerator2 idkgen = new IdentificationKeyGenerator2();
+		IdentificationKeyGenerator idkgen = new IdentificationKeyGenerator();
 		
 //		idkgen.setDependencies(featureTree);
 		
