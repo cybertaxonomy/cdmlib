@@ -38,7 +38,6 @@ import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.api.service.DeltaTextDataProcessor;
 import eu.etaxonomy.cdm.api.service.INaturalLanguageTextDataProcessor;
-import eu.etaxonomy.cdm.api.service.IdentificationKeyGenerator;
 import eu.etaxonomy.cdm.api.service.MicroFormatCategoricalDescriptionBuilder;
 import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
@@ -87,6 +86,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.generate.IdentificationKeyGenerator;
 
 /**
  * Writes the SDD XML file. 

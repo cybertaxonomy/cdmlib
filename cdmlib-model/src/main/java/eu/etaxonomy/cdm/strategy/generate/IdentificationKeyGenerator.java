@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.strategy.generate;
 
 import java.util.ArrayList;
 import java.util.HashMap;

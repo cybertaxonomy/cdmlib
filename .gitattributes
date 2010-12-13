@@ -729,6 +729,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefau
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/generate/IdentificationKeyGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/CacheMatcher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/FieldMatcher.java -text
@@ -1608,7 +1609,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IVersionableService.j
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IVocabularyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IWorkingSetService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBase.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGenerator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentificationKeyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/LocationServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MarkerServiceImpl.java -text
