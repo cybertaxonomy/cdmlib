@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -416,5 +417,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Taxon findBestMatchingTaxon(String taxonName);
 	
 	public Synonym findBestMatchingSynonym(String taxonName);
+	
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon();
+	
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 	
 }

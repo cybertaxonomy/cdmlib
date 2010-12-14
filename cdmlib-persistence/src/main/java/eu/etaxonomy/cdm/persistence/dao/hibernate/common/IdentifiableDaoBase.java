@@ -32,6 +32,7 @@ import org.hibernate.search.SearchFactory;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -260,19 +261,23 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 	}
 	
 	public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
-		List<UuidAndTitleCache<T>> list = new ArrayList<UuidAndTitleCache<T>>();
 		Session session = getSession();
-		
 		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
+		return getUuidAndTitleCache(query);
+	}
+	
+	protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
+		List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
 		
 		List<Object[]> result = query.list();
 		
 		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<T>(type, (UUID) object[0], (String) object[1]));
+			list.add(new UuidAndTitleCache<E>((UUID) object[0], (String) object[1]));
 		}
 		
 		return list;
 	}
+	
 
 	public int countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
 		return countByParam(clazz, "titleCache",queryString,matchmode,criterion);

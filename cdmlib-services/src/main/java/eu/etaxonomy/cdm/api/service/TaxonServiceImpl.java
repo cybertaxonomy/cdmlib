@@ -681,6 +681,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return toTaxon;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheTaxon()
+	 */
+	@Override
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
+		return dao.getUuidAndTitleCacheTaxon();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheSynonym()
+	 */
+	@Override
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym() {
+		return dao.getUuidAndTitleCacheSynonym();
+	}
 	
 	
 }

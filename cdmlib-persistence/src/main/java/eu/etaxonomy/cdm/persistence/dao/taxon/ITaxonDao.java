@@ -425,5 +425,15 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			List<OrderHint> orderHints, List<String> propertyPaths,
 			Direction relatedfrom);
 
+	/**
+	 * @return
+	 */
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon();
+
+	/**
+	 * @return
+	 */
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
+
 	
 }

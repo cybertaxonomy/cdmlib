@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -63,7 +64,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
@@ -1942,6 +1942,34 @@ WHERE     (FaEuSyn.OriginalDB = N'FaEu') AND (ERMSAcc.OriginalDB = N'ERMS') AND 
 			
 			return result;
 		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getUuidAndTitleCacheTaxon()
+	 */
+	@Override
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
+		String queryString = String.format("select uuid, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Taxon.class.getSimpleName());
+		Query query = getSession().createQuery(queryString);
+		
+		List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
+		
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getUuidAndTitleCacheSynonym()
+	 */
+	@Override
+	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym() {
+		String queryString = String.format("select uuid, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Synonym.class.getSimpleName());
+		Query query = getSession().createQuery(queryString);
+		
+		List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
+		
+		return result;
 	}
 
 
