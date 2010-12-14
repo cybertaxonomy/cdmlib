@@ -10,21 +10,18 @@
 
 package eu.etaxonomy.cdm.api.service.config;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.babadshanjan
  * @created 20.01.2009
  * @version 1.0
  */
-public interface ITaxonServiceConfigurator {
+public interface ITaxonServiceConfigurator extends IIdentifiableEntityServiceConfigurator{
 
 	public boolean isDoTaxa();
 	
@@ -45,22 +42,10 @@ public interface ITaxonServiceConfigurator {
 	public String getSearchString();
 	
 	public void setSearchString(String searchString);
-	
-	public MatchMode getMatchMode();
-
-	public void setMatchMode(MatchMode matchMode);
 
 	public Classification getClassification();
 	
 	public void setClassification(Classification classification);
-	
-	public Integer getPageSize();
-
-	public void setPageSize(Integer pageSize);
-
-	public Integer getPageNumber();
-	
-	public void setPageNumber(Integer pageNumber);
 	
 	public Set<NamedArea> getNamedAreas();
 
@@ -77,11 +62,6 @@ public interface ITaxonServiceConfigurator {
 	public List<String> getCommonNamePropertyPath();
 
 	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath);
-	
-	@Deprecated
-	public Reference getSec();
-	@Deprecated
-	public void setSec(Reference sec);
 
 	public List<String> getSynonymPropertyPath();
 	

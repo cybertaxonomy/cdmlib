@@ -17,7 +17,6 @@ import java.util.Set;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -34,7 +33,6 @@ implements ITaxonServiceConfigurator {
 	private boolean doTaxaByCommonNames = false;
 	private boolean doNamesWithoutTaxa = false;
 	private String searchString;
-	private Reference sec = null;
 	private Classification classification = null;
 	private List<String> taxonPropertyPath;
 	private List<String> synonymPropertyPath;
@@ -118,14 +116,6 @@ implements ITaxonServiceConfigurator {
 
 	public void setMatchMode(MatchMode matchMode) {
 		this.matchMode = matchMode;
-	}
-	
-	public Reference getSec() {
-		return sec;
-	}
-	
-	public void setSec(Reference sec) {
-		this.sec = sec;
 	}
 	
 	public Classification getClassification() {

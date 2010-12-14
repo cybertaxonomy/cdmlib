@@ -17,16 +17,12 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @created 03.03.2009
  * @version 1.0
  */
-public class IdentifiableServiceConfiguratorBase {
+public abstract class IdentifiableServiceConfiguratorBase implements IIdentifiableEntityServiceConfigurator{
 	
 	private String titleSearchString = null;
-	protected MatchMode matchMode = MatchMode.EXACT;
+	protected MatchMode matchMode = MatchMode.LIKE;
 	private Integer pageSize = null;
 	private Integer pageNumber = 0;
-	
-	public static IdentifiableServiceConfiguratorBase NewInstance() {
-		return new IdentifiableServiceConfiguratorBase();
-	}
 	
 	public String getTitleSearchString() {
 		return titleSearchString;

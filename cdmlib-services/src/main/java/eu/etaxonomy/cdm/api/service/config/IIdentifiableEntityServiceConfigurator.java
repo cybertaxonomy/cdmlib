@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.api.service.config;
 
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
