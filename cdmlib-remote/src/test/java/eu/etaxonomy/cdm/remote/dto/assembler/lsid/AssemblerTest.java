@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -28,6 +29,8 @@ import org.hibernate.engine.SessionImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.Partial;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,10 +40,13 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -59,6 +65,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord;
+import eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
@@ -70,6 +77,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	
 	private Taxon taxon;
 	private IBook sec;
+	private IBook book;
+	private Reference bookSection;
 	private TeamOrPersonBase authorTeam;
 	private NonViralName name;
 	private LSID lsid;
@@ -136,6 +145,37 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		distribution.setStatus(PresenceTerm.NATIVE());
 		
 		taxonDescription.addElement(distribution);
+		
+		// ------------------------------------------------------
+		
+		book = refFactory.newBook();
+		book.setTitle("Book.title");
+		book.setAuthorTeam(authorTeam);
+		book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
+		book.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
+		book.setEdition("1st Edition");
+		book.setEditor("Editor");
+		book.setIsbn("isbn");
+		book.setPlacePublished("placePublished");
+		book.setPublisher("publisher");
+		book.setReferenceAbstract("referenceAbstract");
+		book.setUri("http://persitent.books.foo/myBook");
+		book.setUuid(UUID.randomUUID());
+		book.setVolume("Volume 1");
+		book.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/1"));
+		
+		bookSection = refFactory.newBookSection();
+		bookSection.setInReference((Reference)book);
+		bookSection.setPages("999 ff.");
+		bookSection.setTitle("BookSection.title");
+		bookSection.setAuthorTeam(authorTeam);
+		bookSection.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
+		bookSection.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
+		bookSection.setReferenceAbstract("referenceAbstract");
+		bookSection.setUri("http://persitent.books.foo/myBookSection");
+		bookSection.setUuid(UUID.randomUUID());
+		bookSection.addCredit(Credit.NewInstance(authorTeam, "Credits to the authorTeam"));
+		bookSection.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/2"));
 	}
 	
 	@Test
@@ -198,11 +238,22 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	public void testSimpleDarwinCoreMapping() {
 		SimpleDarwinRecord simpleDarwinRecord = mapper.map(taxon, SimpleDarwinRecord.class);
 		mapper.map((NonViralName)taxon.getName(), simpleDarwinRecord);
+		
 		assertNotNull(simpleDarwinRecord.getModified());
 		assertEquals(taxon.getName().getTitleCache(), simpleDarwinRecord.getScientificName());
 		assertEquals(((NonViralName)taxon.getName()).getAuthorshipCache(), simpleDarwinRecord.getScientificNameAuthorship());
 		assertEquals(((NonViralName)taxon.getName()).getCitationString(), simpleDarwinRecord.getNamePublishedIn());
 		assertEquals(Rank.SPECIES().getLabel(), simpleDarwinRecord.getTaxonRank());
+	}
+	
+	@Test
+	public void testOAIDublinCoreMapping() {
+		OaiDc oaiDcRecordBook = mapper.map(book, OaiDc.class);
+		
+		assertEquals(book.getTitle(), book.getTitle());
+		
+		OaiDc oaiDcRecordBookSection = mapper.map(bookSection, OaiDc.class);
+		assertNotNull(oaiDcRecordBookSection.getRelation());
 	}
 	
 	private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz,final T wrappedCollection) {
