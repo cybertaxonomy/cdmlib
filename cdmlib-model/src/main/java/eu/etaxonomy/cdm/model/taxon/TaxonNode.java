@@ -151,7 +151,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	 */
 	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation, Synonym synonymToBeUsed) {
 		if (this.getClassification().isTaxonInTree(taxon)){
- 			throw new IllegalArgumentException("Taxon may not be in a taxonomic view twice: " + taxon == null? "(null)" : taxon.getTitleCache());
+ 			throw new IllegalArgumentException(String.format("Taxon may not be in a taxonomic view twice: %s", taxon.getTitleCache()));
 		}
 		
 		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);

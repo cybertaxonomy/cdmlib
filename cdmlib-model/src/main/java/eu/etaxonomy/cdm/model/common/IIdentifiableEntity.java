@@ -14,7 +14,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.media.Rights;
 
-public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>{
+public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IAnnotatableEntity{
 
 	public LSID getLsid();
 

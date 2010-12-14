@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * @created Aug 14, 2009
  * @version 1.0
  */
-public class UuidAndTitleCache<T extends CdmBase> {
+public class UuidAndTitleCache<T extends ICdmBase> {
 	private static final Logger logger = Logger
 			.getLogger(UuidAndTitleCache.class);
 	
@@ -28,10 +28,18 @@ public class UuidAndTitleCache<T extends CdmBase> {
 	String titleCache;
 	
 	public UuidAndTitleCache(Class<T> type, UUID uuid, String titleCache) {
+		this(uuid, titleCache);
+	}
+	
+	/**
+	 * @param uuid2
+	 * @param string
+	 */
+	public UuidAndTitleCache(UUID uuid, String titleCache) {
 		this.uuid = uuid;
 		this.titleCache = titleCache;
 	}
-	
+
 	/**
 	 * @return the titleCache
 	 */
