@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -1147,7 +1148,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @deprecated to be used by RelationshipBase only
 	 */
 	@Override
-	@Deprecated
+	@Deprecated //to be used by RelationshipBase only
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof HybridRelationship){
 			addHybridRelationship((HybridRelationship)relation);
@@ -1259,7 +1260,35 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	/**
 	  * Needs to be implemented by those classes that handle autonyms (e.g. botanical names).
 	  **/
+	@Transient
 	public boolean isAutonym(){
 		return false;
+	}
+	
+	
+	/**
+	 * Returns the boolean value indicating whether <i>this</i> names rank is Rank "unranked"
+	 * (uuid = 'a965befb-70a9-4747-a18f-624456c65223') but most likely it is an infrageneric rank
+	 * due to existing atomized data for the genus epithet and the infrageneric epithet but missing
+	 * specific epithet.
+	 * Returns false if <i>this</i> names rank is null.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isGenus()
+	 * @see  #isSpeciesAggregate()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
+	 */
+	@Transient
+	public boolean isInfragenericUnranked() {
+		Rank rank = this.getRank();
+		if (rank == null || ! rank.equals(Rank.UNRANKED())){
+			return false;
+		}
+		if (StringUtils.isBlank(this.getSpecificEpithet()) && StringUtils.isBlank(this.getInfraSpecificEpithet()) ){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

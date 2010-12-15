@@ -961,6 +961,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v25_30/Polytom
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v25_30/SchemaUpdater_25_30.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v25_30/SequenceTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v25_30/TermUpdater_25_30.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/LanguageLabelUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_30_31.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoPropertyInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.java -text

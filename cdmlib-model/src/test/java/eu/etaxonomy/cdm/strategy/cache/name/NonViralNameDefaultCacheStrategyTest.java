@@ -62,7 +62,6 @@ public class NonViralNameDefaultCacheStrategyTest {
 	private INomenclaturalAuthor basAuthor;
 	private INomenclaturalAuthor exBasAuthor;
 	private Reference citationRef;
-	private ReferenceFactory refFactory;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -75,7 +74,6 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		refFactory = ReferenceFactory.newInstance();
 		strategy = NonViralNameDefaultCacheStrategy.NewInstance();
 		familyName = BotanicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
 		genusName = BotanicalName.PARSED_NAME(genusNameString, Rank.GENUS());
@@ -136,6 +134,26 @@ public class NonViralNameDefaultCacheStrategyTest {
 		specName.setGenusOrUninomial("Genus");
 		specName.setSpecificEpithet("");
 		assertEquals("Empty species string must not result in trailing whitespace", "Genus", specName.getNameCache());
+
+		//unranked taxa
+		String unrankedCache;
+		BotanicalName unrankedName = BotanicalName.NewInstance(Rank.UNRANKED());
+		unrankedName.setGenusOrUninomial("Genus");
+		NonViralNameDefaultCacheStrategy<BotanicalName> strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+			//infraspecific
+		unrankedName.setInfraSpecificEpithet("infraspecific");
+		unrankedName.setSpecificEpithet("species");
+		unrankedCache = strategy.getNameCache(unrankedName);
+		
+		Assert.assertEquals("Correct unranked cache expected", "Genus species [unranked] infraspecific", unrankedCache);
+		
+			//infrageneric
+		unrankedName.setInfraSpecificEpithet(null);
+		unrankedName.setSpecificEpithet(null);
+		unrankedName.setInfraGenericEpithet("Infrageneric");
+		unrankedCache = strategy.getNameCache(unrankedName);
+		Assert.assertEquals("Correct unranked cache expected", "Genus [unranked] Infrageneric", unrankedCache);
+		
 		
 	}
 	
@@ -185,7 +203,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	
 	@Test
 	public void testCacheListener() {
-		Reference ref = refFactory.newGeneric();
+		Reference ref = ReferenceFactory.newGeneric();
 		ref.setTitleCache("GenericRef",true);
 		this.subSpeciesName.setNomenclaturalReference(ref);
 		Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
@@ -283,7 +301,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		
 		
 		//ref + nomRef
-		Reference book = refFactory.newBook();
+		Reference book = ReferenceFactory.newBook();
 		book.setTitle("Booktitle");
 		Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
 		subSpeciesName.setNomenclaturalReference(book);
@@ -384,7 +402,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	}
 	
 	@Test
-	public void testGetInfraGericNames(){
+	public void testGetInfraGenericNames(){
 		String author = "Anyauthor";
 		NonViralName nonViralName = NonViralName.NewInstance(Rank.SUBGENUS());
 		nonViralName.setGenusOrUninomial("Genus");

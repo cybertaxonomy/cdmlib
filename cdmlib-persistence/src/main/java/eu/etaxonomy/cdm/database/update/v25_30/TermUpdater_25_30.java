@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.VocabularyCreator;
 import eu.etaxonomy.cdm.database.update.v24_25.TermUpdater_24_25;
+import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_30_31;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 
@@ -123,7 +124,7 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_30_31.NewInstance();
 	}
 
 	/* (non-Javadoc)

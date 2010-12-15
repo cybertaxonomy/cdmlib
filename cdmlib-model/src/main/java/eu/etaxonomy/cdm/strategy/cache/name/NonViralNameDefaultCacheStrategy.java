@@ -307,6 +307,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			result = nonViralName.getNameCache();
 		}else if (rank == null){
 			result = getRanklessNameCache(nonViralName);
+		}else if (nonViralName.isInfragenericUnranked()){
+			result = getUnrankedInfragenericNameCache(nonViralName);
 		}else if (rank.isInfraSpecific()){
 			result = getInfraSpeciesNameCache(nonViralName);
 		}else if (rank.isSpecies()){
@@ -323,7 +325,38 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		return result;
 	}
-	
+//	
+//
+//	/**
+//	 * @param nonViralName
+//	 * @return
+//	 */
+//	private boolean isInfragenericUnranked(T nonViralName) {
+//		Rank rank = nonViralName.getRank();
+//		if (rank == null || ! rank.equals(Rank.UNRANKED())){
+//			return false;
+//		}
+//		if (StringUtils.isBlank(nonViralName.getSpecificEpithet()) && StringUtils.isBlank(nonViralName.getInfraSpecificEpithet()) ){
+//			return true;
+//		}else{
+//			return false;
+//		}
+//	}
+
+
+	private String getUnrankedInfragenericNameCache(T nonViralName) {
+		String result;
+		Rank rank = nonViralName.getRank();
+		if (rank.isSpeciesAggregate()){
+			return getSpeciesAggregateCache(nonViralName);
+		}
+		String infraGenericMarker = rank.getAbbreviation();
+		result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
+		result += " " + infraGenericMarker + " " + (CdmUtils.Nz(nonViralName.getInfraGenericEpithet())).trim().replace("null", "");
+		result = addAppendedPhrase(result, nonViralName).trim();
+		return result; 
+	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.name.NonViralName)

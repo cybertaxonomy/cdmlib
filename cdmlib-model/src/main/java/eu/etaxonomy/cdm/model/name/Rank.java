@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
@@ -126,7 +127,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
 	private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
 	private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
-
+	private static final UUID uuidUnranked = UUID.fromString("a965befb-70a9-4747-a18f-624456c65223");
 	
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
@@ -398,6 +399,9 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 	public static final Rank NATIO(){
 		return getTermByUuid(uuidNatio);
+	}
+	public static final Rank UNRANKED(){
+		return getTermByUuid(uuidUnranked);
 	}
 	
 	

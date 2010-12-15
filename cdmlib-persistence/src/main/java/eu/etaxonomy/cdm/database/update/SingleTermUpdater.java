@@ -137,7 +137,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 		}
 		
 		UUID uuidRepresentation = UUID.randomUUID();
-		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, abbreviatedlabel, label, language_id) " +
+		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
 				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "',  '" + abbrev +  "', " + langId + ")"; 
 		
 		datasource.executeUpdate(sqlInsertRepresentation);
