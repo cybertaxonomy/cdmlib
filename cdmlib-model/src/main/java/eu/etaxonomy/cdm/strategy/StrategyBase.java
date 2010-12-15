@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.strategy;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -81,7 +82,8 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 		if (	fieldType == TimePeriod.class ||
 				fieldType == DateTime.class ||
 				fieldType == LSID.class ||
-				fieldType == Contact.class
+				fieldType == Contact.class ||
+				fieldType == URI.class
 			){
 				return true;
 		}else{

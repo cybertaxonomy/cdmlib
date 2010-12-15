@@ -15,6 +15,8 @@
  */
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1776,7 +1778,12 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					String strFace_Url = elStyle_Url.getAttributeValue("face");
 					String strFont_Url = elStyle_Url.getAttributeValue("font");
 					String strSize_Url = elStyle_Url.getAttributeValue("size");
-					reference.setUri(elStyle_Url.getTextNormalize());
+					try {
+						reference.setUri(new URI(elStyle_Url.getTextNormalize()));
+					} catch (URISyntaxException e) {
+						logger.warn("Unvalid URL:" + elStyle_Url.getText());
+						success = false;
+					}
 				}
 			
 				childName = "pdf-urls";
@@ -1805,7 +1812,12 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					String strFace_PdfUrl = elStyle_PdfUrl.getAttributeValue("face");
 					String strFont_PdfUrl = elStyle_PdfUrl.getAttributeValue("font");
 					String strSize_PdfUrl = elStyle_PdfUrl.getAttributeValue("size");
-					reference.setUri(elStyle_PdfUrl.getText());
+					try {
+						reference.setUri(new URI(elStyle_PdfUrl.getText()));
+					} catch (URISyntaxException e) {
+						logger.warn("Unvalid URL:" + elStyle_PdfUrl.getText());
+						success = false;
+					}
 				}
 			
 				childName = "text-urls";
@@ -1834,7 +1846,12 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					String strFace_TextUrl = elStyle_TextUrl.getAttributeValue("face");
 					String strFont_TextUrl = elStyle_TextUrl.getAttributeValue("font");
 					String strSize_TextUrl = elStyle_TextUrl.getAttributeValue("size");
-					reference.setUri(elStyle_TextUrl.getText());
+					try {
+						reference.setUri(new URI(elStyle_TextUrl.getText()));
+					} catch (URISyntaxException e) {
+						logger.warn("Unvalid URL:" + elStyle_TextUrl.getText());
+						success = false;
+					}
 				}
 			
 				childName = "related-urls";
@@ -1864,7 +1881,12 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					String strFace_RelatedUrl = elStyle_RelatedUrl.getAttributeValue("face");
 					String strFont_RelatedUrl = elStyle_RelatedUrl.getAttributeValue("font");
 					String strSize_RelatedUrl = elStyle_RelatedUrl.getAttributeValue("size");	
-					reference.setUri(elStyle_RelatedUrl.getText());
+					try {
+						reference.setUri(new URI(elStyle_RelatedUrl.getText()));
+					} catch (URISyntaxException e) {
+						logger.warn("Unvalid URL:" + elStyle_RelatedUrl.getText());
+						success = false;
+					}
 				}
 			
 				childName = "image-urls";
@@ -1894,7 +1916,12 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					String strFace_ImageUrl = elStyle_ImageUrl.getAttributeValue("face");
 					String strFont_ImageUrl = elStyle_ImageUrl.getAttributeValue("font");
 					String strSize_ImageUrl = elStyle_ImageUrl.getAttributeValue("size");
-					reference.setUri(elStyle_ImageUrl.getText());
+					try {
+						reference.setUri(new URI(elStyle_ImageUrl.getText()));
+					} catch (URISyntaxException e) {
+						logger.warn("Unvalid URL:" + elStyle_ImageUrl.getText());
+						success = false;
+					}
 				}
 			}
 			

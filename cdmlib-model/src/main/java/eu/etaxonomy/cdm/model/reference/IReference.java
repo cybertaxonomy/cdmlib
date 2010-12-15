@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.net.URI;
+
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
@@ -85,11 +87,11 @@ public interface IReference extends IIdentifiableEntity, IParsable, IMergable, I
 	 * 
 	 * @return  the URI of <i>this</i> reference
 	 */
-	public String getUri();
+	public URI getUri();
 	/**
 	 * @see #getUri()
 	 */
-	public void setUri(String uri);
+	public void setUri(URI uri);
 
 	
 	/**

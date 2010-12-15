@@ -14,6 +14,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -208,6 +209,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(fieldType == UUID.class){
 					//result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+				}else if(fieldType == URI.class){
+					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(isSingleCdmBaseObject(fieldType)){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if (isCollection(fieldType)){

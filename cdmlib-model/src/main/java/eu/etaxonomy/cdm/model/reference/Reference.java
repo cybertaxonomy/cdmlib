@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import java.net.URI;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -35,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Table;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -264,7 +266,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@NullOrNotEmpty
 	@Length(max = 255)
 	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
-	private String uri;
+	@Type(type="uriUserType")
+	private URI uri;
 	
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
@@ -515,13 +518,13 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 * 
 	 * @return  the URI of <i>this</i> reference
 	 */
-	public String getUri(){
+	public URI getUri(){
 		return this.uri;
 	}
 	/**
 	 * @see #getUri()
 	 */
-	public void setUri(String uri){
+	public void setUri(URI uri){
 		this.uri = uri;
 	}
 	

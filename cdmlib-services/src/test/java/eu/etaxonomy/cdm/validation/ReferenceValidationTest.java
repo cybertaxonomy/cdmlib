@@ -14,6 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -99,14 +101,22 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	
 	@Test
 	public final void testLevel2ValidationWithValidUri() {
-		book.setUri("http://www.e-taxonomy.eu");
+		try {
+			book.setUri(new URI("http://www.e-taxonomy.eu"));
+		} catch (URISyntaxException e) {
+			Assert.fail("URI is not valid");
+		}
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 	
 	@Test
 	public final void testLevel2ValidationWithInValidUri() {
-		book.setUri("http://www.e-\taxonomy.eu");
+		try {
+			book.setUri(new URI("http://www.e-\taxonomy.eu"));
+		} catch (URISyntaxException e) {
+			Assert.fail("URI is not valid");	
+		}
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be a constraint violation as this book has an invalid URI",constraintViolations.isEmpty());
 	}
