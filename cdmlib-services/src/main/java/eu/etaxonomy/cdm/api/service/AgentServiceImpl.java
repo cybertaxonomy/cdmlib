@@ -116,4 +116,12 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache() {
 		return dao.getTeamUuidAndTitleCache();
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getInstitutionUuidAndTitleCache()
+	 */
+	@Override
+	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache() {
+		return dao.getInstitutionUuidAndTitleCache();
+	}
 }

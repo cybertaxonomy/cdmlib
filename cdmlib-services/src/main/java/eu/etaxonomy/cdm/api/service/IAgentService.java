@@ -81,7 +81,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache();
 	
 	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
+	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> objects
 	 * with their respective titleCache
 	 * 
 	 * @return a list of <code>UuidAndTitleCache</code> instances
@@ -89,11 +89,19 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
 	
 	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
+	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> objects
 	 * with their respective nomenclaturalTitle instead of regular titleCache
 	 * 
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
+	
+	/**
+	 * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
+	 * with their respective titleCache
+	 * 
+	 * @return a list of <code>UuidAndTitleCache</code> instances
+	 */
+	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache();
 	
 }
