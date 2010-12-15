@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.mail.MethodNotSupportedException;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -39,7 +40,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @version 1.0
  */
 public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportExtensionMapper.class);
 	
 //************************** FACTORY METHODS ***************************************************************/
@@ -192,6 +192,10 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			UUID uuidExtensionTypeVocabulary = UUID.fromString("117cc307-5bd4-4b10-9b2f-2e14051b3b20");
 			IVocabularyService vocService = currentImport.getVocabularyService();
 			TermVocabulary voc = vocService.find(uuidExtensionTypeVocabulary);
+			//NEW
+			TransactionStatus tx = currentImport.startTransaction();
+			currentImport.getVocabularyService().saveOrUpdate(voc);
+			//END NEW
 			if (voc != null){
 				voc.addTerm(extensionType);
 			}else{
@@ -199,6 +203,9 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			}
 			//save
 			termService.save(extensionType);
+			//NEW 
+			currentImport.commitTransaction(tx);
+			//END NEW
 		}
 		return extensionType;
 	}
