@@ -82,9 +82,13 @@ public class PointTest {
 		Assert.assertNotNull("Point1 must not be null", point1);
 		Assert.assertNotNull("Point2 must not be null", point2);
 		Assert.assertEquals("", longitude1, point1.getLongitude());
+
 		Assert.assertEquals("", latitude1, point1.getLatitude());
 		Assert.assertEquals("", errorRadius, point1.getErrorRadius());
 		Assert.assertEquals("", referenceSystem, point1.getReferenceSystem());
+		
+		Assert.assertNull("LongitudeSexagesimal should be null", point2.getLongitudeSexagesimal());
+		Assert.assertNull("LatitudeSexagesimal should be null", point2.getLatitudeSexagesimal());
 	}
 
 	@Test
@@ -170,6 +174,7 @@ public class PointTest {
 			Assert.assertTrue("Longitude can not be S", true);
 		}
 
+
 		
 		
 //		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
@@ -197,8 +202,16 @@ public class PointTest {
 
 	}
 	
-	
-	
+	@Test
+	public void testStaticParsing(){
+		try{
+			Point.parseLatitude("1");
+		}catch (NullPointerException e){
+			Assert.fail("No NullPointerException should occur");
+		} catch (ParseException e) {
+			Assert.fail("No parsing error should occur");
+		}
+	}
 	
 	
 	

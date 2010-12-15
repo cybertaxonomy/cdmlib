@@ -315,6 +315,9 @@ public class Point implements Cloneable, Serializable {
 		}
 		
 		public static Sexagesimal valueOf(Double decimal, boolean isLatitude, boolean nullSecondsToNull, boolean nullMinutesToNull){
+			if(decimal == null){
+				return null;
+			}
 			Sexagesimal sexagesimal = new Sexagesimal(); 
 			Double decimalDegree = decimal;
 		        if (isLatitude) {
@@ -422,7 +425,7 @@ public class Point implements Cloneable, Serializable {
 	public static Double parseLatitude(String string) throws ParseException{
 		CoordinateConverter converter = new CoordinateConverter();
 		ConversionResults result = converter.tryConvert(string);
-		if (! result.conversionSuccessful || result.isLongitude  ){
+		if (! result.conversionSuccessful || (result.isLongitude != null  && result.isLongitude)  ){
 			throw new ParseException("Latitude could not be parsed", 0);
 		}else{
 			return result.convertedCoord;
@@ -432,7 +435,7 @@ public class Point implements Cloneable, Serializable {
 	public static Double parseLongitude(String string) throws ParseException{
 		CoordinateConverter converter = new CoordinateConverter();
 		ConversionResults result = converter.tryConvert(string);
-		if (! result.conversionSuccessful || ! result.isLongitude){
+		if (! result.conversionSuccessful || (result.isLongitude != null  && ! result.isLongitude)){
 			throw new ParseException("Longitude could not be parsed", 0);
 		}else{
 			return result.convertedCoord;
