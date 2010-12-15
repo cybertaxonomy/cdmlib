@@ -192,7 +192,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					
 					int factId = rs.getInt("factId");
 					Object taxonIdObj = rs.getObject("taxonId");
-					int taxonId = rs.getInt("taxonId");
+					long taxonId = rs.getLong("taxonId");
 					Object factRefFkObj = rs.getObject("factRefFk");
 					Object categoryFkObj = rs.getObject("factCategoryFk");
 					Integer categoryFk = rs.getInt("factCategoryFk");
@@ -466,7 +466,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		return taxonDescription;
 	}
 
-	private TaxonBase getTaxon(Map<String, TaxonBase> taxonMap, Object taxonIdObj, Integer taxonId){
+	private TaxonBase getTaxon(Map<String, TaxonBase> taxonMap, Object taxonIdObj, Long taxonId){
 		if (taxonIdObj != null){
 			return taxonMap.get(String.valueOf(taxonId));
 		}else{
