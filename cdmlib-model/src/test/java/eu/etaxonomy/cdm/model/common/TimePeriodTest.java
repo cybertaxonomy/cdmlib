@@ -179,7 +179,7 @@ public class TimePeriodTest {
 		Assert.assertNotNull("Time period must be created",tp);
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void testSetStart(){
 		Partial startDate = new Partial().with(DateTimeFieldType.year(), 2010)
@@ -189,9 +189,9 @@ public class TimePeriodTest {
 		
 		String startString = tp.toString();
 		
-		Partial partial = new Partial().with(DateTimeFieldType.year(), 2010)
+		Partial partial = new Partial().with(DateTimeFieldType.year(), 1984)
 				.with(DateTimeFieldType.monthOfYear(), 12)
-				.with(DateTimeFieldType.dayOfMonth(), 15);
+				.with(DateTimeFieldType.dayOfMonth(), 14);
 		
 		tp.setStart(partial);
 		String changedString = tp.toString();
@@ -199,7 +199,7 @@ public class TimePeriodTest {
 		Assert.assertTrue("Setting the partial should change the string representation of the TimePeriod", !startString.equals(changedString));
 		
 		//
-		tp = TimePeriod.parseString("15.12.2010");
+		tp = TimePeriod.parseString("15.12.1730");
 		
 		startString = tp.toString();
 		tp.setStart(partial);
