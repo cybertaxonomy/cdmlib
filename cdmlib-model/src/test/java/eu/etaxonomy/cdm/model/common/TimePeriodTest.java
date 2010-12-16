@@ -23,6 +23,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -178,6 +179,35 @@ public class TimePeriodTest {
 		Assert.assertNotNull("Time period must be created",tp);
 	}
 
+	@Ignore
+	@Test
+	public void testSetStart(){
+		Partial startDate = new Partial().with(DateTimeFieldType.year(), 2010)
+				.with(DateTimeFieldType.monthOfYear(), 12)
+				.with(DateTimeFieldType.dayOfMonth(), 16);
+		TimePeriod tp = TimePeriod.NewInstance(startDate);
+		
+		String startString = tp.toString();
+		
+		Partial partial = new Partial().with(DateTimeFieldType.year(), 2010)
+				.with(DateTimeFieldType.monthOfYear(), 12)
+				.with(DateTimeFieldType.dayOfMonth(), 15);
+		
+		tp.setStart(partial);
+		String changedString = tp.toString();
+		
+		Assert.assertTrue("Setting the partial should change the string representation of the TimePeriod", !startString.equals(changedString));
+		
+		//
+		tp = TimePeriod.parseString("15.12.2010");
+		
+		startString = tp.toString();
+		tp.setStart(partial);
+		changedString = tp.toString();
+				
+		Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod	", !startString.equals(changedString));
+	}
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#TimePeriod(org.joda.time.Partial)}.
 	 */
