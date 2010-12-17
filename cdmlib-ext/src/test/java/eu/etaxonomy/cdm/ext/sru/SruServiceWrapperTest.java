@@ -39,7 +39,7 @@ public class SruServiceWrapperTest {
 // ******************************* TESTS ******************************************************/
 
 	@Test
-	@Ignore
+	@Ignore // ignore web accessing tests
 	public void testDoSearchRetrieve(){
 		
 		List<Reference> refList = sruServiceWrapper.doSearchRetrieve("pica.tit=\"Linnaei Species Plantarum Europae\"", "dc");

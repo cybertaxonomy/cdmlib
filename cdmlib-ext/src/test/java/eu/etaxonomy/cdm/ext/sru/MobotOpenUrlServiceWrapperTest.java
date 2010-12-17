@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlQuery;
@@ -41,6 +42,7 @@ public class MobotOpenUrlServiceWrapperTest {
 // ******************************* TESTS ******************************************************/
 
 	@Test
+	@Ignore // ignore web accessing tests
 	public void testDoResolveAndPage() {
 
 		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
