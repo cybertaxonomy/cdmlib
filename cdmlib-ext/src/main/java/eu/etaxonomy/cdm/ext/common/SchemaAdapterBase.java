@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.ext.common;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
@@ -41,6 +42,6 @@ public abstract class SchemaAdapterBase<T extends CdmBase> {
 	 * @param inputStream
 	 * @return
 	 */
-	public abstract List<T> getCmdEntities(InputStream inputStream);
+	public abstract List<T> getCmdEntities(InputStream inputStream) throws IOException;
 
 }

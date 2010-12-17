@@ -13,6 +13,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/FileCopy.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/IProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/NullProgressMonitor.java -text svneol=unset#text/plain
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/StreamUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/Tree.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/TreeNode.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/UriUtils.java -text
@@ -54,10 +55,15 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceAuthorConfigurator
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceConfiguratorBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceNamesConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServicePublicationConfigurator.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlQuery.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlResponseSchemaAdapter.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/OpenUrlReference.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/MobotOpenUrlServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text

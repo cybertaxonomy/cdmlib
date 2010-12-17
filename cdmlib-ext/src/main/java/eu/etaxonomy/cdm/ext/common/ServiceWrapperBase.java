@@ -23,6 +23,7 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -97,6 +98,18 @@ public class ServiceWrapperBase<T extends CdmBase> {
         	logger.error("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
         	return null;
         }
+	}
+	
+	public static void addNewPairNN(List<NameValuePair> listOfPairs, String name, String value){
+		if(value != null){
+			listOfPairs.add(new BasicNameValuePair(name, value));
+		}
+	}
+	
+	public static void addNewPairNN(List<NameValuePair> listOfPairs, String name, Object value){
+		if(value != null){
+			listOfPairs.add(new BasicNameValuePair(name, value.toString()));
+		}
 	}
 	
 

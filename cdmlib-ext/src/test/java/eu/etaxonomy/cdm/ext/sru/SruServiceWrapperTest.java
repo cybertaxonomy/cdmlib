@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
@@ -38,6 +39,7 @@ public class SruServiceWrapperTest {
 // ******************************* TESTS ******************************************************/
 
 	@Test
+	@Ignore
 	public void testDoSearchRetrieve(){
 		
 		List<Reference> refList = sruServiceWrapper.doSearchRetrieve("pica.tit=\"Linnaei Species Plantarum Europae\"", "dc");
