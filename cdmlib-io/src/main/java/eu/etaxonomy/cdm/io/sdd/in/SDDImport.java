@@ -140,7 +140,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Rights copyright = null;
 
-	private int taxonNamesCount = 0; //XIM ajout
+	private int taxonNamesCount = 0;
 	
 	public SDDImport(){
 		super();
