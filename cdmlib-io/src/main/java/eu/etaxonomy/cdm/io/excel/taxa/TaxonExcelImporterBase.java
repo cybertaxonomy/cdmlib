@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
  * @version 1.0
  */
 public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExcelImportState> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
 
 	/*
