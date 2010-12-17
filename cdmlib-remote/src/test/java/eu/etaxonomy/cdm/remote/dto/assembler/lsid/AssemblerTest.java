@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -159,7 +160,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		book.setPlacePublished("placePublished");
 		book.setPublisher("publisher");
 		book.setReferenceAbstract("referenceAbstract");
-		book.setUri("http://persitent.books.foo/myBook");
+		book.setUri(new URI("http://persitent.books.foo/myBook"));
 		book.setUuid(UUID.randomUUID());
 		book.setVolume("Volume 1");
 		book.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/1"));
@@ -172,7 +173,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		bookSection.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
 		bookSection.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
 		bookSection.setReferenceAbstract("referenceAbstract");
-		bookSection.setUri("http://persitent.books.foo/myBookSection");
+		bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
 		bookSection.setUuid(UUID.randomUUID());
 		bookSection.addCredit(Credit.NewInstance(authorTeam, "Credits to the authorTeam"));
 		bookSection.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/2"));
