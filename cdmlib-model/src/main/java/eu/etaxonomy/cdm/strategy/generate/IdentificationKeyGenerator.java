@@ -164,7 +164,7 @@ public class IdentificationKeyGenerator {
 			int i;
 			/************** either the feature supports quantitative data... **************/
 			// NB: in this version, "quantitative features" are dealt with in a dichotomous way
-			if (winnerFeature.isSupportsQuantitativeData()) {
+			if (winnerFeature!=null && winnerFeature.isSupportsQuantitativeData()) {
 				// first, get the threshold
 				float threshold = quantitativeFeaturesThresholds.get(winnerFeature);
 				String sign;
@@ -201,7 +201,7 @@ public class IdentificationKeyGenerator {
 			// "categorical features" may present several different states, each one of these might correspond to one child
 			List<State> statesDone = new ArrayList<State>(); // the list of states already used
 			int numberOfStates;
-			if (winnerFeature.isSupportsCategoricalData()) {
+			if (winnerFeature!=null && winnerFeature.isSupportsCategoricalData()) {
 				for (TaxonDescription td : taxaCovered){
 					DescriptionElementBase debConcerned = null;
 
@@ -276,10 +276,12 @@ public class IdentificationKeyGenerator {
 		// if the node is a leaf, the statement contains the list of taxa to which the current leaf leads.
 		if (!childrenExist){
 			KeyStatement fatherStatement = father.getStatement();
-			String statementString = fatherStatement.getLabelText(Language.DEFAULT());
-			if (statementString !=null && taxaCovered != null){
-				String label = statementString + " --> " + taxaCovered.toString();
-				fatherStatement.putLabel(label, Language.DEFAULT());
+			if (fatherStatement!=null){
+				String statementString = fatherStatement.getLabelText(Language.DEFAULT());
+				if (statementString !=null && taxaCovered != null){
+					String label = statementString + " --> " + taxaCovered.toString();
+					fatherStatement.putLabel(label, Language.DEFAULT());
+				}
 			}
 		}
 	}
