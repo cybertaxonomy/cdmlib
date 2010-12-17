@@ -970,7 +970,7 @@ public class DerivedUnitFacadeTest {
 		
 	}
 
-	@Ignore // set to ignore because I did not want to check knowingly failing tests. Remove @Ignore when this is fixed
+//	@Ignore // set to ignore because I did not want to check knowingly failing tests. Remove @Ignore when this is fixed
 	@Test
 	public void testSetBarcode(){
 		String barcode = "barcode";

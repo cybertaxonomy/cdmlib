@@ -1558,7 +1558,7 @@ public class DerivedUnitFacade {
 		return derivedUnit.getBarcode();
 	}
 	public void setBarcode(String barcode) {
-		derivedUnit.setCatalogNumber(barcode);
+		derivedUnit.setBarcode(barcode);
 	}
 
 	
