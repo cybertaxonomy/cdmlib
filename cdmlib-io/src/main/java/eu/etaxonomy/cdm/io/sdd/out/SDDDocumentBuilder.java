@@ -36,10 +36,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.api.service.DeltaTextDataProcessor;
-import eu.etaxonomy.cdm.api.service.INaturalLanguageTextDataProcessor;
-import eu.etaxonomy.cdm.api.service.MicroFormatCategoricalDescriptionBuilder;
-import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -202,7 +198,6 @@ public class SDDDocumentBuilder {
 
 	private static final Logger logger = Logger.getLogger(SDDDocumentBuilder.class);
 	
-	private boolean natlang = true; // Only for tests on natural language generation ; to be deleted after
 	private String NEWLINE = System.getProperty("line.separator");
 
 	public SDDDocumentBuilder() throws SAXException, IOException {
@@ -260,10 +255,6 @@ public class SDDDocumentBuilder {
 
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
-		if (natlang) {
-			buildIdentificationKey(baselement);
-		}
-		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		baselement.setAttribute("xmlns", "http://rs.tdwg.org/UBIF/2006/");
 		baselement.setAttribute("xsi:schemaLocation", "http://rs.tdwg.org/UBIF/2006 http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd");
@@ -279,92 +270,9 @@ public class SDDDocumentBuilder {
 				buildDataset(baselement, reference);
 			}
 		}
-		}
 		document.appendChild(baselement);
 	}
 	
-	// Only for tests on natural language generation ; to be deleted after
-	public void buildNaturalLanguageDescription(ElementImpl dataset) {
-		List<TextData> listTextData = null;
-		Set<TaxonDescription> descriptions = null;
-		TaxonDescription description = null;
-		FeatureTree featureTree = null;
-		
-		for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
-			VersionableEntity featu = cdmSource.getFeatureData().get(i);
-			if (featu instanceof FeatureTree){
-				FeatureTree ft = (FeatureTree) featu;
-				if (ft.getLabel().contains("Main")) {
-					featureTree = ft;
-				}
-			}
-		}
-		
-		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
-			Taxon taxon = (Taxon) tb.next();
-			//if (taxon.generateTitle().contains("Podospermum")) { // write the name (or part of the name) of the taxon you want to import the descriptions
-				descriptions = taxon.getDescriptions();
-				description = descriptions.iterator().next();
-				NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
-				Map<String,INaturalLanguageTextDataProcessor> processors = new HashMap<String,INaturalLanguageTextDataProcessor>();
-				processors.put("DiversityDescriptions",new DeltaTextDataProcessor());
-				natlgen.setElementProcessors(processors);
-				MicroFormatCategoricalDescriptionBuilder mfcdb = new MicroFormatCategoricalDescriptionBuilder();
-//				natlgen.setCategoricalDescriptionBuilder(mfcdb);
-//				String descriptionString = natlgen.generateStringNaturalLanguageDescription(featureTree, description, Language.DEFAULT());
-//				String descriptionString = natlgen.generateNaturalLanguageDescriptionStringTest(featureTree, description, Language.DEFAULT());
-				TextData descriptionTD = natlgen.generateSingleTextData(featureTree, description);
-//				System.out.println(taxon.generateTitle() + " : " + descriptionString);
-				System.out.println(taxon.generateTitle() + " : " + descriptionTD.getText(defaultLanguage));
-			//}
-		}
-		
-//		NaturalLanguageGenerator natlgen = new NaturalLanguageGenerator();
-//		String descriptionString = natlgen.generateStringNaturalLanguageDescription(featureTree, description, Language.DEFAULT());
-//		System.out.println(descriptionString);
-	}
-
-	// TO BE DELETED SOON
-	public void buildIdentificationKey(ElementImpl dataset) {
-		
-		FeatureTree featureTree=null;
-		for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
-			VersionableEntity featu = cdmSource.getFeatureData().get(i);
-			if (featu instanceof FeatureTree){
-				FeatureTree ft = (FeatureTree) featu;
-				if (ft.getLabel().contains("Ordre")) {
-					featureTree = ft;
-				}
-			}
-		}
-		
-		IdentificationKeyGenerator idkgen = new IdentificationKeyGenerator();
-		
-//		idkgen.setDependencies(featureTree);
-		
-		Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
-		List<Feature> featureList = new ArrayList<Feature>();
-		for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
-			Taxon taxon = (Taxon) tb.next();
-			for (TaxonDescription td : taxon.getDescriptions()){
-				descriptions.add(td);
-				for(DescriptionElementBase deb : td.getElements()){
-//				if (deb.isInstanceOf(CategoricalData.class)){
-					//CategoricalData catdat = (CategoricalData)deb;
-					Feature feat = deb.getFeature();
-					if (feat!=null && feat.getLabel()!=null && !featureList.contains(feat)){
-						featureList.add(feat);
-					}
-//				}
-				}
-			}
-		}
-		idkgen.setFeatures(featureList);
-		idkgen.setTaxa(descriptions);
-		logger.error("Start keys");
-		
-		idkgen.invoke();
-	}
 	//	#############
 	//	# BUILD DOM	#
 	//	#############	
@@ -969,7 +877,7 @@ public class SDDDocumentBuilder {
 	}
 
 	/**
-	 * Builds Measure associated with a Quantitative XIMCHECK
+	 * Builds Measure associated with a Quantitative
 	 */
 	public void buildMeasure(ElementImpl element, StatisticalMeasurementValue statisticalValue) throws ParseException {
 
