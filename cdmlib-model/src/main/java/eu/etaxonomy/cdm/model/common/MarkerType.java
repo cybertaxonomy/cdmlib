@@ -47,7 +47,8 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final UUID uuidComplete = UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433");
 	private static final UUID uuidPublish = UUID.fromString("0522c2b3-b21c-400c-80fc-a251c3501dbc");
 	private static final UUID uuidInBibliography = UUID.fromString("2cdb492e-3b8b-4784-8c26-25159835231d");
-
+	private static final UUID uuidEndemic = UUID.fromString("efe95ade-8a6c-4a0e-800e-437c8b50c45e");
+	
 	protected static Map<UUID, MarkerType> termMap = null;		
 
 	public static MarkerType NewInstance(String term, String label, String labelAbbrev){
@@ -144,6 +145,10 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	
 	public static final MarkerType IN_BIBLIOGRAPHY(){
 		return getTermByUuid(uuidInBibliography);
+	}
+
+	public static final MarkerType ENDEMIC(){
+		return getTermByUuid(uuidEndemic);
 	}
 	
 	@Override

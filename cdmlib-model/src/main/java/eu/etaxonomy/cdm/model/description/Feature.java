@@ -570,7 +570,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidIndividualsAssociation = UUID.fromString("e2308f37-ddc5-447d-b483-5e2171dd85fd");
 	private static final UUID uuidSpecimen = UUID.fromString("8200e050-d5fd-4cac-8a76-4b47afb13809");
 	private static final UUID uuidObservation = UUID.fromString("f59e747d-0b4f-4bf7-b69a-cbd50bc78595");
-	
+	private static final UUID uuidStatus = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
+	private static final UUID uuidSystematics = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
 	
 	/** 
 	 * Creates and returns a new feature instance on the basis of a given string
@@ -911,6 +912,21 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature OBSERVATION(){
 		return getTermByUuid(uuidObservation);
 	}
+
+	/**
+	 * The status of a taxon. Usually the status should be determined within a {@link Distribution distribution}.
+	 * If this is not possible for some reason (e.g. the area is not well defined) the status feature
+	 * may be used.
+	 * @return
+	 */
+	public static final Feature STATUS(){
+		return getTermByUuid(uuidStatus);
+	}
+
+	public static final Feature SYSTEMATICS(){
+		return getTermByUuid(uuidSystematics);
+	}
+	
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
 	 * by {@link TaxonInteraction taxon interactions}.<BR>
