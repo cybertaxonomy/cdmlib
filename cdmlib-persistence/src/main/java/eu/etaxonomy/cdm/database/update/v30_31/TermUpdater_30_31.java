@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v25_30.TermUpdater_25_30;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
@@ -56,19 +58,70 @@ public class TermUpdater_30_31 extends TermUpdaterBase implements ITermUpdater {
 	protected List<ITermUpdaterStep> getUpdaterList() {
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
 
-	
+		String description;
+		String label;
+		String abbrev;
+		String dtype;
+		boolean isOrdered;
+		UUID uuidVocabulary;
+		UUID uuidAfterTerm;
+		UUID uuidLang;
+		String stepName;
+		
 		// [unranked]
 		UUID uuidTerm = UUID.fromString("a965befb-70a9-4747-a18f-624456c65223");
-		String description = "Unranked Rank: The name on purpose has no rank";
-		String label = "Unranked";
-		String abbrev = "[unranked]";
-		String dtype = Rank.class.getSimpleName();
-		boolean isOrdered = true;
-		UUID uuidVocabulary = UUID.fromString("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b");
-		UUID uuidAfterTerm = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
-		UUID uuidLang = Language.uuidEnglish;
-		list.add( SingleTermUpdater.NewInstance("Add 'unranked' rank to ranks", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+		description = "Unranked Rank: The name on purpose has no rank";
+		label = "Unranked";
+		abbrev = "[unranked]";
+		dtype = Rank.class.getSimpleName();
+		isOrdered = true;
+		uuidVocabulary = UUID.fromString("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b");
+		uuidAfterTerm = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'unranked' rank to ranks";
+		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
 
+		// endemic
+		uuidTerm = UUID.fromString("efe95ade-8a6c-4a0e-800e-437c8b50c45e");
+		description = "endemic";
+		label = "endemic";
+		abbrev = "endemic";
+		dtype = MarkerType.class.getSimpleName();
+		isOrdered = false;
+		uuidVocabulary = UUID.fromString("19dffff7-e142-429c-a420-5d28e4ebe305");
+		uuidAfterTerm = null;//UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'endemic' rank to ranks";
+		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+
+		// status feature
+		uuidTerm = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
+		description = "Status";
+		label = "Status";
+		abbrev = "Status";
+		dtype = Feature.class.getSimpleName();
+		isOrdered = false;
+		uuidVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
+		uuidAfterTerm = null;//UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'status' feature to features";
+		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+
+		// systematics feature
+		uuidTerm = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
+		description = "Systematics";
+		label = "Systematics";
+		abbrev = "Systematics";
+		dtype = Feature.class.getSimpleName();
+		isOrdered = false;
+		//TODO is this a name feature or a taxon feature
+		uuidVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
+		uuidAfterTerm = null;//UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'systematics' feature to features";
+		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+
+		
 		//language labels
 		LanguageLabelUpdater langLabelUpdater = LanguageLabelUpdater.NewInstance();
 		list.add(langLabelUpdater);
