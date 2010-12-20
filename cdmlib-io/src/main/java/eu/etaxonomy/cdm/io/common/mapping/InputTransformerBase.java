@@ -112,5 +112,22 @@ public class InputTransformerBase implements IInputTransformer {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getPresenceTermByKey(java.lang.String)
+	 */
+	public NameTypeDesignationStatus getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
+		String warning = "getPresenceTermByKey is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getPresenceTermUuid(java.lang.String)
+	 */
+	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getPresenceTermUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
+	
 	
 }

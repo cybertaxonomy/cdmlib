@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 
 
 /**
+ * Interface for import and export transformer classes. Mainly to transform defined terms.
  * @author a.mueller
  * @created 15.03.2010
  * @version 1.0
@@ -51,5 +52,10 @@ public interface IInputTransformer {
 	
 	public UUID getNameTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException;
  
+	
+	//Prsence Term
+	public NameTypeDesignationStatus getPresenceTermByKey(String key) throws UndefinedTransformerMethodException;
+
+	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException;	
 	
 }
