@@ -32,7 +32,15 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 	 * @param destination
 	 */
 	protected ExcelImportConfiguratorBase(URI uri, ICdmDataSource destination) {
-		super(defaultTransformer);
+		this(uri, destination, defaultTransformer);
+	}
+	
+	/**
+	 * @param url
+	 * @param destination
+	 */
+	protected ExcelImportConfiguratorBase(URI uri, ICdmDataSource destination, IInputTransformer transformer) {
+		super(transformer);
 		setSource(uri);
 		setDestination(destination);
 	}

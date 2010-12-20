@@ -76,6 +76,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
+		
+		if (getTransformer() == null){
+			IInputTransformer newTransformer = config.getTransformer();
+//			if (newTransformer == null){
+//				newTransformer = new DefaultTransf();
+//			}
+			setTransformer(newTransformer);
+		}
 	}
 	
 	//different type of stores that are used by the known imports
