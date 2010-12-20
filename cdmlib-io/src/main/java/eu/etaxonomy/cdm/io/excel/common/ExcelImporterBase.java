@@ -77,7 +77,11 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState> extends 
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
     			success = analyzeRecord(record, state);
-    			success = firstPass(state);
+    			try {
+					success = firstPass(state);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
     		}
     		//second pass
     		for (int i = 0; i < recordList.size(); i++) {

@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -232,6 +233,36 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putFeature(feature);
 		}
 		return feature;
+	}
+	
+	/**
+	 * Returns a presence term for a given uuid by first ...
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected PresenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		if (uuid == null){
+			return null;
+		}
+		PresenceTerm presenceTerm = state.getPresenceTerm(uuid);
+		if (presenceTerm == null){
+			presenceTerm = (PresenceTerm)getTermService().find(uuid);
+			if (presenceTerm == null){
+				presenceTerm = PresenceTerm.NewInstance(text, label, labelAbbrev);
+				presenceTerm.setUuid(uuid);
+				//set vocabulary ; FIXME use another user-defined vocabulary
+				UUID uuidPresenceVoc = UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05"); 
+				TermVocabulary<PresenceTerm> voc = getVocabularyService().find(uuidPresenceVoc);
+				voc.addTerm(presenceTerm);
+				getTermService().save(presenceTerm);
+			}
+			state.putPresenceTerm(presenceTerm);
+		}
+		return presenceTerm;
 	}
 
 	/**

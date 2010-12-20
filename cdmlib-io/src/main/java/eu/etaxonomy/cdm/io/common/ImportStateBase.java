@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -58,6 +59,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
+	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
 	
 
@@ -205,6 +207,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public void putFeature(Feature feature){
 		featureMap.put(feature.getUuid(), feature);
+	}
+	
+	public PresenceTerm getPresenceTerm(UUID uuid){
+		return presenceTermMap.get(uuid);
+	}
+	
+	public void putPresenceTerm(PresenceTerm presenceTerm){
+		presenceTermMap.put(presenceTerm.getUuid(), presenceTerm);
 	}
 
 	public Language getLanguage(UUID uuid){
