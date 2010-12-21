@@ -248,12 +248,24 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 
+	
+	private class DeduplicateState{
+		String lastTitleCache;
+		Integer pageSize = 50;
+		int nPages = 3;
+		int startPage = 0;
+		boolean isCompleted = false;
+		int result; 
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#deduplicate(java.lang.Class, eu.etaxonomy.cdm.strategy.match.IMatchStrategy, eu.etaxonomy.cdm.strategy.merge.IMergeStrategy)
 	 */
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+		DeduplicateState dedupState = new DeduplicateState();
+		
 		if (clazz == null){
 			logger.warn("Deduplication clazz must not be null!");
 			return 0;
@@ -266,36 +278,62 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		if (matchStrategy == null){
 			matchStrategy = DefaultMatchStrategy.NewInstance(matchableClass);
 		}
-
-		int result = 0;
-		double countTotal = count(clazz);
-		Integer pageSize = 1000;
 		List<T> nextGroup = new ArrayList<T>();
-		String lastTitleCache = null;
 		
-		Number countPagesN = Math.ceil(countTotal/pageSize.doubleValue()) ; 
-		int countPages = countPagesN.intValue();
+		int result = 0;
+//		double countTotal = count(clazz);
+//		
+//		Number countPagesN = Math.ceil(countTotal/dedupState.pageSize.doubleValue()) ; 
+//		int countPages = countPagesN.intValue();
+//		
 		
-		//TODO test paging 
-		for (int i = 0; i< countPages ; i++){
-			List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", SortOrder.ASCENDING)});
-			List<T> objectList = listByTitle(clazz, null, null, null, pageSize, i, orderHints, null);
+		List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", SortOrder.ASCENDING)});
 		
-			for (T object : objectList){
-				String currentTitleCache = object.getTitleCache();
-				if (currentTitleCache != null && currentTitleCache.equals(lastTitleCache)){
-					//=titleCache
-					nextGroup.add(object);
-				}else{
-					//<> titleCache
-					result += handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
-					nextGroup = new ArrayList<T>();
-					nextGroup.add(object);
-				}
-				lastTitleCache = currentTitleCache;
-			}
+		while (! dedupState.isCompleted){
+			//get x page sizes
+			List<T> objectList = getPages(clazz, dedupState, orderHints);
+			//after each page check if any changes took place
+			int nUnEqualPages = handleAllPages(objectList, dedupState, nextGroup, matchStrategy, mergeStrategy);
+			nUnEqualPages = nUnEqualPages + dedupState.pageSize * dedupState.startPage;
+			//refresh start page counter
+			int finishedPages = nUnEqualPages / dedupState.pageSize;
+			dedupState.startPage = finishedPages;
 		}
+				
 		result += handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
+		return result;
+	}
+
+
+	private int handleAllPages(List<T> objectList, DeduplicateState dedupState, List<T> nextGroup, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+		int nUnEqual = 0;
+		for (T object : objectList){
+			String currentTitleCache = object.getTitleCache();
+			if (currentTitleCache != null && currentTitleCache.equals(dedupState.lastTitleCache)){
+				//=titleCache
+				nextGroup.add(object);
+			}else{
+				//<> titleCache
+				dedupState.result += handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
+				nextGroup = new ArrayList<T>();
+				nextGroup.add(object);
+				nUnEqual++;	
+			}
+			dedupState.lastTitleCache = currentTitleCache;
+		}
+		handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
+		return nUnEqual;
+	}
+
+	private List<T> getPages(Class<? extends T> clazz, DeduplicateState dedupState, List<OrderHint> orderHints) {
+		List<T> result = new ArrayList<T>();
+		for (int pageNo = dedupState.startPage; pageNo < dedupState.startPage + dedupState.nPages; pageNo++){
+			List<T> objectList = listByTitle(clazz, null, null, null, dedupState.pageSize, pageNo, orderHints, null);
+			result.addAll(objectList);
+		}
+		if (result.size()< dedupState.nPages * dedupState.pageSize ){
+			dedupState.isCompleted = true;
+		}
 		return result;
 	}
 
