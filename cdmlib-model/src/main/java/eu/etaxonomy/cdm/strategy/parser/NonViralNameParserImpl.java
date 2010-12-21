@@ -746,6 +746,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		// OLD: fullName = oWsRE.subst(fullName, " "); //substitute multiple whitespaces		   
 		fullNameString = fullNameString.trim();
 		
+		fullNameString = removeHybridBlanks(fullNameString);
 		String[] epi = pattern.split(fullNameString);
 		try {
 	    	//cultivars //TODO 2 implement cultivars
@@ -754,17 +755,17 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 //		    }
 		    //hybrids //TODO 2 implement hybrids
 		    //else 
-		    if (hybridPattern.matcher(fullNameString).matches() ){
-		    	nameToBeFilled = parseHybrid(fullNameString);
-		    }
-		    else if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
+//		    if (hybridPattern.matcher(fullNameString).find() ){
+//		    	parseHybrid(nameToBeFilled, fullNameString, rank, makeEmpty);
+//		    } else 
+		      if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
 		    	//supraGeneric
 				if (rank != null && ! hasCheckRankProblem  && (rank.isSupraGeneric()|| rank.isGenus())){
 					nameToBeFilled.setRank(rank);
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 				} 
-				//genus or guess rank
-				else {
+				 //genus or guess rank
+				 else {
 					rank = guessUninomialRank(nameToBeFilled, epi[0]); 
 					nameToBeFilled.setRank(rank);
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -774,28 +775,28 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				}
 				authorString = fullNameString.substring(epi[0].length());
 			}
-			//infra genus
-			else if (infraGenusPattern.matcher(fullNameString).matches()){
+			 //infra genus
+			 else if (infraGenusPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[1]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setInfraGenericEpithet(epi[2]);
 				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length()+ 1 + epi[2].length());
 			}
-			//aggr. or group
-			else if (aggrOrGroupPattern.matcher(fullNameString).matches()){
+			 //aggr. or group
+			 else if (aggrOrGroupPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 			}
-			//species
-			else if (speciesPattern.matcher(fullNameString).matches()){
+			 //species
+			 else if (speciesPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.SPECIES());
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length());
 			}
-			//autonym
-			else if (autonymPattern.matcher(fullNameString).matches()){
+			 //autonym
+			 else if (autonymPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[epi.length - 2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
@@ -804,8 +805,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				int lenInfraSpecies =  2 + epi[epi.length - 2].length() + epi[epi.length - 1].length();
 				authorString = fullNameString.substring(lenSpecies, fullNameString.length() - lenInfraSpecies);
 			}
-			//infraSpecies
-			else if (infraSpeciesPattern.matcher(fullNameString).matches()){
+			 //infraSpecies
+			 else if (infraSpeciesPattern.matcher(fullNameString).matches()){
 				String infraSpecRankEpi = epi[2];
 				String infraSpecEpi = epi[3];
 				if ("tax.".equals(infraSpecRankEpi)){
@@ -818,7 +819,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				nameToBeFilled.setInfraSpecificEpithet(infraSpecEpi);
 				authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecRankEpi.length() + 1 + infraSpecEpi.length());
 			}//old infraSpecies
-			else if (oldInfraSpeciesPattern.matcher(fullNameString).matches()){
+			 else if (oldInfraSpeciesPattern.matcher(fullNameString).matches()){
 				boolean implemented = false;
 				if (implemented){
 					nameToBeFilled.setRank(Rank.getRankByNameOrAbbreviation(epi[2]));
@@ -844,6 +845,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				// END
 				logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");
 		    }
+		    //hybrid bits	
+		    handleHybridBits(nameToBeFilled);
 			//authors
 		    if (nameToBeFilled != null && StringUtils.isNotBlank(authorString) ){ 
 				handleAuthors(nameToBeFilled, fullNameString, authorString);
@@ -863,6 +866,47 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			//return result;
 			return;
 		}
+	}
+
+	private void handleHybridBits(NonViralName nameToBeFilled) {
+		//uninomial
+		String uninomial = CdmUtils.Nz(nameToBeFilled.getGenusOrUninomial());
+		boolean isUninomialHybrid = uninomial.startsWith(hybridSign);
+		if (isUninomialHybrid){
+			nameToBeFilled.setMonomHybrid(true);
+			nameToBeFilled.setGenusOrUninomial(uninomial.replace(hybridSign, ""));
+		}
+		//infrageneric
+		String infrageneric = CdmUtils.Nz(nameToBeFilled.getInfraGenericEpithet());
+		boolean isInfraGenericHybrid = infrageneric.startsWith(hybridSign);
+		if (isInfraGenericHybrid){
+			nameToBeFilled.setBinomHybrid(true);
+			nameToBeFilled.setInfraGenericEpithet(infrageneric.replace(hybridSign, ""));
+		}
+		//species Epi
+		String speciesEpi = CdmUtils.Nz(nameToBeFilled.getSpecificEpithet());
+		boolean isSpeciesHybrid = speciesEpi.startsWith(hybridSign);
+		if (isSpeciesHybrid){
+			if (StringUtils.isBlank(infrageneric)){
+				nameToBeFilled.setBinomHybrid(true);
+			}else{
+				nameToBeFilled.setTrinomHybrid(true);
+			}
+			nameToBeFilled.setSpecificEpithet(speciesEpi.replace(hybridSign, ""));
+		}
+		//infra species
+		String infraSpeciesEpi = CdmUtils.Nz(nameToBeFilled.getInfraSpecificEpithet());
+		boolean isInfraSpeciesHybrid = infraSpeciesEpi.startsWith(hybridSign);
+		if (isInfraSpeciesHybrid){
+			nameToBeFilled.setTrinomHybrid(true);
+			nameToBeFilled.setInfraSpecificEpithet(infraSpeciesEpi.replace(hybridSign, ""));
+		}
+		
+	}
+
+	private String removeHybridBlanks(String fullNameString) {
+		fullNameString = fullNameString.replaceAll(hybridFull, " "+hybridSign).trim();
+		return fullNameString;
 	}
 
 	/**
@@ -1002,7 +1046,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 		}else {
 			//TODO
-			logger.warn ("not yet implemented");
+			logger.warn ("Full author String parsable only for defined BotanicalNames or ZoologicalNames but this is " + clazz.getSimpleName());
 			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
 		}
 		fullAuthorsChecked(fullAuthorString, authors, years);
@@ -1131,13 +1175,53 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	
 
 	//Parsing of the given full name that has been identified as hybrid already somewhere else.
-	private BotanicalName parseHybrid(String fullName){
+	private void parseHybrid(NonViralName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty){
 	    logger.warn("parseHybrid --> function not yet implemented");
-	    BotanicalName result = BotanicalName.NewInstance(null);
-	    result.setTitleCache(fullName,true);
-	    return result;
+	    
+//	    String nonHybridName  = fullNameString;
+//	    boolean isMonomHybrid = isMonomHybrid(fullNameString);
+//	    if (isMonomHybrid){
+//	    	nonHybridName.replaceAll(hybrid, "");
+//	    }
+//	    
+//	    String[] split = nonHybridName.split("\\s");
+//	    parseFullName(nameToBeFilled, nonHybridName, rank, makeEmpty);
+//	    
+//	    nonHybridName = nonHybridName.replaceAll(hybrid, " ");
+//
+//	    boolean isBinomHybrid = isBinomHybrid(split);
+////	    boolean isTrinomHybrid = isTrinomHybrid(split);
+//	    
+//	    nonHybridName = nonHybridName.replaceAll(hybrid, " ");
+//	     
+//	    parseFullName(nameToBeFilled, nonHybridName, rank, makeEmpty);
+//	    nameToBeFilled.getTitleCache();
+//	    nameToBeFilled.setMonomHybrid(isMonomHybrid);
+//	    nameToBeFilled.setBinomHybrid(isBinomHybrid);
+//	    nameToBeFilled.setBinomHybrid(isTrinomHybrid);
+	    
+	    nameToBeFilled.setTitleCache(fullNameString,true);
+	    return;
     }
 	
+//	private boolean isBinomHybrid(String[] split) {
+//		if (){
+//			
+//		}
+//		return false;
+//	}
+
+	private boolean isMonomHybrid(String fullNameString) {
+		Matcher matcher = hybridPattern.matcher(fullNameString);
+		boolean find = matcher.find();
+		int start = matcher.start();
+		if (find == true && start == 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 //	// Parsing of the given full name that has been identified as a cultivar already somwhere else.
 //	// The ... cv. ... syntax is not covered here as it is not according the rules for naming cultivars.
 	public BotanicalName parseCultivar(String fullName)	throws StringNotParsableException{

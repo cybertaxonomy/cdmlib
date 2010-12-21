@@ -22,13 +22,15 @@ import org.apache.log4j.Logger;
 public abstract class NonViralNameParserImplRegExBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImplRegExBase.class);
-	
+
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
     
     //splitter
     protected static String epiSplitter = "(\\s+|\\(|\\))"; //( ' '+| '(' | ')' )
     protected static Pattern pattern = Pattern.compile(epiSplitter); 
-    
+
+	public static final String hybridSign = "\u00D7";
+
     //some useful non-terminals
     protected static String pStart = "^";
     protected static String end = "$";
@@ -231,14 +233,16 @@ public abstract class NonViralNameParserImplRegExBase  {
     //cultivars and hybrids
     protected static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
     protected static String cultivarMarker = oWs + "(cv.|')";
-    protected static String hybrid = oWs + "((x|X)" + oWs + "|notho)";//= ( x )|( X )|( notho)
+    protected static String hybridPart = "((x|X)" + oWs + "|"+hybridSign+"|notho)";
+    protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + hybridPart;
+    
     
     //  Name String
-    protected static String genusOrSupraGenus = capitalEpiWord;
+    protected static String genusOrSupraGenus = "("+hybridFull+")?" + capitalEpiWord;
     protected static String infraGenus = capitalEpiWord + oWs + InfraGenusMarker + oWs + capitalEpiWord;
     protected static String aggrOrGroup = capitalEpiWord + oWs + nonCapitalEpiWord + oWs + aggrOrGroupMarker;
-    protected static String species = capitalEpiWord + oWs +  nonCapitalEpiWord;
-    protected static String infraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + infraSpeciesMarker + oWs + nonCapitalEpiWord;
+    protected static String species = genusOrSupraGenus + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
+    protected static String infraSpecies = species + oWs + infraSpeciesMarker + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
     protected static String oldInfraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + oldInfraSpeciesMarker + oWs + nonCapitalEpiWord;
     protected static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same 
     //autonym pattern used within anyBotanicalFullName pattern
@@ -257,7 +261,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern teamSplitterPattern = Pattern.compile(teamSplitter);
     protected static Pattern cultivarPattern = Pattern.compile(cultivar);
     protected static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
-    protected static Pattern hybridPattern = Pattern.compile(hybrid); 
+    protected static Pattern hybridPattern = Pattern.compile(hybridFull); 
     
     protected static Pattern genusOrSupraGenusPattern = Pattern.compile(pStart + genusOrSupraGenus + facultFullAuthorString2 + end);
     protected static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);

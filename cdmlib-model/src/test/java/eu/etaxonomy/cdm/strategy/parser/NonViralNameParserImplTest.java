@@ -87,12 +87,6 @@ public class NonViralNameParserImplTest {
 		termInitializer.initialize();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -103,12 +97,6 @@ public class NonViralNameParserImplTest {
 		botanicCode = NomenclaturalCode.ICBN;
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 
 /*************** TEST *********************************************/
 	
@@ -284,6 +272,43 @@ public class NonViralNameParserImplTest {
 		BotanicalName authorname = (BotanicalName)parser.parseFullName(fullNameString);
 		assertFalse(authorname.hasProblem());
 		assertEquals("Basionym author should have 3 authors", 3, ((Team)authorname.getExBasionymAuthorTeam()).getTeamMembers().size());
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
+	 */
+	@Test
+	public final void testHybrids() {
+		try {
+			Method parseMethod = parser.getClass().getDeclaredMethod("parseFullName", String.class, NomenclaturalCode.class, Rank.class);
+			testName_StringNomcodeRank(parseMethod);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		
+		//Species hybrid
+//		NonViralName nameTeam1 = parser.parseFullName("Aegilops ×insulae-cypri H. Scholz");
+		NonViralName name1 = parser.parseFullName("Aegilops ×insulae Scholz", botanicCode, null);
+		assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
+		assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
+		assertFalse("Name must not have trinom hybrid bit set", name1.isTrinomHybrid());
+		assertEquals("Species epithet must be 'insulae'", "insulae", name1.getSpecificEpithet());
+		
+		//Uninomial hybrid
+		name1 = parser.parseFullName("x Aegilops Scholz", botanicCode, null);
+		assertTrue("Name must have monom hybrid bit set", name1.isMonomHybrid());
+		assertFalse("Name must not have binom hybrid bit set", name1.isBinomHybrid());
+		assertFalse("Name must not have trinom hybrid bit set", name1.isTrinomHybrid());
+		assertEquals("Uninomial must be 'Aegilops'", "Aegilops", name1.getGenusOrUninomial());
+
+		//Species hybrid
+		name1 = parser.parseFullName("Aegilops insulae subsp. X abies Scholz", botanicCode, null);
+		assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
+		assertFalse("Name must not have binom hybrid bit set", name1.isBinomHybrid());
+		assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
+		assertEquals("Infraspecific epithet must be 'abies'", "abies", name1.getInfraSpecificEpithet());
+
 	}
 	
 	private void testName_StringNomcodeRank(Method parseMethod) 
@@ -746,6 +771,8 @@ public class NonViralNameParserImplTest {
 		assertTrue("Name with apostrophe is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
 
 	}
+	
+	
 	
 	/**
 	 * @param testParsable

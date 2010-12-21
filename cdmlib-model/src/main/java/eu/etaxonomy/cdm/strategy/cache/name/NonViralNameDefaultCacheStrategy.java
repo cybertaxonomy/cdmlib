@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
 
 /**
@@ -506,8 +507,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	
 		protected String getGenusOrUninomialNameCache(NonViralName nonViralName){
 			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
+			result = getUninomialPart(nonViralName);
 			result = addAppendedPhrase(result, nonViralName).trim();
+			return result;
+		}
+
+
+		private String getUninomialPart(NonViralName nonViralName) {
+			String result;
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
+			if (nonViralName.isMonomHybrid()){
+				result = NonViralNameParserImplRegExBase.hybridSign + result; 
+			}
 			return result;
 		}
 		
@@ -525,7 +536,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 					infraGenericMarker = "'unhandled infrageneric rank'";
 				}
 			}
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
+			result = getUninomialPart(nonViralName);
 			result += " " + infraGenericMarker + " " + (CdmUtils.Nz(nonViralName.getInfraGenericEpithet())).trim().replace("null", "");
 			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
@@ -567,7 +578,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			if (includeMarker){ 
 				result += " " + (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
 			}
-			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim().replace("null", "");
+			String infrSpecEpi = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet());
+			if (nonViralName.isTrinomHybrid()){
+				infrSpecEpi = NonViralNameParserImplRegExBase.hybridSign + infrSpecEpi; 
+			}
+			result += " " + (infrSpecEpi).trim().replace("null", "");
 			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
 		}
@@ -575,11 +590,25 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 		private String getGenusAndSpeciesPart(NonViralName nonViralName) {
 			String result;
-			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
-			if (StringUtils.isNotBlank(nonViralName.getInfraGenericEpithet()) ){
-				result += " (" + nonViralName.getInfraGenericEpithet().trim() + ")";
+			//Uninomial
+			result = getUninomialPart(nonViralName);
+			
+			//InfraGenericEpi
+			boolean hasInfraGenericEpi = StringUtils.isNotBlank(nonViralName.getInfraGenericEpithet());
+			if (hasInfraGenericEpi){
+				String infrGenEpi = nonViralName.getInfraGenericEpithet().trim();
+				if (nonViralName.isBinomHybrid()){
+					infrGenEpi = NonViralNameParserImplRegExBase.hybridSign + infrGenEpi; 
+				}
+				result += " (" + infrGenEpi + ")";
 			}
-			result += " " + (CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim()).replace("null", "");
+			//Species Epi
+			String specEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim();
+			if (! hasInfraGenericEpi && nonViralName.isBinomHybrid() || 
+					hasInfraGenericEpi && nonViralName.isTrinomHybrid()){
+				specEpi = NonViralNameParserImplRegExBase.hybridSign +  specEpi; 
+			}
+			result += " " + (specEpi).replace("null", "");
 			return result;
 		}
 
