@@ -86,6 +86,21 @@ public class User extends CdmBase implements UserDetails {
 		return user;
 	}
 	
+	public static User NewInstance(String personTitle, String username, String pwd){
+		User user = new User();
+		user.setUsername(username);
+		user.setPassword(pwd);
+		
+		user.setAccountNonExpired(true);
+		user.setAccountNonLocked(true);
+		user.setCredentialsNonExpired(true);
+		user.setEnabled(true);
+		Person userPerson = Person.NewTitledInstance(personTitle);
+		user.setPerson(userPerson);
+		
+		return user;
+	}
+	
 	@XmlElement(name = "Username")
 	@NaturalId
 	@Field(index = Index.UN_TOKENIZED)
