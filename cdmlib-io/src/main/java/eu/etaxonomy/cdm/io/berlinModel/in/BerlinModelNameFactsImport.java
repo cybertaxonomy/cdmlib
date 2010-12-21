@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_ALSO_PUBLISHED_IN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_PROTOLOGUE;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_BIBLIOGRAPHY;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -143,7 +146,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							success = false;
 						}						
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
-						if (! nameFact.equals("")){
+						if (StringUtils.isNotBlank(nameFact)){
 							TaxonNameDescription description = TaxonNameDescription.NewInstance();
 							TextData additionalPublication = TextData.NewInstance(Feature.ADDITIONAL_PUBLICATION());
 							//TODO language
@@ -152,6 +155,18 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							additionalPublication.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
 									nameFactRefDetail, null, null);
 							description.addElement(additionalPublication);
+							taxonNameBase.addDescription(description);
+						}
+					}else if (category.equalsIgnoreCase(NAME_FACT_BIBLIOGRAPHY)){
+						if (StringUtils.isNotBlank(nameFact)){
+							TaxonNameDescription description = TaxonNameDescription.NewInstance();
+							TextData bibliography = TextData.NewInstance(Feature.CITATION());
+							//TODO language
+							Language language = Language.DEFAULT();
+							bibliography.putText(nameFact, language);
+							bibliography.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
+									nameFactRefDetail, null, null);
+							description.addElement(bibliography);
 							taxonNameBase.addDescription(description);
 						}
 					}else {

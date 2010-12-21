@@ -113,6 +113,7 @@ public final class BerlinModelTransformer {
 	//NameFacts
 	public static String NAME_FACT_PROTOLOGUE = "Protologue";
 	public static String NAME_FACT_ALSO_PUBLISHED_IN = "Also published in";
+	public static String NAME_FACT_BIBLIOGRAPHY = "Bibliography";
 	
 	//TaxonRelationShip
 	public static int TAX_REL_IS_INCLUDED_IN = 1;
