@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-
 
 /**
  * @author a.mueller
