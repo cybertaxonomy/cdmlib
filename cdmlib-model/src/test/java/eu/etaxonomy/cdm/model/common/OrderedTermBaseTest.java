@@ -76,9 +76,15 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		//TODO assertEquals("term", otb2.getD);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public final void testCompareTo() {
+		//since an exception is thrown when comparing OrderedTermBase that do not belong
+		//to the same vocabulary this dummy vocabulary is added
+		OrderedTermVocabulary voc = new OrderedTermVocabulary();
+		otb1.vocabulary = voc;
+		otb2.vocabulary = voc;
+		otb3.vocabulary = voc;
+		
 		int comp = otb1.compareTo(otb2);
 		assertTrue("expected:  1 > 4", comp > 0  );
 		assertTrue("expected:  1 = 1", otb1.compareTo(otb1) == 0  );

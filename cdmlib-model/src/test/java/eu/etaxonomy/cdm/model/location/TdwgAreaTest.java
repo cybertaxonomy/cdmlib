@@ -11,25 +11,23 @@ package eu.etaxonomy.cdm.model.location;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.common.Tree;
-import eu.etaxonomy.cdm.common.TreeNode;
-import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author a.mueller
@@ -45,13 +43,7 @@ public class TdwgAreaTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+		new DefaultTermInitializer().initialize();
 	}
 
 	/**
@@ -60,23 +52,18 @@ public class TdwgAreaTest {
 	@Before
 	public void setUp() throws Exception {
 	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
+	
+// ************** TESTS *************************************************	
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.location.TdwgArea#getAreaByTdwgAbbreviation(java.lang.String)}.
 	 */
 	@Test
 	public void testGetAreaByTdwgAbbreviation() {
-//		Language.ENGLISH(); // to make sure Terms are already loaded
-//		NamedArea area = TdwgArea.getAreaByTdwgAbbreviation("GER");
-//		Assert.assertEquals("Germany", area.getLabel(Language.ENGLISH()));
-//		Assert.assertNull(TdwgArea.getAreaByTdwgAbbreviation("A1R"));
+		Language.ENGLISH(); // to make sure Terms are already loaded
+		NamedArea area = TdwgArea.getAreaByTdwgAbbreviation("GER");
+		Assert.assertEquals("Germany", area.getLabel(Language.ENGLISH()));
+		Assert.assertNull(TdwgArea.getAreaByTdwgAbbreviation("A1R"));
 	}
 
 	/**
@@ -84,8 +71,8 @@ public class TdwgAreaTest {
 	 */
 	@Test
 	public void testGetAreaByTdwgLabel() {
-//		Assert.assertEquals("Germany", TdwgArea.getAreaByTdwgLabel("Germany").getLabel(Language.ENGLISH()));
-//		Assert.assertNull(TdwgArea.getAreaByTdwgLabel("A1R"));
+		Assert.assertEquals("Germany", TdwgArea.getAreaByTdwgLabel("Germany").getLabel(Language.ENGLISH()));
+		Assert.assertNull(TdwgArea.getAreaByTdwgLabel("A1R"));
 	}
 
 	/**
@@ -93,8 +80,8 @@ public class TdwgAreaTest {
 	 */
 	@Test
 	public void testIsTdwgAreaLabel() {
-//		Assert.assertTrue(TdwgArea.isTdwgAreaLabel("Germany"));
-//		Assert.assertFalse(TdwgArea.isTdwgAreaLabel("sf2fe"));
+		Assert.assertTrue(TdwgArea.isTdwgAreaLabel("Germany"));
+		Assert.assertFalse(TdwgArea.isTdwgAreaLabel("sf2fe"));
 	}
 
 	/**
@@ -102,43 +89,43 @@ public class TdwgAreaTest {
 	 */
 	@Test
 	public void testAddTdwgArea() {
-//		String testAreaLabel = "TestArea";
-//		Assert.assertFalse(TdwgArea.isTdwgAreaLabel(testAreaLabel));
-//		NamedArea area = NamedArea.NewInstance("", testAreaLabel, "");
-//		TdwgArea.addTdwgArea(area);
-//		Field labelMapField = null;
-//		try {
-//			labelMapField = TdwgArea.class.getDeclaredField("labelMap");
-//			labelMapField.setAccessible(true);
-//			Object obj = labelMapField.get(null);
-//			Map<String, UUID> map = (Map<String, UUID>)obj;
-//			Assert.assertEquals(area.getUuid(), map.get(testAreaLabel));
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		String testAreaLabel = "TestArea";
+		Assert.assertFalse(TdwgArea.isTdwgAreaLabel(testAreaLabel));
+		NamedArea area = NamedArea.NewInstance("", testAreaLabel, "");
+		TdwgArea.addTdwgArea(area);
+		Field labelMapField = null;
+		try {
+			labelMapField = TdwgArea.class.getDeclaredField("labelMap");
+			labelMapField.setAccessible(true);
+			Object obj = labelMapField.get(null);
+			Map<String, UUID> map = (Map<String, UUID>)obj;
+			Assert.assertEquals(area.getUuid(), map.get(testAreaLabel));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
 	public void testLoadingOfPartOfRelationships() {
-//		NamedArea britain = TdwgArea.getAreaByTdwgAbbreviation("GRB");
-//		NamedArea northernEurope = TdwgArea.getAreaByTdwgAbbreviation("10");
-//		assert britain != null : "NamedArea must exist";
-//		assert northernEurope != null : "NamedArea must exist";
-//		
-//		assertTrue("Northern Europe should include Britain",northernEurope.getIncludes().contains(britain));
-//		assertEquals("Britain should be part of Northern Europe",britain.getPartOf(),northernEurope);
+		NamedArea britain = TdwgArea.getAreaByTdwgAbbreviation("GRB");
+		NamedArea northernEurope = TdwgArea.getAreaByTdwgAbbreviation("10");
+		assert britain != null : "NamedArea must exist";
+		assert northernEurope != null : "NamedArea must exist";
+		
+		Assert.assertTrue("Northern Europe should include Britain",northernEurope.getIncludes().contains(britain));
+		assertEquals("Britain should be part of Northern Europe",britain.getPartOf(),northernEurope);
 	}
 	
 	@Test
 	public void testNamedAreaLevelAssignment() {
-//		NamedArea britain = TdwgArea.getAreaByTdwgAbbreviation("GRB");
-//		NamedArea northernEurope = TdwgArea.getAreaByTdwgAbbreviation("10");
-//		assert britain != null : "NamedArea must exist";
-//		assert northernEurope != null : "NamedArea must exist";
-//		
-//		assertEquals("Northern Europe should be TDWG Level 2",northernEurope.getLevel(),NamedAreaLevel.TDWG_LEVEL2());
-//		assertEquals("Britain should be TDWG Level 3",britain.getLevel(),NamedAreaLevel.TDWG_LEVEL3());
+		NamedArea britain = TdwgArea.getAreaByTdwgAbbreviation("GRB");
+		NamedArea northernEurope = TdwgArea.getAreaByTdwgAbbreviation("10");
+		assert britain != null : "NamedArea must exist";
+		assert northernEurope != null : "NamedArea must exist";
+		
+		assertEquals("Northern Europe should be TDWG Level 2",northernEurope.getLevel(),NamedAreaLevel.TDWG_LEVEL2());
+		assertEquals("Britain should be TDWG Level 3",britain.getLevel(),NamedAreaLevel.TDWG_LEVEL3());
 	}
 	
 	@Test
@@ -148,6 +135,26 @@ public class TdwgAreaTest {
 		NamedArea saoTome = TdwgArea.getTermByUuid(UUID.fromString("c64e07cc-0a58-44b3-ac91-c216d1b91c1f"));
 		assertEquals("Utf8 error", "S\u00E3o Tom\u00E9", saoTome.getLabel());
 		
+	}
+	
+	
+	@Test
+	public void testCompare(){
+		//test compare method for set functionality. TreeSet is used by OrderedTermVocabulary therefore
+		//this needs to work correctly
+		TermVocabulary voc = TdwgArea.getAreaByTdwgAbbreviation("1").getVocabulary();
+		
+		Set<TdwgArea> set = new TreeSet<TdwgArea>();
+		TdwgArea area3 = new TdwgArea();
+		area3.addRepresentation(Representation.NewInstance("Spain", "Spain", "SPA", Language.DEFAULT()));
+		TdwgArea area4 = new TdwgArea();
+		area4.addRepresentation(Representation.NewInstance("Spain6", "Spain6", "SPA-SP", Language.DEFAULT()));
+		voc.addTerm(area3);
+		voc.addTerm(area4);
+		
+		set.add(area3);
+		set.add(area4);
+		Assert.assertEquals("There must be 2 areas in the set", 2, set.size());
 	}
 	
 	

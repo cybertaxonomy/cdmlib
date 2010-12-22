@@ -317,6 +317,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		}
 	}
 	
+// ************** Hierarchie List ****************************	
 	
 /*	public boolean equals(NamedArea area){
 		boolean result = false;
@@ -326,9 +327,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		return result;
 	}*/
 	
-	public int compareTo(NamedArea area){
-		return getLabel().compareTo(area.getLabel());
-	}
+//	public int compareTo(NamedArea area){
+//		return getLabel().compareTo(area.getLabel());
+//	}
+	
+	
 	
 	public NamedAreaNode getHiearchieList(List<NamedArea> areaList){
 		NamedAreaNode result = new NamedAreaNode();

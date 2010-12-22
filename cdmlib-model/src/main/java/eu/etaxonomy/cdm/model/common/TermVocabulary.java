@@ -117,8 +117,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		this.terms.add(term);
 	}
 	public void removeTerm(T term) {
-		term.setVocabulary(null);
 		this.terms.remove(term);
+		term.setVocabulary(null);
 	}
 
 	public String getTermSourceUri() {

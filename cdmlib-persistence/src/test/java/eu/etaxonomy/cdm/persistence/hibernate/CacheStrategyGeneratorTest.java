@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @version 1.0
  */
 public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
-	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
 
 	private UUID uuid;

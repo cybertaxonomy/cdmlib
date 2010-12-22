@@ -86,6 +86,10 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	 * {@link java.lang.Comparable#compareTo(java.lang.Object)}
 	 */
 	public int compareTo(T orderedTerm) {
+		if (this.vocabulary == null || ! this.vocabulary.getUuid().equals(orderedTerm.vocabulary.getUuid())){
+			throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared");
+		}
+		
 		int orderThat;
 		int orderThis;
 		try {
