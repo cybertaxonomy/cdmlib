@@ -258,15 +258,19 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
 	//hybrid name  may not have either an authorteam nor other name components.
     @XmlElement(name ="IsHybridFormula")
+	@CacheUpdate("nameCache")
 	private boolean hybridFormula = false;
 	
     @XmlElement(name ="IsMonomHybrid")
+	@CacheUpdate("nameCache")
 	private boolean monomHybrid = false;
 	
     @XmlElement(name ="IsBinomHybrid")
+	@CacheUpdate("nameCache")
 	private boolean binomHybrid = false;
 	
     @XmlElement(name ="IsTrinomHybrid")
+	@CacheUpdate("nameCache")
 	private boolean trinomHybrid = false;
     
 	/** 

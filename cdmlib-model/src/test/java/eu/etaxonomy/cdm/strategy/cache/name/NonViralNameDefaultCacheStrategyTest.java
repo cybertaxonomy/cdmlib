@@ -211,29 +211,18 @@ public class NonViralNameDefaultCacheStrategyTest {
 		Assert.assertEquals("Should be Abies alba L.", "Abies alba L.", speciesName.getTitleCache());
 		
 		speciesName.setBinomHybrid(true);
-		//TODO
-//		speciesName.setTitleCache(null, false);
-//		speciesName.setNameCache(null, false);
 		Assert.assertEquals("Should be Abies ×alba L.", "Abies ×alba L.", speciesName.getTitleCache());
 		speciesName.setMonomHybrid(true);
-		speciesName.setTitleCache(null, false);
-		speciesName.setNameCache(null, false);
 		Assert.assertEquals("Should be '×Abies ×alba L.'", "×Abies ×alba L.", speciesName.getTitleCache());
 		
 		Assert.assertEquals("Should be 'Genus'", "Genus", genusName.getTitleCache());
 		genusName.setMonomHybrid(true);
-		genusName.setTitleCache(null, false);
-		genusName.setNameCache(null, false);
 		Assert.assertEquals("Should be '×Genus'", "×Genus", genusName.getTitleCache());
 	
 		Assert.assertEquals("Should be 'Abies alba subsp. beta'", subSpeciesNameString, subSpeciesName.getTitleCache());
 		subSpeciesName.setTrinomHybrid(true);
-		subSpeciesName.setTitleCache(null, false);
-		subSpeciesName.setNameCache(null, false);
 		Assert.assertEquals("Should be 'Abies alba subsp. ×beta'", "Abies alba subsp. ×beta", subSpeciesName.getTitleCache());
 		subSpeciesName.setMonomHybrid(true);
-		subSpeciesName.setTitleCache(null, false);
-		subSpeciesName.setNameCache(null, false);
 		Assert.assertEquals("Should be '×Abies alba subsp. ×beta'", "×Abies alba subsp. ×beta", subSpeciesName.getTitleCache());
 	}
 	
