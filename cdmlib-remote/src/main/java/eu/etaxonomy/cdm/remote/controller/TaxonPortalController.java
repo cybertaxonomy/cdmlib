@@ -162,6 +162,42 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.homotypicalGroup.typifiedNames.taxonBases.$"
 	});
 	
+	private static final List<String> SYNONYMY_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
+			// initialize homotypical and heterotypical groups; needs synonyms
+			"synonymRelations.$",
+			"synonymRelations.synonym.$",
+			"synonymRelations.synonym.name.status.type.representation",
+			"synonymRelations.synonym.name.nomenclaturalReference.inReference",
+			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
+			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
+			"synonymRelations.synonym.name.combinationAuthorTeam.$",
+			
+			"name.homotypicalGroup.$",
+			"name.homotypicalGroup.typifiedNames.$",
+			"name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
+			
+			"name.homotypicalGroup.typifiedNames.taxonBases.$",
+			
+			"taxonNodes.$",
+			"taxonNodes.classification.$",
+			"taxonNodes.childNodes.$"
+	});
+	private static final List<String> SIMPLE_TAXON_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
+			"*",
+			// taxon relations 
+			"relationsToThisName.fromTaxon.name",
+			// the name
+			"name.$",
+			"name.rank.representations",
+			"name.status.type.representations",
+			"name.nomenclaturalReference",
+			
+			"taxonNodes.$",
+			"taxonNodes.classification.$",
+			"taxonNodes.childNodes.$"		
+			});
+	
+	
 	private static final List<String> TAXONRELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
 			"$",
 			"type.inverseRepresentations",
@@ -398,20 +434,64 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *         {@link #SYNONYMY_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "accepted", method = RequestMethod.GET)
-	public Set<TaxonBase> getAccepted(@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping(value = "accepted/{classification_uuid}", method = RequestMethod.GET)
+	public Set<TaxonBase> getAccepted(
+				@PathVariable("uuid") UUID uuid,
+				@PathVariable("classification_uuid") UUID classification_uuid,
+				HttpServletRequest request, 
+				HttpServletResponse response) 
+				throws IOException {
 		
 		if(request != null){
 			logger.info("getAccepted() " + request.getServletPath());
 		}
-		
-		TaxonBase tb = service.load(uuid, SYNONYMY_INIT_STRATEGY);
+
+		TaxonBase tb = service.load(uuid, SYNONYMY_WITH_NODES_INIT_STRATEGY);
 		if(tb == null){
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "A taxon with the uuid " + uuid + " does not exist");
 			return null;
 		}
+		
 		HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
+
+		if (tb instanceof Taxon){
+			Taxon taxon = (Taxon) tb;
+			Set<TaxonNode> nodes = taxon.getTaxonNodes();
+			for (TaxonNode taxonNode : nodes) {
+				if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
+					resultset.add((Taxon) tb);
+				}
+			}
+			if (resultset.size() > 1){
+				//error!! A taxon is not allow to have more taxonnodes for a given classification
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+				"A taxon with the uuid " + uuid + " has more than one taxon node for the given classification" + classification_uuid);
+			}
+		}else{
+			Synonym syn = (Synonym) tb;
+			for(TaxonBase accepted : syn.getAcceptedTaxa()){
+				tb = service.load(accepted.getUuid(), SIMPLE_TAXON_WITH_NODES_INIT_STRATEGY);
+				if (tb instanceof Taxon){
+					Taxon taxon = (Taxon) tb;
+					Set<TaxonNode> nodes = taxon.getTaxonNodes();
+					for (TaxonNode taxonNode : nodes) {
+						if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
+							resultset.add((Taxon) tb);
+						}
+					}
+					if (resultset.size() > 1){
+						//error!! A taxon is not allow to have more taxonnodes for a given classification
+						response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"A taxon with the uuid " + uuid + " has more than one taxon node for the given classification" + classification_uuid);
+					}
+				}else{
+					//ERROR!! perhaps missapplied name????
+					//syn.getRelationType((Taxon)accepted);
+				}
+			}
+		}
+/**
+ * OLD CODE!!		
 		if(tb instanceof Taxon){
 			//the taxon already is accepted
 			//FIXME take the current view into account once views are implemented!!!
@@ -423,6 +503,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 				resultset.add(accepted);
 			}
 		}
+*/
 		return resultset;
 	}
 	
