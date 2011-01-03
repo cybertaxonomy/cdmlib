@@ -13,6 +13,9 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 
@@ -36,4 +39,17 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
+	
+	/**
+	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
+	 * All data associated with the former taxon are moved to the newly accepted taxon.
+	 * 
+	 * @param oldTaxonNode
+	 * @param newAcceptedTaxonNode
+	 * @param synonymRelationshipType
+	 * @param citation
+	 * @param citationMicroReference
+	 * @return
+	 */
+	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference);
 }

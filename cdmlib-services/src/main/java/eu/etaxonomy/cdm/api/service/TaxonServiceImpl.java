@@ -175,81 +175,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return taxonRelTypeVocabulary;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
-	 */
-	@Transactional(readOnly = false)
-	public Synonym changeAcceptedTaxonToSynonym(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) {
-
-		// TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
-		// in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
-		if (oldTaxonNode == null || newAcceptedTaxonNode == null || oldTaxonNode.getTaxon().getName() == null){
-			throw new IllegalArgumentException("A mandatory parameter was null.");
-		}
-		
-		if(oldTaxonNode.equals(newAcceptedTaxonNode)){
-			throw new IllegalArgumentException("Taxon can not be made synonym of its own.");
-		}
-		
-		Taxon oldTaxon = (Taxon) HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
-		Taxon newAcceptedTaxon = (Taxon) HibernateProxyHelper.deproxy(newAcceptedTaxonNode.getTaxon());
-		
-		// Move oldTaxon to newTaxon
-		TaxonNameBase<?,?> synonymName = oldTaxon.getName();
-		if (synonymRelationshipType == null){
-			if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
-				synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-			}else{
-				synonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
-			}
-		}
-		SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName, synonymRelationshipType, citation, citationMicroReference);
-		
-		//Move Synonym Relations to new Taxon
-		for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
-			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), synRelation.getType(), 
-					synRelation.getCitation(), synRelation.getCitationMicroReference());
-		}
-
-		
-		// CHILD NODES
-		if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
-			for(TaxonNode childNode : oldTaxonNode.getChildNodes()){
-				newAcceptedTaxonNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
-			}
-		}
-		
-		//Move Taxon RelationShips to new Taxon
-		Set<TaxonRelationship> obsoleteTaxonRelationships = new HashSet<TaxonRelationship>();
-		for(TaxonRelationship taxonRelationship : oldTaxon.getTaxonRelations()){
-			Taxon fromTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
-			Taxon toTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
-			if (fromTaxon == oldTaxon){
-				newAcceptedTaxon.addTaxonRelation(taxonRelationship.getToTaxon(), taxonRelationship.getType(), 
-						taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-				
-			}else if(toTaxon == oldTaxon){
-				taxonRelationship.getFromTaxon().addTaxonRelation(newAcceptedTaxon, taxonRelationship.getType(), 
-						taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-
-			}else{
-				logger.warn("Taxon is not part of its own Taxonrelationship");
-			}
-			// Remove old relationships
-			taxonRelationship.setToTaxon(null);
-			taxonRelationship.setFromTaxon(null);
-		}
-		
-		//Move descriptions to new taxon
-		for(TaxonDescription description : oldTaxon.getDescriptions()){
-			description.setTitleCache("Description copied from former accepted taxon: " + oldTaxon.getTitleCache() + "(Old title: " + description.getTitleCache()  + ")");
-			newAcceptedTaxon.addDescription(description);
-		}
-				
-		oldTaxonNode.delete();
-		
-		return synonmyRelationship.getSynonym();
-	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -674,11 +600,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public Taxon moveSynonymToAnotherTaxon(SynonymRelationship synonymRelation,
 			Taxon toTaxon, SynonymRelationshipType synonymRelationshipType, Reference reference, String referenceDetail) {
 		Taxon fromTaxon = synonymRelation.getAcceptedTaxon();
+
+		toTaxon.addSynonym(synonymRelation.getSynonym(), synonymRelationshipType, reference, referenceDetail);
 		
 		fromTaxon.removeSynonymRelation(synonymRelation);
-		
-		toTaxon.addSynonym(synonymRelation.getSynonym(), synonymRelationshipType);
-		
+				
 		return toTaxon;
 	}
 

@@ -120,7 +120,10 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		//printDataSet(System.out);
 	}
 	
+	@Test
 	public final void testMakeTaxonSynonym() {
 		
 	}
+	
+
 }
