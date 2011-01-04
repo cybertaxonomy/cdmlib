@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
@@ -66,7 +67,7 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheS
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
-public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>> {
+public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>> implements Cloneable{
 	private static final long serialVersionUID = 8065879180505546803L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDescription.class);
@@ -237,5 +238,38 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 		addElement(textData);
 		return textData;
 	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> taxon description. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> taxon description by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		TaxonDescription result;
+		result = (TaxonDescription)super.clone();
+		
+		//scopes
+		result.scopes = new HashSet<Scope>();
+		for (Scope scope : getScopes()){
+			result.scopes.add(scope);
+		}
+		
+		//geo-scopes
+		result.geoScopes = new HashSet<NamedArea>();
+		for (NamedArea namedArea : getGeoScopes()){
+			result.geoScopes.add(namedArea);
+		}
+		
+		//no changes to: taxon
+		return result;
+	}	
+
 	
 }

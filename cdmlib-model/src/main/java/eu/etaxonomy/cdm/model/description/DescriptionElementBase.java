@@ -400,12 +400,15 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	
 	/** 
 	 * Clones the description element. The element is <b>not</b> added to the same 
-	 * description as the orginal element (inDescription is set to <code>null</null>.
+	 * description as the orginal element (inDescription is set to <code>null</null>).
 	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		DescriptionElementBase result = (DescriptionElementBase)super.clone();
+
+		//inDescription
+		result.inDescription = null;
 		
 		//Sources
 		result.sources = new HashSet<DescriptionElementSource>();
@@ -414,9 +417,27 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 			result.addSource(newSource);
 		}
 		
-		//inDescription
-		result.inDescription = null;
+		//media
+		result.media = new ArrayList<Media>();
+		for (Media media : getMedia()){
+			result.media.add(media);
+		}
+		
+		//modifying text
+		result.modifyingText = new HashMap<Language, LanguageString>();
+		for (Language language : getModifyingText().keySet()){
+			//TODO clone needed? See also IndividualsAssociation
+			LanguageString newLanguageString = (LanguageString)getModifyingText().get(language).clone();
+			result.modifyingText.put(language, newLanguageString);
+		}
+		
+		//modifiers
+		result.modifiers = new HashSet<Modifier>();
+		for (Modifier modifier : getModifiers()){
+			result.modifiers.add(modifier);
+		}
 
+		//no changes to: feature
 		return result;
 	}
 

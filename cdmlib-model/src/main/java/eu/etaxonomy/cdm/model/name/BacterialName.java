@@ -25,7 +25,6 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 
 /**
  * The taxon name class for bacteria.
@@ -46,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class BacterialName extends NonViralName<BacterialName> {
+public class BacterialName extends NonViralName<BacterialName> implements Cloneable{
 	private static final long serialVersionUID = -7641841279209976443L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BacterialName.class);
@@ -190,6 +189,23 @@ public class BacterialName extends NonViralName<BacterialName> {
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICNB;
 
+	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> bacterial name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> bacterial name by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.NonViralName#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		BacterialName result = (BacterialName)super.clone();
+		//no changes to: subGenusAuthorship, nameApprobation
+		return result;
 	}
 
 }

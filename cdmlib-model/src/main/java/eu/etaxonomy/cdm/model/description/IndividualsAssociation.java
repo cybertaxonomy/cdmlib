@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class IndividualsAssociation extends DescriptionElementBase implements IMultiLanguageTextHolder{
+public class IndividualsAssociation extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -4117554860254531809L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);
@@ -164,4 +165,39 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 		this.description.remove(language);
 	}
 
+
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> individuals association. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> individuals association by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			IndividualsAssociation result = (IndividualsAssociation)super.clone();
+			
+			//description
+			result.description = new HashMap<Language, LanguageString>();
+			for (Language language : getDescription().keySet()){
+				//TODO clone needed?
+				LanguageString newLanguageString = (LanguageString)getDescription().get(language).clone();
+				result.description.put(language, newLanguageString);
+			}
+	
+			
+			return result;
+			//no changes to: associatedSpecimenOrObservation
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}	
+	
 }

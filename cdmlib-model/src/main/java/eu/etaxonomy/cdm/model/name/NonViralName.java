@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +52,10 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
@@ -115,7 +119,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 @CorrectEpithetsForRank(groups = Level2.class)
 @MustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
-public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
+public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> implements Cloneable{
 	private static final long serialVersionUID = 4441110073881088033L;
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
@@ -230,23 +234,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@NotNull
 	private Set<HybridRelationship> hybridParentRelations = new HashSet<HybridRelationship>();
 
-    public Set<HybridRelationship> getHybridParentRelations() {
-		return getParentRelationships();
-	}
-
-	public void setHybridParentRelations(
-			Set<HybridRelationship> hybridParentRelations) {
-		this.hybridParentRelations = hybridParentRelations;
-	}
-
-	public Set<HybridRelationship> getHybridChildRelations() {
-		return this.getChildRelationships();
-	}
-
-	public void setHybridChildRelations(Set<HybridRelationship> hybridChildRelations) {
-		this.hybridChildRelations = hybridChildRelations;
-	}
-
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
     @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY)
@@ -313,7 +300,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		return new NonViralName(rank, homotypicalGroup);
 	}
 	
-	// ************* CONSTRUCTORS *************/	
+// ************************** CONSTRUCTORS *************/	
 	
 	//needed by hibernate
 	/** 
@@ -398,7 +385,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	
 	
-	//********* METHODS **************************************/
+//**************************** METHODS **************************************/
 
 	
 	private void setNameCacheStrategy(){
@@ -688,7 +675,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	public void setInfraSpecificEpithet(String infraSpecificEpithet){
 		this.infraSpecificEpithet = infraSpecificEpithet;
 	}
-
+	
 	/**
 	 * Generates and returns the string with the scientific name of <i>this</i>
 	 * non viral taxon name including author strings and maybe year according to
@@ -1078,6 +1065,24 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		this.trinomHybrid = trinomHybrid;
 	}
 	
+
+    public Set<HybridRelationship> getHybridParentRelations() {
+		return getParentRelationships();
+	}
+
+	private void setHybridParentRelations(
+			Set<HybridRelationship> hybridParentRelations) {
+		this.hybridParentRelations = hybridParentRelations;
+	}
+
+	public Set<HybridRelationship> getHybridChildRelations() {
+		return this.getChildRelationships();
+	}
+
+	private void setHybridChildRelations(Set<HybridRelationship> hybridChildRelations) {
+		this.hybridChildRelations = hybridChildRelations;
+	}
+	
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
 	 * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
@@ -1294,5 +1299,53 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		}else{
 			return false;
 		}
+	}
+	
+	
+//*********************** CLONE ********************************************************/
+
+	/** 
+	 * Clones <i>this</i> non-viral name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> non-viral name by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		NonViralName result = (NonViralName)super.clone();
+		
+		//HybridChildRelations
+		result.hybridChildRelations = new HashSet<HybridRelationship>();
+		for (HybridRelationship hybridRelationship : getHybridChildRelations()){
+			HybridRelationship newChildRelationship = (HybridRelationship)hybridRelationship.clone();
+			newChildRelationship.setRelatedTo(result);
+			result.hybridChildRelations.add(newChildRelationship);
+		}
+		
+		//HybridParentRelations
+		result.hybridParentRelations = new HashSet<HybridRelationship>();
+		for (HybridRelationship hybridRelationship : getHybridParentRelations()){
+			HybridRelationship newParentRelationship = (HybridRelationship)hybridRelationship.clone();
+			newParentRelationship.setRelatedFrom(result);
+			result.hybridParentRelations.add(newParentRelationship);
+		}
+
+		//empty caches
+		if (! protectedNameCache){
+			result.nameCache = null;
+		}
+
+		//empty caches
+		if (! protectedAuthorshipCache){
+			result.authorshipCache = null;
+		}
+
+		//no changes to: basionamyAuthorTeam, combinationAuthorTeam, exBasionymAuthorTeam, exCombinationAuthorTeam
+		//genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+		//protectedAuthorshipCache, protectedNameCache
+		//binomHybrid, monomHybrid, trinomHybrid, hybridFormula,
+		return result;
 	}
 }

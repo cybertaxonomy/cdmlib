@@ -53,13 +53,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlType(name = "NameTypeDesignation", propOrder = {
     "rejectedType",
     "conservedType",
-    /*"lectoType",*/
     "typeName"
 })
 @Entity
 @Audited
-public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignationStatus> 
-implements ITypeDesignation {
+public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignationStatus> implements ITypeDesignation, Cloneable {
 	
 	final static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	
@@ -239,4 +237,28 @@ implements ITypeDesignation {
 //	public void setLectoType(boolean lectoType) {
 //		this.lectoType = lectoType;
 //	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> name type. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> name type by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		NameTypeDesignation result;
+		try {
+			result = (NameTypeDesignation)super.clone();
+			//no changes to: rejectedType, conservedType, typeName
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}	
 }

@@ -27,7 +27,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -50,9 +52,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class BotanicalName extends NonViralName<BotanicalName> /*implements IMergable*/ {
+public class BotanicalName extends NonViralName<BotanicalName> implements Cloneable /*, IMergable*/ {
 	private static final long serialVersionUID = 6818651572463497727L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
 	
 	//Only for fungi: to indicate that the type of the name is asexual or not
@@ -335,6 +336,23 @@ public class BotanicalName extends NonViralName<BotanicalName> /*implements IMer
 		}else{
 			return false;
 		}
+	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> botanical name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> botanical name by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.NonViralName#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		BotanicalName result = (BotanicalName)super.clone();
+		//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
+		return result;
 	}
 
 }

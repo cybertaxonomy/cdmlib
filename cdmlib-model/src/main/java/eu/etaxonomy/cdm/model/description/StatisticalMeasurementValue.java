@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +33,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -53,7 +57,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
-public class StatisticalMeasurementValue extends VersionableEntity implements IModifiable{
+public class StatisticalMeasurementValue extends VersionableEntity implements IModifiable, Cloneable{
 	private static final long serialVersionUID = -3576311887760351982L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
@@ -151,6 +155,38 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	 */
 	public void removeModifier(Modifier modifier) {
 		this.modifiers.remove(modifier);
+	}
+	
+
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> statistical measurement value. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> statistical measurement value by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			StatisticalMeasurementValue result = (StatisticalMeasurementValue)super.clone();
+			
+			//modifiers
+			result.modifiers = new HashSet<Modifier>();
+			for (Modifier modifier : getModifiers()){
+				result.modifiers.add(modifier);
+			}
+			
+			return result;
+			//no changes to: value, type
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

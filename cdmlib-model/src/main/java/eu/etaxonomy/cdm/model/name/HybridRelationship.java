@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class HybridRelationship extends RelationshipBase<NonViralName, NonViralName, HybridRelationshipType> {
+public class HybridRelationship extends RelationshipBase<NonViralName, NonViralName, HybridRelationshipType>  implements Cloneable{
   
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
@@ -213,4 +213,33 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 	public void setType(HybridRelationshipType type) {
 		this.type = type;
 	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> hybrid relationship. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> hybrid relationship by
+	 * modifying only some of the attributes.<BR>
+	 * CAUTION: Cloning a relationship will not add the relationship to the according 
+	 * {@link #relatedFrom} and {@link #relatedTo} objects. The method is meant to be used
+	 * mainly for internal purposes (e.g. used within {@link TaxonNameBase#clone()}
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		HybridRelationship result;
+		try {
+			result = (HybridRelationship)super.clone();
+			//no changes to: relatedFrom, relatedTo, type
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }

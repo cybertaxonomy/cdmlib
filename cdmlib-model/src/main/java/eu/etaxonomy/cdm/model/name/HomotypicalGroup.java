@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 @Entity
 @Audited
 public class HomotypicalGroup extends AnnotatableEntity {
-	static Logger logger = Logger.getLogger(HomotypicalGroup.class);
+	private static final Logger logger = Logger.getLogger(HomotypicalGroup.class);
 
 	@XmlElementWrapper(name = "TypifiedNames")
 	@XmlElement(name = "TypifiedName")
@@ -80,15 +80,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.LAZY)
 	protected Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
-	    
-	/** 
-	 * Class constructor: creates a new homotypical group instance with an
-	 * empty set of typified {@link TaxonNameBase taxon names}.
-	 */
-	public HomotypicalGroup() {
-		super();
-	}
-	
+
+// ******************** static methods **************************************/
 	/** 
 	 * Creates a new homotypical group instance with an empty set of typified
 	 * {@link TaxonNameBase taxon names}.
@@ -98,6 +91,19 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	public static HomotypicalGroup NewInstance(){
 		return new HomotypicalGroup();
 	}
+	
+	
+//********************** CONSTRUCTOR ********************************************/
+	
+	/** 
+	 * Class constructor: creates a new homotypical group instance with an
+	 * empty set of typified {@link TaxonNameBase taxon names}.
+	 */
+	public HomotypicalGroup() {
+		super();
+	}
+
+// ********************** GETTER/SETTER/ADDER/REMOVER ********************************/
 		
 	/** 
 	 * Returns the set of {@link TaxonNameBase taxon names} that belong to <i>this</i> homotypical group.

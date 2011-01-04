@@ -141,4 +141,23 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 //	protected void setFromUuid(UUID uuid){
 //		fromUuid = uuid;
 //	}
+	
+	
+//*********************** CLONE ********************************************************/
+		
+	/** 
+	 * Clones <i>this</i> relationship. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> relationship by
+	 * modifying only some of the attributes.
+	 * @throws CloneNotSupportedException 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		RelationshipBase<FROM,TO,TYPE> result = (RelationshipBase<FROM,TO,TYPE>)super.clone();
+		//no changes to: doubtful, deletedObjects
+		return result;
+	}	
 }

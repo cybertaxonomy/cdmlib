@@ -11,23 +11,22 @@ package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-//import eu.etaxonomy.cdm.model.reference.Article;
-//import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.IReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -41,7 +40,6 @@ public class NonViralNameTest extends EntityTestBase {
 	
 	NonViralName<?> nonViralName1;
 	NonViralName<?> nonViralName2;
-	ReferenceFactory refFactory;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -56,7 +54,6 @@ public class NonViralNameTest extends EntityTestBase {
 	public void setUp() throws Exception {
 		nonViralName1 = new BotanicalName();
 		nonViralName2 = new BotanicalName();
-		refFactory = ReferenceFactory.newInstance();
 	}
 
 	/**
@@ -112,7 +109,7 @@ public class NonViralNameTest extends EntityTestBase {
 	@Test
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Team agent = Team.NewInstance();
-		INomenclaturalReference article = refFactory.newArticle();
+		INomenclaturalReference article = ReferenceFactory.newArticle();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
 		NonViralName<?> nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
@@ -249,7 +246,7 @@ public class NonViralNameTest extends EntityTestBase {
 		String strTeam1 = "Team1";
 		String strTeam2 = "Team2";
 		String strTeam3 = "Team3";
-		IGeneric ref1 = refFactory.newGeneric();
+		IGeneric ref1 = ReferenceFactory.newGeneric();
 		ref1.setTitleCache("RefTitle",true);
 		
 		Team team1 = Team.NewInstance();
@@ -353,5 +350,62 @@ public class NonViralNameTest extends EntityTestBase {
 		//null
 		botanicalName1.removeHybridRelationship(null);
 		assertEquals(0, botanicalName1.getChildRelationships().size());
+	}
+	
+	
+	
+	@Test
+	public void testClone(){
+
+		Team combinationAuthor = Team.NewTitledInstance("CombinationAuthor", "comb. auth.");
+		nonViralName1.setRank(Rank.SUBSPECIES());
+		nonViralName1.setCombinationAuthorTeam(combinationAuthor);
+		nonViralName1.setGenusOrUninomial("Aus");
+		nonViralName1.setInfraGenericEpithet("Infaus");
+		nonViralName1.setSpecificEpithet("bus");
+		nonViralName1.setInfraSpecificEpithet("infrabus");
+		nonViralName1.setBinomHybrid(true);
+		
+		NonViralName parent = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName parent2 = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName child = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName child2 = NonViralName.NewInstance(Rank.SPECIES());
+		nonViralName1.addHybridParent(parent, HybridRelationshipType.FIRST_PARENT(), "parent rule");
+		nonViralName1.addHybridParent(parent2, HybridRelationshipType.SECOND_PARENT(), "parent rule2");
+		nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
+		
+		
+		NonViralName clone = (NonViralName)nonViralName1.clone();
+		Assert.assertEquals("Genus should be equal", "Aus", clone.getGenusOrUninomial());
+		Assert.assertEquals("Infragenus should be equal", "Infaus", clone.getInfraGenericEpithet());
+		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());
+		Assert.assertEquals("Infraspecific epithet should be equal", "infrabus", clone.getInfraSpecificEpithet());
+		Assert.assertEquals("BinomHybrid should be equal", true, clone.isBinomHybrid());
+		Assert.assertSame("Combination author should be the same", combinationAuthor, clone.getCombinationAuthorTeam());
+		Assert.assertEquals("NameCache should be equal", nonViralName1.getNameCache(), clone.getNameCache());
+		Assert.assertEquals("AuthorshipCache should be equal", nonViralName1.getAuthorshipCache(), clone.getAuthorshipCache());
+		
+		//hybrid parents of clone 
+		Assert.assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getChildRelationships().size());
+		Set<NonViralName> parentSet = new HashSet<NonViralName>();
+		Set<NonViralName> childSet = new HashSet<NonViralName>();
+		for (Object object : clone.getChildRelationships()){
+			HybridRelationship childRelation = (HybridRelationship)object;
+			NonViralName relatedFrom = childRelation.getRelatedFrom();
+			parentSet.add(relatedFrom);
+			NonViralName relatedTo = childRelation.getRelatedTo();
+			childSet.add(relatedTo);
+		}
+		Assert.assertTrue("Parent set should contain parent1", parentSet.contains(parent));
+		Assert.assertTrue("Parent set should contain parent2", parentSet.contains(parent2));
+		Assert.assertTrue("Child set should contain clone", childSet.contains(clone));
+		
+		//hybrid child of clone
+		Assert.assertEquals("There should be exactly 1 hybrid relationship in which the clone takes the parent role", 1, clone.getParentRelationships().size());
+		HybridRelationship parentRelation = (HybridRelationship)clone.getParentRelationships().iterator().next();
+		Assert.assertSame("Clone should be parent in parentRelationship", clone, parentRelation.getRelatedFrom());
+		Assert.assertSame("Child should be child in parentRelationship", child, parentRelation.getRelatedTo());
+		Assert.assertSame("Relationship type should be cloned correctly", HybridRelationshipType.FEMALE_PARENT(), parentRelation.getType());
+		Assert.assertEquals("Rule should be cloned correctly", "child rule", parentRelation.getRuleConsidered());
 	}
 }

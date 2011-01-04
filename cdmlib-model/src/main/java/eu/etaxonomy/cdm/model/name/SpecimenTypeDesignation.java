@@ -57,8 +57,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDesignationStatus>
-implements ITypeDesignation {
+public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDesignationStatus> implements ITypeDesignation, Cloneable {
 	private static final long serialVersionUID = 6481627446997275007L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
@@ -163,6 +162,30 @@ implements ITypeDesignation {
 			return false;
 		}
 		return getTypeStatus().isLectotype();
+	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> type specimen. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> type specimen by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		SpecimenTypeDesignation result;
+		try {
+			result = (SpecimenTypeDesignation)super.clone();
+			//no changes to: typeSpecimen
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

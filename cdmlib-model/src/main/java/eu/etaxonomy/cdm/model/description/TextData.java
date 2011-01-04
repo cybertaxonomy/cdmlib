@@ -65,9 +65,8 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class TextData extends DescriptionElementBase implements IMultiLanguageTextHolder{
+public class TextData extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -2165015581278282615L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TextData.class);
 
 	//@XmlElement(name = "MultiLanguageText", type = MultilanguageText.class)
@@ -364,6 +363,40 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	 */
 	public int size(){
 		return this.multilanguageText.size();
+	}
+
+
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> text data. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> text data by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			TextData result = (TextData)super.clone();
+
+			//description
+			result.multilanguageText = new HashMap<Language, LanguageString>();
+			for (Language language : getMultilanguageText().keySet()){
+				//TODO clone needed? See also IndividualsAssociation
+				LanguageString newLanguageString = (LanguageString)getMultilanguageText().get(language).clone();
+				result.multilanguageText.put(language, newLanguageString);
+			}
+			
+			return result;
+			//no changes to: format
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

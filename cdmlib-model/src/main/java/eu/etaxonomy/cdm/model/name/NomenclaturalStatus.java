@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @Entity
 @Audited
-public class NomenclaturalStatus extends ReferencedEntityBase {
+public class NomenclaturalStatus extends ReferencedEntityBase implements Cloneable{
 	private static final long serialVersionUID = -2451270405173131900L;
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
 	
@@ -123,5 +123,29 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;
 	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> nomenclatural status. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> nomenclatural status by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.ReferencedEntityBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try {
+			NomenclaturalStatus result = (NomenclaturalStatus)super.clone();
+			//no changes to: ruleConsidered, type
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}	
 
 }

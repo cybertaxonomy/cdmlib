@@ -18,7 +18,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -58,7 +57,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>  {
+public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>> implements Cloneable {
 	private static final long serialVersionUID = 4516625507432071817L;
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
@@ -213,4 +212,21 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 //		this.cacheStrategy = cacheStrategy;
 //	}
 
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> viral name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> viral name by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		ViralName result = (ViralName)super.clone();
+		//no changes to: acronym
+		return result;
+	}
 }

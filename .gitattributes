@@ -855,7 +855,9 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java 
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/TdwgAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/media/MediaTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BacterialNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/CultivarPlantNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/HomotypicalGroupTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NameTypeDesignationStatusTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NameTypeDesignationTest.java -text
@@ -864,6 +866,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java -te
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/RankTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameBaseTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/ViralNameTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/ZoologicalNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/occurrence/SpecimenTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/reference/PublicationBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/ClassificationTest.java -text

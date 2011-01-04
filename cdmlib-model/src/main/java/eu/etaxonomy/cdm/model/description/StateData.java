@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "StateData")
 @Entity
 @Audited
-public class StateData extends VersionableEntity implements IModifiable, IMultiLanguageTextHolder{
+public class StateData extends VersionableEntity implements IModifiable, IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -4380314126624505415L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StateData.class);
@@ -203,4 +203,42 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 		return this.modifyingText.remove(lang);
 	}
 
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> state data. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> state data by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			StateData result = (StateData)super.clone();
+			
+			//modifiers
+			result.modifiers = new HashSet<Modifier>();
+			for (Modifier modifier : getModifiers()){
+				result.modifiers.add(modifier);
+			}
+			
+			//modifying text
+			result.modifyingText = new HashMap<Language, LanguageString>();
+			for (Language language : getModifyingText().keySet()){
+				//TODO clone needed? See also IndividualsAssociation
+				LanguageString newLanguageString = (LanguageString)getModifyingText().get(language).clone();
+				result.modifyingText.put(language, newLanguageString);
+			}
+			
+			return result;
+			//no changes to: state
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

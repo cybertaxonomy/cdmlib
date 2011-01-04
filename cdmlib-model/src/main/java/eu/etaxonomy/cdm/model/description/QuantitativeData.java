@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
-public class QuantitativeData extends DescriptionElementBase {
+public class QuantitativeData extends DescriptionElementBase implements Cloneable {
 	private static final long serialVersionUID = -2755806455420051488L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(QuantitativeData.class);
@@ -240,4 +241,39 @@ public class QuantitativeData extends DescriptionElementBase {
 		}
 		return result;
 	}
+	
+
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> quantitative data. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> quantitative data by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			QuantitativeData result = (QuantitativeData)super.clone();
+			
+			//states
+			result.statisticalValues = new HashSet<StatisticalMeasurementValue>();
+			for (StatisticalMeasurementValue data : getStatisticalValues()){
+				//TODO do we need to clone here?
+				StatisticalMeasurementValue newData = (StatisticalMeasurementValue)data.clone();
+				result.statisticalValues.add(newData);
+			}
+			
+			return result;
+			//no changes to: unit
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}	
+
 }

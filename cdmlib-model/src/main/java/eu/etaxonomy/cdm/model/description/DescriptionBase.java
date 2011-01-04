@@ -35,8 +35,13 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -321,4 +326,64 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 		}
 		return false;
 	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> descriptioin. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> description by
+	 * modifying only some of the attributes.<BR>
+     *
+	 * Usages of this name in a taxon concept are NOT cloned.<BR>
+	 * The name is added to the same homotypical group as the original name 
+	 * (CAUTION: this behaviour needs to be discussed and may change in future).<BR>
+	 * {@link TaxonNameDescription Name descriptions} are cloned as XXX.<BR>
+	 * {@link TypeDesignationBase Type designations} are cloned as XXX.<BR>
+	 * {@link NameRelationship Name relation} are cloned as XXX.<BR>
+	 *  
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		DescriptionBase result;
+		logger.warn("Clone not yet tested");
+		try{
+			result = (DescriptionBase)super.clone();
+			
+			//descriptive system
+			result.descriptiveSystem = new HashSet<Feature>();
+			for (Feature feature : getDescriptiveSystem()){
+				result.descriptiveSystem.add(feature);
+			}
+			
+			//descriptions
+			result.descriptionSources = new HashSet<Reference>();
+			for (Reference reference : getDescriptionSources()){
+				result.descriptionSources.add(reference);
+			}
+
+			//elements
+			result.descriptionElements = new HashSet<DescriptionElementBase>();
+			for (DescriptionElementBase element : getElements()){
+				DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
+				result.addElement(newElement);
+			}
+
+			//specimen or observations
+			result.describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
+			for (SpecimenOrObservationBase specimenOrObservation : getDescribedSpecimenOrObservations()){
+				specimenOrObservation.addDescription(result);
+			}
+			
+			//no changes to: imageGallery 
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+	}	
 }

@@ -31,6 +31,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -163,10 +164,26 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
 
 //*********************************** CLONE *****************************************/
 
+	/** 
+	 * Clones <i>this</i> common name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> common name by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		//no changes to name, language, area
-		return super.clone();
+	public Object clone() {
+
+		try {
+			CommonTaxonName result = (CommonTaxonName)super.clone();
+			return result;
+			//no changes to name, language, area
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}	
 
 //*********************************** toString *****************************************/

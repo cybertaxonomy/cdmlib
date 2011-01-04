@@ -49,8 +49,9 @@ import javax.xml.bind.annotation.XmlType;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class CultivarPlantName extends BotanicalName {
-	static Logger logger = Logger.getLogger(CultivarPlantName.class);
+public class CultivarPlantName extends BotanicalName implements Cloneable{
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CultivarPlantName.class);
 	
 	//the characteristical name of the cultivar
     @XmlElement(name = "CultivarName", required = true)
@@ -168,6 +169,24 @@ public class CultivarPlantName extends BotanicalName {
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICNCP;
+	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> cultivar plant name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> cultivar plant name by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.BotanicalName#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		BotanicalName result = (BotanicalName)super.clone();
+		//no changes to: cultivarName
+		return result;
 	}
 
 }

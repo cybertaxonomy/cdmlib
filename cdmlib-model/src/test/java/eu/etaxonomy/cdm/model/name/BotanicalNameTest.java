@@ -9,25 +9,23 @@
  
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.After;
-import org.junit.AfterClass;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-//import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -156,6 +154,19 @@ public class BotanicalNameTest extends EntityTestBase{
 		assertTrue(botanicalName1.isAnamorphic());
 		botanicalName1.setAnamorphic(false);
 		assertFalse(botanicalName1.isAnamorphic());
+	}
+	
+	@Test
+	public void testClone(){
+		botanicalName1.setGenusOrUninomial("Aus");
+		botanicalName1.setRank(Rank.GENUS());
+		botanicalName1.setAnamorphic(true);
+		BotanicalName clone = (BotanicalName)botanicalName1.clone();
+		Assert.assertEquals("Anamorphic should be equal", true, clone.isAnamorphic());
+		botanicalName1.setAnamorphic(false);
+		clone = (BotanicalName)botanicalName1.clone();
+		Assert.assertEquals("Anamorphic should be equal", false, clone.isAnamorphic());
+		
 	}
 
 }

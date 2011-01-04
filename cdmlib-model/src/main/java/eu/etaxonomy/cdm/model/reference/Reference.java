@@ -825,6 +825,24 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		return ParserProblem.warningList(this.parsingProblem);
 	}
 	
+	
+	@Transient
+	public String getNomenclaturalCitation(String microReference) {
+		rectifyCacheStrategy();
+		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
+			return null;
+		}else{
+			if (cacheStrategy instanceof INomenclaturalReferenceCacheStrategy){
+				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
+			}else {
+				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
+				return null;
+			}
+		}
+	}
+	
 
 	/**
 	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
@@ -850,7 +868,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //		}
 //	}
 	
-//**************************** CLONE *********************************/
 
 
 //	/**
@@ -876,32 +893,9 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //	public Set<Reference> identicalReferences(){
 //		return referenceIdentity.getReferences();
 //	}
+
 	
-//*********************** CLONE ********************************************************/
-	
-	/** 
-	 * Clones <i>this</i> reference. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> reference by
-	 * modifying only some of the attributes.
-	 * 
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Object clone() {
-		try {
-			Reference result = (Reference)super.clone();
-			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
-			//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
-			return result;
-		} catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/* Casting methods */
+//********** Casting methods ***********************************/
 	
 	public IArticle castReferenceToArticle(){
 		setType(ReferenceType.Article);
@@ -983,37 +977,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		return (IThesis) this;
 	}
 
-	
-	@Transient
-	public String getNomenclaturalCitation(String microReference) {
-		rectifyCacheStrategy();
-		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
-		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
-			return null;
-		}else{
-			if (cacheStrategy instanceof INomenclaturalReferenceCacheStrategy){
-				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
-			}else {
-				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
-				return null;
-			}
-		}
-	}
-
-	/**
-	 * The type property of this class is mapped on the field level to the data base column, so
-	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor} 
-	 * to set the property. This PropertyAccessor directly sets the field instead of using the according setter so 
-	 * the CacheStrategy is not correctly set after the initialization of the bean. Thus we need to 
-	 * validate the CacheStrategy before it is to be used.
-	 */
-	private void rectifyCacheStrategy() {
-		if(!cacheStrategyRectified ){
-			setType(getType());
-			cacheStrategyRectified = true;
-		}
-	}
 
 	@Transient // prevent from being serialized by webservice
 	public IJournal getInJournal() {
@@ -1042,6 +1005,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		return book;
 	}
 
+//********************** In-References *****************************************
+	
 	public void setInBook(IBook book) {
 		this.inReference = (Reference<BookDefaultCacheStrategy<Reference>>) book;
 	}
@@ -1055,6 +1020,23 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	public void setInProceedings(IProceedings proceeding) {
 		this.inReference = (Reference<BookDefaultCacheStrategy<Reference>>) proceeding;
 	}
+	
+//*************************** CACHE STRATEGIES ******************************/
+	
+	/**
+	 * The type property of this class is mapped on the field level to the data base column, so
+	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor} 
+	 * to set the property. This PropertyAccessor directly sets the field instead of using the according setter so 
+	 * the CacheStrategy is not correctly set after the initialization of the bean. Thus we need to 
+	 * validate the CacheStrategy before it is to be used.
+	 */
+	private void rectifyCacheStrategy() {
+		if(!cacheStrategyRectified ){
+			setType(getType());
+			cacheStrategyRectified = true;
+		}
+	}
+
 
 	//public void setCacheStrategy(S cacheStrategy){
 	//	this.cacheStrategy = cacheStrategy;
@@ -1090,6 +1072,30 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		
 	}
 
+	
+//*********************** CLONE ********************************************************/
+		
+	/** 
+	 * Clones <i>this</i> reference. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> reference by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try {
+			Reference result = (Reference)super.clone();
+			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
+			//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }
 

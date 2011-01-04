@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.persistence.Entity;
@@ -65,7 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class TaxonInteraction extends DescriptionElementBase implements IMultiLanguageTextHolder{
+public class TaxonInteraction extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -5014025677925668627L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
@@ -190,5 +191,39 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 */
 	public void removeDescription(Language lang){
 		this.description.remove(lang);
+	}
+
+
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> taxon interaction. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> taxon interaction by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			TaxonInteraction result = (TaxonInteraction)super.clone();
+
+			//description
+			result.description = new HashMap<Language, LanguageString>();
+			for (Language language : getDescriptions().keySet()){
+				//TODO clone needed? See also IndividualsAssociation
+				LanguageString newLanguageString = (LanguageString)getModifyingText().get(language).clone();
+				result.description.put(language, newLanguageString);
+			}
+			
+			return result;
+			//no changes to: taxon2
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

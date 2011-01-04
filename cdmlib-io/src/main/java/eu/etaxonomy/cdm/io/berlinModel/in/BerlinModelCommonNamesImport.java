@@ -290,13 +290,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					if (misappliedName != null){
 						taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
 						TaxonDescription misappliedNameDescription = getDescription(misappliedName);
-						try {
-							for (CommonTaxonName commonTaxonName : commonTaxonNames){
-								CommonTaxonName commonNameClone = (CommonTaxonName)commonTaxonName.clone();
-								misappliedNameDescription.addElement(commonNameClone);
-							}
-						} catch (CloneNotSupportedException e) {
-							e.printStackTrace();
+						for (CommonTaxonName commonTaxonName : commonTaxonNames){
+							CommonTaxonName commonNameClone = (CommonTaxonName)commonTaxonName.clone();
+							misappliedNameDescription.addElement(commonNameClone);
 						}	
 					}else{
 						logger.warn("Misapplied name is null for common name " + commonNameId);
@@ -343,12 +339,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			return false;
 		} catch (ClassCastException e) {
 			e.printStackTrace();
-		} catch (CloneNotSupportedException e) {
-			logger.error("Clone not supported by CommonTaxonName");
-			e.printStackTrace();
-			return false;
-		}
-	
+		} 	
 			
 		//	logger.info( i + " names handled");
 		getTaxonService().save(taxaToSave);

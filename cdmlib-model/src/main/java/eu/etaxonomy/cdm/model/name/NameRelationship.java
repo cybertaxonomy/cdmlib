@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 @Entity
 @Audited
 @NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = {Level3.class})
-public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> {
+public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> implements Cloneable{
 
   static Logger logger = Logger.getLogger(NameRelationship.class);
 
@@ -222,4 +222,32 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	public void setType(NameRelationshipType type) {
 		this.type = type;
 	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> name relationship. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> name relationship by
+	 * modifying only some of the attributes.<BR>
+	 * CAUTION: Cloning a relationship will not add the relationship to the according 
+	 * {@link #relatedFrom} and {@link #relatedTo} objects. The method is meant to be used
+	 * mainly for internal purposes (e.g. used within {@link TaxonNameBase#clone()}
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		NameRelationship result;
+		try {
+			result = (NameRelationship)super.clone();
+			//no changes to: relatedFrom, relatedTo, type
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}	
 }

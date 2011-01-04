@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class ZoologicalName extends NonViralName<ZoologicalName> {
+public class ZoologicalName extends NonViralName<ZoologicalName> implements Cloneable{
 	private static final long serialVersionUID = 845745609734814484L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalName.class);
@@ -347,5 +347,23 @@ public class ZoologicalName extends NonViralName<ZoologicalName> {
 	public static ZoologicalName valueOf(TaxonNameBase taxonNameBase){
 		logger.error("Not implemented yet.");
 		return null;
+	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> zoological name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> zoological name by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.name.NonViralName#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		ZoologicalName result = (ZoologicalName)super.clone();
+		//no changes to: breed, publicationYear, originalPublicationYear
+		return result;
 	}
 }

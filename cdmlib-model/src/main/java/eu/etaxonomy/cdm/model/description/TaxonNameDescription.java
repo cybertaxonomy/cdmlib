@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -51,7 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
-public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>> {
+public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>> implements Cloneable{
 	private static final long serialVersionUID = -7349160369642038687L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDescription.class);
@@ -99,4 +98,23 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
 	public TaxonNameBase<?,?> getTaxonName() {
 		return taxonName;
 	}
+	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> taxon name description. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> taxon name description by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		TaxonNameDescription result;
+		result = (TaxonNameDescription)super.clone();
+		//no changes to: taxonName
+		return result;
+	}	
 }

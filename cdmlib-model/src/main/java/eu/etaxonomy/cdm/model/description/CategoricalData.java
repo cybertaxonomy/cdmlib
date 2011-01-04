@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -62,7 +64,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class CategoricalData extends DescriptionElementBase {
+public class CategoricalData extends DescriptionElementBase implements Cloneable{
 	private static final long serialVersionUID = -6298361966947668998L;
 	private static final Logger logger = Logger.getLogger(CategoricalData.class);
 
@@ -147,5 +149,39 @@ public class CategoricalData extends DescriptionElementBase {
 	public void setOrderRelevant(boolean orderRelevant){
 		this.orderRelevant = orderRelevant;
 	}
+	
+
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> categorical data. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> categorical data by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			CategoricalData result = (CategoricalData)super.clone();
+			
+			//states
+			result.states = new ArrayList<StateData>();
+			for (StateData stateData : getStates()){
+				//TODO do we need to clone here?
+				StateData newState = (StateData)stateData.clone();
+				result.states.add(newState);
+			}
+			
+			return result;
+			//no changes to: orderRelevant
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}	
 
 }

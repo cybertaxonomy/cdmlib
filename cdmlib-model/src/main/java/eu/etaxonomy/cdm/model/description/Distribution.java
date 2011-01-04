@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.ArrayList;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -54,7 +56,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class Distribution extends DescriptionElementBase {
+public class Distribution extends DescriptionElementBase implements Cloneable {
 	private static final long serialVersionUID = 8366462435651559730L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Distribution.class);
@@ -178,6 +180,34 @@ public class Distribution extends DescriptionElementBase {
 		}
 		return result;
 	}
+	
+
+//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> distribution. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> distribution by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		try {
+			Distribution result = (Distribution)super.clone();
+			
+			return result;
+			//no changes to: area, status
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}	
+
+// ************************* to String ***************************************************/	
 	
 	/**
 	 * Implementation of the toString() function

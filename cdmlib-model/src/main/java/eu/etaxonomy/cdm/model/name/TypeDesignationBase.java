@@ -169,7 +169,10 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	 * type designation) typified {@link TaxonNameBase taxon names} belong.
 	 *  
 	 * @see   #getTypifiedNames()
+	 * @deprecated homotypical group can not be set and always seems to be <code>null</code>.
+	 * Probably it is a relict of an old version.
 	 */
+	@Deprecated
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;
 	}
@@ -219,4 +222,33 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	protected void addTypifiedName(TaxonNameBase taxonName){
 		this.typifiedNames.add(taxonName);
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> type designation. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> type designation by
+	 * modifying only some of the attributes.<BR>
+	 * CAUTION: the typifiedNames set is not cloned but empty after cloning as the typified 
+	 * names is considered to be the not owning part of a bidirectional relationship.
+	 * This may be changed in future.
+	 * 
+	 * @throws CloneNotSupportedException 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.ReferencedEntityBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		TypeDesignationBase result = (TypeDesignationBase)super.clone();
+		
+		result.typifiedNames = new HashSet<TaxonNameBase>();
+//		for (TaxonNameBase taxonNameBase : getTypifiedNames()){
+//			result.typifiedNames.add(taxonNameBase);
+//		}
+
+		
+		//no changes to: notDesignated, typeStatus, homotypicalGroup
+		return result;
+	}	
 }

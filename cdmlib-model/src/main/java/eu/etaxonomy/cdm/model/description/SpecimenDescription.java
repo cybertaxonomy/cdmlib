@@ -41,9 +41,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
-public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>> {
+public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>> implements Cloneable {
 	private static final long serialVersionUID = -8506790426682192703L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenDescription.class);
 	
 
@@ -71,7 +70,24 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 		result.addDescribedSpecimenOrObservation(specimen);
 		return result;
 	}
-
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> specimen description. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> specimen description by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		SpecimenDescription result;
+		result = (SpecimenDescription)super.clone();
+		//no changes to: taxonName
+		return result;
+	}	
 	
 
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.relation.RelationServiceNotRegisteredException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -47,6 +48,8 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
+
+import com.sun.xml.internal.stream.events.NamedEvent;
 
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
@@ -111,7 +114,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IReferencedEntity, IParsable, IRelated, IMatchable {
+public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IReferencedEntity, IParsable, IRelated, IMatchable, Cloneable {
 	private static final long serialVersionUID = -4530368639601532116L;
 	private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
@@ -1711,5 +1714,91 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		for (NameRelationship relation : removeRelations) {
 			this.removeNameRelationship(relation);
 		}
+	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> taxon name. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> taxon name by
+	 * modifying only some of the attributes.<BR>
+	 * Usages of this name in a taxon concept are NOT cloned.<BR>
+	 * The name is added to the same homotypical group as the original name 
+	 * (CAUTION: this behaviour needs to be discussed and may change in future).<BR>
+	 * {@link TaxonNameDescription Name descriptions} are cloned as XXX.<BR>
+	 * {@link TypeDesignationBase Type designations} are cloned as XXX.<BR>
+	 * {@link NameRelationship Name relation} are cloned as XXX.<BR>
+	 *  
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		TaxonNameBase result;
+		try {
+			result = (TaxonNameBase)super.clone();
+			
+			//taxonBases -> empty
+			result.taxonBases = new HashSet<TaxonBase>();
+			
+			//empty caches
+			if (! protectedFullTitleCache){
+				result.fullTitleCache = null;
+			}
+
+			//descriptions
+			result.descriptions = new HashSet<TaxonNameDescription>();
+			for (TaxonNameDescription taxonNameDescription : getDescriptions()){
+				TaxonNameDescription newDescription = (TaxonNameDescription)taxonNameDescription.clone();
+				result.descriptions.add(newDescription);
+			}
+
+			//status
+			result.status = new HashSet<NomenclaturalStatus>();
+			for (NomenclaturalStatus nomenclaturalStatus : getStatus()){
+				NomenclaturalStatus newStatus = (NomenclaturalStatus)nomenclaturalStatus.clone();
+				result.status.add(newStatus);
+			}
+
+			
+			//To Relations
+			result.relationsToThisName = new HashSet<NameRelationship>();
+			for (NameRelationship toRelationship : getRelationsToThisName()){
+				NameRelationship newRelationship = (NameRelationship)toRelationship.clone();
+				newRelationship.setRelatedTo(result);
+				result.relationsToThisName.add(newRelationship);
+			}
+			
+			//From Relations
+			result.relationsFromThisName = new HashSet<NameRelationship>();
+			for (NameRelationship fromRelationship : getRelationsFromThisName()){
+				NameRelationship newRelationship = (NameRelationship)fromRelationship.clone();
+				newRelationship.setRelatedFrom(result);
+				result.relationsFromThisName.add(newRelationship);
+			}
+			
+			//type designations
+			result.typeDesignations = new HashSet<TypeDesignationBase>();
+			for (TypeDesignationBase typeDesignation : getTypeDesignations()){
+				TypeDesignationBase newDesignation = (TypeDesignationBase)typeDesignation.clone();
+				result.typeDesignations.add(newDesignation);
+				newDesignation.addTypifiedName(result);
+			}
+			
+			//homotypicalGroup
+			//TODO still needs to be discussed
+			homotypicalGroup = HomotypicalGroup.NewInstance();
+			homotypicalGroup.addTypifiedName(this);
+			
+			//no changes to: appendedPharse, nomenclaturalReference, 
+			//nomenclaturalMicroReference, parsingProblem, problemEnds, problemStarts
+			//protectedFullTitleCache, rank
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }
