@@ -1721,13 +1721,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	/** 
 	 * Clones <i>this</i> taxon name. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> taxon name by
-	 * modifying only some of the attributes.<BR>
-	 * Usages of this name in a taxon concept are NOT cloned.<BR>
-	 * The name is added to the same homotypical group as the original name 
-	 * (CAUTION: this behaviour needs to be discussed and may change in future).<BR>
-	 * {@link TaxonNameDescription Name descriptions} are cloned as XXX.<BR>
-	 * {@link TypeDesignationBase Type designations} are cloned as XXX.<BR>
-	 * {@link NameRelationship Name relation} are cloned as XXX.<BR>
+	 * modifying only some of the attributes.<BR><BR>
+	 * Usages of this name in a taxon concept are <b>not</b> cloned.<BR>
+	 * <b>The name gets a newly created homotypical group</b><BR> 
+	 * (CAUTION: this behaviour needs to be discussed and may change in future).<BR><BR>
+	 * {@link TaxonNameDescription Name descriptions} are cloned and not reused.<BR>
+	 * {@link TypeDesignationBase Type designations} are cloned and not reused.<BR>
 	 *  
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
