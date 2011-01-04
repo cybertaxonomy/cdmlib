@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -246,9 +247,9 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	 * @param text		the string representing the content of the text data
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
-	 * @return			the language string
 	 * @see    	   		#getMultilanguageText()
 	 * @see    	   		#putText(LanguageString)
+	 * @return			the language string
 	 */
 	public LanguageString putText(String text, Language language) {
 		fixHashMapHibernateBug();
@@ -276,14 +277,15 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	}
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the multilanguage text representing the content of <i>this</i> text data.
+	 * to the multi-language text representing the content of <i>this</i> text data.
 	 * The given language string will be returned. 
 	 * 
 	 * @param languageString	the language string representing the content of
 	 * 							the text data in a particular language
-	 * @return					the language string
 	 * @see    	   				#getMultilanguageText()
 	 * @see    	   				#putText(String, Language)
+	 * @see						HashMap#put(Object, Object)
+	 * @return					the previous language string associated with key, or null if there was no mapping for key
 	 */
 	public LanguageString putText(LanguageString languageString) {
 		
