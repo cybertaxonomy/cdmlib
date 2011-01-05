@@ -249,7 +249,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	 * @param language	the language in which the text string is formulated
 	 * @see    	   		#getMultilanguageText()
 	 * @see    	   		#putText(LanguageString)
-	 * @return			the language string
+	 * @return			the previous language string associated with the given Language, or null if there was no mapping for the given Language
 	 */
 	public LanguageString putText(String text, Language language) {
 		fixHashMapHibernateBug();
@@ -304,7 +304,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	 *
 	 * @param  language	the language in which the language string to be removed
 	 * 					has been formulated
-	 * @return			the language string associated with the given language
+	 * @return			the language string associated with the given language or null if there was no mapping for the given Language
 	 * @see     		#getMultilanguageText()
 	 */
 	public LanguageString removeText(Language language) {
