@@ -136,9 +136,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<T> includes = new HashSet<T>();
 	
-	/**
-	 * FIXME should be many-to-many?
-	 */
 	@XmlElementWrapper(name = "Media")
 	@XmlElement(name = "Medium")
     @XmlIDREF
