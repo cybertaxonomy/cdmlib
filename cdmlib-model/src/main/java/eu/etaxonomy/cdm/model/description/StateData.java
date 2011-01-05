@@ -68,7 +68,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Audited
 public class StateData extends VersionableEntity implements IModifiable, IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -4380314126624505415L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StateData.class);
 	
 	@XmlElement(name = "State")
