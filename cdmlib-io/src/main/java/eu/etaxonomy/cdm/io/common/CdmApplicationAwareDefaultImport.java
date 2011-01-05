@@ -194,8 +194,15 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 				(result? "(successful)":"(with errors)")) ;
 		return result;
 	}
-	
-	private String getComponentBeanName(Class<ICdmIO> ioClass){
+
+	/**
+	 * Returns the name of a component bean. If the name is defined in the Component annotation this name is returned.
+	 * Otherwise the class name is returned with starting lower case.
+	 * @param ioClass
+	 * @return
+	 * @throws IllegalArgumentException if the class does not have a "Component" annotation
+	 */
+	public static String getComponentBeanName(Class<ICdmIO> ioClass) throws IllegalArgumentException {
 		Component component = ioClass.getAnnotation(Component.class);
 		if (component == null){
 			throw new IllegalArgumentException("Class " + ioClass.getName() + " is missing a @Component annotation." );
