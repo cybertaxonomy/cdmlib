@@ -558,6 +558,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		if (! protectedTitleCache){
 			result.titleCache = null;
 		}
+		
+		result.initListener();
 		return result;
 	}
 	

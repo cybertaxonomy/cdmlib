@@ -358,6 +358,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	protected void clone(CdmBase clone){
 		clone.setCreatedBy(createdBy);
 		clone.setId(id);
+		clone.propertyChangeSupport=new PropertyChangeSupport(clone);
 		//Constructor Attributes
 		//clone.setCreated(created);
 		//clone.setUuid(getUuid());
@@ -370,6 +371,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		CdmBase result = (CdmBase)super.clone();
+		result.propertyChangeSupport=new PropertyChangeSupport(result);
 		
 		//TODO ?
 		result.setId(0);

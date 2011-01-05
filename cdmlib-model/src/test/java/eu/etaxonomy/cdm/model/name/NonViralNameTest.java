@@ -385,6 +385,9 @@ public class NonViralNameTest extends EntityTestBase {
 		Assert.assertEquals("NameCache should be equal", nonViralName1.getNameCache(), clone.getNameCache());
 		Assert.assertEquals("AuthorshipCache should be equal", nonViralName1.getAuthorshipCache(), clone.getAuthorshipCache());
 		
+		clone.setSpecificEpithet("sub");
+		Assert.assertEquals("NameCache should be changed", "Aus (\u00D7Infaus) sub subsp. infrabus", clone.getNameCache());
+		
 		//hybrid parents of clone 
 		Assert.assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getChildRelationships().size());
 		Set<NonViralName> parentSet = new HashSet<NonViralName>();
