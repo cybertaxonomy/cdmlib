@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration implements ICdmIO<STATE> {
-	private static Logger logger = Logger.getLogger(CdmIoBase.class);
+	private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
 	protected String ioName = null;
 
