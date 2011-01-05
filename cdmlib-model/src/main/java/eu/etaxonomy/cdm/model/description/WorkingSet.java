@@ -17,10 +17,13 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -82,7 +85,13 @@ public class WorkingSet extends AnnotatableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name="workingset_descriptionbase",
+        joinColumns=@JoinColumn(name="WorkingSet_id"),
+        inverseJoinColumns=@JoinColumn(name="descriptions_id")
+    )
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
 	
 	/** 
@@ -232,25 +241,32 @@ public class WorkingSet extends AnnotatableEntity {
 	 * working set.
 	 * 
 	 * @param description	the description to be added to <i>this</i> working set
-	 * @see    	   								#getDescriptions()
-	 * @see    	   								WorkingSet#addDescription(DescriptionBase)
+	 * @see    	   			#getDescriptions()
+	 * @see    	   			WorkingSet#addDescription(DescriptionBase)
 	 */
-	public void addDescription(DescriptionBase description) {
-		logger.debug("addDescription");
-		this.descriptions.add(description);
+	public boolean addDescription(DescriptionBase description) {
+		boolean result = this.descriptions.add(description);
+		if (! description.getWorkingSets().contains(this)){
+			description.addWorkingSet(this);
+		}
+		return result;
 	}
 	
 	/** 
 	 * Removes one element from the set of {@link #getDescriptions() descriptions} involved
 	 * in <i>this</i> working set.<BR>
 	 *
-	 * @param  description   the description which should be removed
-	 * @see     		  						#getDescriptions()
-	 * @see     		  						#addDescription(DescriptionBase)
-	 * @see     		  						WorkingSet#removeDescription(DescriptionBase)
+	 * @param  description	the description which should be removed
+	 * @see     		 	#getDescriptions()
+	 * @see     		  	#addDescription(DescriptionBase)
+	 * @see     		  	WorkingSet#removeDescription(DescriptionBase)
 	 */
-	public void removeDescription(DescriptionBase description) {
-		this.descriptions.remove(description);
+	public boolean removeDescription(DescriptionBase description) {
+		boolean result = this.descriptions.remove(description);
+		if (description.getWorkingSets().contains(this)){
+			description.removeWorkingSet(this);
+		}
+		return result;
 	}
 	
 }

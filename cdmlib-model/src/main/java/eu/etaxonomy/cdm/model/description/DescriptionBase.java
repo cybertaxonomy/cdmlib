@@ -18,8 +18,10 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -33,16 +35,17 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * The upmost (abstract) class for a description as a whole (with possibly
@@ -97,7 +100,16 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
     //@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
     @JoinTable(name = "DescriptionBase_Feature")
-	private Set<Feature> descriptiveSystem = new HashSet<Feature>();
+	@Deprecated //see getDescriptiveSystem
+    private Set<Feature> descriptiveSystem = new HashSet<Feature>();
+	
+	@XmlElementWrapper(name = "WorkingSets")
+	@XmlElement(name = "WorkingSet")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "descriptions")
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private Set<WorkingSet> workingSets = new HashSet<WorkingSet>();
 	
 	@XmlElementWrapper(name = "DescriptionElements")
     @XmlElements({
@@ -315,6 +327,33 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	public void setImageGallery(boolean imageGallery) {
 		this.imageGallery = imageGallery;
 	}
+
+
+	public Set<WorkingSet> getWorkingSets() {
+		return workingSets;
+	}
+	
+	public boolean addWorkingSet(WorkingSet workingSet){
+		boolean result = this.workingSets.add(workingSet);
+		if (! workingSet.getDescriptions().contains(this)){
+			workingSet.addDescription(this);
+		}
+		return result;
+	}
+	
+	public boolean removeWorkingSet(WorkingSet workingSet){
+		boolean result = this.workingSets.remove(workingSet);
+		if (workingSet.getDescriptions().contains(this)){
+			workingSet.addDescription(this);
+		}
+		return result;
+	}
+
+	protected void setWorkingSets(Set<WorkingSet> workingSets) {
+		this.workingSets = workingSets;
+	}
+
+
 	
 	@Transient
 	public boolean hasStructuredData(){
@@ -385,5 +424,5 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 			return null;
 		}
 		
-	}	
+	}
 }

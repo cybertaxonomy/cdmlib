@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -120,12 +121,13 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
-	private Set<Feature> featureSet = new HashSet<Feature>();
+//	private Set<Feature> featureSet = new HashSet<Feature>();
 	private Set<Reference> sources = new HashSet<Reference>();
 	private Reference sec = ReferenceFactory.newDatabase();
 	private Reference sourceReference = null;
 
 	private Language datasetLanguage = null;
+	private WorkingSet workingSet = null;
 
 	private Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
 
@@ -223,17 +225,27 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 			<Detail>This is an example for a very simple SDD file, representing a single description with categorical, quantitative, and text character. Compare also the "Fragment*" examples, which contain more complex examples in the form of document fragments. Intended for version="SDD 1.1".</Detail>
 	       </Representation>
 		 */
+
+		
+		
 		Element elRepresentation = parent.getChild("Representation",sddNamespace);
 		String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 		String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+		
+		//new
+		Representation representation = Representation.NewInstance(detail, label, null, datasetLanguage);
+		workingSet.addRepresentation(representation);
+		
 
-		sec.setTitleCache(label, true);
-
-		if (detail != null) {
-			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-			annotation.setAnnotationType(AnnotationType.EDITORIAL());
-			sec.addAnnotation(annotation);
-		}
+		//old
+//		sec.setTitleCache(label, true);
+//
+//		if (detail != null) {
+//			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
+//			annotation.setAnnotationType(AnnotationType.EDITORIAL());
+//			sec.addAnnotation(annotation);
+//		}
+		
 
 		List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
 
@@ -523,6 +535,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		boolean success = true;
 		SDDImportConfigurator sddConfig = state.getConfig();
 
+		workingSet = WorkingSet.NewInstance();
 		importDatasetLanguage(elDataset,sddConfig);
 		importDatasetRepresentation(elDataset, sddNamespace);
 		importRevisionData(elDataset, sddNamespace);
@@ -629,6 +642,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		for (FeatureTree featureTree : featureTrees) {
 			getFeatureTreeService().save(featureTree);
 		}
+		getWorkingSetService().save(workingSet);
 		for (Classification classification : classifications) {
 			getClassificationService().save(classification);
 		}
@@ -709,7 +723,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 	protected void importDatasetLanguage(Element elDataset, SDDImportConfigurator sddConfig){
 		String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
 
-		if (!nameLang.equals("")) {
+		if (StringUtils.isNotBlank(nameLang)) {
 			String iso = nameLang.substring(0, 2);
 			datasetLanguage = getTermService().getLanguageByIso(iso);
 		} else {
@@ -1157,7 +1171,9 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				taxon.addDescription(taxonDescription);
 			}
 //			
-			taxonDescription.setDescriptiveSystem(featureSet);
+			workingSet.addDescription(taxonDescription);
+			
+//OLD			taxonDescription.setDescriptiveSystem(featureSet);
 
 			taxonDescriptions.put(idCD, taxonDescription);//FIXME
 
@@ -1229,7 +1245,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 				nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
 			}				
 		} else {							
-			logger.info("creating new Taxon from TaxonName" + nonViralName.getTitleCache());
+			logger.info("creating new Taxon from TaxonName '" + nonViralName.getTitleCache()+"'");
 			taxon = Taxon.NewInstance(nonViralName, sec);
 		}
 		
@@ -1602,10 +1618,12 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 									//											rb.addMedia(me);
 									//										}
 									//									}
-								}/* else if (lcb.get(k) instanceof TaxonNameBase){
-									TaxonNameBase tb = (TaxonNameBase) lcb.get(k);
-									tb.addMedia(media);
-							}*/
+//								 else if (lcb.get(k) instanceof TaxonNameBase){
+//									TaxonNameBase tb = (TaxonNameBase) lcb.get(k);
+//									tb.addMedia(media);
+								} else {
+									logger.warn("Can't handle associated media for " + lcb.get(k).getId() + "(" +  lcb.get(k).getClass().getSimpleName()+")"  );
+								}
 							}
 						}
 					}
@@ -1704,16 +1722,22 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
-					FeatureTree feattree =  FeatureTree.NewInstance();
-					importRepresentation(elCharacterTree, sddNamespace, feattree, "", sddConfig);
-					FeatureNode root = feattree.getRoot();
-					List<Element> listelNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
+					FeatureTree featureTree =  FeatureTree.NewInstance();
+					importRepresentation(elCharacterTree, sddNamespace, featureTree, "", sddConfig);
+					FeatureNode root = featureTree.getRoot();
+					List<Element> listeOfNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
 
 					//Nodes of CharacterTrees in SDD always refer to DescriptiveConcepts
-					for (Element elNodes : listelNodes) {
+					for (Element elNodes : listeOfNodes) {
 						handleCharacterNodes(sddNamespace, root, elNodes);
 					}
-					featureTrees.add(feattree);
+					featureTrees.add(featureTree);
+					if (workingSet.getDescriptiveSystem() != null){
+						//TODO how to handle multiple 
+						logger.warn("Multiple feature trees not yet supported");
+					}else{
+						workingSet.setDescriptiveSystem(featureTree);
+					}
 				}
 
 				catch (Exception e) {
