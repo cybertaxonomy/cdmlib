@@ -68,7 +68,17 @@ public class SchemaUpdater_30_31 extends SchemaUpdaterBase {
 		String stepName;
 		
 		//drop unique index for DefinedTermBase_media.media_id
-		UniqueIndexDropper step = UniqueIndexDropper.NewInstance("DefinedTermBase_media", "media_id", ! INCLUDE_AUDIT);
+		ISchemaUpdaterStep step = UniqueIndexDropper.NewInstance("DefinedTermBase_media", "media_id", ! INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//drop unique index for StateData_DefinedTermBase.modifier_id
+		//this was part of schema version 2.5 but an updater was never written
+		step = UniqueIndexDropper.NewInstance("StateData_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//drop unique index for StateData_DefinedTermBase.modifier_id
+		//this was part of schema version 2.5 but an updater was never written
+		step = UniqueIndexDropper.NewInstance("StatisticalMeasurementValue_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		return stepList;

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -64,8 +65,8 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@OneToMany(fetch = FetchType.LAZY)
-	@NotNull // avoids creating a UNIQUE key for this field
+	@ManyToMany(fetch = FetchType.LAZY)
+//	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "StatisticalMeasureType")
