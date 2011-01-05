@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Audited
 public class StatisticalMeasurementValue extends VersionableEntity implements IModifiable, Cloneable{
 	private static final long serialVersionUID = -3576311887760351982L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 	
 	@XmlElement(name = "Value")
