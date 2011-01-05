@@ -141,7 +141,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Media> media = new HashSet<Media>();
 	
