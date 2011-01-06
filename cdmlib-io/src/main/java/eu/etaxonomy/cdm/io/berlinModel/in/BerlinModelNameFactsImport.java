@@ -65,7 +65,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	/**
 	 * write info message after modCount iterations
 	 */
-	private int modCount = 50;
+	private int modCount = 500;
 	private static final String pluralString = "name facts";
 	private static final String dbTableName = "NameFact";
 
