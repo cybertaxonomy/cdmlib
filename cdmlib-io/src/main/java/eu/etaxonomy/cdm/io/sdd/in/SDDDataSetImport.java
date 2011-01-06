@@ -89,8 +89,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
- * @author h.fradin
- * @created 24.10.2008
+ * This class is not used yet. It is meant for refactoring the SDD import.
+ * 
+ * @author a.mueller
+ * @created 06.01.2011
  * @version 1.0
  */
 @Component
