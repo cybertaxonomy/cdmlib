@@ -68,7 +68,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class TaxonInteraction extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -5014025677925668627L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
 	
 	@XmlElement(name = "Description")
