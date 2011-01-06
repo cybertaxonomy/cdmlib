@@ -238,6 +238,18 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
 		return MultilanguageTextHelper.getPreferredLanguageString(getMultilanguageText(), languages);
 	}
+
+	private void fixHashMapHibernateBug() {
+		//workaround for key problem
+		if(! isHashMapHibernateBugFixed){
+			HashMap<Language, LanguageString> tmp = new HashMap<Language, LanguageString>();
+			tmp.putAll(multilanguageText);
+			multilanguageText.clear();
+			multilanguageText.putAll(tmp);
+
+			isHashMapHibernateBugFixed = true;
+		}
+	}
 	
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
@@ -264,17 +276,6 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 		return (result == null ? null : result);
 	}
 
-	private void fixHashMapHibernateBug() {
-		//workaround for key problem
-		if(! isHashMapHibernateBugFixed){
-			HashMap<Language, LanguageString> tmp = new HashMap<Language, LanguageString>();
-			tmp.putAll(multilanguageText);
-			multilanguageText.clear();
-			multilanguageText.putAll(tmp);
-
-			isHashMapHibernateBugFixed = true;
-		}
-	}
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the multi-language text representing the content of <i>this</i> text data.
