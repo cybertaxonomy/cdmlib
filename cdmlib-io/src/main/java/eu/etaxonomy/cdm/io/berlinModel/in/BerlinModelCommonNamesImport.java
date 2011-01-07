@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * FIXME TO BE IMPLEMENTED (Common names)
  * 
  * @author a.mueller
  * @created 20.03.2008
@@ -421,8 +420,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param iso639_1
 	 * @return
 	 */
-	private Language getLanguageFromIsoMap(Map<String, Language> iso639Map,
-			String iso639_2, String iso639_1) {
+	private Language getLanguageFromIsoMap(Map<String, Language> iso639Map,	String iso639_2, String iso639_1) {
 		Language language;
 		language = iso639Map.get(iso639_2);
 		if (language == null){
@@ -468,7 +466,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			String[] regionFkArray = strRegionFks.split(",");
 			for (String regionFk: regionFkArray){
 				regionFk = regionFk.trim();
-				if (! StringUtils.isNumeric(regionFk)){
+				if (! StringUtils.isNumeric(regionFk) || "".equals(regionFk)  ){
 					result = false;
 					logger.warn("RegionFk is not numeric: " + regionFk);
 				}else{
