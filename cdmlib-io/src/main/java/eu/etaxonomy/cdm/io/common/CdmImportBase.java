@@ -193,6 +193,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			namedArea = (NamedArea)getTermService().find(uuid);
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
+				//FIXME define vocabulary
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
