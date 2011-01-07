@@ -35,7 +35,7 @@ public class BerlinModelCommonNamesImportValidator implements IOValidator<Berlin
 		boolean result = true;
 		logger.warn("Checking for common names not yet implemented");
 		result &= checkUnreferredNameUsedInSource(state.getConfig());
-		//result &= checkPartOfJournal(bmiConfig);
+		result &= checkUnreferredLanguageRefFk(state.getConfig());
 		
 		return result;
 	}
@@ -84,6 +84,37 @@ public class BerlinModelCommonNamesImportValidator implements IOValidator<Berlin
 						"\n  TaxonRefFk: " + refFk + "\n  TaxonId" + rIdentifier + "\n NameInSourceFk: " + nameInSourceFk + "\n");
 			}
 			if (i > 0){
+				System.out.println(" ");
+			}
+			
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+	
+	private boolean checkUnreferredLanguageRefFk(BerlinModelImportConfigurator config){
+		try {
+			boolean result = true;
+			Source source = config.getSource();
+			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
+					" FROM emCommonName " +
+					" WHERE (emCommonName.LanguageRefFk NOT IN " + 
+							"(SELECT ReferenceId FROM emLanguageReference)) AND " + 
+						"(emCommonName.LanguageRefFk is NOT NULL)";
+			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+			rs.next();
+			int count = rs.getInt("n");
+			if (count > 0){
+				System.out.println("========================================================");
+				logger.warn("There are " + count + " common names that have a languageRefFk which can not be found in the emLanguageRefernce table.");
+
+				System.out.println("========================================================");
+			}
+			if (count > 0){
 				System.out.println(" ");
 			}
 			
