@@ -78,6 +78,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 @Audited
 public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final long serialVersionUID = 6248434369557403036L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
 	
 	protected static Map<UUID, NamedArea> termMap = null;		
@@ -461,6 +462,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		
 		if (this.level != null){
 			level = this.level.getLabel();
+		}else{
+			level = "no level";
 		}
 		label = this.getLabel();
 		result = "[" + level + ", " + label + "]";
