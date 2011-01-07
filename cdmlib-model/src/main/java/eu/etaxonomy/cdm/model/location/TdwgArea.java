@@ -90,7 +90,7 @@ public class TdwgArea extends NamedArea {
 		}
 		UUID uuid = abbrevMap.get(tdwgAbbreviation);
 		if (uuid == null){
-			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgAbbreviation));
+			logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgAbbreviation));
 			return null;
 		}
 		return TdwgArea.getTermByUuid(uuid);
@@ -108,7 +108,7 @@ public class TdwgArea extends NamedArea {
 		}
 		UUID uuid = labelMap.get(tdwgLabel);
 		if (uuid == null){
-			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
+			logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
 			return null;
 		}
 		return TdwgArea.getTermByUuid(uuid);
