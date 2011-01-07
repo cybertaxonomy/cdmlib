@@ -64,7 +64,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	public static final String NAMESPACE = "common name";
 	
 	
-	private static int modCount = 10000;
 	private static final String pluralString = "common names";
 	private static final String dbTableName = "emCommonName";
 
@@ -405,6 +404,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					logger.warn("Language for code ISO693-2 '" + iso639_2 + "' and ISO693-1 '" + iso639_1 + "' was not found");
 				}
 			}
+		} else if ("unknown".equals(languageString)){
+			language = Language.UNKNOWN_LANGUAGE();
 		}else{
 			logger.warn("language ISO 639_1 and ISO 639_2 were empty for " + languageString);
 			language = null;
