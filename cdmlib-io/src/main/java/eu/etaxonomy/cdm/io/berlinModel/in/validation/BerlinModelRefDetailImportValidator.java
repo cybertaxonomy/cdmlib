@@ -106,7 +106,7 @@ public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinMo
 			Source source = state.getConfig().getSource();
 			String strQuery = 
 				"SELECT count(*) AS n FROM RefDetail " + 
-				" WHERE (Notes IS NOT NULL) AND (RTRIM(LTRIM(IdInSource)) <> '')";
+				" WHERE (Notes IS NOT NULL) AND (RTRIM(LTRIM(Notes)) <> '')";
 			ResultSet rs = source.getResultSet(strQuery);
 			rs.next();
 			int n;

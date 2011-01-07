@@ -96,6 +96,33 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 		}
 	}
 	
+	/**
+	 * @param state
+	 * @return
+	 */
+	private boolean checkRelPTaxonWithNotes(BerlinModelImportState state) {
+		boolean success = true;
+		try {
+			
+			Source source = state.getConfig().getSource();
+			String strQuery = 
+				"SELECT count(*) AS n FROM RelPTaxon " + 
+				" WHERE (Notes IS NOT NULL) AND (RTRIM(LTRIM(Notes)) <> '')";
+			ResultSet rs = source.getResultSet(strQuery);
+			rs.next();
+			int n;
+			n = rs.getInt("n");
+			if (n > 0){
+				System.out.println("========================================================");
+				logger.warn("There are " + n + " RelPTaxa with a note. Notes for RelPTaxa are not imported!");
+				System.out.println("========================================================");
+				success = false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return success;
+	}
 
 
 }
