@@ -230,7 +230,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				//CommonTaxonName
 				List<CommonTaxonName> commonTaxonNames = new ArrayList<CommonTaxonName>();
-				for (String regionFk : regionFkSplit){ 
+				for (String regionFk : regionFkSplit){ //
 					CommonTaxonName commonTaxonName;
 					if (commonTaxonNames.size() == 0){
 						commonTaxonName = CommonTaxonName.NewInstance(commonNameString, language);
@@ -241,7 +241,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					regionFk = regionFk.trim();
 					NamedArea area = regionMap.get(regionFk);
 					if (area == null){
-						logger.warn("Area for " + regionFk + " not defined.");
+						if (regionFkSplit.length > 1 && StringUtils.isNotBlank(regionFk)){
+							logger.warn("Area for " + regionFk + " not defined.");
+						}else{
+							//no region is defined
+						}
 					}else{
 						commonTaxonName.setArea(area);
 						TaxonDescription description = getDescription(taxon);
@@ -253,8 +257,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String strRefId = String.valueOf(refId);
 				String languageRefFk = String.valueOf(languageRefRefFk);
 				if (! CdmUtils.nullSafeEqual(strRefId, languageRefFk)){
-					logger.warn("CommonName.RefFk (" + CdmUtils.Nz(strRefId) + ") and LanguageReference.RefFk " + CdmUtils.Nz(languageRefFk) + " are not equal. I will import only languageRefFk");
+					//use strRefId if languageRefFk is null
+					if (languageRefFk == null){
+						languageRefFk = strRefId;
+					}else{
+						logger.warn("CommonName.RefFk (" + CdmUtils.Nz(strRefId) + ") and LanguageReference.RefFk " + CdmUtils.Nz(languageRefFk) + " are not equal. I will import only languageReference.RefFk");
+					}
 				}
+				
 						
 				Reference reference = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(languageRefRefFk));
 				String microCitation = null;
