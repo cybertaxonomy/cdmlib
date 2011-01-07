@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,9 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -82,7 +85,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
             " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurrence.Native, emOccurrence.Introduced, " +
             		" emOccurrence.Cultivated, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
-                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.TDWGCode " + 
+                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.TDWGCode, emArea.EMCode " + 
                 " FROM emOccurrence INNER JOIN " +  
                 	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
                 	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
@@ -122,6 +125,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 int occurrenceId = rs.getInt("OccurrenceId");
                 int newTaxonId = rs.getInt("taxonId");
                 String tdwgCodeString = rs.getString("TDWGCode");
+                String emCodeString = rs.getString("EMCode");
                 Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
                 
                 try {
@@ -136,24 +140,33 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                      }
                      
                      //Create area list
-                     List<NamedArea> tdwgAreas = new ArrayList<NamedArea>();
+                     List<NamedArea> areas = new ArrayList<NamedArea>();
                      if (tdwgCodeString != null){
                            String[] tdwgCodes = tdwgCodeString.split(";");
                            for (String tdwgCode : tdwgCodes){
-                                 NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
-                                 if (tdwgArea != null){
-                                       tdwgAreas.add(tdwgArea);
+                                 NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
+                            	 if (area == null){
+                            		 area = getOtherAreas(state, emCodeString, tdwgCodeString);
+                            	 }
+                                 if (area != null){
+                                       areas.add(area);
                                  }
                            }
                      }
                      Reference<?> sourceRef = state.getConfig().getSourceReference();
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
-                     if (tdwgAreas.size() == 0){
+                     if (areas.size()== 0){
+                		 NamedArea area = getOtherAreas(state, emCodeString, tdwgCodeString);
+                		 if (area != null){
+                             areas.add(area);
+                       }
+                	 }
+                     if (areas.size() == 0){
                     	 logger.warn("No areas defined for occurrence " + occurrenceId);
                      }
-                     for (NamedArea tdwgArea : tdwgAreas){
-                           Distribution distribution = Distribution.NewInstance(tdwgArea, status);
+                     for (NamedArea area : areas){
+                           Distribution distribution = Distribution.NewInstance(area, status);
                            if (status == null){
                         	   AnnotationType annotationType = AnnotationType.EDITORIAL();
                         	   Annotation annotation = Annotation.NewInstance(alternativeStatusString, annotationType, null);
@@ -177,7 +190,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                             	   duplicate.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getConfig().getSourceReference(), null);
                             	   logger.info("Distribution is duplicate");	                           }
 	                       	} else { 
-	                       		logger.warn("Distribution " + tdwgArea.getLabel() + " ignored. OccurrenceId = " + occurrenceId);
+	                       		logger.warn("Distribution " + area.getLabel() + " ignored. OccurrenceId = " + occurrenceId);
 	                       		success = false;
 	                       	}
                      }
@@ -201,6 +214,23 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
+	}
+
+	private NamedArea getOtherAreas(BerlinModelImportState state, String emCodeString, String tdwgCodeString) {
+		String em = CdmUtils.Nz(emCodeString).trim();
+		String tdwg = CdmUtils.Nz(tdwgCodeString).trim();
+		if ("EM".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.euroMedUuid, "Euro+Med", "Euro+Med area", "EM", null, null);
+		}else if("Rf".equals(em)){
+			return WaterbodyOrCountry.RUSSIANFEDERATION();
+		}else if("KRY-OO + UKR-UK".equals(tdwg)){
+			return WaterbodyOrCountry.UKRAINE();
+		}else if("TCS-AZ + TCS-NA".equals(tdwg)){
+			return WaterbodyOrCountry.AZERBAIJANREPUBLICOF();
+		}else if("TCS-AB + TCS-AD + TCS-GR".equals(tdwg)){
+			return WaterbodyOrCountry.GEORGIA();
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)

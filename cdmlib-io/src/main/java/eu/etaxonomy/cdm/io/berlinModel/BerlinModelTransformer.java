@@ -48,7 +48,10 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
- 
+	
+	//named areas
+	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
+
 	
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
@@ -678,5 +681,6 @@ public final class BerlinModelTransformer {
 			
 			
 	}
+	
 	
 }
