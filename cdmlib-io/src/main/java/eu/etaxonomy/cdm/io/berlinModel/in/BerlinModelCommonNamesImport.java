@@ -258,7 +258,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String languageRefFk = String.valueOf(languageRefRefFk);
 				if (! CdmUtils.nullSafeEqual(strRefId, languageRefFk)){
 					//use strRefId if languageRefFk is null
-					if (languageRefFk == null){
+					if (languageRefRefFk == null){
 						languageRefFk = strRefId;
 					}else{
 						logger.warn("CommonName.RefFk (" + CdmUtils.Nz(strRefId) + ") and LanguageReference.RefFk " + CdmUtils.Nz(languageRefFk) + " are not equal. I will import only languageReference.RefFk");
