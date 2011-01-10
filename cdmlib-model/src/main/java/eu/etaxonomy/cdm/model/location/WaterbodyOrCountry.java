@@ -328,12 +328,6 @@ public class WaterbodyOrCountry extends NamedArea {
 	private static final UUID uuidRedSea = UUID.fromString("aa96ca19-46ab-c953-a494-96886eb7108a");
 	private static final UUID uuidPersianGulf = UUID.fromString("aa96ca19-46ab-4114-a494-96886eb7108a");
 
-	
-	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
-		logger.warn("Not yet implemented");
-		return null; // FIXME(uuidArgentinaArgentineRepublic);
-	}
-
 	public static final WaterbodyOrCountry AFGHANISTAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAfghanistan );}
 	public static final WaterbodyOrCountry ALBANIAPEOPLESSOCIALISTREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAlbaniaPeoplesSocialistRepublicof );}
 	public static final WaterbodyOrCountry ALGERIAPEOPLESDEMOCRATICREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAlgeriaPeoplesDemocraticRepublicof );}
