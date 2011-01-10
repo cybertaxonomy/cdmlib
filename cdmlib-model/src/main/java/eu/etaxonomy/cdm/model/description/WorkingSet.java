@@ -86,7 +86,7 @@ public class WorkingSet extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name="workingset_descriptionbase",
+        name="WorkingSet_DescriptionBase",
         joinColumns=@JoinColumn(name="WorkingSet_id"),
         inverseJoinColumns=@JoinColumn(name="descriptions_id")
     )
