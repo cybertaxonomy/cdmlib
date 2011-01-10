@@ -91,7 +91,7 @@ public class TestSpecimen {
 		
 		logger.info("Create locality");
 		NamedArea namedArea = NamedArea.NewInstance();
-		WaterbodyOrCountry country = WaterbodyOrCountry.ARGENTINA_ARGENTINE_REPUBLIC();
+		WaterbodyOrCountry country = WaterbodyOrCountry.ARGENTINAARGENTINEREPUBLIC();
 		namedArea.addWaterbodyOrCountry(country);
 		namedArea.setType(NamedAreaType.ADMINISTRATION_AREA());
 		// XX
