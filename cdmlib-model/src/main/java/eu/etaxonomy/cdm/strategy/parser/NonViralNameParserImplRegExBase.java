@@ -41,7 +41,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
     protected static String nonCapitalWord = "\\p{javaLowerCase}+";
     protected static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
-    protected static String uppercaseWord = "\\p{javaUpperCase}+";
+    protected static String uppercaseWord = "\\p{javaUpperCase}{2,}";
     
     protected static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
     protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
