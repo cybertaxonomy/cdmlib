@@ -41,7 +41,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
     protected static String nonCapitalWord = "\\p{javaLowerCase}+";
     protected static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
-    
+    protected static String uppercaseWord = "\\p{javaUpperCase}+";
     
     protected static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
     protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
@@ -174,7 +174,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + ")";  
     protected static String pSeriesPart = ",?" + fWs + "[sS]er(\\.)?" + oWs + "\\d{1,2},?";
     protected static String referenceTitleFirstPart = "(" + word + pTitleWordSeparator + ")";
-    protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + pSeriesPart + ")";  //reference title may have words seperated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word 
+    protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + pSeriesPart + ")";  //reference title may have words seperated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word 
     protected static String referenceTitleWithSepCharacters = "(((" + referenceTitle +"|\\(.+\\))"  + anySepChar + ")*" + referenceTitle + ")"; //,?
     //TODO test performance ??
     protected static String referenceTitleWithSepCharactersAndBrackets = referenceTitleWithSepCharacters + fWs + "(\\(" + referenceTitleWithSepCharacters + "\\)"+fWs+ ")?(" + referenceTitleWithSepCharacters +")?"  ; 

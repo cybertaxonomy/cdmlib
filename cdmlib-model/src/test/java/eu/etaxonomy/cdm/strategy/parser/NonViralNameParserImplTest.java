@@ -288,8 +288,8 @@ public class NonViralNameParserImplTest {
 		}
 		
 		//Species hybrid
-//		NonViralName nameTeam1 = parser.parseFullName("Aegilops ×insulae-cypri H. Scholz");
-		NonViralName name1 = parser.parseFullName("Aegilops ×insulae Scholz", botanicCode, null);
+//		NonViralName nameTeam1 = parser.parseFullName("Aegilops \u00D7insulae-cypri H. Scholz");
+		NonViralName name1 = parser.parseFullName("Aegilops \u00D7insulae Scholz", botanicCode, null);
 		assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
 		assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
 		assertFalse("Name must not have trinom hybrid bit set", name1.isTrinomHybrid());
@@ -770,6 +770,8 @@ public class NonViralNameParserImplTest {
 //		testParsable = "Hieracium antarcticum Urv. in M\u00E9m. Soc. Linn. Paris 4: 608. 1826";
 		assertTrue("Name with apostrophe is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
 
+		testParsable = "Cichorium intybus subsp. glaucum (Hoffmanns. & Link) Tzvelev in Komarov, Fl. SSSR 29: 17. 1964";
+		assertTrue("Name is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
 	}
 	
 	
