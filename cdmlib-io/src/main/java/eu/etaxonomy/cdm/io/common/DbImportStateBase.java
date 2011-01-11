@@ -24,6 +24,10 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  * @version 1.0
  */
 public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, STATE extends DbImportStateBase> extends ImportStateBase<CONFIG, CdmImportBase> implements IPartitionedState {
+	
+	public static final String CURRENT_OBJECT_NAMESPACE = "CurrentObjectNamespace";
+	public static final String CURRENT_OBJECT_ID = "CurrentObjectId";
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
 	private RelatedObjectsHelper relatedObjectsHelper = new RelatedObjectsHelper();;

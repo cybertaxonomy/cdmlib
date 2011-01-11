@@ -101,6 +101,7 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 	public CDMBASE invoke(ResultSet rs, CDMBASE cdmBase) throws SQLException {
 		try{
 	//		if (this.parameterTypes.length > 1 && DbExportStateBase.class.isAssignableFrom(parameterTypes[1])){
+			getState().addRelatedObject(getState().CURRENT_OBJECT_NAMESPACE, getState().CURRENT_OBJECT_ID, cdmBase);
 			CDMBASE result = (CDMBASE)method.invoke(objectToInvoke, rs, getState());
 	//		}else{
 	//			return (CDMBASE)method.invoke(null, rs);
