@@ -544,7 +544,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return results;
 	}
 	
-	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
+	public List<RelationshipBase> getRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    //FIXME only NameRelationships
@@ -609,7 +609,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return persistentObject.getUuid();
 	}
 	
-	public List<ZoologicalName> getAllZoologicalNames(Integer limit, Integer start){
+	public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start){
 		List <TaxonNameBase> names = new ArrayList<TaxonNameBase>();
 		List <ZoologicalName> zooNames = new ArrayList<ZoologicalName>();
 		names = super.list(ZoologicalName.class, limit, start);
