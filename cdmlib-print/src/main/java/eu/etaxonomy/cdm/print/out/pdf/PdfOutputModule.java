@@ -44,7 +44,7 @@ public class PdfOutputModule extends AbstractPublishOutputModule {
 	private static final Logger logger = Logger
 			.getLogger(PdfOutputModule.class);
 	
-	public static String STYLESHEET_RESOURCE_DEFAULT = "/eu/etaxonomy/printpublisher/out/pdf/cdmToPdf.xsl";
+	public static String STYLESHEET_RESOURCE_DEFAULT = "/eu/etaxonomy/cdm/print/out/pdf/cdmToPdf.xsl";
 		
 	/*
 	 * (non-Javadoc)
@@ -74,7 +74,7 @@ public class PdfOutputModule extends AbstractPublishOutputModule {
 	            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
 
 	            // Setup XSLT
-	            InputStream xslt = PdfOutputModule.class.getResourceAsStream(STYLESHEET_RESOURCE_DEFAULT);
+	            InputStream xslt = getXslt();
 	            TransformerFactory factory = TransformerFactory.newInstance();
 	            Transformer transformer = factory.newTransformer(new StreamSource(xslt));
 
@@ -98,5 +98,9 @@ public class PdfOutputModule extends AbstractPublishOutputModule {
 
 	public String getOutputFileSuffix() {
 		return "pdf";
+	}
+	
+	public InputStream getXslt(){
+		return PdfOutputModule.class.getResourceAsStream(STYLESHEET_RESOURCE_DEFAULT);
 	}
 }
