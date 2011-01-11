@@ -61,7 +61,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param name
 	 *            the name
 	 * @param direction
-	 *            specifies the direction of the relationship
+	 *            specifies the direction of the relationship, may be null to return all relationships
 	 * @param type
 	 *            the relationship type (or null to return all relationships)
 	 * @param pageSize
@@ -263,7 +263,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public Integer countByName(String queryString, 
 			MatchMode matchmode, List<Criterion> criteria);
 	
-	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
+	public List<RelationshipBase> getRelationships(Integer limit, Integer start); 
 	
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames();
 
@@ -289,7 +289,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 */
 	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
-	public List<ZoologicalName> getAllZoologicalNames(Integer limit, Integer start);
+	public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start);
 	
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
 

@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -39,7 +37,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -133,6 +130,48 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 	
 	/**
+	 * Return a List of name relationships in which this name is related to
+	 * another name, optionally filtered by relationship type
+	 * 
+	 * @param name
+	 *            the name on either the <i>"from side"</i> or on the
+	 *            <i>"to side"</i> of the relationship, depending on the
+	 *            <code>direction</code> of the relationship.
+	 * @param direction
+	 *            the direction of the NameRelationship, may be null to return all relationships
+	 * @param type
+	 *            the relationship type (or null to return all relationships)
+	 * @param pageSize
+	 *            The maximum number of relationships returned (can be null for
+	 *            all relationships)
+	 * @param pageNumber
+	 *            The offset (in pageSize chunks) from the start of the result
+	 *            set (0 - based)
+	 * @param orderHints
+	 *            may be null
+	 * @param propertyPaths
+	 *            properties to initialize - see
+	 *            {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of NameRelationship instances
+	 */
+	public List<NameRelationship> listNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Return a List of name relationships in which this name is related to another name, optionally filtered 
+	 * by relationship type
+	 * 
+	 * @param name the name on the <i>"from side"</i> of the relationship
+	 * @param direction the direction of the NameRelationship
+	 * @param type the relationship type (or null to return all relationships) 
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of NameRelationship instances
+	 */
+	public Pager<NameRelationship> pageNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
 	 * Return a List of relationships in which this name is related to another name, optionally filtered 
 	 * by relationship type
 	 * 
@@ -143,7 +182,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
+	 * @deprecated use {@link #listNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
+	@Deprecated
 	public List<NameRelationship> listFromNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
@@ -157,7 +198,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
+	 * @deprecated use {@link #pageNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
+	@Deprecated
 	public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
@@ -171,7 +214,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
+	 * @deprecated use {@link #listNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
+	@Deprecated
 	public List<NameRelationship> listToNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
@@ -185,7 +230,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
+	 * @deprecated use {@link #pageNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
+	@Deprecated
 	public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	

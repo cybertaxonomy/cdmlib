@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -149,7 +150,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	 */
 	@Deprecated
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
-		return dao.getAllRelationships(limit, start);
+		return dao.getRelationships(limit, start);
 	}
 	
 	/**
@@ -240,56 +241,49 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	public List<NameRelationship> listFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#listNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
+	public List<NameRelationship> listNameRelationships(TaxonNameBase name,	Direction direction, NameRelationshipType type, Integer pageSize,
+			Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 		
+		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
+
 		List<NameRelationship> results = new ArrayList<NameRelationship>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths); 
+		if (numberOfResults > 0 && (pageNumber != null && pageSize != null && numberOfResults >= (pageNumber * pageSize))) { // no point checking again
+			results = dao.getNameRelationships(name, direction, type, pageSize,	pageNumber, orderHints, propertyPaths);
 		}
 		return results;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#pageNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
+	public Pager<NameRelationship> pageNameRelationships(TaxonNameBase name, Direction direction, NameRelationshipType type, Integer pageSize,
+			Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+		List<NameRelationship> results = listNameRelationships(name, direction, type, pageSize, pageNumber, orderHints, propertyPaths);
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+	}
+
+	public List<NameRelationship> listFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 
 	public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
-		
-		List<NameRelationship> results = new ArrayList<NameRelationship>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths); 
-		}
-		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
+		List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
 	}
 	
-	public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type,
-			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-
-		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedTo, type);
-
-		List<NameRelationship> results = new ArrayList<NameRelationship>();
-		if (numberOfResults > 0) { // no point checking again
-			results = dao.getNameRelationships(name, 
-											   NameRelationship.Direction.relatedTo, 
-											   type, 
-											   pageSize, 
-											   pageNumber,
-				                               orderHints, 
-				                               propertyPaths);
-		}
-		return results;
+	public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 	
 	public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedTo, type);
-
-		List<NameRelationship> results = new ArrayList<NameRelationship>();
-		if (numberOfResults > 0) { // no point checking again
-			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedTo, type, pageSize, pageNumber,
-				orderHints, propertyPaths);
-		}
-
-		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
+		List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
 	}
-
 	
 	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, 
 			Integer pageSize, Integer pageNumber) {	
