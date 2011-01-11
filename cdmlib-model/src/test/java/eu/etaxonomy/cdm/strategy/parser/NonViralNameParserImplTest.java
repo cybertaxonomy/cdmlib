@@ -771,7 +771,7 @@ public class NonViralNameParserImplTest {
 		assertTrue("Name with apostrophe is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
 
 		testParsable = "Cichorium intybus subsp. glaucum (Hoffmanns. & Link) Tzvelev in Komarov, Fl. SSSR 29: 17. 1964";
-		assertTrue("Name is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Reference containing a word in uppercase is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
 	}
 	
 	
