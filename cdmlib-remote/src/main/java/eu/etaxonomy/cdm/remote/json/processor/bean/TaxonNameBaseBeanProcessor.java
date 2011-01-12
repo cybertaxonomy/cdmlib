@@ -104,8 +104,8 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 		//   - infraGenericEpithet	"Cicerbita"	
         //   - infraSpecificEpithet	null	
 
+		logger.debug(taxonNameBase.getTitleCache()); // DELETE
 		List<Object> taggedName = taxonNameBase.getCacheStrategy().getTaggedName(taxonNameBase);
-		
 		for (Object token : taggedName){
 			TaggedText tag = new TaggedText();
 			if (String.class.isInstance(token)){
