@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -222,11 +223,52 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
 		}
 		return this.title;
 	}
-	
+	/**
+	 * Adds the languageString to the {@link MultilanguageText multilanguage text} 
+	 * used to be the title of <i>this</i> media.
+	 * 
+	 * @param title		the languageString with the title in a particular language
+	 * @see    	   		#getTitle()
+	 * @see    	   		#putTitle(Language String)
+	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #putTitle(LanguageString) putTitle} method instead
+	 */
+	@Deprecated
 	public void addTitle(LanguageString title){
 		this.title.put(title.getLanguage(), title);
 	}
+	public void putTitle(LanguageString title){
+		this.title.put(title.getLanguage(), title);
+	}
+	
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to be the title of <i>this</i> media.
+	 * 
+	 * @param text		the title in a particular language
+	 * @param language	the language in which the title string is formulated
+	 * @see    	   		#getTitle()
+	 * @see    	   		#putTitle(LanguageString)
+	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #putTitle(Language, String) putTitle} method instead
+	 */
+	@Deprecated
 	public void addTitle(String title, Language language){
+		this.title.put(language, LanguageString.NewInstance(title, language));
+	}
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to be the title of <i>this</i> media.
+	 * 
+	 * @param language	the language in which the title string is formulated
+	 * @param text		the title in a particular language
+	 * 
+	 * @see    	   		#getTitle()
+	 * @see    	   		#putTitle(LanguageString)
+	 */
+	public void putTitle(Language language, String title){
 		this.title.put(language, LanguageString.NewInstance(title, language));
 	}
 	

@@ -153,8 +153,29 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * @return			the language string
 	 * @see    	   		#getMultilanguageText()
 	 * @see    	   		#putText(LanguageString)
+	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #putLabel(Language, String) putLabel} method
 	 */
 	public LanguageString putLabel(String label, Language language) {
+		LanguageString result = this.label.put(language , LanguageString.NewInstance(label, language));
+		return (result == null ? null : result);
+	}
+	
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language}, returns it and adds it to the multilanguage 
+	 * text representing the content of <i>this</i> text data.
+	 * 
+	 * @param language	the language in which the text string is formulated
+	 * @param text		the string representing the content of the text data
+	 * 					in a particular language
+	 *
+	 * @return			the language string
+	 * @see    	   		#getLabel()
+	 * @see    	   		#putLabel(LanguageString)
+	 * 
+	 */
+	public LanguageString putLabel(Language language, String label) {
 		LanguageString result = this.label.put(language , LanguageString.NewInstance(label, language));
 		return (result == null ? null : result);
 	}
@@ -166,8 +187,30 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * @param languageString	the language string representing the content of
 	 * 							the text data in a particular language
 	 * @return					the language string
-	 * @see    	   				#getMultilanguageText()
-	 * @see    	   				#putText(String, Language)
+	 * @see    	   				#getLabel()
+	 * @see    	   				#putLabel(String, Language)
+	 */
+	public LanguageString putLabel(LanguageString languageString) {
+		if (languageString == null){
+			return null;
+		}else{
+			Language language = languageString.getLanguage();
+			return this.label.put(language, languageString);
+		}
+	}
+	
+	/**
+	 * Adds a translated {@link LanguageString text in a particular language}
+	 * to the label.
+	 * The given language string will be returned. 
+	 * 
+	 * @param languageString	the language string representing the content of
+	 * 							the text data in a particular language
+	 * @return					the language string
+	 * @see    	   				#getLabel()
+	 * @see    	   				#putLabel(String, Language)
+	 * @deprecated				This method will be removed in v4.0
+	 * 							Use the {@link #putLabel(LanguageString) putLabel} method instead 
 	 */
 	public LanguageString putText(LanguageString languageString) {
 		if (languageString == null){

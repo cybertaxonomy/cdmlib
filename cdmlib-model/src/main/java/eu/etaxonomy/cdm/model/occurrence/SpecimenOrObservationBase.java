@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -297,13 +298,66 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		return this.definition;
 	}
 	
+	/**
+	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text} 
+	 * used to define <i>this</i> specimen or observation.
+	 * 
+	 * @param description	the languageString in with the title string and the given language
+	 *  
+	 * @see    	   		#getDefinition()
+	 * @see    	   		#putDefinition(Language, String)
+	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #putDefinition(LanguageString) putDefinition} method instead
+	 */
+	@Deprecated
 	public void addDefinition(LanguageString description){
 		this.definition.put(description.getLanguage(),description);
 	}
-	
-	public void addDefinition(String text, Language language){
+	/**
+	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text} 
+	 * used to define <i>this</i> specimen or observation.
+	 * 
+	 * @param description	the languageString in with the title string and the given language
+	 *  
+	 * @see    	   		#getDefinition()
+	 * @see    	   		#putDefinition(Language, String)
+	 */
+	public void putDefinition(LanguageString description){
+		this.definition.put(description.getLanguage(),description);
+	}
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to define <i>this</i> specimen or observation.
+	 * 
+	 * @param language	the language in which the title string is formulated
+	 * @param text		the definition in a particular language
+	 * 
+	 * @see    	   		#getDefinition()
+	 * @see    	   		#putDefinition(LanguageString)
+	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #putDefinition(Language String) putDefinition} method instead
+	 */
+	@Deprecated
+	public void addDefinition( String text, Language language){
 		this.definition.put(language, LanguageString.NewInstance(text, language));
 	}
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to define <i>this</i> specimen or observation.
+	 * 
+	 * @param language	the language in which the title string is formulated
+	 * @param text		the definition in a particular language
+	 * 
+	 * @see    	   		#getDefinition()
+	 * @see    	   		#putDefinition(LanguageString)
+	 */
+	public void putDefinition(Language language, String text){
+		this.definition.put(language, LanguageString.NewInstance(text, language));
+	}
+	
+	
 	public void removeDefinition(Language lang){
 		this.definition.remove(lang);
 	}

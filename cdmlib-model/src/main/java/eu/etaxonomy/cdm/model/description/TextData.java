@@ -262,6 +262,8 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	 * @see    	   		#getMultilanguageText()
 	 * @see    	   		#putText(LanguageString)
 	 * @return			the previous language string associated with the given Language, or null if there was no mapping for the given Language
+	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #putText(Language, String) putText} method instead
 	 */
 	public LanguageString putText(String text, Language language) {
 		fixHashMapHibernateBug();
@@ -275,7 +277,34 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 		LanguageString result = this.multilanguageText.put(language , languageString);
 		return (result == null ? null : result);
 	}
+	
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language}, returns it and adds it to the multilanguage 
+	 * text representing the content of <i>this</i> text data.
+	 * 
+	 * @param language	the language in which the text string is formulated
+	 * @param text		the string representing the content of the text data
+	 * 					in a particular language
+	 * 
+	 * @see    	   		#getMultilanguageText()
+	 * @see    	   		#putText(LanguageString)
+	 * @return			the previous language string associated with the given Language, or null if there was no mapping for the given Language
+	 */
+	public LanguageString putText(Language language, String text) {
+		fixHashMapHibernateBug();
+		//** end workaround
+		LanguageString languageString = multilanguageText.get(language);
+		if (languageString != null){
+			languageString.setText(text);
+		}else{
+			languageString = LanguageString.NewInstance(text, language);
+		}
+		LanguageString result = this.multilanguageText.put(language , languageString);
+		return (result == null ? null : result);
+	}
 
+		
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the multi-language text representing the content of <i>this</i> text data.

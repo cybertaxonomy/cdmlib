@@ -283,9 +283,25 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 * @param description	the language string describing the validity
 	 * 						in a particular language
 	 * @see    	   			#getModifyingText()
-	 * @see    	   			#addModifyingText(String, Language)
+	 * @see    	   			#putModifyingText(Language, String)
+	 * @deprecated 			should follow the put semantic of maps, this method will be removed in v4.0
+	 * 						Use the {@link #putModifyingText(LanguageString) putModifyingText} method 
 	 */
 	public LanguageString addModifyingText(LanguageString description){
+		return this.modifyingText.put(description.getLanguage(),description);
+	}
+	
+	/**
+	 * Adds a translated {@link LanguageString text in a particular language}
+	 * to the {@link MultilanguageText multilanguage text} used to qualify the validity
+	 * of <i>this</i> description element.
+	 * 
+	 * @param description	the language string describing the validity
+	 * 						in a particular language
+	 * @see    	   			#getModifyingText()
+	 * @see    	   			#putModifyingText(Language, String)
+	 */
+	public LanguageString putModifyingText(LanguageString description){
 		return this.modifyingText.put(description.getLanguage(),description);
 	}
 	/**
@@ -297,9 +313,28 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
 	 * @see    	   		#getModifyingText()
-	 * @see    	   		#addModifyingText(LanguageString)
+	 * @see    	   		#putModifyingText(LanguageString)
+	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #putModifyingText(Language, String) putModifyingText} method
 	 */
 	public LanguageString addModifyingText(String text, Language language){
+		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
+	}
+	
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to qualify the validity of <i>this</i> description element.
+	 * 
+	 * @param language	the language in which the text string is formulated
+	 * @param text		the string describing the validity
+	 * 					in a particular language
+	 * 
+	 * @see    	   		#getModifyingText()
+	 * @see    	   		#putModifyingText(LanguageString)
+	 * 
+	 */
+	public LanguageString putModifyingText(Language language, String text){
 		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
 	}
 	/** 
