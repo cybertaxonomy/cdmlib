@@ -889,5 +889,17 @@ public class Rank extends OrderedTermBase<Rank> {
 		abbrevMap.put(abbrevLabel, rank.getUuid());
 		labelMap.put(label.toLowerCase(), rank.getUuid());	
 	}
+	
+	
+	/**
+	 * It is nessecary to skip the vocabulary check, otherwise we would have
+	 * problems in some CacheStrategies, due to uninitialized Vocabularies.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.OrderedTermBase#compareTo(eu.etaxonomy.cdm.model.common.OrderedTermBase)
+	 */
+	@Override
+	public int compareTo(Rank orderedTerm) {
+		return performCompareTo(orderedTerm, true);
+	}
 
 }
