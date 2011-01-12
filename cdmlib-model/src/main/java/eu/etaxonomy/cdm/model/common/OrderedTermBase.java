@@ -86,8 +86,23 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	 * {@link java.lang.Comparable#compareTo(java.lang.Object)}
 	 */
 	public int compareTo(T orderedTerm) {
-		if (this.vocabulary == null || ! this.vocabulary.getUuid().equals(orderedTerm.vocabulary.getUuid())){
-			throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared");
+		return performCompareTo(orderedTerm, false);
+	}
+	
+	/**
+	 * Compares this OrderedTermBase with the specified OrderedTermBase for
+	 * order. Returns a negative integer, zero, or a positive integer as the
+	 * orderId of this object is greater than, equal to, or less than the
+	 * specified object. This Integer compare logic of this method is the
+	 * <b>inverse logic</b> of the the one implemented in
+	 * {@link java.lang.Comparable#compareTo(java.lang.Object)}
+	 */
+	protected int performCompareTo(T orderedTerm, boolean skipVocabularyCheck) {
+		
+		if(!skipVocabularyCheck){
+			if (this.vocabulary == null || ! this.vocabulary.getUuid().equals(orderedTerm.vocabulary.getUuid())){
+				throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared");
+			}
 		}
 		
 		int orderThat;
