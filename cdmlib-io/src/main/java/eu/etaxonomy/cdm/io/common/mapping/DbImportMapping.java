@@ -77,7 +77,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 		if (secondPath == true && secondPathMapping != null){
 			return secondPathMapping.invoke(rs, objectsToSave);
 		} else {
-		CdmBase objectToSave = null;
+			CdmBase objectToSave = null;
 			//		try {
 			for (CdmAttributeMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbImportMapper){
