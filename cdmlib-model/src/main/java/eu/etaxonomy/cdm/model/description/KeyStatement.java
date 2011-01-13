@@ -157,8 +157,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * 					Use the {@link #putLabel(Language, String) putLabel} method
 	 */
 	public LanguageString putLabel(String label, Language language) {
-		LanguageString result = this.label.put(language , LanguageString.NewInstance(label, language));
-		return (result == null ? null : result);
+		return putLabel(language, label);
 	}
 	
 	/**
@@ -213,13 +212,25 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * 							Use the {@link #putLabel(LanguageString) putLabel} method instead 
 	 */
 	public LanguageString putText(LanguageString languageString) {
-		if (languageString == null){
-			return null;
-		}else{
-			Language language = languageString.getLanguage();
-			return this.label.put(language, languageString);
-		}
+		return putLabel(languageString);
 	}
+	
+	/** 
+	 * Removes from label the one {@link LanguageString language string}
+	 * with the given {@link Language language}. Returns the removed
+	 * language string.
+	 *
+	 * @param  language	the language in which the language string to be removed
+	 * 					has been formulated
+	 * @return			the language string associated with the given language
+	 * @see     		#getLabelText()
+	 * @deprecated		This method will be removed in v4.0
+	 * 					Use the {@link #removeLabel(Language)} method instead 
+	 */
+	public LanguageString removeText(Language language) {
+		return removeLabel(language);
+	}
+
 	/** 
 	 * Removes from label the one {@link LanguageString language string}
 	 * with the given {@link Language language}. Returns the removed
@@ -230,9 +241,10 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * @return			the language string associated with the given language
 	 * @see     		#getLabelText()
 	 */
-	public LanguageString removeText(Language language) {
+	public LanguageString removeLabel(Language language) {
 		return this.label.remove(language);
 	}
+	
 	
 	/** 
 	 * Returns the number of {@link Language languages} in which the label
