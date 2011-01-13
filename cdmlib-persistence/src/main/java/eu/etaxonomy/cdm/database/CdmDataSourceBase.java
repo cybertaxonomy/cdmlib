@@ -103,8 +103,12 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			return null;
 		}
 		Connection connection = getConnection();
-		Statement statement = connection.createStatement();
-		resultSet = statement.executeQuery(query);
+		if (connection != null){
+			Statement statement = connection.createStatement();
+			resultSet = statement.executeQuery(query);
+		}else{
+			throw new RuntimeException("Could not establish connection to database");
+		}
 		return resultSet;
 
 	}
