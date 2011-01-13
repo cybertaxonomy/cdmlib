@@ -106,6 +106,7 @@ public class TdwgArea extends NamedArea {
 		if (labelMap == null){
 			initMaps();
 		}
+		tdwgLabel = tdwgLabel.toLowerCase();
 		UUID uuid = labelMap.get(tdwgLabel);
 		if (uuid == null){
 			logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
@@ -115,6 +116,7 @@ public class TdwgArea extends NamedArea {
 	}
 	
 	public static boolean isTdwgAreaLabel(String label){
+		label = (label == null? null : label.toLowerCase());
 		if (labelMap.containsKey(label)){
 			return true;
 		}else{
@@ -160,7 +162,7 @@ public class TdwgArea extends NamedArea {
 		Language lang = Language.DEFAULT();
 		Representation representation = area.getRepresentation(lang);
 		String tdwgAbbrevLabel = representation.getAbbreviatedLabel();
-		String tdwgLabel = representation.getLabel();
+		String tdwgLabel = representation.getLabel().toLowerCase();
 		if (tdwgAbbrevLabel == null){
 			logger.warn("tdwgLabel = null");
 			return;

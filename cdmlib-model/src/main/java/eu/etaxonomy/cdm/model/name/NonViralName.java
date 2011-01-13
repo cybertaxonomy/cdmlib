@@ -1301,6 +1301,58 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		}
 	}
 	
+
+	/**
+	 * Tests if the given name has any authors.
+	 * @return false if no author ((ex)combination or (ex)basionym) exists, true otherwise
+	 */
+	public boolean hasAuthors() {
+		return (this.getCombinationAuthorTeam() != null || 
+				this.getExCombinationAuthorTeam() != null ||
+				this.getBasionymAuthorTeam() != null ||
+				this.getExBasionymAuthorTeam() != null);
+	}
+	
+	/**
+	 * Shortcut. Returns the combination authors title cache. Returns null if no combination author exists.
+	 * @return
+	 */
+	public String computeCombinationAuthorNomenclaturalTitle() {
+		return computeNomenclaturalTitle(this.getCombinationAuthorTeam());
+	}
+
+	/**
+	 * Shortcut. Returns the basionym authors title cache. Returns null if no basionym author exists.
+	 * @return
+	 */
+	public String computeBasionymAuthorNomenclaturalTitle() {
+		return computeNomenclaturalTitle(this.getBasionymAuthorTeam());
+	}
+	
+	
+	/**
+	 * Shortcut. Returns the ex-combination authors title cache. Returns null if no ex-combination author exists.
+	 * @return
+	 */
+	public String computeExCombinationAuthorNomenclaturalTitle() {
+		return computeNomenclaturalTitle(this.getExCombinationAuthorTeam());
+	}
+
+	/**
+	 * Shortcut. Returns the ex-basionym authors title cache. Returns null if no exbasionym author exists.
+	 * @return
+	 */
+	public String computeExBasionymAuthorNomenclaturalTitle() {
+		return computeNomenclaturalTitle(this.getExBasionymAuthorTeam());
+	}
+	
+	private String computeNomenclaturalTitle(INomenclaturalAuthor author){
+		if (author == null){
+			return null;
+		}else{
+			return author.getNomenclaturalTitle();
+		}
+	}
 	
 //*********************** CLONE ********************************************************/
 

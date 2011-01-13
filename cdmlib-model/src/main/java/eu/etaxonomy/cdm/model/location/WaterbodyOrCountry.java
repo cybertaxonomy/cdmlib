@@ -36,8 +36,11 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -76,7 +79,8 @@ public class WaterbodyOrCountry extends NamedArea {
 	@JoinTable(name="DefinedTermBase_Continent")
 	private Set<Continent> continents = new HashSet<Continent>();
 	
-	protected static Map<UUID, NamedArea> termMap = null;		
+	protected static Map<UUID, NamedArea> termMap = null;
+	protected static Map<String, UUID> labelMap = null;
 
 	private static final UUID uuidAfghanistan = UUID.fromString("974ce01a-5bce-4be8-b728-a46869354960");
 	private static final UUID uuidAlbaniaPeoplesSocialistRepublicof = UUID.fromString("238a6a93-8857-4fd6-af9e-6437c90817ac");
@@ -635,8 +639,15 @@ public class WaterbodyOrCountry extends NamedArea {
 	@Override
 	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		try {
+			Language lang= Language.DEFAULT();
 			WaterbodyOrCountry newInstance = WaterbodyOrCountry.class.newInstance();
-			super.readCsvLine(newInstance, csvLine, Language.DEFAULT());
+			newInstance.setUuid(UUID.fromString(csvLine.get(0)));
+			newInstance.setUri(csvLine.get(1));
+			String label = csvLine.get(3).trim();
+			String text = csvLine.get(3).trim();
+			String abbreviatedLabel = csvLine.get(2);
+			newInstance.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
+			
 			// iso codes extra
 			newInstance.setIso3166_A2(csvLine.get(4).trim());
 			
@@ -670,9 +681,42 @@ public class WaterbodyOrCountry extends NamedArea {
 		writer.writeNext(line);
 	}	
 
+	public static boolean isWaterbodyOrCountryLabel(String label) {
+		if (labelMap.containsKey(label)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 
 	
 //************************** METHODS ********************************
+	
+	
+	private static void initMaps(){
+		labelMap = new HashMap<String, UUID>();
+		termMap = new HashMap<UUID, NamedArea>();
+	}
+	
+	/**
+	 * FIXME This class should really be refactored into an interface and service implementation,
+	 * relying on TermVocabularyDao / service (Ben)
+	 * @param tdwgLabel
+	 * @return
+	 */
+	public static WaterbodyOrCountry getWaterbodyOrCountryByLabel(String label) {
+		if (labelMap == null){
+			initMaps();
+		}
+		UUID uuid = labelMap.get(label);
+		if (uuid == null){
+			logger.info("Unknown country: " + CdmUtils.Nz(label));
+			return null;
+		}
+		return (WaterbodyOrCountry)termMap.get(uuid); 
+		
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
@@ -680,14 +724,22 @@ public class WaterbodyOrCountry extends NamedArea {
 	@Override
 	public void resetTerms(){
 		termMap = null;
+		labelMap = null;
 	}
+
 
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
-		termMap = new HashMap<UUID, NamedArea>();
+		initMaps();
 		for (NamedArea term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
 		}
+		for (NamedArea term : termVocabulary.getTerms()){
+			labelMap.put(term.getLabel(), term.getUuid());  
+		}
+		
 	}
+
+	
 }
