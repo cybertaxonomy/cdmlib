@@ -308,7 +308,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation) throws SQLException {
+	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable)cdmBase;
@@ -324,6 +324,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				return;
 			}
 			sourceable.addSource(source);
+		}else if (cdmBase != null){
+			logger.warn("Sourced object does not implement ISourceable: " + cdmBase.getClass() + "," + cdmBase.getUuid());
+		}else{
+			logger.warn("Sourced object is null");
 		}
 	}
 	

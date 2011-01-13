@@ -18,6 +18,8 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 
 /**
@@ -115,7 +117,7 @@ public class InputTransformerBase implements IInputTransformer {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getPresenceTermByKey(java.lang.String)
 	 */
-	public NameTypeDesignationStatus getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
+	public PresenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
@@ -125,6 +127,25 @@ public class InputTransformerBase implements IInputTransformer {
 	 */
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaByKey(java.lang.String)
+	 */
+	@Override
+	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
+		String warning = "getNamedAreaByKey is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getNamedAreaUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 	
