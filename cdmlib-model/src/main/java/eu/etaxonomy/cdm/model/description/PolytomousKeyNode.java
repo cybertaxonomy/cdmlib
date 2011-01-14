@@ -533,7 +533,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * 						Use the {@link #putModifyingText(LanguageString) putModifyingText} method instead
 	 */
 	public LanguageString addModifyingText(LanguageString description){
-		return this.modifyingText.put(description.getLanguage(),description);
+		return this.putModifyingText(description);
 	}
 	
 	/**
@@ -564,7 +564,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * 					Use the {@link #putModifyingText(Language, String) putModifyingText} method instead
 	 */
 	public LanguageString addModifyingText(String text, Language language){
-		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
+		return this.putModifyingText(language, text);
 	}
 	
 	/**

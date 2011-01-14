@@ -179,7 +179,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 	 */
 	@Deprecated
 	public LanguageString addModifyingText(String text, Language language){
-		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
+		return this.putModifyingText(language, text);
 	}
 	
 	/**
@@ -211,7 +211,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 	 */
 	@Deprecated
 	public LanguageString addModifyingText(LanguageString text){
-		return this.modifyingText.put(text.getLanguage(),text);
+		return this.putModifyingText(text);
 	}
 	
 	/**

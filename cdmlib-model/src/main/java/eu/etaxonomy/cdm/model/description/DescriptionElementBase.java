@@ -288,7 +288,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 * 						Use the {@link #putModifyingText(LanguageString) putModifyingText} method 
 	 */
 	public LanguageString addModifyingText(LanguageString description){
-		return this.modifyingText.put(description.getLanguage(),description);
+		return this.putModifyingText(description);
 	}
 	
 	/**
@@ -318,7 +318,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	 * 					Use the {@link #putModifyingText(Language, String) putModifyingText} method
 	 */
 	public LanguageString addModifyingText(String text, Language language){
-		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
+		return this.putModifyingText(language, text);
 	}
 	
 	/**

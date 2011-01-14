@@ -235,7 +235,7 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
 	 */
 	@Deprecated
 	public void addTitle(LanguageString title){
-		this.title.put(title.getLanguage(), title);
+		this.putTitle(title);
 	}
 	public void putTitle(LanguageString title){
 		this.title.put(title.getLanguage(), title);
@@ -255,7 +255,7 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
 	 */
 	@Deprecated
 	public void addTitle(String title, Language language){
-		this.title.put(language, LanguageString.NewInstance(title, language));
+		this.putTitle(language, title);
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string

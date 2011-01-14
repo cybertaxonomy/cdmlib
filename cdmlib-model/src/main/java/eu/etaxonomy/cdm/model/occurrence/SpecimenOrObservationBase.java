@@ -311,7 +311,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 */
 	@Deprecated
 	public void addDefinition(LanguageString description){
-		this.definition.put(description.getLanguage(),description);
+		this.putDefinition(description);
 	}
 	/**
 	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text} 
@@ -340,7 +340,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 */
 	@Deprecated
 	public void addDefinition( String text, Language language){
-		this.definition.put(language, LanguageString.NewInstance(text, language));
+		this.putDefinition(language, text);
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string

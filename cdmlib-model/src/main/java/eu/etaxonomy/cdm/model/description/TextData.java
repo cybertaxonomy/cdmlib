@@ -266,16 +266,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	 * 					Use the {@link #putText(Language, String) putText} method instead
 	 */
 	public LanguageString putText(String text, Language language) {
-		fixHashMapHibernateBug();
-		//** end workaround
-		LanguageString languageString = multilanguageText.get(language);
-		if (languageString != null){
-			languageString.setText(text);
-		}else{
-			languageString = LanguageString.NewInstance(text, language);
-		}
-		LanguageString result = this.multilanguageText.put(language , languageString);
-		return (result == null ? null : result);
+		return this.putText(language, text);
 	}
 	
 	/**
