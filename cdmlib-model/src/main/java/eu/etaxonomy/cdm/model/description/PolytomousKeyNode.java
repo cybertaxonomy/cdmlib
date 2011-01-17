@@ -417,7 +417,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 
 	
-	//** ********************** QUESTIONS AND STATEMENTS ******************************/
+//** ********************** QUESTIONS AND STATEMENTS ******************************/
 
 	/**
 	 * Returns the statement for <code>this</code> PolytomousKeyNode. If the user
