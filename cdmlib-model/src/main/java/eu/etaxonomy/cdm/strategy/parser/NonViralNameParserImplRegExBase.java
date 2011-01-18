@@ -233,8 +233,9 @@ public abstract class NonViralNameParserImplRegExBase  {
     //cultivars and hybrids
     protected static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
     protected static String cultivarMarker = oWs + "(cv.|')";
-    protected static String hybridPart = "((x|X)" + oWs + "|"+hybridSign+"|notho)";
+    protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|notho)";
     protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + hybridPart;
+    protected static String hybridFormularSeparator = oWs + "[" + hybridSign + "xX]" + oWs;
     
     
     //  Name String
@@ -247,7 +248,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same 
     //autonym pattern used within anyBotanicalFullName pattern
     protected static String autonym2 = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\2";  //2-nd word and last word are the same 
-
+    
+    
     protected static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
 					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
     protected static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
@@ -255,6 +257,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
     protected static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
     protected static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
+    protected static String hybridFullName = "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")" + hybridFormularSeparator + "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")"; 
     
     //Pattern
     protected static Pattern oWsPattern = Pattern.compile(oWs);
@@ -270,6 +273,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern infraSpeciesPattern = Pattern.compile(pStart + infraSpecies + facultFullAuthorString2 + end);
     protected static Pattern oldInfraSpeciesPattern = Pattern.compile(pStart + oldInfraSpecies + facultFullAuthorString2 + end);
     protected static Pattern autonymPattern = Pattern.compile(pStart + autonym + fWs + end);
+    protected static Pattern hybridFormulaPattern = Pattern.compile(pStart + hybridFullName + fWs + end);
+    
 	
     protected static Pattern botanicBasionymPattern = Pattern.compile(botanicBasionymAuthor);
     protected static Pattern zooBasionymPattern = Pattern.compile(zooBasionymAuthor);

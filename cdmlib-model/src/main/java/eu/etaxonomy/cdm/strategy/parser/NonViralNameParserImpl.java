@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -836,7 +837,38 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 					logger.info("Name string " + fullNameString + " could not be parsed because UnnnamedNamePhrase is not yet implemented!");
 				}
 			}
-			//none
+		     //hybrid formula
+			 else if (hybridFormulaPattern.matcher(fullNameString).matches()){
+				 String firstNameString = "";
+				 String secondNameString = "";
+				 boolean isFirstName = true;
+				 for (String str : epi){
+					 if (str.matches(hybridSign)){
+						 isFirstName = false;
+					 }else if(isFirstName){
+						 firstNameString += " " + str;
+					 }else {
+						 secondNameString += " " + str;
+					 }
+				 }
+				 nameToBeFilled.setHybridFormula(true);
+				 NomenclaturalCode code = nameToBeFilled.getNomenclaturalCode();
+				 NonViralName firstName = this.parseFullName(firstNameString.trim(), code, rank);
+				 NonViralName secondName = this.parseFullName(secondNameString.trim(), code, rank);
+				 nameToBeFilled.addHybridParent(firstName, HybridRelationshipType.FIRST_PARENT(), null);
+				 nameToBeFilled.addHybridParent(secondName, HybridRelationshipType.SECOND_PARENT(), null);
+				 Rank newRank;
+				 Rank firstRank = firstName.getRank();
+				 Rank secondRank = secondName.getRank();
+				 
+				 if (firstRank == null || firstRank.isHigher(secondRank)){
+					 newRank = secondRank;
+				 }else{
+					 newRank = firstRank;
+				 }
+				 nameToBeFilled.setRank(newRank);
+			 }
+		    //none
 			else{ 
 				nameToBeFilled.addParsingProblem(ParserProblem.UnparsableNamePart);
 				nameToBeFilled.setTitleCache(fullNameString,true);

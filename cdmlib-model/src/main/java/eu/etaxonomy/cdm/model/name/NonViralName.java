@@ -13,9 +13,14 @@ package eu.etaxonomy.cdm.model.name;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -1066,17 +1071,39 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	}
 	
 
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
+	 *  
+	 * @see    #getHybridRelationships()
+	 * @see    #getChildRelationships()
+	 * @see    HybridRelationshipType
+	 */
     public Set<HybridRelationship> getHybridParentRelations() {
-		return getParentRelationships();
+		if(hybridParentRelations == null) {
+			this.hybridParentRelations = new HashSet<HybridRelationship>();
+		}
+		return hybridParentRelations;
 	}
 
-	private void setHybridParentRelations(
-			Set<HybridRelationship> hybridParentRelations) {
+	private void setHybridParentRelations(Set<HybridRelationship> hybridParentRelations) {
 		this.hybridParentRelations = hybridParentRelations;
 	}
 
+	
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
+	 *  
+	 * @see    #getHybridRelationships()
+	 * @see    #getParentRelationships()
+	 * @see    HybridRelationshipType
+	 */
 	public Set<HybridRelationship> getHybridChildRelations() {
-		return this.getChildRelationships();
+		if(hybridChildRelations == null) {
+			this.hybridChildRelations = new HashSet<HybridRelationship>();
+		}
+		return hybridChildRelations;
 	}
 
 	private void setHybridChildRelations(Set<HybridRelationship> hybridChildRelations) {
@@ -1086,31 +1113,39 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
 	 * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
-	 *  
-	 * @see    #getHybridRelationships()
-	 * @see    #getChildRelationships()
-	 * @see    HybridRelationshipType
+	 * @see 	#getHybridParentRelations()
+	 * @see    	#getHybridRelationships()
+	 * @see    	#getChildRelationships()
+	 * @see    	HybridRelationshipType
 	 */
+	@Transient
 	public Set<HybridRelationship> getParentRelationships() {
-		if(hybridParentRelations == null) {
-			this.hybridParentRelations = new HashSet<HybridRelationship>();
-		}
-		return hybridParentRelations;
+		return getHybridParentRelations();
+	}
+	
+	/**
+	 * Returns the hybrid child relationships ordered by relationship type, or if equal 
+	 * by title cache of the related names. 
+	 * @see #getHybridParentRelations()
+	 */
+	@Transient
+	public List<HybridRelationship> getOrderedChildRelationships(){
+		List<HybridRelationship> result = new ArrayList<HybridRelationship>();
+		result.addAll(this.hybridChildRelations);
+		Collections.sort(result);
+		Collections.reverse(result);
+		return result;
+		
 	}
 
-	/** 
-	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
-	 *  
-	 * @see    #getHybridRelationships()
-	 * @see    #getParentRelationships()
-	 * @see    HybridRelationshipType
+	
+	/**
+	 * @see #getHybridChildRelations()
+	 * @return
 	 */
+	@Transient
 	public Set<HybridRelationship> getChildRelationships() {
-		if(hybridChildRelations == null) {
-			this.hybridChildRelations = new HashSet<HybridRelationship>();
-		}
-		return hybridChildRelations;
+		return this.getHybridChildRelations();
 	}
 
 	/**

@@ -18,6 +18,8 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -308,8 +311,71 @@ public class NonViralNameParserImplTest {
 		assertFalse("Name must not have binom hybrid bit set", name1.isBinomHybrid());
 		assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
 		assertEquals("Infraspecific epithet must be 'abies'", "abies", name1.getInfraSpecificEpithet());
+		
 
 	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
+	 */
+	@Test
+	public final void testHybridFormulars() {
+		try {
+			Method parseMethod = parser.getClass().getDeclaredMethod("parseFullName", String.class, NomenclaturalCode.class, Rank.class);
+			testName_StringNomcodeRank(parseMethod);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		
+		//Species hybrid
+		NonViralName<?> name1 = parser.parseFullName("Abies alba \u00D7 Pinus bus", botanicCode, null);
+		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+		assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+		assertEquals("Title cache must be correct", "Abies alba \u00D7 Pinus bus", name1.getTitleCache());
+		List<HybridRelationship> orderedRels = name1.getOrderedChildRelationships();
+		assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+		NonViralName firstParent = orderedRels.get(0).getParentName();
+		assertEquals("Name must have Abies alba as first hybrid parent", "Abies alba", firstParent.getTitleCache());
+		NonViralName secondParent = orderedRels.get(1).getParentName();
+		assertEquals("Name must have Pinus bus as second hybrid parent", "Pinus bus", secondParent.getTitleCache());
+		assertEquals("Hybrid name must have the lowest rank ('species') as rank", Rank.SPECIES(), name1.getRank());
+
+		//Subspecies first hybrid
+		name1 = parser.parseFullName("Abies alba subsp. beta \u00D7 Pinus bus", botanicCode, null);
+		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+		assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+		assertEquals("Title cache must be correct", "Abies alba subsp. beta \u00D7 Pinus bus", name1.getTitleCache());
+		orderedRels = name1.getOrderedChildRelationships();
+		assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+		firstParent = orderedRels.get(0).getParentName();
+		assertEquals("Name must have Abies alba subsp. beta as first hybrid parent", "Abies alba subsp. beta", firstParent.getTitleCache());
+		secondParent = orderedRels.get(1).getParentName();
+		assertEquals("Name must have Pinus bus as second hybrid parent", "Pinus bus", secondParent.getTitleCache());
+		assertEquals("Hybrid name must have the lower rank ('subspecies') as rank", Rank.SUBSPECIES(), name1.getRank());
+
+		//variety second hybrid
+		name1 = parser.parseFullName("Abies alba \u00D7 Pinus bus  var. beta", botanicCode, null);
+		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+		assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+		assertEquals("Title cache must be correct", "Abies alba \u00D7 Pinus bus var. beta", name1.getTitleCache());
+		assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
+		
+		//hybrids with authors
+		name1 = parser.parseFullName("Abies alba L. \u00D7 Pinus bus Mill.", botanicCode, null);
+		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+		assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+		assertEquals("Title cache must be correct", "Abies alba L. \u00D7 Pinus bus Mill.", name1.getTitleCache());
+		orderedRels = name1.getOrderedChildRelationships();
+		assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+		firstParent = orderedRels.get(0).getParentName();
+		assertEquals("Name must have Abies alba L. as first hybrid parent", "Abies alba L.", firstParent.getTitleCache());
+		secondParent = orderedRels.get(1).getParentName();
+		assertEquals("Name must have Pinus bus Mill. as second hybrid parent", "Pinus bus Mill.", secondParent.getTitleCache());
+		assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
+		
+	}
+
 	
 	private void testName_StringNomcodeRank(Method parseMethod) 
 			throws InvocationTargetException, IllegalAccessException  {

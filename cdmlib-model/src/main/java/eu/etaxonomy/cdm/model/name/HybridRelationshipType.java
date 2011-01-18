@@ -163,6 +163,12 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 		return getTermByUuid(uuidMaleParent);
 	}
 	
+	
+	@Override
+	public int compareTo(HybridRelationshipType otherRelationshipType) {
+		return super.performCompareTo(otherRelationshipType, true);
+	}
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<HybridRelationshipType> termVocabulary) {
 		termMap = new HashMap<UUID, HybridRelationshipType>();

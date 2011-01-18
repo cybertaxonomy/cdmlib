@@ -55,9 +55,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class HybridRelationship extends RelationshipBase<NonViralName, NonViralName, HybridRelationshipType>  implements Cloneable{
-  
-	@SuppressWarnings("unused")
+public class HybridRelationship extends RelationshipBase<NonViralName, NonViralName, HybridRelationshipType>  implements Cloneable, Comparable<HybridRelationship>{
 	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 	
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
@@ -212,6 +210,30 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 
 	public void setType(HybridRelationshipType type) {
 		this.type = type;
+	}
+	
+// ************************ compareTo *************************************************
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+//	@Override  //leads to compile errors in some environments
+	public int compareTo(HybridRelationship rel2) {
+		HybridRelationshipType type1 = this.getType();
+		HybridRelationshipType type2 = rel2.getType();
+		int compareType = type1.compareTo(type2);
+		if (compareType != 0){
+			return compareType;
+		}else{
+			NonViralName related1 = this.getRelatedFrom();
+			NonViralName<?> related2 = rel2.getRelatedFrom();
+			if (related1 != related2){
+				related1 = this.getRelatedTo();
+				related2 = rel2.getRelatedTo();
+			}
+			String title1 = related1.getTitleCache();
+			String title2 = related2.getTitleCache();
+			return title1.compareTo(title2);
+		}
 	}
 	
 	

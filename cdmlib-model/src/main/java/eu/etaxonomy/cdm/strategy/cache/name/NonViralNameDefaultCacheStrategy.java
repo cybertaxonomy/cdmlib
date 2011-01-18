@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -168,8 +170,17 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			return nonViralName.getTitleCache();
 		}
 		String result = "";
-		//Autonym
-		if (nonViralName.isAutonym()){
+		if (nonViralName.isHybridFormula()){
+			//hybrid formula
+			result = null;
+			String hybridSeparator = " " + NonViralNameParserImplRegExBase.hybridSign + " ";
+			List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+			for (HybridRelationship rel: rels){
+				result = CdmUtils.concat(hybridSeparator, result, rel.getParentName().getTitleCache()).trim();
+			}
+			return result;
+		}else if (nonViralName.isAutonym()){
+			//Autonym
 			result = handleAutonym(nonViralName);
 		}else{ //not Autonym
 			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
