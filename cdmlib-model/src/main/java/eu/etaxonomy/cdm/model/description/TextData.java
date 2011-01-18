@@ -265,6 +265,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
 	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
 	 * 					Use the {@link #putText(Language, String) putText} method instead
 	 */
+	@Deprecated
 	public LanguageString putText(String text, Language language) {
 		return this.putText(language, text);
 	}
