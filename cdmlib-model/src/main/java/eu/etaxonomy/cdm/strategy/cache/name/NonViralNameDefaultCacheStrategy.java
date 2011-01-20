@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -215,7 +214,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			basAuthorPart = CdmUtils.Nz(basAuthor.getNomenclaturalTitle());
 		}
 		if (! "".equals(basAuthorPart)){
-			authorPart = "("+ basAuthorPart +")" + authorPart;
+			authorPart = "("+ basAuthorPart +") " + authorPart;
 		}
 		String infraSpeciesPart = (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()));
 
