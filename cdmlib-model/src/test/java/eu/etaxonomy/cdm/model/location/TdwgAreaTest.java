@@ -99,7 +99,8 @@ public class TdwgAreaTest {
 			labelMapField.setAccessible(true);
 			Object obj = labelMapField.get(null);
 			Map<String, UUID> map = (Map<String, UUID>)obj;
-			Assert.assertEquals(area.getUuid(), map.get(testAreaLabel));
+			UUID uuid = map.get(testAreaLabel.toLowerCase());
+			Assert.assertEquals(area.getUuid(), uuid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
