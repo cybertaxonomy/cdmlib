@@ -113,6 +113,7 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 		private static final String DC_CREATOR = "dc:creator";
 		private static final String DC_PUBLISHER = "dc:publisher";
 		private static final String DC_DATE = "dc:date";
+		private static final String DC_IDENTIFIER = "dc:identifier"; //TODO map this
 		
 		List<Reference> referenceList = new ArrayList<Reference>();
 
