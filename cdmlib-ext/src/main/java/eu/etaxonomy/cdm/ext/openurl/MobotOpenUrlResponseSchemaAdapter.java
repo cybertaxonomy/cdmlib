@@ -27,6 +27,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
@@ -36,8 +37,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 25.08.2010
  */
 public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Reference>{
-	
-
 
 	static URI identifier = null;
 
@@ -174,7 +173,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 			} else if (reference != null && qName.equals(AUTHORS)) {
 				authorTeam = Team.NewInstance();
 			} else if (reference != null && qName.equals(SUBJECTS)) {
-				//TODO implement
+				//TODO implement, but no equivalent in the cdm model			
 			} else {
 				elementName = qName;
 			}
@@ -192,7 +191,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 				reference.setAuthorTeam(authorTeam);
 				authorTeam = null;
 			} else if (reference != null && qName.equals(SUBJECTS)) {
-				//TODO implement
+				//TODO implement, but no equivalent in the cdm model		
 			}else {
 				elementNameToStore = elementName;
 				elementName = null;
@@ -255,7 +254,25 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 						reference.setPlacePublished(trimmedText);
 					}
 					if(elementNameToStore.equals(DATE)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						/* may be a single year or a range of years 1797-1830 */
+						Integer startYear = null;
+						Integer endYear = null;
+						if(trimmedText.length() == 9 && trimmedText.indexOf("-") == 4){
+							try {
+								startYear = Integer.valueOf(trimmedText.substring(0, 4));
+								endYear = Integer.valueOf(trimmedText.substring(5));
+								reference.setDatePublished(TimePeriod.NewInstance(startYear, endYear));
+							} catch (NumberFormatException e) {	
+								logger.error("date can not be parsed: "+ trimmedText);
+							}
+						} else if(trimmedText.length() == 4) {
+							try {
+								startYear = Integer.valueOf(trimmedText);
+							} catch (NumberFormatException e) {
+								logger.error("date can not be parsed: "+ trimmedText);
+							}
+							reference.setDatePublished(TimePeriod.NewInstance(startYear));
+						}
 					}
 					if(elementNameToStore.equals(VOLUME)){
 						reference.setVolume(trimmedText);

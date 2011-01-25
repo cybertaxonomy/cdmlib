@@ -92,7 +92,7 @@ public class ServiceWrapperBase<T extends CdmBase> {
         HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
 
         if(UriUtils.isOk(response)){
-        	InputStream stream = response.getEntity().getContent();;
+        	InputStream stream = response.getEntity().getContent();
         	return stream;
         } else {
         	logger.error("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));

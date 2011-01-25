@@ -63,7 +63,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
-cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/MobotOpenUrlServiceWrapperTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text

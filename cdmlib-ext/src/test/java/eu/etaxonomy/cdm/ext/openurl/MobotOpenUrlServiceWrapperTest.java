@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.ext.sru;
+package eu.etaxonomy.cdm.ext.openurl;
 
 import java.util.List;
 
@@ -10,12 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlQuery;
-import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlResponseSchemaAdapter;
-import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlServiceWrapper;
-import eu.etaxonomy.cdm.ext.openurl.OpenUrlReference;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -42,8 +36,8 @@ public class MobotOpenUrlServiceWrapperTest {
 // ******************************* TESTS ******************************************************/
 
 	@Test
-	@Ignore // ignore web accessing tests
-	public void testDoResolveAndPage() {
+	//@Ignore // ignore web accessing tests
+	public void testDoResolveAndPage_1() {
 
 		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
 		query.refType = MobotOpenUrlServiceWrapper.ReferenceType.book;
@@ -64,12 +58,36 @@ public class MobotOpenUrlServiceWrapperTest {
 		
 		// -------------------------
 		
-		refList = openUrlServiceWrapper.doPage(reference, 2);
+		try {
+			refList = openUrlServiceWrapper.doPage(reference, 2);
+		} catch (Exception e) {
+			refList = null;
+		}
+		Assert.assertNotNull(refList);
 		OpenUrlReference reference_plus1 = refList.get(0);
 		logger.info(reference_plus1.toString());
 		Assert.assertEquals("Manual of North American Diptera /  by Samuel W. Williston.", reference_plus1.getTitleCache());
 		Assert.assertEquals("Page 18", reference_plus1.getPages());
+		logger.info(reference_plus1.getJpegImage(null, null));
+		logger.info(reference_plus1.getJpegImage(400, 600));
+	}
 
+	@Test
+	public void testDoResolveAndPage_2() {
+
+		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
+		query.refType = MobotOpenUrlServiceWrapper.ReferenceType.book;
+		query.oclcNumber = "ocm05202749";
+		
+		List<OpenUrlReference> refList = openUrlServiceWrapper.doResolve(query);
+
+		// Assert.assertEquals("There should be exactly 2 result for 'Linnaei Species Plantarum Europae'",
+		// 2, refList.size());
+		OpenUrlReference reference = refList.get(0);
+		logger.info(reference.toString());
+		Assert.assertEquals("1830", reference.getDatePublished().getEndYear().toString());
+		Assert.assertEquals("1797", reference.getDatePublished().getStartYear().toString()); 
+	    logger.info(reference.getJpegImage(null, null));
 	}
 
 }

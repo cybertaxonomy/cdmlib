@@ -58,26 +58,7 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 	 * bhl-bits/source/browse/trunk/portal/OpenUrlUtilities
 	 * /OpenUrlResponse.cs?r=17 there seems to be no xml schema available
 	 * though.
-	 * @param refType TODO
-	 * @param bookTitle
-	 * @param journalTitle
-	 * @param authorName
-	 * @param authorLastName
-	 * @param authorFirstName
-	 * @param authorNameCorporation
-	 * @param publicationDetails
-	 * @param publisherName
-	 * @param publicationPlace
-	 * @param publicationDate
-	 * @param ISSN
-	 * @param ISBN
-	 * @param CODEN
-	 * @param abbreviation
-	 * @param volume
-	 * @param issue
-	 * @param startPage
-	 * @param schemaShortName for BHL-US OpenURL use "MOBOT.OpenUrl.Utilities.OpenUrlResponse" 
-"
+	 * @param query the MobotOpenUrlQuery object
 	 * @return
 	 */
 	public List<OpenUrlReference> doResolve(MobotOpenUrlQuery query) {
@@ -130,9 +111,10 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 		/* Issue */
 		addNewPairNN(pairs, "rft.issue", query.issue);
 		/* Start page */
-		Integer page = parsePageNumber(query.startPage); 
-		addNewPairNN(pairs, "rft.spage", page.toString());
-
+		if(query.startPage != null){
+			Integer page = parsePageNumber(query.startPage); 
+			addNewPairNN(pairs, "rft.spage", page.toString());			
+		}
 		/* BHL title ID (where XXXX is the ID value)*/ 
 		addNewPairNN(pairs, "rft_id" , query.bhlTitleURI);
 		/* BHL page ID (where XXXX is the ID value)*/
@@ -157,6 +139,8 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 			String search = "utf-16";
 			String replace = "UTF-8";
 			stream = StreamUtils.streamReplace(stream, search, replace);
+			// fix the "org.xml.sax.SAXParseException: An invalid XML character (Unicode: 0x1) was found" problem
+			stream = StreamUtils.streamReplaceAll(stream, "[\\x01-\\x10]", " ");
 			
 			List<OpenUrlReference> referenceList = schemaAdapter.getCmdEntities(stream);
 			// TODO : we need to set ReferenceType here unless we know that the field Genre returns the reference type
@@ -198,9 +182,10 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 	}
 	
 	
-	public List<OpenUrlReference> doPage(OpenUrlReference reference, int forward){
+	public List<OpenUrlReference> doPage(OpenUrlReference reference, int forward) throws Exception{
 		
 		Integer pageNumber = null;
+		
 		if(reference.getPages() != null){
 			pageNumber = parsePageNumber(reference.getPages());
 		}
@@ -215,9 +200,11 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 			return doResolve(query);
 			
 		} else {
-			logger.error("Reference has no page number"); //TODO throw exception
+			String errorMessage = "Reference has no page number or the field 'pages' is not parsable";
+			logger.warn(errorMessage);
+			throw new Exception(errorMessage);
 		}
-		return null;
+
 	}
 	
 	public enum ReferenceType{

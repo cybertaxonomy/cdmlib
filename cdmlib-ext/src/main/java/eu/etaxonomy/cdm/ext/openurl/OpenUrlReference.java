@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.ext.openurl;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlServiceWrapper.ReferenceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -21,6 +24,11 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
  *
  */
 public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Reference<S> {
+	
+
+	private static final String PAGETHUMB_BASE_URI = "http://www.biodiversitylibrary.org/pagethumb/";
+
+	public static final Logger logger = Logger.getLogger(OpenUrlReference.class);
 
 	private static final long serialVersionUID = 1L;
 	
@@ -64,12 +72,21 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 	}
 	
 	
+	/**
+	 * Splits the id from the base ulr of the id urls used in bhl. For example the url string http://www.biodiversitylibrary.org/item/16772 will be split into
+	 * <ol>
+	 * <li>http://www.biodiversitylibrary.org/item</li>
+	 * <li>16772</li>
+	 * </ol>
+	 * @param uri
+	 * @return
+	 */
 	private String[] splitPathAndId(URI uri) {
 		String[] tokens = new String[2];
 		if(uri != null){
 			String titleUriString = uri.toString();
-			tokens[0]  = titleUriString.substring(titleUriString.lastIndexOf('/'));
-			tokens[1]  = titleUriString.substring(0, titleUriString.lastIndexOf('/') - 1);
+			tokens[1]  = titleUriString.substring(titleUriString.lastIndexOf('/') + 1);
+			tokens[0]  = titleUriString.substring(0, titleUriString.lastIndexOf('/'));
 			return tokens;
 		} else  {
 			return null;
@@ -89,5 +106,40 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 	public ReferenceType getReferenceType() {
 		return referenceType;
 	}	
+	
+	/**
+	 * This method will construct an URI pointing to a service which creates an
+	 * jpeg image. This may take a while. For more information please refer to
+	 * http://biodivlib.wikispaces.com/Developer+Tools+and+API. If the width or
+	 * height of the of the image given as parameter are null or 0 the BHL
+	 * service will respond with the default thumbnail which seems to be cached.
+	 * This is usually much faster than requesting for a custom imge
+	 * size.
+	 * <p>
+	 * 
+	 * @param width
+	 *            width of the image, may be null or 0
+	 * @param height
+	 *            height of the image, may be null or 0
+	 * @return
+	 */
+	public URI getJpegImage(Integer width, Integer height){
+		
+		URI imageURI = null;
+		try {
+			String sizeStr = "";
+			if(width != null && height != null && width > 0 && height > 0){
+				sizeStr = "," + width + "," + height;
+			}
+			String[] tokens = splitPathAndId(getItemUri());
+			if(tokens.length == 2){
+				imageURI = new URI(PAGETHUMB_BASE_URI + tokens[1] + sizeStr);				
+			}
+		} catch (URISyntaxException e) {
+			// should never happen, but let's report it anyway
+			logger.error(e);
+		}
+		return imageURI;
+	}
 
 }
