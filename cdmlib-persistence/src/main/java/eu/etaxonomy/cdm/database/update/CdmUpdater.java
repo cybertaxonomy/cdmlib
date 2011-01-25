@@ -15,6 +15,8 @@ import eu.etaxonomy.cdm.common.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.v25_30.SchemaUpdater_25_30;
+import eu.etaxonomy.cdm.database.update.v25_30.TermUpdater_25_30;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_31;
 import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_30_31;
 
@@ -78,7 +80,7 @@ public class CdmUpdater {
 	 * @return
 	 */
 	private ISchemaUpdater getCurrentSchemaUpdater() {
-		return SchemaUpdater_30_31.NewInstance();
+		return SchemaUpdater_25_30.NewInstance();
 	}
 
 	/**
