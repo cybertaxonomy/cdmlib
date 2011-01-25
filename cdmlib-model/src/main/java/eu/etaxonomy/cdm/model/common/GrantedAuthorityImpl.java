@@ -26,10 +26,6 @@ import org.springframework.security.core.GrantedAuthority;
 @XmlRootElement(name = "Group")
 @Entity
 public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2651969425860655040L;
 
 	@XmlElement(name = "Authority")
