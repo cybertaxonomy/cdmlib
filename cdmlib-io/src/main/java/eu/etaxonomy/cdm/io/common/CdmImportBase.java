@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,7 +50,9 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -117,7 +120,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (extensionType == null){
 				extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 				extensionType.setUuid(uuid);
-				ExtensionType.DOI().getVocabulary().addTerm(extensionType);
+				UUID uuidExtensionTypeVoc = UUID.fromString("117cc307-5bd4-4b10-9b2f-2e14051b3b20");
+				TermVocabulary voc = getVocabularyService().find(uuidExtensionTypeVoc);
+				voc.addTerm(extensionType);
 				getTermService().save(extensionType);
 			}
 			state.putExtensionType(extensionType);
@@ -153,7 +158,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (markerType == null){
 				markerType = MarkerType.NewInstance(label, text, labelAbbrev);
 				markerType.setUuid(uuid);
-				MarkerType.COMPLETE().getVocabulary().addTerm(markerType);
+				UUID uuidMarkerTypeVoc = UUID.fromString("19dffff7-e142-429c-a420-5d28e4ebe305");
+				TermVocabulary voc = getVocabularyService().find(uuidMarkerTypeVoc);
+				voc.addTerm(markerType);
 				getTermService().save(markerType);
 			}
 			state.putMarkerType(markerType);
@@ -168,7 +175,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (annotationType == null){
 				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
 				annotationType.setUuid(uuid);
-				AnnotationType.EDITORIAL().getVocabulary().addTerm(annotationType);
+				UUID uuidAnnotationTypeVoc = UUID.fromString("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d");
+				TermVocabulary voc = getVocabularyService().find(uuidAnnotationTypeVoc);
+				voc.addTerm(annotationType);
 				getTermService().save(annotationType);
 			}
 			state.putAnnotationType(annotationType);
@@ -194,6 +203,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				//FIXME define vocabulary
+				logger.warn("No vocabulary defined for named area");
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
@@ -405,6 +415,50 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * Returns the accepted taxon of a {@link TaxonBase taxon base}. <BR>
+	 * If taxonBase is of type taxon the same object is returned. If taxonBase is of type
+	 * synonym the accepted taxon is returned if one exists. If no accepted taxon exists
+	 * <code>null</code> is returned. If multiple accepted taxa exist the one taxon with the 
+	 * same secundum reference is returned. If no such single taxon exists an 
+	 * {@link IllegalStateException illegal state exception} is thrown.  
+	 * @param taxonBase
+	 * @return
+	 */
+	protected Taxon getAcceptedTaxon(TaxonBase<?> taxonBase) {
+		if (taxonBase == null){
+			return null;
+		}else if(taxonBase.isInstanceOf(Taxon.class)){
+			return CdmBase.deproxy(taxonBase, Taxon.class);
+		}else if(taxonBase.isInstanceOf(Synonym.class)){
+			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+			Set<Taxon> acceptedTaxa = synonym.getAcceptedTaxa();
+			if (acceptedTaxa.size() == 0){
+				return null;
+			}else if (acceptedTaxa.size() == 1){
+				return acceptedTaxa.iterator().next();
+			}else{
+				Reference sec = synonym.getSec();
+				if (sec != null){
+					Set<Taxon> taxaWithSameSec = new HashSet<Taxon>();
+					for (Taxon taxon: acceptedTaxa){
+						if (sec.equals(taxon.getSec())){
+							taxaWithSameSec.add(taxon);
+						}
+					}
+					if (taxaWithSameSec.size() == 1){
+						return taxaWithSameSec.iterator().next();
+					}
+				}
+				throw new IllegalStateException("Can't define the one accepted taxon for a synonym out of multiple accept taxa");
+			}
+		}else{
+			throw new IllegalStateException("Unknown TaxonBase subclass: " + taxonBase.getClass().getName());
+		}
+	}
+
 	
 
 	/**
