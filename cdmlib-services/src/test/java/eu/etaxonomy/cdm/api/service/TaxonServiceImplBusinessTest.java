@@ -10,13 +10,16 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -45,6 +48,7 @@ public class TaxonServiceImplBusinessTest {
 	private NonViralName s1n;
 	private NonViralName t2n;
 	private NonViralName t1n;
+	private NonViralName s2n;
 
 	/**
 	 * @throws java.lang.Exception
@@ -61,6 +65,8 @@ public class TaxonServiceImplBusinessTest {
 		
 		s1n = NonViralName.NewInstance(null);
 		s1 = Synonym.NewInstance(s1n, reference);
+		
+		s2n = NonViralName.NewInstance(null);
 		
 		// referencing
 		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
@@ -83,6 +89,7 @@ public class TaxonServiceImplBusinessTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)}.
 	 */
 	@Test
+	@Ignore
 	public final void testChangeSynonymToAcceptedTaxon() {
 		t1.addSynonym(s1, synonymRelationshipType);
 		Taxon taxon = service.changeSynonymToAcceptedTaxon(s1, t1);
@@ -90,6 +97,31 @@ public class TaxonServiceImplBusinessTest {
 		Assert.assertTrue("Former accepted taxon should not have synonyms anymore", t1.getSynonyms().isEmpty());
 		Assert.assertNotNull(taxon);
 		Assert.assertEquals(s1n, taxon.getName());
+		HomotypicalGroup newGroup = taxon.getName().getHomotypicalGroup();
+		Assert.assertTrue("Homotypical group of new accepted taxon should contain exactly one name", newGroup.getTypifiedNames().size() == 1);
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)}.
+	 */
+	@Test
+	@Ignore
+	public final void testChangeSynonymWithMultipleSynonymsInHomotypicalGroupToAcceptedTaxon() {
+		t1.addSynonym(s1, synonymRelationshipType);
+				
+		HomotypicalGroup group = s1.getHomotypicGroup();
+		group.addTypifiedName(s2n);
+		t1.addHeterotypicSynonymName(s2n);
+		
+		Taxon taxon = service.changeSynonymToAcceptedTaxon(s1, t1);
+		
+		Assert.assertTrue("Former accepted taxon should not have synonyms anymore", t1.getSynonyms().isEmpty());
+		Assert.assertNotNull(taxon);
+		Assert.assertEquals(s1n, taxon.getName());
+		Assert.assertTrue("New accepted taxon should have a synonym", ! taxon.getSynonyms().isEmpty());
+		
+		List<Synonym> synonymsInNewTaxonsGroup = taxon.getHomotypicGroup().getSynonymsInGroup(taxon.getSec());
+		Assert.assertTrue("New accepted taxons homotypic group should have a synonym", synonymsInNewTaxonsGroup.size() == 1);
 	}
 
 	/**
