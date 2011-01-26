@@ -51,5 +51,20 @@ public class StreamUtils {
 		logger.debug(replacedContent);
 		return replacedStream;
 	}
+	
+	public static InputStream streamReplaceAll(InputStream stream, String regex, String replace) throws IOException {
+		InputStreamReader reader = new InputStreamReader(stream);
+		StringBuilder strBuilder = new StringBuilder();
+		
+		char[] cbuf = new char[1024];
+		int charsRead = -1;
+		while ((charsRead = reader.read(cbuf)) > -1){
+			strBuilder.append(cbuf, 0, charsRead);
+		}
+		String replacedContent = strBuilder.toString().replaceAll(regex, replace);	
+		StringBufferInputStream replacedStream = new StringBufferInputStream(replacedContent); //TODO replace with StringReader
+		logger.debug(replacedContent);
+		return replacedStream;
+	}
 
 }
