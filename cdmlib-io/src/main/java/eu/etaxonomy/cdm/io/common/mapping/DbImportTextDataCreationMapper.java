@@ -104,7 +104,7 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 			if (language == null){
 				language = Language.DEFAULT();
 			}
-			textData.putText(text, language);
+			textData.putText(language, text);
 		}
 		TextFormat format = this.defaultFormat;
 		textData.setFormat(format);
