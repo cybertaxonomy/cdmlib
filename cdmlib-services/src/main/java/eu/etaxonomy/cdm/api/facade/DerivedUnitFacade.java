@@ -425,6 +425,9 @@ public class DerivedUnitFacade {
 	 * 
 	 */
 	private void setCacheStrategy() {
+		if (derivedUnit == null){
+			throw new NullPointerException("Facade's derviedUnit must not be null to set cache strategy");
+		}
 		derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
 	}
 
