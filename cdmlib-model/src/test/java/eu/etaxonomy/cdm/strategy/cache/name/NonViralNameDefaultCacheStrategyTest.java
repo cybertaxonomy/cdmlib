@@ -137,7 +137,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 
 		//unranked taxa
 		String unrankedCache;
-		BotanicalName unrankedName = BotanicalName.NewInstance(Rank.UNRANKED());
+		BotanicalName unrankedName = BotanicalName.NewInstance(Rank.INFRASPECIFICTAXON());
 		unrankedName.setGenusOrUninomial("Genus");
 		NonViralNameDefaultCacheStrategy<BotanicalName> strategy = NonViralNameDefaultCacheStrategy.NewInstance();
 			//infraspecific
@@ -145,14 +145,15 @@ public class NonViralNameDefaultCacheStrategyTest {
 		unrankedName.setSpecificEpithet("species");
 		unrankedCache = strategy.getNameCache(unrankedName);
 		
-		Assert.assertEquals("Correct unranked cache expected", "Genus species [unranked] infraspecific", unrankedCache);
+		Assert.assertEquals("Correct unranked cache expected", "Genus species [infraspec.] infraspecific", unrankedCache);
 		
 			//infrageneric
+		unrankedName.setRank(Rank.INFRAGENERICTAXON());
 		unrankedName.setInfraSpecificEpithet(null);
 		unrankedName.setSpecificEpithet(null);
 		unrankedName.setInfraGenericEpithet("Infrageneric");
 		unrankedCache = strategy.getNameCache(unrankedName);
-		Assert.assertEquals("Correct unranked cache expected", "Genus [unranked] Infrageneric", unrankedCache);
+		Assert.assertEquals("Correct unranked cache expected", "Genus [infragen.] Infrageneric", unrankedCache);
 		
 		
 	}
@@ -173,6 +174,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		assertEquals("Name cache should be Lepidocaryum (Infralepi) tenue var. tenue", "Lepidocaryum (Infralepi) tenue var. tenue", botName.getNameCache());
 		
 		botName.setInfraGenericEpithet(" ");
+		//Note: This test may fail if aspectj doesn't work correctly
 		assertEquals("Empty infrageneric epithet must be neglegted", "Lepidocaryum tenue var. tenue", botName.getNameCache());
 	}
 
@@ -197,6 +199,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		String atomizedAuthorCache = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
 		assertEquals(atomizedAuthorCache, speciesName.getAuthorshipCache());
 		String atomizedTitleCache = speciesNameString + " "+ strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
+		//Note: This test may fail if aspectj doesn't work correctly
 		assertEquals(atomizedTitleCache, speciesName.getTitleCache());
 		assertEquals(atomizedTitleCache, speciesName.getFullTitleCache());	
 	}
@@ -211,6 +214,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		Assert.assertEquals("Should be Abies alba L.", "Abies alba L.", speciesName.getTitleCache());
 		
 		speciesName.setBinomHybrid(true);
+		//Note: This test may fail if aspectj doesn't work correctly
 		Assert.assertEquals("Should be Abies ×alba L.", "Abies ×alba L.", speciesName.getTitleCache());
 		speciesName.setMonomHybrid(true);
 		Assert.assertEquals("Should be '×Abies ×alba L.'", "×Abies ×alba L.", speciesName.getTitleCache());

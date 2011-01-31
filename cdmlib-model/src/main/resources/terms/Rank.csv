@@ -31,7 +31,7 @@
 "4aa6890b-0363-4899-8d7c-ee0cb78e6166",,"Tribe","Tribe","trib."
 "ae41ecc5-5165-4126-9d24-79939ae5d822",,"Subtribe","Subtribe","subtrib."
 "1ec02e8f-f2b7-4c65-af9f-b436b34c79a3",,"Infratribe","Infratribe",
-"1fdc0b93-c354-441a-8406-091e0303ff5c",,"Suprageneric Taxon","Suprageneric Taxon",
+"1fdc0b93-c354-441a-8406-091e0303ff5c",,"'Unranked' Suprageneric Rank: The suprageneric name on purpose has no rank","Suprageneric Taxon",
 "1b11c34c-48a8-4efa-98d5-84f7f66ef43a",,"Genus","Genus","gen.",
 "78786e16-2a70-48af-a608-494023b91904",,"Subgenus","Subgenus","subg.",
 "a9972969-82cd-4d54-b693-a096422f13fa",,"Infragenus","Infragenus",
@@ -39,7 +39,7 @@
 "d20f5b61-d463-4448-8f8a-c1ff1f262f59",,"Subsection (Botany)","Subsection bot.","subsect."
 "d7381ecf-48f8-429b-9c54-f461656978cd",,"Series","Series","ser.",
 "80c9a263-f4db-4a13-b6c2-b7fec1aa1200",,"Subseries","Subseries","subser.",
-"41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9",,"Infrageneric Taxon","Infrageneric Taxon","t.infgen."
+"41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9",,"'Unranked' Infrageneric Rank: The infrageneric name on purpose has no rank","Unranked (infrageneric)","[infragen.]"
 "1ecae058-4217-4f75-9c27-6d8ba099ac7a",,"Species Aggregate","Species Aggregate","aggr."
 "d1988a11-292b-46fa-8fb7-bc64ea6d8fc6",,"Species Group","Species Group","species group"
 "b301f787-f319-4ccc-a10f-b4ed3b99a86d",,"Species","Species","sp."
@@ -57,7 +57,7 @@
 "bed20aee-2f5a-4635-9c02-eff06246d067",,"Special Form","Special Form","f.spec.",
 "47cfc5b0-0fb7-4ceb-b61d-e1dd8de8b569",,"Subform","Subform","subf.",
 "1c8ac389-4349-4ae0-87be-7239f6635068",,"Subsubform","Subsubform",
-"eb75c27d-e154-4570-9d96-227b2df60474",,"Infraspecific Taxon","Infraspecific Taxon","t.infr."
+"eb75c27d-e154-4570-9d96-227b2df60474",,"`Unranked´ Infraspecific Rank: The infraspecific name on purpose has no rank","Unranked (infraspecific)","[infraspec.]"
 "ead9a1f5-dfd4-4de2-9121-70a47accb10b",,"Candidate","Candidate",
 "49bdf74a-2170-40ed-8be2-887a0db517bf",,"Denomination Class","Denomination Class",
 "08dcb4ff-ac58-48a3-93af-efb3d836ac84",,"Grex","Grex","grex"
@@ -65,4 +65,4 @@
 "d763e7d3-e7de-4bb1-9d75-225ca6948659",,"Cultivar Group","Cultivar Group",
 "5e98415b-dc6e-440b-95d6-ea33dbb39ad0",,"Cultivar","Cultivar",
 "5c4d6755-2cf6-44ca-9220-cccf8881700b",,"Unknown Rank","Unknown Rank","unknown"
-"a965befb-70a9-4747-a18f-624456c65223",,"Unranked Rank: The name on purpose has no rank","Unranked","[unranked]"
+"a965befb-70a9-4747-a18f-624456c65223",,"'Unranked' Infraspecific Rank: The infraspecific name on purpose has no rank","Unranked Infraspecific","[unranked]"

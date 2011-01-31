@@ -53,15 +53,19 @@ public class LanguageLabelUpdater extends SchemaUpdaterStepBase implements ITerm
 		datasource.executeUpdate(sql);
 		
 		//update term titleCache
-		//FIXME only for English representations
 		sql = " UPDATE DefinedTermBase dtb " + 
 			  " SET titleCache = " +  
 					" ( " +
 					" SELECT rep.label  " +
 					" FROM DefinedTermBase_Representation MN " + 
 					" INNER JOIN Representation rep ON MN.representations_id = rep.id " +
-					" WHERE dtb.id = MN.DefinedTermBase_id) " + 
+					" WHERE dtb.id = MN.DefinedTermBase_id AND rep.language_id = @langId) " + 
 				" WHERE dtb.DTYPE = 'Language'";
+		String englishId = String.valueOf(getEnglishLanguageId(datasource, monitor));
+		if (englishId == null){
+			throw new NullPointerException("English id could not be found");
+		}
+		sql = sql.replace("@langId", englishId);
 		datasource.executeUpdate(sql);
 		
 		return 0;

@@ -318,8 +318,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			result = nonViralName.getNameCache();
 		}else if (rank == null){
 			result = getRanklessNameCache(nonViralName);
-		}else if (nonViralName.isInfragenericUnranked()){
-			result = getUnrankedInfragenericNameCache(nonViralName);
+//		}else if (nonViralName.isInfragenericUnranked()){
+//			result = getUnrankedInfragenericNameCache(nonViralName);
 		}else if (rank.isInfraSpecific()){
 			result = getInfraSpeciesNameCache(nonViralName);
 		}else if (rank.isSpecies()){

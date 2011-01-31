@@ -63,6 +63,7 @@ public class CdmMetaData extends CdmBase{
 		result.add(new CdmMetaData(MetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
 		return result;	
 	}
+	
 	/**
 	 * The version number for the terms loaded by the termloader (csv-files)
 	 * It is recommended to have the first two numbers equal to the CDM Library version number.
@@ -78,7 +79,7 @@ public class CdmMetaData extends CdmBase{
 	 * 
 	 * The last number represents the date of change.
 	 */
-	private static final String termsVersion = "3.0.1.0.201012150000";
+	private static final String termsVersion = "3.0.1.1.201101310000";
 	
 	
 	public enum MetaDataPropertyName{

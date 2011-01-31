@@ -1310,31 +1310,31 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	}
 	
 	
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> names rank is Rank "unranked"
-	 * (uuid = 'a965befb-70a9-4747-a18f-624456c65223') but most likely it is an infrageneric rank
-	 * due to existing atomized data for the genus epithet and the infrageneric epithet but missing
-	 * specific epithet.
-	 * Returns false if <i>this</i> names rank is null.
-	 *
-	 * @see  #isSupraGeneric()
-	 * @see  #isGenus()
-	 * @see  #isSpeciesAggregate()
-	 * @see  #isSpecies()
-	 * @see  #isInfraSpecific()
-	 */
-	@Transient
-	public boolean isInfragenericUnranked() {
-		Rank rank = this.getRank();
-		if (rank == null || ! rank.equals(Rank.UNRANKED())){
-			return false;
-		}
-		if (StringUtils.isBlank(this.getSpecificEpithet()) && StringUtils.isBlank(this.getInfraSpecificEpithet()) ){
-			return true;
-		}else{
-			return false;
-		}
-	}
+//	/**
+//	 * Returns the boolean value indicating whether <i>this</i> names rank is Rank "unranked"
+//	 * (uuid = 'a965befb-70a9-4747-a18f-624456c65223') but most likely it is an infrageneric rank
+//	 * due to existing atomized data for the genus epithet and the infrageneric epithet but missing
+//	 * specific epithet.
+//	 * Returns false if <i>this</i> names rank is null.
+//	 *
+//	 * @see  #isSupraGeneric()
+//	 * @see  #isGenus()
+//	 * @see  #isSpeciesAggregate()
+//	 * @see  #isSpecies()
+//	 * @see  #isInfraSpecific()
+//	 */
+//	@Transient
+//	public boolean isInfragenericUnranked() {
+//		Rank rank = this.getRank();
+//		if (rank == null || ! rank.equals(Rank.UNRANKED())){
+//			return false;
+//		}
+//		if (StringUtils.isBlank(this.getSpecificEpithet()) && StringUtils.isBlank(this.getInfraSpecificEpithet()) ){
+//			return true;
+//		}else{
+//			return false;
+//		}
+//	}
 	
 
 	/**

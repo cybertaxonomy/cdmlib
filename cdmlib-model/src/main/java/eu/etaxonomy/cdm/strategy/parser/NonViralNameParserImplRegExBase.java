@@ -74,9 +74,9 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String status = "";
     
     //marker
-    protected static String InfraGenusMarker = "(subgen.|subg.|sect.|subsect.|ser.|subser.|t.infgen.)";
+    protected static String InfraGenusMarker = "(subgen.|subg.|sect.|subsect.|ser.|subser.|t.infgen.|\\[unranked\\])";
     protected static String aggrOrGroupMarker = "(aggr.|agg.|group)";
-    protected static String infraSpeciesMarker = "(subsp.|convar.|var.|subvar.|f.|subf.|f.spec.|tax." + fWs + "infrasp.)";
+    protected static String infraSpeciesMarker = "(subsp.|convar.|var.|subvar.|f.|subf.|f.spec.|\\[unranked\\]|tax." + fWs + "infrasp.)";
     protected static String oldInfraSpeciesMarker = "(prol.|proles|race|taxon|sublusus)";
     
     

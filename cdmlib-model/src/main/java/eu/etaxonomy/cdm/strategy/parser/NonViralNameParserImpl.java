@@ -778,7 +778,13 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 			 //infra genus
 			 else if (infraGenusPattern.matcher(fullNameString).matches()){
-				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[1]));
+				Rank infraGenericRank;
+				if ("[unranked]".equals(epi[1])){
+					infraGenericRank = Rank.INFRAGENERICTAXON();
+				}else{
+					infraGenericRank = Rank.getRankByAbbreviation(epi[1]);
+				}
+				nameToBeFilled.setRank(infraGenericRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setInfraGenericEpithet(epi[2]);
 				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length()+ 1 + epi[2].length());
@@ -814,7 +820,13 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 					infraSpecRankEpi += " " +  epi[3];
 					infraSpecEpi = epi[4];
 				}
-				nameToBeFilled.setRank(Rank.getRankByAbbreviation(infraSpecRankEpi));
+				Rank infraSpecificRank;
+				if ("[unranked]".equals(infraSpecRankEpi)){
+					infraSpecificRank = Rank.INFRASPECIFICTAXON();
+				}else{
+					infraSpecificRank = Rank.getRankByAbbreviation(infraSpecRankEpi);
+				}
+				nameToBeFilled.setRank(infraSpecificRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				nameToBeFilled.setInfraSpecificEpithet(infraSpecEpi);

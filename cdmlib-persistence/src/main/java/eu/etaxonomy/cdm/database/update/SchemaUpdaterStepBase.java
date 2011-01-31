@@ -9,9 +9,11 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -19,6 +21,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
@@ -77,6 +80,31 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase> imp
 		return result;
 	}
 	
+	protected Integer getEnglishLanguageId(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+		return getLanguageId(Language.uuidEnglish, datasource, monitor);
+	}
+
+	/**
+	 * @param uuidLanguage
+	 * @param datasource
+	 * @param monitor
+	 * @return
+	 * @throws SQLException
+	 */
+	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+		ResultSet rs;
+		Integer langId = null;
+		String sqlLangId = " SELECT id FROM DefinedTermBase WHERE uuid = '" + uuidLanguage + "'";
+		rs = datasource.executeQuery(sqlLangId);
+		if (rs.next()){
+			langId = rs.getInt("id");
+		}else{
+			String warning = "Term for language (" +  uuidLanguage + ") does not exist!";
+			monitor.warning(warning);
+		}
+		return langId;
+	}
+
 	
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<ISchemaUpdaterStep>();

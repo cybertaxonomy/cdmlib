@@ -17,34 +17,30 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
-import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
-import eu.etaxonomy.cdm.database.update.v25_30.TermUpdater_25_30;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * @author a.mueller
  * @date 10.09.2010
  *
  */
-public class TermUpdater_30_31 extends TermUpdaterBase implements ITermUpdater {
+public class TermUpdater_31_311 extends TermUpdaterBase implements ITermUpdater {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermUpdater_30_31.class);
+	private static final Logger logger = Logger.getLogger(TermUpdater_31_311.class);
 	
-	public static final String startTermVersion = "3.0.0.0.201011170000";
-	private static final String endTermVersion = "3.0.1.0.201012150000";
+	public static final String startTermVersion = "3.0.1.0.201012150000";
+	private static final String endTermVersion = "3.0.1.1.201101310000";
 	
 // *************************** FACTORY **************************************/
 	
-	public static TermUpdater_30_31 NewInstance(){
-		return new TermUpdater_30_31(startTermVersion, endTermVersion);
+	public static TermUpdater_31_311 NewInstance(){
+		return new TermUpdater_31_311(startTermVersion, endTermVersion);
 	}
 	
 // *************************** CONSTRUCTOR ***********************************/	
 
-	protected TermUpdater_30_31(String startTermVersion, String endTermVersion) {
+	protected TermUpdater_31_311(String startTermVersion, String endTermVersion) {
 		super(startTermVersion, endTermVersion);
 	}
 	
@@ -94,51 +90,33 @@ public class TermUpdater_30_31 extends TermUpdaterBase implements ITermUpdater {
 //		stepName = "Add 'unranked' rank to ranks";
 //		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
 
-		
-		// endemic
-		UUID uuidTerm = UUID.fromString("efe95ade-8a6c-4a0e-800e-437c8b50c45e");
-		description = "endemic";
-		label = "endemic";
-		abbrev = "endemic";
-		dtype = MarkerType.class.getSimpleName();
-		isOrdered = false;
-		uuidVocabulary = UUID.fromString("19dffff7-e142-429c-a420-5d28e4ebe305");
-		uuidAfterTerm = null;//UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
-		uuidLang = Language.uuidEnglish;
-		stepName = "Add 'endemic' rank to ranks";
-		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+		String sql = "UPDATE Representation SET text = '`Unranked´ Infrageneric Rank: The infrageneric name on purpose has no rank', label = 'Unranked (infrageneric)', abbreviatedlabel = '[infragen.]'" +
+		" WHERE abbreviatedlabel = 't.infgen.'";
+		stepName = "Update unranked infrageneric representation";
+		SimpleSchemaUpdaterStep infraGenStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		list.add(infraGenStep);
 
-		// status feature
-		uuidTerm = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
-		description = "Status";
-		label = "Status";
-		abbrev = "Status";
-		dtype = Feature.class.getSimpleName();
-		isOrdered = false;
-		uuidVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
-		uuidAfterTerm = null;//UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
-		uuidLang = Language.uuidEnglish;
-		stepName = "Add 'status' feature to features";
-		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
-
-		// systematics feature
-		uuidTerm = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
-		description = "Systematics";
-		label = "Systematics";
-		abbrev = "Systematics";
-		dtype = Feature.class.getSimpleName();
-		isOrdered = false;
-		//TODO is this a name feature or a taxon feature
-		uuidVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
-		uuidAfterTerm = null;//UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
-		uuidLang = Language.uuidEnglish;
-		stepName = "Add 'systematics' feature to features";
-		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+		sql = "UPDATE DefinedTermBase SET titleCache = 'Unranked (infrageneric)' " +
+			" WHERE titleCache  = 'Infrageneric Taxon'";
+		stepName = "Update unranked infrageneric title cache";
+		SimpleSchemaUpdaterStep infraGenTitleStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		list.add(infraGenTitleStep);
 
 		
-		//language labels
-		LanguageLabelUpdater langLabelUpdater = LanguageLabelUpdater.NewInstance();
-		list.add(langLabelUpdater);
+		
+		sql = "UPDATE Representation SET text = '`Unranked´ Infraspecific Rank: The infraspecific name on purpose has no rank', label = 'Unranked (infraspecific)', abbreviatedlabel = '[infraspec.]' " +
+		" WHERE abbreviatedlabel = 't.infr.'";
+		stepName = "Update unranked infraspecific representation";
+		SimpleSchemaUpdaterStep infraSpecStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		list.add(infraSpecStep);
+
+		sql = "UPDATE DefinedTermBase SET titleCache = 'Unranked (infraspecific)' " +
+			" WHERE titleCache  = 'Infraspecific Taxon'";
+		stepName = "Update unranked infraspecific title cache";
+		SimpleSchemaUpdaterStep infraSpecTitleStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		list.add(infraSpecTitleStep);
+
+
 		
 		return list;
 	}
@@ -149,7 +127,7 @@ public class TermUpdater_30_31 extends TermUpdaterBase implements ITermUpdater {
 	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return TermUpdater_31_311.NewInstance();
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -157,7 +135,7 @@ public class TermUpdater_30_31 extends TermUpdaterBase implements ITermUpdater {
 	 */
 	@Override
 	public ITermUpdater getPreviousUpdater() {
-		return TermUpdater_25_30.NewInstance();
+		return TermUpdater_30_31.NewInstance();
 	}
 
 }

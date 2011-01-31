@@ -127,7 +127,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
 	private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
 	private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
-	private static final UUID uuidUnranked = UUID.fromString("a965befb-70a9-4747-a18f-624456c65223");
+//	private static final UUID uuidUnrankedInfraSpecific = UUID.fromString("a965befb-70a9-4747-a18f-624456c65223");
+//	private static final UUID uuidUnrankedInfraGeneric = UUID.fromString("994646a1-c2e7-461d-a1bc-2afd6ea51b40");
 	
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
@@ -328,6 +329,11 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static final Rank SPECIESGROUP(){
 		return getTermByUuid(uuidSpeciesGroup);
 	}
+	/**
+	 * 'Unranked infrageneric'. An infrageneric rank which is on purpose not further defined.
+	 * This sometimes holds for names from the 19th century. 
+	 */
+
 	public static final Rank INFRAGENERICTAXON(){
 		return getTermByUuid(uuidInfragenericTaxon);
 	}
@@ -373,6 +379,10 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static final Rank SUBSUBFORM(){
 		return getTermByUuid(uuidSubsubform);
 	}
+	/**
+	 * 'Unranked infraspecific'. An infraspecific rank which is on purpose not further defined.
+	 * This sometimes holds for names from the 19th century. 
+	 */
 	public static final Rank INFRASPECIFICTAXON(){
 		return getTermByUuid(uuidInfraspecificTaxon);
 	}
@@ -400,10 +410,18 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static final Rank NATIO(){
 		return getTermByUuid(uuidNatio);
 	}
-	public static final Rank UNRANKED(){
-		return getTermByUuid(uuidUnranked);
+	/**
+	 * @see #INFRASPECIFICTAXON()
+	 */
+	public static final Rank UNRANKED_INFRASPECIFIC(){
+		return getTermByUuid(uuidInfraspecificTaxon);
 	}
-	
+	/**
+	 * @see #INFRAGENERICTAXON()
+	 */
+	public static final Rank UNRANKED_INFRAGENERIC(){
+		return getTermByUuid(uuidInfragenericTaxon);
+	}
 	
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> rank is higher than 
@@ -560,7 +578,10 @@ public class Rank extends OrderedTermBase<Rank> {
 	
 	/**
 	 * Returns the rank identified through an abbreviated name.
-	 * Preliminary implementation for BotanicalNameParser.
+	 * Preliminary implementation for BotanicalNameParser.<BR>
+	 * Note: For abbrev = "[unranked]" the result is undefined.
+	 * It maybe the infrageneric unranked or the infraspecific unranked.
+	 * You need to define by context which one is correct.
 	 * 
 	 * @param	abbrev	the string for the name abbreviation
 	 * @return  		the rank

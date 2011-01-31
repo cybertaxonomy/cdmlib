@@ -113,14 +113,8 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 //
 
 		//language id
-		int langId;
-		String sqlLangId = " SELECT id FROM DefinedTermBase WHERE uuid = '" + uuidLanguage + "'";
-		rs = datasource.executeQuery(sqlLangId);
-		if (rs.next()){
-			langId = rs.getInt("id");
-		}else{
-			String warning = "Term for default language (English) not  does not exist!";
-			monitor.warning(warning);
+		Integer langId = getLanguageId(uuidLanguage, datasource, monitor);
+		if (langId == null){
 			return null;
 		}
 		
@@ -151,7 +145,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 	}
 
 
-
+	
 	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) {
 		if (dtype.equals(Feature.class.getSimpleName())){
 			String sqlUpdate = "UPDATE DefinedTermBase SET " + 

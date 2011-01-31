@@ -314,6 +314,38 @@ public class NonViralNameParserImplTest {
 		
 
 	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
+	 */
+	@Test
+	public final void testUnrankedNames() {
+		try {
+			Method parseMethod = parser.getClass().getDeclaredMethod("parseFullName", String.class, NomenclaturalCode.class, Rank.class);
+			testName_StringNomcodeRank(parseMethod);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		
+		//unranked infraspecific
+		String infraspecificUnranked = "Genus species [unranked] infraspecific";
+		NonViralName name = parser.parseFullName(infraspecificUnranked);
+		assertEquals( "Genus", name.getGenusOrUninomial());
+		assertEquals( "species", name.getSpecificEpithet());
+		assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+		assertEquals( "Unranked rank should be parsed", Rank.INFRASPECIFICTAXON(), name.getRank());
+
+		//unranked infrageneric
+		String infraGenericUnranked = "Genus [unranked] Infragen";
+		NonViralName name2 = parser.parseFullName(infraGenericUnranked);
+		assertEquals( "Genus", name2.getGenusOrUninomial());
+		assertEquals( null, name2.getSpecificEpithet());
+		assertEquals( "Infragen", name2.getInfraGenericEpithet());
+		assertEquals( "Unranked rank should be parsed", Rank.INFRAGENERICTAXON(), name2.getRank());
+
+	}
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
