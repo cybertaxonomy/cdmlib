@@ -157,7 +157,7 @@ public class TextDataTest {
 	@Test
 	public void testPutTextStringLanguage() {
 		textDataLeer.putText(Language.GERMAN(), "xx");
-		assertNull(textDataLeer.putText("francais", Language.FRENCH()));
+		assertNull(textDataLeer.putText(Language.FRENCH(), "francais"));
 		textDataLeer.putText(null, "nothing");
 		textDataLeer.putText(Language.CHINESE(), null);
 		assertEquals(4 , textDataLeer.size());

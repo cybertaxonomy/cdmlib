@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

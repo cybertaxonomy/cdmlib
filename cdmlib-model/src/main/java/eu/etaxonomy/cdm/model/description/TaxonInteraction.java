@@ -164,6 +164,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * @deprecated			should follow the put semantic of maps, this method will be removed in v4.0
 	 * 						Use the {@link #putDescription(LanguageString) putDescription} method instead
 	 */
+	@Deprecated
 	public void addDescription(LanguageString description){
 		this.putDescription(description);
 	}
@@ -209,6 +210,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
 	 * 					Use the {@link #putDescription(Language, String) putDescription} method instead
 	 */
+	@Deprecated
 	public void addDescription(String text, Language language){
 		this.putDescription(language, text);
 	}

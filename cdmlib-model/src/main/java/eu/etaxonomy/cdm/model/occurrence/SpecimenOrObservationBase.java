@@ -390,7 +390,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		result.definition = new HashMap<Language,LanguageString>();
 		for(LanguageString languageString : this.definition.values()) {
 			LanguageString newLanguageString = (LanguageString)languageString.clone();
-			result.addDefinition(newLanguageString);
+			result.putDefinition(newLanguageString);
 		} 
 
 		//sex
