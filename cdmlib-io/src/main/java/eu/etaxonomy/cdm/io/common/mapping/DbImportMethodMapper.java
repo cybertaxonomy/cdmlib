@@ -111,6 +111,7 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 			return result;
 		} catch (InvocationTargetException e) {
 			logger.error("InvocationTargetException: " + e.getLocalizedMessage() + " in method " + this.method.getName());
+			e.printStackTrace();
 			return null;
 		} catch (IllegalAccessException e) {
 			logger.error("IllegalAccessException: " + e.getLocalizedMessage());
