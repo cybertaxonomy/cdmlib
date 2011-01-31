@@ -151,7 +151,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							TextData additionalPublication = TextData.NewInstance(Feature.ADDITIONAL_PUBLICATION());
 							//TODO language
 							Language language = Language.DEFAULT();
-							additionalPublication.putText(nameFact, language);
+							additionalPublication.putText(language, nameFact);
 							additionalPublication.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
 									nameFactRefDetail, null, null);
 							description.addElement(additionalPublication);
@@ -163,7 +163,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							TextData bibliography = TextData.NewInstance(Feature.CITATION());
 							//TODO language
 							Language language = Language.DEFAULT();
-							bibliography.putText(nameFact, language);
+							bibliography.putText(language, nameFact);
 							bibliography.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
 									nameFactRefDetail, null, null);
 							description.addElement(bibliography);

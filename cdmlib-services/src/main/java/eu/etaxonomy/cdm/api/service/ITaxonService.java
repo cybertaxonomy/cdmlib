@@ -404,4 +404,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 	
+	public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(ITaxonServiceConfigurator configurator);
+	
 }

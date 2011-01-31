@@ -280,7 +280,7 @@ public class IdentificationKeyGenerator {
 				String statementString = fatherStatement.getLabelText(Language.DEFAULT());
 				if (statementString !=null && taxaCovered != null){
 					String label = statementString + " --> " + taxaCovered.toString();
-					fatherStatement.putLabel(label, Language.DEFAULT());
+					fatherStatement.putLabel(Language.DEFAULT(), label);
 				}
 			}
 		}

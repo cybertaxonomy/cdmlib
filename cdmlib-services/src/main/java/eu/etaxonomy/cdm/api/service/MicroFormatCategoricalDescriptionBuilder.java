@@ -38,7 +38,7 @@ public class MicroFormatCategoricalDescriptionBuilder extends AbstractCategorica
 		if (language==null) {
 			language = Language.DEFAULT();
 		}
-		textData.putText(CategoricalDescription.toString(), language);
+		textData.putText(language, CategoricalDescription.toString());
 		
 		return textData;
 	}

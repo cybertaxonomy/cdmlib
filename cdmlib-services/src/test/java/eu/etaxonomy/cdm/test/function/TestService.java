@@ -236,8 +236,8 @@ public class TestService {
 		//testDeleteTaxa();
 		//testDeleteRelationship();
 		//regenerateTaxonTitleCache();
-//		testVocabularyLists();
-//		testTransientRank();
+		//testVocabularyLists();
+		//testTransientRank();
 		testFeature();
 		System.out.println("\nEnd ...");
 	}

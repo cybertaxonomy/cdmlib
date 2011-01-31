@@ -70,7 +70,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	
 	public static KeyStatement NewInstance(String defaultLabel){
 		KeyStatement result = new KeyStatement();
-		result.putLabel(defaultLabel, Language.DEFAULT());
+		result.putLabel(Language.DEFAULT(), defaultLabel);
 		return result;
 	}
 	

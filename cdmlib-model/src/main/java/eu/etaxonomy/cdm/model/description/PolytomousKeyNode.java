@@ -448,7 +448,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (this.statement == null){
 			setStatement(KeyStatement.NewInstance());
 		}
-		return getStatement().putLabel(text, language);
+		return getStatement().putLabel(language, text);
 	}
 
 	/**
@@ -489,7 +489,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (this.question == null){
 			setQuestion(KeyStatement.NewInstance());
 		}
-		return getQuestion().putLabel(text, language);
+		return getQuestion().putLabel(language, text);
 	}
 
 	/**

@@ -820,7 +820,7 @@ public class TaxonNameBaseTest {
 		//description
 		TaxonNameDescription description = TaxonNameDescription.NewInstance(taxonNameBase1);
 		TextData textData = TextData.NewInstance(Feature.IMAGE());
-		textData.putText("My media text data", Language.DEFAULT());
+		textData.putText(Language.DEFAULT(), "My media text data");
 		Media media = Media.NewInstance();
 		textData.addMedia(media);
 		description.addElement(textData);

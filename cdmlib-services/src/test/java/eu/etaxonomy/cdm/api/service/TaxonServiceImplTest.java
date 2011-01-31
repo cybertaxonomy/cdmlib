@@ -19,9 +19,13 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -122,7 +126,21 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public final void testMakeTaxonSynonym() {
+		Rank rank = Rank.SPECIES();
+		HomotypicalGroup group = HomotypicalGroup.NewInstance();
+		Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
+		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+		tax1.addHomotypicSynonym(synonym, null, null);
+		UUID uuidTaxon = service.save(tax1);
+		UUID uuidSyn = service.save(synonym);
 		
+		service.swapSynonymAndAcceptedTaxon(synonym, tax1);
+		
+		TaxonBase tax = service.find(uuidTaxon);
+		TaxonBase syn = service.find(uuidSyn);
+		HomotypicalGroup groupTest = tax.getHomotypicGroup();
+		HomotypicalGroup groupTest2 = syn.getHomotypicGroup();
+		assertEquals(groupTest, groupTest2);
 	}
 	
 

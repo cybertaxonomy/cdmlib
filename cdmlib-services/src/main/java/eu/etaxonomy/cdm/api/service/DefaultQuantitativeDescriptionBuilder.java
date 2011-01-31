@@ -99,7 +99,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 				QuantitativeDescription.append("("+ more_Or_Less + space + sdvalue + ")");
 			}
 		}
-		textData.putText(QuantitativeDescription.toString(), languages.get(0)); // which language should be put here ?
+		textData.putText(languages.get(0), QuantitativeDescription.toString()); // which language should be put here ?
 		textData.setFormat(TextFormat.NewInstance(null, "Text",null ));
 		
 		return textData;

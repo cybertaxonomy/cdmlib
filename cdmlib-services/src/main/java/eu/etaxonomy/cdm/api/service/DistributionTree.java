@@ -24,7 +24,7 @@ public class DistributionTree extends Tree<Distribution>{
 		NamedArea area = new NamedArea();
 		Distribution data = Distribution.NewInstance();
 		data.setArea(area);
-		data.addModifyingText("test", Language.ENGLISH());
+		data.putModifyingText(Language.ENGLISH(), "test");
 		TreeNode<Distribution> rootElement = new TreeNode<Distribution>();
 		List<TreeNode<Distribution>> children = new ArrayList<TreeNode<Distribution>>();
 		
@@ -148,7 +148,7 @@ public class DistributionTree extends Tree<Distribution>{
 			highestDistNode = new TreeNode<Distribution>(data);
 		}
 		if(highestDistNode.data.getModifyingText().isEmpty()){
-			highestDistNode.data.addModifyingText("test", Language.ENGLISH());
+			highestDistNode.data.putModifyingText(Language.ENGLISH(), "test");
 		}
 
 		if (root.getChildren().isEmpty() || !containsChild(root, highestDistNode)) {

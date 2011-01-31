@@ -156,12 +156,12 @@ public class TextDataTest {
 	 */
 	@Test
 	public void testPutTextStringLanguage() {
-		textDataLeer.putText("xx", Language.GERMAN());
+		textDataLeer.putText(Language.GERMAN(), "xx");
 		assertNull(textDataLeer.putText("francais", Language.FRENCH()));
-		textDataLeer.putText("nothing", null);
-		textDataLeer.putText(null, Language.CHINESE());
+		textDataLeer.putText(null, "nothing");
+		textDataLeer.putText(Language.CHINESE(), null);
 		assertEquals(4 , textDataLeer.size());
-		assertEquals("deutsch", textDataLeer.putText("deutsch", Language.GERMAN()).getText() );
+		assertEquals("deutsch", textDataLeer.putText(Language.GERMAN(), "deutsch").getText());
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
 		assertEquals("deutsch", textDataLeer.getText(Language.GERMAN()));
 		assertEquals("francais", textDataLeer.getText(Language.FRENCH()));

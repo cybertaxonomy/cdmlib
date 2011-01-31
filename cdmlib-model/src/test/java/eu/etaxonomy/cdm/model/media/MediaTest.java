@@ -107,7 +107,7 @@ public class MediaTest {
 		media1.addRights(rights1);
 		
 		languageString2 = LanguageString.NewInstance("media1Title", Language.DEFAULT());
-		media1.addTitle(languageString2);
+		media1.putTitle(languageString2);
 		
 	}
 

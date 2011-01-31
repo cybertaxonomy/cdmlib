@@ -246,19 +246,61 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Integer pageNumber, List<String> propertyPaths) {
 				
 		boolean doCount = false;
+		long zstVorher;
+		long zstNachher;
+
+		zstVorher = System.currentTimeMillis();
 		Query query = prepareTaxaByName(clazz, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
+		
 		if (query != null){
 			List<TaxonBase> results = query.list();
+			
 			//results.addAll (prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			//TaxonComparatorSearch comp = new TaxonComparatorSearch();
 			//Collections.sort(results, comp);
+			zstNachher = System.currentTimeMillis();
+			System.out.println("Zeit benötigt (getTaxaByName): " + ((zstNachher - zstVorher)) + " msec " + results.size());
 			return results;
 		}
+		
 		return new ArrayList<TaxonBase>();
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
+	//new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
+	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+			MatchMode matchMode, Set<NamedArea> namedAreas, List<String> propertyPaths) {
+		long zstVorher;
+		long zstNachher;
+		zstVorher = System.currentTimeMillis();		
+		boolean doCount = false;
+		Query query = prepareTaxaByNameForEditor(clazz, "nameCache", queryString, classification, matchMode, namedAreas, doCount);
+		if (query != null){
+			//TODO: only for testing!
+			
+			Iterator<Object[]> results = query.iterate();
+			List<UuidAndTitleCache<TaxonBase>> resultObjects = new ArrayList<UuidAndTitleCache<TaxonBase>>();
+			Object[] result;
+			while (results.hasNext()){
+				result = results.next();
+				resultObjects.add( new UuidAndTitleCache((UUID) result[0], (String)result[1]));
+			}
+			//TODO: only for testing!
+			zstNachher = System.currentTimeMillis();
+			System.out.println("Zeit benötigt (getTaxaByNameForEditor): " + ((zstNachher - zstVorher)) + " msec " + resultObjects.size());
+			
+			return resultObjects;
+			
+		}
+		return new ArrayList<UuidAndTitleCache<TaxonBase>>();
+		
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByCommonName(java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
@@ -277,7 +319,257 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 	}
 	
+	/**
+	 * @param clazz
+	 * @param searchField the field in TaxonNameBase to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
+	 * @param queryString
+	 * @param classification TODO
+	 * @param matchMode
+	 * @param namedAreas
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param doCount
+	 * @return
+	 * 
+	 *
+	 */
+	private Query prepareTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String searchField, String queryString, Classification classification,
+			MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount) {
+		return prepareQuery(clazz, searchField, queryString, classification,
+				matchMode, namedAreas, doCount, true);
+	}
+	
+	private Query prepareQuery(Class<? extends TaxonBase> clazz, String searchField, String queryString, Classification classification,
+			MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doForEditor){
+		
+		String hqlQueryString = matchMode.queryStringFrom(queryString);
+		String selectWhat;
+		if (doForEditor){
+			selectWhat = "t.uuid, t.titleCache";
+		}else selectWhat = (doCount ? "count(t)": "t");
+		
+		String hql = "";
+		Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
+		if(namedAreas != null && namedAreas.size() > 0){
+			// expand areas and restrict by distribution area
+			List<NamedArea> childAreas;
+			Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
+			expandNamedAreas(namedAreas, areasExpanded, areaQuery);
+		}
+		boolean doAreaRestriction = areasExpanded.size() > 0;
+		
+		Set<UUID> namedAreasUuids = new HashSet<UUID>();
+		for (NamedArea area:areasExpanded){
+			namedAreasUuids.add(area.getUuid());
+		}
+		
+		String taxonSubselect = null;
+		String synonymSubselect = null;
+		
+		if(classification != null){
+			
+			if(doAreaRestriction){
+				
+				taxonSubselect = "select t.id from" +
+					" Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" +
+					" join t.name n " +
+					" join t.taxonNodes as tn "+
+					" where" +
+					" e.area.uuid in (:namedAreasUuids) AND" +
+					" tn.classification = :classification" +
+					" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString";
+				
+				
+				synonymSubselect = "select s.id from" +
+					" Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" + // the taxa
+					" join t.taxonNodes as tn "+
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where" +
+					" e.area.uuid in (:namedAreasUuids) AND" +
+					" tn.classification = :classification" +
+					" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+				
+			} else {
+				
+				taxonSubselect = "select t.id from" +
+					" Taxon t" +
+					" join t.name n " +
+					" join t.taxonNodes as tn "+
+					" where" +
+					" tn.classification = :classification" +
+					" AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+				
+				synonymSubselect = "select s.id from" +
+					" Taxon t" + // the taxa
+					" join t.taxonNodes as tn "+
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where" +
+					" tn.classification = :classification" +
+					" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+			}	
+		} else {
+			
+			if(doAreaRestriction){
+				
+				taxonSubselect = "select t.id from " +
+					" Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" +
+					" join t.name n "+
+					" where" +
+					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
+					" n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+				
+				synonymSubselect = "select s.id from" +
+					" Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" + // the taxa
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where" +
+					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
+					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+				
+			} else {
+				
+				taxonSubselect = "select t.id from " +
+					" Taxon t" +
+					" join t.name n "+
+					" where" +
+					" n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 
+				synonymSubselect = "select s.id from" +
+					" Taxon t" + // the taxa
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where" +
+					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+			}
+			
+		
+		}
+		
+		
+		
+		
+		Query subTaxon = null;
+		Query subSynonym = null;
+		if(clazz.equals(Taxon.class)){
+			// find Taxa
+			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
+			//subTaxon = getSession().createQuery(taxonSubselect);
+			
+			if(doAreaRestriction){
+				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
+			}	
+			if(classification != null){
+				subTaxon.setParameter("classification", classification);
+			}
+		} else if(clazz.equals(Synonym.class)){
+			// find synonyms
+			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
+			
+			if(doAreaRestriction){
+				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
+			}		
+			if(classification != null){
+				subSynonym.setParameter("classification", classification);
+			}
+		} else {
+			// find taxa and synonyms
+			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
+			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
+			if(doAreaRestriction){
+				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
+				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
+			}
+			if(classification != null){
+				subTaxon.setParameter("classification", classification);
+				subSynonym.setParameter("classification", classification);
+			}
+		}
+		
+		List<Integer> taxa = new ArrayList<Integer>();
+		List<Integer> synonyms = new ArrayList<Integer>();
+		if(clazz.equals(Taxon.class)){
+			taxa = subTaxon.list();
+			
+		}else if (clazz.equals(Synonym.class)){
+			synonyms = subSynonym.list();
+		}else {
+			taxa = subTaxon.list();
+			synonyms = subSynonym.list();
+		}
+		if(clazz.equals(Taxon.class)){
+			if  (taxa.size()>0){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
+			}else{
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
+			}
+		} else if(clazz.equals(Synonym.class) ){
+			if (synonyms.size()>0){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";		
+			}else{
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
+			}
+		} else {
+			if(synonyms.size()>0 && taxa.size()>0){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+			}else if (synonyms.size()>0 ){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
+			} else if (taxa.size()>0 ){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+			} else{
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
+			}
+		}
+		
+		if (hql == "") return null;
+		if(!doCount){
+			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
+			hql += " order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+			
+    
+		}
+	
+		Query query = getSession().createQuery(hql);
+		
+				
+		if(clazz.equals(Taxon.class) && taxa.size()>0){
+			//find taxa
+			query.setParameterList("taxa", taxa );
+		} else if(clazz.equals(Synonym.class) && synonyms.size()>0){
+			// find synonyms
+			query.setParameterList("synonyms", synonyms);
+			
+		
+		} else {
+			// find taxa and synonyms
+			if (taxa.size()>0){
+				query.setParameterList("taxa", taxa);
+			}
+			if (synonyms.size()>0){
+				query.setParameterList("synonyms",synonyms);
+			}
+			if (taxa.size()== 0 && synonyms.size() == 0){
+				return null;
+			}
+		}
+		return query;
+		
+	}
+	
+	
 	/**
 	 * @param clazz
 	 * @param searchField the field in TaxonNameBase to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
@@ -297,7 +589,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 		//TODO ? checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, Reference sec)");
 
-		String hqlQueryString = matchMode.queryStringFrom(queryString);
+		/*String hqlQueryString = matchMode.queryStringFrom(queryString);
 		
 		String selectWhat = (doCount ? "count(t)": "t");
 		
@@ -414,7 +706,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		
 		
-		// TODO  mysql needs  optimization:  see http://www.xaprb.com/blog/2006/04/30/how-to-optimize-subqueries-and-joins-in-mysql/#commen
+		
 		Query subTaxon = null;
 		Query subSynonym = null;
 		if(clazz.equals(Taxon.class)){
@@ -517,8 +809,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			if (taxa.size()== 0 && synonyms.size() == 0){
 				return null;
 			}
-		}
-		
+		}*/
+		Query query = prepareQuery(clazz, searchField, queryString, classification,
+				matchMode, namedAreas, doCount, false);
 		
 		if(pageSize != null &&  !doCount) {
 			query.setMaxResults(pageSize);

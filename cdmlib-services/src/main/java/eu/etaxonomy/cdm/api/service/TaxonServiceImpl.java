@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -376,6 +377,25 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return heterotypicSynonymyGroups;
 	}
 	
+	public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(ITaxonServiceConfigurator configurator){
+		
+		List<UuidAndTitleCache<TaxonBase>> result = new ArrayList<UuidAndTitleCache<TaxonBase>>();
+		Class<? extends TaxonBase> clazz = null;
+		if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
+			clazz = TaxonBase.class;
+			//propertyPath.addAll(configurator.getTaxonPropertyPath());
+			//propertyPath.addAll(configurator.getSynonymPropertyPath());
+		} else if(configurator.isDoTaxa()) {
+			clazz = Taxon.class;
+			//propertyPath = configurator.getTaxonPropertyPath();
+		} else if (configurator.isDoSynonyms()) {
+			clazz = Synonym.class;
+			//propertyPath = configurator.getSynonymPropertyPath();
+		}
+		
+		result = dao.getTaxaByNameForEditor(clazz, configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getTaxonPropertyPath());
+		return result;
+	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)
 	 */
@@ -412,6 +432,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 						configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
 						configurator.getNamedAreas());
 			}
+			
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
 				taxa = dao.getTaxaByName(clazz, 
 					configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),

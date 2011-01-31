@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -162,4 +163,13 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		printDataSet(System.out);
 	}
 	
+	
+	@Test
+	public final void testLoadCacheStrategyForReference(){
+		Reference ref = referenceService.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
+		//ref.setType(ReferenceType.Article);
+		//referenceService.update(ref);
+		referenceService.updateTitleCache();
+		
+	}
 }

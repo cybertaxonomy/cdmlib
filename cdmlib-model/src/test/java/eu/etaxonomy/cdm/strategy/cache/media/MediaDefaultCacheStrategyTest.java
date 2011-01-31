@@ -58,7 +58,7 @@ public class MediaDefaultCacheStrategyTest {
 		
 		try {
 			Media media = Media.NewInstance();
-			media.addTitle("My best media", Language.DEFAULT());
+			media.putTitle(Language.DEFAULT(), "My best media");
 			Assert.assertEquals("Wrong title cache for media", "My best media", media.getTitleCache());
 			
 			media = Media.NewInstance();

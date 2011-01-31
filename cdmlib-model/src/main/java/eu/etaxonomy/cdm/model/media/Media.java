@@ -294,7 +294,7 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
 	 */
 	@Override
 	public void setTitleCache(String titleCache) {
-		addTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
+		putTitle(LanguageString.NewInstance(titleCache, Language.DEFAULT()));
 	}
 	
 	/* (non-Javadoc)

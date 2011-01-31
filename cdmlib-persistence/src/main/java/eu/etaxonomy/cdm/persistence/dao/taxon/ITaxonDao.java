@@ -435,5 +435,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
+	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+			MatchMode matchMode, Set<NamedArea> namedAreas, List<String> propertyPaths);
+
 	
 }

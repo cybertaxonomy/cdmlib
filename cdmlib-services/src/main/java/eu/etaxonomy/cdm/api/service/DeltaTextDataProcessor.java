@@ -40,7 +40,7 @@ public class DeltaTextDataProcessor implements INaturalLanguageTextDataProcessor
 			}
 			
 			textData.removeText(language);
-			textData.putText(oldText,language);
+			textData.putText(language, oldText);
 			
 		}
 		

@@ -340,7 +340,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 		for (Language lang : langLabDet.keySet()){
 			List<String> labDet = langLabDet.get(lang);
 			if (labDet.get(0) != null){
-				m.addTitle(LanguageString.NewInstance(labDet.get(0), lang));
+				m.putTitle(LanguageString.NewInstance(labDet.get(0), lang));
 			}
 			if (labDet.size()>1) {
 				m.addDescription(labDet.get(1), lang);
@@ -1286,7 +1286,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 
 			// <Content>Free form text</Content>
 			String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
-			textData.putText(content, datasetLanguage);
+			textData.putText(datasetLanguage, content);
 			taxonDescription.addElement(textData);
 		}
 	}

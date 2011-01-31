@@ -288,7 +288,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							textData.addMedia(media);
 							textData.setFeature(Feature.IMAGE());
 						}else{
-							textData.putText(fact, Language.DEFAULT());
+							textData.putText(Language.DEFAULT(), fact);
 							textData.setFeature(feature);
 						}
 						

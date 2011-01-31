@@ -174,7 +174,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 				", ");
 		
 		TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
-		textData.putText(naturalLanguageDescription, Language.DEFAULT());
+		textData.putText(Language.DEFAULT(), naturalLanguageDescription);
 
 		mv.addObject(textData);
 		

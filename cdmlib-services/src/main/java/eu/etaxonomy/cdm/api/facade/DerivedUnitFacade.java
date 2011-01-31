@@ -1154,7 +1154,7 @@ public class DerivedUnitFacade {
 		if (ecologyText == null){
 			ecology.removeText(language);
 		}else{
-			ecology.putText(ecologyText, language);
+			ecology.putText(language, ecologyText);
 		}
 	}
 	public void removeEcology(Language language){
@@ -1223,7 +1223,7 @@ public class DerivedUnitFacade {
 		if (plantDescriptionText == null){
 			plantDescription.removeText(language);
 		}else{
-			plantDescription.putText(plantDescriptionText, language);
+			plantDescription.putText(language, plantDescriptionText);
 		}
 	}
 	public void removePlantDescription(Language language){

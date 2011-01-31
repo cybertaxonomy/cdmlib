@@ -114,7 +114,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		Map<Language, LanguageString> multiLangText = singleLanguageTextData.getMultilanguageText();
 		Assert.assertEquals("There should be exactly 1 languageText in the multilanguageText", 1, multiLangText.size());
 		Assert.assertTrue("The language should be English", multiLangText.containsKey(Language.ENGLISH()));
-		singleLanguageTextData.putText("Ein test auf deutsch", Language.GERMAN());
+		singleLanguageTextData.putText(Language.GERMAN(), "Ein test auf deutsch");
 		Assert.assertEquals("There should be exactly 2 languageText in the multilanguageText", 2, singleLanguageTextData.size());
 		String germanText = singleLanguageTextData.getText(Language.GERMAN());
 		Assert.assertNotNull("German text should exist", germanText);
@@ -122,7 +122,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		LanguageString germanLanguageText = singleLanguageTextData.getLanguageText(Language.GERMAN());
 		Assert.assertNotNull("German language text should exist", germanLanguageText);
 		
-		singleLanguageTextData.putText(singleLanguageTextData.getText(Language.ENGLISH()), Language.ENGLISH());
+		singleLanguageTextData.putText(Language.ENGLISH(), singleLanguageTextData.getText(Language.ENGLISH()));
 		descriptionElementDao.saveOrUpdate(singleLanguageTextData);
 		
 		setComplete(); endTransaction();
@@ -144,7 +144,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		Assert.assertEquals("There should be exactly 1 languageText in the multilanguageText", 1, multiLangText.size());
 		Assert.assertTrue("The language should be English", multiLangText.containsKey(Language.ENGLISH()));
 		
-		singleLanguageTextData.putText("A new English text", Language.ENGLISH());
+		singleLanguageTextData.putText(Language.ENGLISH(), "A new English text");
 		descriptionElementDao.saveOrUpdate(singleLanguageTextData);
 		
 		setComplete(); endTransaction();

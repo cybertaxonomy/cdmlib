@@ -113,7 +113,7 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 			}
 		}
 		QuantitativeDescription.append(spanEnd);
-		textData.putText(QuantitativeDescription.toString(), languages.get(0)); // which language should be put here ?
+		textData.putText(languages.get(0), QuantitativeDescription.toString()); // which language should be put here ?
 		textData.setFormat(TextFormat.NewInstance(null, "HTML",null )); // the data format is set (not yet real HTML)
 		
 		return textData;

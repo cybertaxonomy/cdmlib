@@ -153,7 +153,7 @@ public class TestDatabase {
 		
 		//textData
 		TextData textData = TextData.NewInstance();
-		textData.putText("XXX", Language.DEFAULT());
+		textData.putText(Language.DEFAULT(), "XXX");
 		taxonDescription.addElement(textData);
 		
 		//commonNames
