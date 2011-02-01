@@ -47,7 +47,7 @@ public class TaxonServiceImplBusinessTest {
 	private TaxonServiceImpl service;
 	private String referenceDetail;
 	private Reference reference;
-	private SynonymRelationshipType synonymRelationshipType;
+	private SynonymRelationshipType homoTypicSynonymRelationshipType;
 	private SynonymRelationshipType heteroTypicSynonymRelationshipType;
 	private NonViralName s1n;
 	private NonViralName t2n;
@@ -78,7 +78,7 @@ public class TaxonServiceImplBusinessTest {
 		s2n = NonViralName.NewInstance(null);
 		
 		// referencing
-		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		homoTypicSynonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 		heteroTypicSynonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
 		reference = ReferenceFactory.newGeneric();
 		referenceDetail = "test"; 
@@ -90,7 +90,7 @@ public class TaxonServiceImplBusinessTest {
 	 */
 	@Test
 	public final void testSwapSynonymAndAcceptedTaxon() {
-		t1.addSynonym(s1, synonymRelationshipType);
+		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
 		
 		service.swapSynonymAndAcceptedTaxon(s1, t1);
 	}
@@ -101,7 +101,7 @@ public class TaxonServiceImplBusinessTest {
 	@Test
 	public final void testChangeSynonymToAcceptedTaxon() {
 
-		t1.addSynonym(s1, synonymRelationshipType);
+		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
 		HomotypicalGroup oldGroup = s1.getName().getHomotypicalGroup();
 		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly one name", 1, oldGroup.getTypifiedNames().size());
 		Taxon taxon = service.changeSynonymToAcceptedTaxon(s1, t1,false, true, null, null);
@@ -177,7 +177,7 @@ public class TaxonServiceImplBusinessTest {
 	 */
 	@Test
 	public final void testChangeSynonymToRelatedTaxon() {
-		t1.addSynonym(s1, synonymRelationshipType);
+		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
 		service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
 	}
 
@@ -186,11 +186,11 @@ public class TaxonServiceImplBusinessTest {
 	 */
 	@Test
 	public final void testMoveSynonymToAnotherTaxon() {
-		t1.addSynonym(s1, synonymRelationshipType);
+		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
 			
 		SynonymRelationship synonymRelation = t1.getSynonymRelations().iterator().next();
 		
-		service.moveSynonymToAnotherTaxon(synonymRelation, t2, synonymRelationshipType, reference, referenceDetail);
+		service.moveSynonymToAnotherTaxon(synonymRelation, t2, homoTypicSynonymRelationshipType, reference, referenceDetail);
 		
 		Assert.assertTrue("t1 should have no synonym relationships", t1.getSynonymRelations().isEmpty());
 		
@@ -200,9 +200,98 @@ public class TaxonServiceImplBusinessTest {
 		synonymRelation = synonymRelations.iterator().next();
 		
 		Assert.assertEquals(t2, synonymRelation.getAcceptedTaxon());
-		Assert.assertEquals(synonymRelationshipType, synonymRelation.getType());
+		Assert.assertEquals(homoTypicSynonymRelationshipType, synonymRelation.getType());
 		Assert.assertEquals(reference, synonymRelation.getCitation());
 		Assert.assertEquals(referenceDetail, synonymRelation.getCitationMicroReference());
+	}
+	
+	@Test
+	public void changeHomotypicalGroupOfSynonym(){
+		
+		//s1 - Heterotypic
+		t1.addSynonym(s1, heteroTypicSynonymRelationshipType);
+		
+		//s2 - heterotypic
+		TaxonNameBase otherHeteroSynonymName = NonViralName.NewInstance(null);
+		Synonym s2 = Synonym.NewInstance(otherHeteroSynonymName, t1.getSec());
+		t1.addSynonym(s2, heteroTypicSynonymRelationshipType, null, null);
+		TaxonNameBase otherHeteroSynonymNameB = NonViralName.NewInstance(null);
+		otherHeteroSynonymName.addBasionym(otherHeteroSynonymNameB);
+		Synonym s2b = Synonym.NewInstance(otherHeteroSynonymNameB, t1.getSec());
+		t1.addSynonym(s2b, heteroTypicSynonymRelationshipType, null, null);
+		
+		//homotypic
+		TaxonNameBase homotypicSynonymName = NonViralName.NewInstance(null);
+		Synonym homotypicSynonym = Synonym.NewInstance(homotypicSynonymName, t1.getSec());
+		t1.addHomotypicSynonym(homotypicSynonym, null, null);
+		t1.getName().addBasionym(homotypicSynonymName);
+		
+		//Preconditions test
+		Assert.assertFalse("s2 must not be in s1 homotypic group", s2.getHomotypicGroup().equals(s1.getHomotypicGroup()));
+		Assert.assertFalse("s2 must not be in t1 homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
+		Assert.assertEquals("s2 must have exactly 1 synonym relationship", 1, s2.getSynonymRelations().size());
+		Assert.assertEquals("s2 must have heterotypic relationship", heteroTypicSynonymRelationshipType, s2.getSynonymRelations().iterator().next().getType());
+		Assert.assertEquals("s2 must have exactly 1 basionym relationships", 1, s2.getName().getBasionyms().size());
+		
+		//do it
+		service.changeHomotypicalGroupOfSynonym(s2, s1.getHomotypicGroup(), t1, false, true);
+		
+		//postconditions
+		Assert.assertEquals("s2 must be in s1 homotypic group", s2.getHomotypicGroup(), s1.getHomotypicGroup());
+		Assert.assertEquals("s2 must have exactly 1 synonym relationship", 1, s2.getSynonymRelations().size());
+		Assert.assertEquals("s2 must have heterotypic relationship", heteroTypicSynonymRelationshipType, s2.getSynonymRelations().iterator().next().getType());
+		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
+
+		
+		//Preconditions test
+		Assert.assertEquals("'homotypicSynonym' must have exactly 1 basionym relationships", 1, homotypicSynonym.getName().getNameRelations().size());
+		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
+		Assert.assertFalse("s2 must not be in t1 homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
+
+		
+		//do it
+		service.changeHomotypicalGroupOfSynonym(s2, homotypicSynonym.getHomotypicGroup(), null, false, true);
+
+		//postconditions
+		Assert.assertEquals("s2 must be in 'homotypicSynonym' homotypic group", s2.getHomotypicGroup(), homotypicSynonym.getHomotypicGroup());
+		Assert.assertEquals("s2 must be in 't1' homotypic group", s2.getHomotypicGroup(), t1.getHomotypicGroup());
+		Assert.assertEquals("s2 must have exactly 1 synonym relationship", 1, s2.getSynonymRelations().size());
+		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymRelationshipType, s2.getSynonymRelations().iterator().next().getType());
+		Assert.assertEquals("s2 must have exactly 1 basionym relationships", 1, s2.getName().getBasionyms().size());
+		Assert.assertEquals("'homotypicSynonym' must have exactly 2 basionym relationships", 2, homotypicSynonym.getName().getNameRelations().size());
+		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
+		Assert.assertEquals("'t1' must have exactly 2 homotypic synonyms", 2, t1.getHomotypicSynonymsByHomotypicRelationship().size());
+		Assert.assertEquals("'t1' must have exactly 2 names in homotypic group", 2, t1.getHomotypicSynonymsByHomotypicGroup().size());
+		Assert.assertEquals("'t1' homotypic group must include 3 names (t1, s2, homotypicSynonym)", 3, t1.getHomotypicGroup().getTypifiedNames().size());
+		
+		
+		//do it
+		service.changeHomotypicalGroupOfSynonym(s2, t2.getHomotypicGroup(), t2, true, false);
+
+		//postconditions
+		Assert.assertEquals("s2 must be in 't2' homotypic group", t2.getHomotypicGroup(), s2.getHomotypicGroup());
+		Assert.assertFalse("s2 must not be in 't1' homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
+		Assert.assertEquals("s2 must have exactly 1 synonym relationship", 1, s2.getSynonymRelations().size());
+		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymRelationshipType, s2.getSynonymRelations().iterator().next().getType());
+		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
+		Assert.assertEquals("'homotypicSynonym' must have exactly 1 basionym relationships", 1, homotypicSynonym.getName().getNameRelations().size());
+		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
+		Assert.assertEquals("'t1' must have exactly 1 homotypic synonyms", 1, t1.getHomotypicSynonymsByHomotypicRelationship().size());
+		Assert.assertEquals("'t1' must have exactly 1 names in homotypic group", 1, t1.getHomotypicSynonymsByHomotypicGroup().size());
+		Assert.assertEquals("'t1' homotypic group must include 2 names (t1, homotypicSynonym)", 2, t1.getHomotypicGroup().getTypifiedNames().size());
+		
+		//do it
+		service.changeHomotypicalGroupOfSynonym(s2, s1.getHomotypicGroup(), t1, false, false);
+
+		//postconditions
+		Assert.assertEquals("s2 must be in s1 homotypic group", s2.getHomotypicGroup(), s1.getHomotypicGroup());
+		Assert.assertFalse("s2 must not be in 't2' homotypic group", t2.getHomotypicGroup().equals(s2.getHomotypicGroup()));
+		Assert.assertEquals("s2 must have exactly 2 synonym relationships", 2, s2.getSynonymRelations().size());
+		for (SynonymRelationship rel: s2.getSynonymRelations()){
+			Assert.assertEquals("Both relationships of s2 must be heterotypic", heteroTypicSynonymRelationshipType, rel.getType());
+		}
+		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
+
 	}
 
 }

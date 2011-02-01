@@ -262,6 +262,69 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return fromTaxon;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#changeHomotypicalGroupOfSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.name.HomotypicalGroup, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
+	 */
+	@Transactional(readOnly = false)
+	@Override
+	public void changeHomotypicalGroupOfSynonym(Synonym synonym, HomotypicalGroup newHomotypicalGroup, Taxon targetTaxon, 
+						boolean removeFromOtherTaxa, boolean setBasionymRelationIfApplicable){
+    	// Get synonym name
+		TaxonNameBase synonymName = synonym.getName();
+		HomotypicalGroup oldHomotypicalGroup = synonymName.getHomotypicalGroup();
+		
+		
+		// Switch groups
+		oldHomotypicalGroup.removeTypifiedName(synonymName);
+		newHomotypicalGroup.addTypifiedName(synonymName);
+		
+		//remove existing basionym relationships
+		synonymName.removeBasionyms();
+				
+		//add basionym relationship
+		if (setBasionymRelationIfApplicable){
+			Set<TaxonNameBase> basionyms = newHomotypicalGroup.getBasionyms();
+			for (TaxonNameBase basionym : basionyms){
+				synonymName.addBasionym(basionym);
+			}
+		}
+
+		//set synonym relationship correctly
+//		SynonymRelationship relToTaxon = null;
+		boolean relToTargetTaxonExists = false;
+		Set<SynonymRelationship> existingRelations = synonym.getSynonymRelations();
+		for (SynonymRelationship rel : existingRelations){
+			Taxon acceptedTaxon = rel.getAcceptedTaxon();
+			boolean isTargetTaxon = acceptedTaxon != null && acceptedTaxon.equals(targetTaxon);
+			HomotypicalGroup acceptedGroup = acceptedTaxon.getHomotypicGroup();
+			boolean isHomotypicToTaxon = acceptedGroup.equals(newHomotypicalGroup);
+			SynonymRelationshipType newRelationType = isHomotypicToTaxon? SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF() : SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			rel.setType(newRelationType);
+			//TODO handle citation and microCitation
+			
+			if (isTargetTaxon){
+				relToTargetTaxonExists = true;
+			}else{
+				if (removeFromOtherTaxa){
+					acceptedTaxon.removeSynonym(synonym, false);
+				}else{
+					//do nothing
+				}
+			}
+		}
+		if (targetTaxon != null &&  ! relToTargetTaxonExists ){
+			Taxon acceptedTaxon = targetTaxon;
+			HomotypicalGroup acceptedGroup = acceptedTaxon.getHomotypicGroup();
+			boolean isHomotypicToTaxon = acceptedGroup.equals(newHomotypicalGroup);
+			SynonymRelationshipType relType = isHomotypicToTaxon? SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF() : SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			//TODO handle citation and microCitation
+			Reference citation = null;
+			String microCitation = null;
+			acceptedTaxon.addSynonym(synonym, relType, citation, microCitation);
+		}
+
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()

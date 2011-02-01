@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -21,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -190,6 +193,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws IllegalArgumentException;
 	
 	/**
+	 * TODO still needed and correct?
 	 * Change a synonym into a related concept 
 	 * 
 	 * @param synonym
@@ -205,6 +209,29 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 	
+	
+	/**
+	 * Changes the homotypic group of a synonym into the new homotypic group.
+	 * All relations to taxa are updated correctly depending on the homotypic
+	 * group of the accepted taxon. <BR>
+	 * All existing basionym relationships to and from this name are removed.<BR>
+	 * If the parameter <code>targetTaxon</code> is defined, the synonym is 
+	 * added to this taxon irrespctive of if it has been related to this
+	 * taxon before.<BR>
+	 * If <code>removeFromOtherTaxa</code> is true and <code>targetTaxon</code> is
+	 * defined all relationships to other taxa are deleted.<BR>
+	 * If <code>setBasionymRelationIfApplicable</code> is true a basionym relationship
+	 * between the existing basionym(s) of the new homotypic group and the synonyms name
+	 * is added.<BR> 
+	 * 
+	 * @param synonym
+	 * @param newHomotypicalGroup
+	 * @param taxon
+	 * @param setBasionymRelationIfApplicable
+	 */
+	public void changeHomotypicalGroupOfSynonym(Synonym synonym, HomotypicalGroup newHomotypicalGroup, Taxon targetTaxon, 
+						boolean removeFromOtherTaxa, boolean setBasionymRelationIfApplicable);
+    
 	
 	/**
 	 * Move a synonym to another taxon, effectively removing the old synonym relationship
