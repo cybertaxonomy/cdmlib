@@ -266,7 +266,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 
 	/**
 	 * Preliminary method to test whether a description contains structured data. 
-	 * @deprecated The means of determining this fact may change soon, so this method is annotated a beeing deprecated.
+	 * @deprecated The means of determining this fact may change soon, so this method is
+					annotated as being deprecated.
 	 * @param description
 	 * @return
 	 */
@@ -279,6 +280,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * 
 	 * @param descriptionElements
 	 * @param targetDescription
+	 * @param isPaste if true, the elements are only copied (cloned) and not removed from the
+	 * 	old description
 	 */
-	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription);
+	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste);
 }

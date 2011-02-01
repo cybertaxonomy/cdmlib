@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -89,23 +91,42 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@Ignore // Remove when implemented
+//	@Ignore // Remove when implemented
 	public void testMoveDescriptionElementsToTaxon(){
 		
 		TaxonDescription sourceDescription = TaxonDescription.NewInstance();
 		
 		TextData element = TextData.NewInstance();
 		sourceDescription.addElement(element);
-		
-		Assert.assertTrue(sourceDescription.getElements() != null);
+		TextData element2 = TextData.NewInstance();
+		sourceDescription.addElement(element2);
+		Collection<DescriptionElementBase> sourceCollection = new HashSet<DescriptionElementBase>();
+		sourceCollection.addAll(sourceDescription.getElements());
+		TextData element3 = TextData.NewInstance();
+		sourceDescription.addElement(element3);
+
+		Assert.assertEquals(3, sourceDescription.getElements().size());
 		
 		TaxonDescription targetDescription = TaxonDescription.NewInstance();
 		
-		service.moveDescriptionElementsToDescription(sourceDescription.getElements(), targetDescription);
+		service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, false);
 		
-		Assert.assertEquals("Source descirption should not have elements anymore", 0, sourceDescription.getElements().size());
-		Assert.assertEquals("Target descriptoin should not be empty", 1, targetDescription.getElements().size());
-		Assert.assertEquals(element, targetDescription.getElements().iterator().next());
+		Assert.assertEquals("Source descirption should have 1 element left", 1, sourceDescription.getElements().size());
+		Assert.assertEquals("Target descriptoin should have 2 new elements", 2, targetDescription.getElements().size());
+		Assert.assertTrue("The moved element should be in the new description", targetDescription.getElements().contains(element));
+		Assert.assertTrue("The moved element2 should be in the new description", targetDescription.getElements().contains(element2));
+		Assert.assertFalse("Element3 should not be in the new description", targetDescription.getElements().contains(element3));
+		Assert.assertTrue("Element3 should remain in the old description", targetDescription.getElements().contains(element));
+
+		try {
+			service.moveDescriptionElementsToDescription(targetDescription.getElements(), sourceDescription, false);
+		} catch (Exception e) {
+			//asserting that no ConcurrentModificationException is thrown when the elements collection is passed as a parameter
+			Assert.fail();
+		}
+		
+		Assert.assertEquals("Source descirption should have 3 elements again", 3, sourceDescription.getElements().size());
+		
 		
 	}
 }

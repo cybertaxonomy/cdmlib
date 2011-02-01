@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -455,11 +456,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#moveDescriptionElementsToDescription(java.util.Collection, eu.etaxonomy.cdm.model.description.DescriptionBase)
 	 */
 	@Override
-	public void moveDescriptionElementsToDescription(
-			Collection<DescriptionElementBase> descriptionElements,
-			DescriptionBase targetDescription) {
-		// TODO Auto-generated method stub
-		
+	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements,
+													DescriptionBase targetDescription, boolean isPaste) {
+		Iterator<DescriptionElementBase> iterator = descriptionElements.iterator();
+		while (iterator.hasNext()){
+			DescriptionElementBase elementToRemove = iterator.next();
+			iterator.remove();
+			targetDescription.addElement(elementToRemove);	
+		}
 	}
 
 }
