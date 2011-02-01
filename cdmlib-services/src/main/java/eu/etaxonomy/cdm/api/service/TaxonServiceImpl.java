@@ -202,7 +202,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
+	//TODO correct delete handling still needs to be implemented / checked
 	@Override
+	@Transactional(readOnly = false)
 	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws IllegalArgumentException{
 		
 		TaxonNameBase acceptedName = acceptedTaxon.getName();
@@ -222,11 +224,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				acceptedTaxon.removeSynonym(heteroSynonym, false);
 			}else{
 				heteroSynonym.replaceAcceptedTaxon(newAcceptedTaxon, relType, copyCitationInfo, citation, microCitation);
-//					newAcceptedTaxon.addSynonym(heteroSynonym, relType, citation, microCitation);
 			}
 		}
 		
 //		synonym.getName().removeTaxonBase(synonym);
+		//TODO correct delete handling still needs to be implemented / checked
 		if (deleteSynonym){
 			try {
 				this.delete(synonym);
@@ -235,16 +237,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 		}
 		
-		//OLD
-		
-//		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
-//		
-//		acceptedTaxon.removeSynonym(synonym);
-//		
-//		// since we are swapping names, we have to detach the name from the synonym completely. 
-//		// Otherwise the synonym will still be in the list of typified names.
-//		synonym.getName().removeTaxonBase(synonym);
-		
+	
 		return newAcceptedTaxon;
 	}
 	
@@ -268,6 +261,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return fromTaxon;
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
