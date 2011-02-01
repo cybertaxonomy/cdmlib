@@ -272,4 +272,13 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 */
 	@Deprecated
 	public boolean hasStructuredData(DescriptionBase<?> description);
+	
+	/**
+	 * Add the collection of {@link DescriptionElementBase description elements} to the <code>targetDescription</code>.
+	 * Remove the description elements from the description they are currently associated with. 
+	 * 
+	 * @param descriptionElements
+	 * @param targetDescription
+	 */
+	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription);
 }

@@ -450,4 +450,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	public boolean hasStructuredData(DescriptionBase<?> description) {
 		return load(description.getUuid()).hasStructuredData();
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#moveDescriptionElementsToDescription(java.util.Collection, eu.etaxonomy.cdm.model.description.DescriptionBase)
+	 */
+	@Override
+	public void moveDescriptionElementsToDescription(
+			Collection<DescriptionElementBase> descriptionElements,
+			DescriptionBase targetDescription) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

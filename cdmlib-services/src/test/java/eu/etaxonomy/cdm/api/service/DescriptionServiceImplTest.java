@@ -10,13 +10,14 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -26,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -86,4 +88,24 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		}
 	}
 	
+	@Test
+	@Ignore // Remove when implemented
+	public void testMoveDescriptionElementsToTaxon(){
+		
+		TaxonDescription sourceDescription = TaxonDescription.NewInstance();
+		
+		TextData element = TextData.NewInstance();
+		sourceDescription.addElement(element);
+		
+		Assert.assertTrue(sourceDescription.getElements() != null);
+		
+		TaxonDescription targetDescription = TaxonDescription.NewInstance();
+		
+		service.moveDescriptionElementsToDescription(sourceDescription.getElements(), targetDescription);
+		
+		Assert.assertEquals("Source descirption should not have elements anymore", 0, sourceDescription.getElements().size());
+		Assert.assertEquals("Target descriptoin should not be empty", 1, targetDescription.getElements().size());
+		Assert.assertEquals(element, targetDescription.getElements().iterator().next());
+		
+	}
 }
