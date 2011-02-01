@@ -202,15 +202,48 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
-	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
+	@Override
+	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws IllegalArgumentException{
+		
+		TaxonNameBase acceptedName = acceptedTaxon.getName();
+		TaxonNameBase synonymName = synonym.getName();
+		HomotypicalGroup synonymHomotypicGroup = synonymName.getHomotypicalGroup();
+		if (acceptedName.getHomotypicalGroup().equals(synonymHomotypicGroup)){
+			String message = "The accepted taxon and the synonym are part of the same homotypical group and therefore can not be both accepted.";
+			throw new IllegalArgumentException(message);
+		}
 		
 		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
 		
-		acceptedTaxon.removeSynonym(synonym);
+		SynonymRelationshipType relType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		List<Synonym> heteroSynonyms = synonymHomotypicGroup.getSynonymsInGroup(acceptedTaxon.getSec());
+		for (Synonym heteroSynonym : heteroSynonyms){
+			if (synonym.equals(heteroSynonym)){
+				acceptedTaxon.removeSynonym(heteroSynonym, false);
+			}else{
+				heteroSynonym.replaceAcceptedTaxon(newAcceptedTaxon, relType, copyCitationInfo, citation, microCitation);
+//					newAcceptedTaxon.addSynonym(heteroSynonym, relType, citation, microCitation);
+			}
+		}
 		
-		// since we are swapping names, we have to detach the name from the synonym completely. 
-		// Otherwise the synonym will still be in the list of typified names.
-		synonym.getName().removeTaxonBase(synonym);
+//		synonym.getName().removeTaxonBase(synonym);
+		if (deleteSynonym){
+			try {
+				this.delete(synonym);
+			} catch (Exception e) {
+				logger.info("Can't delete old synonym from database");
+			}
+		}
+		
+		//OLD
+		
+//		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
+//		
+//		acceptedTaxon.removeSynonym(synonym);
+//		
+//		// since we are swapping names, we have to detach the name from the synonym completely. 
+//		// Otherwise the synonym will still be in the list of typified names.
+//		synonym.getName().removeTaxonBase(synonym);
 		
 		return newAcceptedTaxon;
 	}

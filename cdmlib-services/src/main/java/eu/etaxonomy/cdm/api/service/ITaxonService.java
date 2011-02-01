@@ -148,17 +148,46 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
 	
 	/**
-	 * Change a synonym into an accepted taxon and removes 
+	 * Changes a synonym into an accepted taxon and removes 
 	 * the synonym relationship to the given accepted taxon.
+	 * Other synonyms homotypic to the synonym to change are
+	 * are moved to the same new accepted taxon as homotypic
+	 * synonyms. The new accepted taxon has the same name and
+	 * the same sec reference as the old synonym.<BR>
+	 * If the given accepted taxon and the synonym are homotypic
+	 * to each other an exception may be thrown as taxonomically it doesn't
+	 * make sense to have two accepted taxa in the same homotypic group
+	 * but also it is than difficult to decide how to handle other names
+	 * in the homotypic group. It is up to the implementing class to 
+	 * handle this situation via an exception or in another way.
+	 * TODO Open issue: does the old synonym need to be deleted from the database?
 	 * 
 	 * @param synonym
 	 * 				the synonym to change into an accepted taxon
 	 * @param acceptedTaxon
 	 * 				an accepted taxon, the synonym had a relationship to
+	 * @param deleteSynonym
+	 * 			if true the method tries to delete the old synonym from the database
+	 * @param copyCitationInfo
+	 * 			if true the citation and the microcitation of newly created synonyms
+	 * 			is taken from the old synonym relationships.
+	 * @param citation
+	 * 			if given this citation is added to the newly created synonym 
+	 * 			relationships as citation. Only used if copyCitationInfo is <code> false</code>
+	 * @param microCitation
+	 * 			if given this microCitation is added to the newly created synonym 
+	 * 			relationships as microCitation.Only used if copyCitationInfo is <code> false</code>
 	 * @return
-	 * 				the newly created accepted taxon
+	 * 			the newly created accepted taxon
+	 * @throws IllegalArgumentException
+	 * 			if the given accepted taxon and the synonym are homotypic
+	 * 		    to each other an exception may be thrown as taxonomically it doesn't
+	 * 			make sense to have two accepted taxa in the same homotypic group
+	 *          but also it is than difficult to decide how to handle other names
+	 *          in the homotypic group. It is up to the implementing class to 
+	 *          handle this situation via an exception or in another way.
 	 */
-	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
+	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws IllegalArgumentException;
 	
 	/**
 	 * Change a synonym into a related concept 

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.management.relation.RelationServiceNotRegisteredException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -1174,6 +1173,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 			throw new IllegalArgumentException("HomotypicalGroup of name should never be null but was set to 'null'");
 		}
 		this.homotypicalGroup = homotypicalGroup;
+		if (! homotypicalGroup.typifiedNames.contains(this)){
+			homotypicalGroup.addTypifiedName(this);
+		}
 	}
 	
 	

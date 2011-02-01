@@ -183,12 +183,10 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	}
 
 	/** 
-	 * Sets the given ("accepted/correct") {@link Taxon taxon} to <i>this</i>
+	 * Sets the given ("accepted/valid") {@link Taxon taxon} to <i>this</i>
 	 * synonym relationship. Therefore <i>this</i> synonym relationship will be
 	 * added to the corresponding set of synonym relationships assigned to the
-	 * given taxon. Furthermore if the given taxon replaces an "old" one <i>this</i>
-	 * synonym relationship will be removed from the set of synonym
-	 * relationships assigned to the "old" taxon.
+	 * given taxon.
 	 *  
 	 * @param acceptedTaxon	the taxon instance to be set in <i>this</i> synonym relationship
 	 * @see   				#getAcceptedTaxon()

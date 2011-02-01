@@ -369,8 +369,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	}
 	
 	/**
-	 * Like {@link Taxon#removeSynonymRelation(SynonymRelationship, boolean)} but synonym name will be deleted from homotypical group 
-	 * by default
+	 * Like {@link Taxon#removeSynonymRelation(SynonymRelationship, boolean)} but synonym name 
+	 * will be deleted from homotypical group by default
 	 * 
 	 * @param synonymRelation   the synonym relationship which should be deleted
 	 * 
@@ -1352,9 +1352,17 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		return synRel;
 	}
 	
+	/**
+	 * Like {@link #removeSynonym(Synonym, boolean)} with <code>removeSynonymNameFromHomotypicalGroup</code> set to true.
+	 * @see #removeSynonym(Synonym, boolean)
+	 */
+	public void removeSynonym(Synonym synonym){
+		removeSynonym(synonym, true);
+	}
+	
 	/** 
 	 * Removes the element(s) from the set of {@link SynonymRelationship synonym relationships}
-	 * assigned to <i>this</i> ("accepted/correct") taxon in which the given synonym is involved.
+	 * assigned to <i>this</i> ("accepted/valid") taxon in which the given synonym is involved.
 	 * Due to bidirectionality the same synonym relationships will also be
 	 * removed from the set of synonym relationships assigned to the
 	 * {@link Synonym#getSynonymRelations() synonym} involved in the relationship. Furthermore the content of
@@ -1363,17 +1371,20 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * themselves will be set to "null".
 	 *
 	 * @param  synonym  the synonym involved in the synonym relationship which should be deleted
+	 * @param removeSynonymNameFromHomotypicalGroup if true the removed synonyms name will get a new homotypic group
+	 * to make sure that it is not together in a homotypic group with any other synonm of this taxon
+	 * anymore.
 	 * @see     		#getSynonymRelations()
 	 * @see     		#addSynonym(Synonym, SynonymRelationshipType)
 	 * @see     		#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see 			#removeSynonymRelation(SynonymRelationship)
 	 */
-	public void removeSynonym(Synonym synonym){
+	public void removeSynonym(Synonym synonym, boolean removeSynonymNameFromHomotypicalGroup){
 		Set<SynonymRelationship> synonymRelationships = new HashSet<SynonymRelationship>();
 		synonymRelationships.addAll(this.getSynonymRelations());
 		for(SynonymRelationship synonymRelationship : synonymRelationships){
 			if (synonymRelationship.getAcceptedTaxon().equals(this) && synonymRelationship.getSynonym().equals(synonym)){
-				this.removeSynonymRelation(synonymRelationship);
+				this.removeSynonymRelation(synonymRelationship, removeSynonymNameFromHomotypicalGroup);
 			}
 		}
 	}

@@ -266,4 +266,35 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		}
 		return result;
 	}
+
+	/**
+	 * Replaces ALL accepted taxa of this synonym by the new accepted taxon.
+	 * The citation information (citation /microcitation) is kept of the synonym relationship
+	 * is kept.
+	 * @param newAcceptedTaxon
+	 * 			the new accepted taxon
+	 * @param relType
+	 * 			if not <code>null</code> the relationship type is changed to relType
+	 * @param copyCitationInfo
+	 * 			if true the citation and the microcitation of relationship
+	 * 			is not changed.
+	 * @param citation
+	 * 			if copyCitationInfo is <code>false</code> this citation is set
+	 * 			to the synonym relationship. 
+	 * @param microCitation
+	 * 			if copyCitationInfo is <code>false</code> this micro citation is set
+	 * 			to the synonym relationship. 
+	 
+	 * @param acceptedTaxon
+	 */
+	public void replaceAcceptedTaxon(Taxon newAcceptedTaxon, SynonymRelationshipType relType, boolean copyCitationInfo, Reference citation, String microCitation) {
+		Set<SynonymRelationship> rels = this.getSynonymRelations();
+		for (SynonymRelationship rel : rels){
+			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
+			oldAcceptedTaxon.getSynonymRelations().remove(rel);
+			rel.setAcceptedTaxon(newAcceptedTaxon);
+			newAcceptedTaxon.getSynonymRelations().add(rel);
+			rel.setType(relType);
+		}
+	}
 }

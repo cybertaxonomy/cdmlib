@@ -124,8 +124,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 */
 	public void addTypifiedName(TaxonNameBase typifiedName) {
 		if (typifiedName != null){
-			typifiedName.setHomotypicalGroup(this);
 			typifiedNames.add(typifiedName);
+			typifiedName.setHomotypicalGroup(this);
 		}
 	}
 	/** 
@@ -136,7 +136,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see    				#addTypifiedName(TaxonNameBase)
 	 */
 	public void removeTypifiedName(TaxonNameBase typifiedName) {
-		typifiedName.setHomotypicalGroup(HomotypicalGroup.NewInstance());
+		HomotypicalGroup newHomotypicalGroup = HomotypicalGroup.NewInstance();
+		typifiedName.setHomotypicalGroup(newHomotypicalGroup);
 		typifiedNames.remove(typifiedName);	
 	}
 
