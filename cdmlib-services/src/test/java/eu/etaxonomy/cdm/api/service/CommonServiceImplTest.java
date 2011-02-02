@@ -167,8 +167,8 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public final void testLoadCacheStrategyForReference(){
 		Reference ref = referenceService.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
-		//ref.setType(ReferenceType.Article);
-		//referenceService.update(ref);
+		ref.setType(ReferenceType.Article);
+		referenceService.update(ref);
 		referenceService.updateTitleCache();
 		
 	}
