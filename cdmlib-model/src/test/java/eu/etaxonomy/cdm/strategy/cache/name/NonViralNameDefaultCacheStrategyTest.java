@@ -209,25 +209,26 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Test
 	public void testHybridNames() {
+		//Note \u00D7 : hybrid sign (multiplication sign)
 		this.speciesName.setCombinationAuthorTeam(author);
 		Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
 		Assert.assertEquals("Should be Abies alba L.", "Abies alba L.", speciesName.getTitleCache());
 		
 		speciesName.setBinomHybrid(true);
 		//Note: This test may fail if aspectj doesn't work correctly
-		Assert.assertEquals("Should be Abies ×alba L.", "Abies ×alba L.", speciesName.getTitleCache());
+		Assert.assertEquals("Should be Abies \u00D7alba L.", "Abies \u00D7alba L.", speciesName.getTitleCache());
 		speciesName.setMonomHybrid(true);
-		Assert.assertEquals("Should be '×Abies ×alba L.'", "×Abies ×alba L.", speciesName.getTitleCache());
+		Assert.assertEquals("Should be '\u00D7Abies \u00D7alba L.'", "\u00D7Abies \u00D7alba L.", speciesName.getTitleCache());
 		
 		Assert.assertEquals("Should be 'Genus'", "Genus", genusName.getTitleCache());
 		genusName.setMonomHybrid(true);
-		Assert.assertEquals("Should be '×Genus'", "×Genus", genusName.getTitleCache());
+		Assert.assertEquals("Should be '\u00D7Genus'", "\u00D7Genus", genusName.getTitleCache());
 	
 		Assert.assertEquals("Should be 'Abies alba subsp. beta'", subSpeciesNameString, subSpeciesName.getTitleCache());
 		subSpeciesName.setTrinomHybrid(true);
-		Assert.assertEquals("Should be 'Abies alba subsp. ×beta'", "Abies alba subsp. ×beta", subSpeciesName.getTitleCache());
+		Assert.assertEquals("Should be 'Abies alba subsp. \u00D7beta'", "Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
 		subSpeciesName.setMonomHybrid(true);
-		Assert.assertEquals("Should be '×Abies alba subsp. ×beta'", "×Abies alba subsp. ×beta", subSpeciesName.getTitleCache());
+		Assert.assertEquals("Should be '\u00D7Abies alba subsp. \u00D7beta'", "\u00D7Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
 	}
 	
 	@Test
