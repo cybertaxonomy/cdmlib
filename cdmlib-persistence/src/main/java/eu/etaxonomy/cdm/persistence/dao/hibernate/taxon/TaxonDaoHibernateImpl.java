@@ -246,21 +246,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Integer pageNumber, List<String> propertyPaths) {
 				
 		boolean doCount = false;
-		long zstVorher;
-		long zstNachher;
-
-		zstVorher = System.currentTimeMillis();
+			
 		Query query = prepareTaxaByName(clazz, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		
 		if (query != null){
 			List<TaxonBase> results = query.list();
 			
-			//results.addAll (prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			//TaxonComparatorSearch comp = new TaxonComparatorSearch();
 			//Collections.sort(results, comp);
-			zstNachher = System.currentTimeMillis();
-			System.out.println("Zeit benötigt (getTaxaByName): " + ((zstNachher - zstVorher)) + " msec " + results.size());
 			return results;
 		}
 		
@@ -277,22 +271,20 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			MatchMode matchMode, Set<NamedArea> namedAreas, List<String> propertyPaths) {
 		long zstVorher;
 		long zstNachher;
-		zstVorher = System.currentTimeMillis();		
+				
 		boolean doCount = false;
 		Query query = prepareTaxaByNameForEditor(clazz, "nameCache", queryString, classification, matchMode, namedAreas, doCount);
+		
+		
 		if (query != null){
-			//TODO: only for testing!
+			List<Object[]> results = query.list();
 			
-			Iterator<Object[]> results = query.iterate();
 			List<UuidAndTitleCache<TaxonBase>> resultObjects = new ArrayList<UuidAndTitleCache<TaxonBase>>();
 			Object[] result;
-			while (results.hasNext()){
-				result = results.next();
+			for(int i = 0; i<results.size();i++){
+				result = results.get(i);
 				resultObjects.add( new UuidAndTitleCache((UUID) result[0], (String)result[1]));
 			}
-			//TODO: only for testing!
-			zstNachher = System.currentTimeMillis();
-			System.out.println("Zeit benötigt (getTaxaByNameForEditor): " + ((zstNachher - zstVorher)) + " msec " + resultObjects.size());
 			
 			return resultObjects;
 			
@@ -2004,29 +1996,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	//TODO: mal nur mit UUID probieren (ohne fetch all properties), vielleicht geht das schneller?
 	public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPaths){
 		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
-		System.err.println("query: " + query.getQueryString());
 		List<UUID> zooNames = query.list();
-		System.err.println("number of identical names"+zooNames.size());
-		
-						
+								
 		return zooNames;
 		
 	}
 	
 	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPaths) {
 		
-		//hole alle TaxonNames, die es mindestens zweimal gibt.
-		
-		
-		
 		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
-		System.err.println("query: " + query.getQueryString());
+		
 		List<TaxonNameBase> zooNames = query.list();
-		System.err.println("number of identical names"+zooNames.size());
 		
 		TaxonNameComparator taxComp = new TaxonNameComparator();
 		Collections.sort(zooNames, taxComp);
-		System.err.println("list is sorted");
+		
 		for (TaxonNameBase taxonNameBase: zooNames){
 			defaultBeanInitializer.initialize(taxonNameBase, propertyPaths);
 		}
@@ -2065,7 +2049,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				identicalNames.add(nameFauna);
 			}
 		}
-		System.err.println("number of identical names: " + identicalNames.size());
+		
 		
 		query = getSession().createQuery("from ZoologicalName zn where zn.nameCache IN (:identicalNames)");
 		query.setParameterList("identicalNames", identicalNames);
@@ -2073,11 +2057,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		TaxonNameBase temp = result.get(0);
 		
 		Iterator<OriginalSourceBase> sources = temp.getSources().iterator();
-		System.err.println(temp.getSources().size());
-		if (sources.hasNext()){
-			System.err.println("funktioniert..."+ sources.next().getIdInSource());
-			//sources.next().getIdInSource();
-		}
+				
 		TaxonNameComparator taxComp = new TaxonNameComparator();
 		Collections.sort(result, taxComp);
 		defaultBeanInitializer.initializeAll(result, propertyPaths);
