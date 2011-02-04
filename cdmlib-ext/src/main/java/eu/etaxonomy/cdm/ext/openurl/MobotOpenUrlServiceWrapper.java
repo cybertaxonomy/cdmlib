@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.omg.CORBA.NameValuePairHelper;
 
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
@@ -50,7 +49,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlReference> {
 
 	private String urlVersion = "Z39.88-2004";
-	
+
+	public MobotOpenUrlServiceWrapper(){
+		addSchemaAdapter(new MobotOpenUrlResponseSchemaAdapter());
+	}
 
 	/**
 	 * BHL uses the response format as specified in the
@@ -172,43 +174,52 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 			if(pageNumbersTokens[0] != null){
 				pageNumbersTokens[0] = pageNumbersTokens[0].trim();
 			} else {
-				logger.info("No number token in " + startPage);
+				throw new NumberFormatException();
 			}
 			page = Integer.valueOf(pageNumbersTokens[0]);
-		} catch (NumberFormatException e1) {
-			logger.info("First page number token of " + startPage + " is not a Number");
+		} catch (NumberFormatException e) {
+			logger.warn("First page number token of " + startPage + " is not a Number", e);
+			throw e;
 		}
 		return page;
 	}
 	
 	
-	public List<OpenUrlReference> doPage(OpenUrlReference reference, int forward) throws Exception{
+	public List<OpenUrlReference> doPage(OpenUrlReference reference, int forward) throws IllegalArgumentException{
 		
 		Integer pageNumber = null;
-		
-		if(reference.getPages() != null){
-			pageNumber = parsePageNumber(reference.getPages());
-		}
-		
-		if(pageNumber != null){
-			
-			MobotOpenUrlQuery query = new MobotOpenUrlQuery();
-			query.bhlTitleURI = reference.getTitleUri();
-			pageNumber += forward;
-			query.startPage = pageNumber.toString();
-			query.refType = reference.getReferenceType();
-			return doResolve(query);
-			
-		} else {
+		try{
+			if(reference.getPages() != null){
+				pageNumber = parsePageNumber(reference.getPages());
+			}
+		}catch(NumberFormatException e){
 			String errorMessage = "Reference has no page number or the field 'pages' is not parsable";
 			logger.warn(errorMessage);
-			throw new Exception(errorMessage);
+			throw new IllegalArgumentException(errorMessage);
 		}
-
+				
+		MobotOpenUrlQuery query = new MobotOpenUrlQuery();
+		query.bhlTitleURI = reference.getTitleUri();
+		pageNumber += forward;
+		query.startPage = pageNumber.toString();
+		query.refType = reference.getReferenceType();
+		return doResolve(query);
 	}
 	
 	public enum ReferenceType{
-		book, jounal;
+		book, journal;
+		
+		public static ReferenceType getReferenceType(Reference reference){
+			if(eu.etaxonomy.cdm.model.reference.ReferenceType.Book.equals(reference.getType())){
+				return book;
+			}
+			else if(eu.etaxonomy.cdm.model.reference.ReferenceType.Journal.equals(reference.getType())){
+				return journal;
+			}
+			else {
+				return null;
+			}
+		}
 	}
 
 }

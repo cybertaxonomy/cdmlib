@@ -60,7 +60,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getCmdEntities(java.io.Reader)
 	 */
 	@Override
-	public List<Reference> getCmdEntities(InputStream inputStream) {
+	public List<Reference> getCmdEntities(InputStream inputStream) throws IOException {
 
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 	    factory.setNamespaceAware(true);
@@ -87,9 +87,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 	    	}
 		} catch (SAXException e) {
 			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		}
+		} 
 
 		
 		return handler.referenceList;
@@ -120,6 +118,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		 * references the according entry in the bibliography
 		 */
 		private static final String ITEM_URL = "ItemUrl";
+
 		/**
 		 * references the specific book or journal, that is to the front page
 		 */

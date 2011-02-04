@@ -131,7 +131,7 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 			if(width != null && height != null && width > 0 && height > 0){
 				sizeStr = "," + width + "," + height;
 			}
-			String[] tokens = splitPathAndId(getItemUri());
+			String[] tokens = splitPathAndId(getUri());
 			if(tokens.length == 2){
 				imageURI = new URI(PAGETHUMB_BASE_URI + tokens[1] + sizeStr);				
 			}
@@ -141,5 +141,4 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 		}
 		return imageURI;
 	}
-
 }

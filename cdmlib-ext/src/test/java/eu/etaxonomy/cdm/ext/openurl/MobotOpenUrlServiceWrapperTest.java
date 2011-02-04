@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,11 +29,11 @@ public class MobotOpenUrlServiceWrapperTest {
 	public void setUp() throws Exception {
 		openUrlServiceWrapper = new MobotOpenUrlServiceWrapper();
 		openUrlServiceWrapper.setBaseUrl(baseUrl);
-		openUrlServiceWrapper.addSchemaAdapter(new MobotOpenUrlResponseSchemaAdapter());
 	}
 
 // ******************************* TESTS ******************************************************/
 
+	
 	@Test
 	//@Ignore // ignore web accessing tests
 	public void testDoResolveAndPage_1() {
@@ -68,6 +67,9 @@ public class MobotOpenUrlServiceWrapperTest {
 		logger.info(reference_plus1.toString());
 		Assert.assertEquals("Manual of North American Diptera /  by Samuel W. Williston.", reference_plus1.getTitleCache());
 		Assert.assertEquals("Page 18", reference_plus1.getPages());
+		Assert.assertTrue(reference.getItemUri().equals(reference_plus1.getItemUri()));
+		Assert.assertTrue(! reference.getUri().equals(reference_plus1.getUri()));
+		
 		logger.info(reference_plus1.getJpegImage(null, null));
 		logger.info(reference_plus1.getJpegImage(400, 600));
 	}
