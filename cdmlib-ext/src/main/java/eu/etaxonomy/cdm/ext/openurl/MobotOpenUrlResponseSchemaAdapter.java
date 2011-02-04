@@ -241,10 +241,10 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 						reference.setTitleCache(trimmedText, true);
 					}
 					if(elementNameToStore.equals(STITLE)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						logger.debug(elementNameToStore + " not yet implemented!");//TODO
 					}
 					if(elementNameToStore.equals(ATITLE)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						logger.debug(elementNameToStore + " not yet implemented!");//TODO
 					}
 					if(elementNameToStore.equals(PUBLISHER_NAME)){
 						reference.setPublisher(trimmedText);
@@ -283,22 +283,22 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 						reference.setPages(trimmedText);
 					}
 					if(elementNameToStore.equals(EPAGE)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						logger.debug(elementNameToStore + " not yet implemented!");//TODO
 					}
 					if(elementNameToStore.equals(PAGES)){
 						// IGNORE we rather need the start page value SPAGE
 					}
 					if(elementNameToStore.equals(PUBLICATION_FREQUENCY)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						logger.debug(elementNameToStore + " not yet implemented!");//TODO
 					}
 					if(elementNameToStore.equals(LANGUAGE)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						logger.debug(elementNameToStore + " not yet implemented!");//TODO
 					}
 					if(elementNameToStore.equals(OCLC)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						logger.debug(elementNameToStore + " not yet implemented!");//TODO
 					}
 					if(elementNameToStore.equals(LCCN)){
-						logger.info(elementNameToStore + " not yet implemented!");//TODO
+						logger.debug(elementNameToStore + " not yet implemented!");//TODO
 					}
 					if(elementNameToStore.equals(ISSN)){
 						reference.setIssn(trimmedText);
