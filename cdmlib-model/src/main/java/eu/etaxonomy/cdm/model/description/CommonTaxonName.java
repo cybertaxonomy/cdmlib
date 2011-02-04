@@ -30,8 +30,8 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -78,13 +78,6 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
 	@ManyToOne(fetch = FetchType.LAZY)
 	private NamedArea area;
 
-	/**
-	 * Class constructor: creates a new empty common name instance.
-	 * The corresponding {@link Feature feature} is set to {@link Feature#COMMON_NAME() COMMON_NAME}.
-	 */
-	protected CommonTaxonName(){
-		super(Feature.COMMON_NAME());
-	}
 	
 	/**
 	 * Creates a common name instance with the given name string and the given
@@ -95,15 +88,38 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
 	 * @param language	the language of the name string
 	 */
 	public static CommonTaxonName NewInstance(String name, Language language){
-		logger.debug("NewInstance");
+		return NewInstance(name, language, null);
+	}
+
+	/**
+	 * Creates a common name instance with the given name string and the given
+	 * {@link Language language}. The corresponding {@link Feature feature} is set to
+	 * {@link Feature#COMMON_NAME() COMMON_NAME}.
+	 * 
+	 * @param name		the name string 
+	 * @param language	the language of the name string
+	 * @param area		the area where this common name is used
+	 */
+	public static CommonTaxonName NewInstance(String name, Language language, NamedArea area){
 		CommonTaxonName result = new CommonTaxonName();
 		result.setName(name);
 		result.setLanguage(language);
+		result.setArea(area);
 		return result;
 	}
+
 	
+// *************************** CONSTRUCTOR *************************************/ 	
+
+	/**
+	 * Class constructor: creates a new empty common name instance.
+	 * The corresponding {@link Feature feature} is set to {@link Feature#COMMON_NAME() COMMON_NAME}.
+	 */
+	protected CommonTaxonName(){
+		super(Feature.COMMON_NAME());
+	}	
 	
-	
+// *************************** METHODS *****************************************/	
 	
 	/**
 	 * @deprecated Deprecated because {@link Feature feature} should always be {@link Feature#COMMON_NAME() COMMON_NAME}
