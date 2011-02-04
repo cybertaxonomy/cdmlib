@@ -9,6 +9,9 @@
  */
 package eu.etaxonomy.cdm.remote.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -20,6 +23,8 @@ import org.springframework.web.context.WebApplicationContext;
  *
  */
 public abstract class AbstractWebApplicationConfigurer {
+
+    private static final String ATTRIBUTE_ERROR_MESSAGES = "cdm.errorMessages";
 
 	public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
 	
@@ -36,6 +41,14 @@ public abstract class AbstractWebApplicationConfigurer {
 		}
 	}
 
+	/**
+	 * Find a property in the ServletContext if not found search in a second
+	 * step in the environment variables of the OS
+	 * 
+	 * @param property
+	 * @param required
+	 * @return
+	 */
 	protected String findProperty(String property, boolean required) {
 		// 1. look for the property in the ServletContext
 		Object obj = webApplicationContext.getServletContext().getAttribute(property);
@@ -53,6 +66,18 @@ public abstract class AbstractWebApplicationConfigurer {
 			System.exit(-1);
 		}
 		return value;
+	}
+
+	protected void addErrorMessageToServletContextAttributes(String errorMessage) {
+		Object o = webApplicationContext.getServletContext().getAttribute(ATTRIBUTE_ERROR_MESSAGES);
+		List<String> messages;
+		if(o != null  && o instanceof List<?>){
+			messages = (List<String>) o;
+		} else {
+			messages = new ArrayList<String>();
+		}
+		messages.add(errorMessage);
+		webApplicationContext.getServletContext().setAttribute(ATTRIBUTE_ERROR_MESSAGES, messages);
 	}
 	
    

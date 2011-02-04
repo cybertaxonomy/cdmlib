@@ -13,6 +13,9 @@ package eu.etaxonomy.cdm.remote.config;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.naming.NamingException;
@@ -27,6 +30,41 @@ import org.springframework.jndi.JndiObjectFactoryBean;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+import eu.etaxonomy.cdm.model.common.CdmMetaData;
+import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
+
+/**
+ * The <code>DataSourceConfigurer</code> can be used as a replacement for a xml configuration in the application context.
+ * Enter the following in your application context configuration in order to enable the <code>DataSourceConfigurer</code>:
+ *  
+<pre>
+&lt;!-- enable processing of annotations such as @Autowired and @Configuration --&gt;
+&lt;context:annotation-config/&gt;
+    
+&lt;bean class="eu.etaxonomy.cdm.remote.config.DataSourceConfigurer" &gt;
+&lt;/bean&gt;
+</pre>
+ * The <code>DataSourceConfigurer</code> allows alternative ways to specify a data source:
+ * 
+ * <ol>
+ * <li>Specify the data source bean to use in the Java environment properties: 
+ * <code>-Dcdm.datasource={dataSourceName}</code> ({@link #ATTRIBUTE_DATASOURCE_NAME}). 
+ * The data source bean with the given name will then be loaded from the <code>cdm.beanDefinitionFile</code> 
+ * ({@link #CDM_BEAN_DEFINITION_FILE}), which must be a valid Spring bean definition file.
+ * </li>
+ * <li> 
+ * Use a JDBC data source which is bound into the JNDI context. In this case the JNDI name is specified 
+ * via the {@link #ATTRIBUTE_JDBC_JNDI_NAME} as attribute to the ServletContext. 
+ * This scenario usually being used by the cdm-server application.
+ * </li>
+ * </ol>
+ * The attributes used in (1) and (2) are in a first step being searched in the ServletContext 
+ * if not found search in a second step in the environment variables of the OS, see:{@link #findProperty(String, boolean)}. 
+ * 
+ * @author a.kohlbecker
+ * @date 04.02.2011
+ *
+ */
 @Configuration
 public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 	
@@ -57,22 +95,57 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 	
 	@Bean
 	public DataSource dataSource() {
-// TODO		
-//		if(!CdmMetaData.isDbSchemaVersionCompatible(CdmMetaData.getDbSchemaVersion())){
-//			logger.error("Schema version of the database ");
-//		}
+		
+		String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
+		String jndiName = null;
 		if(this.dataSource == null){
-			String jndiName = findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false);
+			jndiName = findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false);
 			
 			if(jndiName != null){
 				dataSource = useJndiDataSource(jndiName);
 			} else {
-				String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
 				dataSource = loadDataSourceBean(beanName);
 			}
 		}
+		
+		if(dataSource == null){
+			return null;
+		} 
+		
+		// validate correct schema version
+		try {
+			
+			Connection connection = dataSource.getConnection();
+
+			ResultSet resultSet = connection.createStatement().executeQuery(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+			String version = null;
+			if(resultSet.next()){
+				version = resultSet.getString(1);
+			} else {
+				throw new RuntimeException("Unable to retrieve version info from data source " + dataSource.toString());
+			}
+			
+			connection.close();
+
+			if(!CdmMetaData.isDbSchemaVersionCompatible(version)){
+				/*
+				 * any exception thrown here would be nested into a spring
+				 * BeanException which can not be caught in the servlet
+				 * container, so we post the information into the
+				 * ServletContext
+				 */
+				String errorMessage = "Incompatible version [" + (beanName != null ? beanName : jndiName) + "] expected version: " + CdmMetaData.getDbSchemaVersion() + ",  data base version  " + version;
+				addErrorMessageToServletContextAttributes(errorMessage);
+			}
+			
+			
+		} catch (SQLException e) {
+			throw new RuntimeException("Unable to connect or to retrieve version info from data source " + dataSource.toString() , e);
+			
+		}
 		return dataSource; 
 	}
+
 
 	private DataSource useJndiDataSource(String jndiName) {
 		logger.info("using jndi datasource '" + jndiName + "'");
