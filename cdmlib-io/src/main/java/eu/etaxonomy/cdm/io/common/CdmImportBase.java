@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -114,6 +115,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 	
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
 		ExtensionType extensionType = state.getExtensionType(uuid);
 		if (extensionType == null){
 			extensionType = (ExtensionType)getTermService().find(uuid);
@@ -152,6 +156,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
 		MarkerType markerType = state.getMarkerType(uuid);
 		if (markerType == null){
 			markerType = (MarkerType)getTermService().find(uuid);
@@ -169,6 +176,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
 		AnnotationType annotationType = state.getAnnotationType(uuid);
 		if (annotationType == null){
 			annotationType = (AnnotationType)getTermService().find(uuid);
@@ -185,6 +195,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return annotationType;
 	}
 	
+	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
 	/**
 	 * Returns a named area for a given uuid by first . If the named area does not
 	 * @param state
@@ -197,13 +208,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
 			namedArea = (NamedArea)getTermService().find(uuid);
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
-				//FIXME define vocabulary
-				logger.warn("No vocabulary defined for named area");
+				TermVocabulary voc = getVocabulary(uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null);
+				voc.addTerm(namedArea);
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
@@ -213,6 +227,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return namedArea;
 	}
+
+
 	
 	/**
 	 * Returns a feature for a given uuid by first ...
@@ -304,6 +320,23 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putLanguage(language);
 		}
 		return language;
+	}
+	
+
+	/**
+	 * @param uuid 
+	 * @return
+	 * 
+	 */
+	protected TermVocabulary getVocabulary(UUID uuid, String text, String label, String abbrev) {
+		TermVocabulary voc = getVocabularyService().find(uuid);
+		if (voc == null){
+			voc = new TermVocabulary();
+			Representation representation = Representation.NewInstance(text, label, abbrev, Language.DEFAULT());
+			voc.addRepresentation(representation);
+			getVocabularyService().save(voc);
+		}
+		return voc;
 	}
 	
 	/**
