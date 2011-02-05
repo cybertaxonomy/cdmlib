@@ -126,7 +126,17 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		}
 		
 		Assert.assertEquals("Source descirption should have 3 elements again", 3, sourceDescription.getElements().size());
+		Assert.assertEquals("Destination descirption should have no elements again", 0, targetDescription.getElements().size());
 		
-		
+		//test paste
+		sourceCollection.add(sourceDescription.getElements().iterator().next());
+		service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, true);
+
+		Assert.assertEquals("Source descirption should still have 3 elements", 3, sourceDescription.getElements().size());
+		Assert.assertEquals("Destination descirption should have 1 element again", 1, targetDescription.getElements().size());
+		for (DescriptionElementBase targetElement : targetDescription.getElements()){
+			Assert.assertFalse("Target elements may not be in sourced description as they are only clones (but not same).", sourceDescription.getElements().contains(targetElement));
+		}
+
 	}
 }

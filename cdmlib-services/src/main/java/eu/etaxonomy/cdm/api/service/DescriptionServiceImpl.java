@@ -461,7 +461,15 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		Iterator<DescriptionElementBase> iterator = descriptionElements.iterator();
 		while (iterator.hasNext()){
 			DescriptionElementBase elementToRemove = iterator.next();
-			iterator.remove();
+			if (! isPaste){
+				iterator.remove();
+			}else{
+				try {
+					elementToRemove = (DescriptionElementBase)elementToRemove.clone();
+				} catch (CloneNotSupportedException e) {
+					new RuntimeException ("Clone not yet implemented for class " + elementToRemove.getClass().getName(), e);
+				}
+			}
 			targetDescription.addElement(elementToRemove);	
 		}
 	}
