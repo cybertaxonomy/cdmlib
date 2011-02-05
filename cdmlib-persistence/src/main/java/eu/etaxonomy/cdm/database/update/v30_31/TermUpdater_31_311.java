@@ -90,7 +90,7 @@ public class TermUpdater_31_311 extends TermUpdaterBase implements ITermUpdater 
 //		stepName = "Add 'unranked' rank to ranks";
 //		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
 
-		String sql = "UPDATE Representation SET text = '`Unranked´ Infrageneric Rank: The infrageneric name on purpose has no rank', label = 'Unranked (infrageneric)', abbreviatedlabel = '[infragen.]'" +
+		String sql = "UPDATE Representation SET text = 'Unranked Infrageneric Rank: The infrageneric name on purpose has no rank', label = 'Unranked (infrageneric)', abbreviatedlabel = '[infragen.]'" +
 		" WHERE abbreviatedlabel = 't.infgen.'";
 		stepName = "Update unranked infrageneric representation";
 		SimpleSchemaUpdaterStep infraGenStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
@@ -104,7 +104,7 @@ public class TermUpdater_31_311 extends TermUpdaterBase implements ITermUpdater 
 
 		
 		
-		sql = "UPDATE Representation SET text = '`Unranked´ Infraspecific Rank: The infraspecific name on purpose has no rank', label = 'Unranked (infraspecific)', abbreviatedlabel = '[infraspec.]' " +
+		sql = "UPDATE Representation SET text = 'Unranked Infraspecific Rank: The infraspecific name on purpose has no rank', label = 'Unranked (infraspecific)', abbreviatedlabel = '[infraspec.]' " +
 		" WHERE abbreviatedlabel = 't.infr.'";
 		stepName = "Update unranked infraspecific representation";
 		SimpleSchemaUpdaterStep infraSpecStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
