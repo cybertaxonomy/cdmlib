@@ -19,7 +19,6 @@ import java.util.UUID;
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -91,7 +90,6 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-//	@Ignore // Remove when implemented
 	public void testMoveDescriptionElementsToTaxon(){
 		
 		TaxonDescription sourceDescription = TaxonDescription.NewInstance();
@@ -108,6 +106,8 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		Assert.assertEquals(3, sourceDescription.getElements().size());
 		
 		TaxonDescription targetDescription = TaxonDescription.NewInstance();
+		this.service.save(sourceDescription);
+		this.service.save(targetDescription);
 		
 		service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, false);
 		
@@ -117,7 +117,9 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		Assert.assertTrue("The moved element2 should be in the new description", targetDescription.getElements().contains(element2));
 		Assert.assertFalse("Element3 should not be in the new description", targetDescription.getElements().contains(element3));
 		Assert.assertTrue("Element3 should remain in the old description", targetDescription.getElements().contains(element));
-
+		this.service.save(sourceDescription);
+		this.service.save(targetDescription);
+		
 		try {
 			service.moveDescriptionElementsToDescription(targetDescription.getElements(), sourceDescription, false);
 		} catch (Exception e) {
@@ -127,6 +129,8 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		
 		Assert.assertEquals("Source descirption should have 3 elements again", 3, sourceDescription.getElements().size());
 		Assert.assertEquals("Destination descirption should have no elements again", 0, targetDescription.getElements().size());
+		this.service.save(sourceDescription);
+		this.service.save(targetDescription);
 		
 		//test paste
 		sourceCollection.add(sourceDescription.getElements().iterator().next());
@@ -137,6 +141,9 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		for (DescriptionElementBase targetElement : targetDescription.getElements()){
 			Assert.assertFalse("Target elements may not be in sourced description as they are only clones (but not same).", sourceDescription.getElements().contains(targetElement));
 		}
+		this.service.save(targetDescription);
+		this.service.save(sourceDescription);
+		
 
 	}
 }
