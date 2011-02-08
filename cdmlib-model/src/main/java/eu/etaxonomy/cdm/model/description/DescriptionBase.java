@@ -18,10 +18,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,7 +33,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -45,7 +42,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * The upmost (abstract) class for a description as a whole (with possibly
@@ -395,6 +391,12 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 			result.descriptiveSystem = new HashSet<Feature>();
 			for (Feature feature : getDescriptiveSystem()){
 				result.descriptiveSystem.add(feature);
+			}
+			
+			//working set
+			result.workingSets = new HashSet<WorkingSet>();
+			for (WorkingSet workingSet : getWorkingSets()){
+				workingSet.addDescription(result);
 			}
 			
 			//descriptions
