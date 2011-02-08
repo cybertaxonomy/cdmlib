@@ -328,6 +328,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements3.size());
 	}
 	
+	//see #2234
 	@Test
 	public void testSaveClonedDescription() {
 		Taxon taxon = Taxon.NewInstance(null, null);
