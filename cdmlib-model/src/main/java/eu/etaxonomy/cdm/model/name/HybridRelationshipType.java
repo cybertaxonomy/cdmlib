@@ -66,9 +66,13 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 	private static final UUID uuidFirstParent = UUID.fromString("83ae9e56-18f2-46b6-b211-45cdee775bf3");
 	private static final UUID uuidSecondParent = UUID.fromString("0485fc3d-4755-4f53-8832-b82774484c43");
+	private static final UUID uuidThirdParent = UUID.fromString("bfae2780-92ab-4f65-b534-e68826f59e7d");
+	private static final UUID uuidFourthParent = UUID.fromString("9e92083b-cb9b-4c4d-bca5-c543bbefd3c7");
 	private static final UUID uuidFemaleParent = UUID.fromString("189a3ed9-6860-4943-8be8-a1f60133be2a");
 	private static final UUID uuidMaleParent = UUID.fromString("8b7324c5-cc6c-4109-b708-d49b187815c4");
-
+	private static final UUID uuidMajorParent = UUID.fromString("da759eea-e3cb-4d3c-ae75-084c2d08f4ed");
+	private static final UUID uuidMinorParent = UUID.fromString("e556b240-b03f-46b8-839b-ad89df633c5a");
+	
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -117,10 +121,14 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	
 	/**
 	 * Returns the "first parent" hybrid relationship type. The elements of the
-	 * {@link BotanicalName botanical taxon name} used as "first parent" affect the
+	 * {@link NonViralName non-viral taxon name} used as "first parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
 	 * 
 	 * @see	#SECOND_PARENT()
+	 * @see #THIRD_PARENT()
+	 * @see #FOURTH_PARENT()
+	 * @see #FEMALE_PARENT()
+	 * @see #MAJOR_PARENT()
 	 */
 	public static final HybridRelationshipType FIRST_PARENT(){
 		return getTermByUuid(uuidFirstParent);
@@ -128,19 +136,43 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 	/**
 	 * Returns the "second parent" hybrid relationship type. The elements of the
-	 * {@link BotanicalName botanical taxon name} used as "second parent" affect the
+	 * {@link NonViralName non-viral taxon name} used as "second parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
 	 * 
 	 * @see	#FIRST_PARENT()
+	 * @see #MALE_PARENT()
+	 * @see #MINOR_PARENT()
 	 */
 	public static final HybridRelationshipType SECOND_PARENT(){
 		return getTermByUuid(uuidSecondParent);
 	}
-
+	
+	/**
+	 * Returns the "third parent" hybrid relationship type. The elements of the
+	 * {@link NonViralName non viral taxon name} used as "third parent" affect the
+	 * taxon name string of the hybrid (see Appendix I of the ICBN).
+	 * 
+	 * @see	#FIRST_PARENT()
+	 */
+	public static final HybridRelationshipType THIRD_PARENT(){
+		return getTermByUuid(uuidThirdParent);
+	}
+	
+	/**
+	 * Returns the "fourth parent" hybrid relationship type. The elements of the
+	 * {@link NonViralName non viral taxon name} used as "third parent" affect the
+	 * taxon name string of the hybrid (see Appendix I of the ICBN).
+	 * 
+	 * @see	#FIRST_PARENT()
+	 */
+	public static final HybridRelationshipType FOURTH_PARENT(){
+		return getTermByUuid(uuidFourthParent);
+	}
+	
 	/**
 	 * Returns the "female parent" hybrid relationship type. The taxon the name
 	 * of which plays the female parent role is the genetic mother of the taxon
-	 * which is the hybrid (and has the hybrid {@link BotanicalName botanical taxon name})
+	 * which is the hybrid (and has the hybrid {@link NonViralName non-viral taxon name})<BR>
 	 * For nomenclature purposes a "female parent" is also a "first parent".
 	 * 
 	 * @see	#MALE_PARENT()
@@ -153,7 +185,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	/**
 	 * Returns the "male parent" hybrid relationship type. The taxon the name
 	 * of which plays the male parent role is the genetic father of the taxon
-	 * which is the hybrid (and has the hybrid {@link BotanicalName botanical taxon name}).
+	 * which is the hybrid (and has the hybrid {@link NonViralName non-viral taxon name}).<BR>
 	 * For nomenclature purposes a "male parent" is also a "second parent".
 	 * 
 	 * @see	#MALE_PARENT()
@@ -161,6 +193,37 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 */
 	public static final HybridRelationshipType MALE_PARENT(){
 		return getTermByUuid(uuidMaleParent);
+	}
+
+	/**
+	 * Returns the "major parent" hybrid relationship type. This relationship 
+	 * maybe used for hybrids which have parents that are not equally represented
+	 * in the child (e.g. some fern hybrids).
+	 * For nomenclature purposes a "major parent" is also a "first parent".<BR>
+	 * Major and minor parent relationships are usually represented in a
+	 * hybrid formula with a "greater than" symbol (>). It replaces the multiplication
+	 * symbol which is generally used for hybrid fromulas.
+	 * 
+	 * @see	#FIRST_PARENT()
+	 * @see #MINOR_PARENT()
+	 */
+	public static final HybridRelationshipType MAJOR_PARENT(){
+		return getTermByUuid(uuidMajorParent);
+	}
+
+	/**
+	 * Returns the "minor parent" hybrid relationship type. This relationship 
+	 * maybe used for hybrids which have parents that are not equally represented
+	 * in the child (e.g. some fern hybrids).<BR>
+	 * For nomenclature purposes a "major parent" is also a "second parent".
+	 * Major and minor parent relationships are usually represented in a
+	 * hybrid formula with a "greater than" symbol (>). It replaces the multiplication
+	 * symbol which is generally used for hybrid fromulas.
+	 * 
+	 * @see	#SECOND_PARENT()
+	 */
+	public static final HybridRelationshipType MINOR_PARENT(){
+		return getTermByUuid(uuidMinorParent);
 	}
 	
 	

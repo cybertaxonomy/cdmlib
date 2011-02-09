@@ -54,6 +54,8 @@ public class Sex extends Scope {
 
 	private static final UUID uuidMale = UUID.fromString("600a5212-cc02-431d-8a80-2bf595bd1eab");
 	private static final UUID uuidFemale = UUID.fromString("b4cfe0cb-b35c-4f97-9b6b-2b3c096ea2c0");
+	private static final UUID uuidHermaphrodite = UUID.fromString("0deddc65-2505-4c77-91a7-17d0de24afcc");
+	private static final UUID uuidUnknown = UUID.fromString("4f5e4c51-a664-48ad-8238-2e9f49eaf8dd");
 
 
 
@@ -130,6 +132,14 @@ public class Sex extends Scope {
 
 	public static Sex FEMALE(){
 		return getTermByUuid(uuidFemale);
+	}
+	
+	public static Sex HERMAPHRODITE(){
+		return getTermByUuid(uuidHermaphrodite);
+	}
+	
+	public static Sex UNKNOWN(){
+		return getTermByUuid(uuidUnknown);
 	}
 	
 	@Override

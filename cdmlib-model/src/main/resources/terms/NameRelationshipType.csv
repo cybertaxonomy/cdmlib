@@ -1,13 +1,13 @@
 "6878cb82-c1a4-4613-b012-7e73b413c8cd",,"NameRelationshipType","NameRelationshipType",,,,
-"eeaea868-c4c1-497f-b9fe-52c9fc4aca53",,"orthographic variant for",,"has orthographic variant",,TRUE,TRUE
-"c6f9afcb-8287-4a2b-a6f6-4da3a073d5de",,"misspelling for",,"has misspelling",,TRUE,TRUE
-"6e23ad45-3f2a-462b-ad87-d2389cd6e26c",,"has emendation",,"emendation for",,TRUE,TRUE
-"80f06f65-58e0-4209-b811-cb40ad7220a6",,"later homonym for",,"is earlier homonym for",,FALSE,TRUE
-"2990a884-3302-4c8b-90b2-dfd31aaa2778",,"treated as later homonym for",,"is treated as earlier homonym for",,FALSE,FALSE
-"049c6358-1094-4765-9fae-c9972a0e7780",,"alternative name for",,"has alternative name",,TRUE,TRUE
-"25792738-98de-4762-bac1-8c156faded4a",,"basionym for",,"is new combination for",,FALSE,FALSE
-"71c67c38-d162-445b-b0c2-7aba56106696",,"replaced synonym for",,"is new name for",,FALSE,FALSE
-"e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a",,"conserved against",,"is rejected in favour of",,FALSE,FALSE
-"a176c9ad-b4c2-4c57-addd-90373f8270eb",,"validated by",,"is validating",,FALSE,FALSE
-"a25ee4c1-863a-4dab-9499-290bf9b89639",,"later validated by",,"is later validating",,FALSE,FALSE
-"1dab357f-2e12-4511-97a4-e5153589e6a6",,"blocking name for",,"is new combination blocked by",,FALSE,FALSE
+"eeaea868-c4c1-497f-b9fe-52c9fc4aca53",,"orthographic variant for",,,"has orthographic variant",,TRUE,TRUE
+"c6f9afcb-8287-4a2b-a6f6-4da3a073d5de",,"misspelling for",,,"has misspelling",,TRUE,TRUE
+"6e23ad45-3f2a-462b-ad87-d2389cd6e26c",,"has emendation",,,"emendation for",,TRUE,TRUE
+"80f06f65-58e0-4209-b811-cb40ad7220a6",,"later homonym for",,,"is earlier homonym for",,FALSE,TRUE
+"2990a884-3302-4c8b-90b2-dfd31aaa2778",,"treated as later homonym for",,,"is treated as earlier homonym for",,FALSE,FALSE
+"049c6358-1094-4765-9fae-c9972a0e7780",,"alternative name for",,,"has alternative name",,TRUE,TRUE
+"25792738-98de-4762-bac1-8c156faded4a",,"basionym for",,,"is new combination for",,FALSE,FALSE
+"71c67c38-d162-445b-b0c2-7aba56106696",,"replaced synonym for",,,"is new name for",,FALSE,FALSE
+"e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a",,"conserved against",,,"is rejected in favour of",,FALSE,FALSE
+"a176c9ad-b4c2-4c57-addd-90373f8270eb",,"validated by",,,"is validating",,FALSE,FALSE
+"a25ee4c1-863a-4dab-9499-290bf9b89639",,"later validated by",,,"is later validating",,FALSE,FALSE
+"1dab357f-2e12-4511-97a4-e5153589e6a6",,"blocking name for",,,"is new combination blocked by",,FALSE,FALSE

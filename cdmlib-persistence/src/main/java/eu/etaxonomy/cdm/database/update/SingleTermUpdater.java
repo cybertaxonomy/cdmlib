@@ -41,6 +41,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 	private boolean isOrdered;
 	private UUID uuidAfterTerm;
 	private UUID uuidLanguage;
+	private String reverseDescription;
+	private String reverseLabel;
+	private String reverseAbbrev;
+	
 	
 
 	private SingleTermUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
@@ -56,7 +60,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 		this.uuidLanguage = uuidLanguage;
 	}
 
-
+	
 
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
  		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
@@ -130,6 +134,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 			return null;
 		}
 		
+		//standard representation
 		UUID uuidRepresentation = UUID.randomUUID();
 		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
 				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "',  '" + abbrev +  "', " + langId + ")"; 
@@ -141,11 +146,26 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 		
 		datasource.executeUpdate(sqlInsertMN);
 		
+		//reverse representation
+		if (hasReverseRepresentation()){
+			int reverseRepId = repId + 1;
+			UUID uuidReverseRepresentation = UUID.randomUUID();
+			String sqlInsertReverseRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
+					"VALUES (" + reverseRepId + ", '" + created + "', '" + uuidReverseRepresentation + "', '" + reverseDescription +  "', '" + reverseLabel +  "',  '" + reverseAbbrev +  "', " + langId + ")"; 
+			
+			datasource.executeUpdate(sqlInsertReverseRepresentation);
+			
+			String sqlReverseInsertMN = "INSERT INTO RelationshipTermBase_inverseRepresentation (DefinedTermBase_id, inverserepresentations_id) " + 
+					" VALUES ("+ termId +"," +reverseRepId+ " )";		
+			
+			datasource.executeUpdate(sqlReverseInsertMN);
+		}
+				
+		
 		return termId;
 	}
 
 
-	
 	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) {
 		if (dtype.equals(Feature.class.getSimpleName())){
 			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
@@ -210,5 +230,18 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 //			UPDATE DefinedTermBase SET uuid = '61cee840-801e-41d8-bead-015ad866c2f1', DTYPE = 'AbsenceTerm', vocabulary_id = 18, orderindex = @maxAbsenceOrderIndex + 1 WHERE uuid = '4ba212ef-041e-418d-9d43-2ebb191b61d8';
 //			UPDATE DefinedTermBase SET orderindex = orderindex -1 WHERE DTYPE = 'PresenceTerm' AND orderindex > @presenceOrderIndex ;
 	}
+
 	
+	private boolean hasReverseRepresentation() {
+		return  reverseLabel != null ||  reverseDescription != null ||  reverseAbbrev != null;
+	}
+
+	public SingleTermUpdater setReverseRepresentation(String reverseDescription, String reverseLabel, String reverseAbbrev) {
+		this.reverseLabel = reverseLabel;
+		this.reverseDescription = reverseDescription;
+		this.reverseAbbrev = reverseAbbrev;
+		return this;
+	}
+
+
 }

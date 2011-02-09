@@ -214,12 +214,12 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		T newInstance = super.readCsvLine(termClass, csvLine, terms);
 
-		String inverseText = csvLine.get(5).trim();
-		String inverseLabel = csvLine.get(4).trim();
+		String inverseText = csvLine.get(6).trim();
+		String inverseLabel = csvLine.get(5).trim();
 		String inverseLabelAbbrev = null;
 		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
-		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(6)));
-		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(7)));
+		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(7)));
+		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(8)));
 		return newInstance;
 	}
 	
@@ -230,10 +230,11 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		line[1] = term.getUri();
 		line[2] = term.getLabel();
 		line[3] = term.getDescription();
-		line[4] = term.getInverseLabel();
-		line[5] = term.getInverseDescription();
-		line[6] = String.valueOf(term.isSymmetric());
-		line[7] = String.valueOf(term.isTransitive());
+		line[4] = term.getDescription();
+		line[5] = term.getInverseLabel();
+		line[6] = term.getInverseDescription();
+		line[7] = String.valueOf(term.isSymmetric());
+		line[8] = String.valueOf(term.isTransitive());
 		writer.writeNext(line);
 	}
 	
