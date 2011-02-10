@@ -79,9 +79,8 @@ public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<Spec
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			sourceReference = refFactory.newDatabase();
-			sourceReference.setTitleCache("SYNTHESYS specimen import", true);
+			sourceReference = ReferenceFactory.newDatabase();
+			sourceReference.setTitleCache("Specimen import", true);
 		}
 		return sourceReference;
 	}
