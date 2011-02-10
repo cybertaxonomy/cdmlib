@@ -559,11 +559,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 	
 		Set<CdmBase> referencingObjects = cdmGenericDao.getReferencingObjects(spec1);
-		System.out.println("############## RESULT ###################");
-		for (CdmBase obj: referencingObjects){
-			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
-		}
-		System.out.println("############## ENDE ###################");
+//		System.out.println("############## RESULT ###################");
+//		for (CdmBase obj: referencingObjects){
+//			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+//		}
+//		System.out.println("############## ENDE ###################");
 		assertEquals("Number of referencing objects must be 2.", 2, referencingObjects.size());
 
 	}
