@@ -103,14 +103,10 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public boolean isDoTaxonNames();
 
 	public void setDoTaxonNames(boolean doTaxonNames);
-
-//	public boolean isDoRelNames();
 //
-//	public void setDoRelNames(boolean doRelNames);
-
-	public boolean isDoNameStatus();
-
-	public void setDoNameStatus(boolean doNameStatus);
+//	public boolean isDoNameStatus();
+//
+//	public void setDoNameStatus(boolean doNameStatus);
 
 	public boolean isDoTypes();
 

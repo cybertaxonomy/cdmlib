@@ -48,6 +48,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 	
+	private boolean doNameStatus = true;
 	private boolean doRelNames = true;
 	private boolean doCommonNames = true;
 	private boolean doOccurrence = true;
@@ -347,6 +348,15 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	}
 
 
+	
+	public boolean isDoNameStatus() {
+		return doNameStatus;
+	}
+	public void setDoNameStatus(boolean doNameStatus) {
+		this.doNameStatus = doNameStatus;
+	}
+	
+	
 	public boolean isDoCommonNames() {
 		return doCommonNames;
 	}

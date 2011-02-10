@@ -35,7 +35,6 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
 	//names
 	private boolean doTaxonNames = true;
-	private boolean doNameStatus = true;
 	private boolean doTypes = true;
 	
 	//taxa
@@ -105,18 +104,6 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 		this.doTaxonNames = doTaxonNames;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoNameStatus()
-	 */
-	public boolean isDoNameStatus() {
-		return doNameStatus;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoNameStatus(boolean)
-	 */
-	public void setDoNameStatus(boolean doNameStatus) {
-		this.doNameStatus = doNameStatus;
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoTypes()
