@@ -48,6 +48,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 	
+	private boolean doRelNames = true;
 	private boolean doCommonNames = true;
 	private boolean doOccurrence = true;
 	private boolean doMarker = true;
@@ -153,6 +154,19 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 			return this.getSource().getDatabase();
 		}
 	}
+	
+	/**
+	 * Import name relationships yes/no?.
+	 * @return
+	 */
+	public boolean isDoRelNames() {
+		return doRelNames;
+	}
+	public void setDoRelNames(boolean doRelNames) {
+		this.doRelNames = doRelNames;
+	}
+	
+	
 	
 	protected void addProParteSynonym(Synonym proParteSynonym){
 		this.proParteSynonyms.add(proParteSynonym);

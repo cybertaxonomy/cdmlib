@@ -42,6 +42,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
 	
+	private boolean doRelNames = true;
 	private boolean doFacts = true;
 	
 	//rdfNamespace
@@ -259,6 +260,17 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	}
 	public void setDoFacts(boolean doFacts) {
 		this.doFacts = doFacts;
+	}
+	
+	/**
+	 * Import name relationships yes/no?.
+	 * @return
+	 */
+	public boolean isDoRelNames() {
+		return doRelNames;
+	}
+	public void setDoRelNames(boolean doRelNames) {
+		this.doRelNames = doRelNames;
 	}
 
 	/* (non-Javadoc)

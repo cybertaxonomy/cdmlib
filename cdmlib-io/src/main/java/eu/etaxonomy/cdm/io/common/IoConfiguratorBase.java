@@ -35,7 +35,6 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
 	//names
 	private boolean doTaxonNames = true;
-	private boolean doRelNames = true;
 	private boolean doNameStatus = true;
 	private boolean doTypes = true;
 	
@@ -105,18 +104,7 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public void setDoTaxonNames(boolean doTaxonNames) {
 		this.doTaxonNames = doTaxonNames;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoRelNames()
-	 */
-	public boolean isDoRelNames() {
-		return doRelNames;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoRelNames(boolean)
-	 */
-	public void setDoRelNames(boolean doRelNames) {
-		this.doRelNames = doRelNames;
-	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoNameStatus()
 	 */

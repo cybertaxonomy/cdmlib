@@ -40,7 +40,8 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	
 	private boolean doMetaData = true;
 	private boolean doSpecimen = true;
-
+	private boolean doRelNames = true;
+	
 	private Method functionMetaDataDetailed = null; 
 	private ITcsXmlPlaceholderClass placeholderClass;
 	
@@ -224,6 +225,17 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	 */
 	public void setFunctionMetaDataDetailed(Method functionMetaDataDetailed) {
 		this.functionMetaDataDetailed = functionMetaDataDetailed;
+	}
+	
+	/**
+	 * Import name relationships yes/no?.
+	 * @return
+	 */
+	public boolean isDoRelNames() {
+		return doRelNames;
+	}
+	public void setDoRelNames(boolean doRelNames) {
+		this.doRelNames = doRelNames;
 	}
 	
 	/**
