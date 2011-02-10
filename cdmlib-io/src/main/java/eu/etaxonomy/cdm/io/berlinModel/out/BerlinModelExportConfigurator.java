@@ -28,7 +28,8 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 
 	//ID for the isHomotypic relationship in RelName, if not exist null
 	private Integer isHomotypicId = null;
-	
+
+	private boolean doRelNames = true;
 	private boolean doOccurrence = true;
 	private boolean doFacts = true;
 	private boolean doNameFacts = true;
@@ -89,6 +90,16 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	}
 	
 	
+	/**
+	 * Import name relationships yes/no?.
+	 * @return
+	 */
+	public boolean isDoRelNames() {
+		return doRelNames;
+	}
+	public void setDoRelNames(boolean doRelNames) {
+		this.doRelNames = doRelNames;
+	}
 	public boolean isDoOccurrence() {
 		return doOccurrence;
 	}

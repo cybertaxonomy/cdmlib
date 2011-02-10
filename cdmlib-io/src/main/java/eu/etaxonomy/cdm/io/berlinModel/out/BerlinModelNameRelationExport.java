@@ -209,7 +209,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(BerlinModelExportState state){
-		return ! state.getConfig().isDoTaxonNames();
+		return ! state.getConfig().isDoRelNames();
 	}
 	
 	//called by MethodMapper
