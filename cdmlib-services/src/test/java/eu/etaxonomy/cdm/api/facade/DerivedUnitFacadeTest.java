@@ -269,8 +269,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		Assert.assertNotNull("Specimen should exist (persisted)", specimen);
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
-			SpecimenDescription imageGallery = facade.getFieldObjectImageGallery(true);
+			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
 			Assert.assertNotNull("Image gallery should exist", imageGallery);
+			Assert.assertEquals("The image gallery should be flagged as such", true, imageGallery.isImageGallery());
 			Assert.assertEquals("There should be one TextData in image gallery", 1, imageGallery.getElements().size());
 			List<Media> media = imageGallery.getElements().iterator().next().getMedia();
 			Assert.assertEquals("There should be 1 media", 1, media.size());
@@ -287,6 +288,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
 			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
 			Assert.assertNotNull("Image Gallery should have been created", imageGallery);
+			Assert.assertEquals("The image gallery should be flagged as such", true, imageGallery.isImageGallery());
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();
 			Assert.fail();
