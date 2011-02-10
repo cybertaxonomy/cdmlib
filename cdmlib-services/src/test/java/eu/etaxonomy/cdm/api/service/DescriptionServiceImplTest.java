@@ -24,10 +24,12 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -43,7 +45,10 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 	
 	@SpringBeanByType
 	private IDescriptionService service;
-	
+
+	@SpringBeanByType
+	private ITermService termService;
+
 	
 
 	@Test
@@ -67,7 +72,7 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 				while (entryIterator.hasNext()){
 					Entry <Language, LanguageString> entry = (Entry<Language, LanguageString>) entryIterator.next();
 					LanguageString langString = entry.getValue();
-					System.out.println(langString);
+//					System.out.println(langString);
 					langString.setText("blablubber");
 				}
 			}
@@ -84,23 +89,30 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 			while (entryIterator.hasNext()){
 				Entry <Language, LanguageString> entry = (Entry<Language, LanguageString>) entryIterator.next();
 				LanguageString langString = entry.getValue();
-				System.out.println(langString);
+//				System.out.println(langString);
 			}
 		}
 	}
 	
 	@Test
 	public void testMoveDescriptionElementsToTaxon(){
+		UUID commonNameFeatureUuid = Feature.COMMON_NAME().getUuid();
+		
+		Feature commonNameFeature = (Feature)termService.find(commonNameFeatureUuid);
 		
 		TaxonDescription sourceDescription = TaxonDescription.NewInstance();
 		
 		TextData element = TextData.NewInstance();
+		element.setFeature(commonNameFeature);
 		sourceDescription.addElement(element);
 		TextData element2 = TextData.NewInstance();
+		element2.setFeature(commonNameFeature);
 		sourceDescription.addElement(element2);
 		Collection<DescriptionElementBase> sourceCollection = new HashSet<DescriptionElementBase>();
 		sourceCollection.addAll(sourceDescription.getElements());
 		TextData element3 = TextData.NewInstance();
+		element3.setFeature(commonNameFeature);
+		
 		sourceDescription.addElement(element3);
 
 		Assert.assertEquals(3, sourceDescription.getElements().size());

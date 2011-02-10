@@ -506,7 +506,7 @@ public class DerivedUnitFacade {
 	/**
 	 * Tests if a given image gallery is supported by the derived unit facade.
 	 * It returns the only text data attached to the given image gallery.
-	 * It the given image gallery does not have text data attached, it is created and attached.
+	 * If the given image gallery does not have text data attached, it is created and attached.
 	 * @param imageGallery
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
@@ -1281,7 +1281,10 @@ public class DerivedUnitFacade {
 	
 	public void setFieldObjectImageGallery(SpecimenDescription imageGallery) throws DerivedUnitFacadeNotSupportedException{
 		SpecimenDescription existingGallery = getFieldObjectImageGallery(false);
-		//TODO test attached fieldObject is the same as this.getFieldObject
+		
+		//test attached specimens contain this.derivedUnit
+		SpecimenOrObservationBase<?> facadeFieldObservation = innerFieldObservation();
+		testSpecimenInImageGallery(imageGallery, facadeFieldObservation);
 		
 		if (existingGallery != null){
 			if (existingGallery != imageGallery){
@@ -1503,7 +1506,10 @@ public class DerivedUnitFacade {
 	}
 	public void setDerivedUnitImageGallery(SpecimenDescription imageGallery) throws DerivedUnitFacadeNotSupportedException{
 		SpecimenDescription existingGallery = getDerivedUnitImageGallery(false);
-		//TODO test attached fieldObject is the same as this.getFieldObject
+		
+		//test attached specimens contain this.derivedUnit
+		SpecimenOrObservationBase facadeDerivedUnit = innerDerivedUnit();
+		testSpecimenInImageGallery(imageGallery, facadeDerivedUnit);
 		
 		if (existingGallery != null){
 			if (existingGallery != imageGallery){
@@ -1514,6 +1520,20 @@ public class DerivedUnitFacade {
 		}else {
 			TextData textData = testImageGallery(imageGallery);
 			this.derivedUnitMediaTextData = textData;
+		}
+	}
+
+	/**
+	 * @param imageGallery
+	 * @throws DerivedUnitFacadeNotSupportedException
+	 */
+	private void testSpecimenInImageGallery(SpecimenDescription imageGallery, SpecimenOrObservationBase specimen) throws DerivedUnitFacadeNotSupportedException {
+		Set<SpecimenOrObservationBase> imageGallerySpecimens = imageGallery.getDescribedSpecimenOrObservations();
+		if (imageGallerySpecimens.size() < 1){
+			throw new DerivedUnitFacadeNotSupportedException("Image Gallery has no Specimen attached. Please attache according specimen or field observation.");
+		}
+		if (! imageGallerySpecimens.contains(specimen)){
+			throw new DerivedUnitFacadeNotSupportedException("Image Gallery has not the facade's field object attached. Please add field object first to image gallery specimenOrObservation list.");
 		}
 	}
 	

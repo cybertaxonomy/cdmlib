@@ -1738,6 +1738,11 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ReferenceValidationTes
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/TaxonNameCannotBeAcceptedAndSynonymTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetDerivedUnitImageGallery-result.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetDerivedUnitImageGallery.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery-result.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.testUpdateTitleCache-result.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.xml -text
