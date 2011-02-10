@@ -96,7 +96,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
     //@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
     @JoinTable(name = "DescriptionBase_Feature")
-	@Deprecated //see getDescriptiveSystem
+	@Deprecated //will probably be removed in future versions due to #2240
+	//fortunately never worked well due to missing cascade #1846
     private Set<Feature> descriptiveSystem = new HashSet<Feature>();
 	
 	@XmlElementWrapper(name = "WorkingSets")
@@ -185,6 +186,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see    #addDescriptionSource(Reference)
 	 * @see    #removeDescriptionSource(Reference)
 	 */
+	@Deprecated //will probably be removed in future versions due to #2240
 	public Set<Reference> getDescriptionSources() {
 		return this.descriptionSources;
 	}
@@ -197,6 +199,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @param descriptionSource	the reference source to be added to <i>this</i> description
 	 * @see    	   				#getDescriptionSources()
 	 */
+	@Deprecated //will probably be removed in future versions due to #2240
 	public void addDescriptionSource(Reference descriptionSource) {
 		this.descriptionSources.add(descriptionSource);
 	}
@@ -209,6 +212,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see     		  			#getDescriptionSources()
 	 * @see     		  			#addDescriptionSource(Reference)
 	 */
+	@Deprecated //will probably be removed in future versions due to #2240
 	public void removeDescriptionSource(Reference descriptionSource) {
 		this.descriptionSources.remove(descriptionSource);
 	}
