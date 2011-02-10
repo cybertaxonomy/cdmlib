@@ -335,20 +335,8 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 	 */
 	public boolean start(SpecimenExcelImportConfigurator config){
 		boolean result = true;
-//		CdmApplicationController app2 = null;
 		TransactionStatus tx = null;
 
-//		app = config.getCdmAppController();
-//		try {
-//		app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
-//		} catch (DataSourceNotFoundException e1) {
-//		e1.printStackTrace();
-//		System.out.println("DataSourceNotFoundException "+e1);
-//		} catch (TermNotFoundException e1) {
-//		e1.printStackTrace();
-//		System.out.println("TermNotFoundException " +e1);
-//		}
-		
 		tx = startTransaction();
 		try {
 			Reference sec = config.getTaxonReference();
