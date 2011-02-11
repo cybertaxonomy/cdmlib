@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -457,11 +456,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	 */
 	@Override
 	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements,
-													DescriptionBase targetDescription, boolean isPaste) {
+													DescriptionBase targetDescription, boolean isCopy) {
 		Iterator<DescriptionElementBase> iterator = descriptionElements.iterator();
 		while (iterator.hasNext()){
 			DescriptionElementBase elementToRemove = iterator.next();
-			if (! isPaste){
+			if (! isCopy){
 				iterator.remove();
 			}else{
 				try {
