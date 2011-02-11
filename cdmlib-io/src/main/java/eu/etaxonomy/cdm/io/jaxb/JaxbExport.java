@@ -185,7 +185,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		
 		
 
-		if (jaxbExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
+		if (jaxbExpConfig.getDoReferences() != IExportConfigurator.DO_REFERENCES.NONE) {
 			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(Reference.class); }
 			logger.info("# Reference: " + referenceBaseRows);
 			dataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));

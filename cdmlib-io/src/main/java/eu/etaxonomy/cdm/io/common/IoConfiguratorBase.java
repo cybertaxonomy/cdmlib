@@ -30,16 +30,6 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	
 	private CdmApplicationController cdmApp = null;
 	
-	private boolean doAuthors = true;
-	//references
-	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
-	//names
-	private boolean doTaxonNames = true;
-	private boolean doTypes = true;
-	
-	//taxa
-	private boolean doTaxa = true;
-	private boolean doRelTaxa = true;
 	
 	//etc
 
@@ -63,85 +53,14 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public CdmApplicationController getCdmAppController(){
 		return this.cdmApp;
 	}
-	
+
 	/**
 	 * @param cdmApp the cdmApp to set
 	 */
 	public void setCdmAppController(CdmApplicationController cdmApp) {
 		this.cdmApp = cdmApp;
 	}
-	
-	public boolean isDoAuthors() {
-		return doAuthors;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoAuthors(boolean)
-	 */
-	public void setDoAuthors(boolean doAuthors) {
-		this.doAuthors = doAuthors;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getDoReferences()
-	 */
-	public DO_REFERENCES getDoReferences() {
-		return doReferences;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoReferences(eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator.DO_REFERENCES)
-	 */
-	public void setDoReferences(DO_REFERENCES doReferences) {
-		this.doReferences = doReferences;
-	}
-	
-	public boolean isDoTaxonNames() {
-		return doTaxonNames;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoTaxonNames(boolean)
-	 */
-	public void setDoTaxonNames(boolean doTaxonNames) {
-		this.doTaxonNames = doTaxonNames;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoTypes()
-	 */
-	public boolean isDoTypes() {
-		return doTypes;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoTypes(boolean)
-	 */
-	public void setDoTypes(boolean doTypes) {
-		this.doTypes = doTypes;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoTaxa()
-	 */
-	public boolean isDoTaxa() {
-		return doTaxa;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoTaxa(boolean)
-	 */
-	public void setDoTaxa(boolean doTaxa) {
-		this.doTaxa = doTaxa;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoRelTaxa()
-	 */
-	public boolean isDoRelTaxa() {
-		return doRelTaxa;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDoRelTaxa(boolean)
-	 */
-	public void setDoRelTaxa(boolean doRelTaxa) {
-		this.doRelTaxa = doRelTaxa;
-	}
-	
+		
 	/**
 	 * @return the useClassification
 	 */

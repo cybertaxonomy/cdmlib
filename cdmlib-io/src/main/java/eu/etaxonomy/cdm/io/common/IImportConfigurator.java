@@ -54,20 +54,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 
 	/* ****************** GETTER/SETTER **************************/
 
-	public boolean isDoAuthors();
-
-	public void setDoAuthors(boolean doAuthors);
-
-	/**
-	 * @return the doReferences
-	 */
-	public DO_REFERENCES getDoReferences();
-
-	/**
-	 * @param doReferences the doReferences to set
-	 */
-	public void setDoReferences(DO_REFERENCES doReferences);
-
 	/**
 	 * @return the doReferences
 	 */
@@ -100,25 +86,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 */
 	public void setIgnoreNull(boolean ignoreNull);
 	
-	public boolean isDoTaxonNames();
-
-	public void setDoTaxonNames(boolean doTaxonNames);
-//
-//	public boolean isDoNameStatus();
-//
-//	public void setDoNameStatus(boolean doNameStatus);
-
-	public boolean isDoTypes();
-
-	public void setDoTypes(boolean doTypes);
-
-	public boolean isDoTaxa();
-
-	public void setDoTaxa(boolean doTaxa);
-
-	public boolean isDoRelTaxa();
-
-	public void setDoRelTaxa(boolean doRelTaxa);
 	
 	/**
 	 * The destination data source for the import 

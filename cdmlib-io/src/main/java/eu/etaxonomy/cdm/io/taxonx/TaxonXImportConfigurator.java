@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -36,6 +37,8 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;
 	private boolean doFacts = true;
+	private boolean doTypes = true;
+
 	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
@@ -168,6 +171,16 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 		this.doFacts = doFacts;
 	}
 
+	
+
+	public boolean isDoTypes() {
+		return doTypes;
+	}
+	public void setDoTypes(boolean doTypes) {
+		this.doTypes = doTypes;
+	}
+
+	
 	/**
 	 * @return the isPublishReferences
 	 */
@@ -181,5 +194,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public void setPublishReferences(boolean isPublishReferences) {
 		this.isPublishReferences = isPublishReferences;
 	}
+	
+
 	
 }

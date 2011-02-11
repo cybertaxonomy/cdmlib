@@ -129,7 +129,7 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(BerlinModelExportState state){
-		return ! state.getConfig().isDoTaxa();
+		return ! state.getConfig().isDoRelTaxa();
 	}
 	
 	//called by MethodMapper

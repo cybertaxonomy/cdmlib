@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 
 /**
  * @author a.babadshanjan
@@ -238,6 +239,43 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	public void setDoOccurrence(boolean doOccurrence) {
 		this.doOccurrence = doOccurrence;
 	}
+	
+	private boolean doAuthors = true;
+	//references
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+	//names
+	private boolean doTaxonNames = true;
+	//taxa
+	private boolean doTaxa = true;
+
+	public boolean isDoAuthors() {
+		return doAuthors;
+	}
+	public void setDoAuthors(boolean doAuthors) {
+		this.doAuthors = doAuthors;
+	}
+
+	public DO_REFERENCES getDoReferences() {
+		return doReferences;
+	}
+	public void setDoReferences(DO_REFERENCES doReferences) {
+		this.doReferences = doReferences;
+	}
+	
+	public boolean isDoTaxonNames() {
+		return doTaxonNames;
+	}
+	public void setDoTaxonNames(boolean doTaxonNames) {
+		this.doTaxonNames = doTaxonNames;
+	}
+
+	public boolean isDoTaxa() {
+		return doTaxa;
+	}
+	public void setDoTaxa(boolean doTaxa) {
+		this.doTaxa = doTaxa;
+	}
+
 
 		
 }

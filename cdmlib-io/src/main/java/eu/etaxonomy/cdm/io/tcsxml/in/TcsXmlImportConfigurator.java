@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
 import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
@@ -40,7 +41,17 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	
 	private boolean doMetaData = true;
 	private boolean doSpecimen = true;
+	
+//	//references
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+//	//names
+	private boolean doTaxonNames = true;
 	private boolean doRelNames = true;
+//	//taxa
+	private boolean doTaxa = true;
+	private boolean doRelTaxa = true;
+
+	
 	
 	private Method functionMetaDataDetailed = null; 
 	private ITcsXmlPlaceholderClass placeholderClass;
@@ -227,6 +238,38 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		this.functionMetaDataDetailed = functionMetaDataDetailed;
 	}
 	
+	
+	
+	
+	
+	public DO_REFERENCES getDoReferences() {
+		return doReferences;
+	}
+	public void setDoReferences(DO_REFERENCES doReferences) {
+		this.doReferences = doReferences;
+	}
+	
+	public boolean isDoTaxonNames() {
+		return doTaxonNames;
+	}
+	public void setDoTaxonNames(boolean doTaxonNames) {
+		this.doTaxonNames = doTaxonNames;
+	}
+
+	public boolean isDoTaxa() {
+		return doTaxa;
+	}
+	public void setDoTaxa(boolean doTaxa) {
+		this.doTaxa = doTaxa;
+	}
+
+	public boolean isDoRelTaxa() {
+		return doRelTaxa;
+	}
+	public void setDoRelTaxa(boolean doRelTaxa) {
+		this.doRelTaxa = doRelTaxa;
+	}
+
 	/**
 	 * Import name relationships yes/no?.
 	 * @return

@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.IExportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -42,18 +43,21 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	private boolean doDescriptions = true;
 	private boolean doMedia = true;
 	private boolean doOccurrence = true;
-//	private boolean doReferences = true;
 	private boolean doReferencedEntities = true;
-//	private boolean doRelationships = true;
 	private boolean doSynonyms = true;
-//	private boolean doTaxonNames = true;
-//	private boolean doTaxa = true;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
 
 	private boolean doTypeDesignations = true;
 	private boolean doClassificationData = true;
+	private boolean doAuthors = true;
+	//references
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+	//names
+	private boolean doTaxonNames = true;
+	//taxa
+	private boolean doTaxa = true;
 
 	
 	
@@ -236,6 +240,38 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public void setDoUser(boolean doUser) {
 		this.doUser = doUser;
 	}
+	
+
+	public boolean isDoAuthors() {
+		return doAuthors;
+	}
+	public void setDoAuthors(boolean doAuthors) {
+		this.doAuthors = doAuthors;
+	}
+
+	public DO_REFERENCES getDoReferences() {
+		return doReferences;
+	}
+	public void setDoReferences(DO_REFERENCES doReferences) {
+		this.doReferences = doReferences;
+	}
+	
+	public boolean isDoTaxonNames() {
+		return doTaxonNames;
+	}
+	public void setDoTaxonNames(boolean doTaxonNames) {
+		this.doTaxonNames = doTaxonNames;
+	}
+
+	public boolean isDoTaxa() {
+		return doTaxa;
+	}
+	public void setDoTaxa(boolean doTaxa) {
+		this.doTaxa = doTaxa;
+	}
+
+
+
 
 }
 

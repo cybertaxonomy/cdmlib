@@ -42,7 +42,14 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
 	
+//	//references
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+//	//names
+	private boolean doTaxonNames = true;
 	private boolean doRelNames = true;
+//	//taxa
+	private boolean doTaxa = true;
+	private boolean doRelTaxa = true;
 	private boolean doFacts = true;
 	
 	//rdfNamespace
@@ -279,6 +286,37 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	public TcsRdfImportState getNewState() {
 		return new TcsRdfImportState(this);
 	}
+	
+	
+	
+	public DO_REFERENCES getDoReferences() {
+		return doReferences;
+	}
+	public void setDoReferences(DO_REFERENCES doReferences) {
+		this.doReferences = doReferences;
+	}
+	
+	public boolean isDoTaxonNames() {
+		return doTaxonNames;
+	}
+	public void setDoTaxonNames(boolean doTaxonNames) {
+		this.doTaxonNames = doTaxonNames;
+	}
+
+	public boolean isDoTaxa() {
+		return doTaxa;
+	}
+	public void setDoTaxa(boolean doTaxa) {
+		this.doTaxa = doTaxa;
+	}
+
+	public boolean isDoRelTaxa() {
+		return doRelTaxa;
+	}
+	public void setDoRelTaxa(boolean doRelTaxa) {
+		this.doRelTaxa = doRelTaxa;
+	}
+
 	
 
 	

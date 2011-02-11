@@ -169,7 +169,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 			sddDataSet.setAgents(getAgentService().list(null,agentRows, 0,null,null));
 		}
 
-		if (sddExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
+		if (sddExpConfig.getDoReferences() != IExportConfigurator.DO_REFERENCES.NONE) {
 			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(Reference.class); }
 			logger.info("# Reference: " + referenceBaseRows);
 			sddDataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));

@@ -29,10 +29,20 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	//ID for the isHomotypic relationship in RelName, if not exist null
 	private Integer isHomotypicId = null;
 
+	private boolean doAuthors = true;
+	//references
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+	//names
+	private boolean doTaxonNames = true;
 	private boolean doRelNames = true;
-	private boolean doOccurrence = true;
-	private boolean doFacts = true;
 	private boolean doNameFacts = true;
+	
+	//taxa
+	private boolean doTaxa = true;
+	private boolean doRelTaxa = true;
+	private boolean doFacts = true;
+	private boolean doOccurrence = true;
+
 	
 	public static BerlinModelExportConfigurator NewInstance(Source berlinModelDestination, ICdmDataSource source){
 			return new BerlinModelExportConfigurator(berlinModelDestination, source);
@@ -120,6 +130,43 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	public void setDoNameFacts(boolean doNameFacts) {
 		this.doNameFacts = doNameFacts;
 	}
+	
+
+	public boolean isDoAuthors() {
+		return doAuthors;
+	}
+	public void setDoAuthors(boolean doAuthors) {
+		this.doAuthors = doAuthors;
+	}
+
+	public DO_REFERENCES getDoReferences() {
+		return doReferences;
+	}
+	public void setDoReferences(DO_REFERENCES doReferences) {
+		this.doReferences = doReferences;
+	}
+	
+	public boolean isDoTaxonNames() {
+		return doTaxonNames;
+	}
+	public void setDoTaxonNames(boolean doTaxonNames) {
+		this.doTaxonNames = doTaxonNames;
+	}
+
+	public boolean isDoTaxa() {
+		return doTaxa;
+	}
+	public void setDoTaxa(boolean doTaxa) {
+		this.doTaxa = doTaxa;
+	}
+
+	public boolean isDoRelTaxa() {
+		return doRelTaxa;
+	}
+	public void setDoRelTaxa(boolean doRelTaxa) {
+		this.doRelTaxa = doRelTaxa;
+	}
+
 
 	
 

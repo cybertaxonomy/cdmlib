@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.IExportConfigurator.DO_REFERENCES;
 
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
@@ -30,22 +31,23 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase imp
 
 	private int maxRows = 0;
 
-//	private boolean doAgents = true;
 	private boolean doAgentData = true;
 	private boolean doLanguageData = true;
 	private boolean doFeatureData = true;
 	private boolean doDescriptions = true;
 	private boolean doMedia = true;
 	private boolean doOccurrence = true;
-//	private boolean doReferences = true;
 	private boolean doReferencedEntities = true;
-//	private boolean doRelationships = true;
 	private boolean doSynonyms = true;
-//	private boolean doTaxonNames = true;
-//	private boolean doTaxa = true;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
+	private boolean doAuthors = true;
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+	private boolean doTaxonNames = true;
+	private boolean doTaxa = true;
+	private boolean doRelTaxa = true;
+
 	
 	
 	public static PilotOutputExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
@@ -149,6 +151,41 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase imp
 	}
 	public void setDoOccurrence(boolean doOccurrence) {
 		this.doOccurrence = doOccurrence;
+	}
+
+	public boolean isDoAuthors() {
+		return doAuthors;
+	}
+	public void setDoAuthors(boolean doAuthors) {
+		this.doAuthors = doAuthors;
+	}
+
+	public DO_REFERENCES getDoReferences() {
+		return doReferences;
+	}
+	public void setDoReferences(DO_REFERENCES doReferences) {
+		this.doReferences = doReferences;
+	}
+	
+	public boolean isDoTaxonNames() {
+		return doTaxonNames;
+	}
+	public void setDoTaxonNames(boolean doTaxonNames) {
+		this.doTaxonNames = doTaxonNames;
+	}
+
+	public boolean isDoTaxa() {
+		return doTaxa;
+	}
+	public void setDoTaxa(boolean doTaxa) {
+		this.doTaxa = doTaxa;
+	}
+
+	public boolean isDoRelTaxa() {
+		return doRelTaxa;
+	}
+	public void setDoRelTaxa(boolean doRelTaxa) {
+		this.doRelTaxa = doRelTaxa;
 	}
 
 	
