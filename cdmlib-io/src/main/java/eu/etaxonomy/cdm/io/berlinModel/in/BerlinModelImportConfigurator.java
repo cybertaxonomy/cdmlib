@@ -56,6 +56,15 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private boolean doUser = true;
 	private boolean doFacts = true;
 	private boolean doNameFacts = true;
+	private boolean doAuthors = true;
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+	private boolean doTaxonNames = true;
+	private boolean doTypes = true;
+	
+	//taxa
+	private boolean doTaxa = true;
+	private boolean doRelTaxa = true;
+
 	
 	
 	/* Max number of records to be saved with one service call */
@@ -409,19 +418,6 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 		this.doNameFacts = doNameFacts;
 	}
 	
-	
-	
-	private boolean doAuthors = true;
-	//references
-	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
-	//names
-	private boolean doTaxonNames = true;
-	private boolean doTypes = true;
-	
-	//taxa
-	private boolean doTaxa = true;
-	private boolean doRelTaxa = true;
-
 	public boolean isDoAuthors() {
 		return doAuthors;
 	}
