@@ -477,6 +477,7 @@ public class DerivedUnitFacade {
 			if (createIfNotExists){
 				SpecimenDescription newSpecimenDescription = SpecimenDescription.NewInstance(specimen);
 				newSpecimenDescription.addElement(textData);
+				newSpecimenDescription.setImageGallery(isImageGallery);
 				return textData;
 			}else{
 				return null;

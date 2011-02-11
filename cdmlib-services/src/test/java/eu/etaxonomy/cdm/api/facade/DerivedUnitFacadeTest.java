@@ -263,14 +263,15 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	
 	@Test
 	@DataSet
-	public void testGetDerivedUnitImageGalleryBooleanPersisted(){
+	public void testGetFieldObjectImageGalleryBooleanPersisted(){
 		UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
 		Specimen specimen = (Specimen)service.find(specimenUUID);
 		Assert.assertNotNull("Specimen should exist (persisted)", specimen);
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
-			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
+			SpecimenDescription imageGallery = facade.getFieldObjectImageGallery(true);
 			Assert.assertNotNull("Image gallery should exist", imageGallery);
+			Assert.assertEquals("UUID should be equal to the persisted uuid", UUID.fromString("8cb772e9-1577-45c6-91ab-dbec1413c060"), imageGallery.getUuid());
 			Assert.assertEquals("The image gallery should be flagged as such", true, imageGallery.isImageGallery());
 			Assert.assertEquals("There should be one TextData in image gallery", 1, imageGallery.getElements().size());
 			List<Media> media = imageGallery.getElements().iterator().next().getMedia();
@@ -281,6 +282,29 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
+	
+	@Test
+	@DataSet
+	public void testGetDerivedUnitImageGalleryBooleanPersisted(){
+		UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
+		Specimen specimen = (Specimen)service.find(specimenUUID);
+		Assert.assertNotNull("Specimen should exist (persisted)", specimen);
+		try {
+			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
+			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
+			Assert.assertNotNull("Image gallery should exist", imageGallery);
+			Assert.assertEquals("UUID should be equal to the persisted uuid", UUID.fromString("cb03acc4-8363-4020-aeef-ea8a8bcc0fe9"), imageGallery.getUuid());
+			Assert.assertEquals("The image gallery should be flagged as such", true, imageGallery.isImageGallery());
+			Assert.assertEquals("There should be one TextData in image gallery", 1, imageGallery.getElements().size());
+			List<Media> media = imageGallery.getElements().iterator().next().getMedia();
+			Assert.assertEquals("There should be 1 media", 1, media.size());
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	
 	@Test
 	public void testGetDerivedUnitImageGalleryBoolean(){
 		Specimen specimen = Specimen.NewInstance();
