@@ -457,20 +457,35 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	@Override
 	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements,
 													DescriptionBase targetDescription, boolean isCopy) {
-		Iterator<DescriptionElementBase> iterator = descriptionElements.iterator();
-		while (iterator.hasNext()){
-			DescriptionElementBase elementToRemove = iterator.next();
-			if (! isCopy){
-				iterator.remove();
-			}else{
-				try {
-					elementToRemove = (DescriptionElementBase)elementToRemove.clone();
-				} catch (CloneNotSupportedException e) {
-					new RuntimeException ("Clone not yet implemented for class " + elementToRemove.getClass().getName(), e);
-				}
+		
+		for (DescriptionElementBase element : descriptionElements){
+			DescriptionBase description = element.getInDescription();
+			try {
+				DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
+				targetDescription.addElement(newElement);	
+			} catch (CloneNotSupportedException e) {
+				new RuntimeException ("Clone not yet implemented for class " + element.getClass().getName(), e);
 			}
-			targetDescription.addElement(elementToRemove);	
+			if (! isCopy){
+				description.removeElement(element);
+//				iterator.remove();
+			}
+			
 		}
+//		Iterator<DescriptionElementBase> iterator = descriptionElements.iterator();
+//		while (iterator.hasNext()){
+//			DescriptionElementBase elementToRemove = iterator.next();
+//			try {
+//				elementToRemove = (DescriptionElementBase)elementToRemove.clone();
+//			} catch (CloneNotSupportedException e) {
+//				new RuntimeException ("Clone not yet implemented for class " + elementToRemove.getClass().getName(), e);
+//			}
+//			
+//			targetDescription.addElement(elementToRemove);	
+//			if (! isCopy){
+//				iterator.remove();
+//			}
+//		}
 	}
 
 }

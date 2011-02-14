@@ -156,6 +156,6 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		this.service.save(targetDescription);
 		this.service.save(sourceDescription);
 		
-
+		
 	}
 }
