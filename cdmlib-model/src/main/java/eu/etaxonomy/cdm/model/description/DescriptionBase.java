@@ -385,9 +385,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Object clone()  {
 		DescriptionBase result;
-		logger.warn("Clone not yet tested");
 		try{
 			result = (DescriptionBase)super.clone();
 			
