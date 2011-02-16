@@ -594,7 +594,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaUtils.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MovieFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ReferencedMedia.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Rights.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/RightsType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/RightsTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaSample.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/GenBankAccession.java -text

@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.media.RightsType;
+import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -76,7 +76,7 @@ public enum VocabularyEnum {
 	PreservationMethod("a7dc20c9-e6b3-459e-8f05-8d6d8fceb465", PreservationMethod.class),
 	DeterminationModifier("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77", DeterminationModifier.class),
 	StatisticalMeasure("066cc62e-7213-495e-a020-97a1233bc037", StatisticalMeasure.class),
-	RightsType("8627c526-73af-44d9-902c-11c1f11b60b4", RightsType.class),
+	RightsTerm("8627c526-73af-44d9-902c-11c1f11b60b4", RightsTerm.class),
 	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class),
 	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class),
 	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class),

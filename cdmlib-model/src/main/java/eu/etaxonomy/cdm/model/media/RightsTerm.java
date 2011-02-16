@@ -32,45 +32,45 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @created 08-Nov-2007 13:06:50
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RightsType")
-@XmlRootElement(name = "RightsType")
+@XmlType(name = "RightsTerm")
+@XmlRootElement(name = "RightsTerm")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class RightsType extends DefinedTermBase<RightsType> {
+public class RightsTerm extends DefinedTermBase<RightsTerm> {
 	private static final long serialVersionUID = -5823263624000932116L;
-	private static final Logger logger = Logger.getLogger(RightsType.class);
+	private static final Logger logger = Logger.getLogger(RightsTerm.class);
 
-	protected static Map<UUID, RightsType> termMap = null;		
+	protected static Map<UUID, RightsTerm> termMap = null;		
 
 	
 	/**
 	 * Factory method
 	 * @return
 	 */
-	public static RightsType NewInstance(){
+	public static RightsTerm NewInstance(){
 		logger.debug("NewInstance");
-		return new RightsType();
+		return new RightsTerm();
 	}
 
 	/**
 	 * Factory method
 	 * @return
 	 */
-	public static RightsType NewInstance(String text, String label, String labelAbbrev){
-		return new RightsType(text, label, labelAbbrev);
+	public static RightsTerm NewInstance(String text, String label, String labelAbbrev){
+		return new RightsTerm(text, label, labelAbbrev);
 	}
 	
 	/**
 	 * Default Constructor
 	 */
-	public RightsType() {
+	public RightsTerm() {
 	}
 
 	/**
 	 * Constructor
 	 */
-	public RightsType(String term, String label, String labelAbbrev) {
+	public RightsTerm(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
@@ -86,25 +86,25 @@ public class RightsType extends DefinedTermBase<RightsType> {
 		termMap = null;
 	}
 	
-	protected static RightsType getTermByUuid(UUID uuid){
+	protected static RightsTerm getTermByUuid(UUID uuid){
 		if (termMap == null){
 			return null;  //better return null then initialize the termMap in an unwanted way 
 		}
-		return (RightsType)termMap.get(uuid);
+		return (RightsTerm)termMap.get(uuid);
 	}
 	
 	/**
 	 * http://purl.org/dc/terms/accessRights
 	 */
-	public static final RightsType ACCESS_RIGHTS(){
+	public static final RightsTerm ACCESS_RIGHTS(){
 		return getTermByUuid(uuidAccessRights);
 	}
 
-	public static final RightsType COPYRIGHT(){
+	public static final RightsTerm COPYRIGHT(){
 		return getTermByUuid(uuidCopyright);
 	}
 
-	public static final RightsType LICENSE(){
+	public static final RightsTerm LICENSE(){
 		return getTermByUuid(uuidLicense);
 	}
 	
@@ -114,10 +114,10 @@ public class RightsType extends DefinedTermBase<RightsType> {
 
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<RightsType> termVocabulary) {
-		termMap = new HashMap<UUID, RightsType>();
-		for (RightsType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (RightsType)term);
+	protected void setDefaultTerms(TermVocabulary<RightsTerm> termVocabulary) {
+		termMap = new HashMap<UUID, RightsTerm>();
+		for (RightsTerm term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (RightsTerm)term);
 		}	
 	}
 
