@@ -451,8 +451,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return load(description.getUuid()).hasStructuredData();
 	}
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#moveDescriptionElementsToDescription(java.util.Collection, eu.etaxonomy.cdm.model.description.DescriptionBase)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#moveDescriptionElementsToDescription(java.util.Collection, eu.etaxonomy.cdm.model.description.DescriptionBase, boolean)
 	 */
 	@Override
 	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements,
@@ -468,24 +469,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 			}
 			if (! isCopy){
 				description.removeElement(element);
-//				iterator.remove();
 			}
 			
 		}
-//		Iterator<DescriptionElementBase> iterator = descriptionElements.iterator();
-//		while (iterator.hasNext()){
-//			DescriptionElementBase elementToRemove = iterator.next();
-//			try {
-//				elementToRemove = (DescriptionElementBase)elementToRemove.clone();
-//			} catch (CloneNotSupportedException e) {
-//				new RuntimeException ("Clone not yet implemented for class " + elementToRemove.getClass().getName(), e);
-//			}
-//			
-//			targetDescription.addElement(elementToRemove);	
-//			if (! isCopy){
-//				iterator.remove();
-//			}
-//		}
 	}
 
 }
