@@ -332,6 +332,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		TermVocabulary voc = getVocabularyService().find(uuid);
 		if (voc == null){
 			voc = new TermVocabulary();
+			voc.setUuid(uuid);
 			Representation representation = Representation.NewInstance(text, label, abbrev, Language.DEFAULT());
 			voc.addRepresentation(representation);
 			getVocabularyService().save(voc);
