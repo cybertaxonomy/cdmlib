@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.xml.sax.InputSource;
 
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
@@ -138,11 +139,11 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 			URI requestUri = createUri(null, pairs);
 
 			InputStream stream = executeHttpGet(requestUri, requestHeaders);
-			String search = "utf-16";
-			String replace = "UTF-8";
-			stream = StreamUtils.streamReplace(stream, search, replace);
+//			String search = "utf-16";
+//			String replace = "UTF-8";
+////			stream = StreamUtils.streamReplace(stream, search, replace);
 			// fix the "org.xml.sax.SAXParseException: An invalid XML character (Unicode: 0x1) was found" problem
-			stream = StreamUtils.streamReplaceAll(stream, "[\\x01-\\x10]", " ");
+//			stream = StreamUtils.streamReplaceAll(stream, "[\\x00-\\x10]", " ");
 			
 			List<OpenUrlReference> referenceList = schemaAdapter.getCmdEntities(stream);
 			// TODO : we need to set ReferenceType here unless we know that the field Genre returns the reference type

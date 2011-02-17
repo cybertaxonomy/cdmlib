@@ -91,5 +91,21 @@ public class MobotOpenUrlServiceWrapperTest {
 		Assert.assertEquals("1797", reference.getDatePublished().getStartYear().toString()); 
 	    logger.info(reference.getJpegImage(null, null));
 	}
+	
+	@Test
+	public void testDoResolveAndPage_3() {
+
+		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
+		query.refType = MobotOpenUrlServiceWrapper.ReferenceType.book;
+		query.authorName = "Linné";
+		query.bookTitle = "Species plantarum";
+		query.publicationDate = "1753";
+		query.startPage = "813";
+		
+		List<OpenUrlReference> refList = openUrlServiceWrapper.doResolve(query);
+
+		Assert.assertTrue("There should be at least one result", refList.size() > 0);
+		OpenUrlReference reference = refList.get(0);
+	}
 
 }
