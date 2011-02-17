@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @version 1.0
  */
 @Component
-public class DistributionImport extends CdmIoBase<ExcelImportState> implements ICdmIO<ExcelImportState> {
+public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportConfiguratorBase>> implements ICdmIO<ExcelImportState<ExcelImportConfiguratorBase>> {
 
     /* used */
     private static final String EDIT_NAME_COLUMN = "EDIT";
@@ -71,7 +72,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState> implements I
 	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
 	@Override
-	protected boolean doInvoke(ExcelImportState state) {
+	protected boolean doInvoke(ExcelImportState<ExcelImportConfiguratorBase> state) {
 		
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
     	

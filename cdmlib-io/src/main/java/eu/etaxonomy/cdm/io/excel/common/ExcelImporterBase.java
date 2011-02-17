@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @created 17.12.2008
  * @version 1.0
  */
-public abstract class ExcelImporterBase<STATE extends ExcelImportState> extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
+public abstract class ExcelImporterBase<STATE extends ExcelImportState<ExcelImportConfiguratorBase>> extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
 	private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";

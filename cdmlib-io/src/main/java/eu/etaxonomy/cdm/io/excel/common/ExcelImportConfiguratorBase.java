@@ -27,6 +27,7 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
+
 	/**
 	 * @param url
 	 * @param destination
@@ -62,5 +63,7 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 	public boolean isDoMatchTaxa() {
 		return false;
 	}
+
+
 	
 }

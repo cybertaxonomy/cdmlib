@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class TaxonExcelImportState extends ExcelImportState{
+public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfiguratorBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImportState.class);
 	
