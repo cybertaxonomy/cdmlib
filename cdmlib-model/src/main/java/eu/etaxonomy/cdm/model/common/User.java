@@ -167,7 +167,9 @@ public class User extends CdmBase implements UserDetails {
 	
 	@Transient
 	public Collection<GrantedAuthority> getAuthorities() {
-		if(authorities == null) initAuthorities();
+		if(authorities == null) {
+			initAuthorities();
+		}
 		return authorities;
 	}
 
