@@ -565,6 +565,13 @@ public class Language extends DefinedTermBase<Language> {
 		return new Language(term, label, labelAbbrev);
 	}
 	
+	public static Language NewInstance(UUID uuid, String label, String iso639_3){
+		Language result = Language.NewInstance(label, label, iso639_3);
+		result.setUuid(uuid);
+		result.setIso639_2(iso639_3);
+		return result;
+	}
+	
 	
 	@XmlAttribute(name = "iso639_1")
 	//TODO create userDefinedType ?
@@ -1146,11 +1153,13 @@ public class Language extends DefinedTermBase<Language> {
 	}
 
 	public void setIso639_1(String iso639_1) {
-		iso639_1 = iso639_1.trim();
-		if(iso639_1.length() > 2){
-			logger.warn("Iso639-1: "+iso639_1+" too long");
+		if (iso639_1 != null){
+			iso639_1 = iso639_1.trim();
+			if(iso639_1.length() > 2){
+				logger.warn("Iso639-1: "+iso639_1+" too long");
+			}
+			this.iso639_1 = iso639_1;
 		}
-		this.iso639_1 = iso639_1;
 	}
 
 	/**
@@ -1164,9 +1173,11 @@ public class Language extends DefinedTermBase<Language> {
 	}
 
 	public void setIso639_2(String iso639_2) {
-		iso639_2 = iso639_2.trim();
-		if(iso639_2.length() > 3 ){
-			logger.warn("Iso639-2: "+iso639_2+" too long");
+		if (iso639_2 != null){
+			iso639_2 = iso639_2.trim();
+			if(iso639_2.length() > 3 ){
+				logger.warn("Iso639-2: "+iso639_2+" too long");
+			}
 		}
 		this.iso639_2 = iso639_2;
 	}
