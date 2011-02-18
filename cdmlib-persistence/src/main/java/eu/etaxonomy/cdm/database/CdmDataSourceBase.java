@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
@@ -31,8 +33,14 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	private static final int TIMEOUT = 10;
 	private Connection connection;
 	
-	private Connection getConnection() {
 
+	public Connection getConnection() throws SQLException {
+
+		return getConnection(getUsername(), getPassword());
+	}
+	
+
+	public Connection getConnection(String username, String password) throws SQLException {
 		try {
 			if(connection != null && connection.isValid(TIMEOUT)){
 				return connection;
@@ -41,7 +49,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 				String classString = dbType.getClassString();
 				Class.forName(classString);
 				String mUrl = dbType.getConnectionString(this);
-				return DriverManager.getConnection(mUrl, getUsername(), getPassword());	
+				return DriverManager.getConnection(mUrl, username, password);	
 			}
 		} catch (ClassNotFoundException e) {
 			logger.error("Database driver class could not be loaded\n" + "Exception: " + e.toString());
@@ -50,7 +58,8 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		}
 		return null;
 	}
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
 	 */
@@ -68,6 +77,9 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getSingleValue(java.lang.String)
+	 */
 	@Override
 	public Object getSingleValue(String query) throws SQLException{
 		String queryString = query == null? "(null)": query;  
