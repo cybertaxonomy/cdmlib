@@ -984,7 +984,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 				// <StateDefinition id="s1">
 				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-				TermVocabulary<State> termVocabularyState = new TermVocabulary<State>();
+				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(null, null, null, null);
 				
 				vocabularies.add(termVocabularyState);
 				
@@ -1713,7 +1713,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 						Element elModifiers = elDescriptiveConcept.getChild("Modifiers", sddNamespace);
 					if (elModifiers !=null){
 						List<Element> listModifiers = elModifiers.getChildren("Modifier", sddNamespace);
-							TermVocabulary<Modifier> termVocabularyState = new TermVocabulary<Modifier>();
+							TermVocabulary<Modifier> termVocabularyState = TermVocabulary.NewInstance(null, null, null, null);
 						for (Element elModifier : listModifiers) {
 								Modifier modif = Modifier.NewInstance();
 								String idmod = elModifier.getAttributeValue("id");

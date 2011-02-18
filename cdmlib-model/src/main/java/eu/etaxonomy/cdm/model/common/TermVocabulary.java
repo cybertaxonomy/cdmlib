@@ -85,7 +85,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	protected Set<T> terms = getNewTermSet();
 	
 // ********************************* FACTORY METHODS *****************************************/
-	
+
 	public static TermVocabulary NewInstance(String description, String label, String abbrev, String termSourceUri){
 		return new TermVocabulary(description, label, abbrev, termSourceUri);
 	}

@@ -85,7 +85,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			return featureVocabulary;
 		} catch (UnknownCdmTypeException e) {
 			logger.error("Feature vocabulary not available. New vocabulary created");
-			return new TermVocabulary<Feature>() ;
+			return TermVocabulary.NewInstance("User Defined Feature Vocabulary", "User Defined Feature Vocabulary", null, null); 
 		}
 	}
 	
