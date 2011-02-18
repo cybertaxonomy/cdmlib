@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.document.Field.Index;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -85,6 +84,25 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	@IndexedEmbedded(depth = 2)
 	protected Set<T> terms = getNewTermSet();
 	
+// ********************************* FACTORY METHODS *****************************************/
+	
+	public static TermVocabulary NewInstance(String description, String label, String abbrev, String termSourceUri){
+		return new TermVocabulary(description, label, abbrev, termSourceUri);
+	}
+	
+// ************************* CONSTRUCTOR *************************************************	
+
+	public TermVocabulary() {
+	}
+	
+	public TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
+		super(term, label, labelAbbrev);
+		setTermSourceUri(termSourceUri);
+	}
+	
+
+// ******************* METHODS *************************************************/	
+	
 	public T findTermByUuid(UUID uuid){
 		for(T t : terms) {
 			if(t.getUuid().equals(uuid)) {
@@ -94,15 +112,6 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return null;
 	}
 
-	public TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
-		super(term, label, labelAbbrev);
-		setTermSourceUri(termSourceUri);
-	}
-	
-	public TermVocabulary() {
-		// TODO Auto-generated constructor stub
-	}
-	
 	@Transient
 	Set<T> getNewTermSet() {
 		return new HashSet<T>();
@@ -129,24 +138,6 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	}
 	
 	
-//	// inner iterator class for the iterable interface
-//	private class TermIterator<T> implements Iterator<T> {
-//		   // FIXME: using a list here is probably not safe. Sth passed by value, an array, would be better
-//		   // but arrays cause generics problems: http://forum.java.sun.com/thread.jspa?threadID=651276&messageID=3832182
-//		   // hack for now ;(
-//		   private Set<T> array;
-//		   private int i= 0;
-//		   // ctor
-//		   public TermIterator(Set<T> array) {
-//		      // check for null being passed in etc.
-//		      this.array= array;
-//		   }
-//		   // interface implementation
-//		   public boolean hasNext() { return i < array.size(); }
-//		   public T next() { return array.get(i++); }
-//		   public void remove() { throw new UnsupportedOperationException(); }
-//	}
-
 	public Iterator<T> iterator() {
 		return terms.iterator();  // OLD: new TermIterator<T>(this.terms);
 	}

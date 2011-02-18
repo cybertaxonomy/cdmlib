@@ -41,6 +41,19 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
 
+// ************************* FACTORY METHODS ***********************************************/
+	
+	public static OrderedTermVocabulary NewInstance(String term, String label, String labelAbbrev, String termSourceUri){
+		return new OrderedTermVocabulary(term, label, labelAbbrev, termSourceUri);
+	}
+	
+	
+//************************ CONSTRUCTOR *****************************************************/	
+
+	public OrderedTermVocabulary() {
+		super();
+	}
+	
 	/**
 	 * @param term
 	 * @param label
@@ -50,9 +63,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super(term, label, labelAbbrev, termSourceUri);
 	}
 
-	public OrderedTermVocabulary() {
-		super();
-	}
+
+//************************* METHODS **************************************/	
 	
 	@Transient
 	@Override

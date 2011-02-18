@@ -90,9 +90,9 @@ public class TermLoader implements ITermLoader {
 			String labelAbbrev = null;
 			
 			if (OrderedTermBase.class.isAssignableFrom(termClass)){
-				voc = new OrderedTermVocabulary(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, termClass.getCanonicalName());
+				voc = OrderedTermVocabulary.NewInstance(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, termClass.getCanonicalName());
 			}else{
-				voc = new TermVocabulary<T>(termClass.getCanonicalName(), vocType.name(), labelAbbrev, termClass.getCanonicalName());
+				voc = TermVocabulary.NewInstance(termClass.getCanonicalName(), vocType.name(), labelAbbrev, termClass.getCanonicalName());
 			}
 			
 			String [] nextLine = reader.readNext();
