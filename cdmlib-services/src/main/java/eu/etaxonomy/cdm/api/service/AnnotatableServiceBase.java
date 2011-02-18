@@ -31,7 +31,7 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
 		Integer numberOfResults = dao.countAnnotations(annotatedObj, status);
 		
 		List<Annotation> results = new ArrayList<Annotation>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
@@ -43,7 +43,7 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
         Integer numberOfResults = dao.countMarkers(annotatableEntity, technical);
 		
 		List<Marker> results = new ArrayList<Marker>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMarkers(annotatableEntity, technical, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 		

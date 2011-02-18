@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -71,7 +72,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
         Integer numberOfResults = dao.countInstitutionalMemberships(person);
 		
 		List<InstitutionalMembership> results = new ArrayList<InstitutionalMembership>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getInstitutionalMemberships(person, pageSize, pageNumber); 
 		}
 		
@@ -82,7 +83,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		Integer numberOfResults = dao.countMembers(team);
 			
 		List<Person> results = new ArrayList<Person>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMembers(team, pageSize, pageNumber); 
 		}
 			
@@ -93,7 +94,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		Integer numberOfResults = dao.countAddresses(agent);
 		
 		List<Address> results = new ArrayList<Address>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAddresses(agent, pageSize, pageNumber); 
 		}
 			

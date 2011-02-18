@@ -104,7 +104,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         Integer numberOfResults = dao.countGeneralizationOf(definedTerm);
 		
 		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getGeneralizationOf(definedTerm, pageSize, pageNumber); 
 		}
 		
@@ -115,7 +115,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         Integer numberOfResults = dao.countIncludes(definedTerms);
 		
 		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getIncludes(definedTerms, pageSize, pageNumber,propertyPaths); 
 		}
 		
@@ -126,7 +126,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         Integer numberOfResults = dao.countMedia(definedTerm);
 		
 		List<Media> results = new ArrayList<Media>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMedia(definedTerm, pageSize, pageNumber); 
 		}
 		
@@ -137,7 +137,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         Integer numberOfResults = dao.countPartOf(definedTerms);
 		
 		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getPartOf(definedTerms, pageSize, pageNumber, propertyPaths); 
 		}
 		
@@ -149,7 +149,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		Integer numberOfResults = dao.count(level, type);
 
 		List<NamedArea> results = new ArrayList<NamedArea>();
-		if (numberOfResults > 0) { // no point checking again
+		if (numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(level, type, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 
@@ -160,7 +160,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         Integer numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
 		
 		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
 		}
 		

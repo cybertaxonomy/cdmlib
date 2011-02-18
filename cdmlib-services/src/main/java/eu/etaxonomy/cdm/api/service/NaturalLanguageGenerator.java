@@ -45,6 +45,8 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	private DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder = new DefaultCategoricalDescriptionBuilder();
 
 	private TextData previousTextData;
+	
+	DeltaTextDataProcessor deltaTextDataProcessor = new DeltaTextDataProcessor();
 
 	private Map<String, INaturalLanguageTextDataProcessor> elementProcessors;
 
@@ -144,6 +146,8 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		for(INaturalLanguageTextDataProcessor processor : applicableElementProcessors){
 			processor.process(textData, previousTextData);
 		}
+		// HUUUUUU!!! FIXME remove hack
+		deltaTextDataProcessor.process(textData, previousTextData);
 	}
 
 

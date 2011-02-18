@@ -210,4 +210,11 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 		return pageSize;
 	}
 
+	public static boolean hasResultsInRange(Integer numberOfResults,
+			Integer pageNumber, Integer pageSize) {
+		return numberOfResults > 0 // no results at all 
+				&& (pageNumber != null && pageSize == null // page size may be null : return all in this case
+				|| pageNumber != null && pageSize != null && numberOfResults >= (pageNumber * pageSize));
+	}
+
 }

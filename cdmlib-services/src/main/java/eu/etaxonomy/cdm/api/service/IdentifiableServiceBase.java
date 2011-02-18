@@ -62,7 +62,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
         Integer numberOfResults = dao.countRights(t);
 		
 		List<Rights> results = new ArrayList<Rights>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getRights(t, pageSize, pageNumber,propertyPaths); 
 		}
 		
@@ -74,7 +74,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 Integer numberOfResults = dao.countSources(t);
 			
 			List<IdentifiableSource> results = new ArrayList<IdentifiableSource>();
-			if(numberOfResults > 0) { // no point checking again
+			if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.getSources(t, pageSize, pageNumber,propertyPaths); 
 			}
 			
@@ -144,7 +144,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
 		 List<T> results = new ArrayList<T>();
-		 if(numberOfResults > 0) { // no point checking again
+		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
 		 }
 			
@@ -156,7 +156,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
 		 List<T> results = new ArrayList<T>();
-		 if(numberOfResults > 0) { // no point checking again
+		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
 		 }
 		 return results;
@@ -167,7 +167,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 Integer numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
 			
 		 List<T> results = new ArrayList<T>();
-		 if(numberOfResults > 0) { // no point checking again
+		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
 		 }
 		 return results;
@@ -183,7 +183,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
         Integer numberOfResults = dao.count(clazz,queryString);
 		
 		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		

@@ -51,7 +51,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         Integer numberOfResults = dao.countMediaKeys(taxonomicScope, geoScopes);
 		
 		List<MediaKey> results = new ArrayList<MediaKey>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMediaKeys(taxonomicScope, geoScopes, pageSize, pageNumber, propertyPaths); 
 		}
 		
@@ -62,7 +62,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         Integer numberOfResults = dao.countRights(t);
 		
 		List<Rights> results = new ArrayList<Rights>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getRights(t, pageSize, pageNumber,propertyPaths); 
 		}
 		

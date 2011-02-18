@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -234,7 +235,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         Integer numberOfResults = dao.countHybridNames(name, type);
 		
 		List<HybridRelationship> results = new ArrayList<HybridRelationship>();
-		if(numberOfResults > 0) { // no point checking again
+		if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) { // no point checking again
 			results = dao.getHybridNames(name, type, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 		
@@ -251,7 +252,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
 
 		List<NameRelationship> results = new ArrayList<NameRelationship>();
-		if (numberOfResults > 0 && (pageNumber != null && pageSize != null && numberOfResults >= (pageNumber * pageSize))) { // no point checking again
+		if (AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) { // no point checking again
 			results = dao.getNameRelationships(name, direction, type, pageSize,	pageNumber, orderHints, propertyPaths);
 		}
 		return results;
@@ -295,7 +296,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         Integer numberOfResults = dao.countTypeDesignations(name, status);
 		
 		List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getTypeDesignations(name, status, pageSize, pageNumber, propertyPaths); 
 		}
 		
@@ -311,7 +312,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
 		
 		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
@@ -329,7 +330,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		Integer numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
 		
 		 List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
-		 if(numberOfResults > 0) { // no point checking again
+		 if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
 		 }
 			

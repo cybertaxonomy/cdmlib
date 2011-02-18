@@ -71,6 +71,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	protected IFeatureDao featureDao;
 	protected ITermVocabularyDao vocabularyDao;
 	protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
+	//TODO change to Interface
 	private NaturalLanguageGenerator naturalLanguageGenerator;
 	
 	@Autowired
@@ -155,7 +156,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		Integer numberOfResults = dao.countDescriptionElements(description, features, type);
 		
 		List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
 		}
 		return results;
@@ -165,7 +166,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		Integer numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
 		
 		List<Annotation> results = new ArrayList<Annotation>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = descriptionElementDao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
@@ -178,7 +179,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);
 		
 		List<Media> results = new ArrayList<Media>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = descriptionElementDao.getMedia(descriptionElement, pageSize, pageNumber, propertyPaths); 
 		}
 		
@@ -189,7 +190,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         Integer numberOfResults = dao.countTaxonDescriptions(taxon, scopes, geographicalScope);
 		
 		List<TaxonDescription> results = new ArrayList<TaxonDescription>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths); 
 		}
 		
@@ -232,7 +233,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         Integer numberOfResults = dao.countTaxonNameDescriptions(name);
 		
 		List<TaxonNameDescription> results = new ArrayList<TaxonNameDescription>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getTaxonNameDescriptions(name, pageSize, pageNumber,propertyPaths); 
 		}
 		
@@ -244,7 +245,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         Integer numberOfResults = dao.countDescriptions(type, hasImages, hasText, feature);
 		
 		List<DescriptionBase> results = new ArrayList<DescriptionBase>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.listDescriptions(type, hasImages, hasText, feature, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 		
@@ -259,7 +260,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         Integer numberOfResults = dao.countDescriptionByDistribution(namedAreas, presence);
 		
 		List<TaxonDescription> results = new ArrayList<TaxonDescription>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.searchDescriptionByDistribution(namedAreas, presence, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 		
@@ -274,7 +275,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         Integer numberOfResults = descriptionElementDao.count(clazz,queryString);
 		
 		List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = descriptionElementDao.search(clazz, queryString, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
@@ -364,7 +365,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 			String categorySeparator = ". ";
 			
 			List<TextData> textDataList;
-			String naturalLanguageDescriptionText = null;
+			TextData naturalLanguageDescriptionText = null;
 			
 			boolean useMicroFormatQuantitativeDescriptionBuilder = false;
 			
@@ -372,21 +373,17 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 				
 				MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
 				naturalLanguageGenerator.setQuantitativeDescriptionBuilder(micro);
-				//FXIME commented because it lead to compile errors -> Maxime please fix
-				logger.error("naturalLanguageGenerator.generateStringNaturalLanguageDescription needs to be fixed");
-//				naturalLanguageDescriptionText = naturalLanguageGenerator.generateStringNaturalLanguageDescription(featureTree, ((TaxonDescription)description), lang);
+				naturalLanguageDescriptionText = naturalLanguageGenerator.generateSingleTextData(featureTree, ((TaxonDescription)description), lang);
 					
 			} else {
 				
-				//FXIME commented because it lead to compile errors -> Maxime please fix
-				logger.error("naturalLanguageGenerator.generateStringNaturalLanguageDescription needs to be fixed");
-//				naturalLanguageDescriptionText = naturalLanguageGenerator.generateStringNaturalLanguageDescription(
-//						featureTree, 
-//						((TaxonDescription)description),
-//						lang);				
+				naturalLanguageDescriptionText = naturalLanguageGenerator.generateSingleTextData(
+						featureTree, 
+						((TaxonDescription)description),
+						lang);				
 			}
 
-			return naturalLanguageDescriptionText;
+			return naturalLanguageDescriptionText.getText(lang);
 			
 //			
 //			boolean doItBetter = false;

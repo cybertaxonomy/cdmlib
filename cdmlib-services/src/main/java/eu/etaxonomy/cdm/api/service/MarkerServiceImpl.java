@@ -30,7 +30,7 @@ public class MarkerServiceImpl extends	VersionableServiceBase<Marker, MarkerDaoI
         Integer numberOfResults = dao.count(markerType);
 		
 		List<Marker> results = new ArrayList<Marker>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(markerType, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 		
@@ -41,7 +41,7 @@ public class MarkerServiceImpl extends	VersionableServiceBase<Marker, MarkerDaoI
         Integer numberOfResults = dao.count(creator,markerType);
 		
 		List<Marker> results = new ArrayList<Marker>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(creator,markerType, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 		

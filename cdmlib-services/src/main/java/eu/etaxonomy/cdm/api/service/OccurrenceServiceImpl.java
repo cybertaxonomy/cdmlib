@@ -116,7 +116,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Integer numberOfResults = dao.countDerivationEvents(occurence);
 		
 		List<DerivationEvent> results = new ArrayList<DerivationEvent>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDerivationEvents(occurence, pageSize, pageNumber,propertyPaths); 
 		}
 		
@@ -127,7 +127,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);
 		
 		List<DeterminationEvent> results = new ArrayList<DeterminationEvent>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDeterminations(occurrence,taxonBase, pageSize, pageNumber, propertyPaths); 
 		}
 		
@@ -138,7 +138,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Integer numberOfResults = dao.countMedia(occurence);
 		
 		List<Media> results = new ArrayList<Media>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMedia(occurence, pageSize, pageNumber, propertyPaths); 
 		}
 		
@@ -152,7 +152,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		Integer numberOfResults = dao.count(type,determinedAs);
 		List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
 		pageNumber = pageNumber == null ? 0 : pageNumber;
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			Integer start = pageSize == null ? 0 : pageSize * pageNumber;
 			results = dao.list(type,determinedAs, pageSize, start, orderHints,propertyPaths);
 		}

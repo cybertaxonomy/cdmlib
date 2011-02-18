@@ -1,16 +1,12 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.common.Language;
-
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.TextData;
 
 public class DeltaTextDataProcessor implements INaturalLanguageTextDataProcessor {
 
@@ -18,29 +14,32 @@ public class DeltaTextDataProcessor implements INaturalLanguageTextDataProcessor
 	public void process(TextData textData, TextData previousTextData) {
 		boolean doItBetter = false;
 		
-		Map<Language,LanguageString> oldMultiLanguageText = previousTextData.getMultilanguageText();
+		Map<Language,LanguageString> previousMultiLanguageText = previousTextData.getMultilanguageText();
 		Map<Language,LanguageString> multiLanguageText = textData.getMultilanguageText();
 		
 		for (Language language : multiLanguageText.keySet()){
 			LanguageString langString = multiLanguageText.get(language);
-			String oldText = langString.getText();
+			String text = langString.getText();
 			
-			oldText = StringUtils.remove(oldText,oldMultiLanguageText.get(language).getText());
+			LanguageString tmpMultilangText = previousMultiLanguageText.get(language);
+			if( tmpMultilangText != null){
+				text = StringUtils.remove(text, tmpMultilangText.getText());
+			}
 			
 			if (doItBetter) { //TODO remove the text between brackets
 				StringBuilder strbuilder = new StringBuilder();
 				do	{
-					strbuilder.append(StringUtils.substringBefore(oldText, "<"));
+					strbuilder.append(StringUtils.substringBefore(text, "<"));
 				}
-				while (!(oldText=StringUtils.substringAfter(oldText, ">")).equals(""));
+				while (!(text=StringUtils.substringAfter(text, ">")).equals(""));
 				StringUtils.substringBeforeLast(strbuilder.toString()," ");
 			}
 			else{
-				oldText=StringUtils.replaceChars(oldText,"<>","");
+				text=StringUtils.replaceChars(text,"<>","");
 			}
 			
 			textData.removeText(language);
-			textData.putText(language, oldText);
+			textData.putText(language, text);
 			
 		}
 		

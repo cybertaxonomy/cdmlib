@@ -28,7 +28,7 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
 		Integer numberOfResults = dao.count();
 		List<IIdentificationKey> results = new ArrayList<IIdentificationKey>();
 		pageNumber = pageNumber == null ? 0 : pageNumber;
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			Integer start = pageSize == null ? 0 : pageSize * pageNumber;
 			results = dao.list(pageSize, start, propertyPaths);
 		}

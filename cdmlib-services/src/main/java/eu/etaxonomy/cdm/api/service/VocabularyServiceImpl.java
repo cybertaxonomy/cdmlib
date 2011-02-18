@@ -70,7 +70,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         Integer numberOfResults = dao.countTerms(vocabulary);
 		
 		List<DefinedTermBase> results = new ArrayList<DefinedTermBase>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getTerms(vocabulary, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 			

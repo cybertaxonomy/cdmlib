@@ -60,7 +60,7 @@ public class AuditEventService implements IAuditEventService {
 		 Integer numberOfResults = dao.count();
 			
 		List<AuditEvent> results = new ArrayList<AuditEvent>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(pageNumber, pageSize, sort); 
 		}
 			

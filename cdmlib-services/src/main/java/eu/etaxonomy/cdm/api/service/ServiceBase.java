@@ -116,7 +116,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		Integer numberOfResults = dao.count(type);
 		List<T> results = new ArrayList<T>();
 		pageNumber = pageNumber == null ? 0 : pageNumber;
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			Integer start = pageSize == null ? 0 : pageSize * pageNumber;
 			results = dao.list(type, pageSize, start, orderHints,propertyPaths);
 		}

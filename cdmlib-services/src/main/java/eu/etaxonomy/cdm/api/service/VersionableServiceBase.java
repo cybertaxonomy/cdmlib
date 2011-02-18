@@ -30,7 +30,7 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 		Integer numberOfResults = dao.countAuditEvents(t, sort);
 			
 		List<AuditEventRecord<T>> results = new ArrayList<AuditEventRecord<T>>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAuditEvents(t, pageSize, pageNumber, sort,propertyPaths);
 		}
 		
@@ -52,7 +52,7 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 		Integer numberOfResults = dao.countAuditEvents(clazz, from, to, criteria);
 		
 		List<AuditEventRecord<T>> results = new ArrayList<AuditEventRecord<T>>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAuditEvents(clazz,from,to,criteria, pageSize, pageNumber, sort,propertyPaths);
 		}
 		

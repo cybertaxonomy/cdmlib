@@ -45,7 +45,7 @@ public class AnnotationService extends AnnotatableServiceBase<Annotation, Annota
 		Integer numberOfResults = dao.count(commentator, status);
 		
 		List<Annotation> results = new ArrayList<Annotation>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(commentator, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 		
@@ -61,7 +61,7 @@ public class AnnotationService extends AnnotatableServiceBase<Annotation, Annota
         Integer numberOfResults = dao.count(creator, status);
 		
 		List<Annotation> results = new ArrayList<Annotation>();
-		if(numberOfResults > 0) { // no point checking again
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(creator, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 		
