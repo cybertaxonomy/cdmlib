@@ -105,9 +105,11 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		TextData element = TextData.NewInstance();
 		element.setFeature(commonNameFeature);
 		sourceDescription.addElement(element);
+		
 		TextData element2 = TextData.NewInstance();
 		element2.setFeature(commonNameFeature);
 		sourceDescription.addElement(element2);
+		
 		Collection<DescriptionElementBase> sourceCollection = new HashSet<DescriptionElementBase>();
 		sourceCollection.addAll(sourceDescription.getElements());
 		TextData element3 = TextData.NewInstance();
@@ -125,10 +127,11 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		
 		Assert.assertEquals("Source descirption should have 1 element left", 1, sourceDescription.getElements().size());
 		Assert.assertEquals("Target descriptoin should have 2 new elements", 2, targetDescription.getElements().size());
-		Assert.assertTrue("The moved element should be in the new description", targetDescription.getElements().contains(element));
-		Assert.assertTrue("The moved element2 should be in the new description", targetDescription.getElements().contains(element2));
-		Assert.assertFalse("Element3 should not be in the new description", targetDescription.getElements().contains(element3));
-		Assert.assertTrue("Element3 should remain in the old description", targetDescription.getElements().contains(element));
+//the following tests are not valid anymore as elements are cloned now even if isCopy is false
+//		Assert.assertTrue("The moved element should be in the new description", targetDescription.getElements().contains(element));
+//		Assert.assertTrue("The moved element2 should be in the new description", targetDescription.getElements().contains(element2));
+//		Assert.assertFalse("Element3 should not be in the new description", targetDescription.getElements().contains(element3));
+		Assert.assertTrue("Element3 should remain in the old description", sourceDescription.getElements().contains(element3));
 		this.service.save(sourceDescription);
 		this.service.save(targetDescription);
 		
@@ -136,20 +139,23 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 			service.moveDescriptionElementsToDescription(targetDescription.getElements(), sourceDescription, false);
 		} catch (Exception e) {
 			//asserting that no ConcurrentModificationException is thrown when the elements collection is passed as a parameter
+			e.printStackTrace();
 			Assert.fail();
 		}
 		
-		Assert.assertEquals("Source descirption should have 3 elements again", 3, sourceDescription.getElements().size());
-		Assert.assertEquals("Destination descirption should have no elements again", 0, targetDescription.getElements().size());
+		Assert.assertEquals("Source description should have 3 elements again", 3, sourceDescription.getElements().size());
+		Assert.assertEquals("Destination description should have no elements again", 0, targetDescription.getElements().size());
 		this.service.save(sourceDescription);
 		this.service.save(targetDescription);
 		
-		//test paste
+		//test copy
+		sourceCollection.clear();
 		sourceCollection.add(sourceDescription.getElements().iterator().next());
 		service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, true);
-
-		Assert.assertEquals("Source descirption should still have 3 elements", 3, sourceDescription.getElements().size());
-		Assert.assertEquals("Destination descirption should have 1 element again", 1, targetDescription.getElements().size());
+		
+		Assert.assertEquals("Source description should still have 3 elements", 3, sourceDescription.getElements().size());
+		int size = targetDescription.getElements().size();
+		Assert.assertEquals("Destination descirption should have 1 element again", 1, size);
 		for (DescriptionElementBase targetElement : targetDescription.getElements()){
 			Assert.assertFalse("Target elements may not be in sourced description as they are only clones (but not same).", sourceDescription.getElements().contains(targetElement));
 		}

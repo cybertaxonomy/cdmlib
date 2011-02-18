@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -456,6 +457,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements,
 													DescriptionBase targetDescription, boolean isCopy) {
 		
+		if (descriptionElements.isEmpty() ){
+			return ;
+		}
+
+		if (! isCopy && descriptionElements == descriptionElements.iterator().next().getInDescription().getElements()){
+			//if the descriptionElements collection is the elements set of a description, put it in a separate set before to avoid concurrent modification exceptions
+			descriptionElements = new HashSet<DescriptionElementBase>(descriptionElements);
+//			descriptionElementsTmp.addAll(descriptionElements);
+//			descriptionElements = descriptionElementsTmp;
+		}
 		for (DescriptionElementBase element : descriptionElements){
 			DescriptionBase description = element.getInDescription();
 			try {
