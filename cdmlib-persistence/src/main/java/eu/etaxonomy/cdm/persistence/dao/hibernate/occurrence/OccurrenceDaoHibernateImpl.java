@@ -340,6 +340,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 			setOfAll.add(specimenTypeDesignation.getTypeSpecimen());
 		}
 		
+		if(setOfAll.size() == 0){
+			return new ArrayList<T>();
+		}
+		
 		String queryString = 
 			"select sob " +
 			" from SpecimenOrObservationBase sob" +
