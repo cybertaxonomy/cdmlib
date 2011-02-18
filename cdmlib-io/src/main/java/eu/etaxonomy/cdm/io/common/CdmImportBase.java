@@ -208,6 +208,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
+		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null);
+	}
+
+	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -216,7 +220,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			namedArea = (NamedArea)getTermService().find(uuid);
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
-				TermVocabulary voc = getVocabulary(uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null);
+				if (voc == null){
+					voc = getVocabulary(uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null);
+				}
 				voc.addTerm(namedArea);
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
@@ -227,8 +233,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return namedArea;
 	}
-
-
 	
 	/**
 	 * Returns a feature for a given uuid by first ...
