@@ -98,7 +98,7 @@ public class MobotOpenUrlServiceWrapperTest {
 		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
 		query.refType = MobotOpenUrlServiceWrapper.ReferenceType.book;
 		query.authorName = "Linné";
-		query.bookTitle = "Species plantarum";
+		query.abbreviation = "Sp. Pl.";
 		query.publicationDate = "1753";
 		query.startPage = "813";
 		
