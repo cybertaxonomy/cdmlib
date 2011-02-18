@@ -341,6 +341,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		}
 		
 		if(setOfAll.size() == 0){
+			// no need querying the data base
 			return new ArrayList<T>();
 		}
 		
