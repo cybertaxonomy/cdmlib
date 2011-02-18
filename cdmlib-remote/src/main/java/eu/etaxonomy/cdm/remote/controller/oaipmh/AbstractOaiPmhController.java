@@ -1,8 +1,10 @@
-package eu.etaxonomy.cdm.remote.controller;
+package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +34,8 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.remote.controller.BadResumptionTokenException;
+import eu.etaxonomy.cdm.remote.controller.IdDoesNotExistException;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.DeletedRecord;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.ErrorCode;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.Granularity;
@@ -43,6 +47,7 @@ import eu.etaxonomy.cdm.remote.editor.IsoDateTimeEditor;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.MetadataPrefixEditor;
 import eu.etaxonomy.cdm.remote.editor.SetSpecEditor;
+import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.exception.CannotDisseminateFormatException;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
 
@@ -70,7 +75,17 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     
     private CachingModel cachingModel;
 
-    /**
+	private boolean onlyItemsWithLsid = false;
+
+    public boolean isRestrictToLsid() {
+		return onlyItemsWithLsid;
+	}
+
+	public void setRestrictToLsid(boolean restrictToLsid) {
+		this.onlyItemsWithLsid = restrictToLsid;
+	}
+
+	/**
      * sets cache name to be used
      */
     @Autowired
@@ -137,6 +152,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         binder.registerCustomEditor(LSID.class, new LSIDPropertyEditor());
         binder.registerCustomEditor(MetadataPrefix.class, new MetadataPrefixEditor());
         binder.registerCustomEditor(SetSpec.class, new SetSpecEditor());
+        binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
     }
 
 
@@ -155,6 +171,20 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 		modelAndView.addObject("metadataPrefix", metadataPrefix);
 
 		finishModelAndView(identifier, metadataPrefix, modelAndView);
+
+		return modelAndView;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, params = "verb=GetRecord")
+	public ModelAndView getRecord(
+			@RequestParam(value = "identifier", required = true) UUID identifier,
+			@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix)
+			throws IdDoesNotExistException {
+
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("metadataPrefix", metadataPrefix);
+		
+		System.err.println("############");
 
 		return modelAndView;
 	}
@@ -281,9 +311,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         }
         
         List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
-        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+        if(onlyItemsWithLsid){
+	        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+	        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+	        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+        }
         Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz, fromAuditEvent, untilAuditEvent, criteria, pageSize, 0, AuditEventSort.FORWARDS, null); 
         
         if(results.getCount() == 0) {
@@ -328,9 +360,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             }
             
             List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
-            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+            if(onlyItemsWithLsid){
+	            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+	            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+	            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+            }
             Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, (resumptionToken.getCursor().intValue() / pageSize) + 1, AuditEventSort.FORWARDS,null); 
         
             if(results.getCount() == 0) {
@@ -392,9 +426,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         }
         
         List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
-        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+        if(onlyItemsWithLsid){
+	        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+	        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+	        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+        }
         Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz, fromAuditEvent, untilAuditEvent, criteria, pageSize, 0, AuditEventSort.FORWARDS, getPropertyPaths()); 
         
         if(results.getCount() == 0) {
@@ -448,9 +484,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
               clazz = (Class)resumptionToken.getSet().getSetClass();
             }
             List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
-            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
-            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+            if(onlyItemsWithLsid){
+            	//criteria.add(AuditEntity.property("lsid_lsid").isNotNull()); 
+            	//TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+            	criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));            	
+            }
             Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, (resumptionToken.getCursor().intValue()  / pageSize) + 1, AuditEventSort.FORWARDS,getPropertyPaths()); 
         
             if(results.getCount() == 0) {

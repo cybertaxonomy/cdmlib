@@ -2,6 +2,11 @@
 <!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN"
     "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">
 <mappings>
+    <!-- 
+        ===============================================
+         Mapping for OAI-PMH Header and OAI-DublinCore
+        ===============================================
+     -->
     <configuration>
         <wildcard>false</wildcard>
     </configuration>
@@ -73,69 +78,24 @@
             <a>publisher</a>
             <b>publisher</b>
        </field>
-       <field>
-            <a>inReference.title</a>
-            <b>relation</b>
+       <!--  isPartOf only exists in DC
+       <field custom-converter="identifierConverter">
+            <a>inReference</a>
+            <b>isPartOf</b>
        </field>
+        -->
        <field>
             <a>type</a>
             <b>type</b>
        </field>
+        <field>
+            <a>referenceAbstract</a>
+            <b>description</b>
+       </field>
+        <field custom-converter-id="identifierConverter">
+            <a>inReference</a>
+            <b>relation</b>
+       </field>
        
     </mapping>
-    
-    <mapping>
-        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>
-        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord</class-b>
-        <field custom-converter-id="dateTimeConverter">
-            <a>updated</a>
-            <b>modified</b>
-        </field>
-        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="titleCache" >
-            <a>sec</a>
-            <b>nameAccordingTo</b>
-       </field>
-    </mapping>
-    
-     <mapping>
-        <class-a>eu.etaxonomy.cdm.model.name.NonViralName</class-a>
-        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord</class-b>
-       <field>
-            <a>titleCache</a>
-            <b>scientificName</b>
-       </field>
-       <field>
-            <a>citationString</a>
-            <b>namePublishedIn</b>
-       </field>
-       <field>
-            <a>authorshipCache</a>
-            <b>scientificNameAuthorship</b>
-       </field>    
-       <field>
-            <a>rank.label</a>
-            <b>taxonRank</b>
-       </field>
-       <field>
-            <a>genusOrUninomial</a>
-            <b>genus</b>
-       </field>
-       <field>
-            <a>infraGenericEpithet</a>
-            <b>subgenus</b>
-       </field>
-       <field>
-            <a>infraSpecificEpithet</a>
-            <b>infraspecificEpithet</b>
-       </field>
-       <field>
-            <a>specificEpithet</a>
-            <b>specificEpithet</b>
-       </field>
-       <field>
-            <a>infraSpecificEpithet</a>
-            <b>infraspecificEpithet</b>
-       </field>
-    </mapping>
-    
 </mappings>

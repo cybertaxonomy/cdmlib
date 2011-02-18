@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
-import eu.etaxonomy.cdm.remote.controller.AbstractOaiPmhController;
 import eu.etaxonomy.cdm.remote.controller.IdDoesNotExistException;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;

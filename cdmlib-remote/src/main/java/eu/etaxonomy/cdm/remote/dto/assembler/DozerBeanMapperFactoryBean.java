@@ -24,9 +24,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
 /**
- * extended version of Sören Chittka's DozerBeanMapperFactoryBean, allowing other
+ * extended version of SÃ¶ren Chittka's DozerBeanMapperFactoryBean, allowing other
  * properties to be set.
- * @author Sören Chittka
+ * @author SÃ¶ren Chittka
  */
 public class DozerBeanMapperFactoryBean implements FactoryBean, InitializingBean {
 

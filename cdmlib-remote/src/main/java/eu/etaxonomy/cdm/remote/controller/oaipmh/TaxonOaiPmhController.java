@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.remote.controller.AbstractOaiPmhController;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
 
 @Controller

@@ -29,6 +29,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.mapping.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -294,6 +295,9 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		Object result = null; 
 		try {
 			PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(instance, baseName);
+			if(propertyDescriptor == null){
+				throw new NoSuchMethodException("No such method: " + instance.getClass().getSimpleName() + ".get" + baseName);
+			}
 			Method method = propertyDescriptor.getReadMethod();
 			
 			Class<?> returnType = method.getReturnType();

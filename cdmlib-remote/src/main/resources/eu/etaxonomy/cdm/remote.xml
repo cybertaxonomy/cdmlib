@@ -35,6 +35,7 @@
     <property name="mappingFiles">
       <list>
         <value>classpath:/eu/etaxonomy/cdm/remote/dto/oaipmh/mappings.xml</value>
+        <value>classpath:/eu/etaxonomy/cdm/remote/dto/dwc/mappings.xml</value>
         <value>classpath:/eu/etaxonomy/cdm/remote/dto/tdwg/mappings.xml</value>
         <value>classpath:/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-deep.xml</value>
         <!--
@@ -63,16 +64,21 @@
             class="eu.etaxonomy.cdm.remote.dto.assembler.converter.HibernateProxyNullSafeDeepConverter"
           />
         </entry>
-        <entry key="preferLsidToUriConverter">
-          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.PreferLsidToUriConverter"/>
+		<entry key="preferLsidToUriConverter">
+		  <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.PreferLsidToUriConverter"/>
+		</entry>
+        <entry key="identifierConverter">
+          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.IdentifierConverter"/>
         </entry>
         <entry key="stripTagsConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.StripTagsConverter"/>
         </entry>
+        
       </map>
     </property>
   </bean>
 
+  
   <bean name="lsidProxyConverter"
     class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidProxyConverter"/>
 

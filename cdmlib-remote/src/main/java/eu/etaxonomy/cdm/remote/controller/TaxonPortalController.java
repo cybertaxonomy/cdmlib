@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -557,7 +558,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetNameRelations()" + request.getServletPath());
 		TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
-		List<NameRelationship> list = nameService.listToNameRelationships(taxonBase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		//List<NameRelationship> list = nameService.listToNameRelationships(taxonBase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;
 	}
 	
@@ -582,7 +584,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		logger.info("doGetNameFromNameRelations()" + request.getServletPath());
 
 		TaxonBase taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
-		List<NameRelationship> list = nameService.listFromNameRelationships(taxonbase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
+		//List<NameRelationship> list = nameService.listFromNameRelationships(taxonbase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
 		return list;
 	}
 	
@@ -777,7 +780,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			Iterator<TaxonNode> iterator = nodes.iterator();
 			//TaxonNode holen
 			node = iterator.next();
-			//überprüfen, ob der TaxonNode zum aktuellen Baum gehört.
+			//ï¿½berprï¿½fen, ob der TaxonNode zum aktuellen Baum gehï¿½rt.
 			
 			node = classificationService.loadTaxonNode(node, TAXONNODE_WITHTAXON_INIT_STRATEGY);
 			Set<TaxonNode> children = node.getChildNodes();
