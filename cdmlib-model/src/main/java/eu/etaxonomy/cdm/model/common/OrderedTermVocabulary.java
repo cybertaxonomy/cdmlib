@@ -50,7 +50,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	
 //************************ CONSTRUCTOR *****************************************************/	
 
-	public OrderedTermVocabulary() {
+	protected OrderedTermVocabulary() {
 		super();
 	}
 	
@@ -59,7 +59,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	 * @param label
 	 * @param termSourceUri
 	 */
-	public OrderedTermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
+	protected OrderedTermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
 		super(term, label, labelAbbrev, termSourceUri);
 	}
 

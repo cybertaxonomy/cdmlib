@@ -92,10 +92,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	
 // ************************* CONSTRUCTOR *************************************************	
 
-	public TermVocabulary() {
+	protected TermVocabulary() {
 	}
 	
-	public TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
+	protected TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
 		super(term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
 	}
