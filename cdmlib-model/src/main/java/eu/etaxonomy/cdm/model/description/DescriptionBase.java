@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "describedSpecimenOrObservations",
     "descriptionSources",
     "descriptiveSystem",
+    "workingSets",
     "descriptionElements",
     "imageGallery"
 })
