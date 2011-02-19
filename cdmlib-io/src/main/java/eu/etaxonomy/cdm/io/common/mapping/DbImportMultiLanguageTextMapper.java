@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
  * @created 15.03.2010
  * @version 1.0
  */
-public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends DbImportMultiAttributeMapperBase<CDMBASE, DbImportStateBase> {
+public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends DbImportMultiAttributeMapperBase<CDMBASE, DbImportStateBase<?,?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportMultiLanguageTextMapper.class);
 
@@ -63,7 +63,7 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportMultiAttributeMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
 	 */
 	@Override
-	public void initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass) {
+	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		super.initialize(state, destinationClass);
 		try {
 			Class targetClass = getTargetClass(destinationClass);

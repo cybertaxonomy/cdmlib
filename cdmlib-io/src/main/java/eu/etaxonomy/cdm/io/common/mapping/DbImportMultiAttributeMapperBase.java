@@ -36,7 +36,7 @@ public abstract class DbImportMultiAttributeMapperBase<CDMBASE extends CdmBase, 
 	 */
 	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
-	}
+	} 
 	
 	protected STATE getState(){
 		return importMapperHelper.getState();

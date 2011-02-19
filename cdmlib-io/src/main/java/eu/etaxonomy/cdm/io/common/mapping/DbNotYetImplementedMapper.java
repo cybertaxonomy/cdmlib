@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 25.02.2010
  * @version 1.0
  */
-public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase, CdmBase> {
+public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
 	private static final Logger logger = Logger.getLogger(DbNotYetImplementedMapper.class);
 	
 	public static DbNotYetImplementedMapper NewInstance(String dbAttributeToIgnore){
@@ -72,7 +72,7 @@ public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
 	 */
 	@Override
-	public void initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass) {
+	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		String attributeName = this.getSourceAttribute();
 		String localReason = "";
 		if (CdmUtils.isNotEmpty(unimplementedReason)){

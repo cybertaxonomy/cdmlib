@@ -25,8 +25,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 24.02.2010
  * @version 1.0
  */
-public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase, CdmBase>{
-
+public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportTruncatedStringMapper.class);
 	
@@ -82,7 +82,7 @@ public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapper
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
 	 */
 	@Override
-	public void initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass) {
+	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		super.initialize(state, destinationClass);
 		Class<?> parameterType = getTypeClass();
 		String methodName = ImportHelper.getSetterMethodName(parameterType, longTextAttribute);
