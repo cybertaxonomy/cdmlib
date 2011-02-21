@@ -70,6 +70,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionP
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -267,8 +268,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
 	 */
 	//new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
+	@SuppressWarnings("unchecked")
 	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
-			MatchMode matchMode, Set<NamedArea> namedAreas, List<String> propertyPaths) {
+			MatchMode matchMode, Set<NamedArea> namedAreas) {
 		long zstVorher;
 		long zstNachher;
 				
@@ -283,7 +285,20 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Object[] result;
 			for(int i = 0; i<results.size();i++){
 				result = results.get(i);
-				resultObjects.add( new UuidAndTitleCache((UUID) result[0], (String)result[1]));
+				
+				//unterscheiden von taxa und synonymen
+				if (clazz.equals(Taxon.class)){
+						resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1]));
+				}else if (clazz.equals(Synonym.class)){
+					resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1]));
+				} else{
+					if (result[2].equals("synonym")) {
+						resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1]));
+					}
+					else {
+						resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1]));
+					}
+				}
 			}
 			
 			return resultObjects;
@@ -337,7 +352,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		String hqlQueryString = matchMode.queryStringFrom(queryString);
 		String selectWhat;
 		if (doForEditor){
-			selectWhat = "t.uuid, t.titleCache";
+			selectWhat = "t.uuid, t.titleCache ";
 		}else selectWhat = (doCount ? "count(t)": "t");
 		
 		String hql = "";
@@ -517,6 +532,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		} else {
 			if(synonyms.size()>0 && taxa.size()>0){
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+				hql = "select " + selectWhat + ", case when t.id in (:taxa) then 'taxon' else 'synonym' end" + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
 			}else if (synonyms.size()>0 ){
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
 			} else if (taxa.size()>0 ){

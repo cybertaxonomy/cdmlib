@@ -486,7 +486,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			//propertyPath = configurator.getSynonymPropertyPath();
 		}
 		
-		result = dao.getTaxaByNameForEditor(clazz, configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getTaxonPropertyPath());
+		
+		result = dao.getTaxaByNameForEditor(clazz, configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 		return result;
 	}
 	/* (non-Javadoc)
