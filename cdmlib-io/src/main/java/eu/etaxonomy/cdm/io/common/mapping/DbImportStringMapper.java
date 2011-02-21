@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 24.02.2010
  * @version 1.0
  */
-public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase, CdmBase>{
+public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStringMapper.class);

@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 26.02.2010
  * @version 1.0
  */
-public class DbImportObjectMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase, CdmBase> {
+public class DbImportObjectMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportObjectMapper.class);
 

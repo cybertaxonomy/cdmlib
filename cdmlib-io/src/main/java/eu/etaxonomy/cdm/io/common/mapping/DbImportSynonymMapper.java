@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
+public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportSynonymMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/

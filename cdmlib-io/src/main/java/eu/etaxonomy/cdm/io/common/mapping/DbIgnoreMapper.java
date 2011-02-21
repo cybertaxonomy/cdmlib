@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 25.02.2010
  * @version 1.0
  */
-public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase, CdmBase> {
+public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
 	private static final Logger logger = Logger.getLogger(DbIgnoreMapper.class);
 	
 //*************************** FACTORY ***************************************************************//
@@ -75,7 +75,7 @@ public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportSt
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
 	 */
 	@Override
-	public void initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass) {
+	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		String localIgnoreReason = "";
 		if (CdmUtils.isNotEmpty(ignoreReason)){
 			localIgnoreReason = "(" + ignoreReason +")";
