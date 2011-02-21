@@ -26,7 +26,7 @@
     <bean name="**/classification **/classification/* **/classification/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="type" value="XML" />
         <!--  <property name="xsl" value="humane.xsl" />  -->
-        <property name="jsonConfig" ref="jsonConfigTaxonomy" />
+        <property name="jsonConfig" ref="jsonConfigClassification" />
     </bean>
     
     <!-- portal service -->

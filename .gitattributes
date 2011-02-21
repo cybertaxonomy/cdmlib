@@ -1319,7 +1319,6 @@ cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApp
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.out.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text

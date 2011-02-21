@@ -7,6 +7,34 @@
     http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
+    
+    <bean id="genericApiCardinalityPropertyFilter" class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
+       <property name="includeToOneRelations" value="false" />
+       <property name="includeToManyRelations" value="false" />
+       <property name="exceptions">
+         <set>
+             <value>FeatureTree.root</value>
+             <value>FeatureNode.children</value>
+             <value>FeatureNode.feature</value>
+             <value>TreeNode.data</value>
+             <value>Media.representations</value>
+             <value>MediaRepresentation.parts</value>
+             <value>TreeNode.data</value>
+             
+             <!-- CardinalityPropertyFilter should allow defining acceptions for abstract super classes : -->
+             <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> --> 
+             
+             <value>TextData.feature</value>
+             <value>CategoricalData.feature</value>
+             <value>CommonTaxonName.feature</value>
+             <value>Distribution.feature</value>
+             <value>IndividualsAssociation.feature</value>
+             <value>QuantitativeData.feature</value>
+             <value>TaxonInteraction.feature</value>
+             <value>TextData.feature</value>
+         </set>
+       </property>
+     </bean>
 
 	<!-- 
          =================================================
@@ -54,34 +82,7 @@
               <constructor-arg>
                   <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
               </constructor-arg>
-              <constructor-arg>
-                  <bean class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
-                      <property name="includeToOneRelations" value="false" />
-                      <property name="includeToManyRelations" value="false" />
-                      <property name="exceptions">
-                        <set>
-                            <value>FeatureTree.root</value>
-                            <value>FeatureNode.children</value>
-                            <value>FeatureNode.feature</value>
-                            <value>TreeNode.data</value>
-                            <value>Media.representations</value>
-                            <value>MediaRepresentation.parts</value>
-                            <value>TreeNode.data</value>
-                            
-                            <!-- CardinalityPropertyFilter should allow defining acceptions for abstract super classes : -->
-                            <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> --> 
-                            
-                            <value>TextData.feature</value>
-                            <value>CategoricalData.feature</value>
-                            <value>CommonTaxonName.feature</value>
-                            <value>Distribution.feature</value>
-                            <value>IndividualsAssociation.feature</value>
-                            <value>QuantitativeData.feature</value>
-                            <value>TaxonInteraction.feature</value>
-                            <value>TextData.feature</value>
-                        </set>
-                      </property>
-                    </bean>
+              <constructor-arg ref="genericApiCardinalityPropertyFilter">
               </constructor-arg>
             </bean>
         </property>
@@ -134,10 +135,10 @@
 
 	<!-- 
          =================================================
-            configuration for RESTful taxonomy service 
+            configuration for RESTful classification service 
          =================================================
     -->
-	<bean name="jsonConfigTaxonomy" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
+	<bean name="jsonConfigClassification" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
 		init-method="init">
 		<property name="jsonBeanProcessorMatcher">
 			<bean
@@ -156,7 +157,13 @@
 			</map>
 		</property>
 		<property name="jsonPropertyFilter">
-            <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+            <bean class="net.sf.json.filters.OrPropertyFilter">
+              <constructor-arg>
+                  <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+              </constructor-arg>
+              <constructor-arg ref="genericApiCardinalityPropertyFilter">
+              </constructor-arg>
+            </bean>
         </property>
 		<property name="jsonValueProcessors">
 			<map>
