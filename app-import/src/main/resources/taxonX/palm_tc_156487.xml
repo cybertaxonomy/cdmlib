@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga pilosa</name>
+<author>(Burret) J.Dransf.</author>
+<citation>Kew Bull. 34: 775 (1980)</citation>
+<type>Borneo, Kinabalu; J. and M. S. Clemens; 29205</type>
+<type_loc>holotype B†; isotype K</type_loc>
+<synonymy>
+<name>Pseudopinanga pilosa</name>
+<author>Burret</author>
+<bibref>Burret in Notizbl. Bot. Gart. Mus. Berlin-Dahlem 13: 186 (1936)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>These two species were among several described by Burret in a new genus Pseudopinanga; other taxa were transferred there from Pinanga. Pseudopinanga was separated from Pinanga on the single character difference of the united calyx of the pistillate flower in the new genus, and the separate calyx lobes in Pinanga. I follow Moore (1973) in regarding this as insufficient grounds for splitting the genus Pinanga; furthermore intermediate states are observable. Although Moore (l.c.) has included Pseudopinanga in Pinanga, there has been no transfer of those species first described in Pseudopinanga to Pinanga. P. aristata and P. pilosa are here formally transferred (see also notes under Pinanga albescens). P. pilosa may well be conspecific with P. trichoneura Becc. ex Martelli, based on Hallier 3163 from Amai Ambit in Western Borneo; unfortunately the type, supposedly in Bogor, has not been traced, and the fragment in Florence is too small to be of help in elucidating this. I have therefore preferred to continue to use Burret's name until the type of P. trichoneura is found. The other species described as new in Pseudopinanga are best not transferred to Pinanga until they are either recollected or duplicate specimens located and re-examined. </p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

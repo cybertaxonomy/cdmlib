@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Synopsis of the Genus Korthalsia (Palmae: Lepidocaryoideae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 36, No. 1, pp. 163-194</mods:publisher>
+<mods:dateIssued>1981</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia celebica</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 12(2): 130 (1918)</citation>
+<type>Celebes, Kurosalimbo; Noerkas; 483</type>
+<type_loc>Holotype BO; isotype FI</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>All specimens of this species known to Beccari are sterile; two recent collections (G. G. Musser T8, and Dransfield &amp; Mogea JD 3837) are fertile and so a description of the inflorescence and fruit is given below. Inflorescences produced from nodes up to 4 from tip; each inflorescence to 60 cm bearing 4-6 partial inflorescences to c 20 cm, each bearing up to 4 distant slender pendulous rachillae. Rachillae with a basal non- floriferous portion to 3 cm mostly obscured by the subtending tubular bract, and a floriferous portion to 75 x 4 mm, dark brown in colour and with conspicuous bracts. Rachilla bracts broad triangular projecting to 1.5 mm beyond the dull dark brown rachilla indumentum, which is thus somewhat obscured; alveolus c. 2 mm diam. Flower to 4 x 2 mm; calyx tubular in proximal half (1 mm) with broad rounded lobes to 1 x 1.5 mm; corolla tubular in proximal 1 mm, with three petals to 2.5 x 1 mm; stamens and pistil diseased in available specimens. Ripe fruit ovate to slightly obovate to 17 1/2 x 15 mm, tipped with minute stigmatic remains; scales mid-brown, dull, slightly darker edged, arranged in 15 vertical rows; seed ovate to 13 x 11 mm; endosperm deeply ruminate and also penetrated by chalazal fovea; embryo lateral.</p></div>
+<div type="distribution"><p>Celebes, recorded from S, Central and N Celebes and from Mangole in the Sula Archipelago E of Central Celebes</p></div>
+<div type="biology_ecology"><p>Growing in lowland forest on steep slopes in Bolaang Mongondow, N Celebes.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>In describing K. celebica, Beccari suggested its relationships were with the Palawan endemic, K. merrillii. The inflorescence of K. celebica is, however, quite different, and much more akin to that of K. rigida. In fact there is little in inflorescence, flower and fruit structure apart from the smaller size of K. celebica, to separate the two species. There is, however, apparently one consistent vegetative difference; the ocrea of K. celebica is up to 7 times as long as broad and is distinctly reticulate in the distal portion, whereas in K. rigida it is usually relatively much shorter, abruptly truncate and is irregularly erose rather than distinctly reticulate. Furthermore, vegetative shoots of K. celebica tend to be much more slender than those of K. rigida and rarely exceed 12 mm diam.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

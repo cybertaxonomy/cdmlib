@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+		<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis occidentalis</name>
+<author>(Jum.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 301(1995)</citation>
+<type>Madagascar, Tsaratanana; Perrier; 12040</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Neophloga occidentalis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 6 (3): 24 (1929)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 21 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 68 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A clustering undergrowth palm with pinnate leaves and a long, unbranched inflorescence. Occidentalis is Latin for 'western', a name which probably comes from the type locality in the protologue - which we believe is faulty.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>None recorded.</p></div>
+<div type="description"><p>Clustering palm in tufts of 6-8. STEMS 0.5-2 m high and 7-8 mm diam. LEAVES 5-8 in the crown, pinnate; sheath 8-14 cm long, with scattered scales to densely pubescent, and 5 mm long triangular auricles; petiole absent or to 5 cm long, 2-4 mm wide, with scattered scales; rachis 29-40 cm long, in mid-leaf to 3 mm wide, with scattered scales; leaflets 4-13 on each side of the   rachis, &#177; regular (with few leaflets) to grouped (when more leaflets are present), sigmoid, the proximal 9-27 x 0.2-1 cm, median 15-30 x 1-5 cm, distal 13-21 x 1.9-3.5 cm, the distal pair joined for 2-5 cm, main veins 1, rarely a 2-4-fold leaflet with 3-4 veins, with scattered scales on the minor veins, apices acuminate, the terminal pair dentate over a width of 1-2 cm. INFLORESCENCE unbranched, erect; peduncle 22-40 cm long, 1-3.5 mm diam., ?glabrous or minutely puberulous; prophyll 12-23 cm long, 3-9 mm wide, open for 1-7 cm, with scattered scales; peduncular bract inserted at 10-15 cm from the base of the peduncle, 9-31 cm long, open in the distal part and tattering, with a beak of up to 6 mm; rachilla 15-31 cm long, 1-2.5 mm diam., glabrous or minutely puberulous, the triads distant. STAMINATE FLOWERS (in bud) with sepals 0.7-0.9 x 0.6-1 mm; petals 1.1-1.4 x 0.6 mm; stamens 6, ?1-seriate, the filaments 0.4-0.7 mm and thin, anthers 0.5-0.7 x 0.2-0.3 mm; pistillode not seen. PISTILLATE FLOWERS with sepals 0.6-1.3 x 0.6-1 mm; petals 1.3-1.8 x 0.8-1 mm; staminodes 0.3-0.4 mm high; gynoecium 0.8-1 x 0.3-0.6 mm. FRUIT reddish-orange, ellipsoid, 9-10 x 4-5 mm.</p></div>
+<div type="distribution"><p>Tsaratanana, Anjanaharibe and Marojejy massifs.</p></div>
+<div type="biology_ecology"><p>Montane or submontane forest; 450-1400 m.</p></div>
+<div type="conservation"><p>Uncertain. These mountains are not well known botanically.</p></div>
+<div type="uses"><p>None recorded.</p></div>
+<div type="discussion"><p>The protologue of N. occidentalis declares that the type specimen comes from the W slopes of Tsaratanana; we read Perriers handwriting on the label of the type as N, as it does not remotely resemble an O (for Ouest).</p></div>
+<div type="materials_examined"><p>Ambilobe/Iharana: between Iharana (Vohemar) and Ambilobe, July 1939 (fr.), Decary 14709 (P). ?Ambanja, Tsaratanana Mt. area, N side, Nov. 1912 (bud), Perrier 12040 (Holotype P). Andapa: NE Marojejy, E of Ambalamanasy II, Nov./Dec. 1948 (bud), Humbert &amp; Capuron 22173 (P); Ambatoharanana Valley to upper Antsahaberoka R., Nov./Dec. 1959 (fl.), Humbert &amp; Saboureau 31703b (P); Anjanaharibe W of Beamalona, June 1992 (bud), Beentje &amp; Andriampaniry 4684 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis spicata</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 407 (1995)</citation>
+<type>Antsiranana, Réserve Naturelle de Marojejy, along trail to Marojejy Est; Dransfield et al.; JD6764</type>
+<type_loc>Holotypus K; isotypus TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This species is one of the smallest in the genus. It appears very similar to Dypsis catatiana and can only be separated with certainty if staminate flowers are available: D. catatiana has six stamens while the present species has only three. It is a very attractive palmlet. The species name comes from the Latin for spicate, bearing a spike, in reference to the unbranched inflorescence.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Gregem specierum floribus staminatis triandris staminibus antepetalis, staminodiis antesepalis alternantibus pertinens, inflorescentia spicata D. monostachyae affinis, sed foliis multo minoribus, integro-bifidis vel 2 foliolis, inflorescentia pilis castaneis juxta flores carentibus differt</p></div>
+<div type="description"><p>   
+Solitary slender palmlet to 1 m tall. STEM 3-7 mm diam., internodes 5-15 mm long with scattered scales, nodal scars c. 1 mm wide. LEAVES 5-8 in crown; sheaths 4-7.5 cm long, 0.5-0.8 cm diam., longitudinally striate, with very sparse caducous dark red-brown scales, membranous by the mouth, sometimes tattering but lacking distinct auricles; petiole 1-3.5 cm long, c. 1 mm wide, triangular in cross section, bearing sparse caducous dark brown scales;   lamina entire bifid or divided into 2 broad leaflets on each side of the rachis, rachis (or costa) 11-15 cm, sparsely scaly; entire bifid lamina 17-20 cm long, the two apical lobes 4.5-7 x 2.5-3.7 cm; where blade divided into leaflets, leaflets 6-9 x 1.5-2 cm, the distal pair not conspicuously broader than the proximal leaflets, lamina surfaces with minute punctiform brown scales borne on pale thickened bases, denser on the abaxial surface than on the adaxial; leaflets drying dark grey on upper surface, chestnut-brown on under surface. INFLORESCENCE spicate (?always-see below), interfoliar, erect at first, becoming pendulous in fruit, shorter than the leaves, 14-21 cm long; peduncle to 13 cm long; prophyll 8-11 x 0.2-0.4 cm, peduncular bract 6.5-9 x 0.2-0.4 cm, both prophyll and peduncular bract sparsely scaly; spike 3-9 x 0.15-0.25 cm, elongating somewhat after anthesis; triads rather sparse in proximal portion, more densely arranged distally, rachilla bract c. 1 mm, rounded to apiculate with laciniate scales, rachilla &#177; glabrous. STAMINATE FLOWERS c. 0.7 mm high; sepals c. mm long, keeled; petals &#177; elliptical, 0.5 x 0.4 mm; stamens 3, antepetalous, alternating with 3 antesepalous triangular staminodes, together borne on a short androecial tube ring to 0.2 mm high, connective &#177; triangular, anthers subdidymous, pistillode not seen. PISTILLATE FLOWERS rounded; sepals imbricate, rounded, c. 1 x 1 mm; petals imbricate, rounded-triangular, 1.2 x 1 mm; staminodes 3, minute, dentiform; ovary c. 1 mm diam., post anthesis. Mature FRUIT cherry-red, glistening, ellipsoid, c. 12 x 7 mm. SEED fusiform, 12 x mm; endosperm homogeneous.</p></div>
+<div type="distribution"><p>Marojejy and environs.</p></div>
+<div type="biology_ecology"><p>Humid lower montane forest on steep slopes; 850-1000 m.</p></div>
+<div type="conservation"><p>Rare. Occurs in a small area, though partly protected in the Marojejy Special Reserve.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>We had misidentified the plants from Marojejy and environs as Neophloga catatiana (= Dypsis catatiana); there is a quite astonishing similarity between the two taxa. However, the three antepetalous stamens alternating with staminodes, borne in an androecial ring are quite different from the six stamens of Dypsis catatiana and its relatives. At first we included these collections with D. monostachya, but later decided that the collections from Marojejy represent an undescribed taxon. D. monostachya is distinguished by it larger leaves that are divided into about six narrow leaflets on each side of the rachis, that dry pale green; in D. spicata the leaf is undivided or divided into two broad leaflets on each side of the rachis and the lamina dries dark grey on the upper surface, and chestnutbrown on the lower surface. In D. monostachya the peduncle is much longer than in D. spicata and in the former there is a distinctive cluster of shining chest-nut-brown scales on the inflorescence axis, just above and adaxial to the triads. Such hairs are absent in the latter species. D. monostachya remains a rather poorly known taxon.  One further collection should be mentioned here. This is Homolle 518 (K, P), collected in the environs of Lac Alaotra, on the banks of the Maningory between Menasaka and Ambodiriana in December 1944 (fl.). It has an entire bifid leaf and seems very similar to  D. spicata. However, the inflorescence bears a single branch at the base of the spike. We tentatively name it as D. spicata.</p></div>
+<div type="materials_examined"><p>Andapa: R&#233;serve Naturelle de Marojejy, along trail to Marojejy Est, Feb. 1989 (fl., fr.), Miller &amp; Lowry 3951 (K, MO, TAN); idem, Nov. 1989 (fl.), Dransfield et al. JD6747 (K, TAN); Nov. 1989 (fl.), Dransfield et al. JD6748 (K, TAN); idem, Nov. 1989 (fl.), JD6753 (K, TAN); idem, Nov. 1989 (fl., fr.), JD6764 (Holotype K; isotype TAN); 4km west of Beamalona, Anjanaharibe, June 1992 (fl.), Beentje &amp; Andriampaniry 4681 (K, TAN); idem, June 1992 (fl.), Beentje &amp; Andriampaniry 4685 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

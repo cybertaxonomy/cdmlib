@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ravenea glauca</name>
+<author>Jum. &amp; H. Perrier</author>
+<citation>Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 56, fig. 13 (1913)</citation>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 5 (1): 24 (1927)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 24 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 170 (1945)</bibref>
+<bibref>Beentje, Kew Bull. 49: 653 (1994)</bibref>
+<type>Massif d'Andringitra, W slopes; Perrier; 13649</type>
+<type_loc>Lectotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p>A variable species, plants can be tall and slender in canyons at Isalo, but they can also flower when almost stemless in a dry river bed. The original description states that this species forms vast forests in the Andringitra mountains, between 1200 and 1800 m, to the exclusion of any other plant; it is said to be resistant to bush fires. Having seen the stands in the Isalo, HB finds monospecific forests without undergrowth hard to believe. The Latin name refers to the glaucous, waxy undersides of the leaflets.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Anivo; Sihara (Bara).</p></div>
+<div type="description"><p>Slender palm. TRUNK 0.2-8 m tall, rarely with sheath remnants in the distal part, 7-12 cm diam.; basal boss to 10 cm high, 18 cm across; internodes 2-5 cm, brown-grey; nodal scars 0.7-2 cm light brown; wood hard. LEAVES 14-20 in crown, porrect and spreading, slightly arching; sheath 10-50 x 7-10 cm, white-floccose, with variously-sized remnants of more distal sheath material; petiole 10-50 cm, proxi mally 1.5-2.5 x 0.8-2 cm across, distally 1-1.8 x 0.8-1.4 cm, (but most of this used to have adjacent sheath material: true petiole 3-18 cm), channelled adaxially, convex abaxially, with raised sharp edges, abaxially white-tomentose; rachis 1.1-2 m, in mid-leaf 0.7-2 cm across, abaxially rounded with two blunt wings, adaxially channelled with blunt edges, densely white-tomentose when young; leaflets regular, the leaflets on opposite sides of the rachis at an angle of 90&#176;, stiff in the proximal part, half-pendulous in their more distal part, green or glaucous with waxy covering when fresh, 49-73 on each side of the rachis, the proximal 9.5-59 x 0.1-1.1 cm, median 50-70 x 1.2-2.3 cm (interval 1-2 cm), distal 13.5-42 x 0.3-1.4 cm, ramenta sparse on the abaxial side, on the midrib only, spaced, large, white, main veins 2-4. STAMINATE INFLORESCENCE multiple in (1) 2s-6s, branched to 1-2 orders (in the Isalo populations the rachillae only branched at the very base of the inflorescence, and sometimes  ; these branched rachillae not present), erect, 70-110 cm; peduncle 35-64 cm long, proximally 5-7 mm across, distally 3-7 mm across, densely white-puberulous; common prophyll 3.5-13.5 cm and membranous; peduncular bracts 9-24 cm (inserted at c. 3 cm from the base of the peduncle), 22-55 cm (inserted at c. 6 cm), 60-105 cm (inserted at c. 6 cm), 62-107 cm (inserted at c. 12 cm), densely pubescent abaxially, adaxially smooth and glabrous; rachis 21-46 cm long, &#177; glabrous, with c. 30 unbranched and 10 branched first order branches in Andringitra, 0-1 unbranched and 25-52 branched ones in Isalo, with rachis bracts c. 15 x 0.3 cm; rachillae close, porrect, 2-12 cm long, 1 mm across, zigzag, especially distally, with dense flowers; pedicel 0.2-1.5 mm. STAMINATE FLOWERS with the calyx connate for 0.3-1 mm, free lobes 0.8-1 x 0.8 mm, triangular, acute; petals free, 7.5-9 x 1.5 mm, gradually tapering to acute apex; anthers 2.5-3.2 x 1.3-1.4 mm, filaments 0.6 -0.7 mm, the 3 epipetalous stamens adnate for 0.7 mm; pistillode 1 x 0.4 mm. PISTILLATE INFLORESCENCE solitary, erect in bud, spreading at anthesis, pendulous in fruit, 66-158 cm long, branching to one order; peduncle 45-105 cm, slightly flattened, proximally 6-10 x 4-10 mm across, distally 4-10 mm across, pale brown- or grey-white tomentose, distally glabrescent; prophyll 6-18 cm, membranous; peduncular bracts respectively 13-34 (inserted at 0-3 cm from the base of the peduncle), 27-48 x 2.2-2.6 (inserted at 0-6 cm), 60-103 (inserted at 6-7 cm) and 59-158 x 1.6-2 cm (inserted at 10-14 cm), the distal two with apices at the same level; all bracts grey-puberulous to white floccose-tomentose abaxially, adaxially glabrous, smooth and rich brown when dry; non-tubular peduncular bract 4-9 x 0.3-0.4 cm; rachis 17-40 cm long, proximally white-tomentose or with grey bloom, otherwise glabrous; most proximal rachis bracts 38 x 5 mm; rachillae spreading or porrect, slightly zigzag, 24-35 in number, 4-26 cm long, 1.2-2 mm across, sinuous, with spaced flowers, with slightly bulbous base 3.5-4 x 2 mm, white-waxy; bracteole 2.3 x 1.8 mm; pedicels 0.5-5 mm. PISTILLATE FLOWERS with the calyx connate for 0.8 mm, free lobes triangular, acute, 1-3 x 1.0-2 mm; petals 6.5-8 x 1.2-1.7 mm, ovate, acute; staminodes 1.8 x 0.6 mm; ovary 2.5 x 1.3 mm. FRUIT yellow, 20-22 x 22-23 mm, 1-seeded; stigmatic remains lateral or subbasal. SEED 16-18 x 18-19 mm, dark brown; seedcoat brown, 0.2 mm thick; embryo 4 mm. EOPHYLL pinnate.</p></div>
+<div type="distribution"><p>Central-S Madagascar: W side of Andringitra Mts and Isalo.</p></div>
+<div type="biology_ecology"><p>Dry forest and in ravines and rocky or sandy gullies; altitude 670-1250 (?1800) m.</p></div>
+<div type="conservation"><p>Vulnerable. We are uncertain about the status of populations in the Andringitra; no plants of this species have been collected there since 1922. Elsewhere this species is only known from the Isalo, where population size is probably a few hundred.</p></div>
+<div type="uses"><p>Not eaten, since the heart is bitter.</p></div>
+<div type="discussion"><p>The protologue describes populations from the Andringitra, but all collections we have seen are from a later date. The illustration in the Flore de Madagascar (1945) has a habit sketch which is based on a photograph of Humbert 13698, which is a R. xerophila.</p></div>
+<div type="materials_examined"><p>Ihosy: Isalo, W of Ranohira, anno 1955 (fr.), Humbert 28705 (K, P); idem, July 1992 (pist.), Beentje &amp; Andriampaniry 4711 (BH, K, MO, P, TAN) and (stam.), Beentje &amp; Andriampaniry 4712 (K, MO, TAN); Isalo, Canyon des Singes, Jan. 1964 (fr.) , Bosser 18867 (P, TAN); idem, Feb. 1992 (fr.), Beentje 4588 (BH, K, MO, P, TAN) and (old stam.), Beentje 4589 (BH, K, MO, P, TAN); Isalo, Angabolava, Nov. 1960 (yfr.), Leandri 3923 (P); Isalo, Canyon des Rats, Nov. 1989 (fr.), B. Du Puy et al. MB 450 (BH, K, MO, P, TAN); Isalo, without precise locality, Oct. 1924 (stam., pist.), Perrier 16550 (P). Ambalavao: Andringitra, W slopes, 1200-1800 m, Sept. 1916 (pist.), Perrier 12061 (P); idem, 1500-2000 m, April 1921 (stam., fr.), Perrier 13649 (Holotype P); idem, Canton Sendrisoa, July 1951 (stam.), Razafindrakoto RN 3601 (P); idem, inselberg 11 km S of Ambalavao, Aug. 1972 (pist.), Cremers 2292 (TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

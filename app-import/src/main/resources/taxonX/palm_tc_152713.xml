@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Tall, single-stemmed hermaphroditic fan-palms of South Thailand and Malesia eastwards to the Moluccas; leaves have fiercely toothed petioles and blades that are divided by deep and shallow splits to form deeply lobed segments; most species have large corky-warted fruit.</p></div>
+<nomenclature>
+<name>Pholidocarpus</name>
+<author>Blume in J.J. Roemer and J.A. Schultes</author> 
+<citation>Syst. veg. 7: 1308 (1830).</citation>
+<type>Type; Pholidocarpus rumphii; Meisn.</type>
+</nomenclature>
+<div type="etymology"><p>Pholidos — scale, carpos — fruit, referring to the corky-warted fruit of most species.</p></div>
+<div type="description"><p>Robust, solitary, armed, pleonanthic, hermaphroditic, tree palms. Stem erect, ringed with inconspicuous, close leaf scars. Leaves induplicate, costapalmate, marcescent in immature individuals, abscising under their own weight in trunked individuals; sheath disintegrating into a conspicuous interwoven mass of reddish-brown fibres; petiole long, robust, particularly in juveniles, bearing thin caducous indumentum, slightly channelled adaxially, abaxially rounded or angular, frequently with 2 lateral yellowish lines, the margins armed with very robust, bulbous-based, horizontal spines; adaxial hastula well developed, triangular, ring-like, abaxial hastula inconspicuous or lacking; blade divided by splits along adaxial folds almost to the hastula, producing 3–4fold segments, these further divided along adaxial folds to 2/3 or 1/2 the radius into single-fold segments, also split very shallowly along abaxial folds, lowermost segments overlapping, interfold filaments not persisting, scattered caducous indumentum present along ribs in young leaves, segments longitudinally striate, midrib prominent, transverse veinlets conspicuous. Inflorescences interfoliar, emerging from the leaf sheath mouths and arching out of the crown, branching to 4 orders, several axils (up to ca. 5) producing inflorescences simultaneously; peduncle robust; prophyll tubular, 2-keeled, somewhat inflated; peduncular bracts 1–ca. 5, conspicuous, robust, tubular, tending to split rather irregularly with age; rachis longer than the peduncle; rachis bracts rather distant, each subtending a first-order branch, adnate to the inflorescence axis; subsequent bracts disintegrating or very inconspicuous; rachillae glabrous or hairy, ± spreading, bearing spirally arranged flowers, solitary or in clusters of 2–3 on low tubercles, subtended by minute triangular bracts and each bearing a minute bracteole. Flowers sessile, golden-yellow; calyx cup-shaped, shallowly 3-lobed, glabrous or sparsely hairy; corolla divided almost to the base into 3 triangular, valvate, glabrous or sparsely hairy petals; stamens 6, filaments united to form a conspicuous tube, free from the corolla, shallowly 6-lobed, tipped with short, slender, distinct filaments, bearing ± rounded or oblong, dorsifixed, introrse anthers; gynoecium tricarpellate, distinctly conical, hairy, the carpels distinct from each other basally, united apically in a long slender style, tipped with a dot-like stigma, ovule basally attached, anatropous. Pollen ellipsoidal, symmetric or slightly asymmetric; aperture a distal sulcus; ectexine tectate, coarsely perforate, perforate or finely reticulate, aperture margin occasionally finer; infratectum columellate; longest axis 34–37 µm [1/6]. Fruit developing from 1 carpel, very large, globose, stigmatic remains scarcely visible but apical; pericarp massive, the epicarp smooth (P. kingiana), or cracked into numerous low corky brown warts, mesocarp thick, ± fleshy, frequently traversed by radiating fibres, endocarp crustaceous. Seed attached laterally or near the base, endosperm massive, homogeneous, but penetrated on one side by a large convoluted intrusion of seed coat; embryo subbasal or lateral. Germination remote-tubular; eophyll entire, lanceolate, plicate. Cytology not studied.</p></div>
+<div type="distribution"><p>Six recognised species, but possibly fewer, from south Thailand, Malay Peninsula, Sumatra, Borneo, Sulawesi, and the Moluccas. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), floral anatomy not studied. </p></div>
+<div type="relationships"><p>The monophyly of Pholidocarpus has not been tested. Pholidocarpus is resolved as sister to Johannesteijsmannia with low support (Asmussen et al. 2006, Baker et al. in review). </p></div>
+<div type="uses"><p>The leaves may be used for thatch. </p></div>
+<div type="taxonomic accounts"><p>Beccari (1931). See also Dransfield and Uhl (1983a). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Distinguished by the deeply divided leaves with compound segments and by very large smooth or corky-warted fruits. Leaf anatomy shows some affinities with Licuala.</p></div>
+<div type="vernacular"><p>Serdang, kepau (Pholidocarpus macrocarpus). </p></div>
+<div type="biology_ecology"><p>In Malay Peninsula, Sumatra, and Borneo, species of Pholidocarpus are conspicuous palms of the lowlands, usually found in fresh water and peat swamp forest, rarely away from waterlogged soils. They may reach great heights (e.g., 45 m). </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

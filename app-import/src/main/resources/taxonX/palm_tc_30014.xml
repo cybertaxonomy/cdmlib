@@ -1,0 +1,84 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus viridispinus</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1893) 458</citation>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11 (1908) 418 and Suppl. (1913) 102</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 61</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 118</bibref>
+<bibref>Dransfield in Malay. Forester 41 (1978) 334</bibref>
+<synonymy>
+<name>Calamus elegans</name>
+<author>Ridley</author>
+<bibref>Ridley in Mat. Fl. Mai. Pen. 2 (1907) 207</bibref>
+<bibref>Ridley, Fl. Mal. Pen. 5 (1925) 61</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 115</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus distichus</name>
+<author>Ridley</author>
+<bibref>Ridley in Mat. Fl. Mal. Pen. 2 (1907) 206</bibref>
+<bibref>Ridley, Fl. Mai. Pen. 5 (1925) 60</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 120</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus distichoideus</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 122</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus oreophilus</name>
+<author>Furtado</author>
+<bibref>Furtado in I.e. 124</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus bubuensis</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Gard. Calcutta 77 (1908) 417</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 126</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus koribanus</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 128</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus brevispadix</name>
+<author>Ridley</author>
+<bibref>Ridley in Mat. Fl. Malay. Pen. 2 (1907) 207</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 61</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 130</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus benomensis</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Singapore 75 (1956) 132.</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>The mountain rattan complex.
+This is a highly problematic taxon which has been split up by Ridley, Beccari and Furtado into several species. Were Furtado's treatment to be followed here, even more species would have to be described, as almost every plant in the complex is slightly different. There is a whole range of leaf, inflorescence and habit variation; however, separate populations tend to be rather uniform. As these are moufitain plants, and hence their distribution disjunct, and botanical explorations even more disjunct, it is not surprising that there are disjunctions in the range of variation. However, I believe that to retain them as separate taxa is counterproductive because of the difficulty of assigning names to new collections. I have therefore included all the names within C. viridispinus, have provided a general description, and have indicated briefly how Furtado's taxa may be distinguished. Furtado (1956) stated that it was possible that his taxa might be no more than adaphic forms of the same species, and with this I now agree. The describing of so many new species by Furtado served the purpose of emphasizing problems of variation and recognition and drawing attention to the taxon. In many ways the complex of C. viridispinus presents problems similar to those of C. javerts is.</p></div>
+<div type="etymology" lang="la"><p>Viridis-green, spinis - spine</p></div>
+<div type="vernacular"><p>rotan keraigunung</p></div>
+<div type="description"><p>Slender clustering montane rattan varying from "stemless" to 10 m tall. Stem without sheaths varying from 3 mm to 7 mm in diameter, with internodes to 15 cm, usually much shorter; stem with sheaths from 6-15 mm in diameter. Sheaths generally dull green armed with horizontal or slightly erect triangular black, yellowish-based spines to 3 cm long, though often much less, and abundant grey-brown indumentum between spines. Knee present in climbing forms. Ocrea inconspicuous. Flagellum absent. Leaf ecirrate in "stemless" forms, cirrate in climbing forms with petiole very short to about 25 cm in climbing forms to about 100 cm, in "stemless" forms sparsely armed with spines like those on the leaf sheath; leaflets very variable in size and shape, but always arranged in groups of 2-5 on either side of the rachis, generally dark green with paler bases, from 8-40 cm long by 5 mm - 2.5 cm wide, variously bristly. Inflorescences male and female superficially similar from 15-100 cm long with partial inflorescences varying greatly in size and length. Mature fruit generally oblong to ovate to about 8 mm long by 6 mm wide covered in dull brown, grey edged or yellowish scales in up to 15 vertical rows. Seed oblong, sometimes somewhat flattened. Endosperm homogeneous. Seedling leaf with A-6 leaflets.</p></div>
+<div type="distribution"><p>Perak, Selangor, Pahang, Trengganu, Kelantan. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>A good cane for tying purposes.</p></div>
+<div type="discussion"><p>Found widely in montane forest, especially on ridgetops 1000-2200 m altitude. The forms growing in valleys are always much larger than those growing on extreme ridgetops.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

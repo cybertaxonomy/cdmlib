@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus erectus</name>
+<author>Roxb.</author>
+<citation>F. Ind. 3:774. 1832</citation>
+<bibref>Beccari in Hook. f. Fl. Brit. Ind. 6:438. 1892</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 11 : 126. 1908 and Appendix PI. 2. 1913</bibref>
+<synonymy>
+<name>Calamus erectus var schizopathus</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Bot. Gard. Calcutta 11 : 125. 1908</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A cluster forming non-scandent rattan. Stem with leafsheath 3.5-4 cm in diameter; exposed part of the stem green and smooth; intemodes 10-12 cm long. Leaves ecirrate, 3 - 5 m long; leafsheath without flagellum, armed with black, flattened spines; ocrea conspicuously auriculate; petiole 1.5 m long, subterete, covered with irregular, whorled spines; leaflets linear-ensiform, equidistant, green on both sides; rachis armed below with irregular to whorled straight spines. Inflorescence 1 m long, compact, non-flagelliform; primary bract elongate, tubular, lacerate in upper part; peduncle strongly armed with black, flattened comb-like spines; male rachillae slender, sterile basal part of rachillae enclosed within the basal bracts; male flowers bifarious, narrowly oblong, obscurely 3-angled at base; calyx campanulate, 3-lobed, lobes apiculate, corolla with 3 distinct petals. In female inflorescence rachillae without sterile basal part. Involucrophorumnon-pedicelliform. Fruit ellipsoid, 3 cm x 2 cm, with distinct conical beak; seed oblong to ovoid, terete in cross section; endosperm ruminate; embryo basal.</p></div>
+<div type="distribution"><p>INDIA (Sikkim, Assam, Meghalaya, Manipur, West Bengal), BANGLADESH, BURMA.</p></div>
+<div type="biology_ecology"><p>Grows in the lower hill forests especially on the drier slopes. Frequent in the Tista and Rangit valley of Sikkim and West Bengal.</p></div>
+<div type="cultivation"><p>Experimental cultivation exists in the North Silviculture, Division, Jalpaiguri, West Bengal. It is also cultivated in the Indian Botanic Garden, Howrah where a few male clumps exists. Experimental cultivation also exists in the Forest Research Institute, Chittagong, Bangladesh.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Due to shorter internodes, the cane is not useful for making furniture. The Miri tribe of Assam plains made their thatched nuts on bamboo pillars raised about 1 - 1.5 m above the ground level to protect them from flood and wild animals. For making the huts they use split Dendrocalamus bamboo and strong canes of Calamus erectus, leaves are used as thatch. Stems and leaves of Calamus erectus are also used by them for making poultry houses. In Sylhet, Bangladesh, people chew the seeds of Calamus erectus in place of betal nuts (Areca catechu).</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,37 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus semoi</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11 (Suppl.): 129 (1913)</citation>
+<bibref>Dransfield, Ratt. Sarawak 116 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>From a local name</p></div>
+<div type="vernacular"><p>Wi tut (Ib.)</p></div>
+<div type="description"><p>Clustering slender rattan climbing to 20 m tall; stem without sheaths c. 8 mm diam., with sheaths c. 12 mm diam., internodes to 18 cm long. Sheaths dull green or grey-green, armed with scattered triangular spines to 10 &#215; 5 mm with conspicuous shaggy-hairy margins, smaller spines and also sometimes with ridges bearing minute spinules, deciduous indumentum present between the spines; knee conspicuous; ocrea scarcely developed. Vestigial flagellum present, to c. 10 cm. Leaf cirrate to 2 m long including petiole to 5 cm and cirrus to 1 m; leaflets c. 30 on each side of the rachis, regularly arranged near the base, somewhat grouped near the tip, the longest to 33 &#215; 1.6 cm, linear, conspicuously bristly on the upper surface, transverse veinlets conspicuous. Young shoots bearing leaves with irregularly grouped leaflets. Inflorescences to 1 m long, usually less, the whole appearing dead; bracts throughout the inflorescence splitting, expanding, tattering, dark brown; male rachillae congested, c. 15 &#215; 2 mm, mostly hidden by subtending bracts; female rachillae curved, c. 40 &#215; 4 mm. Fruit not known. (Fig. 40).</p></div>
+<div type="distribution"><p>Known with certainty only from the 1st Division of Sarawak. The collections from Brunei are similar to a taxon found in the Mulu National Park in Sarawak which has tentatively been identified asC. semoi (see Dransfield 1992). In Brunei this rattan is confined to higher elevations in the Temburong Basin.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>This species belongs to a very perplexing group of species and its relationships with C. pogonacanthus are not yet completely understood.</p></div>
+<div type="materials_examined"><p>TEM: Amo, Bt.Belalong, Dransfield J. 7117; Amo, Bt.Belalong, Wong 1407.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calmus gibbsianus</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11 (Suppl.): 58 (1913)</citation>
+<bibref>Dransfield, Kew Bull. 36: 791 (1982)</bibref>
+<bibref>Dransfield, Ratt. Sabah 121 (1984)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Lillian Suzette Gibbs, 1870 - 1925, plant collector who made an important expedition to Kinabalu</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering montane rattan climbing to 8 m, rarely more, very rarely &#177; stemless; stem without sheaths 4-8 mm diam., with sheaths 7-30 mm diam., internodes short, rarely exceeding 10 cm. Sheaths dull mid to dark green, sparsely to densely armed with pale green spines to 7 mm, occasionally also with minute spicules arranged in partial whorls, sheaths and spines all densely covered in brown indumentum; knee conspicuous; ocrea inconspicuous to well developed, armed with groups of spicules or bristles. Flagellum to 1 m, rarely absent. Leaf ecirrate, onclimbing stems to 70 cm, more in stemless forms; petiole 3-18 cm, sparsely to densely armed; rachis covered with rusty-brown hairs; leaflets regularly arranged, 6 - 20 on each side of the rachis, distant to crowded, lanceolate, mid-leaf leaflets 45 -200 x 7 - 25 mm, usually very densely covered with minute spine-like papillae or short bristles on the undersurface and occasionally also on the upper surface, always with a dense tuft of orange to red-brown hairs on the undersurface at the leaflet base. Inflorescence usually to c. 1m long, with 1-4 partial inflorescences to c. 10 cm, strongly recurved and bearing short recurved rachillae, large conspicuous bracteoles and relatively large flowers. Mature fruit spherical to ovoid, to 16 x 12 mm, tipped by a short beak to 1 x 1 mm and covered in 15 - 18 vertical rows of pale brown, black-edged scales; seed ovoid to &#177; oblong, to 14 x 7 mm, deeply pitted and grooved; endosperm subruminate. Seedling leaf pinnate with c. 6 leaflets (Fig. 56).</p></div>
+<div type="distribution"><p>In Sarawak known only from one collection from the Kelabit Highlands. Elsewhere in montane forest on Kinabalu and the Crocker Range at elevations of 1400-3000m.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>In Sabah used for general tying and weaving by successive expeditions to Kinabalu.</p></div>
+<div type="discussion"><p>C. gibbsianus is a very polymorphic species and reaches the highest altitude of any palm in Borneo. It has a characteristic inflorescence with strongly curved branches bearing conspicuous saucerlike bracteoles below the flowers or fruit, and the leaflets always have a conspicuous tuft of reddish-brown hair on the undersurface at the base.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

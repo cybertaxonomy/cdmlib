@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops unijuga</name>
+<author>J.Dransf.</author>
+<citation>Bot. J. Linn. Soc. 81: 24 (1980)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>One pair</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering slender rattan with stems climbing to 20 m tall; stem without sheaths to c. 5 mm diam., with sheaths to c. 9 mm diam., internodes to 18 cm long. Sheath dull green, bearing rather sparse horizontal groups of minute black easily detached spicules knee conspicuous, unarmed. Leaf cirrate, to 70 cm long including the short petiole to 8 cm and the cirrus to 65 cm; leaflets comprising a single pair only, to 35 x 7 cm, usually less, rather stiff, the tips &#177; hooded, unarmed except for a few bristles along the margins near the tip, both surfaces mid green, transverse veinlets inconspicuous. Inflorescences usually sparsely produced, pendulous, slender, to 50 - 55 cm long; peduncle to c. 20 cm, rather sparsely armed with short spines; prophyll (known only in the male) to 9 x 1.5 cm, sparsely armed; partial inflorescences 5 - 6, to 6 cm in male, to 15 cm in the female. Mature fruit relatively large, ovoid, strongly beaked, to 30 x 20 mm, covered in 17 vertical rows of greenish brown scales. Seed c. 20 x 13 mm. irregularly ovoid; endosperm deeply ruminate. Seedling leaf not known (Fig. 31).</p></div>
+<div type="distribution"><p>Known only from four collections from limestone hills near Kg Belimbing, Padawan, in the 1st Division. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of good quality.</p></div>
+<div type="discussion"><p>D. unijuga is one of the rarest and perhaps most threatened of Sarawak's rattans. It is an extraordinary, very distinctive species, known only from forest on limestone at low elevations. The single pair of leaflets combined with a cirrus, the black spicules on the sheaths and the large fruit make this a very easily distinguished species, without close relatives.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

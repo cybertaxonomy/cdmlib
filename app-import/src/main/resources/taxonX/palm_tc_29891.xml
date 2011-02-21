@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus rotang</name>
+<author>Linn.</author>
+<citation>Sp. Pl. 1 :323. 1753</citation>
+<bibref>Beccair in Hook. f. Fl. Brit. Ind. 6 :447. 1892</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 11 : 269. 1908 &amp; Appendix Pl. 97. 1913</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Perambu, Betambu. Bettapu.</p></div>
+<div type="description"><p>A slender thicket forming climber; stem with leafsheath 8-16 mm in diameter; internodes to 40 cm or more long. Leaves ecirrate, to 80 cm long; leafsheath with distinct knee, armed with more or less scattered, broad-based 1 cm long yellowish spines; each pointing down-wards; flagellum slender, about 2 m long; petiole absent; leaflets numerous, equidistant or sub-equidisitant, linear to lanceolate, 1-nerved, 10 -15 cm long, 1.5 cm broad at middle; midnerve with 2 hooks on upper side and uniformly spinulose below; uppermost leaflets smallest. Male inflorescence flagelliform; axial part strongly aculeate; rachillae scorpioid, 12 - 35 cm long, with 5-12 approximate male flowers on each side of the rachilla; in male flowers corolla deeply divided into 3 segments. Female inflorescence flagelliform; partial inflorescences 15 - 20 cm long with 5-8 rachillae on each side; each arch-like with divaricate neuter flower. Fruit globose, apiculate, 1.3 -1.5 cm long, 1.2 cm broad at middle; fruit scales in 21 longitudinal series, faintly channelled at middle; seed flattened, 8 mm in diameter.</p></div>
+<div type="distribution"><p>INDIA (Andhra Pradesh, Tamil Nadu, Kerala), SRI LANKA.</p></div>
+<div type="biology_ecology"><p>Common in coastal fresh water swamp forests, frequent along fresh water streams of lower hill valleys.</p></div>
+<div type="cultivation"><p>Cultivated in the Indian Botanic Garden, Howrah. It is also cultivated in trial plots of the Kerala Forest Research Institute, Peechi, Kerala.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Cane is used for making rough baskets for plucking tea leaves and for carrying building materials. Split canes are largely used for making bags, 'jhapi', a kind of small bucket used in villages for measuring grain, and for making chair bottoms. The young leaves are also eaten as a vegetable by tribal people.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,49 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis fibrosa</name>
+<author>(Wright) Beentje &amp; J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 365 (1995)</citation>
+<type>Madagascar; Proctor Brothers; s.n.</type>
+<type_loc>Holotypus K</type_loc> 
+<synonymy>
+<name>Dictyosperma fibrosum</name>
+<author>Wright</author>
+<bibref>Wright, Kew Bull. (1894): 359.</bibref>
+</synonymy>
+<synonymy>
+<name>Vonitra fibrosa</name>
+<author>(Wright) Becc.</author>
+<bibref>(Wright) Becc., Agric Colon 5: 322 (1911)</bibref>
+<bibref>Becc., Palme del Madag: 8, figs 3, 4 (1912)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This is one of the most widespread of species in the "Vonitra" group, occurring throughout the north-west and eastern rain forest belt. In habitat it differs from the much larger D. crinita that often grows in nearby val-ley bottoms and riversides, while the present species will grow on ridges and slopes. The sheaths produce abundant piassava, leaf sheath fibre, and hence the species name. This species has been cultivated in many botanical gardens and private collections where the combination of neat dark green leaves that are flushed red when newly emerged and attractive brown fibre make it particularly ornamental. Its ability to branch dichotomously adds to its appeal.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Vonitra (widespread), Vonitrambohitra (mountain vonitra, fide Jumelle), Ravimbontro (Nosy Mangabe).</p></div>
+<div type="description"><p>Solitary or clustering palm, when clustering in groups of 2-6. TRUNK 3-9 m, branched once or twice (rarely three times) a few meters above the ground, rarely unbranched, the branches closely parallel, 5-18 cm diam.; distal part of the trunk covered in fibrous piassava; base swollen, sometimes with surface roots resembling stilt roots; bark pale brown to grey, ringed, internodes 0.8-2 cm; wood hard, white. LEAVES 8-25 in each crown, occasionally with up to 8 marcescent leaves; leaves arching, held on edge in the distal half; sheath 40-60 cm long, red-brown floccose, proximally 10-12 cm wide, more distally with a central woody part and a fibrous part together with a 30-34 cm long pale brown tongue opposite the   petiole becoming tattered and so producing the piassava clothing the upper part of the trunk; petiole 40-170 cm long, proximally 1.2-2.6 x 0.8-1.5 cm, distally 0.9-1.6 x 0.8-1 cm, with red-brown patches of tomentum but glabrescent, adaxially slightly convex or channelled, with sharp edges; rachis 1.4-2 m long, in mid-leaf 0.9-1 cm wide and keeled, with red-brown patches of tomentum but glabrescent; leaflets regular, 34-51 on each side of the rachis, in one plane, dull dark green (red in young leaves), the proximal 45-82 x 0.8-2.5 cm, median 46-71 x 2.6-4.3 cm (108 x 7.3 cm in Perrier 14097), distal 10-42 x 0.5-2.3 cm, acute, the terminal pair in young plants wide (up to 5 cm) and connate for up to 25 % of their length, main veins 5-7, the midrib prominent adaxially, glabrous, apices unequally attenuate. INFLORESCENCE interfoliar, erect in bud, porrect-arching in flower and fruit, branched to 3 orders (once to 4 orders); peduncle 70-94 (- 150) cm long, proximally 1.5-2.5 x 0.9-1.8 cm, distally 1-1.7 x 0.7-1 cm, green, glabrous; prophyll 39-56 cm, reddish-tomentose, glabrescent; peduncular bract 103-188 cm, 6-8 cm wide, splitting only near its apex, beaked for 2-12 cm, coriaceous, inserted at 17-20 cm from the base of the peduncle, abscising and carried upwards with the lengthening inflorescence, brown with patches of red-brown pubescence; rachis 37-60 cm long, green, glabrous, with 15-17 branched and 6-14 unbranched branches; first order branches flattened, -1.3 x 0.3-0.5 cm, with basal swelling; rachillae arching to almost pendulous (4.5-) 17-53 cm long (up to 78 cm in fruit) and 0.1-0.2 cm diam. (up to 0.5 cm in fruit), glabrous, green to red-brown, with spaced triads in slight pits. FLOWERS orange in bud, yellow at anthesis. STAMINATE FLOWERS slightly trigonous, narrowed near the base, with sepals 1-1.4 x 1.4-2.3 mm, broadly ovate, hooded; petals 1.5-1.8 x 1.3 mm, hooded; stamens 6, in 2 series, didymous, densely appressed against the pistillode, filaments 1-1.4 x 0.5 mm, anthers medifixed or dorsifixed with almost globose thecae, c. 0.3 x 0.3 mm; pistillode bottle-shaped, with indentations conforming to the stamens, c. x 0.4-0.5 mm in diam. PISTILLATE FLOWERS globose, with sepals 1.2-1.8 x 2.3-2.8 mm, broadly ovate, hooded; petals suborbicular, 2.1-2.8 x 1.8-2.4 mm; ovary asymmetrical, c. 1.8 x 1.6 mm, topped by an indistinct trigonous apex; staminodes c. 0.2 mm high, dentiform. FRUIT black, obovoid to almost globose, 20-30 x 18-25 mm; persistent sepals c. 3 x 3-4 mm, persistent petals c. 5 x 7 mm; mesocarp fleshy, c. 5 mm thick; endocarp fibrous, with up to 25 mm long fibres. SEED 20-23 x 15-18 mm, ellipsoid, pointed at the apex; endosperm with ruminations 3-4 mm deep. EOPHYLL bifid, germination adjacent-ligular.</p></div>
+<div type="distribution"><p>NW and E Madagascar.</p></div>
+<div type="biology_ecology"><p>Moist upland forest or coastal hill forest on steep slopes or less often on ridge tops, also in littoral or peatswamp forest overlying white sand at low altitudes; alt. 5-800 m.</p></div>
+<div type="conservation"><p>Not threatened. Widespread.</p></div>
+<div type="uses"><p>Leaf extensively used for thatching (Masoala), inflorescences sold as brushes (Masoala). Formerly one of the main piassava producers (30-50 francs a kg in 1951).</p></div>
+<div type="discussion"><p>The fruit is said to be eaten by wild pig, and we have seen signs which seem to confirm this. Though Beccari (1906) thought he was making a new combination based on Dypsis thouarsiana when coining the name Vonitra thouarsiana, the descriptions, both of the new genus and of the species, were based on Baron 3190, quite distinct from the types of Dypsis thouarsiana. Beccari saw the types of Dypsis thouarsiana and thought the leaf was a young one, possibly a seedling, of his new taxon; he also considered the inflorescence of Dypsis thouarsiana as too young too analyse. The taxa, however, are clearly distinct, the types of Dypsis thouarsiana having three most peculiar stamens and leaves with 3-4 leaflets on each side of the rachis (see under 109. Dypsis thouarsiana).</p></div>
+<div type="materials_examined"><p>Ambanja: Manongarivo, Bekolosi, Dec. 1992 (fr.), Malcomber et al. 1972 (K). Maroantsetra: Antalavia, Apr. 1988 (fl.), Gentry &amp; Schatz 62180 (K, MO, P); W of Maroantsetra, Oct. 1963 (fl.), Moore 9009 (P, TAN); 5 km W of Maroantsetra, Oct. 1986 (bud), Dransfield et al. JD6360 (K, P, TAN); Nosy Mangabe, April 1989 (fl.), B. DuPuy MB146 (K, TAN); Hiaraka, Oct. 1986 (fl., fr.), Dransfield et al. JD6373 (K, TAN). Sainte Marie: Kalalao forest, Nov. 1994 (bud), Dransfield et al. JD7523 (K, TAN). Soanierana-Ivongo: Andasibe, Dec. 1938 (bud), Lam &amp; Meeuse 5862 (K, L). Ambatondrazaka: Maningory Falls, Dec. 1944, Homolle 547 (P, probably a very young plant). Toamasina: Betampona, Oct. 1991 (bud, fr.), Beentje 4498 (BH, K, MO, P, TAN); Toamasina, (leaf, seed), Proctor Bros. s.n. (K). Moramanga: Analamazaotra, (fl.,fr.), Perrier 12001 (P). Ampasimanolotra: Andrambolahy kely to Andranampony, April 1951 (fl.), Cours 4511 (K, P, TAN); Anivoranokely, Sept. 1954 (fl.), Vigrence 15462 (P); 5 km S of Ambila-Lemaitso, Nov. 1986 (fr.), Dransfield et al. JD6440 (K, P, TAN); idem, Sept. 1991 (fl., fr.), Beentje 4449 (BH, K, MO, P, TAN). Vatomandry: without precise location, Nov. 1927 (fl.), Perrier 14097 (P). Ifanadiana: Ambohimanga rd. (fl.), Dequaire 27702 (P); 34km E of Ranomafana, March 1991 (bud), Beentje 4439 (BH, K, MO, P, TAN). Mananjary: Mt Vatovavy, Aug. 1911 (fl.), Perrier 12053 (P). Farafangana: Manombo, Nov. 1991 (bud), Beentje 4519 (BH, K, MO, P, TAN). Vangaindrano: Analalava, Dec. 1971 (fl.), Guillaumet 4017 (TAN). Tolanaro: Manantenina, Marovony, Oct. 1990 (infl.), Randrianasolo et al. 185 (K); NW of Ste Luce, Oct. 1989 (fr.), McPherson et al. 14218 (P). Without locality, Central Madagascar, s.d. (fl.), Baron 2319 (K, type of V. thouarsiana sensu Beccari).  CULTIVATED: Sri Lanka, Peradeniya Royal Bot. Gard., July 1986 (fr.), Rutherford &amp; Bandara R 136 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

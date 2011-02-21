@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia cheb</name>
+<author>Becc.</author>
+<citation>Malesia 2: 67 (1884)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(2): 118 (1918)</bibref>
+<bibref>Dransfield, Kew Bull. 36: 190 (1981)</bibref>
+<bibref>Dransfield, Ratt. Sabah 25 (1984)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Cheb - Italian spelling of a local name, keb</p></div>
+<div type="vernacular"><p>wae duru (Pen.), rua (Bid.)</p></div>
+<div type="description"><p>Robust clustering and branching rattan climbing to 40 m. Stem without sheaths to 2 cm diam., with sheaths to 3 cm diam., internodes to 20 cm long. Sheaths bright green, ± unarmed except for a few short spines to 2 mm, bearing caducous brown scales, but ± completely covered by the ocrea of the preceding leaf, ocrea very large and conspicuous, tightly sheathing just above the petiole then greatly inflated, the inflated portion to 25 x 4.5 cm, bearing few scattered short triangular spines to 5 mm with broad bases to 10 mm, and thin buff indumentum; ants abundant. Leaf to 2.25 m including the cirrus to 1 m; petiole to 10 cm in young shoots, ± absent in exposed stems; leaflets to 7 on each side of the rachis, large diamond-shaped, to 30 x 15 cm borne on stalks to 1 cm; upper leaflet surface bright green, lower buff-coloured. Inflorescence to c. 75 cm, bearing numerous rachillae to 18 x 0.8 cm, rachillae dull mid brown tomentose. Ripe fruit somewhat oblong, 1.5 x 1 cm covered in 18 vertical rows of straw-coloured scales. Seed 12 x 8 mm; endosperm deeply ruminate. Seedling leaf not known.</p></div>
+<div type="distribution"><p>Very local, known from a few collections from the 1st Division. Elsewhere in Sabah, W., S., and E. Kalimantan, apparently always very local. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p>It occurs in hill dipterocarp forest at altitudes up to 800 m, usually in humid valleys.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Produces a medium-sized rotan merah.</p></div>
+<div type="discussion"><p>K. cheb is a very distinctive species with its very large inflated ocreas and broad diamond-shaped leaflets.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

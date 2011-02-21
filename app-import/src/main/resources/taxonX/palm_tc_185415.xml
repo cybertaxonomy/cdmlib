@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary pinnate-leaved palm from the Ryukyu Islands in southern Japan, remarkable for the two large peduncular bracts and small fruit.</p></div>
+<nomenclature>
+<name>Satakentia</name>
+<author>H.E. Moore</author> 
+<citation>Principes 13: 5 (1969).</citation>
+<type>Type; Satakentia liukiuensis; (Hatus.) H.E.Moore</type>
+</nomenclature>
+<div type="etymology"><p>Honoring Toshihiko Satake (1910–1998), Japanese industrialist and palm hobbyist, by combining his name with the generic name Kentia, named for William Kent (1779 –1827), one-time curator of the botanic gardens at Buitenzorg, Java (now Kebun Raya Bogor).</p></div>
+<div type="description"><p>Moderate, solitary, unarmed, pleonanthic, monoecious palm. Stem erect, usually enlarged and with a mass of adventitious roots at the base, columnar above, green to brown, longitudinally striate, ringed with close leaf scars. Leaves pinnate, spreading; sheaths tubular, forming a prominent crownshaft and with a prominent chartaceous ligule; petiole short, adaxially channelled with a central ridge, abaxially rounded; rachis elongate, flattened adaxially, rounded abaxially, tomentose; leaflets regularly arranged, acute, single-fold, midrib evident abaxially, marginal nerves thickened, usually 2(–3) secondary ribs, and numerous tertiary veins on each side, glabrous adaxially, ramenta present abaxially near the base of the midrib, transverse veinlets not evident. Inflorescences infrafoliar, densely and minutely stellate-tometose, branched to 2 orders basally, to 1 order distally; peduncle short, stout; prophyll tubular, terete, 2-keeled laterally, briefly beaked, much shorter than the peduncular bracts; first peduncular bract, complete, tubular, thick, woody, terete, beaked, enclosing a second almost complete and similar peduncular bract, both splitting abaxially and caducous at anthesis, a prominent but much shorter third and sometimes fourth, chartaceous incomplete peduncular bract also developed; rachis about as long as the peduncle, tapering, densely tomentose, angled, bearing spirally inserted, rather large, acute bracts subtending basal branches and smaller rounded bracts subtending distal branches; rachillae elongate, rather stout, stiff, bearing spirally arranged, low, rounded bracts subtending flowers borne in triads of 2 staminate and 1 pistillate in lower 1/4 to 1/3 of the rachillae, paired to solitary staminate flowers distally. Staminate flowers nearly symmetrical; sepals 3, distinct, imbricate, ± rounded; petals 3, distinct, valvate, more than twice as long as the sepals; stamens 6, filaments distinct, awl-shaped, inflexed at the apex in bud, anthers oblong in outline, latrorse; pistillode as long as the stamens, cylindrical, with obliquely subcapitate apex. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, perforate, aperture margin similar; infratectum columellate; longest axis 43–45 µm [1/1]. Pistillate flowers ovoid; sepals 3, distinct, broadly imbricate; petals 3, distinct, imbricate, with shortly valvate apices; staminodes 3, tooth-like, on one side of the gynoecium; gynoecium ovoid, unilocular, uniovulate, stigmas 3, recurved at anthesis, ovule pendulous, anatropous. Fruit ovoid-ellipsoidal with eccentrically apical stigmatic remains; epicarp smooth but drying longitudinally lines, mesocarp with numerous flat longitudinal fibres in thin flesh and some red-brown stone cells near the apex, endocarp thin, fragile, operculate at the base of the elongate hilar seam, not adherent to the seed. Seed ellipsoidal, hilum elongate, raphe branches anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>A single species on Ishigaki Island (Yonehara) and Iriomote Island (Hoshitate, Nakam River,Sonai, and Yoeyama Group of the Ryukyus).</p></div>
+<div type="anatomy"><p>Fruit (Essig et al. 1999). </p></div>
+<div type="relationships"><p>For relationships, see Carpoxylon.</p></div>
+<div type="uses"><p>Cultivated as an ornamental. The ‘cabbage’ is said to havebeen eaten during World War II.</p></div>
+<div type="taxonomic accounts"><p>Moore (1969a); see also Pintaud andSetoguchi (1999).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Pintaud and Setoguchi (1999) were the first torecognise that the inflorescence of Satakentia has twopeduncular bracts, a character it shares with Carpoxylon butnot with Neoveitchia. However, the inflorescences and fruit ofthe three genera are similar.</p></div>
+<div type="vernacular"><p>Noyashi and yaeyama-yashi.</p></div>
+<div type="biology_ecology"><p>Growing on hillslopes or more rarely near the sea; often growing in densemore-or-less even-aged stands.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

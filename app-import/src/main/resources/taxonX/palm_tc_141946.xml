@@ -1,0 +1,70 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate to robust single-stemmed palms with praemorse leaflets and lacking crownshafts, found in Madagascar and from south Thailand through to New Guinea, where most species are found; the peduncular bract(s) greatly exceeds the prophyll; fruits are relatively large and rounded.</p></div>
+<nomenclature>
+<name>Orania</name>
+<author>Zipp. in Blume</author>
+<citation>Alg. Konst-Lett.-Bode 1: 297(1829).</citation>
+<type>Type; Orania regalis; Zipp. ex Blume</type>
+<synonymy>
+<name>Arausiaca</name>
+<author>Blume</author>
+<bibref>Blume, Rumphia 2: viii, t. 122 (1838–1839).</bibref>
+<type>Type; Arausiaca excelsa; Blume</type>
+</synonymy>
+<synonymy>
+<name>Macrocladus</name>
+<author>Griff.</author>
+<bibref>Griff., Calcutta J. Nat. Hist. 5: 489 (1845).</bibref>
+<type>Type; Macrocladus sylvicola; Griff.</type>
+</synonymy>
+<synonymy>
+<name>Sindroa</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-Géol. Colon. Marseille ser. 5.1 (1): 11 (1933).</bibref>
+<type>Type; Sindroa longisquama; Jum.</type>
+</synonymy>
+<synonymy>
+<name>Halmoorea</name>
+<author>J. Dransf. and N.W. Uhl</author>
+<bibref>J. Dransf. and N.W. Uhl, Principes 28(4): 164 (1984).</bibref>
+<type>Type; Halmoorea trispatha; J.Dransf. &amp; N.W.Uhl</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Commemorates F.G.L. Willem van Nassau, Prince of Orange (Oranje) and Crown Prince of the Netherlands (1792–1849).</p></div>
+<div type="description"><p>Small to large, solitary, unarmed, pleonanthic, monoecious palms. Stem erect, short to tall, becoming bare, conspicuously ringed with leaf scars, and sometimes bearing corky, warty protuberances. Leaves distichous (Orania disticha, O. ravaka, O. trispatha and sometimes O. lauterbachiana) or spirally arranged, large, pinnate, deciduous under their own weight; crownshaft not present; sheath well developed, splitting longitudinally opposite the petiole, usually densely tomentose, distally narrowing into the petiole; petiole usually relatively short, channelled adaxially, rounded abaxially, bearing abundant persistent or caducous tomentum; rachis much longer than the petiole; leaflets single-fold, regularly arranged and held ± in one plane, or rarely (O. archboldiana) grouped and held in several planes giving the leaf a plumose appearance, linear-lanceolate, often narrow, frequently somewhat plicate, apices praemorse, adaxial surface glabrous, dark green, abaxial surface covered with dense white indumentum and rarely with brown ramenta along the mainvein (Madagascar species), midrib very prominent adaxially, transverse veinlets obscure. Inflorescences axillary, interfoliar, solitary, often massive, branching to 1–3 orders, protandrous; prophyll short, tubular, 2-keeled, included within the subtending leaf, usually becoming frayed distally; peduncular bracts usually 1, rarely 2, borne just above the prophyll, very large and conspicuous, almost woody, tubular, completely enclosing the inflorescence in bud, before anthesis splitting along their length to expose the inflorescence, eventually deciduous, apically with a solid flattened, lanceolate beak, and bearing sparse to abundant tomentum, often grooved on drying; peduncle ± circular in cross-section, short to very long, variously tomentose; subsequent first-order bracts very inconspicuous except rarely in O. oreophila where well developed in one collection; rachis shorter or longer than the peduncle; first-order branches often with a basal pulvinus; further branches, where present, each subtended by an inconspicuous triangular bract; rachillae usually spreading, flexuous, (in O. regalis congested), glabrous or variously tomentose, bearing rather distant triads proximally and solitary or paired staminate flowers distally, more rarely with triads almost throughout, or with staminate flowers throughout; triads subdistichous or spirally arranged, ± superficial, subtended by a minute triangular rachilla bract; floral bracteoles minute or not visible. Staminate and pistillate flowers superficially rather similar, cream-coloured. Staminate flowers narrower and longer than the pistillate; calyx very short, flattened, with 3, low triangular lobes or with 3 distinct imbricate lobes; petals 3, distinct, valvate, broad to narrow-lanceolate, ± striate in dried state; stamens 3, 4, 6 or 9–32, filaments distinct or variously connate, short to moderate, rather fleshy, anthers elongate, basifixed, erect, with large connective, extrorse, or latrorse; pistillode usually lacking, minute and trilobed in O. palindan, sometimes present in O. sylvicola (minute, conical). Pollen ellipsoidal, slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, perforate and micro-channelled, or perforate-rugulate, aperture margin broad, psilate-perforate; infratectum columellate; longest axis ranging from 23–40 µm (Thankaimoni 1970) [2/25]. Pistillate flowers ± conical or pyramidal; calyx flattened, very short, with 3 low, triangular lobes or with 3 distinct imbricate sepals; petals 3, distinct, valvate, triangular; staminodes 3–11, very short, awl-shaped, or well developed, possibly rarely producing pollen (some collections of O. sylvicola); gynoecium trilocular, triovulate, ± pyramidal, stigmas 3, short, recurved at anthesis, ovule form unknown. Fruit developing from 1, 2, or rarely 3 carpels, orange, green, or dull orange to yellowish-brown at maturity, spherical or very slightly pear- shaped, where more than 1 carpel developing, each lobe spherical, stigmatic remains subbasal; epicarp smooth, mesocarp thin or thick, fleshy, traversed by numerous short radial fibres, endocarp rather thin. Seed spherical, basally attached with a ± circular hilum, the surface of the seed somewhat grooved by a sparse network of fibres, endosperm homogeneous, sometimes with a very small central hollow; embryo subapical or lateral. Germination remote-tubular; eophyll bifid with praemorse apices, or rarely pinnate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>About 25 species distributed in south Thailand, Malay Peninsula, Sumatra, Java, Borneo, Philippines, Sulawesi, Moluccas and New Guinea, and three species in Madagascar. The greatest diversity occurs in New Guinea, with a minor radiation in the Philippines. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>Orania is monophyletic with high support (Lewis and Doyle 2002, Asmussen et al. 2006, Baker et al. in review). For relationships, see tribe Oranieae. </p></div>
+<div type="uses"><p>Outer part of the trunk is reputed to be strong and has been used to make spears. The ‘cabbage’ of all species seems to be poisonous and avoided by local people; Orania sylvicola is reputed to be very poisonous in all its parts. </p></div>
+<div type="taxonomic accounts"><p>Keim (in prep.). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Orania is of considerable interest. Not only does it have an astonishingly disjunct distribution but the inflorescence and flowers are rather unspecialised within the Areceae. </p></div>
+<div type="vernacular"><p>Orania palms, ibul, sindro. </p></div>
+<div type="biology_ecology"><p>Most species are large tree palms of the canopy or subcanopy of humid tropical rain forest in the lowlands or hills up to ca. 1700 m; Orania parva and O. oreophila are smaller palms of the forest undergrowth. There is some evidence that O. sylvicola avoids the highest rainfall areas within its range of distribution. Nothing is known of pollination or dispersal.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

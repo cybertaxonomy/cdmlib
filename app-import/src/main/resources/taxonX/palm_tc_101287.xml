@@ -1,0 +1,57 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate single-stemmed pinnate-leaved palms with conspicuous crownshafts and often bottle-shaped trunks, from the Mascarene Islands; inflorescence is horn-like in bud and has many tubular bracts and flowers borne in acervuli.</p></div>
+<nomenclature>
+<name>Hyophorbe</name>
+<author>Gaertn.</author> 
+<citation>De Fructibus et Seminibus Plantarum</citation>  
+<type>Type; Hyophorbe indica; Gaertn.</type>
+<synonymy>
+<name>Sublimia</name>
+<author>Comm. ex Mart.</author>
+<bibref>Comm. ex Mart., Historia Naturalis Palmarum 3: 164 (1838)</bibref>
+<type>Type; Sublimia vilicaulis; Comm. ex Mart.</type>
+</synonymy>
+<synonymy>
+<name>Mascarena</name>
+<author>L.H. Bailey</author>
+<bibref>L.H. Bailey, Gentes Herb. 6: 71 (1942).</bibref>
+<type>Lectotype; Mascarena revaughanii; L.H.Bailey</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Hys, hyos — pig, sow, phorbe — food, in reference to the past use of the fruits as pig food.</p></div>
+<div type="description"><p>Solitary, moderate, unarmed, pleonanthic, monoecious palms. Stem in some species variously swollen, of ± uniform diameter in others, ringed with leaf scars, ± striate, grey. Leaves pinnate, neatly abscising; sheaths forming a prominent crownshaft; petiole short, robust, channelled adaxially, rounded abaxially; rachis flat adaxially, rounded abaxially; leaflets acute to acuminate, single-fold, stiff, midrib prominent with 0–2(–3) evident veins on each side, ramenta prominent on the midrib beneath. Inflorescences infrafoliar, solitary, branched to 3–4 orders, horn-shaped and erect in bud, becoming ± horizontal, protandrous; peduncle stout, elongate; prophyll very short, tubular, caducous, opening at the apex; peduncular bracts 5(4–9), caducous, progressively opening apically, rachis prominent, slightly longer than the peduncle, first-order branches spirally arranged, divaricate, each with a short basal bare part; rachillae slender, elongate, pendulous at first, becoming divaricate; bracts subtending branches and rachillae not evident at anthesis. Flowers orange, yellowish, or white at anthesis, sometimes fragrant, borne in acervuli of a basal pistillate and 3–7 distal staminate, bracts subtending the acervuli and bracteoles subtending the flowers not evident at anthesis. Staminate flowers symmetrical or somewhat asymmetrical in bud; sepals 3, distinct, imbricate or basally connate; petals 3, valvate, briefly connate basally; stamens 6, filaments connate basally and adnate to the corolla or extending beyond the adnation in a tube, distally free, subulate, erect, anthers dorsifixed at or above the middle, bifid basally for 1/2 their length or more, emarginate or briefly bifid apically, latrorse; pistillode conic-ovoid and shorter than the stamens or sometimes minute, 3-lobed. Pollen ellipsoidal, asymmetric, infrequently oblate triangular; aperture a distal sulcus, infrequently a trichotomosulcus; ectexine tectate, scabrate-perforate, aperture margin similar; narrow infratectum columellate; longest axis ranging from 38–58 µm; post-meiotic tetrads usually tetrahedral, occasional tetragonal or, rarely, rhomboidal [4/5]. Pistillate flowers symmetrical, ovoid; sepals 3, distinct and imbricate, or connate basally in a cupule, the lobes then slightly imbricate; petals 3, valvate or slightly imbricate, briefly connate basally; staminodes connate basally in a 6-lobed cupule, sometimes with minute abortive anthers; gynoecium trilocular, triovulate, with 3 recurved, minutely papillate stigmas at anthesis, ovary with septal nectary, ovules laterally attached, hemianatropous, arillate in Hyophorbe verschaffeltii. Fruit ellipsoidal to globose or obpyriform, orange to black, red, or brown, normally 1-seeded, with basal stigmatic remains, perianth persistent, thickened; epicarp smooth or drying somewhat roughened or minutely warty, mesocarp thin, fleshy, with numerous reddish tannin cells and flat fibres of various widths in more than one layer, endocarp thin. Seed ovoid to ellipsoidal or globose, the hilum small, basal, vasculature of few simple or little-branched strands radiating distally and laterally from the hilum, endosperm homogeneous; embryo lateral to apical. Germination adjacent-ligular; eophyll bifid or rarely pinnate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Five species endemic to the Mascarene Islands: one each on Rodrigues and Reunion, and three on Mauritius and Round Island. </p></div>
+<div type="anatomy"><p>Leaves and floral (Uhl 1978b, 1978c). Developmental studies have shown that the acervulus is an adnate cincinnus (Uhl and Moore 1978). Root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>Hyophorbe is monophyletic with high support (Cuenca and Asmussen-Lange 2007). The relationships among the five genera of tribe Chamadoreeae are still unclear despite the dense sampling in some studies. There is a discrepancy between phylogenies resulting from data from nuclear DNA and those from plastid DNA. Most studies that are based on nuclear data place Hyophorbe as sister to the rest of the Chamaedoreeae with moderate to high support (Thomas et al. 2006, Baker et al. in prep.), whereas Hyophorbe is sister to Wendlandiella with moderate support in studies based on plastid DNA (Asmussen et al. 2006, Cuenca and Asmussen-Lange 2007). </p></div>
+<div type="uses"><p>These are important ornamentals, often commanding high prices in the horticultural trade. Some species apparently have poisonous cabbage, whereas the cabbage of others (e.g., H. amaricaulis) was eaten in the past despite being very bitter. </p></div>
+<div type="taxonomic accounts"><p>Moore (1978a). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>The combination of a prominent crownshaft, a horn-like inflorescence bud borne below the leaves, briefly connate but valvate petals, adnation and some connation of stamen filaments, connate staminodes, and large fruits distinguish Hyophorbe from the other genera of the Chamaedoreeae.</p></div>
+<div type="vernacular"><p>Bottle palms, spindle palm (Hyophorbe verschaffeltii). </p></div>
+<div type="biology_ecology"><p>These handsome palms once covered the mountains and valleys of the Mascarene Islands. All species are now nearly extinct in the wild state but formerly were apparently palms of the forest to ca. 700 m altitude or perhaps of the coastal savannah (Hyophorbe lagenicaulis). The last is now restricted to a few individuals on the exposed rock of Round Island; the others occur on volcanic soils or on both volcanic soils and calcarenite limestones (H. verschaffeltii). Only a single tree of H. amaricaulis now remains, growing in the botanic garden at Curepipe, Mauritius, and relatively few individuals of the other four species can be found (Moore 1978a). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

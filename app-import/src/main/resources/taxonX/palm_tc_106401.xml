@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia rostrata</name>
+<author>Bl.</author>
+<citation>Rumphia 2: 168 (1843)</citation>
+<bibref>Dransfield, Kew Bull. 34: 29 (1979), 36: 184 (1981)</bibref>
+<bibref>Dransfield, Ratt. Sabah 25 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 33 (1992)</bibref>
+<synonymy>
+<name>Korthalsia scaphigera</name>
+<author>Griff. ex Mart.</author>
+<bibref>Griff. ex Mart., Hist. Nat. Palm. 3 (2nd Edit.): 211 (1845)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(2):112 (1918) </bibref><bibref>Dransfield, Man. Ratt. Malay Pen. 47 (1979)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Beaked</p></div>
+<div type="vernacular"><p>Uwai Merah (Dus.), Wi Semut (Ib.), Wi Cit (Ib.)</p></div>
+<div type="description"><p>Slender clustering high-climbing and branching rattan, to 20 m or more. Stems without sheaths 6-9 mm diam., with sheaths 8-15 mm diam., internodes to 10 cm. Sheaths dull green with scattered short black-tipped spines to 2 mm; ocrea rarely exceeding 3 &#215; 2 cm, inflated armed, with very short scattered spines to 3 mm; ants abundant. Leaf to 1.1 m including the cirrus to 60 cm; petiole short to well-developed, 3-15 cm; leaflets 3-7 on each side of the rachis, generally broad rhomboid, to 20 &#215; 10 cm borne on short stalks to 3 mm, rarely (see below) narrow lanceolate, to 22 &#215; 2 cm, upper leaflet surface dark green, lower surface whitish. Inflorescences borne on up to 4 topmost nodes, to 50 cm, bearing up to 10 rachillae; rachillae slender c. 8 &#215; 0.7 cm, densely brown tomentose. Fruit to 2 &#215; 1.2 cm, somewhat obovoid, covered in 15-18 vertical rows of orangey-brown scales. Seed c. 1.5 &#215; 0.8 cm; endosperm deeply ruminate. Seedling leaf bifid. (Fig. 7).</p></div>
+<div type="distribution"><p>A common rattan found throughout Brunei at altitudes up to 850 m above sea level. Elsewhere widespread throughout Borneo (but rather rare in Sabah), Sumatra, Peninsular Malaysia and South Thailand.</p></div>
+<div type="biology_ecology"><p>K. rostrata occurs in a variety of habitats including lowland and hill dipterocarp forest and kerangas.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Durable slender rattan for binding purposes, used mostly in local handicrafts.</p></div>
+<div type="discussion"><p>In Sabah it is partially replaced by K. furtadoana, which differs in the usually few, thick rachillae with conspicuous bracts and the conspicuous fine close transverse veinlets in the leaf. Both species are recorded for Brunei, and there may occasionally be problems in identifying sterile material. In Temburong District and in parts of neighbouring Sarawak, K. rostrata occurs as a distinctive form with lanceolate rather than rhomboid leaflets. There are only a few collections. Although the leaflet shape seems so distinctive, it is otherwise identical to K. rostrata. This form is particularly noticeable on the slopes of Bukit Belalong.</p></div>
+<div type="materials_examined"><p>BEL: Sungai Liang, Andulau F.R, Wong 495; Sungai Liang, Sungei Liang Arboretem, Wong 137. TEM: Amo, Stockdale 19; Amo, Wong 1738; Amo, Kuala Belalong, Stockdale 14; Amo, Kuala Belalong, Dransfield J. 7064; Amo, Bt.Belalong, Dransfield J. 7150.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

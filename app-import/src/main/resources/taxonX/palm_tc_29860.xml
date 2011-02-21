@@ -1,0 +1,31 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus psilocladus</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 45: 96 (1990)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Smooth stem</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary slender rattan climbing to 5 m tall. Stem without sheaths 6-8 mm diam., with sheaths to 12 mm diam., internodes c. 10 cm long. Sheath dull green, unarmed, covered in thin grey indumentum; knee conspicuous; ocrea inconspicuous. Flagellum to 1.5 m, armed at the base with regular horizontal spines to 10 mm long. Leaf ecirrate, to c. 55 cm long including the sparsely armed petiole to 10 cm; rachis covered with rusty-red hairs; leaflets 24 - 34 on each side, close, regular, rather stiff, becoming plicate on drying, the longest to 15 x 0.7 cm, sparsely bristly on the upper surface and margins, densely scabrid on the under surf ace. Inflorescence very slender, elongate, to 1 m with 2-4 partial inflorescences; peduncle armed as the base of the flagellum, the primary bracts &#177; bearded at their tips; partial inflorescences &#177; pendulous, to 40 cm; male rachillae 10-25 mm; female rachillae to 40 mm. Mature fruit beaked, c. 8 mm diam., covered in 13 - 14 vertical rows of yellowish to ivory-coloured scales. Seed rounded, grooved and ridged; endosperm homogeneous. Seedling leaf not known (Fig. 90).</p></div>
+<div type="distribution"><p>Known only from forest north of Mile 74 on the Kuching to Simanggang road in the 1st Division. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>C. psilocladus was collected on a hill slope in kerangas forest at low altitude. It is related to C. nematospadix but differs in the smooth sheaths, the conspicuously spiny peduncle and flagellum bases, the scabrid undersurface of the leaflets, and the minutely split and expanded bracts subtending the rachillae. It is a very elegant species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

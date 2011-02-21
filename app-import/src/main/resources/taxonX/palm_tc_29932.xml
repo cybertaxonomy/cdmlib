@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus simplex</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1893) 456</citation>
+<bibref>Beccari, Ann Roy. Bot. Card. Calcutta 11 (1908) 428</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 88</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Simplex - simple, referring to the simple partial inflorescences - in the type</p></div>
+<div type="vernacular"><p>rotan ?</p></div>
+<div type="description"><p>Clustering thicket-forming mountain rattan with slender stem often branching, to about 6 m tall, without sheaths about 8 mm in diameter, with sheaths about 1.5 cm. Internodes about 18 cm. Sheaths pale brown armed with scattered narrowly triangular flattened spines held horizontally, the largest to 20 mm long by 5 mm wide at the base, with few smaller spines scattered in between; thin brown indumentum in between spines. Knee well-developed. Ocrea to 5 mm high, tattering. Leaf cirrate to 2.0 m long; petiole to 15 mm long armed with spines as on the leaf sheath, leaflets about 5 on each side ofrachis very broad, arranged alternately below, subopposite above, in most robust plants 60 cm long by 10 cm wide (Furtado 1956), usually about 30 cm long by 7 cm wide, with about 5 main veins, the margins black bristly at the tips only. Inflorescence up to about 80 cm long, shorter than the leaves, bearing about 6 partial inflorescences evenly distributed; bracts covered in pale grey indumentum and scattered scales almost inerm. Partial inflorescence in female consisting of 1 rachilla only; in male sometimes with 3-4 rachillae. Flowers arranged neatly in 2 rows. Fruit globose, very large, about 3 cm high by 2 cm in diameter, tipped with a short beak, covered in 24 vertical rows of pale brown to red-brown black-tipped scales. Seed globose, about 15 mm in diameter, with deeply ruminate endosperm. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Perak, Pahang (Main Range at Cameron Highlands and G. Tambang Batak). Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Collected by "Orang Asli" - apparently a good cane.</p></div>
+<div type="discussion"><p>Calamus simplex is the only slender high altitude cirrate rattan with few large broad leaflets; this character together with the simple or very sparsely branched partial inflorescences should be sufficient to distinguish it. It appears to be a very rare montane rattan, known only from the Main Range near Cameron Highlands, growing in lower montane forest at altitudes of about 1,500-2,000 m. However, it is extremely abundant at Cameron Highlands; G. Jasar, G. Beremban, and G. Batu Brinchang carry forests, in which the undergrowth is in places dominated by this rattan. In August 1977 large quantities of cane from this species had been collected but not extracted from the forest.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

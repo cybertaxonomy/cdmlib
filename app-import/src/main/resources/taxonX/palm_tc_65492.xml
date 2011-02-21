@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis monostachya</name>
+<author>Jum.</author>
+<citation>Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 6 (1): 29, 36 (1918)</citation>
+<bibref>Jum., Bull. Ac. Malgache 6: 15 (1922-23)</bibref>	
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 14 (1938)</bibref>	
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 46 (1945)</bibref>	
+<type>Madagascar, Rantabe, Bay of Antongil; Perrier; 12047</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p>This is a curious species that superficially looks much more like the species of Dypsis formerly included in the genus Neophloga. However, there are clearly only three stamens, and these being opposite the petals, this taxon belongs to the grouping formerly included in Dypsis &#167; Trichodypsis. Initially we had confused Dypsis spicata with this species; for differences, see under the latter. The species name is derived from the Greek for a single spike.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Clustering slender palmlet to 1m tall. STEM 5-7 mm diam., internodes 7-25 mm long with scattered scales, nodal scars c. 1 mm    wide. LEAVES c. 5 in crown; sheaths 6-8 x 0.5-0.8 cm, longitudinally striate, sparsely to densely covered with caducous dark red-brown scales, membranous by the mouth, sometimes tattering but lacking distinct auricles; petiole lacking or to 7.5 cm long, c. 1-2 mm wide, triangular in cross section, bearing sparse to dense caducous dark brown scales; lamina divided into c. 6 narrow leaflets on each side of the rachis, rachis 8-28 cm, sparsely scaly; leaflets 15-22 x 0.5-1.2 cm, the apical pair only slightly broader than the proximal leaflets, lamina surfaces with minute punctiform brown scales borne on pale thickened bases, denser on the abaxial surface than on the adaxial, leaflets drying very pale green. INFLORESCENCE spicate, interfoliar, only slightly shorter than the leaves or exceeding them, 24-45 cm long, erect, but with the flower-bearing portion sometimes pendulous; prophyll 6-9.5 x 0.4-0.6 cm; peduncular bract 6.5-18 x 0.4 cm, both prophyll and peduncular bract sparsely scaly; peduncle 13-24 cm long; spike 9-21 x 0.15-0.2 cm; triads rather sparse in proximal portion, more densely arranged distally, rachilla bract c. 1 mm, rounded to apiculate with laciniate scales, a distinctive patch of chestnut-brown scales present on axis just above the triads. STAMINATE FLOWERS c. 1.4 mm high; sepals c. 0.6 mm long, keeled; petals valvate, &#177; elliptical, 1 x 0.6 mm; stamens 3, antepetalous, alternating with 3 antesepalous triangular staminodes, together borne on a short androecial tube ring to 0.4 mm high, connective &#177; triangular, anthers subdidymous, pistillode not seen. PISTILLATE FLOWER rounded; sepals imbricate, rounded, c. 0.8 x 0.8 mm; petals round-ed-triangular, 1.2 x 1 mm; staminodes 3, minute, dentiform; ovary 
+c. 1 mm diam., post anthesis. FRUIT unknown.</p></div>
+<div type="distribution"><p>Bay of Antongil and Mandritsara.</p></div>
+<div type="biology_ecology"><p>Lowland and montane forest; to 900 m.</p></div>
+<div type="conservation"><p>Not known. Presumed extinct, although the known sites are rarely visited by collectors.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>As circumscribed here, D. monostachya is known from two separate populations. The type was collected at Rantabe at the southern end of the Bay of Antongil. The second collection was made further south but at relatively high altitude at Andilamena, Mandritsara. This latter collection differs from the   
+type in having rather thick scattered scales on the leaf sheath and in its inflorescences which are longer and have the flower bearing portion apparently pendulous. Otherwise the two collections are very similar.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Rantabe, Bay of Antongil, Aug. 1912 (fl.), Perrier 12047 (Holotype P). Mandritsara: north of Andilamena, April 1923 (fl.), Perrier 15015 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,49 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay peninsula</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus penicillatus</name>
+<author>Roxb.</author>
+<citation>Fl. Ind. 3 (1832) 781</citation>
+<bibref>Martius, Hist. Nat. Palm. 3 ed 1 (1838) 210</bibref>
+<bibref>Griffith, Calcutta J. Nat. Hist. 5 (1844) 56</bibref>
+<bibref>Griffith, Palms of Br. India (1850) 66</bibref>
+<bibref>Beccari, Hook, f., Fl. Brit. Ind. 6 (1893) 402</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11 (1908) 500</bibref>
+<bibref>Furtado, Gdns' Bull. Singapore 15 (1956) 187</bibref>
+<synonymy>
+<name>Calamus martianus</name>
+<author>Becc.</author>
+<bibref>Becc. in Hook, f., Fl. Br. India 6 (1893) 459</bibref>
+<bibref>Becc., Ann. Roy. Bot. Gard. Calcutta 11 (1908) 353</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus penangensis</name>
+<author>Ridley</author>
+<bibref>Ridley in Mat. Fl. Mai. Pen. 2 (1907) 192</bibref>
+<bibref>Ridley, Fl. Mai. Pen. 5 (1925) 51</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Penicillatus - pencil like, probably referring to the very slender stem</p></div>
+<div type="vernacular"><p>rotan batu</p></div>
+<div type="description"><p>Extremely slender clustering rattan climbing to 40 m tall. All pans drying pale. Stem without sheaths 2 - 4 mm in diameter, with sheaths to 7 mm, with internodes about 10 cm in length; sheaths dull green armed with upward pointing yellowish bulbous-based, black tipped spines 1 - 2 mm long, and scattered brownish scales. Knee conspicuous; Ocrea inconspicuous. Flagellum to 30 cm only. Leaf 40 cm long, ecirrate, without a petiole, bearing 3 - 4 leaflets on each side of the rachis; leaflets inequidistant, the terminal two slightly joined, bright green, thick textured, with rather conspicuous cross veins, the largest 15 cm long by 3 cm wide, usually less. Inflorescence male and female superficially similar very slender, rarely more than 60 cm long, with 4-5 partial inflorescences, to 15 cm long. Rachillae about 4 cm long. Fruit unknown; seedling leaf unknown.</p></div>
+<div type="distribution"><p>Penang: Penang Hill. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>This appears to be a first class cane but of very small diameter. This species however is extremely rare.</p></div>
+<div type="discussion"><p>Calamus penicillatus is known from a very few collections, all made on Penang Hill. It still grows on the hill, where it has been found at 650 m altitude growing on a steep slope near a small stream, in hill Dipterocarp forest. It is easily distinguished by its very small size, the upward pointing sheath spines and the very small leaf with few leaflets.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

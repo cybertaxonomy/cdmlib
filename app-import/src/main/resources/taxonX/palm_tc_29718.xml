@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus microsphaerion</name>
+<author>Becc.</author>
+<citation>in Perkins, Fragm. Fl. Philippines 45 (1904)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 543 (1908) and Suppl. 113 (1913)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Small sphere, referring to the unusually small fruit</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender solitary rattan climbing to c 10 m; stem without sheaths 5-10 mm, with sheaths to 20 mm; internodes to 16 cm. Sheaths dull green armed with abundant &#177; evenly spaced rigid brown spines to 25 mm with conspicuous swollen bases, and scattered brown scales, the spines usually &#177; horizontal or somewhat upward pointing. Knee conspicuous armed as the sheath. Ocrea short to 5 mm, membranous, occasionally armed with short spines. Leaf cirrate, to 1.5 m, including the short petiole to 5 cm, and cirrus to 40 cm; rachis armed with fierce black, yellowish-based reflexed spines; leaflets to c 35 on each side of the rachis, irregularly arranged in groups of 2-4, and fanned within the groups, extremely slender and limp, toe 30x0.5cm, dark shiny green throughout except for very base where pale yellowish-brown, unarmed, the main vein very prominent, lateral veinlets conspicuous but very short. Male and female inflorescences superficially similar, to c 1m, usually rather inconspicuous amongst the plumose leaves, with about 8 partial inflorescences, the male with very crowded branches, the rachillae to 2 cm, the female with rather lax branches bearing rachillae to 12 cm with rather distant flowers. Almost mature fruit very small, green, spherical to c 6 mm diam., with very short beak and covered in c 18 vertical rows of pale green to pale brown scales with mid brown tips. Seed spherical to 4 mm diam.; endosperm homogeneous. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>So far, in Sabah, known only from the ultrabasic rocks of Bt. Silam, Lahad Datu; elsewhere known only from Palawan and Luzon.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>C. microsphaerion was until recently known only from a very few collections from the Philippines. The Sabah plants do not match exactly those from the Palawan, but the Philippine collections themselves show considerable variation; the Sabah population is certainly very closely related to those of the Philippines, but until we have more material from Palawan and Luzon, it is not possible to investigate the relationships further. It is interesting to note that in Palawan also this species grows on ultrabasic rock. For differences between this species and the Sabah populations of C. oxleyanus, see under the latter. For differences between this and C. malawaliensis see under the latter.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia furcata</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Card. Calcutta 12(2): 120 (1918)</citation>
+<bibref>Dransfield in Kew Bull. 36: 192 (1981)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Forked</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering slender rattan with stems climbing to 20 m, branching in the canopy. Stem without sheaths 2-3 mm diam., with sheaths 4-6 mm diam., internodes c. 10 cm in mature climbing stems, much shorter in juvenile shoots. Sheaths pale brown, armed with scattered triangular spines to 1.5 mm long and with scattered deciduous black scales between the spines; ocrea inflated, c. 20 x 11 mm, armed as the sheaths, usually ant- infested. Leaf cirrate to 65 cm long including the cirrus; petiole short, rarely exceeding 2 cm in mature stems, longer in juveniles, cirrus to 65 cm; leaflets usually 2 only, one on each side of the rachis, rarely with an extra basal leaflet on one side, the major leaflets 10- 25 x 2.5 - 5 cm with praemorse tips, the upper surface bright to dark green, the lower surface covered in a dense layer of white indumentum, transverse veinlets conspicuous on the upper surface. Inflorescences produced from the topmost 1 - 2 nodes, each with 1 -2 rachillae only;rachillaec. 18 x 0.8 cm. Young fruit c .6x8 mm covered in 17 vertical rows of chestnut brown scales. Seedling leaf bifid (Fig. 10).</p></div>
+<div type="distribution"><p>A very rare rattan known only from two collections - the type from West Kalimantan and one from G Gaharu in Serian District.</p></div>
+<div type="biology_ecology"><p>K. furcata was found growing in a valley bottom in forest transitional between hill dipterocarp forest and kerangas at 350 m altitude on G Gaharu.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of good quality though very slender.</p></div>
+<div type="discussion"><p>It is similar to K. rostrata but can be distinguished immediately by the leaf which has a single pair of leaflets, rarely with an extra single leaflet on one side.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

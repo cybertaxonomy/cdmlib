@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small to moderate pinnate-leaved palm known only from mountain forest on Lord Howe Island; leaf sheaths not forming a crownshaft, the inflorescences interfoliar, apparently unisexual, but both sexes borne on the same plant.</p></div>
+<nomenclature>
+<name>Lepidorrhachis</name>
+<author>(H. Wendl. and Drude) O.F. Cook</author>
+<citation>J. Heredity 18: 408 (1927) (‘Lepidorhachis’).</citation>
+<type>Type; Lepidorrhachis mooreana; (F.Muell.) O.F.Cook</type>
+</nomenclature>
+<div type="etymology"><p>Lepis — scale, rhachis — spine or backbone, referring to the scaly leaf rachis.</p></div>
+<div type="description"><p>Small to moderate, solitary, unarmed, pleonanthic, monoecious palm. Stem thick, short, green, prominently ringed with close leaf scars. Leaves pinnate, ascending; sheath inflated at the base, deeply split opposite the petiole, not forming a distinct crownshaft, densely brown-scurfy toward the apex and petiole; petiole short, shallowly channelled adaxially, rounded abaxially, densely brown-scurfy; rachis adaxially channelled to ridged, abaxially rounded, densely tomentose; leaflets regularly arranged, alternate, single-fold, acute, stiff, ascending from the rachis, the midrib and 2–3 secondary nerves on each side prominent adaxially, margins thickened, bearing scales along ribs on both surfaces, transverse veinlets not evident. Inflorescences apparently unisexual, interfoliar in bud, becoming infrafoliar at anthesis, branched to 3 orders basally, fewer distally, densely covered with basifixed, twisted, simple to forked or tattered, brown, membranous scales; peduncle very short; prophyll usually incompletely sheathing, 2-keeled, open apically, apparently completely encircling at the base; peduncular bract tubular, beaked, exserted from the prophyll; rachis longer than the peduncle, bearing short, wide, acute bracts subtending rather distant, spirally arranged branches and rachillae; rachillae short, bearing paired or solitary staminate flowers or solitary pistillate flowers, the flowers superficial, each subtended by an acute bract. Staminate flowers slightly asymmetrical; sepals 3, distinct, imbricate basally, keeled, ± rounded apically; petals 3, distinct, slightly asymmetrical, about twice as long as the sepals, strongly nerved when dry; stamens 6, filaments distinct, inflexed in bud, anthers oblong in outline, latrorse; pistillode narrowly cylindrical, expanded apically, slightly longer than the stamens in bud. Pollen grains ellipsoidal asymmetric, occasionally lozenge-shaped; aperture a distal sulcus; ectexine tectate, perforate and micro-channelled, aperture margin similar or slightly finer; infratectum columellate; longest axis 32–44 µm [1/1]. Pistillate flowers symmetrical; sepals 3, distinct, broadly rounded and imbricate; petals 3, distinct, imbricate with briefly valvate apices, strongly nerved when dry; staminodes 3, on one side of the gynoecium; gynoecium unilocular, uniovulate, subglobose, stigmas recurved, ovule pendulous, probably hemianatropous. Fruit globose or nearly so, red at maturity, stigmatic remains lateral in the upper 1/3–1/4; epicarp smooth, drying granular over included sclerosomes, mesocarp fleshy, thin, with included longitudinal fibres except along the rapheal region, endocarp thin, fragile, operculate. Seed globose, with elongate raphe, hilum apical, short, elliptic, vasculature prominent, branched, the branches anastomosing abaxially, endosperm homogeneous; embryo subbasal. Germination and eophyll unrecorded. Cytology not studied.</p></div>
+<div type="distribution"><p>One species on Lord Howe Island.</p></div>
+<div type="anatomy"><p>Gynoecium with many bundles of sclereids peripherally (Uhl unpublished); leaf anatomy not studied, and fruit (Essig et al. 1999).</p></div>
+<div type="relationships"><p>The sister relationships of Lepidorrhachis remain unresolved (Asmussen et al. 2006, Norup et al. 2006, Baker et al. in review, in prep.). </p></div>
+<div type="uses"><p>A handsome ornamental. The fruit is favoured by invasive rats and must be protected. </p></div>
+<div type="taxonomic accounts"><p>Green (1994) and Baker and Hutton (2006). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>The rather short stout stem, ascending leaflets, lack of a crownshaft, sheath with copious buff indumentum and red fruits are characteristic. The restriction of this palm to high elevations on Lord Howe Island makes it particularly vulnerable to climate change. </p></div>
+<div type="vernacular"><p>Little mountain palm. </p></div>
+<div type="biology_ecology"><p>Found only in low mossy forest at high elevations.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

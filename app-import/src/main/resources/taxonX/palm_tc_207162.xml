@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Trachycarpus latisectus: The Windamere Palm</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Gibbons</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Spanner</mods:namePart>
+<mods:namePart type="given">T.W.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 42: 24-29</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Trachycarpus latisectus</name>
+<author>Spanner, Noltie &amp; Gibbons</author>
+<citation>Edinburgh J. Bot. 54: 257 (1997)</citation>
+<type></type>
+<type_loc></type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The specific epithet latisectus (with wide segments) was chosen for this species unusually wide leaf segments, a characteristic through which it usually can be easily identified from olher members of the genus.</p></div>
+<div type="vernacular"><p>The following local names have been recorded: talaerkop, punkah, tarika, purbung, and bhotay kucho.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Solitary, unarmed, dioecious fan palm to about 12 m tall; trunk slender, erect, bare, light grey, obscurely ringed, (10-)14-17 cm diameter, elothed in persistent, fibrous leaf-sheaths for 0.6-2 m below the crown. Leaves (8-)15-25, forming an erect, open ciown, some leaves reflexed, marcescent leaves numerous, forming a small skirt below the crown; leaf-sheath fibrous, 3O cm long or more, coarse, abaxial surface covered in pale tomentum,broadly triangular towards the apex, not breaking down into threads; petiole (50-)120-140 cm, slender (about 2.5 cm. wide and 1.2 cm high near the middle), flat above, slightly keeled towards the leaf-blade, broadly iriangular to rounded beneath, margins smoothr sharp-edged base very thick and robust, about 3.8 cm wide and 2 cm high, covered in pale tomentum; hastula less than 1 cm long, broadly triangular, slightly crested; leaf-blade palmate, 3/4 to completely orbicular, 65-85 cm long from hastula, 110-135 cm wide, leathery, dark green above, with thin whitish tomentum along the folds, slightly glaucous beneath, with clearly visible cross veinlets, nearly regularly divided for less than half its length into 65-75 stiff, linear segments with two inconspicuous longitudinal folds on either side of the midrib, tapering towards the apex from their broadest point, arranged at slightly differing angles, producing a slightly convoluted leaf profile; central segments 65-80 cm longo 3.5-5 cm wide at middle, with a prominent midrib beneath, lateral segments gradually more narrow and shorter, to about 2l-45 cm long and 1 cm wide, the more lateral segments joined for nearly the entire length in groups of 2-4, apex of central segments acute, notched, of lateral segments acuminate, bifid for 1-3 cm. Inflorescences 3-6, solitary, interfoliar, branched to three orders. Male inflorescence 60-100 cm long, spreading; peduncle short; prophyll two-keeled, apex acute; peduncular bract single, keeled, base tubular, inflated distally, about 7 cm wide in the distal portion, apex acuminate; rachis bracts 3, similar to peduncular bracts; rachillae short, about 2 mm diameter, yellowish; flowers globose,2.5-3 mm diameter, yellowish, arranged in groups of 2-4 on short pedicels; sepals ovate-triangular, joined into a fleshy base for lower l/4; petals nearly orbicular, minutely triangular-tipped, 3 times as long as sepals; stamens 6, slightly exceeding petals; filaments ventricose; anthers broadly ovate-sagittate, blunt; pistillodes less than half the length of the stamens. Female inflorescence 100-150 cm long, stiff, spreading; peduncle about 50 cm long, oval in cross section, 4.2 cm wide, 1.8 cm high; prophyll two.keeled, about 30 cm long, apex acute; peduncular bracts 2, keeledl long, tubular, about 4.5 cm wide. apex acuminate; rachis bracts 3, similar to peduncular bracts; rachillae 5-IB cm long, I*2 mm di- -ameter,'yellowish-green (in fruit); flowers glo. bose; about 1.5 mm diameter, yellowish, usually in pairs, subsessile, sepals briefly connate into a distinctly swollen base; petals oblong-orbicular, twice as long as sepals; staminodes 6, slightly exceeding petals; carpels with a very shdrt, conical style, stigma punctiform. Fruit shortly stalked, oblong-ellipsoid, flattened on one side, 16-18 mm long, 1l-13 mm wide; epicarp thin, yellowish-brown when ripe, turning bluishblack; mesocarp thin, fibrous; seed oval-oblong, flattened or shallowly depressed and grooved on one side, 13-16 mm long, 8.5-11 mm wide; endocarp very thin, with a crustaceous sand-like layer of light brown, small, irregurlar scales; endosperm homogeneous with a deep, lateral intrusion. Germination remote-tubular, eophyll simple, plicate, to 2 cm wide, glabrous. </p></div>
+<div type="distribution"><p>INDIA: in the foothills of the Sikkim Himalayas in extreme northeastern West Bengal (Kalimpong) and southern Sikkim between about 1200m and 2440m elevation (Gamble 1902, Cowan and Cowan 1929, Beccari 193l).</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>In Sikkim and two locations in West Bengal, it has apparently not been recorded for at least 60 years and could not be relocated to date. It is under immediate threat of extinction in the wild with only about 50 plants surviving in what may be its last remaining site on a steep, deforested slope on rocky soil at Mirik Busty on the Relli River between 1300 and 1400 m, where it is unable to reproduce. Unless immediate action is taken, the chances for its survival in the wild seem bleak. </p></div>
+<div type="uses"><p>The stems have reportedly been used in construction.</p></div>
+<div type="discussion"><p>Cultiaation. Trachycarpus latisectus is a frequently cultivated ornamental in Kalimpong and environs and its future in cultivation there seems fairly secure. Young plants are commonly encountered. Being cold-hardy as well as fast and easy to grow, it has good prospects of becoming a popular ornamental for temperate and subtropical regions. Seeds from cultivated trees around Kalimpong have been distributed to many growers around the world during recent years as Trachycarpus "sikkimensis", a provisional name of no botanical standing, relating to the area of its historical distribution being floristically and or geographically known as the "Sikkim Himalayas". Although many growers and enthusiasts may have become familiar with the name T. "sikkimensis" in the meantime, we have decided for a number of reasons not to use this name as the specific epithet of this new species and hope we will not have added too much to the confusion alreadys surrounding this genus. Note: There is no recent taxonomic treatment of the genus Trachycarpus (but see Beccari 1931, Kimnach 1977, and Gibbons 1996). Relationships of T. latisectus will be dealt with in a conspectus of the whole genus, which will appear in a later publication. </p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

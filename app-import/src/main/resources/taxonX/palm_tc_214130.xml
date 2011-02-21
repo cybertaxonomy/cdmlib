@@ -1,0 +1,57 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Wallichia (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Taiwania 52(1) 1-11</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wallichia disticha</name>
+<author>T.Anderson</author>
+<citation>J. Linn. Soc., Bot. 11: 6 (1869)</citation>
+<type>INDIA. Sikkim, between the rivers Mahanuddee and Teesta, no date; T. Anderson; s. n.</type>
+<type_loc>Lectotype P!</type_loc>
+<synonymy>
+<name>Didymosperma distichum</name>
+<author>(T.Anderson) Hook.f.</author>
+<bibref>(T.Anderson) Hook.f., Rep. Progr. Condition Roy. Bot. Gard. Kew 1882: 61 (1884)</bibref>
+</synonymy>
+<synonymy>
+<name>Wallichia yomae</name>
+<author>Kurz</author>
+<bibref>Kurz, Forest Fl. Burma 2: 533 (1877)</bibref>
+<type>MYANMAR, Bago, Pegu Yomah, 23 Jan 1868; S. Kurz; 1469</type>
+<type_loc>Lectotype US!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Thakal (Bhutan), katong (India), tao pha (Lao), minbaw, trung, zanong (Myanmar), mak na re suan (Thailand).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems solitary, to 9 m tall, 15-25 cm diameter. Leaves arranged in one or a few planes; sheaths 40-60 cm long, fibrous, with coarse, overlapping, black fibers, those of the outer layer thicker than the inner ones; petioles 0.5-1.5 m long; rachis 1.8-3.5 m long; pinnae 45-73 per side of rachis, irregularly arranged in clusters of 3-8 pinnae, spreading in different planes, pinnae from middle of leaf 56-80 cm long, 5-8 cm wide at widest point, linear or linear-lanceolate, shallowly lobed. Inflorescences unisexual, staminate and pistillate borne on the same stem, the pistillate terminal and the staminate lateral; staminate inflorescences to 1.2 m long, pendulous; prophyll not seen; peduncle to 50 cm long; peduncular bracts several, open and not sheathing the peduncle; rachillae to over 1000, to 30 cm long, 2 mm diameter, arranged in irregular whorls; staminate flowers to 10 mm long; sepals 1.5-2 mm long, connate into a cupular, lobed calyx, the lobes very briefly imbricate; petals to 10 mm long, purple and yellow; stamens 8-15; pistillate inflorescences to 1 m long, pendulous; prophyll not seen; peduncle to 50 cm long; peduncular bracts open and not sheathing the peduncle; rachillae 40-50, 30-60 cm long, 5-9 mm diameter; pistillate flowers 2 mm long; sepals 1 mm long; petals 2 mm long; gynoecium 2 mm long; fruits ellipsoid, to 2.2 cm long, to 1.5 cm diameter, reddish-brown.</p></div>
+<div type="distribution"><p>Bangladesh, Bhutan, China (Yunnan), India (Arunachal Pradesh, Assam, Meghalaya, Sikkim, West Bengal), Lao (Bolikhamsay), Myanmar (Bago, Chin, Kachin, Kayin, Rakhine), Thailand (Northern, West), and probably Nepal.</p></div>
+<div type="biology_ecology"><p>Scattered localities in lowland to montane rain forest, especially in rocky places on steep slopes, often in disturbed areas, to 1200 m elevation.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The pith from the stems is eaten in times of famine.</p></div>
+<div type="discussion"><p>There is considerable variation in size and shape of pinnae, from narrowly linear to more broadly linear-lanceolate. 
+Staminate and pistillate inflorescences are borne on the same stem, with the pistillate terminal and the staminate lateral. Direction of anthesis amongst inflorescences is basipetal. There is no evidence that inflorescences are subtended by smaller leaves. An individual stem can produce inflorescences for over two years. On staminate rachillae, the direction of anthesis is acropetal.
+The locality of Brandis s. n. has not been found. Sopilura (Sopilara?) is not found on modern maps or gazeteers, and the only Gonda Hills found in India is in the state of Jharkhand, an unlikely locality for Wallichia disticha. </p></div>
+<div type="materials_examined"><p>INDIA. Assan: Makim, Apr 1879, Brandis s. n. (K). Meghalaya: Cherrapunjee, Khasi Hills, 4000 ft., 14 Aug 1952, Thakur Rup Chand 6391 (BH). West Bengal: above Sivoka, Feb 1874, Gamble 2970 (K). State unknown: Choklong, lower Danguling (Daguling?) Hills, Jan 1875, Gamble 2971 (K); Gonda Hills, inland from Sopilura (Sopilara?), no date, Brandis s. n. (K). MYANMAR. Chin: Nachawan-Webula, 1000-4000 ft., 28 Apr 1938, Dickason 7217 (NY). CHINA. Yunnan: Ying Jiang, Xi Ma, 28 Nov 1981, Chen 18946 (HITBC); Ying Jiang, Xi Ma, Na Bang Ba, 10 Oct 1988, Chen 659 (KUN). THAILAND. Kanchanaburi: Sangkhlaburi District, Three Pagodas Pass, 300 m, 8 Jan 1994, Dransfield et al. 7343 (K); Sangkhlaburi, 450 m, 1 Nov 1997, Hodel &amp; Vatcharakorn 1766 (BH); Wangka, Kanburi, 200 m, 26 Jan 1926, Kerr 10313 (AAU, K, NY); SE of Sai Yok, 26 Dec 1961, Larsen 8965 (BKF); Toong Yai, Sangkhlaburi, 400-500 m, 22 Mar 1997, Niyomdham &amp; Phuma 4967 (BKF); same locality, same date, Niyomdham &amp; Phuma 4968 (BKF). LAO. Bolikhamsay: Pakkading District, Ban Naphong, Houay Mouang, 18°12’N, 104°21’E, 260 m, 9 Feb 1999, Evans 32 (K). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

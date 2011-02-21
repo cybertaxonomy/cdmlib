@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus holttumii</name>
+<author>Furtado</author>
+<citation>Gdns. Bull. Singapore 15 (1956) 228.</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>R.E. Holttum - eminent tropical botanist, one-time director of Botanic Gardens Singapore</p></div>
+<div type="vernacular"><p>rota n peru t ay a m</p></div>
+<div type="description"><p>Solitary rattan climbing to 15 m tall, usually less. Stem without sheaths to 10 mm in diameter, with sheaths to 2 cm; internodes about 15 cm long. All parts dull becoming reddish tinged on drying. Sheaths dull green armed with abundant bulbous-based spines to 1 cm long by 5 mm wide and abundant sinuous rough ridges. Knee conspicuous armed as the leaf sheath. Ocrea to 1 cm high. Flagellum to 2 m long. Leaf ecirrate to 1 m including petiole to 30 cm long; leaflets very variable, from 4 to 15 on each side, very broad (30 cm long by 5 cm wide) or narrow (30 cm long by 1.5 cm wide), with many intermediates, &#177; unarmed. Inflorescences to 1.5 m long, the male more highly branched than the female, with bracts rather densely spiny and armed with rough ridges. Mature fruit to about 1 cm in diameter, rounded, very shortly beaked covered in 15 vertical rows of green, drying brown scales; seed about 6 mm in diameter. Endosperm deeply ruminate. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Johore, Trengganu. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Cane of good quality (5-10 mm) but probably too rare to be of much significance.</p></div>
+<div type="discussion"><p>Calamus holttumii is a variable plant; the type specimen from G. Panti has relatively narrow leaflets, though most of the living population at the same locality has broad leaflets.
+Yet in every other respect the plants are similar. For differences from C. tanakadatei see under the latter species. C. holttumii is known from three localities - Ulu Endau and G. Panti in Johore, and Bt. Bauk in Trengganu. It grows in all three localities in hill forest on humus rich soil.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

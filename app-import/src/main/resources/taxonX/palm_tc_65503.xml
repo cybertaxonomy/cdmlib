@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis pachyramea</name>
+<author>J.Dransf. </author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 403 (1995)</citation>
+<type>Madagascar, Masoala, Hiaraka; Dransfield et al.; JD6362</type>
+<type_loc>Holotypus K; isotypi BH, MO, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This is one of the smallest members of the genus. It is an attractive species with mid green, deeply plicate leaves and short, squat inflorescences hidden among the leaf bases. It is found in very humid lowland forest on the western side of the Masoala Peninsula. The species name is derived from the Greek for thick branches.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Habitu et forma inflorescentia congesta rachillis brevibus crassisque D. angustifoliaesuperficialiter similis sed gregem specierum floribus staminatis triandris staminibus antepetalis, staminodiis antesepalis alternantibus pertinens.  </p></div>
+<div type="description"><p>Slender clustering undergrowth palmlet occurring in rather dense stands. STEMS to 50 cm tall, usually less, decumbent, rooting at the ground and sprouting at the rooting point, 7-8 mm diam., in the upper part obscured by marcescent leaf sheaths, internodes 7-23 mm long; nodal scars c. 2 mm wide, stem surface covered in scattered chestnut-brown scales. LEAVES c. 8 in the crown; sheaths tubular, 60 x 9-14 mm, striate when dry, apically with 2 short triangular auricles 4.5 x 3 mm, these soon disintegrating, the sheath surface covered in dense caducous fimbriate-margined chestnutbrown scales; petiole absent or to c. 9 cm long, triangular in cross section, 2 mm wide, densely covered in fimbriate-margined caducous chestnut-brown scales; blade narrow triangular, entire bifid, plicate, matt mid green, 39-43 cm, with costa 20-23 cm long, the lobes 17-20 cm long, 3.5-4.0 cm wide at the base, tapering to 1 cm wide at the shallowly dentate tips; costa bearing abundant caducous chestnut-brown scales, adaxial blade surface with scattered brown punctiform scales both on and between the ribs, abaxial surface with caducous fimbriate scales along ribs and scattered punctiform brown scales between ribs. INFLORESCENCE interfoliar, erect or sharply reflexed, much shorter than the leaves, 7-15 cm, branched to one order only; peduncle to 10 cm long, 3 mm diam. distally, densely covered with fimbriate dark brown caducous scales; prophyll inserted to 10 mm above the base of the peduncle, 46 x 6 mm, tattering and bearing caducous dark brown scales; peduncular bract inserted c. 2 cm above the prophyll insertion, 40 x 6 mm, tattering and scaly as the prophyll; rachis to 3 cm; rachillae 5-10, thick, short, 10-25 x 3 mm in liquid-preserved specimen, the longest being the continuation of the rachis, rachilla surface obscured by dense fimbriate scales. Triads borne congested &#177; throughout the rachilla length, partially obscured by the scales and partially sunken in pits, the rachilla bracts rounded, c. 0.5 x 1 mm, forming the lower lips of the pits. STAMINATE FLOWERS at anthesis c. 1.1 mm, spherical; sepals rounded, c. 0.8 mm diam., margins irregularly dentate or entire; petals &#177; free except at the very base, broadly triangular, 1 x 1 mm, striate, glabrous; androecium with 3 antepetalous stamens, filaments forming a fleshy ring c. 0.4 mm high, anthers didymous, 0.2 mm, &#177; sessile, introrse, connective c. 0.1 mm, staminodes scarcely visible as 3 minute triangular lobes positioned between the anthers; pistillode scarcely visible. PISTILLATE FLOWERS at anthesis 2 x 1.5 mm, briefly stalked; sepals ovate, margins irregularly dentate, 1.2-1.5 x 0.9 mm; petals 1.5 x 1 mm, free, with thick triangular striate valvate tips, basally weakly imbricate; staminodes 6, irregularly triangular, 0.1-0.75 mm, irregularly grouped at one side of the ovary or separated, if grouped then connate; ovary spherical, c. 1.1 mm diam., stigmas eccentrically apical, to 0.2 mm, basally connate. Immature FRUIT green, fusiform, mature fruit cherry-red, ellipsoid, 17 x 7 mm; epicarp smooth, mesocarp 1-2 mm thick, endocarp 0.4 mm thick with sparse anastomosing fibres. SEED ellipsoid, 14 x 5 mm, embryo lateral.</p></div>
+<div type="distribution"><p>Masoala Peninsula.</p></div>
+<div type="biology_ecology"><p>Lowland forest, on steep slopes and in humid valley bottoms; to 400 m.</p></div>
+<div type="conservation"><p>Vulnerable. Only known from two sites.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>This species was at first confused with Dypsis humbertii var. angustifolia (= D. angustifolia). The inflorescences of both taxa are remarkably similar and unlike other species of Dypsis in the few short fat rachillae densely covered with hairs that obscure the flowers. There are also similarities in habit and form of the leaf. However, stamens in the new taxon are antepetalous, while in D. angustifolia they are antesepalous.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Masoala Peninsula, Hiaraka, Oct. 1986 (fl.), Dransfield et al. JD6362 (Holotype K, isotypes BH, MO, P, TAN); Andranofotsy River, Sahavary, swamp at headwaters of Sahafotra River, Feb. 1988 (fl.), Dransfield et al. JD6451 (K, MO, NY, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

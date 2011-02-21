@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus dilaceratus</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. Ind. 2: 198. 1902</citation>
+<bibref>Beccari, in Ann. Roy. Bot. Card. Calcutta 11: 144, PI. 15. 1908.</bibref>
+<bibref>Basu, Rattans in India Mongr Rev: 7. 1992. (emend, descr.).</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering, large diameter rattan. Stem 20 m long or more, with sheaths to 4 cm in diameter, without sheaths 2 cm. Leaf to 6 m long, cirrate; sheath green, distal sheaths covered with white powder, densely armed with spines, spines 2-4 cm long, yellow with a reddish brown tinge, grouped together, arranged horizontally in slightly raised rims; knee present, not seen clearly from a distance because of dense spines,, petiole spiny, spines brownish yellow, grouped together, arranged horizontally in slightly raised rims; rachis stout, armed with 3 rows of spines, spines to 0.3 cm long, black, grouped together in slightly raised rims; leaflets ca. 50 x 2.5 cm, basal and distal ones smaller, veins and margins sparsely ciliate. Inflorescence not flagellate; male inflorescence, primary sheath lacerate, spiny; spines black, 1 cm long; partial inflorescences to 18 cm long; secondary sheath splits open, not spiny; rachilla 4 cm long, flowers in distichous rows; female inflorescence, primary sheath to 2.5 cm long, spiny, splitting open, slightly prolonged at the distal end into a lanceolate point: partial inflorescence to 25 cm Ipng; secondary sheaths splits open, not spiny, 1 cm long, prolonged at the distal end into a lanceolate point; rachilla to 6 cm long, arched; female flower outer side of outer perianth with black spots, both whorls split longitudinally in fruit; involucrophorum sessile. Fruit ovoid, ca. 1 x 0.8 cm, scales in 21 vertical rows, yellowish white with thin brown margin, channelled in the middle; endosperm not ruminate.</p></div>
+<div type="distribution"><p>Evergreen forest. Great Nicobar. (Map. 7).</p></div>
+<div type="biology_ecology"><p>Flowering November - December. Fruiting April - May.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Used in furniture industry and house construction. Leaves are used for thatching.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>16th Km, East West Road, Nicobar, 12.4.93, male fls., Renukaand Vijayakumaran 7043, (KFRI); 16 th km, East West Road, Nicobar, 15.4.1993, fr., Renuka and Vijayakumaran 7047(KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

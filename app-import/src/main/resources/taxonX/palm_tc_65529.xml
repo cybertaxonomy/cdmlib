@@ -1,0 +1,65 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis scottiana</name>
+<author>(Becc.) Beentje &amp; J.Dransf. </author>
+<citation>Palms of Madagascar: 239 (1995)</citation>
+<type>Madagascar, forest near Fort Dauphin (Tolanaro); Scott Elliot; 2615</type>
+<type_loc>Holotype K</type_loc>
+<synonymy>
+<name>Neophloga scottiana</name>
+<author>Becc.</author>
+<bibref>(Becc.) Becc. Bot. Jahrb. Syst. 38, Beibl. 87: 22 (1906)</bibref>
+<bibref>Becc., Palme del Madagascar 22, fig. 15, t. 20 (1912)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 22 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 91 (1945)</bibref>
+</synonymy>
+<synonymy>
+<name>Phloga scottiana</name>
+<author>Becc.</author>
+<bibref>Becc., J. Linn. Soc. 29: 61 (1891)</bibref>
+<bibref>Baill., Bull. Soc. Lin. Paris 150: 1195 (1894)</bibref>
+</synonymy>
+<synonymy>
+<name>Neophloga affinis</name>
+<author>Becc.</author>
+<bibref>Becc., Bot Jahrb Syst 38, Beibl 87: 22 (1906)</bibref>
+<bibref>Becc., Palme del Madagascar 21 (1912)</bibref>
+<bibref>Jum., Cat Pl Madagascar, Palmae: 19 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl Madagascar 30: 91 (1945)</bibref> 
+<type>Madagascar, Fort Dauphin (Tolanaro); Cloisel; 108</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A very distinct species from the white sand forest of southern Madagascar, with elegant, slender inflorescences with short rachillae. This species would probably do very well as an ornamental; not only is it beautiful, but its habitat indicates it would tolerate fairly dry climates, probably along the lines of D. lutescens. The name refers to the collector of the type, George Francis Scott Elliot (1862-1934) who collected in Madagascar between 1888 and 1890.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Raosy (Antanosy).</p></div>
+<div type="description"><p>Clustering palm in tufts of 3-16 STEMS 2-4 m tall, 0.6-2 cm diam.; internodes 1-5 cm, pale grey, nodal scars 2-3 mm, slightly stepped. LEAVES 4-7 in the crown, porrect to spreading; sheath 8-31 cm long, 0.8-2 cm diam., 2/3 closed in outermost leaves, light brown with dense red scales, glabrescent but distally always with some patches of scales, with small triangular auricles up to 2 mm high; petiole 4-30 cm long, 0.2-0.5 x 0.2-0.3 mm diam., adaxially flat or slightly channelled, abaxially convex, with scattered scales, proximally often with a raised triangular continuation of the inner sheath lining; rachis 15-66 cm long, in mid-leaf 1-4 mm wide, with scattered scales on both surfaces; leaflets 11-27 on each side of the rachis, in groups of 2-8 (regular or nearly so in Decary 10729), interval between the groups 2.5-8 cm, interval between the leaflets 0.5-2 cm, the proximal 7-22 x 0.3-0.8 cm, median 8-24 x 0.6-2 cm, distal 6-15 x 0.4-2.7 cm, proximal and median with cuneate base, 1-3 main veins (prominent adaxially), and acuminate apex, glabrous or with a few scattered scales near the base and on the margins, the distal pair joined for 0.4-3.5 cm, with 3 main veins, narrow and dentate at the apex. INFLORESCENCE interfoliar to infrafoliar, erect to spreading to semi-pendulous, branched to (2) 3 (4) orders, 25-55 cm long; peduncle 12-25 cm long, proximally 3-6 mm diam. and flattened, distally 1.6-5 mm diam. and cylindrical, densely scaly but glabrescent; prophyll 14-26 cm long, borne at 2-3.5 cm above the base of the peduncle, up to 1.3 cm wide, pale brown with scattered scales, opening near the apex only; peduncular bract quickly deciduous, inserted at 7-14 cm from the base of the peduncle, 15-19 cm long, split in its distal half except for the distal 1-2 cm, with a narrow beak of 0.5-1 cm, pale brown with scattered scales; rarely with a small (1.5 mm) non-tubular peduncular bract in the distal part of the peduncle; rachis 7-40 cm long, scaly, with 7-27 branched and 0-10 unbranched first order branches, the proximal ones near their base 1.5-3 mm diam. and hardly flattened; rachillae 0.7-6.5 cm long, c. 1 mm diam., sparsely scaly, with distant superficial triads, with green to cream flowers. STAMINATE FLOWERS with sepals 0.5-0.8 x 0.8-1 mm, keeled, gibbous at the base, broadly ovate, rounded; petals on a 0.4 mm high receptacle, 1.4-1.8 x 1.4-1.6 mm, ovate to elliptic, acute, opening only slightly; stamens 6, at anthesis poking through the slits in the corolla, with the anthers held vertically, their openings upward, slightly 2-seriate, the antepetalous filaments with small swellings at the base and inserted slightly higher than the antesepalous ones, 1.2-1.5 mm long, thin, anthers 1.2-1.3 x 0.4-0.5 mm, dorsifixed, versatile, the locules parallel and obtuse; pistillode 0.7-0.8 mm high, ellipsoid, 0.5-0.6 mm diam. PISTILLATE FLOWERS with sepals 0.8-1.1 x 1.2-1.8 mm, broadly ovate, rounded, concave; petals proximally imbricate and broadly ovate, distally triangular, fleshy and acute, 2-2.3 x 1.6-2.2 mm; staminodes 6, 0.3-0.5 mm, dentiform, flat; gynoecium 2.4-2.6 x 2-2.2 mm, asymmetrically gibbous. FRUIT red, ellipsoid, 6 -11 x 3.5- 6.5 mm, with slightly pointed apex; mesocarp fleshy, c. 1 mm thick; endocarp fibrous with free fibres. SEED ellipsoid, 6.5-9 x 3-5 mm, obtuse to pointed at both ends; endosperm homogeneous. EOPHYLL bifid.</p></div>
+<div type="distribution"><p>SE Madagascar.</p></div>
+<div type="biology_ecology"><p>Forest on white sand, heath scrub on white sand, once found in lowland rain forest; 10-515 m.</p></div>
+<div type="conservation"><p>Vulnerable. Distribution area small, in a specialized habitat which is under threat of mining operations and fire. Numbers are estimated at less than five hundred.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>N. affinis was described by Beccari based on an inflorescence collected by Cloisel (called Choisel by Beccari), which resembles that of N. scottiana closely. Beccari distinguished the species by the branching of the inflorescence: N. scottiana branched to two orders, N. affinis branched to three orders. However, the type of N. scottiana is clearly branched to three  
+orders, and we hereby put N. affinis into the synonymy of D. scottiana. 
+Jumelle mentions the two species only briefly in his 1929 revision of Neophloga, since he did not believe the two taxa belonged to the genus. Not hampered by the fact that he had not seen the type of N. scottiana, he based his opinion on the description by Beccari (to whom he usually refers to as 'the Italian botanist'). In the Flora (Jumelle &amp; Perrier 1945) the species are treated under Neophloga, with the brief remark that they are intermediate between Neophloga and Chrysalidocarpus. 
+A collection from lowland rain forest (Beentje 4599) matches the collections from white sand forest and heath scrub at much lower altitudes; the main differences are the higher number of leaflets (up to 27 on each side of the rachis, rather than the 11-19 of the white sand populations) and the slightly longer petiole. The inflorescence agrees perfectly, however, and we see no reason to distinguish the forms formally. A collection from Manombo Forest, much further north, looks similar to D. scottiana, but with the following differences: leaf sheath 6.5-9.5 cm long; LEAFLETS 7-11 on each side of the rachis; inflorescence branched to 2 orders; prophyll and peduncular bract slightly shorter; rachis with 1-5 branched and 8-9 unbranched first order branches; STAMINATE FLOWERS with sepals 0.7-1.2 mm. Other characters overlap [Farafangana: Manombo, Jan. 1993 (fl.), Beentje &amp; Andriampaniry 4782 (K, MO, P, TAN]. It is not the same, but is verging towards it!</p></div>
+<div type="materials_examined"><p>Tolanaro: forest near Fort Dauphin (Tolanaro), May 1890 (fl.), Scott Elliot 2615 (Holotype K); between Pic St. Louis and the sea, 1928 (fl.), Humbert 5958 (P); 13 km N of Ezoambo, March 1992 (fr.), Beentje &amp; Andriampaniry 4599 (K, MO, TAN); 24 km N of Tolanaro, April 1989 (ster.), Rabevohitra et al. 1932 (K, P); idem, March 1992 (fl.), Beentje &amp; Andriampaniry 4607 (BH, K, MO, P, TAN) and (fl., fr.), Beentje &amp; Andriampaniry 4608 (BH, K, MO, P, TAN); St. Luce forest, March 1992 (fl., fr.), Phillipson et al. 3961 (K); idem, Dec. 1992 (fl.), Beentje 4759 (K, MO, P, TAN); L. Mananivo-Andriamanga, March 1989 (fl.), Dumetz et al. 616 (K, P); NW Marokoky, March 1989 (y.fr.), Dumetz et al. 618 (K, P, TAN); Mandena, March 1989 (fl., fr.), Dumetz et al. 503 (MO); idem, (fl.), Dumetz et al. 527 (K, P); idem, April 1989 (bud, fr.), Rabevohitra et al. 1888 (K, P). Fort Dauphin (Tolanaro), without further locality, without date (fl.), Cloisel 108 (P, type of N. affinis); idem, Oct. 1932 (fl., fr.), Decary 10729 (K, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

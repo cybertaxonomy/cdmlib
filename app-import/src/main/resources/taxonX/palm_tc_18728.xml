@@ -1,0 +1,76 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Extremely variable genus of spiny pinnate-leaved palms from Central and South America and the Caribbean, with almost always acute not praemorse leaflets, or entire margins. The staminate flowers are borne in triads along with the pistillate, not concentrated at the tips of the rachillae.</p></div>
+<nomenclature>
+<name>Bactris</name>
+<author>Jacq. ex Scop.</author> 
+<citation>Intro. hist. nat. 70 (1777).</citation>
+<type>Lectotype; Bactris minor; Jacq.</type>
+<synonymy>
+<name>Guilielma</name>
+<author>Mart.</author>
+<bibref>Mart., Palm. fam. 21 (1824).</bibref>
+<type>Type; Guilielma speciosa; Mart.</type>
+</synonymy>
+<synonymy>
+<name>Augustinea</name>
+<author>H.Karst.</author>
+<bibref>H.Karst., Linnaea 28: 395 (1857) (non A. St.-Hil. and Naudin 1844).</bibref>
+<type>Type; Augustinea major; (Jacq.) H. Karst.</type> 
+</synonymy>
+<synonymy>
+<name>Pyrenoglyphis</name>
+<author>H.Karst.</author>
+<bibref>H.Karst., Linnaea 28: 607 (1857) (‘1856’).</bibref>
+<type>Type; Pyrenoglyphis major; (Jacq.) H. Karst.</type>
+</synonymy>
+<synonymy>
+<name>Amylocarpus</name>
+<author>Barb.Rodr.</author>
+<bibref>Barb.Rodr., Contrib. Jard. Bot. Rio de Janeiro 3: 69 (1902) (non Currey 1859).</bibref>
+<type>Lectotype; Amylocarpus simplicifrons; (Mart.) Barb. Rodr.</type> 
+</synonymy>
+<synonymy>
+<name>Yuyba</name>
+<author>(Barb.Rodr.) L.H.Bailey</author>
+<bibref>(Barb.Rodr.) L.H. Bailey, Gentes Herb. 7: 416 (1947).</bibref>
+<type>Type; Yuyba simplicifrons; (Mart.) L.H. Bailey</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Probably derived from baktron — stick, cane, staff, because of the slender stems of many species.</p></div>
+<div type="description"><p>Diminutive to large, solitary or clustered, unarmed (rarely) to very spiny, pleonanthic, monoecious palms. Stems subterranean and very short, to erect, very slender to moderate, with short to long internodes and, eventually, with conspicuous nodal scars, often scaly, frequently armed with short to long spines. Leaves pinnate or entire bifid, marcescent or neatly deciduous; sheaths usually splitting opposite the petiole, the margins smooth or becoming fibrous, unarmed to densely spiny, glabrous, scaly, hairy or bristly, a ligule-like projection sometimes also present; petiole very short to long, adaxially channelled, flat, or angled, abaxially rounded, variously unarmed to spiny; rachis usually longer than the petiole, adaxially angled except near base where channelled or not, abaxially rounded to flattened, variously armed or unarmed; blade where undivided with smooth or spiny margins, numerous ribs and an apical V-shaped notch, leaflets 1–several-fold, regularly arranged or irregularly grouped, often held in different planes within the groups, linear, lanceolate, or sigmoid, the tips very rarely praemorse (Bactris caryotifolia), acute or acuminate in a long drip tip, more rarely bifid or irregularly lobed, sometimes the abaxial surface covered in chalky-white indumentum, sometimes spiny along midrib on abaxial surface, the margins often bristly, blade surfaces sometimes softly hairy, midrib prominent adaxially, transverse veinlets conspicuous or obscure. Inflorescences interfoliar, or mostly becoming infrafoliar, solitary, spicate (rarely) or branching to 1 order, protogynous; peduncle usually relatively short, sometimes elongate, ± curved, oval in cross-section, armed or unarmed; prophyll short, tubular, 2-keeled, tightly sheathing, often concealed within the leaf sheath, usually membranous, unarmed, splitting along the abaxial face; peduncular bract inserted near the base of the peduncle, usually persistent, much longer than the prophyll, enclosing the rachillae in bud, coriaceous to woody, tightly sheathing the peduncle, tubular, later splitting longitudinally in distal region and often expanding and becoming boat-shaped or cowl-like, usually bearing indumentum, often bearing spines on the outer face, inner face smooth, sometimes conspicuously cream-coloured, rarely a second peduncular bract present; rachis usually shorter than the peduncle, bearing spirally arranged, rather stiff, ± glabrous, densely hairy or bristly rachillae, each subtended by an inconspicuous triangular bract; rachillae bearing spirally arranged, usually rather crowded, small triangular rachilla bracts subtending flower groups, flowers borne in triads ± throughout the rachillae, or triads scattered among paired or solitary staminate flowers ± throughout, or triads borne in proximal ca. 1/2 and solitary or paired staminate flowers distally; floral bracteoles minute. Staminate flowers often somewhat asymmetrical, sessile, or rarely borne on slender, unequal pedicels; calyx cupular or spreading, very short, shallowly trilobed; petals 3, fleshy, asymmetrically triangular, distally valvate, connate basally to ca. 1/2 their length and adnate basally to a fleshy floral axis; stamens (3–)6(–12), filaments slender, inflexed at the apex nearly from the middle in bud, sometimes curved, anthers usually dorsifixed, short to elongate, ±versatile, latrorse; pistillode absent. Pollen grains ellipsoidal, or oblate-triangular, usually with either slight or obvious asymmetry; aperture a distal sulcus or trichotomosulcus; ectexine tectate, usually, finely to coarsely rugulate, perforate and/or micro-channelled, or psilate with usually widely spaced perforations, less frequently finely perforate rugulate tectum with either supratectal spines, verrucae or gemmae, aperture margin may be slightly finer; infratectum columellate; longest axis ranges from 28–52 µm [42/73]. Pistillate flowers scarcely larger than the staminate; calyx annular, somewhat flattened or urn-shaped, truncate or very shallowly 3-lobed, sometimes hairy, scaly or spinulose; corolla much longer than the calyx or ± the same length, urn-shaped, truncate or very shallowly 3-lobed, variously hairy or spiny or glabrous; staminodes absent or forming a membranous ring, not adnate to the corolla; gynoecium columnar to ovoid, sometimes spiny or hairy, trilocular, triovulate, stigmas 3, very short, ovules laterally attached, orthotropous. Fruit usually 1-seeded, very small to large, ovoid, obpyriform, oblate, or top-shaped, yellow, red, green, brown, purple, or black; epicarp smooth, spiny, roughened or hairy, mesocarp thin to very thick, fleshy, juicy or starchy with sparse or abundant fibres, endocarp thick, bony, with 3 pores at or above the equator, sometimes with fibres radiating from the pores. Seed irregularly globular, basally attached, hilum circular, raphe branches sparsely anastomosing (?always) endosperm homogeneous, with or without a central hollow; embryo next to one of the endocarp pores. Germination adjacent-ligular; eophyll bifid or rarely pinnate, often spiny, bristly or hairy. Cytology: 2n = 30.</p></div>
+<div type="distribution"><p>Although over 230 species have been described in the past, Henderson (2000), using a broad species concept in his recent monograph, has brought order to the genus. Seventy-seven species are currently accepted, distributed from Mexico and the West Indies south to Paraguay, with the greatest diversity in Brazil.  </p></div>
+<div type="anatomy"><p>Leaf morphology (Clement and Urpi 1983), anatomy (Tomlinson 1961, Roth 1990), root (Seubert 1998a, 1998b), flower (Uhl and Moore 1971, 1977a) and seed (Werker 1997).</p></div>
+<div type="relationships"><p>Bactris is monophyletic with high support (Couvreur et al. 2007). For relationships, see Acrocomia. For interspecies relationships, see Couvreur et al. (2007).</p></div>
+<div type="uses"><p>Economically, the most important species is B. gasipaes (Guilielma gasipaes), which is widely cultivated and not known in the truly wild state (Mora-Urpi 1983); this species is thought to be one of the oldest of all domesticated palms and its endocarps have been found in early archaeological sites (Morcote-Rios and Bernal 2001). It produces thick mesocarp flesh that is edible and tasty after cooking, and that is sufficiently rich in nutrients and vitamins to be an important constituent of the diet of rural people. The ‘cabbage’ of the same species is edible and good. See also Guerrero and Clement (1982) for references on B. gasipaes. Other species have edible fruits and some have been used as a source of walking sticks, and for thatch and fibre. </p></div>
+<div type="taxonomic accounts"><p>Henderson (2000). </p></div>
+<div type="fossil record"><p>From the Middle Eocene of southeastern North America (Claiborne Group), very fragmentary pinnate fronds, some with spiny margins, are referred to Bactrites pandanifoliolus (Berry 1924). However, the leaves referred to Bactrites cannot safely be attributed to the extant genus; fossil vegetative parts, especially spines, can bear some resemblance to Bactris but there should be caution in equating them (Uhl and Dransfield 1987). Hollick (1928) compared fossil fruit from the Middle Oligocene of Puerto Rico, named Bactris pseudocuesco, with fruit of Bactris cuesco Engl. (= B. corossilla), and commented that, “the fossils can hardly be distinguished.” </p></div>
+<div type="discussion"><p>This genus is distinguished by staminate flowers in triads or dispersed among the triads on the rachillae and by pistillate flowers with united petals. Several attempts have been made to divide the genus into infrageneric groupings (e.g., Sanders 1991), some of which have also been elevated to generic rank. Henderson (2000) recognises none of these, preferring to use six informal groupings, which he clearly indicates as being groupings of convenience that are not necessarily natural. </p></div>
+<div type="vernacular"><p>Peach palm, pejibaye, chonta, pupunha (Bactris gasipaes).</p></div>
+<div type="biology_ecology"><p>It is not surprising that there are species of Bactris adapted to a very wide range of habitats in the lowlands and uplands, but the genus appears to be absent from montane forest. There are species confined to the undergrowth of tropical rain forest, others adapted to the landward fringe of mangrove, to white sand savannahs, and to freshwater swamp forest. Pollination in Bactris, where known, is by beetles (many studies, e.g., Essig 1971a, Beach 1984, and reviewed by Listabarth 1996).</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Clustering high-climbing pinnate-leaved rattan palms of Southeast Asia and West Malesia; sheaths are densely armed with whorls of spines, ocrea absent; hapaxanthic and dioecious, the rachillae bear solitary staminate flowers or solitary pistillate flowers; perianths are membranous and the fruit relatively large, covered with minute irregularly arranged scales.</p></div>
+<nomenclature>
+<name>Myrialepis</name>
+<author>Becc. in Hook.f.</author> 
+<citation>Fl. Brit. India 6: 480 (1893).</citation>
+<type>Type; Myrialepis scortechinii; Becc.</type>
+<synonymy>
+<name>Bejaudia</name>
+<author>Gagnep.</author>
+<bibref>Gagnep., Notul. Syst. (Paris) 6(3): 149 (1937).</bibref>
+<type>Type; Bejaudia cambodiensis; Gagnep.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Myrioi — very many, lepis — scale, referring to the countless minute scales on the fruit.</p></div>
+<div type="description"><p>Robust, clustered, high-climbing, spiny, hapaxanthic, dioecious, rattan palm. Stem eventually becoming bare with long internodes and conspicuous nodal scars, basal vegetative branches borne opposite the leaves. Leaves on mature climbing stems usually massive, pinnate, cirrate; sheath tubular, sparsely armed with neat whorls of large spines in juveniles, with scattered spines in adults, indumentum abundant on sheath surfaces; knee absent; ocrea absent; flagellum absent; petiole very short to well developed, deeply channelled, sparsely armed; rachis sparsely armed proximally, distally armed as the cirrus with regular groups of grapnel spines on the abaxial surface; leaflets numerous, lanceolate, entire, regularly arranged or rather indistinctly grouped, sometimes armed with short marginal spines, adaxial surface bearing bands of caducous indumentum, abaxial surface with scattered minute peltate scales, midribs slightly larger than other veins, transverse veinlets not evident. Inflorescences produced simultaneously in the axils of the most distal few, often reduced leaves, inflorescence axis adnate to the proximal part of the internode above the subtending leaf, emerging from the leaf-sheath mouth, branched to 3 orders; peduncle short; prophyll tubular, 2-keeled, with 2 triangular lobes, included within the leaf sheaths; peduncular bracts absent (?always); rachis much longer than the peduncle; rachis bracts tubular, subdistichous, each subtending a first-order branch; each order of branching with a tubular 2-keeled prophyll and subdistichous tubular bracts, each subtending a branch; rachillae very short, formed from branches of several orders, often somewhat curved, staminate rachillae bearing groups of up to 8 distichous flowers, each subtended by a cup-like rachilla bract and bearing a minute 2-keeled bracteole, pistillate rachillae bearing groups of 2–7 flowers, each subtended by a tubular rachilla bract and bearing a 2-keeled cup-like bracteole. Staminate flowers symmetrical; calyx membranous, tubular, with 3 apical lobes; corolla membranous, divided almost to the base into 3 triangular lobes; stamens 6, borne at the base of the corolla lobes, filaments adnate laterally near the base, free portions gradually narrowing, inflexed at the tip bearing pendulous, medifixed, oblong, somewhat sagittate, introrse anthers; pistillode minute. Pollen ellipsoidal, bi-symmetric; apertures equatorially disulcate; ectexine tectate, perforate-rugulate, aperture margins similar; infratectum columellate; longest axis 31–38 µm [1/1]. Pistillate flowers larger than the staminate; calyx membranous, tubular, divided into 3 triangular lobes; corolla membranous, divided almost to the base into 3 triangular lobes; staminodal ring borne at the base of the corolla, bearing 6 triangular lobes, each tipped with a short slender filament bearing empty anthers; gynoecium incompletely trilocular, triovulate, ± spherical, covered with minute hair-like scales, stigmas 3 short, apical, ovule basally attached, anatropous. Fruit 1-seeded, perianth whorls persistent, stigmatic remains very small, apical; epicarp covered in minute, ± irregularly arranged scales, mesocarp thin, fibrous, endocarp not differentiated. Seed attached near the base, sarcotesta thick but not juicy, endosperm homogeneous; embryo basal. Germination adjacent ligular, eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>A single species widespread inIndochina, Burma, Thailand, Malay Peninsula and Sumatra.</p></div>
+<div type="anatomy"><p>Leaf, stem (Tomlinson 1961).</p></div>
+<div type="relationships"><p>For relationships, see Plectocomia.</p></div>
+<div type="uses"><p>The stemsare of poor quality and used only in coarse basketry.</p></div>
+<div type="taxonomic accounts"><p>Dransfield (1982b).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Myrialepis is very similar to Plectocomiopsis but lacks a sheathing ocrea. Other differences are the diffuse branching of the inflorescence, the much thinner androecium and the minute, irregularly arranged scales on the fruit in contrast to the large, regularly arranged scales of Plectocomiopsis. 
+</p></div>
+<div type="vernacular"><p>Rattan, rotan kertong.</p></div>
+<div type="biology_ecology"><p>Myrialepis paradoxa is found at altitudes from near sea level toabout 1000 m in the mountains; it tends to form extensivethickets and, like the other Asiatic hapaxanthic rattan genera,appears to show a preference for disturbed sites in primaryforest, such as large light gaps or old landslips. Nothing is known of pollination or dispersal.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

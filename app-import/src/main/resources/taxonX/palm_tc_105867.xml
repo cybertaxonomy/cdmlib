@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Kentiopsis, a Genus Endemic to New Caledonia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Pintaud</mods:namePart>
+<mods:namePart type="given">J.-C.</mods:namePart>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 42(1) 32-33, 41-53</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Kentiopsis magnifica</name>
+<author>(H.E.Moore) Pintaud &amp; Hodel</author>
+<citation>Principes 42: 42 (1998)</citation>
+<type>; MacKee; 26471</type>
+<type_loc>Holotype BH</type_loc>
+<synonymy>
+<name>Mackeea magnifica</name>
+<author>H. E. Moore</author>
+<bibref>H. E. Moore, Gentes Herb. 11:304 (1978)</bibref>
+<bibref>Moore &amp; Uhl, Allertonia 3(5): 324-325 (1984)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Moore (1978) chose the epithet because K. magnifica is one of the tallest and stateliest palms of New Caledonia</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Emergent palm. Trunk to 25 m tall, 25 cm dbh. Leaves B-9, spreading; sheath 0.8-0.9(- 1.5) m long, initially covered with blackish-centered, white-margined scales; petiole 20 cm long, minutely covered with brown-centered pale-margined scales of trichomes concrescent toward center; rachis ca. 2.25 m long, densely covered by similar scales; pinnae to 55 on each side, dark green on both surfaces and coriaceous, with numerous veins especially prominent abaxially, median pinnae 74-80 x 2.4-5 cm, the lowermost continuing into lorae to 2 m long, all arranged in one plane, although leaves in upper part of crown often twisted so pinnae oriented vertically (but still in one plane). Inflorescences 45-55 cm long, spreading, branched to three orders; peduncle 6.5-9 cm long, densely covered especially proximally with small brown-centered scales with long diverging white trichomes along margins; prophyll and first peduncular bract 5l-55 cm long, densely tomentose-floccose  abaxially; rachis l6-17.5 cm long, scarcely scaly, with 15-20 angled branches; rachillae 27-44 cm longo waxy glaucous and glabrous. Flowers in triads nearly to apex of rachillae; bract subtending triad prominent, rounded, liplike; staminate flowers brown in bud, white inside, symmetrical, 12 mm diameter and l0 mm high at anthesis; stamens 32-38, exceeding petals, connate basally in a conspicuous ring, filaments 5 mm long, equalling petals, subulate, awl-shaped, straight at apex, anthers 3.5 mm long, linear-oblong, introrse, connective large, dark; pistillode less than half as high as filaments, conic, 3-lobed; outer bracteole surrounding pistillate flower ring-like, equalling triad bract, inner one twice as high, partly surrounding flower, both brown.; pistillate flowers B X 6 mm at anthesis, gynoecium 5 mm high, ovoid, stigmatic lobes prominent, white; staminodes 2-3. Fruits 2.2 X 1.2 cm, red, perianth brown, stigmatic remains apical; mesocarp with longitudinal fibers adherent to endocarp only basally; endocarp glossy, with longitudinal groove and round basal invagination. Seeds 15-16 X 9 mm, bullet-shaped, truncate basally. Leaves of juvenile individuals distichously arranged; "saxophone" type establishment growth lacking. </p></div>
+<div type="distribution"><p>Kentiopsis magnifica occurs in an area of about l0 X 1-4 km along Col d'Amos and the Pam Penninsula ridge at the north end of New Caledonia where it grows in dense populations at 300-600 m elevation. </p></div>
+<div type="biology_ecology"><p>Ecology: Kentiopsis magnifica is an emergent tree in remnant rain forest on schists in many small, close but mostly separate valleys. Associated palms include Basselinia gracilis, Cyphophoenix elegans, and Moratia cerifera. Phenology: Anthesis occurs from March through June; fruits mature from December through March. Flowers are visited by bees that have nests in the forest while the ant Polyrhachis guerini feeds on the stigmas of pistillate flowersr also. a verv abundant Tetranichydae mire feeds on the fleshy inflorescence branches and flowers. </p></div>
+<div type="conservation"><p>Vulnerable (Jaffré et al. in press). Although K. magnifica occurs gregariously in numerous populations, its range is quite limited and the remnant forest habitat is fireprone. </p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Distinguishing features of Kentiopsis magnifica include the thick indument of brown scaly-concrescent trichomes on the petiole, rachis, and peduncle; bright red to chocolate-brown expanding leaf with pinnae held in one plane (initially vertically) and stamens connate in a ring in the proximal 1/3. "Saxophone" type establishment growth is not present but eccentric root development does occur. Leaves are distichously arranged in juvenile plants and petioles are covered by a dense brown tomenttm. Kentiopsis magnifica is very similar to K piersoniorum in inflorescence architecture and morphology but quite different in floral structure. Taxonomic history: H. E. Moore, Jr. (1978) named and described Mackeea magnifica as a monotypic genus, stating that it differed from Kentiopsis, also monotypic at the time, by its symmetrical staminate flowers, mesocarp fibers adnate only basally to the endocarp, and short, trifid pistillode. These characters proved to be quite variable from species to species within the New Caledonian Archontophoenicinae with the wider series of specimens now available for study and thus are not sufficiently significant to maintain Mackeea as a distinct genus. Moore also stated that Mackeea was distinctive by the conspicuous layer of tannin cells overlaying the endocarp but Kentiopsis oliviformis was ambiguously described as having or lacking a layer of tannin cells in Moore and Uhl (1984). K. oliaiformis has, in fact, a layer of tannin cells like the three other members of the genus. On the other hand, Moore did not say anything about the connation of stamens in a ring, a unique character.</p></div>
+<div type="materials_examined"><p>Specimens examined, additional to those cited in Moore &amp; Uhl (1984). NEW CALEDONIA. Upper Mayavetch valley, 550 m elev., 20˚l8'S, 164˚23'8E, 29 Apr. 1995 (stam. fl.), J.-C. pintaud &amp; I.-L. Aubé 175 &amp; 176 (K), 177 (NY), 1ZB &amp; 179 (NOU),180 (K) (all juv.); Col d'Amos, 550 m elev., 20˚l8'S, 164˚26'E, 13 Jun. 1995 (ster.), J.-C. Pintaud &amp; M. Olivier 215 (K); Upper Mayavetch valley 550 m elev., l8B Sept. 1995 (juv.), J.-C. Pintaud 281 (NOU),282 (NY); id., 17 Mar. 1996 (stam. fl.), J.-C. Pintaud &amp; D.R.Hodel 339( K, NY); Col d'Amos 550 m elev., 29 Apr. 1996 (stam. fl.), J.-C. Pintaud. &amp; J.-P. Tivollier 346 (NY); Mayavetch, 550 m elev., 6 Jun. 1996 (pist. fl.), J.-C. Pintaud &amp; D. R. Hodel 373 (NOU). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

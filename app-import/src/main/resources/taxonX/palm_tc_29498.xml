@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus erioacanthus</name>
+<author>Becc.</author>
+<citation>Nelle Foreste di Borneo 610 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11:424(1908)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Woolly spine</p></div>
+<div type="vernacular"><p>wi buluh (Ib.)</p></div>
+<div type="description"><p>Clustering rattan climbing to 10 m or more; stem without sheaths 7-10 mm diam., with sheaths to 18 mm diam., internodes c. 15 cm long. Sheaths dark green, armed with scattered triangular black spines to 10 mm long with decurrent bases and long hairy margins, or spines more crowded and of varying size, low ridges sometimes present between the spines; knee well developed; ocrea 5-8 cm, membranous at first, becoming fibrous and net-like, conspicuous in young sheaths. Vestigial flagellum to 10 cm, usually less. Leaf to 1.5 m including the cirrus to 75 cm; petiole very short in mature stems, 2-6 cm long; leaflets c. 12 on each side of the rachis, irregularly arranged in groups of 2 - 4, shiny dark green, broad lanceolate, the longest 25-35x4.5-5.5 cm, &#177; unarmed, transverse veinlets conspicuous. Inflorescences inconspicuous, appearing dead even at anthesis, with up to 7 partial inflorescences; base of prophyll sparsely to very densely armed with hairy-margined spines; primary and secondary bracts covered in brown scales, irregularly tattering; partial inflorescences to 15 cm, often less, partly obscured by the tattering bracts; male and female rachillae very short, usually crowded. Mature fruit &#177; oblate, 15 x 17 mm, briefly beaked, covered in c. 21 vertical rows of pale straw-coloured scales, irregularly blotched and tinged with reddish-brown. Seed c. 10 mm diam.; endosperm deeply ruminate. Seedling leaf not known (Fig. 49).</p></div>
+<div type="distribution"><p>Locally common in the 1st and 2nd Divisions. Not known elsewhere. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of good quality.</p></div>
+<div type="discussion"><p>C. erioacanthus has quite a wide altitudinal range from c. 50 - 800 m above sea level. It occurs in lowland dipterocarp forest and on ridge tops with submontane elements. It is quite variable, particularly in the density of the spines; however, it can be distinguished from other species in the group having cirri and vestigial flagella by the well developed ocrea and the broad lanceolate grouped leaflets.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

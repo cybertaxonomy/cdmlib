@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate hermaphroditic fan palm endemic to New Caledonia, remarkable for its large fruit, the endocarp with a keel and a basal extension.</p></div>
+<nomenclature>
+<name>Pritchardiopsis</name>
+<author>Becc.</author> 
+<citation>Webbia 3: 131 (1910).</citation>
+<type>Type; Pritchardiopsis jeanneneyi; Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Derived from Pritchardia and opsis — similar to.</p></div>
+<div type="description"><p>Moderate, solitary, armed, pleonanthic, hermaphroditic, tree palm. Stem erect, smooth, ringed with conspicuous leaf scars. Leaves induplicate, briefly costapalmate, neatly abscising; sheath disintegrating into a network of fine rusty-brown fibres; petiole elongate, adaxially flat to ridged, abaxially rounded, margins distally smooth, basally with short recurved spines in juvenile plants, smooth in adults, adaxial hastula short, rounded, abaxial hastula lacking; blade stiff, regularly divided to or beyond the middle into single-fold, briefly bifid, lanceolate, spreading segments, glabrous on both surfaces, midribs and intercostal ribs prominent, transverse veinlets conspicuous. Inflorescences interfoliar, branched to 4 orders, branches angled; peduncle very short, flattened; prophyll not seen, inserted above the base; peduncular bracts lacking; rachis very short, deeply divided into 3 elongate first-order branches, each branch bearing l peduncular bract below 2 unilateral second-order branches subtended by tubular, chartaceous bracts, bifid and flaring at the apex; proximal two second-order branches flattened, adnate to the first-order branch, subsequent second-order branches not subtended by tubular bracts, not adnate; bracts not evident at bases of rachillae; rachillae short, ± clustered at the ends of second-order branches, bearing rather distant cincinni of 3 flowers basally and solitary flowers distally. Flowers sessile, ebracteolate; calyx tubular, adnate basally to the receptacle, with 3 short free lobes; petals 3, briefly connate basally, valvate and adaxially hollowed distally, persistent; stamens 6, inserted at throat of the corolla, filaments erect, briefly connate and adnate to the petals basally, anthers erect, subglobose, sagittate, introrse; gynoecium globose-trilobate, trilocular, triovulate, carpels distinct in ovarian region, connate through styles, style slender, short, awl-shaped, stigma dot-like, ovule inserted basally, anatropous. Pollen ellipsoidal, occasionally slightly asymmetric; aperture a distal sulcus; ectexine tectate, aperture margin similar; infratectum columellate; longest axis 23–24 µm [1/1]. Fruit large, 1-seeded, globose, with apical stigmatic remains; epicarp smooth, purplish, mesocarp fleshy to fibrous near endocarp, endocarp woody, rounded on one side, keeled on the opposite side, laterally elongate and attenuate basally. Seed globose, erect, hilum basal, raphe orbicular, adjacent to hilum, endosperm homogeneous, deeply hollowed out basally with a large, erect intrusion of seed coat; embryo eccentrically apical. Germination remote-tubular; eophyll entire, oblanceolate, toothed distally. Cytology not studied.</p></div>
+<div type="distribution"><p>A single species in New Caledonia. Restricted to south-eastern New Caledonia.  </p></div>
+<div type="uses"><p>The apex is edible and destructive exploitation has resulted in near extinction. </p></div>
+<div type="anatomy"><p>Leaf with coryphoid midrib, irregular 2-layered adaxial hypodermis, and indistinct or lacking palisade layers (Uhl and Martens 1980); floral (Uhl pers. obs.). </p></div>
+<div type="relationships"><p>There is low bootstrap support for a sister relationship between Pritchardiopsis and a clade of Johannesteijsmannia and Pholidocarpus (Asmussen et al. 2006, Baker et al. in review). </p></div>
+<div type="taxonomic accounts"><p>Moore and Uhl (1984) and Hodel and Pintaud (1998).</p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Pritchardiopsis differs from most other Old World members of the Trachycarpeae in lacking any kind of armature on the petioles. The endocarp is unlike that of any other member of the group. In habit, it resembles Livistona, and in the branching of the inflorescence, it is much like L. woodfordii. 
+</p></div>
+<div type="vernacular"><p>Common names not recorded. </p></div>
+<div type="biology_ecology"><p>On steep slopes with serpentine soils at ca. 200 m in the vicinity of the Bay of Prony, once thought to be extinct but recently relocated in three very small populations.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

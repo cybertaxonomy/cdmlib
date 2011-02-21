@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The genus Heterospathe (Palmae: Arecoideae) in the Philippines</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 45, No. 2, pp. 219-234</mods:publisher>
+<mods:dateIssued>1990</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Heterospathe scitula</name>
+<author>Fernando</author>
+<citation>Kew Bull. 45: 228 (1990)</citation>
+<type>Luzon, Camarines Norte Prov., Bicol National Park; Fernando; 506</type>
+<type_loc>Holotypus K; isotypi BH, LBC</type_loc>
+<synonymy>
+<name>Iguanura sp.</name>
+<author>Vidal</author>
+<bibref>Vidal exsicc. no. 935, Vidal, Rev. P1. Vasc. Filip. 279 (1886)</bibref>
+<bibref>Ceron, Cat. P1. Herb. Rec. Per. Sup. Com. Fl. For. 174 (1892)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>H. philippinensi et H. dransfieldii affinis sed foliis multo brevioribus caducis, foliolis paucioribus, inflorescentia infrafoliari bene distincta.</p></div>
+<div type="description"><p>Clustering, slender, undergrowth palm to 2 m tall. Stem c. 1.5 cm diam.; internodes to 2 cm long. Leaves pinnate, to 8 in crown, arching; young leaves reddish-brown; leaf including petiole to 50 cm long; leaf sheaths not forming a well-defined crownshaft, each to 10 cm long, folded, scaly, and drying striate, the edges not readily marcescent; petiole slender, c. 20 x 0.3 cm, flattened adaxially, convex abaxially and covered with scattered, brown, peltate-lacerate scales, the edges sharply angled; the leaves including sheaths and petioles abscissing neatly from the stem; rachis covered above and below with brown, tomentose scales, rather dense, especially near leaflet bases. Leaflets 2-10 on each side of the rachis, very rarely of a single pair, uni- to pluri-costate, regularly arranged, spaced 2-4 cm apart, linear-elliptic with long acuminate tips to sigmoidal or slightly falcate towards apex, midribs and secondary nerves prominently elevated, the margins slightly thickened; ramenta prominent along midribs on undersurface, with smaller peltate- lacerate scales along secondary nerves, and the surface of the lamina puncticulate; basal leaflets 1- to 3-costate, c. 37-41 x 0.8-2.3 cm; middle leaflets generally unicostate, c. 34-41 x 0.7-1.2 cm; apical leaflets 2- to 5-costate, c. 26-38 x 1.3-4 cm. Inflorescences infrafoliar, arching, 18-45 cm long, branching to 1 order only; peduncle c. 14-23 x 0.5 x 0.3 cm, covered with tomentose scales; prophyll c. 8-13 x 1-1.8 cm, flattened and 2-keeled, splitting apically, the surface lepidote-puncticulate; peduncular bract attached below middle of peduncle, to 34 x 2 cm, tubular near base, flattened near apex, splitting abaxially, the surface covered with ribbon-like to tomentose scales; rachillae 4-5, each c. 14-20 x 0.3 cm, terete, lepidote-tomentose; triads borne spirally along rachilla and subtended by low, lip-like bracts c. 1 x 1.5 mm. Staminate flower oblong, c. 3 x 2.5 mm; sepals 3, imbricate, shorter than the petals, c. 1.75 x 2 mm, ciliolate along the margins; petals 3, valvate, ± equal, striate when dry, acute at tip, 2.75 x 2 mm; stamens 6, anthers dorsifixed, 2 mm long, filaments 1 mm long, pistillode conical, 1.5 x 1.75 mm, trifid. Pistillate flower rounded in bud, shorter than the staminate flower, c. 1.75 x 1.5 mm; sepals 3, imbricate, c. 1.75 x 1.5 mm, rounded with acute tips, sparsely ciliolate along the margins; petals 3, imbricate at base with valvate tips, unequal, c. 1 x 0.5 mm; pistil conical, 0.75 x 0.3 mm; staminodes minute, flattened, tooth-like, borne at base of pistil. Infructescence with arching rachillae. Fruit spirally arranged to 3 lax series, white, ripening orange-tinged then glossy red, spherical, c. 8 x 6 mm, stigmatic residue obliquely apical, epicarp drying granulose with sclerosomes. Seed globose, c. 5 x 5 mm, with prominent hilum; endosperm ruminate.</p></div>
+<div type="distribution"><p>Luzon (Bicol Peninsula: Camarines Norte Prov. and Albay Prov.)</p></div>
+<div type="biology_ecology"><p>In lowland dipterocarp forest on gentle slopes; c. 100-200 m. Endemic.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>H. scitula is certainly one of the most elegant species of palms indigenous to the Philippines. This species is similar to H. philippinensis and H. dransfieldii but differs in its neatly abscissing, shorter leaves with fewer leaflet pairs, and in its infrafoliar inflorescence. Two forms of H. scitula occur even within the same habitat: one with leaves having about 8-10 pairs of mostly unicostate leaflets; and the other with leaves having about 1-6 pairs of leaflets, mostly pluricostate. The two forms are otherwise indistinguishable. Both leaf character states have also been occasionally observed on different stems within the same clump.</p></div>
+<div type="materials_examined"><p>LUZON. Camarines Norte Prov., Buhi, Canicosa 1434 (LBC), Mabesa 863 (LBC), Basud, Tuaca, Fernando 465 (LBC), Bicol National Park, Lagrimas 374 (LBC), Fernando 493 (K, LBC), 495 (LBC), 501 (K, LBC), 506 (holotype K; isotypes BH, LBC), 511 (LBC), and 559 (LBC), Hernaez 2919 (CAHP) and 3846 (CAHP), locality not known, Fischer F.B. 21752 (FI); Albay Prov., Daraga, Vidal 935 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

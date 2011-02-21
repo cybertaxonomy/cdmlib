@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia concolor</name>
+<author>Burr.</author>
+<citation>Notizbl. Bot. Card. Mus. Berlin-Dahlem 15: 736 (1942)</citation>
+<bibref>Dransfield, Kew Bull. 36: 177 (1981).</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Concolorous, the leaflets the same colour on both surfaces</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender, clustering and branching, high-climbing rattan reaching high into the forest canopy. Stem without sheaths c 6 mm diam. (to 15 mm in young suckers) with sheaths to 9 mm; internodes to 12 cm. Sheaths bright green, with very sparse spines (except on suckers) and very thin caducous grey indument; chocolate-coloured scales present on young sheaths, but these quickly falling. Ocrea tightly sheathing, to c 4 cm &#177; unarmed, &#177; entire except for network of fibres opposite the leaf rachis. Leaf to 30 cm only on exposed shoots (to 75 cm on young shoots) including cirrus to 15 cm; petiole very short or absent; leaflets concolorous about 5 on each side, the largest to 12 x 4 cm with an ansa c 1 cm. Inflorescences rarely exceeding 35 cm, with few rachillae, to 8 x 0.6 cm, conspicuously reddish brown tomentose. Fruit ovate, c 2 x 1.7 cm covered in 15 vertical rows of rich brown scales; seed c 1.5 x 1 cm with deeply ruminate endosperm. Eophyll simple concolorous.</p></div>
+<div type="distribution"><p>Confined to forest on ultrabasic rock in the lowlands; not known outside Sabah.</p></div>
+<div type="biology_ecology"><p>During field work in 1979, it was found only In forest on ultrabasic rock at Pulau Sapi and at Silam. It is probably more widespread as ultrabasic rock is so frequent in Sabah.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Probably too rare to be of much significance.</p></div>
+<div type="discussion"><p>Korthalsia concolor is a rare rattan which until recently was known only from the type collected by Ramos (No. 1490) from "Sandakan". It is a distinctive species, being unlikely to be confused with any other due to its very slender habit and concolorous leaflets; old leaves of K. rigida lose their indument and may appear to be superficially concolorous.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

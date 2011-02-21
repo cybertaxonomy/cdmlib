@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Two unusual Calamus species from New Guinea</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bull. 57: 719-724</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus essigii</name>
+<author>W.J. Baker</author>
+<citation>Kew Bull. 57: 720</citation>
+<type>Papua New Guinea, Central Province, Port Moresby Sub-District, Kokoda Trail, 1 mile from Owers Corner; Essig and Womersley LAE; 55180</type>
+<type_loc>Holotype K!; isotypes L!, LAE!, BH</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Hulawarra (Goari)</p></div>
+<div type="diagnosis"><p>C. anomaloBurret affinis sed habitu graciliore, petiolo distincto ferenti, foliolis angustissimis linearibusque, et inflorescentia ramis paucioribus differt</p></div>
+<div type="description"><p>Very slender, clustering, short-stemmed rattan, sometimes climbing to 8 m. Stem with sheaths 4 – 5 mm diam., without sheaths 2 – 2.5 mm diam.; internodes 4.5 – 10 cm. Leaf ecirrate 12 – 23 cm long including petiole, to 29 cm in juvenile leaves on lower stem; sheath with thin, brown, scaly indumentum, most abundant near sheath mouth, scattered brown scales in lower sheath, unarmed or armed with numerous, very fine spines to 3 mm long, most abundant in upper parts of sheath, spines most numerous near to sheath mouth, spines at sheath mouth to 5mm long, erect; knee to 7 mm long, unarmed or armed as sheath; ocrea absent or minute; petiole 1 – 3 cm, to 11 cm in juvenile leaves on lower stem, to 2 mm wide and 1.5 mm thick at base, flattened adaxially, rounded abaxially, with thin, brown indumentum, unarmed or with few solitary, reflexed, grapnel spines; rachis 8 – 55 mm, with indumentum as petiole, unarmed or armed as petiole; leaflets 3 – 5 each side of rachis, subregular or in two distinct subregular groups, narrowly linear, longest leaflet near base 12 – 21.5 × 0.5 – 0.8 cm, apical leaflets 11.5 – 21 × 0.4 – 0.6 cm, apical leaflet pair united to one tenth of their length or not at all, few minute spines on leaflet margins, most frequent towards apex, very few on adaxial surface of midrib, transverse veinlets rather inconspicuous. Flagellum to 36 cm, readily detached. Staminate inflorescence 10.5 – 17.5 cm long including 15 – 45 mm peduncle, branched to 2 orders or rarely 1 order; prophyll 40 – 80 × 3 – 5 mm, tubular if not subtending primary branch, otherwise split to base by emerging primary branches, sometimes remaining tubular distally, with indumentum as sheath, sometimes armed with few reflexed grapnel spines; peduncular bracts absent; rachis bracts 20 – 60 × 3 – 4 mm, similar to prophyll, imbricate; primary branches up to 5, to 45 mm long, 25 – 35 mm apart, straight to strongly recurving, barely adnate to primary inflorescence axis above point of insertion, bursting through base of rachis bracts, with up to 6 rachillae, sparse to abundant brown indumentum on all axes, readily detached; rachillae 2 – 15 mm × 0.3 – 1 mm, sometimes recurving; rachilla bracts 0.75 – 1 × 0.6 – 1 mm, triangular, distichous, glabrous; floral bracteole 0.8 – 1.2 × 0.5 – 0.6 mm, elliptic. Staminate flowers 4 × 2 mm prior to anthesis; calyx 1.8 – 2 mm diam., tubular in basal 1 mm, with 3 lobes to 0.5 mm long, glabrous; corolla 3.5 × 1.5 mm in bud, very briefly tubular at base, glabrous; stamens 6, filaments 2 – 3 × 0.3 – 0.5 mm, anthers 1.5 × 0.4 – 0.7 mm; pistillode minute, to 1 mm long. Pistillate inflorescence similar to staminate inflorescence, 10 – 10.5 cm long including 30 – 40 mm peduncle, branched to 1 order; prophyll 25 – 50 × 2 – 5 mm; peduncular bracts absent or 1, similar to prophyll; rachis bracts 13 – 30 × 3 – 4 mm; primary branches (=rachillae) up to 5, 4 – 20 mm × 1 – 2 mm, 15 – 30 mm apart, recurving; rachilla bracts 0.5 × 1.5 mm, subdistichous, triangular, glabrous; proximal floral bracteole 1 × 0.5 mm, distal floral bracteole 1.2 – 1.7 × 1 – 1.5 mm, glabrous, scar of sterile staminate inconspicuous. Pistillate flowers 4 × 2 mm prior to anthesis; calyx 2 mm diam., tubular in basal 3 mm, with 3 lobes to 0.75 × 1.25 mm, glabrous; corolla 3 × 2 mm, tubular in basal 0.5 mm, with 3 lobes to 2.5 × 1.5 mm, glabrous; staminodes 6, 2 mm long, staminodal ring 0.5 mm high; ovary 1.5 × 1.5 mm, spherical, style 1 mm long, stigmas 1 mm long. Fruit globose, 9.5 × 9 mm including beak to 1 mm long, with 12 – 15 longitudinal rows of smooth scales with minutely fimbriate margins. Seed somewhat immature in available material, 7 × 5.5 × 5 mm, ellipsoid, with a shallow depression on one side; endosperm homogeneous; embryo basal.</p></div>
+<div type="distribution"><p>Known from a small area between the Astrolabe Range and the Tinumu Range due east of Port Moresby</p></div>
+<div type="biology_ecology"><p>In under storey of lower montane forest with Lithocarpus and Castanopsis between 650 and 900 m</p></div>
+<div type="conservation"><p>Near threatened. While the forests of the Astrolabe and Tinimu Range are thought to be relatively undisturbed, C. essigii is known from an area so small and in such close proximity to the major urban centre of Port Moresby that the species faces an appreciable level of threat</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This extremely slender, rather short-stemmed rattan is closely related to C. anomalus, but is readily distinguished from that species in both vegetative and reproductive features (Fig. 1). It usually possesses a distinct petiole that can be as much as 3 cm in length whereas the petiole of C. anomalus is lacking or is little more than a few millimetres in length. The leaflets of C. essigii are arranged subregularly or in two widely-spaced, subregular groups; those of C. anomalus are organised in two widely-spaced groups, each comprising two divaricate pairs of leaflets. The leaflets of C. essigii are very narrowly linear in contrast to the lanceolate leaflets of C. anomalus. While general inflorescence morphology of the two species is rather similar, the inflorescences of C. essigii are much smaller than those of C. anomalus. Moreover, the pistillate inflorescence is branched to just one order in C. essigii compared with two orders in C. anomalus. Similarly, its staminate inflorescence is branched to two orders or sometimes only one order whereas that of C. anomalus is branched to three orders. It could be suggested that C. essigii is a depauperate montane form of C. anomalus and indeed their ranges are adjacent to each other. However, the former is known only from localities at considerably lower elevations than the latter.
+The species is named for Fred Essig, botanist at the University of South Florida and collector of the type specimen, whose research in Papua New Guinea has contributed much to our knowledge of the palms of New Guinea.
+</p></div>
+<div type="materials_examined"><p>PAPUA NEW GUINEA. Central Province: 1 mile from Owers Corner, Kokoda Trail, Port Moresby Sub-District, Feb. 1972, Essig &amp; Womersley LAE 55180 (holotype K!; isotypes L!, LAE!, BH); Girinumu plantation passing Chapsinum mission station, Sogeri Sub-District, Sept. 1976, Larivita &amp; Maru LAE 70623 (BRI!, LAE!, K!); Astrolabe Range, Sogeri Sub-District, May 1968, Zieck NGF 36158 (BH, BRI!, K!, LAE!,). Locality unknown: New Guinea, 1885, Sunderland s.n. (MEL!)</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

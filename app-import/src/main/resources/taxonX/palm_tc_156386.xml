@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga chaiana</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 34: 779 (1980)</citation>
+<type>Borneo, Sarawak; Paul Chai; S 39601</type>
+<type_loc>Holotypus K; isotypi BH, L, KEP, SAN, SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>This handsome 'pinang' is named after Paul Chai, the Forest Botanist, Kuching, who collected the type, and whose enthusiasm for palms has done much to enrich our knowledge of Bornean palms.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>species Pinangae compta vaginis foliorum lateritio-tomentosis, foliis furcatis non pinnatifidis, inflorescentiae rachillis 5-7 pendulis, triadibus florum distichis distinctissima. Structura inflorescentiae P. patulae similis, sed characteres vegetativi omnino diversi.</p></div>
+<div type="description"><p>Solitary, unarmed, pleonanthic, monoecious undergrowth palm. Stem erect, unbranched, up to 5.5 m tall, about 2.5 cm diam., with internodes to 5 cm; nodes only slightly prominent; stem surface dull greenish-brown, densely covered with pale brown flocculent indumentum. Crownshaft elongate, about 40 cm long, only slightly wider than the stem, about 3.5 cm diam., dull green but densely covered with abundant flocculent pale buff to bright reddish-brown indumentum; ligule poorly developed; about 7 leaves in crown. Whole leaf including leaf sheath to 1.8 m long; leaf sheath to 30 cm long; petiole to 18 cm x 7 mm, triangular in cross-section; lamina entire except for a deep apical split, to 130 cm long, 38 cm wide at the widest point near the leaf tip, coarsely and shortly toothed at the apex, the toothed edge about 17 cm long, the lamina shallowly folded with about 32 main adaxial ribs, with a few less prominent parallel ribs between these; lamina when fresh pale dull green, slightly paler on lower surface than on upper, on drying becoming dull green on upper surface and russet brown on lower surface; brown indumentum very sparse, scattered along main veins on abaxial surface. Inflorescence infrafoliar, pendulous, to about 18 cm long; prophyll not known; all other parts turning black on drying; peduncle erect at base, then sharply reflexed, about 2 cm x 7 mm, with 5-7 crowded parallel branches; rachillae to 20 cm x 2 mm, glabrous; triads borne strictly distichously, about 4 mm apart; staminate flowers not known; pistillate flower globular, ± partly sunken into the rachilla; calyx of 3 free or basally shortly joined, rounded, cucullate, imbricate petals 1.2 mm diam.; ovary rounded, c. 1 mm diam., tipped with an irregular umbonate stigma. Mature fruit not known; almost mature fruit greenish-yellow, spindle- shaped, 10 x 6 mm, terminating in a moderately sharp point. Seed 8 x 4 mm; endosperm deeply ruminate.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>I observed it sterile in a habitat similar to that of the type, at the foot of G. Buda, in the proposed extension of the G. Mulu National Park in October 1977. This pinang is very distinctive in its russet brown crownshaft, undivided leaves, and branched inflorescence. In inflorescence structure it appears to approach P. patula Blume, but is vegetatively quite distinct. </p></div>
+<div type="materials_examined"><p>SARAWAK. 4th Division, G. Mulu National Park, Ulu Sg. Berar, on ridge top in mixed Dipterocarp forest with heavy yellow clay soil, on Setap shale, c. 170 m, Paul Chai S 39601 (holotype K; isotypes BH, L, KEP, SAN, SAR). BRUNEI. Andalau Forest Reserve, damp clay soil in valley, periodically inundated, Ashton A 501 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

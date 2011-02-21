@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis malcomberi</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 165 (1995)</citation>
+<type>Madagascar, Andohahela, Col Tanatana; Dransfield et al.; JD6779</type>
+<type_loc>Holotypus K; isotypi P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>An impressive and massive tristichous palm. The species is named for Simon Malcomber, enthusiastic plant collector and tree climber, who took a great deal of trouble to obtain more material of this rare species.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Rahosy, Vakaka (Antanosy).</p></div>
+<div type="diagnosis"><p>D. piluliferaeet D. mananjarensi similis sed vagina folii glabra forma rachillarum bracteas triadium conspicuas et flores confertim tectarum recedit. </p></div>
+<div type="description"><p>Solitary palm. TRUNK 15-25 m, 25-35 cm diam., distally 14-15 cm diam., at the base slightly bulbous with a few aerial roots, internodes 10-28 cm (distally 5-6 cm), slightly stepped, finely fissured and brown, ringed, nodal scars c. 2 cm. LEAVES tristichous, 6-8 per crown, plumose; sheath bright green to yellow-green, waxy, swollen, 1.5-2 m, 17-25 cm diam., closed or open for up to one quarter of its length, glabrous, auricles absent or up to 4 x 10 cm; petiole 20-50 cm, 4-8 cm diam., bright green, glabrous, canaliculate with sharp edges; rachis 3-4 m long, bright green, in mid-leaf 4-5 cm diam., proximally canaliculate, distally keeled; leaflets in groups of 2-8 or only slightly irregular, the group interval 1-13 cm, the leaflets fanned to almost in one plane, drooping in their distal part, 135-188 on each side of the rachis, basal 80-110 (-220) x 0.6-3.2 cm, median 93-135 x 2.8-4.6 cm, distal 10-50 x 1-2 cm, attenuate, main vein 1, bright green, not waxy, glabrous but for the ramenta. INFLORESCENCE infrafoliar, branched to 3-4 orders, arching and with pendulous rachillae in fruit; peduncle green, 20-30 cm long, 6-16 x 3-5 cm diam., glabrous; prophyll 42-73 x 12-20 cm, borne at 8-9 cm above the base of the peduncle, glabrous, splitting abaxially; peduncular bract borne at 15 cm above the base of the peduncle, deciduous, 72-117 x 16 cm, beaked for 8-21 cm, green, glabrous with a waxy bloom; rachis 60-124 cm, green, glabrous, with 18-21 branched and 12-17 unbranched first order branches; rachillae 15-48   cm long, 3.5-8 mm diam., glabrous, triads dense with proud, slightly reflexed bracts. STAMINATE FLOWERS pale green, with sepals 1.8-2.3 x 2.2-2.8 mm; petals 2.3-2.6 x 1.8-1.9 mm; stamens 6, cream, uniseriate, filaments c. 1 mm in bud, anthers c. 1.3 x 0.6 mm, versatile; pistillode c. 1.5 x 0.5 mm. PISTILLATE FLOWERS (in fruit) with sepals 2.6-3.2 x 2.4-2.8 mm; petals 3-3.5 x 3-4.2 mm; staminodes 0.5-1.3 mm, flat; gynoecium not seen. FRUIT pale orange, globose to ellipsoid, 8-10 x 4-7 mm, with hardly fibrous endocarp; SEED c. 5.5 x 4 mm, with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Only known from the Andohahela.</p></div>
+<div type="biology_ecology"><p>Moist forest; slight or steep mid slopes, occasionally near forest streams; alt. 400-800 m.</p></div>
+<div type="conservation"><p>Vulnerable. Only known from a single small area. Though this species occurs in a protected area (Andohahela is a Reserve Sp&#233;ciale) the felling for construction purposes seems to continue.</p></div>
+<div type="uses"><p>The outer wood is used to make planks for walls.</p></div>
+<div type="discussion"><p>Clearly allied to D. mananjarensis and D. pilulifera; though very similar, in the field these three taxa have a different appearance. 
+Probably the same is: Midongy: 24km S of Midongy, May 1992 (fr.), Beentje &amp; Andriampaniry 4670 (K, TAN), but the material is too scanty to be certain; it comes from wet forest at 800 m altitude, but was collected from a tree felled for palm-heart some time before.</p></div>
+<div type="materials_examined"><p>Tolanaro: upper Manampanihy valley between Eminiminy and the Saindro Col, Feb. 1934 (fr.), Humbert 14032 (P); Col Tanatana, Andohahela, Nov. 1989 (fl., fr.), Dransfield et al. JD6779 (K, P, TAN); 13km N of Ezoambo, March 1992 (bud), Beentje &amp; Andriampaniry 4596 (BH, K, MO, P, TAN); idem, March 1992 (fr.), Beentje &amp; Andriampaniry 4603 (BH, K, MO, P, TAN); Andohahela R, May 1992 (bud), Malcomber et al. 1542 (K, MO, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

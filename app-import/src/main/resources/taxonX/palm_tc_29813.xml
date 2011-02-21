@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus paspalanthus</name>
+<author>Becc.</author>
+<citation>in Hooker f., Fl. Br. India 6: 450 (1893)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 295 (1908)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 157 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 130 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 146 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Referring to the superficial resemblance of the male rachillae in flower to a grass inflorescence</p></div>
+<div type="vernacular"><p>Wi Singkau (Ib.)</p></div>
+<div type="description"><p>Solitary moderate rattan, usually short-stemmed but rarely climbing to 20 m, frequently flopping to the ground and producing roots at a position about 1 cm below each node; stem without sheaths 10-15 mm diam., with sheaths to c. 40 mm diam., internodes usually rather short to 12 cm long. Sheath dull dark purplish-brown due to abundant persistent scales, armed with large dark spines 3-5 cm long except around the sheath mouth where very much larger and &#177; erect to 10 cm; knee very conspicuous, bulbous, grossly swollen; ocrea very long, up to c. 1 m, straw-coloured, fragile and papery, quickly disintegrating to leave almost no trace. Flagellum to 2 m long. Leaf ecirrate, to 2 m including petiole to 80 cm, but often much less;rachis covered with red-brown hairs; leaflets numerous, up to 100 on each side of the rachis, very close and regular, delicate in texture, to 30 &#215; 1 cm, densely bristly on the lower surface. Inflorescences to 5 m or more, including the terminal flagellum; bracts tightly sheathing at the base but thin, papery and disintegrating at the tips; rachillae held at right angles to the partial inflorescence axis. Flowers strictly distichous. Fruit &#177; spherical, to 18 &#215; 16 mm, covered in c. 15 vertical rows of smooth, red-brown scales with paler shiny margins. Seed &#177; anvil-shaped with two sharp wings, the sarcotesta extremely sour. Seedling leaf pinnate with numerous leaflets and reddish-brown hairy rachis. (Fig. 54).</p></div>
+<div type="distribution"><p>Rare in Brunei; elsewhere throughout Borneo, local in Peninsular Malaysia.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane is &#177; useless as it shrinks and is frequently marred by the adventitious roots. The fruit is usually much appreciated for its sourness. Seedlings would make fine ornamentals.</p></div>
+<div type="discussion"><p>C. paspalanthus is such a strange species that there should be no difficulty in distinguishing it.</p></div>
+<div type="materials_examined"><p>TEM: Amo, K.Belalong, Dransfield J. 6672.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

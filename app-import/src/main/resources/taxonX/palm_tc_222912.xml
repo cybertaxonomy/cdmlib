@@ -1,0 +1,42 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>An account of the Papuasian species of Calamus (Arecaceae) with paired fruit</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 58, No. 2, pp. 371-387</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus pholidostachys</name>
+<author>J. Dransf and W J. Baker</author>
+<citation>Kew Bull. 58: 381 (2003)</citation>
+<type>Papua New Guinea, Milne Bay, Peria Creek, Kwagira R., river bank, alt. 50 m, 27 Aug. 1953; Brass; 24209</type>
+<type_loc>Holotypus L; isotypi A, LAE</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded</p></div>
+<div type="diagnosis"><p>inter species Papuanas fructibus geminatis flagello longissimo, foliolis regulariter dispositis, vaginis foliorum sparse armatis, geniculo inerme, ocrea fibrosa, bracteis rachillarum expansis imbricatis recedit.</p></div>
+<div type="description"><p>Moderately robust, solitary rattan climbing to 30 m. Stem with sheaths 20 - 40 mm diam., without sheaths to 9 - 15 mm diam.; internodes 12 - 28 cm. Leaf ecirrate, to 2 m long including petiole; sheath green, drying pale greenish brown, usually with sparse to very dense, dull brown, caducous indument; spines persistent, rather sparse and mostly of uniform size and form, (5)12 - 25 x 2 - 4 mm, rigid, laminar, black, drying grey, scattered or arranged in horizontal groups, pointing horizontally or upwards, spines around leaf sheath mouth similar or sometimes much longer, to 60 mm long; knee conspicuous, only slightly swollen, to 80 x 10 mm, green, unarmed; ocrea 15 x 2 cm, tubular at first, splitting to form two auricles with rounded triangular tips, these then disintegrating to form a tangle of slender pale to mid-brown fibres at the sheath mouth, the ocrea unarmed or with a few spines near the sheath mouth; flagellum present, 2.5 - 3 m long; petiole 7 - 12 cm long, 13 - 14 mm wide, 6.5 mm thick at the base, adaxially flattened or shallowly channelled, abaxially rounded, with sparse to dense caducous brown indument, and very few rigid persistent triangular spines to 5 mm long along the margins, otherwise unarmed; rachis to 150 cm long, armed with solitary or grouped recurved hooks abaxially, glabrous or with sparse to dense brown caducous indument; leaflets c. 60 on each side of rachis, regularly arranged, concolorous, lanceolate, longest leaflet in mid-leaf 38 - 46 x 2.3 - 2.4 cm, apical leaflets 8 - 12 x 0.4 - 0.9 cm, apical leaflet pair united to 1/10 their length, leaflets armed with dark bristles 3 - 4 mm long along 5 veins adaxially and with slightly shorter bristles along mid-vein abaxially, margins minutely bristly and strongly inrolled at the very insertion, transverse veinlets conspicuous. Staminate inflorescence unknown. Staminate flowers unknown. Pistillate inflorescence 4.5 - 8.2 m long, including peduncle to 3.9 m long, branching to 2 orders; prophyll not seen; rachis bracts closely sheathing, armed with robust recurved hooks in grapnel-like groups; primary branches 5 - 7, to 50 cm long, each bearing 6 - 8 rachillae, subtending bracts unarmed, or sparsely armed with short triangular recurved spines to 1 mm long; rachillae in fruit 15 - 30 x 0.3 - 0.5 cm, probably pendulous; rachilla bracts very conspicuous, 8 x 5 mm, distichous, unarmed or with a single or pair of very short dark-tipped spines to 0.5 mm, the bract tips triangular but eroding and becoming truncate and expanded, covered in sparse to dense irregular dark brown scales; proximal floral bracteole cup-shaped, 1.5 x 4 mm, distal floral bracteole cup-shaped, 1.5 x 3 mm, scar from sterile staminate c. 1 mm diam. Pistillate flowers borne in pairs together with a sterile staminate flower to form a triad; pistillate flowers in bud or anthesis; fruiting perianth with calyx to 3 mm long, tubular in basal 1 mm, the 3 free sepals split in 2 as the fruit develops, giving 6 lobes; corolla with 3 lobes 3.5 x 2 mm, each split in 2; staminodal ring split into 6 lobes to 1.5 x 1 mm, together with the calyx and corolla spread-out star-like at the fruit base. Sterile staminate flowers not seen. Fruit ovoid to ellipsoid, 14 - 16.5 x 9.5 - 12.5 mm, including beak 1.5 x 1.5 mm, with 18 - 20 longitudinal rows of dull pale brown, channelled scales with darker intramarginal lines. Seed 11 x 9 x 7 mm, ellipsoid, with a deep lateral chalazal pit, the surface covered in shallow scalloped depressions; endosperm homogeneous; embryo basal.
+</p></div>
+<div type="distribution"><p>Confined to eastern New Guinea, recorded only from Milne Bay and Central Districts of PNG.</p></div>
+<div type="biology_ecology"><p>In lowland forest, usually on river banks at altitudes up to 750 m above sea level.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Local uses not recorded</p></div>
+<div type="discussion"><p>This species appears most similar to Calamus zebrinus, but differs in the very different leaf sheath armature and the distinctive overlapping, eventually truncate rachilla bracts with expanded mouths. As yet, it is known only from pistillate material. This robust rattan is easily distinguished by its ecirrate leaves with regularly arranged leaflets, long flagella and sheaths sparsely, but robustly armed, with unarmed knee and fibrous ocrea; the pistillate rachillae are particularly distinctive with their almost overlapping expanded rachilla bracts that lend an almost scaly appearance to the rachilla.</p></div>
+<div type="materials_examined"><p>PAPUA NEW GUINEA. Central: Port Moresby, Vanapa R., Oct. 1969, Zieck 36231 (L); Mariboi Plantation, April 1973, Zieck and Gore NGF36549 (LAE). Milne Bay: Alotave, Aug. 1979, Kairo 109 (A, BFC, K, L, LAE, USF); Peria Creek, Kwagira R., Aug. 1953 Brass 24209 (holotype L; isotypes A, LAE).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Calamus longipinna (Arecaceae: Calamoideae) and its relatives in New Guinea</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bull. 57: 853-866</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus wanggaii</name>
+<author>WJ.Baker &amp; J.Dransf.</author>
+<citation>Kew Bull. 57: 863 (2002)</citation>
+<type>Indonesia, Papua, Manokwari Regency, Wasior District, Sikama River, 3 km SE of Wosimi River at Senderawoi, 26 km SSE of Wasior (S 2˚ 57’ 2.7”, E 134˚ 34’ 22.5”), Feb. 2000; Barrow et al.; 129</type>
+<type_loc>Holotypus K!; isotypi AAU!, BO!, BRI!, L!, MAN!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not known.</p></div>
+<div type="diagnosis"><p>C. longipinnae Lauterb. et K. Schum. affinis sed foliolis paucioribus aggregatis oblanceolatis vice regularibus linearibusque, setis foliolorum longissimis, spinis ocreae triangularibus differt.</p></div>
+<div type="description"><p>Moderately robust, clustering rattan climbing to 25 m. Stem with sheaths c. 15 mm diam., without sheaths to 7 - 9 mm diam.; internodes c. 35 cm. Leaf ecirrate to 75 cm long including petiole; sheath dark green, with abundant, thin indumentum of minute, matted, brown and white scales, with numerous spines, 2 - 6 x 0.5 - 1 mm, solitary, narrowly triangular; knee 28 mm long, 13 mm wide, colour and armature as sheath; ocrea 22 x 2.6 cm, persistent, inflated, boat-shaped, split longitudinally to base on side opposite petiole insertion, clasping and usually obscuring sheath, papery, tattering, with sparse indumentum as sheath, armed as sheath; flagellum present, c. 2 m; petiole c. 13 cm, 6 mm wide and 5 mm thick at base, shallowly channelled adaxially, rounded abaxially, with sparse indumentum of scales as sheath, adaxial surface with short spines similar to sheath spines, abaxial surface with scattered solitary grapnel spines; rachis c. 51 cm, indumentum as petiole, unarmed adaxially, abaxial surface as petiole; 28 leaflets each side of rachis, arranged in three widely-spaced groups of 9 - 11 leaflets, leaflets regularly spaced within groups, but divaricate, upper and lower leaflets of middle group overlapping with leaflets in adjacent groups, oblanceolate, longest leaflet in upper part of lowest group, 33 x 2 cm, mid-leaf leaflets 26.5 x 2 cm, apical leaflets 17 x 1.2 cm, apical leaflet pair briefly united, leaflets armed with conspicuous bristles on mid-vein and one major either side, 7 - 11 mm, bristles very rare or absent from abaxial surface, numerous short bristles on margin, 0.5 - 1 mm, some scales on leaflet bases, transverse veinlets conspicuous. Staminate inflorescence c. 2.2 m long including c. 1.9 m peduncle (always?) and at least 25 cm flagelliform tip, branched to 3 orders; prophyll 38 x 0.4 cm, strictly tubular, splitting very briefly at apex, with thin indument of purple-brown scales, armed with numerous grapnel spines; peduncular bracts 3 (always?), peduncular and rachis bracts similar to prophyll, with indumentum and armature as prophyll; primary branches 1 (always?), to at least 19 cm long, lax, with 11 rachillae in available material, bracts on first order branch very sparsely armed; rachillae 26 - 40 mm x 1.5 mm, straight to recurved; rachilla bracts 1.4 x 1.5 mm, distichous, shallowly funnel-shaped, with indumentum as prophyll; floral bracteole 1.5 x 1.5 mm. Staminate flowers 3.3 x 1.7 mm prior to anthesis; calyx 1.8 mm diam., tubular in basal 1.7 mm, with 3 lobes 0.7 x 1 mm, scattered scales as prophyll; corolla 2.5 x 1.5 mm in bud, tubular in basal 0.5 mm, very few scales as prophyll; stamens 6, filaments 1 x 0.2 mm, anthers 1.4 x 0.5 mm; pistillode 0.8 x 0.2 mm, trifid. Pistillate inflorescence not seen. Pistillate flowers not seen. Fruit not seen. Seed not seen. Fig. 2.</p></div>
+<div type="distribution"><p>Known from a single collection near the Wosimi River, south of the Wandammen Peninsula, Papua, Indonesia.</p></div>
+<div type="biology_ecology"><p>Lowland, primary forest, 30 m.</p></div>
+<div type="conservation"><p>Data deficient. The type locality of C. wanggaii falls outside the Wondiwoi Mountain reserve. Although C. wanggaii occurs in abundance at the type locality, it may be threatened by impending forestry activities. There is considerable logging activity in the area and the type locality itself has been assessed for timber extraction. However, it is not possible to assign a conservation category because the available distribution data is inadequate.</p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>A strikingly beautiful rattan, C. wanggaii is distinguished from other members of the group by the possession of oblanceolate leaflets with very long bristles on the adaxial surface (Fig. 2). The leaflets are arranged in three groups and although they are inserted equidistantly within each group, they are divaricate so that leaflets of the middle group overlap with leaflets in the upper and lower groups. A similar rattan bearing regularly arranged rather than grouped leaflets was observed at the type locality. No material is available, but it is possible that it is conspecific with C. wanggaii. Thus leaflet arrangement may be rather more variable than the description suggests.
+The ocrea of C. wanggaii is quite similar to that of C. longipinna, bearing a congenital split, but unlike most forms of C. longipinna, it is heavily armed throughout with short triangular spines similar to those which occur on the leaf sheath.
+The specimen that was used to draw up this description (the holotype at K) includes a single staminate, flagelliform inflorescence that bears just one primary branch near the apex. This inflorescence is branched to only two orders whereas the field notes indicate that the inflorescence is branched to three orders. It is probable that one of the isotypes contains an inflorescence that displays a greater number of branching orders and perhaps more primary branches than the holotype.
+This species is named for Jack Wanggai, Head of the Biodiversity Study Centre at Universitas Negeri Papua, Manokwari, Indonesia and co-collector of the type material, in honour of his dedication to plant exploration in New Guinea and in recognition of his collaboration on the Palms of New Guinea project.</p></div>
+<div type="materials_examined"><p>INIDONESIA, Papua. Manokwari Regency: Wasior Distr., Sikama R., 3 km SE of Wosimi R. at Senderawoi, 26 km SSE of Wasior (S 2˚ 57’ 2.7”, E 134˚ 34’ 22.5”), Feb. 2000, Barrow et al. 129 (AAU, BO, BRI, K!, L, MAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

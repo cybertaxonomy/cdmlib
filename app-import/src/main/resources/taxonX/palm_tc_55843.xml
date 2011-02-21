@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops spectabilis</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 12(1): 228 (1911)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Striking, remarkable</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary or clustered, rather massive erect rattan', stem very short, not exceeding 2 m, without sheaths c. 20 mm diam., with sheaths c. 50 - 60 mm diam., internodes very short. Sheath splitting opposite the petiole, bright green, armed with large flattened golden-yellow spines to 40 x 5 mm, scattered or arranged in groups, brown indumentum abundant between the spines; knee absent. Leaf massive, ecirrate, to 2.75 m including the petiole; petiole to 1 m, armed laterally with large triangular flattened spines to 40 x 5 mm, arranged singly or, near the base, in groups, interspersed with scattered much smaller spines; leaflets c. 17 on each side of the rachis, arranged in pairs, the leaflets of each pair inserted very close together and &#177; diverging, lanceolate, &#177; acute, the longest to 55 x 3 cm, apparently unarmed, transverse veinlets slender, sinuous, not very conspicuous. Inflorescence arching or pendulous, much shorter than the leaves, to 50 -100 cm long, the peduncle slender, armed with slender spines, partial inflorescences 2-4, crowded at the peduncle tip; prophyll and primary bracts dull brown rather papery, soon shed; partial inflorescences rather lax with short rachillae, the male to 25 mm bearing large dull brown flowers to 7 x 5 mm; female rachillae to 3 cm, the flowers to 8 x 6 mm. Mature fruit very large, ovoid, c. 35 x 30 mm, beaked, covered in 15 vertical rows of light brown (green when young) scales with darker margins. Seed ovoid, c. 24 x 20 mm; endosperm deeply ruminate. Seedling not known (Fig. 36).</p></div>
+<div type="distribution"><p>In Sarawak known from three collections from the Mulu National Park, 4th Division. Otherwise known only from the type from W Kalimantan. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>This spectacular palm was collected in wet kerangas forest at c. 1 - 200 m elevation in the Mulu National Park. Beccari described the species from a single collection made by Hallier in W Kalimantan; the type material is incomplete and Beccari concluded that Halliefs plant was a robust climbing palm, even though no cirrus is present in the type. However, the Mulu collections match the type in every respect. D. spectabilis is easily distinguished from D. ingens by the paired leaflets and the very slender peduncle.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

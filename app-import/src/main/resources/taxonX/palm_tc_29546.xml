@@ -1,0 +1,45 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus gracilis</name>
+<author>Roxb.</author> 
+<citation>Fl. Ind. 3: 781 (1832);</citation>
+<type>India Orientalis; Roxburgh; s.n.</type>
+<type_loc>Holotype BM (labelled as s.n. E132); isotype BR, photograph at K</type_loc>
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 318 (1908)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, Fl. Reip. Pop. Sin. 13 (1): 88 (1991)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 36 (2001)</bibref>
+</nomenclature>
+<div type="distribution"><p>India (North-east), Bangladesh, China (South Yunnan) and Laos (Central). Also in South-east China (Pei et al. 1991)</p></div>
+<div type="materials_examined"><p>INDIA (NORTH-EAST): Khasia, Ladder Valley, undated, (fr.), Hooker &amp; Thompson s.n. E62 (K). BANGLADESH: 'India Orientalis', undated, (stam.), Roxburgh s.n. E132 (BM). CHINA (SOUTH YUNNAN): Mengla, Yaoqu, 21 May 1965, (fr.), Chen, S. Y. &amp; Yu C. 05536 (K). LAOS (CENTRAL): Bolikhamxay Province, Khamkheut Distr., Ban Phonkheo (map name Ban Phongnot), 13 March 1999, (fr.), Khamphone KP 386 (FRCL, K).</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 300 - 750 m in Laos, up to 850 m in South Yunnan.</p></div>
+<div type="discussion"><p></p></div>
+<div type="vernacular"><p>wai hom, wai soum, wai tairtair (Lao Loum).</p></div>
+<div type="uses"><p>The cane is of high quality and widely traded. The shoot is edible.</p></div>
+<div type="conservation"><p>Unknown, but likely to be of low concern due to its wide range and clustering habit, which allows it to tolerate a moderate level of harvesting. However, Renuka (1999) notes that the Indian populations have declined considerably in recent years.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

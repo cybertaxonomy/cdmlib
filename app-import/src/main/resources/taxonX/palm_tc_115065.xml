@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>The famous double-coconut of the Seychelles Islands, a dioecious massive tree palm distinctive in the huge leaf lacking a hastula and the enormous bilobed endocarp.</p></div>
+<nomenclature>
+<name>Lodoicea</name>
+<author>Comm. ex DC.</author> 
+<citation>Bull. Sci. Soc. Philom. Paris 2(46): 171 (1800).</citation>
+<type>Lectotype; Lodoicea callypige; Comm. ex J.St.Hil.</type>
+</nomenclature>
+<div type="etymology"><p>Honoring Louis XV of France (latinised as Ludovicus).</p></div>
+<div type="description"><p>Robust, often tall, solitary, unarmed, pleonanthic, dioecious, tree palm. Stem erect, slightly expanded at the base, inconspicuously ringed with leaf scars. Leaves induplicate, costapalmate, marcescent, later abscising under their own weight; sheath soon splitting opposite the petiole and a triangular cleft developing at the petiole base; petiole robust, deeply channelled adaxially, rounded abaxially, abaxial surface with minute black dots, irregularly tomentose, margins fibrous basally, rough to smooth distally; hastulae absent; costa long, tapering, reaching nearly to the end of the blade; blade about as long as the petiole, stiff, basally wedge-shaped, divided ca. 1/4–1/3 its length into single-fold segments, these shortly bifid, free ends often drooping, adaxial surface shiny, smooth, dull abaxially with thick indumentum along abaxial ridges, midribs prominent abaxially, transverse veinlets long, conspicuous. Inflorescences interfoliar, massive, shorter than the leaves, pendulous, staminate and pistillate markedly dissimilar. Staminate inflorescence with short, narrow peduncle, often unbranched, ridged, terminating in a single rachilla or 2–3 digitately arranged rachillae; prophyll short, 2-keeled throughout its length, split ventrally but with a long closed triangular tip; peduncular bracts 1 (or more?), obscuring the peduncle, completely tubular, split ventrally above the center leaving a long solid pointed beak; rachillae massive, catkin-like, bearing several large empty, imbricate cup-like bracts basally, above these bearing spirally inserted, very tough leathery bracts, connate laterally and distally to form large pits, each containing a recurved cincinnus of 60–70 staminate flowers. Staminate flowers each bearing a fibrous bracteole; sepals 3, connate in an asymmetrical tube, tips distinct, imbricate, irregular; corolla with a long stalk-like base and 3 elongate lobes, unequal in width, not closed laterally around the androecium, tips of lobes thick, rounded, imbricate; stamens 17–22, borne on the surface of an elongate receptacle, filaments short, wide, variously angled, anthers elongate, tips reflexed, latrorse; pistillode columnar, trifid. Pollen ellipsoidal and bi-symmetric; aperture a distal sulcus; ectexine tectate, finely perforate-rugulate; aperture margin slightly finer; infratectum columellate; longest axis 61–68 µm [1/1]. Pistillate inflorescence unbranched with prophyll and 2(–3 or ?several), tubular peduncular bracts, split ventrally, with long pointed tips like those of the staminate inflorescence; rachilla a direct extension of and about as long as the peduncle, short, wide, zigzag, tapered distally, bearing several empty incompletely sheathing, cupular bracts, subsequent bracts completely sheathing, large, each subtending a pistillate flower. Pistillate flowers, the largest flowers in the palms, each sessile, ovoid, bearing at the base 2 lateral, large, cupulate bracteoles; sepals 3, distinct, imbricate, leathery, rounded, thicker basally; petals 3,as sepals; staminodes triangular, low, briefly connate basally with several(–11) pointed tips; gynoecium ovoid, tricarpellate, trilocular with a central trilobed septal nectary, stylar regions wide, triangular,fibrous, stigmas 3, short, becoming reflexed, ovules beaked, apparently orthotropous, laterally winged and with 2 lateral bodies, perhaps vestigial ovules. Fruit very large, ovoid and pointed, 1(–3)-seeded; epicarp smooth, mesocarp fibrous, endocarp comprising one to three 2-lobed, thick, hard pyrenes. Seed, the largest known, 2-lobed, endosperm thick, relatively hard, hollow, homogeneous; embryo  apical in the sinus between the 2 lobes. Germination remote-tubular,  tube remarkably long, reported to reach ca. 4 m; eophyll shallowly  lobed. Cytology: 2n = 34.</p></div>
+<div type="distribution"><p>One species in the Seychelles Islands.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1997), seed  (Werker 1997). </p></div>
+<div type="relationships"><p>Lodoicea is resolved as sister to a clade of  Borassodendron and Borassus with moderate support (Bayton 2005, Asmussen et al. 2006).  </p></div>
+<div type="uses"><p>Leaves are used locally as thatch and plaiting, wood  as palisades and water-troughs, seeds for dishes and vegetable  ivory, and down from young leaves for stuffing pillows. The  sale of nuts to tourists is an important source of revenue. </p></div>
+<div type="taxonomic accounts"><p>Bailey (1942). </p></div>
+<div type="fossil record"><p>No generic records found.  </p></div>
+<div type="discussion"><p>Recognisable by the huge, more or less diamond-shaped leaf in juvenile stages, by the lack of hastulae on both  surfaces, and when present, by the huge and bizarre  inflorescences, flowers, fruits and seeds. Important historically  because of the many legends involving the huge seeds, and as an oddity.</p></div>
+<div type="vernacular"><p>Coco-de-Mer or double coconut. </p></div>
+<div type="biology_ecology"><p>Lodoicea today is restricted to hill slopes and valleys of  Praslin and Curieuse but formerly may have occurred on  adjacent islets. It does not reach coastal plains or main ridges.  Edwards et al. (2002) suggest that the huge seed, the largest in the plant kingdom, may be an adaptation to establishment in  shade or to sibling rivalry on an isolated island. Both  hypotheses assume that Lodoicea evolved from a Borassus-like  palm adapted to a drier and more savannah-like climate than  that experienced by Lodoicea today.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

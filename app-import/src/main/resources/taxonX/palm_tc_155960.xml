@@ -1,0 +1,64 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Vegetable ivory palms distinguished by the staminate flowers having relatively flat or slightly rounded floral receptacles and being sessile or borne in groups of four on short stalks.</p></div>
+<nomenclature>
+<name>Phytelephas</name>
+<author>Ruiz and Pavon</author>
+<citation>Syst. Veg. Fl. Peruv. Chil.: 299(l798).</citation>
+<type>Lectotype; Phytelephas macrocarpa; Ruiz &amp; Pav.</type>
+<synonymy>
+<name>Elephantusia</name>
+<author>Willd.</author>
+<bibref>Willd., Sp. pl. 4(2): 890, 1156 (1806).</bibref>
+<type>Type; Elephantusia macrocarpa; (Ruiz &amp; Pav.) Willd.</type>
+</synonymy>
+<synonymy>
+<name>Yarina</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, J. Wash. Acad. Sci. 17: 223 (1927).</bibref>
+<type>Type; Yarina microcarpa; (Ruiz &amp; Pav.) O.F.Cook</type>
+</synonymy>
+<synonymy>
+<name>Palandra</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, J. Wash. Acad. Sci. 17: 228 (1927).</bibref>
+<type>Type; Palandra aequatorialis; (Spruce) O.F.Cook</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>phyt — plant, elephas — elephant, in reference to its use as a source of vegetable ivory.</p></div>
+<div type="description"><p>Moderate, solitary or clustered, unarmed, pleonanthic, dioecious palms. Stem robust or rarely rather slender, erect or procumbent, internodes short, covered with a mass of fibres and petiole bases, when bare marked by spiral, triangular, often pitted leaf scars. Leaves numerous or rarely few, erect, arching, evenly pinnate; marcescent; sheath tubular, sometimes with a large ligule opposite the petiole, becoming fibrous; petiole short, lacking, or rarely elongate, shallowly channelled adaxially, rounded abaxially, margins rounded or sharp; rachis triangular in section, with greyish brown scales abaxially, leaflets regularly arranged in one plane, or irregularly arranged and held in different planes to give the leaf a plumose appearance, subopposite, single-fold, pointed, often pinched in at the base, usually smaller basally and distally, glossy dark green adaxially, paler and duller beneath; tomentose abaxially along a conspicuous midrib, transverse veinlets conspicuous. Inflorescences interfoliar, staminate and pistillate dissimilar; staminate unbranched; peduncle short; prophyll short, tubular, 2-keeled laterally, broadly pointed, splitting apically; complete peduncular bracts 1, like the prophyll but longer, splitting abaxially, persistent above the inflorescence, subsequent peduncular bracts several (4–5), incomplete, spirally inserted below the flowers. Staminate flowers in groups of 4, sessile or with a conspicuous common stalk, usually lacking a subtending into sepals and petals at maturity (but see Uhl and Moore 1977b); stamens 36–900 or more, filaments erect, awl-shaped, anthers elongate, latrorse; pistillode lacking. Pollen ellipsoidal, usually with slight or, occasionally, with obvious asymmetry; aperture a distal sulcus; ectexine tectate, coarsely perforate, or perforate-rugulate, aperture margin slightly finer; infratectum columellate; longest axis 72–90 µm [3/7]. Pistillate inflorescence head-like; peduncle short, dorsiventrally flattened; prophyll and first peduncular bract as in the staminate, subsequent peduncular bracts numerous, larger than in the staminate, sometimes in series, elongate, pointed, ± covering the flowers. Pistillate flowers asymmetrical, each subtended by a pointed bract, spirally arranged, closely appressed; sepals 3 or more, triangular, ± elongate; petals 4–10, long, narrow, variously folded and wrinkled; staminodes numerous, 35 or more, like the stamens but irregular in size; gynoecium of 4–10 united carpels, ovarian part short, rounded, stigma long, narrow, cylindrical, styles as many as the carpels, long, narrow, conduplicately folded with stigmatoid tissue along the margins, ovules 1 per carpel, hemianatropous or anatropous. Fruit clusters, individual fruits ± rounded, 4–10-seeded, covered with large, woody, pointed warts, stylar remains terminal; epicarp woody, mesocarp fibrous, endocarp surrounding each seed bony or shell-like, bifacial adaxially with round basal projection, rounded abaxially. Seed ±kidney-shaped, basally or laterally attached, hilum round, median to basal, raphe branches numerous, laterally ascending and anastomosing; endosperm homogeneous, hard (vegetable ivory), embryo basal or lateral. Germination remote-ligular; eophyll pinnate. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>Six species occurring in the Amazonian Basin in Bolivia, Ecuador and Peru, and along the northwest coast of Ecuador, Colombia and into Venezuela and Panama. </p></div>
+<div type="anatomy"><p>Vegetative (Tomlinson 196l, Barfod 1991), root (Seubert 1996b), floral (Moore and Uhl 1973, Uhl and Moore 1977b, Uhl and Dransfield 1984) and seed (Werker 1997). </p></div>
+<div type="relationships"><p>In more densely sampled studies, Phytelephas is monophyletic with high or moderate support (Barfod et al. 1999, Trénel et al. 2007). Asmussen et al. (2006) recover a non-monophyletic Phytelephas with moderate support, but they only include two species. Phytelephas is highly supported as sister to a highly supported clade of Aphandra and Ammandra (Baker et al. in review, in prep., Trenél et al. 2007). For interspecies relationships, see Trenél et al. (2007). </p></div>
+<div type="uses"><p>Leaves are used for thatch; immature pericarp and endosperm are edible; mature endosperm is hard and used as vegetable ivory for carvings. </p></div>
+<div type="taxonomic accounts"><p>Barfod (1991). </p></div>
+<div type="fossil record"><p>A sandstone cast of a fruit, Phytelephas olssonii, is reported from the Upper Miocene-Lower Pliocene of Ecuador (Brown 1956b). Fossil stem material described from the Miocene of Antigua (Kaul 1943) is questionable (Uhl and Dransfield 1987). </p></div>
+<div type="discussion"><p>The three genera of this tribe are separated largely on characters of the staminate flowers. Phytelephas is distinguished from Aphandra by sessile staminate flowers and by up to about 250 rather than more than 900 stamens, and from Ammandra by flat rather than club-shaped receptacles in staminate flowers.</p></div>
+<div type="vernacular"><p>Ivory palms, tagua, yarina. </p></div>
+<div type="biology_ecology"><p>Strictly confined to rain forest usually under large trees along streams and on wet hillsides. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

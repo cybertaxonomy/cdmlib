@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus maiadum</name>
+<author>J.Dransf.</author>
+<citation>Rattans Brunei: 193. 1997</citation>
+<type>Borneo, Brunei; Dransfield; JD7027</type>
+<type_loc>Holotypus K; isotypus BRUN</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The specific epithet (inspired by Beccari"s Pholidocarpus maiadum) is derived from a Bornean name, "maias", for the orang utan; the strange brown whisker-like bristles are reminiscent of the coarse long brown hair of the orang utan.</p></div>
+<div type="vernacular"><p>Wi Tulang (Ib.)</p></div>
+<div type="diagnosis"><p>bracteis inflorescentiae Sectionem Platyspatham Furtado pertinens, a C. myriacantho et ceteris speciebus sectionis spinis vix trichomatiformibus curvatis egregie mollibus apice vaginae foliorum et bractearum inflorescentiae differt.</p></div>
+<div type="description"><p>Stout solitary erect rattan to 3 m tall; stem without sheaths to c. 25 mm diam., with sheaths to c. 50 mm diam.; internodes short, c. 50 mm long. Leaf ecirrate to 2.2 m long; leaf sheaths mid green, drying pale greenish brown, armed with rather dense but evenly spaced black spines to c. 1l mm long, with scarcely swollen bases and pale brown indumentum abundant and persistent between the spines, spines around the leaf sheath mouth conspicuously different from the rest, long and horizontal, c. 20-40 &amp;#215; 3 mm with conspicuous swollen bases and dark reddish brown curled whisker-like, flexible bristles, to 90 mm long and 1 mm wide at the base; knee absent; flagellum absent; petiole to 45 cm long, armed with scattered triangular spines to 9 mm long, usually less; rachis arcuate, armed with scattered very robust reflexed and curved spines to 6 &amp;#215; 4 mm with black tips; leaflets c. 60 on each side of the rachis, evenly spaced, linear-lanceolate, 3- 4 cm distant, the longest in mid leaf to 34 &amp;#215; 2.5 cm, apical leaflets to 13.5 &amp;#215; 1.0 cm, not divaricate, all drying dirty brown, armed with very sparse short spinules on both surfaces and along the margins near the tips, transverse veinlets conspicuous, sinuous. Inflorescence, only pistillate known, branching to 2 orders, erect or arcuate, to 2 m long, with 4 partial inflorescences; prophyll elongate, &amp;#177; tubular throughout, c. 80 cm long, 2 cm wide, armed distally with short horizontal dark brown flattened spines to 4 mm long, and abundant soft, flexible, &amp;#177; reflexed dark red brown whiskerlike spines to 70 mm long, scattered floccose indumentum abundant between the spines; rachis bracts similar to the prophyll, similarly covered towards their tips with whisker-like bristles, these much shorter in the distalmost rachis bracts; partial inflorescence emerging at the mouth of the subtending bract, the basal to at least 30 cm long, the distal shorter and the apical to c. 23 cm; bracts on first order branch c. 11 &amp;#215; 4 mm, with truncate apex, unarmed but covered with abundant brown scales; mid inflorescence partial inflorescence bearing 11-12 strictly distichous rachillae on each side; rachillae 40-60 &amp;#215; 2.5 mm, rachilla bracts tubular with triangular limbs to 1 mm long, striate, with scattered very short dark brown spinules and scattered indumentum; involucrophore and involucre explanate, striate, not pedicellate; scar of sterile staminate flower c. 0.5 mm diam. Pistillate flower c. 4 &amp;#215; 3 mm, &amp;#177; conical in outline; calyx to 3 mm long, striate, glabrous, tubular in the basal 2 mm, with three short triangular lobes; petals 3 &amp;#215; 1.5 mm, smooth; staminodes c. 1.1 &amp;#215; 0.2 mm; ovary c. 1.5 mm diam., tipped with non-scaly columnar style to 2 &amp;#215; 1.5 mm and three reflexed stigmas to 2 &amp;#215; 1 mm. Other parts unknown.</p></div>
+<div type="distribution"><p>Known only from Bukit Teraja and Ulu Ingei, on Bukit Batu Patam. Endemic to Brunei.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>Calamus maiadum occurs in kerangas forest developed on a ridge top on Bukit Teraja and in similar forest on a gentle slope on Bukit Batu Patam. This is a very distinctive species, belonging to the group of species that Furtado included in his section Platyspathus, and that are referred to in northern Borneo as "wi tulang" (see Dransfield 1990). This group includes C. myriacanthus, C. bacularis, C. sabalensis, C. acanthochlamys and C. paulii and the two species described here as new. C. maiadum is immediately distinguished from the rest by the extraordinary soft curved Appendix 193 whisker-like bristles that adorn the leaf sheath mouth and the primary inflorescence bracts. Though so distinctive in the field, once we had seen and collected it twice we searched for it on many subsequent occasions in Brunei but without success. The description is thus inevitably drawn from rather incomplete material.</p></div>
+<div type="materials_examined"><p>BORNEO: Brunei Darussalam, Belait, Labi, Bt.Teraja, (pist.) 80 m, Dransfield et al. JD7027 (Holotype K: isotype BRUN); Melilas, Bt.Batu Patam, (ster.) Dransfield et al. JD6593 (BRUN, K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

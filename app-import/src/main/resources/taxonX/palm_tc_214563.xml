@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Diminutive pinnate-leaved dioecious undergrowth palms from rain forest in South America; the leaves are often entire bifid; inflorescences are very small with flowers in acervuli.</p></div>
+<nomenclature>
+<name>Wendlandiella</name>
+<author>Dammer</author>
+<citation>Bot. Jahrb. Syst. 36 (Beibl. 80): 31 (1905).</citation>
+<type>Type; Wendlandiella gracilis; Dammer</type>
+</nomenclature>
+<div type="etymology"><p>Commemorates Hermann Wendland (1825–1903), German botanist and horticulturist who collected palms in Costa Rica and described many palms, with the diminutive iella, perhaps distinguishing the genus from one named after H. Wendland’s grandfather, J.C. Wendland, also a horticulturist.</p></div>
+<div type="description"><p>Dwarf, clustering, unarmed, pleonanthic, dioecious palm. Stem very slender, internodes long, ringed with leaf scars. Leaves pinnate or entire, bifid and pinnately nerved; sheaths slender, tubular, not splitting opposite the petiole; petiole slender; rachis ± triangular in cross-section; leaflets when present only 24 per side, with broad insertions, thin, smooth, lanceolate, midrib and sometimes another pair of veins larger, transverse veinlets not apparent. Inflorescences interfoliar, staminate and pistillate inflorescences superficially similar, branching to 1(–2) orders; peduncle elongate; prophyll tubular; peduncular bract 1, tubular, it and the prophyll included within the sheath or exserted and exceeding the peduncle; rachis shorter than the peduncle; rachillae slender, few and subdigitate to numerous, bearing low membranous bracts, floral bracteoles not evident. Staminate flowers in acervuli of 2–6; sepals 3, briefly connate and markedly gibbous basally, distinct distally and the lobes ± hooded at least in bud, the margins usually thin; petals 3, thin, nerveless when dry, valvate, spreading to recurved at anthesis; stamens 6, the filaments erect in bud, distinct, anthers medium with rounded ends, fleshy connectives very short; pistillodes 3, distinct or somewhat connate. Pollen ellipsoidal, slightly asymmetric; aperture a distal sulcus; ectexine tectate, very finely striate, aperture margin similar or slightly perforate; infratectum columellate; longest axis ranging from 26–32 µm; post-meiotic tetrads tetrahedral, occasionally tetragonal [1/1]. Pistillate flowers solitary or in vertical pairs; sepals 3, connate in a low, 3-lobed cupule, gibbous basally; petals 3, imbricate, gibbous, about twice as long as sepals; staminodes 3, minute; gynoecium subglobose, trilocular, triovulate, stigmas 3, reflexed, ovule pendulous, form unknown. Fruit ellipsoidal, with basal stigmatic remains and remnants of abortive carpels, orange-red at maturity; epicarp smooth, mesocarp thin, lacking fibres, endocarp membranous, not adherent to the seed. Seed with a single raphe branch ventrally curving over the top and a side branch curving around each lateral surface, endosperm homogeneous; embryo lateral slightly below the middle. Germination and eophyll unrecorded. Cytology: 2n = 28.</p></div>
+<div type="distribution"><p>A single species with three varieties, each confined to three separate basins of the western Amazon in Brazil, Peru and Bolivia.  </p></div>
+<div type="uses"><p>Grown as ornamentals by a few enthusiasts. </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>The placement of Wendlandiella is not yet clear and varies among different studies. In a well-sampled study based on nuclear DNA alone, Wendlandiella is found to be sister to the rest of the Chamaedoreeae, excluding Hyophorbe, with high support (Thomas et al. 2006). In the studies based on plastid DNA alone, Wendlandiella is found to be sister to Hyophorbe with moderate or low support (Asmussen et al. 2006, Cuenca and Asmussen-Lange 2007). Alternative placements are found in other studies based on combinations of data types: Wendlandiella as sister to Chamaedorea (Uhl et al. 1995) and Wendlandiella as sister to Synechanthus (Baker et al. in review). </p></div>
+<div type="taxonomic accounts"><p>Henderson (1995). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Wendlandiella resembles Chamaedorea but differs in having only two bracts on the inflorescence, the staminate and sometimes pistillate flowers borne in rows (acervuli), sepals of both staminate and pistillate flowers connate in a low ring, and endocarp membranous not hard. </p></div>
+<div type="vernacular"><p>Chontilla, ponilla (Peru). </p></div>
+<div type="biology_ecology"><p>This is a palm of the undergrowth of lowland rain forest on terra firme (Henderson 1995).</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the Genus Physokentia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Moore</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 13(4) 120-136</mods:publisher>
+<mods:dateIssued>1969</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Physokentia whitmorei</name>
+<author>H.E. Moore</author>
+<citation>Principes 13: 129 (1969)</citation>
+<type>British Solomon Islands Protectorate, San Cristobal (East), 4 miles E. of Wainoni, headwaters of Huni R., ultrabasic outcrop, broad ridge top, 1600-1700 ft. altitude, 10 August 1965; T. C. Whitmore; RSS 6309</type>
+<type_loc>Holotype BH; isotype K</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The epithet is but a faint tribute to the devotion which Dr. Whitmore has lavished on the flora of the Solomon Islands and to the unfailing assistance he has provided me during and after field work in the Solomons.</p></div>
+<div type="vernacular"><p>manusilae in the Kwara'ae dialect</p></div>
+<div type="diagnosis"><p>Folia regulariter pinnata pinnis utrin-que numerosis acutis uninervibus. Inflorescentia duplo-ramosa rachillis ad 33 cm. longis, bracteolis floris foeminei angustis, apice rotundatis. Fructus ater, globosus, 2.3 cm. altus, 2.0 cm. in diam., endocarpio 17 mm. alto, 15 mm. in diam., crasso, acute 4-angulato</p></div>
+<div type="description"><p>Trunk solitary, to 6 m. high, with stilt roots to 1.5 m. high. Leaves 5-6, suberect; sheaths green, tinged grey, forming a crownshaft 6-9 dm. high, covered, when young or where protected, with a dense, continuous mat of small, brown-centered, floccose-margined, peltate scales or becoming densely brown-puncticulate with persistent scale-bases in age or where exposed; petiole ca. 26 cm. long, densely covered above and below with shining, irregularly and narrowly membranous-margined, brown, peltate scales; rachis with a dense cover of scales similar to those of the petiole or often with a broader, paler, lacerate-fimbriate margin; pinnae regularly arranged, the number on each side of the rachis not noted, the central ca. 57 cm. long, 5 cm. wide, narrowed basally to an insertion 1.5 cm. wide and to an acute apex, but this sometimes broken or frayed, glabrous above except the prominent, elevated, brown-puncticulate mid-nerve and minute scattered puncticula-tions on some lesser nerves, below densely and minutely brown-lepidote on the midnerve, on 3 rather prominent secondary nerves on each side, and on numerous tertiary nerves, the midnerve and secondary nerves also bearing prominent, dull brown, membranous, irregularly linear, medifixed or basifixed scales to ca. 3 mm. long near the base or nearly throughout their length, apical and subapical pinnae similar but smaller, (15-25 cm. long, 1.8-2 cm. wide) with usually 2 secondary nerves on each side, the lowermost pinnae ca. 32 cm. long, 1.5 cm. wide, long-attenuate, probably continuing into a rein or lora when first expanded. Inflorescence ca. 5.5 dm. long from base to apex, glabrous; bracts apparently glabrous (from a very young inflorescence obviously from within a leaf-sheath and molded) ; peduncle 8 cm. long, 1.4 cm. wide at apex; rachis 18 cm. long to last branch, bearing 9 subdisti-chously arranged branches including the terminal; lower few branches again sub-distichously branched into ca. 6 simple or rarely furcate rachillae to 28 cm. long, the upper simple, to ca. 33 cm. long in fruit, all more or less angled or even flexuous at anthesis and terminating in a brief spinose t;p; triads in the lower half or more of the rachillae, distally with paired or solitary staminate flowers, each triad subtended by a prominent acute bract 2 (-3) mm. long; bracteoles membranous, narrow, white-barbate on the upper margins as are the brief staminate pedicels. Staminate flowers 4—5 mm. long, somewhat asymmetric, more or less rounded at the apex in bud; sepals indistinctly nerved when dry, broadly imbricate, rounded to acutish, ca. 2.5 mm. high, 3 mm. wide, the margins more or less ciliolate; petals nerved when dry, valvate, ca. 5 mm. long, 3-4 mm. wide; pistillode as long as the filaments, angled-columnar, 3-angled at apex: pistillate flowers in bud, 3^1 mm. long, the perianth in fruit of sepals 3.5^1 mm. long, 5—6 mm. wide and petals 6 mm. long, 9 mm. wide, both, and especially petals, rather strongly nerved. Fruit olive maturing black, globose when still incompletely mature, with ex-centrically apical stigmatic residue, 2.3 cm. high, 2 cm. in diam.; exocarp smooth; mesocarp thin with longitudinal fibers, not collapsing when dried; endo-carp thick, 17 mm. high, 15 mm. wide and thick, 4-angled with beaked ridge on adaxial (hilar) side lower than rounded-angled apex, operculum rounded; seed not sufficiently developed to describe. </p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Physokentia Whitmorei is the only species thus far known from the Solomon Islands that shows an immediate and clear resemblance to species from Fiji and the New Hebrides. The sharply angled endocarp, white-barbate bracteoles of the triads, and the pinnae are very similar to those of P. Thurstonii. Though the seeds had not developed sufficiently to provide information on endosperm, it may be anticipated that the endosperm will be homogeneous.</p></div>
+<div type="materials_examined"><p>BRITISH SOLOMON ISLANDS PROTECTORATE: SAN CRISTOBAL (EAST) ; 4 miles E. of Wainoni, headwaters of Huni R., ultrabasic outcrop, broad ridge top, 1600-1700 ft. altitude, 10 August 1965, T. C. Whitmore RSS 6309 (BH, holotype; K, isotype).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

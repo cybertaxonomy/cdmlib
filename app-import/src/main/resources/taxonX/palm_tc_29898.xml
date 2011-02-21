@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus rugosus</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1892) 443</citation>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 11 (1908) 175</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 58</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Rugosus - wrinkled, referring to the minute ridges on the leaf sheath</p></div>
+<div type="vernacular"><p>rotan perut ay am</p></div>
+<div type="description"><p>Solitary (? always) slender rattan climbing to 8 m only. Stem without sheaths to 6 mm in diameter, with to 13 mm. Internodes to 8 cm long. Leaf rachides and sheaths drying dull brown. Leaf sheaths bright green closely and sparsely armed with short triangular reflexed convex spines, dull reddish brown in colour with paler bases and dense annular ridges minutely rough on their crests. Ocrea inconspicuous. Knee well developed. Flagellum to 1.2 m. Leaf ecirrate to 80 cm long including petiole to 20 cm long; petiole tinged red in fresh state, very sparsely armed. Leaflets up to about 40 on each side, very fine, regular, the longest in the mid-section decreasing gradually to the leaf tip; largest leaflets to 25 cm long by 12 cm wide, the terminal two not joined, armed with black bristles on three veins above, &#177; unarmed beneath, minutely denticulate along margins. Inflorescence to 1.2 m long with A-5 very slender partial inflorescences, with rachillae to 4 cm long. Ripe fruit rounded to somewhat oblong covered in 15-17 vertical rows of brownish scales. Seed with homogeneous endosperm. Seedling not known.</p></div>
+<div type="distribution"><p>Perak, Pahang, Johore. Borneo (E. Kalimantan), Sumatra (Lampung).</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>This species has been very rarely collected. It is easily distinguished by the combination of characters italicized above. The reddish tinge to young parts and to dried specimens seems characteristic.
+ Recent collections have all been from well-drained sites in lowland and hill Dipterocarp forest</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

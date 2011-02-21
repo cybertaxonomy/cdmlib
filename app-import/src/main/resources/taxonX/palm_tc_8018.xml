@@ -1,0 +1,76 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Notes on the Genus Ammandra (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Bernal</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Ramírez</mods:namePart>
+<mods:namePart type="given">G.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Morales</mods:namePart>
+<mods:namePart type="given">R.I.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 45(3) 123-126</mods:publisher>
+<mods:dateIssued>2001</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ammandra decasperma</name>
+<author>O.F.Cook</author>
+<citation>J. Wash. Acad. Sci. 17: 220 (1927)</citation>
+<type>Colombia. Valle del Cauca: Buenaventura, 26 May 1926; Cook and Baker; 153</type>
+<type_loc>Holotype US</type_loc>
+<synonymy>
+<name>Phytelephas decasperma</name>
+<author>(O.F.Cook) Dahlgren</author>
+<bibref>(O.F.Cook) Dahlgren, Publ. Field Mus. Nat. Hist., Bot. Ser. 14: 231 (1936)</bibref>
+</synonymy>
+<synonymy>
+<name>Phytelephas dasyneura</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 11: 5 (1930)</bibref>
+<type>Colombia. Caqueta: Getuchá, Río Orteguaza, 30 Jul 1926; Woronow &amp; Juzepczuk; 6335</type>
+<type_loc>Holotype B destroyed; lectotype LE (Barfod 1991)</type_loc>
+</synonymy>
+<synonymy>
+<name>Ammandra dasyneura</name>
+<author>(Burret) Barfod</author>
+<bibref>(Burret) Barfod, Opera Bot. 105: 43 (1991)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Solitary or clustered dioecious palm, with stems short and subterranean,o r prostratea nd up to 1.5 m long and 25-35 cm in diameter, usually decaying at the older portions. Leaves 8-20 erect or arching; sheath l-1.7 m long, strongly fibrous, most of it appearing like the petiole; petiole cylindrical, l-2.4 m long, 2-2.5 cm in diameter, green; rachis 3.3-4 m long, with 40-62 pinnae; middle pinnae opposite, to 85 cm long and 5 cm wide, glabrous, with a prominent submarginal vein on either side of the midvein. Inflorescences interfoliar, the staminate up to 1.4 m long; peduncle 30-75 cm; peduncular bract 35-50 cm long; rachis 3O-92 cm long; rachillae 45-90, each with 6-9 flowers 0.5-3 cm long, the proximal ones larger and with more stamens; perianth obscure, hidden by the enlarged receptacle, the latter making the most conspicuous part of the flower; receptacle prismatic, to 1.5 cm long, with a small, central pistillode; stamens 300-1321; filaments 0.1-0.9 mm long; anthers 0.5-1.7 mm long. Pistillate inflorescence with peduncle to 30 cm long; peduncular bt'act 15*30 cm long; pistillate flowers 6-10 densely arranged in a head on a short rachis 1-2.5 cm long, each flower up to 25 cm long, with 7-10 narrow tepals to 10 cm long; ovary with 6-10 locules; style to 7 cm long; stigmas to 5 cm long. Infructescence2O-25 cm diameter, with 3-10 fruits. Fruit depressed-globose1,0 -12 cm diameter, with woody spiny projections to L cm long; seeds 6-10, wedge-shaped, with two flat sides, the distal surface convex, 4.5-5 cm long, 3-4 cm wide,2.2-3 cm along the tangential face. </p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined">COLOMBIA. Boyacá: Municipio de Puerto Boyacá, Puerto Pinzón, on rio Ermitaño, 6˚ 03' N, 74˚ 14' W, 450 m, Jan 2OOO, Ramírez &amp; Morales s.n. (COL); 2 Nov 2000, Bernal et al. 2506 (COL, HUA, NY), 2507 (COL, HUA).<p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

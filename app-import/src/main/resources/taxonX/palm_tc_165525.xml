@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia beccariana</name>
+<author>Rock</author>
+<citation>Bull. Torrey Bot. Club 43: 386. 1916</citation>
+<type>Glenwood, Hawaii, Hawaii; Rock; 10356</type>
+<type_loc>Holotype BISH!; isotypes FI, GH</type_loc>
+<synonymy>
+<name>Pritchardia beccariana var. giffardiana</name>
+<author>Becc.</author>
+<bibref>Becc., Mem. Bernice P. Bishop Mus. 8: S9. 1921</bibref>
+<type>Kalaiulehua, Olaa, Hawaii, Hawaii; Rock; 12799</type>
+<type_loc>Holotype FI; isotype BISH!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 20 m tall; proximal margins of petiole with slight to moderate fibers; leaf blade nearly flat, divided 1/5-1/4, abaxial surface incompletely covered with scattered lepidia, segment tips stiff; inflorescences composed of 2-4 panicles, shorter than or equaling petioles in flower and fruit (infrequently slightly exceeding petioles in fruit), panicles branched to 3 orders, rachillae glabrous to clothed with scurfy indumentum in flower, glabrous in fruit; fruits 40 x 30-40 mm, globose to ellipsoid.</p></div>
+<div type="distribution"><p>Wet forest on the northeastern and eastern slope of Mauna Loa, Hawaii, 300-1300 m elevation. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia beccariana is distinct in its large, flat, round, shallowly divided leaf blades incompletely covered abaxially with lepidia and with stiff segment tips, inflorescences shorter than or about equaling the petioles, and large fruits. It is similar to P. gordonii and P. schattaueri, both of which differ in their leaf blades with pendulous segment tips and petiole margins with an abundance of conspicuous fibers proximally.</p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Hawaii: Kulani Road (Stainback Highway), Degener 21797 (BISH), Henrickson 4133 (BISH), Krajina 660702117 (HAW), St. John 22370 (BISH); above Hilo, Rock 3650, 3654 (BISH); Glenwood (29 mile marker above Hilo) Degener 9716, 9717 (BISH), Rock 10356 (BISH), Rock s. n., Aug. 19l5 (BISH); Upper Olaa Forest Reserve, Wright Road, Hodel 146,147 (PTBG); Kalaiulehua, Rock 12799 (BISH), Rock 12959 (BISH); S. of Saddle Road, 10 miles from Hilo, Bishop 1833 (HAW). CULT. U.S.A. Hawaii. Oahu: Waimea Valley Audubon Center, 79p1071, Zona 1003 (HAW).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

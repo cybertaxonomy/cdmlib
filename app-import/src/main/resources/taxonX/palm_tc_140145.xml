@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Tropical African Plants: XXVII</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hutchinson</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 17, No. 1, pp. 161-181</mods:publisher>
+<mods:dateIssued>1963</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Oncocalamus wrightianus</name>
+<author>Hutch.</author>
+<citation>Kew Bull. 17: 181 (1963)</citation>
+<synonymy>
+<name>0. manniisensu</name>
+<author>C. H. Wright</author>
+<bibref>C. H. Wright in Dyer, Fl. Trop. Afr. 8: III (1901), partim, non Wendl.</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>affini, O. wrightii Wendl., sed foliolis paucioribus et vaginis foliorum aculealis differt.</p></div>
+<div type="description"><p>Folia pinnata; folioa circiter 5-juga, opposita vel subopposita, lanceolata, acuta, circiter 10-15 cm. longa el 2-4.5 cm. lata, remote spinuloso-denlata, tenuia, plurinelvia; rhachis prope basin aculeala, in cirrhum gracilem aculeis oppositis reflexis armatum producta; vagina basalis aculeata.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Nigeria. Lagos Island, swamp, 1857, Barter 2220 (K, holotype):-6 m·high. Ebute Metta, swampy ground, Nov. 1892, Millen 18:-stem used for making baskets; used for tie-tie; vernacular name (Yoruba) 'Pankere'. Ijebu Prov.: about 1 km. from Sunmoge on the new road to Osho, in high secondary forest tangles, 10 Apr. 1946, A. P. D. Jones and Onochie in F.H.l. 17419:-tall scrambling palm to 10 m. high.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

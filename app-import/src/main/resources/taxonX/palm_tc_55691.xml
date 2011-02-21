@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops atra</name>
+<author>J.Dransf.</author>
+<citation>Bot. J. Linn. Soc. 81: 15 (1980)</citation>
+<bibref>Dransfield, Ratt. Sarawak 63 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Blackish</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering rattan climbing to c. 6 m only, often much less; stem without sheaths c. 15 mm diam., with to c. 30 mm diam., internodes c. 10 cm long. Sheath bright green, armed with partial or rarely complete whorls of slender, flattened or horse-hair-like, reflexed black spines, 5-40 mm long, borne on low collars, spines around sheath mouth mostly erect, to 70 mm long, pale brown hairs abundant between the spines; knee inconspicuous, armed as the sheath. Leaf cirrate, to 2.5 m including the cirrus to 1 m and petiole to 35 cm; petiole armed laterally with rather distant long spines to 25 mm, and very much smaller spines on the upper surface; leaflets 25-30 on each side of the rachis, stiffly held, arranged in distant groups of 3-7, arranged regularly within the groups in one plane, narrow, linear, acuminate, the longest to c. 42 &#215; 2 cm, bristly on 3-5 nerves on the lower surface, transverse veinlets crowded, easily visible. Inflorescences much shorter than the leaves, rarely more than 70 cm long; peduncle c. 10 cm long, in the female elongating in fruit; prophyll and other primary bracts chestnut brown, papery, covered in pale brown indumentum and sometimes also bearing fine bristles or spines, the bracts soon falling or becoming tattered; partial inflorescences up to c. 9; secondary bracts rather conspicuous, becoming tattered; male rachillae crowded, to 2 cm long, bearing strictly distichous crowded flowers; female rachillae up to 7 cm long. Mature fruit rounded, c. 20 mm diam., beaked and covered in 15-17 vertical rows of matt blackish-brown scales. Seed spherical with sweet sarcotesta; endosperm ruminate, embryo basal. Seedling not known. (Fig. 19).</p></div>
+<div type="distribution"><p>Known from a single collection from Ulu Tutong. Elsewhere in Sarawak and S and E Kalimantan. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>D. atra is a plant of rather poor soils on ridges in hill dipterocarp forest at altitudes up to about 200 m above sea level. It is related to D. collarifera but differs in the smaller size of all its parts, the more crowded slender leaflets, the less well developed collars on the sheaths, the conspicuous secondary bracts on the inflorescences and the matt black fruit.</p></div>
+<div type="materials_examined"><p>TUT: Johns 7578.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus travancoricus</name>
+<author>Bedd.</author>
+<citation>Hook. f. Fl. Brit. Ind. 6 : 452. 1893</citation>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11 : 310. 1908 and Appendix PI. 121. 1913.</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A thicket-forming climber; stem slender to 10 m long, with leafsheath 8-10 mm in diameter, without leafsheath 5-7 mm in diameter; internodes up to 20 cm long. Leaves ecirrate, to 50 cm long; leafsheath without knee, armed with to 5 mm long, straight spines; ocrea distinct, thin, upper margins bristly; petiole armed with a few longer spines along the margins; leaflets 20 - 30 in number in one leaf; in opposite groups of 2 - 5 leaflets in each group, deflected from the rachis in one plane, not pointed to different direction, narrowly oblanceolate, to 18 cm long, 10 - 15 mm broad at middle. Inflorescence flagelliform, slender, axial portion aculeate; primary bract longer than smaller partial inflorescences, enclosing the fertile parts completely until splitting longitudinally; male rachillae 7 - 8 mm long, delicate, sinuous, with 7-8 distichous flowers; female partial inflorescences 7 - 10 cm long, shorter than bracts; female rachillae simple, zig-zag, 12 - 15 mm long, with 3-4 distinct female flowers on each side; involucrophorum shortly pedicelliform, conspicuous in infructescence. Fruit globose, mucronulate, 8-10 mm long; fruit scales with deep brown margins, faintly channelled at middle. Seed not examined.</p></div>
+<div type="distribution"><p>INDIA (Kerala, Tamil Nadu). Endemic.</p></div>
+<div type="biology_ecology"><p>Grows in the forest undergrowth or on partially cleared forest patches.</p></div>
+<div type="cultivation"><p>Not cultivated.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The thin and delicate cane has no commercial value. Its local uses are unknown. It is reported that tender leaves are used for treating dyspepsia, biliousness and ear trouble and is considered as anthelmintic.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Kerala : Pathanamthette, Chalakkayam Pambi, Sabrimala R.F. 27.4. 1980, Vajravelu 80619 (CAL &amp; MH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

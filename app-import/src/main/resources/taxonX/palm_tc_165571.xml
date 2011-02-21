@@ -1,0 +1,54 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia thurstonii</name>
+<author>F. Muell. &amp; Drude</author>
+<citation>Gartenflora 36: 486. 1887</citation>
+<type>Fiji Oct. 1886; Thurston; s. n.</type>
+<type_loc>Lectotype MEL; isolectotype K (photo!)</type_loc>
+<synonymy>
+<name>Washingtonia thurstonii</name>
+<author>(F. Muell. &amp; Drude) Kuntze</author>
+<bibref>(F. Muell. &amp; Drude) Kuntze, Revis. Gen. PI. 2: 737. 1891</bibref>
+</synonymy>
+<synonymy>
+<name>Eupritchardia thurstonii</name>
+<author>(F. Muell. &amp; Drude) Kuntze</author>
+<bibref>(F. Muell. &amp; Drude) Kuntze, Revis, Gen. PI. 3(2): 323. 1898</bibref>
+</synonymy>
+<synonymy>
+<name>Styloma thurstonii</name>
+<author>(F. Muell. &amp; Drude) O. F. Cook</author>
+<bibref>(F. Muell. &amp; Drude) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 8 m tall, erect, rarely distinctly serpentine or saxophone-shaped; proximal margins of petiole with only a few fibers; leaf blade flat, divided 1/5-1/4, slightly waxy-glaucous, abaxial leaf blade surface with lepidia conspicuously arranged in distinct, parallel lines, segment tips stiff; inflorescences composed of 1 panicle, equaling or exceeding leaf blades in flower to greatly exceeding leaf blades in fruit, panicles branched to 2--3 orders, rachillae glabrous; fruits 7 mm diam., globose. </p></div>
+<div type="distribution"><p>Moist to wet forest on rough, sharp, folded, pitted, fissured karst limestone, slopes, cliffs, large boulders and small islands, Fiji (Lau Group: Vanuabalavu, Vulaga, and Ogea Drikj) and Tonga (Eua), 0-200 m elev. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The lepidia on the abaxial leaf blade surface, conspicuously arranged in distinct, parallel lines, are diagnostic for Pritchardia thurstonii. It is rather widely cultivated in tropical gardens. On Vulaga and Ogea Driki in the Lau Group of Fiji, Pritchardia thurstonii is restricted, in rather spectacular fashion, to the tops of small, mushroom-shaped, karst limestone islets in their lagoons, nearly to the exclusion of all other woody vegetation (Fuller 1997, Fuller &amp; Jones 1999, Watling 2005). On Eua island in Tonga, it is confined to the rock escarpment 200-300 m high on the southeast coast. There it occurs from the lip or crest near the top of the escarpment, sometimes with serpentine trunks, down to the sea coast. At the base of the escarpment, near and at the sea, is a jumble of gigantic, limestone boulders, some as much as 10-15 m in diameter, amongst and on top of which grow P. thurstonii. There is no barrier reef at this point, and waves crashing on the rocks at times envelope the surrounding area, including the palms, in a salt-laden haze. Because Mueller and Drude did not designate a holotype from the original material, Moore selected a lectotype at MEL and an isolectotype at Kas the type material for this species (Moore 1979). Several workers (Lister 1893, Burkill 1901, Beccari &amp; Rock 1921, Watling 2005) have erroneously referred to Tongan material of Pritchardia thurstonii as P. pacifica. likewise, herbarium specimens of P. thurstonii from Tonga are frequently misidentified as P. pacifica. </p></div>
+<div type="materials_examined"><p>FIJI (Lau Group). Thurston s. n. (K). Ongeandriti (Ogea Driki): Bryan 389 (BISH). Fulanga (Vulaga): Smith 1230 (BISH). TONGA. Eua Island: south plateau cliffs, Parks 16374 (BlSH, K [photo]); Vaifefe, Sykes Il29 (Bl5H); Haaluma, Yuncker 15607 (BISH). CULT. I U.s.A. Hawaii. Kauai: National Tropical Bot. Gard. (NTBG 950211.001) Chapin 058 (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

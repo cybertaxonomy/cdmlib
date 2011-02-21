@@ -1,0 +1,104 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A monograph of Ceratolobus (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 1, pp. 1-33</mods:publisher>
+<mods:dateIssued>1979</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ceratolobus subangulatus</name>
+<author>(Miq.) Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11, Supplement: iii (1913)</citation>
+<type>Sumatra; Teysmann; 200</type>
+<type_loc>Holotypus BO</type_loc>
+<synonymy>
+<name>Calamus subangulatus</name>
+<author>Miq.</author>
+<bibref>Miq., Prodr. Fl. Sum. 256, 594 (1861)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus</name>
+<author>(Mart.) Becc.</author>
+<bibref>(Mart.) Becc. in Hooker f., Fl. Br. India 6: 477 (1894)</bibref>
+<bibref>Ridley, Mat. Fl. Mal. Peninsula 2: 187 (1907)</bibref>
+<bibref>Heyne, Nuttige Pl. Nederl. Ind.: 94 (1913)</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 12(2): 13, tt 9-11 (1918)</bibref>
+<bibref>Ridley, Fl. Mal. Peninsula 5: 46 (1925)</bibref>
+<bibref>Furtado in Gard. Bull. Sing. 13: 354, tt 20-22 (1951)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus var. angustifolius</name>
+<author>Becc.</author>
+<bibref>Becc. in Hooker f., Fl. Br. India 6: 477 (1894</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus var. angustifolius</name>
+<author>Becc.</author>
+<bibref>Becc. in Hooker f., Fl. Br. India 6: 477 (1894)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus var. borneensis</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Gard. Calcutta 12(2): 16 (1918)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus var. divaricatus</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Gard. Calcutta 12(2): 16 (1918)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus var. major</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Gard. Calcutta 12(2): 16 (1918)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus var. regularis</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Gard. Calcutta 12(2): 16 (1918)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus var. subangulatus</name>
+<author>(Miq.) Becc.</author>
+<bibref>(Miq.) Becc. in Ann. Roy. Bot. Gard. Calcutta 12(2): 16 (1918)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus divaricatus </name>
+<author>Becc.</author>
+<bibref>Becc. nomen in sched., on Hallier 2758 (BO)</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus elegantissimus</name>
+<author>Ridley</author>
+<bibref>Ridley nomen in sched., on Ridley 7904 (K, SING)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus</name>
+<author>sensu Becc.</author>
+<bibref>sensu Becc. in Ann. Roy. Bot. Gard. Calcutta 12(2): 13 (1918) non Mart.</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Slender clustering rattan generally low to moderate in height. Stems closely clumping by short suckers, usually only 3-4 m tall but occasionally to 15 m or more (West Sumatra), 6-17 mm diam. with sheaths, 4-7.5 mm diam. without sheaths; internodes 10-20 cm long. Leaf sheaths dull to dark green when fresh, greeny-brown to pale reddish-brown when dry, with in- conspicuous longitudinal striations darker in colour; ocrea minute inconspicuous; sheath armature consisting of very few to moderately numerous scattered broad-based, flattened, triangular, reflexed pale-green spines, slightly swollen at the base and 3-11 mm long; chocolate-coloured and pale brown scales scattered among the spines, sometimes absent; geniculus present, slightly swollen. Leaf to 60-70 cm long including the terminal cirrus, exceptionally almost 100 cm long, sometimes very diminu- tive. Petiole very short or absent; rachis armed with scattered reflexed spines and scattered chocolate-coloured scales below, in robust specimens with scattered spines on upper surface of the rachis; cirrus 30-50 cm long armed with scattered groups of 3-5 reflexed thorns. Leaflets very variable in arrangement but populations usually remarkably uniform within themselves; leaflets 10-16 on each side of the rachis, pink when emerging, dark green when fully expanded, the lowermost 2-3 on each side reflexed; other leaflets usually arranged in opposite groups of 2-3, occasionally almost regular, perfectly opposite and somewhat divaricate; leaflets narrowly to broadly lanceolate, sometimes acuminate in a drip-tip, 10-25 cm long, 1.5-3 cm wide; margins and midnerve above with small bristles. Staminate and pistillate inflorescences superficially similar, erect throughout development, sessile or with a very short peduncle not exceeding 1 cm in length. Bract very variable in size, 6-20 x 2-6 cm, flat, with slightly inrolled margins, with a terminal beak up to 3 cm long, usually less, covered with chocolate- coloured scales when young, one population (in Sumatra) also covered in scattered stubby spines 2 mm high on the abaxial face, pale green when young, cinnamon-brown at anthesis. Axis c. 2 mm diam. at anthesis, usually with about 4 or 5 first-order branches; first-order bracts tightly sheathing, with triangular tips. Staminate flowers solitary, pale greeny-cream-coloured at anthesis, borne on a moderately pronounced alveolus, c. 1 mm diam., whole flower up to 4 x 2-5 mm; calyx tubular shallowly 3-lobed, c. 0.7 mm long; corolla tubular below, split to about 1/2 length into 3 triangular lobes, each c. 3.5 mm long, c. 2 mm wide at the base; stamens 6, shortly epipetalous, with thick fleshy filaments c. 1 mm long; anthers medifixed c. 2 x 0.25 mm, bright canary-yellow; pollen copious, powdery, canary- yellow; pistillode minute. Pistillate flower similar to staminate, about 4 mm high by 2.5 mm wide; calyx cup-shaped with 3 short triangular lobes, to c. 1 mm high; corolla tubular below, split to 1/2 length at anthesis, in fruit splitting to the base, staminodes 6, epipetalous, with flattened empty yellow anthers; ovary c. 1-5 mm diam., rounded, with reflexed scales, tipped with 3 divergent, fleshy, rugose stigmas to about 1 mm in length. Sterile staminate flower more slender than the fertile, to 4 x 1 mm, fleshy, with 6 slender staminodes and a minute central pistillode. Inflorescence often increasing in size after fertilization and breaking out through the enclosing bract and spreading. Ripe fruit globose or slightly beaked, up to 2 x 1.5 cm at maturity, usually much less, covered with usually 12 vertical rows of scales, 4 x 5 mm, varying from pale brown with a darker marginal line c. 1 mm wide to dark red-brown without a darker marginal line. Seed conforming to the shape of the pericarp, covered in a thin sarcotesta to 2 mm thick. Diaspore up to 14 x 10 mm, reniform in longitudinal section, the endo- sperm deeply penetrated by ruminations. Embryo basal c. 1.5 x 0.7 mm. Seedling unknown.</p></div>
+<div type="distribution"><p>Widespread and often common though frequently over- looked, in the Malay Peninsula and Borneo; rather rare in Sumatra. Found in a wide range of habitats from coastal hills at 50 m altitude to 1000 m in hill Dipterocarp forest in the mountains, but apparently absent from peat and fresh water swamp forests</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This is a highly polymorphic species. Several varieties have been dis- tinguished under C. laevigatus, by Beccari and Furtado. Individual popula- tions may be very uniform yet adjacent populations may appear quite distinct. On the basis of a rather limited amount of material Furtado recognized three varieties for the Malay Peninsula and Beccari recognized seven varieties in all. The distinctions between these varieties depend on the arrangement and size of the leaflets, the size of the mature fruit, and the degree of splitting of the fruiting perianth. Intermediates between these varieties exist: for example, var. regularis and var. angustifolius are separated on the basis of the leaflet alignment. In var. regularis the leaflets are more or less regularly and horizontally disposed and in var. angustifolius they are grouped and divergent. Yet many populations have leaves intermediate between the two. Similarly between var. laevigatus and var. angustifolius there are intermediates. Bornean material previously referred to as var. borneensis and var. divaricatus respectively represent further intermediates between the extemes of var. laevigatus and var. regularis. Some of the Sumatran populations of Ceratolobus subangulatus, e.g. from near Kepahiang, Bengkulu and near Tapan, West Sumatra, have a markedly broad, spiny, inflorescence bract. Vegetatively they fit Beccari's 'C. laevigatus var. subangulatus'; there is however no mention of spines on the bract in Beccari's description of this variety and specimens labelled by him have all lost their bracts. Though some Bornean populations may have reflexed spines along either side of the peduncular portion of the bract, the Sumatran plants are the only ones in which the abaxial face of the bract is spiny. However, plants vegetatively identical to these Kepahiang and Tapan populations but without spiny bracts can also be found nearby in Sumatra. Variation within Ceratolobus subangulatus does not appear sufficiently disjunct to me to justify the separation of varieties. Fruiting specimens in which the bract has rotted could be confused with Daemonorops; however the single bract scar together with the minute per- sistent tubular bracts on the rachillae together with the rather distinctive vegetative morphology should be sufficient to determine it. In the field, sterile, it might be confused with Daemonorops didymophylla Becc.; this latter species however is usually more robust, and has leafsheaths without vertical lines, has well-defined petioles, and its young leaves, though sometimes pinkish, are never so vividly pink as the young leaves of C. subangulatus. NOMENCLATURAL NOTE. The nomenclature of this taxon has been confused for almost a century due to a misinterpretation of the type of Martius' Calamus laevigatus. I had searched in vain in Kew for specimens collected by Griffith of C. laevigatus although, according to Beccari, the material should be there; a search in Florence was also without success, though I eventually came across an old, dark photograph of a sterile specimen apparently from Calcutta. Eventually Prof. H. E. Moore drew my attention to the presence of the holotype in Martius' personal herbarium in Brussels. It is quite likely that Beccari never saw this material-it is not annotated by Beccari, neither is it referred to in his monograph; it is also possible that the material in Calcutta is conspecific with the authentic material in Brussels- unfortunately the photograph is too poor for identification. Authentic Calamus laevigatus is sterile and bears a superficial resemblance to the plant known for so long as Ceratolobus laevigatus, but actually represents a true species of Calamus, up till now known as Calamus pallidulus Becc. (Malay Peninsula) or C. retrophyllus Becc. (Borneo). In the herbarium, these two species, one in Calamus, one in Ceratolobus, do indeed bear a marked resem- blance to each other, yet in the field are totally distinct; naturally, if inflorescences are present, there is no difficulty in separating them. Crucial to the identification of sterile herbarium material are the lowermost leaflets, the colour of the sheaths and leaflets, and the presence or absence of stria- tions on the sheaths. In the Calamus commonly known as C. pallidulus, the plants dry mid- to pale-green, the lowermost leaflets are strongly reflexed across the stem enclosing a chamber, in the fresh state often occupied by ants, these leaflets numbering 3-8 on each side of the rachis, and the sheaths may be unarmed to densely armed but are never broadly longitudinally striate; in the Ceratolobus, commonly known as C. laevigatus, plants dry dull to reddish brown, the lowermost leaflets can be reflexed but never number more than 3 on each side, and the sheaths may be unarmed to densely armed and carry broad longitudinal lines of alternating pale and dark brown. The holotype of Calamus laevigatus is mid-green, not brown, and bears a uniform smooth sheath, and the lowermost leaflets number 6 on each side of the rachis and are very strongly reflexed. Details of texture and armature of the rachis all reinforce the conspecificity of Calamus laevigatus, C. pallidulus and C. retrophyllus. Calamus laevigatus has thus to be rejected as the basionym of the lanceolate- leafleted species of Ceratolobus. The first binomial genuinely referring to this Ceratolobus is Calamus subangulatus Miq., based on a collection by Teysmann from Priaman in West Sumatra, transferred by Beccari to Ceratolobus in 1913.</p></div>
+<div type="materials_examined"><p>MALAY PENINSULA. Perak: no further locality, Scortechini 123b &amp; 126b (FI). Taiping, Waterfall Hill: Burkill &amp; Md. HaniffSFN 13128 (K, SING); Furtado SFN 33078 (BH, K, KEP, L, SING) &amp; 33079 (BH, BM, L, SAR, SING); Henderson SFN 11597 (SING); Md. Haniff &amp; Md. Nur SFN 2377 (SING); Ridley 11463 (BM, SING) &amp; Aug. 1909, Ridley s.n. (BM); Wray M212 (2919) (K, SING). Lumut, Dindings: Burkill 491 (SING); Dec. 1902, Curtis s.n. (SING); Dransfield 883 (BH, K, L); Ridley 3489 (holotype FI; isotype SING of C. laevigatus var. regularis Becc.), 7904 (K, SING), 10340 (K, SING) &amp; Feb. 1896, Ridley s.n. (SING). Kledang Saiong forest Reserve, Ipoh: Dransfield 875 (BH, K, L); Dransfield &amp; Manokaran 4491 (K, KEP); Ridley 9808 (K, SING). Gopeng: Kunstler 575 (K), 5916 (K, BM) &amp; 971 (K). Bujong Malacca: Curtis 3163 (SING); Ridley 9812 (SING). Kinta Hills Forest Reserve, Ipoh: Dransfield &amp; Manokaran 4472 (K, KEP), 4476 (K, KEP); Forest Ranger FRI old series 68903 (KEP). Larut: Kunstler 1879 (Type no. of C. laevigatus var. angustifolius Becc., BM, K) &amp; 7953 (Type no. of C. laevigatus var. major Becc., FI, K). Kamuning, 1907, Machado s.n. (SING). Sungei Siput, Md. Haniff &amp; Md. Nur 6968 (SING). Tapah, 1908, Ridley s.n. (SING). Batang Padang District, Kunstler 8902 (BM). Trengganu: Bukit Bauk Forest Reserve, Dungun, Poore 5077 (K, KLU). Kemaman, Corner SFN 30094 (BH, K, L, SING). Pahang: Kuantan, Bukit Galing, Dransfield &amp; Manokaran 4558 (K, KEP). Selangor: Kepong, Bukit Lanjan: Dransfield &amp; Manokaran 4522 (K, KEP), 4532 (K, KEP). Kepong, Oct. 1967, Dransfield s.n. (SING). Sungei Buloh: Ridley 13448 (BM, K, SING) &amp; 6 March 1915, Ridley s.n. (BM, K). Semangkok Pass: Ridley 12120 (FI, SING) &amp; Sept. 1890, Ridley s.n. (K). Damansara Hill, Kuala Lumpur, 10 Dec. 1920, Ridley s.n. (K, SING). SINGAPORE. Ridley 10220 (FI). BORNEO. SARAWAK. With no further locality, Merrill's Native Collector 1471 (Type of C. laevigatus var. borneensis Becc. is incorrectly cited by Beccari (1918) as 1771). Lundu, Sept. 1905, Ridley s.n. (SING). Kuching, Semongok Forest Reserve, Dransfield et al. 4622 (K, SAR). Carapa Pila, Ulu Pila, Mujong Watershed, Ashton S19602 (BH, K, L, SAR). Ulu Temalad, Mujong, Hose Mountains, Ashton S19774 (BH, K, L, SAR). N Setungun Ulu Segan, Ashton S22012 (K, SAR). Miri, Lambir Hills, Banyeng &amp; Sibat S24497 (BH, K, SAR). Baram, Hose 705 (BM, K). KALIMANTAN. Liang gagang, Hallier 2758 (Type of C. laevigatus var. divaricatus Becc., BO, FI, L). Sampit, Pondo, Md. Dachlan bb 2643 (BO). Banjermasin, Heyne 22 (BO, FI, L). SUMATRA. West Sumatra: Padang, Ayer Mancur: Beccari P.5519 (FI, K). Priaman: Teysmann 200 (holotype BO). Tapan, km 39 Sg. Penuh-Tapan, Dransfield &amp; Mogea 4156 (BO, K, L). West Indragiri Meiyer 4076 (SING) &amp; 4215 (SING). Riau: Kuantan District, Sungei Paku: Radjo Amat bb 31231 (BO), bb 31232 (BO), bb 31233 (BO). Indragiri Highlands; Telok Bagus: Rapii, bb 31256 (BO), bb 31257 (BO) (bb 31278 without collector or location probably originates in Riau also). Jambi: Kampung Penetai, Kerinci, Dransfield 2628 (BO, L). Bengkulu: Kepahiang, Pagar Gunung, Dransfield 1221 (BO), 3562 (BO), 3612 (BO, K) &amp; 3617 (BO, K). CULTIVATED. Bogor: Furtado SFN 30823 (K, L, SING).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

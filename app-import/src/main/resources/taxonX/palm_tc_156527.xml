@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga tenacinervis</name>
+<author>J.Dransf.,</author>
+<citation>Kew Bull. 34: 785 (1980)</citation>
+<type>Borneo, Sarawak; Dransfield; JD 5342</type>
+<type_loc>Holotypus K; isotypus SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>ab aliis speciebus Pinangae distincta foliolis sigmoideis fibris elasticis illis folii Corni sanguineae similibus. Quamquam P. patulae superficialiter similis, haec species habitu acaulescente radicibus gralliformibus et calyce floris feminei gamosepalo differt.</p></div>
+<div type="description"><p>Clustering, acaulescent, unarmed, pleonanthic monoecious palm. Stems apparently suckering underground to produce rather loose colonies of 3-5 stems; stem very short, scarcely more than 10 cm tall, surrounded by conspicuous stilt roots, about 3 mm diam.; stem to 1.2 cm diam., with internodes to 8 mm long, with surface dull greenish-brown, glabrous. Crownshaft to 16 x 2 cm, bright green, shiny when fresh, dull, striate when dry, with inconspicuous scattered brown scales. Crown with 5-6 leaves. Whole leaf including leaf sheath to c. 110 cm; leaf sheath c. 10 cm long; petiole 45 cm x 3 mm, triangular in cross-section, bright green, bearing very sparse, scattered brown scales; leaflets 5-6 on each side of the rachis, subopposite or alternate, dark green, shiny above when fresh, ± sigmoid, the apical pair joined; lowermost leaflet pair generally narrower than the rest to 18 x 2 cm; mid-leaf leaflets to 22 x 5 cm, long-acuminate, rarely a single fold leaflet present to 1 cm wide; apical leaflets to 12 cm long, 4 cm wide with a coarsely dentate upper margin; leaflets 1-6-ribbed; lamina very sparsely brown-scaly on upper surface, on lower surface with scattered minute, brown-based, branched, white hairs; fibres of fibrovascular bundles extremely tough, the leaflets hence difficult to tear, the fibres protruding from torn surfaces in the manner of the leaf of Cornus sanguinea. Inflorescence spicate or bifid, pendulous, to 10 cm long with a basal peduncular portion about 2 cm long; prophyll only known in immature state, strongly two- keeled; rachillae green, glabrous; triads arranged strictly distichously, about 4 mm distant. Staminate flower unknown except in a very immature state; stamens apparently 8 in number. Pistillate flower globular, somewhat sunken into the rachilla; calyx tubular below with 3 ovate, cucullate, glabrous sepals, about 1.5 mm high; corolla of 3 ovate, cucullate, glabrous, imbricate petals about 1.2 mm high; ovary ovoid about 1 mm high, tipped with irregular umbonate stigma. Almost mature fruit crimson, shiny, fusiform, about 1.2 x 4 mm; endosperm apparently ruminate.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>I have seen no other specimen of this distinctive Pinanga. Although there is a superficial resemblance to P. patula Blume, the gamosepalous pistillate flower suggests a relationship with P. albescens Becc. ex H. Winkler.</p></div>
+<div type="materials_examined"><p>SARAWAK. 5th Division, G. Mulu National Park, by Sg. Medalam, near G. Buda, in alluvial forest, on shallow soils overlying limestone, 150 m, Dransfield JD 5342 (holotype K; isotype SAR).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Usually tall, single-stemmed fan-palms of the Horn of Africa and Arabia, and Himalayas to Australia; there are a few dwarf species; most are hermaphroditic but a few dioecious species are known.</p></div>
+<nomenclature>
+<name>Livistona</name>
+<author>R. Br.</author> 
+<citation>Prodr. 267 (1810).</citation>
+<type>Lectotype; Livistona humilis; R.Br.</type>
+<synonymy>
+<name>Saribus</name>
+<author>Blume</author>
+<bibref>Blume, Rumphia 2: 48 (1838 [‘1836’]).</bibref>
+<type>Lectotype; Saribus rotundifolius; (Lam.) Blume</type>
+</synonymy>
+<synonymy>
+<name>Wissmannia</name>
+<author>Burret</author>
+<bibref>Burret, Bot. Jahrb. Syst. 73: 184 (1943).</bibref>
+<type>Type; Wissmannia carinensis; (Chiov.) Burret</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Honours Patrick Murray, Baron Livingstone, who laid out a garden on his estate at Livingstone, west of Edinburgh, Scotland, in the latter part of the seventeenth century.</p></div>
+<div type="description"><p>Slender (rarely) to robust, solitary, armed or unarmed, pleonanthic, hermaphroditic (rarely dioecious), shrub or tree palms. Stem erect, obscured at first by persistent sheaths, later becoming bare or covered with persistent petiole bases, conspicuously or obscurely ringed with leaf scars. Leaves induplicate, palmate or costapalmate, marcescent or deciduous under their own weight, a skirt of dead leaves sometimes developing; sheath disintegrating into a conspicuous interwoven, often cloth-like, reddish brown mass of broad and fine fibres; petiole well developed, grooved or flattened adaxially, rounded or angled abaxially, sparsely covered with indumentum or not, expanded and sometimes bulbous at the occasionally persistent base, the margins unarmed or armed with inconspicuous to robust horizontal spines or teeth; adaxial hastula well developed, abaxial hastula poorly developed or absent; blade divided along adaxial ribs to varying depths to form single or, very rarely, multiple-fold segments, these further divided for a short to long distance along abaxial folds near the tip, rarely the adaxial splits almost reaching the hastula and the costa, the segments then all single-fold and very fine; segments stiff or pendulous, interfold filaments sometimes present, scattered caducous indumentum present along ribs, wax sometimes present on the abaxial surface, more rarely waxy on both surfaces, midribs conspicuous, transverse veinlets obscure or conspicuous. Inflorescences interfoliar, solitary, branched to 5 orders, sometimes immediately trifurcating to give 3 equal ‘inflorescences’ enclosed within a common prophyll, each branch with its own prophyll (e.g. L. rotundifolia); peduncle elongate; prophyll 2-keeled, tubular, closely sheathing, variously covered with indumentum or not, frequently tattering at the tip; peduncular bracts 1–few, tubular, like the prophyll; rachis usually longer than the peduncle; rachis bracts variously covered with indumentum, each subtending a first-order branch; bracts of subsequent orders generally inconspicuous; rachillae erect, pendulous or divaricate, glabrous or hairy, usually numerous, bearing spirally arranged flowers, singly or in cincinni of up to 5, sessile or on low tubercles or slender stalks, each group subtended by a minute rachilla bract and each flower bearing a minute bracteole. Flowers small to very small, usually cream-coloured; calyx with receptacle often producing a short, broad stalk, tubular above, tipped with 3 triangular lobes, these sometimes imbricate at the very base, glabrous or hairy; corolla shallow, tubular at the base, apically with 3 triangular, valvate lobes; stamens 6, epipetalous, the filaments connate to form a fleshy ring, tipped with short, slender distinct filaments, anthers medifixed, rounded or oblong, latrorse; gynoecium tricarpellate, the carpels wedge-shaped, distinct in the ovarian region, connate distally to form a common, slender style, with an apical, dot-like or minutely 3-lobed stigma, ovule basally attached, anatropous; where dioecious, anthers or ovules not developing but otherwise as in the hermaphroditic. Pollen ellipsoidal, bi-symmetric, occasionally slightly asymmetric; aperture a distal sulcus; ectexine tectate, psilate and sparsely perforate, finely perforate, perforate, perforate-rugulate, foveolate or finely reticulate, aperture margin sometimes slightly finer; infratectum columellate; longest axis 19–37 µm [10/33]. Fruit usually developing from 1 carpel, globose to ovoid, pyriform, or ellipsoidal, small to medium-sized, variously coloured, green, scarlet, blue-green, blue-black, black or dark brown, stigmatic remains apical, sterile carpel remains basal; epicarp smooth, dull or shining, often with a wax bloom, mesocarp thin or thick, fleshy or dry, somewhat fibrous, usually easily separated from the bony or woody endocarp. Seed ellipsoidal or globose, basally attached, hilum circular or ± elongate, raphe branches few or lacking, endosperm homogeneous, penetrated laterally by a variable, frequently convoluted intrusion of seed coat; embryo lateral. Germination remote-tubular; eophyll lanceolate, plicate, minutely toothed apically. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>About 35 species, ranging from the Horn of Africa and Arabia (Livistonia carinensis), to the Himalayas and Ryukyu Islands, south through Indochina and Malesia to New Guinea, the Solomon Islands and Australia, where there is a great diversity of species. </p></div>
+<div type="anatomy"><p>Leaf (L. australis and L. chinensis; Tomlinson 1961),roots (Seubert 1997), floral (Morrow 1965); stegmata(Killmann and Hong 1989).</p></div>
+<div type="relationships"><p>The monophyly of Livistona has not beentested. Livistona is resolved as sister to the rest of the Livistoninaewith low support (Asmussen et al. 2006, Baker et al. in review).</p></div>
+<div type="uses"><p>Many are planted as ornamentals. Leaves of severalspecies are used for thatch, their segments for umbrellas, andfibres for rope and cloth. Trunks have been used for wood.The ‘cabbage’ of L. australis is edible.</p></div>
+<div type="taxonomic accounts"><p>Beccari (1931). See also Dransfield and Uhl (1983b). The genus has recently been revised by John Dowe (in prep.). </p></div>
+<div type="fossil record"><p>Leaves from India, Maharashtra State, were described as Sabalophyllum livistonoides (Bonde 1986b) and compared with Livistona (although the age span of the volcanic deposits in which they were found is controversial, see Chapter 5). Reid and Chandler (1933) report seeds, Livistona (?)minima [sic], from the Eocene (London Clay); and a seed, L. atlantica, is described from Germany, Middle Eocene (Geiseltal) (Mai 1976: the diagnosis for L. minima [Reid and Chandler 1933] is emended). From the Czech Republic, Turów, Lower Miocene, a seed, L. australis, is reported (Czeczott and Juchniewicz 1975). Stem wood, Palmoxylon, is difficult to identify to generic level; however, the Deccan Intertrappean beds of India (Maharashtra State) have yielded P. livistonoides (Prakash and Ambwani 1980) and P. arcotense (Ramanujam 1953), both of which are compared with Livistona. It needs to be stated that the generic attribution of all of these records is doubtful. Pollen (Jarzen 1978) from the Maastrichtian of Canada (Saskatchewan) is comparable to that of Livistona, and at least some of the small perforate or finely reticulate monosulcate pollen grains described by Khin Sein (1961) from southern England, Lower Eocene (London Clay) are probably assigned correctly to Livistona. Small monosulcate grains from palm flower compression fossils, Palmaemargosulcites fossperforatus, recovered from the Middle Eocene oil shales of Messel, Germany, are compared with pollen of a number of coryphoid genera, including Livistona (Harley 1997). </p></div>
+<div type="discussion"><p>A large and variable genus distinguished by flower structure, in particular by the gynoecium of three carpels connate only by their styles, by united sepals, by petals with internal grooves, by the usually small fruits with apical stigmatic remains and basal carpel remains, by seed with homogeneous endosperm, and by a large intrusion of seedcoat. </p></div>
+<div type="vernacular"><p>Cabbage palm (Livistona australis), Chinese fan palm (L. chinensis), serdang (West Malesian species). </p></div>
+<div type="biology_ecology"><p>The ecology is very varied. There are species adapted to fresh water and peat swamp forest (L. saribus), montane forest (L. tahanensis and L. jenkinsiana), undergrowth of tropical rain forest (L. exigua), dry savannah woodland (L. humilis and L. lorophylla), canyon Species are frequently gregarious, the tallest species often occurring in spectacularly beautiful groves (e.g., L. rotundifolia in Celebes and elsewhere).</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

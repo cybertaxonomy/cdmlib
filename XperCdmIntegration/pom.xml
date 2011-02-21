@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+   -->
+  <parent>
+    <groupId>eu.etaxonomy</groupId>
+    <artifactId>cdmlib-parent</artifactId>
+    <version>3.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>xper2-cdm-integration</artifactId>
+  <name>xper2 Cdm Integration</name>
+  <description>The import-export package for EDIT's cdmLibrary</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/XperCdmIntegration/</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/XperCdmIntegration/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib-apps/XperCdmIntegration/</url>
+  </scm>
+  
+  <dependencies>
+   	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-io</artifactId>
+  		<version>3.0</version>
+  	</dependency>
+   	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>xper2</artifactId>
+		<version>3.0</version>
+  	</dependency>
+
+	<dependency>
+		<groupId>aspectj</groupId>
+		<artifactId>aspectjrt</artifactId>
+	<version>1.6.3</version>
+	</dependency>
+	  </dependencies>
+</project>

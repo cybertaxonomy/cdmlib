@@ -1,0 +1,64 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A revision of the genus Sclerosperma (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name  type="personal">
+<mods:namePart type="family">van Valkenburg</mods:namePart>
+<mods:namePart type="given">J.L.C.H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Sunderland</mods:namePart>
+<mods:namePart type="given">T.C.H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Couvreur</mods:namePart>
+<mods:namePart type="given">T.L.P.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 63, pp 75-86</mods:publisher>
+<mods:dateIssued>2008</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Sclerosperma mannii</name>
+<author>H.Wendl.</author>
+<citation>Trans. Linn. Soc. London 24: 427 (1964)</citation>
+<type>Equatorial Guinea, Rio Muni, Ntüm Gebiet 1910; Wölfert; s.n.</type>
+<type_loc>Lectotype HBG!; isolectotype WAG!; paralectotype HBG!</type_loc>
+<synonymy>
+<name>Sclerosperma dubium</name>
+<author>Becc.</author>
+<bibref>Becc., Atti Soc. Tosc. Sci. Nat. Pisa, Mem. 44: 176 (1934)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The species was named after the collector of the type, Gustav Mann (1836 – 1916), a Kew gardener and plant explorer</p></div>
+<div type="vernacular"><p>Bia (Baka, Cameroon, South Province), Kia (Bulu, Cameroon, South Province), Akoura (Fang, Rio Muni), Manga (Punu, Nzabi, Lumbu, Gabon), Mangana (Angola, Cabinda), N’Djwa (Turumbu, Congo [Kinshasa], Orientale), Mangobo (Kingwana, Congo [Kinshasa], Orientale), Nbya (Lega, Congo [Kinshasa], Nord-Kivu), Matukulu (Kitembo, Congo [Kinshasa], Sud-Kivu), Mangobo (Kiswahili, Congo [Kinshasa], Sud-Kivu), Mbia (Kirega, Congo [Kinshasa], Sud-Kivu). The following names are listed in ‘Les plantes utiles du Gabon’ (Raponda-Walker &amp; Sillans 1961) for Gabon: angokolo (Mpongwè); ipovo (Galoa); amanga (Nkomi, Orungu); akóra, mvyè (Fang); manga (Éshira, Bavarama, Bavunugu, Bapunu, Balumbu, Bavili, Baduma, Banzabi, Benga, Masangu, Ngowé); maga (Mindumu, Ambèdè); makaga (Apindji, Bavové); mbègó (Mitsogo); kóndjó (Ivéa); ingutuku (Bakota); mèkutuku, mèkétséké (Bakèlè); and mèngokulu, mékétséké (Béséki). Some of these refer to Sclerosperma walkeri, as no distinction is made between these species by local people.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Short or acaulescent, clustering palm. Stem, if evident, very short, rather stout, closely ringed with leaf scars. Leaves divided, very large, deeply bifid in juveniles, ascending; sheath to 35 cm, splitting opposite the petiole, margins fibrous; petiole slender, 150 – 300 cm long, adaxially channelled, abaxially rounded proximally, becoming triangular distally; rachis 80 – 150 cm long, continuing in the terminal leaflet, abaxially rounded, adaxially with a prominent ridge, leaflets 8 –17(– 24), sub-opposite to alternate, folds 30 – 45 (– 63)_(3 –)6 – 9(–13) cm, the upper leaflet deeply bifid, broadly rhomboid in outline, base of the upper leaflet asymmetrical, 30 – 45 _(20 –)30 – 45 cm, midribs prominent, marginal ribs next largest, blade adaxially dark green, abaxially glaucous to silvery and with small scales along the veins, folds apically praemorse, margins minutely toothed, transverse veinlets not evident. Inflorescence solitary, interfoliar, concealed among the leaf bases and often partially obscured by accumulated debris; peduncle to 12 (– 19 cm) long, elliptic in cross-section to 1.5 cm wide, densely tomentose; prophyll occasionally to 20 cm long; peduncular bract 18 – 25 cm long; rachis 10 – 14 cm long. Staminate flowers sepals 3, distinct 3 – 4 mm long; petals 3, distinct 6 – 8 mm long, elliptical; stamens c. 60, filaments very short, ±triangular; pistillode lacking. Pistillate flowers larger than the staminate, broadly ovoid; sepals 3, connate in a 3-lobed, glabrous cupule or margins of 2 sepals distinct and imbricate, somewhat angled by mutual pressure; petals 3, distinct, asymmetrical. Rachis of infructescence 3 – 6 cm long, bearing up to 17 fruits, but generally fewer. Fruit 2.5 – 3(– 3.5)_ 2.2 – 2.9 cm. Seed globose, 1.5 – 2.3(– 2.5)_ 2 – 2.5 cm.</p></div>
+<div type="distribution"><p>Sclerosperma mannii appears to have a rather disjunct distribution with a population in Liberia and from southeast Nigeria southward to Congo and as far east as the border area of Congo and Rwanda. The species was reported to be present on the island of Bioko by Guinea López (1946) quoting Gómez Moreno, but without a specimen citation (no specimens to corroborate its presence on this island have been received from MA).</p></div>
+<div type="biology_ecology"><p>Shrub layer in lowland evergreen rainforest, ranging from forest just behind the mangrove swamp forest, through periodically flooded forest, to valley bottom forest at higher elevations, persisting in secondary growth; 0 – 1,400 m.</p></div>
+<div type="conservation"><p>Although this species is geographically widespread, it is highly localised with many disjunctions. As such, the species may be classified as Lower Risk within the sub-category Near Threatened, but given the extent of habitat loss throughout its range, particularly in West Africa, it could become Vulnerable in the medium-term future.</p></div>
+<div type="uses"><p>The leaves are used for thatch throughout its range either whole or in an admixture with Raphia (Burkill 1997). In Gabon, the leaves are specifically used for the entrance of Bwiti temples, because of the silvery indumentum on the underside. In Cameroon, the petioles are reported to be used for mattresses (van der Burgt 312a). The young fruits, with the endosperm still relatively soft, are consumed locally.</p></div>
+<div type="discussion"><p>Sclerosperma dubium was described on the basis of a carpological collection in the Hamburg museum. Beccari stated that he initially considered the specimen to belong to S. mannii. However, upon closer examination, he considered it to be sufficiently different with respect to the reticulation on the kernel and the position of the embryo. The botanical museum in Hamburg houses three samples collected by Wölfert, all bearing the same label information, one bottle contains a single fruit with the kernel cut lengthwise that is obviously well developed, 20 _ 25 mm. This specimen can easily be matched with S. mannii, and was identified as such on the label. Two other bottles contain a seemingly identical set of kernels, with Sclerosperma sp. written on the label. The dimension and the shape of the seeds match the protologue of S. dubium. We therefore consider these specimens to be the syntypes. The seeds in these two samples are on average smaller than those expected for S. mannii, but it might well be that the seeds are not yet fully developed. Despite the slightly different colour and external aspect of the seeds, we consider them to fall well within the range of S. mannii, and in the absence of any further diagnostic details, we hereby consider S. dubium to be a synonym of S. mannii.</p></div>
+<div type="materials_examined"><p>LIBERIA. Lower Margibi, along the Monrovia-Careysburg highway on your right, Zewald junction: LRC factory, Karfier Clan, Zeor village, 50 m, 15 Dec. 2005, D. Kwewon 2005/1 (WAG!); 1904, M. J. Dinklage s.n. (HBG!). NIGERIA. Cross River State, between mile 13 – 14 along Eket to Oron road, 330 m, 12 Sept. 1972, Otedoh, M.O. 7265 (K!); Ikot Opora, 2 Jan. 1965, P. Tuley s.n. (K!); Ojo road, 120 m, 4 May 1964, P. Tuley 604 (K!); Ojo Road, near Ikot Okpora, 14 July 1963, P. Tuley 654 (K!); Oban, S. Nigeria, 1911, P. A. Talbot 737 (BM!). CAMEROON. Central Province, 1 km SW of Ngoumou, 19 Feb. 1977, J. Lowe 3167 (K!); about 6 km along the road from Ngoulemakong direction N, village Obégué is 2 km W of the road, about 1 km S of this village, 720 m, 26 Dec. 1997, X. M. van der Burgt 312 a (WAG!); South Province, Djoum to Sangmelima road at Alouma, 9 Sept. 1999, T. C. H. Sunderland 1863 (BR!, K!, MO!); South-West Province, South Korup Reserve, bank of Mana River, Map # NB 32 IV Buea- Douala, 50 m, 6 July 1983, D. W. Thomas 2247 (MO!); Korup National Park, 50 m, 5 Dec. 1984, D. W. Thomas 4143 (MO!); 15 miles W of Mamfe on Ikom road, Kembong F. R., 20 March 1957, P. B. Tomlinson 57/1 (BH!); Kembong forest reserve: near junction of Oban-Mamfe and Ikom-Mamfe roads, 16 March 1955, P. W. Richards 5215 (K!); Korup National Park, P plot, subplot 26A, 100 m, 3 Dec. 2005, X. M. van der Burgt 811 (SCA, WAG!, YA). EQUATORIAL GUINEA. Rio Muni, Spanish Guinea, Ntüm Gebiet, 1910, W. Wölfert s.n. (HBG!, WAG!); 1910, W. Wölfert s.n. (HBG!); 1910, W. Wölfert s.n. (HBG!); Rio Muni, Litoral, Bata-Mbini Road, 17 km from Bata, 13 March 1997, T. C. H. Sunderland 1794 (K!, WAG!); Ndote Forest Reserve, 13 Sept. 1999, T. C. H. Sunderland 1868 (K!, WAG!). GABON. Estuaire, in swampy places near the River Gaboon, from Point Clara upwards, 1 m, 1861, G. Mann 1046 (K!); about 89 km from Libreville on road to Mela, Nka’n, and Medouneu, 10 March 1971, H. E. Moore Jr. 9899 (BH!); Forêt de Mondah, sentier des conservateurs, 80 m, 27 April 2005, J. L. C. H. van Valkenburg 3235 (BR!, LBV!, WAG!); forest in mangrove, c. 17 km NE of Libreville, 5 m, 9 Aug. 1985, J. M. Reitsma 1306 (NY); Ngounié, road Fougamou to Lambarene near village Kesi, 90 m, 25 April 2005, J. L. C. H. van Valkenburg 3234 (BR!, LBV!, WAG!); Nyanga, Mayombe, sur la route de Massanga à Moabinako, 21 Oct. 1908, G. M. P. C. Le Testu 1428 (BM!, P); chantier SFN, 60 m, 2 Dec. 2003, J. L. C. H. van Valkenburg 2682 (K, LBV!, MO, P, SCA, WAG!); Ogooué-Maritime, former extraction road system accessible from Peni CBG chantier, 250 m, 24 April 2005, J. L. C. H. van Valkenburg 3230 (BR!, LBV!, WAG!). ANGOLA. Cabinda, Mayumbe, Portuguese Congo, Buco Zau Maiombe, Jan. 1917, J. Gossweiler s.n. (BM!); Portuguese Maiombe: Chiluango, 1919, J. Gossweiler s.n. (K!); Mayumbe, Portuguese Congo, Pango Mungo, Jan. 1916, J. Gossweiler 6215 (BM!); Mayumbe, Portuguese Congo, Buco Zau Maiombe, 5 Nov. 1918, J. Gossweiler 7547 (BM!). CONGO (KINSHASA). Bandundu, Entre la Kamtsha et Ipamu, July 1921, H. J. R. Vanderyst 10061 (BR!); Equateur, Besoi, 30 March 1991, M. M. Dhetchuvi 1117b (BRLU!); Nord-Kivu, Mont Bukukuha region Mangurejipa, 1000 m, 3 June 1956, A. R. Christiaensen 1749 (BR!); Nyamakombola, 18 Oct. 1989, Terashima 84 (BR!); Orientale, Ile en aval de Basoko, 11 Jan. 1904, E. Laurent s.n. (BR!); 15 km à l'O de Yangambi; entre la piste d’Isangi et le fleuve, 470 m, 11 Oct. 1939, J. Louis 16197 (BR!); Bambesa, 17 Nov. 1913, J. C. C. Bequaert 1202 (BR!); Tete/Gete (Penghe à Irumu), forêt de l’Ituru, 22 Feb. 1914, J. C. C. Bequaert 2659 (BR!); Sud-Kivu, Bukumbi, territoire Kalehe. Km 70 route Kavumu–Walikale, 1400 m, 18 June 1955, A. R. Christiaensen 908 (BR!). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

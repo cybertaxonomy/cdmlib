@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis lanceolata</name>
+<author>(Becc.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 222 (1995)</citation>
+<type>Comoros, Combani Forest; Humblot; 1347</type>
+<type_loc>Holotype P; isotype K</type_loc>
+<synonymy>
+<name>Chrysalidocarpus lanceolatus</name>
+<author>Becc.</author>
+<bibref>Beccari, Bot. Jahrb. Syst. 38 Beibl. 87: 34 (1906)</bibref>
+<bibref>Jum. &amp; H. Perrier Fl. Madagascar 30: 97 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This would be a wonderful ornamental. Hull describes it as 'even more beautiful than D. cabadae'. The name refers to the shape of the leaflets, which are unusually broad for the genus Dypsis.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Ivovowo (fide Hull).</p></div>
+<div type="description"><p>Clustering palm. STEMS 5-6 m high; nodal scars pronounced. LEAVES "somewhat plumose" (Hull); petiole distally 1.5-1.7 cm diam., red- dish pubescent on both surfaces, channelled; rachis 1.8-1.9 m long, in mid-leaf 1-1.6 cm wide, keeled, densely scaly or with scattered pale scales; leaflets slightly irregular (interval in mid-leaf 1.5-5 cm), proximal 38-43 x 1-2.7 cm, median 30-48 x 3.5-7 cm, distal 4-24 x 0.7-3.8 cm, main veins 3-5, with very conspicuous thickened margins, with several large (0.5-1 cm long) pale-coloured laciniate ramenta on midrib and main veins proximally, and faint minute reddish scales in longitudinal lines on the main and minor veins on the type, but absent in modern collections, acuminate. INFLORESCENCE branched to 3 orders or more, c. 60 cm long; rachis bract (one seen) 4.5 cm long, narrowly triangular; rachillae 13-24 cm long, 1.5-3 mm diam., glabrous, with distant superficial triads. STAMINATE FLOWERS with sepals 1.2-1.4 x 1.4-1.6 mm; petals connate for 0.5 mm, free for 2.6-2.9 x 1.4-1.6 mm, spreading at full anthesis; stamens 6, uniseriate, filaments 1 (in closed flow-ers)-3 (in fully open flowers) mm long, narrowly cylindrical, anthers 1.4 x 0.5-0.6 mm; pistillode 1.6-1.7 mm high, 0.4-0.6 mm diam. PISTILLATE FLOWERS not seen. FRUIT ellipsoid, 13-17 x 6-10 mm, with rounded apex; endocarp fibrous, with anastomizing fibres. SEED slightly obovoid with obtuse apex, (10-) 13-16 x 5-7 mm, with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Comoro Islands: Grande Comore, Moheli.</p></div>
+<div type="biology_ecology"><p>Mid-altitude rain forest; 500-1000 m.</p></div>
+<div type="conservation"><p>Unknown, but at least Vulnerable.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Affinities of this taxon are unclear.</p></div>
+<div type="materials_examined"><p>Grande Comore: Combani forest, Oct. 1884 (fl.), Humblot 1347 (K, P; type); Mt Kartala, above Boboni, Oct. 1993 (fr.), Hull s.n. (K). Moheli: Mt St. Antonio, Dec. 1967 (fr.), Bernardi 11750 (K, P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

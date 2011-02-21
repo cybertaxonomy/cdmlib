@@ -1,0 +1,54 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A revision of Borassus L. (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Bayton</mods:namePart>
+<mods:namePart type="given">R.P.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin 62: 561-586</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Borassus madagascariensis</name>
+<author>(Jum. &amp; H.Perrier) Bojer ex Jum. &amp; H.Perrier</author>
+<citation>Ann. Inst. Bot.-Géol. Colon. Marseille, III, 1(1): 61, t. 33-35 (1913)</citation>
+<type>Madagascar, Mahajanga Prov.: Marovoay, 14 March 2003 (♀); Bayton &amp; Ranaivojaona; 44</type>
+<type_loc>Neotype K!, P!, TAN!</type_loc>
+<bibref>Beccari, O. (1914). Studio sui Borassus e descrizione di un genere nuovo asiatico di Borasseae. Webbia 4: 293–385.</bibref>
+<bibref>Beccari, O. (1924). Palme della Tribù Borasseae. (ed. U. Martelli). G. Passeri, Florence, Italy.</bibref>
+<bibref>Jumelle, H. L. (1938). Catalogue des Plantes de Madagascar, Palmae. G. Pitot, Antananarivo, Madagascar.</bibref>
+<bibref>Jumelle, H. L. &amp; Perrier de la Bâthie, (1945). Palmiers. In: H. Humbert (ed.), Flore de Madagascar et des Comores, Vol. 30. Imprimerie officelle, Antananarivo, Madagascar.</bibref>
+<bibref>Dransfield, J. &amp; Beentje, H. (1995a). The Palms of Madagascar, Royal Botanic Gardens, Kew, U.K. &amp; International Palm Society, Lawrence, Kansas, U.S.A.</bibref>
+<bibref>Bayton, R. P., Obunyali, C. &amp; Ranaivojaona, R. (2003). A reexamination of Borassus in Madagascar. Palms 47: 206–219.</bibref>
+<synonymy>
+<name>Borassus flabellifer var. madagascariensis</name>
+<author>Jum. &amp; H.Perrier</author>
+<bibref>Jum. &amp; H.Perrier, Ann. Inst. Bot.-Géol. Colon. Marseille, II, 5: 389, f. 2-4 (1907)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The epithet ‘madagascariensis’ translates as ‘of Madagascar’.</p></div>
+<div type="vernacular"><p>Dimaka (Sakalava). This name is also used for B. aethiopum in Madagascar.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem to 25 m tall, almost always ventricose, to 80 cm diameter. Leaves 16 – 23 in the crown; petiole and sheath 170 – 237 cm long; petiole 7.8 – 9.2 cm wide at midpoint, robust, yellow-green along the whole length, margins with small serrate black teeth, 0.1 – 0.85 cm long; petiole spines extending along the margin of the first leaflet; costa 77 – 82 cm long; adaxial hastula conspicuous, to 1.5 cm, abaxial hastula rudimentary; lamina radius to 100 cm maximum, dense indumentum on the ribs of some immature leaves; leaflets 102 – 132, 4.2 – 7.9 cm wide, apices acute and entire or splitting longitudinally with age, shortest leaflet 68 – 83 cm long, leaf divided to 61 – 83 cm; commissural veins 10 – 14 per cm, leaf anatomy isolateral. Staminate inflorescences branched to two orders, upper subtending branches terminating in 1 – 3 rachillae; rachillae green-brown and catkin-like, 30 – 44 cm long, 2.3 – 3.3 cm diameter, usually with a mamilliform apex; rachilla bracts form pits that contain a cincinnus of 8 – 12 staminate flowers. Pistillate inflorescences spicate; flower-bearing portion 76 – 90 cm long with 7 – 15 flowers arranged spirally. Staminate flowers 0.4 – 0.7 cm long, exserted individually from the pits, bracteoles 0.8 × 0.5 cm; calyx 0.5 × 0.2 cm, shallowly divided into three sepals, petals 0.2 × 0.1 cm; stamens 6 with very short filaments, 0.02 × 0.04 cm, anthers, 0.14 × 0.1 cm; pistillode minute. Pollen monosulcate, elliptical, 46 – 65 μm long, aperture 38 – 52 μm long, polar axis 42 – 54 μm long; tectum perforate, sparsely covered with supratectal gemmae. Pistillate flowers 3.5 × 3 cm, bracteoles 2 cm diam., sepals 2 × 2 cm and petals 1.5 × 1.5 cm. Fruits massive, 25 – 35 × 7 – 18.5 cm, ovoid with a somewhat pointed apex; fragrant and yellowish green at maturity; produced inside persistent perianth segments; pyrenes 1 – 2(– 3), 8.7 – 12.1 cm × 8.3 – 12.3 cm × 6.3 – 7.5 cm, unlobed or somewhat bilobed; some pyrenes with one or two external longitudinal furrows; internal flanges absent; an external, longitudinal crest is common. </p></div>
+<div type="distribution"><p>Endemic to Madagascar, where it is found in the dry western part of the island. Populations in Mahajanga Province are all in close proximity to human settlements. There appears to be no overlap with the range of B. aethiopum in the Sambirano region of northwest Madagascar. </p></div>
+<div type="biology_ecology"><p>Riverine forest in low-lying areas, particularly on sandy or alluvial soils. Borassus madagascariensis does not form monospecific forest. It is common in several towns in the northwest of Madagascar, where it grows in gardens, streets and on waste ground. </p></div>
+<div type="conservation"><p>Vulnerable. Dransfield &amp; Beentje (1995a) assessed B. madagascariensis as vulnerable (VU A1c) due to habitat loss and the encroachment of human settlements. Subsequent investigation by the author can only confirm this assessment. Of all the species of Borassus, this one has the smallest range. While the species does not appear to be threatened by over-exploitation, as are some populations of B. aethiopum in mainland Africa, all of the populations visited by the author were in close proximity to expanding human settlements. Some populations are actually confined to urban areas (Bayton et al. 2003) and the decline in habitat quality qualifies this species as vulnerable. </p></div>
+<div type="uses"><p>While several uses have been recorded for B. madagascariensis (Jumelle &amp; Perrier de la Bâthie 1913), Bayton et al. (2003) could find little evidence for exploitation in the northwest of the island.</p></div>
+<div type="discussion"><p>The case for continued recognition of this species has been difficult to assess. Most of the taxonomic accounts dealing with Borassus madagascariensis focus on differentiating it from the other Madagascar species, B. sambiranensis. Borassus madagascariensis has close affinities with B. aethiopum. This is not entirely unexpected as East Africa is the likely origin of the seeds that colonised Madagascar. Both species are generally large in all aspects, and both have a ventricose stem. The differences between the species are rather subtle and can be difficult to interpret in the herbarium. Borassus madagascariensis has small petiole spines that are like saw-teeth, while the spines of B. aethiopum are large and recurved. In B. madagascariensis, the petiole remains green along its entire length, in both high and low light environments. In B. aethiopum, the petiole is yellow and turns brown towards the stem. In juvenile specimens of B. aethiopum, the petioles are completely black (in full sun) or yellow-brown (shade). Juvenile specimens of B. madagascariensis have greenish-yellow petioles. The fruit apex of B. madagascariensis is pointed and in this respect, it is similar to that of Borassus akeassii. The fruit apex of B. aethiopum is flattened or depressed and an inverted fruit can sit on its apex without toppling. The fruits and seeds of B. madagascariensis are the largest in the genus. While the colour characters can be difficult to employ in the herbarium, the petiole spines are easily identifiable. In combination with the large fruits and seeds, and a known origin in Madagascar, this taxon should be easily identified. Jumelle and Perrier de la Bâthie (1907, 1913) did not cite a type specimen when describing B. madagascariensis, so a neotype has been selected. The neotype was collected in the town of Marovoay, at the head of the Bay of Bombetok, which corresponds to the locality cited by Bojer (1837: 308): “sur les bords de la rivière Marou-voai dans la baie de Bombetok”. </p></div>
+<div type="materials_examined"><p>MADAGASCAR. Mahajanga Prov.: Lower valley of Tsiribihina River, 1933, Humbert s.n. (P!); Berevo sur Ranoba, Sept. 1940, Decary 15892 (P!); Manombolo River gorges, 10 km E of Bekopaka, 26 March 1995 (&#9792;), Du Puy &amp; Du Puy 791 (K!, TAN!); Antamanakana, 44 km SW of Katsepy, 24 July 1995 (&#9792; &amp; &#9794;), Noblick 5055 (FTG!, K!, TAN!); Marovoay, Colonial Experimental Garden, Oct. 1908, Prudhomme s.n. (FI!); environs of Marovoay, 16 March 2003 (&#9794;), Bayton &amp; Ranaivojaona 46, 47 (K!, P!, TAN!); Lake Amboromalandy, 18 March 2003 (&#9792;), Bayton &amp; Ranaivojaona 48 (K!); Ankarafantsika National Park, Ampijeroa Forestry Station, 19 March 2003, Bayton &amp; Ranaivojaona 49 (K!, TAN!); Ankijabe village, near Ambato-Boeny, 19 March 2003 (&#9794;), Bayton &amp; Ranaivojaona 50 (FTG!, K!, TAN!); Maevatanana, 21 March 2003 (&#9792; &amp; &#9794;), Bayton &amp; Ranaivojaona 51, 52 (K!, MO!, TAN!); Toliara Prov.: Sakeny River plain, July 1989, B. Du Puy et al. 256 (K!, TAN!); unknown date and locality, Darian s.n. (BH!, K!); </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

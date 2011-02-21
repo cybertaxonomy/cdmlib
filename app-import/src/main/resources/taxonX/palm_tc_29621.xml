@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus kingianus</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 197 (1908)</citation>
+<type>India, Assam; Sir G. King's collectors s.n. February 1893; </type>
+<type_loc>Holotype CAL</type_loc>
+<bibref>Evans et al., Rattans Lao PDR: 46 (2001).</bibref>
+</nomenclature>
+<div type="distribution"><p>Laos (Central). Also North-east India (Beccari 1908, Basu 1992).</p></div>
+<div type="materials_examined"><p>EXAMINED. LAOS (CENTRAL): Khammuane Province, Nakay Distr., Ban Malua (map name Ban Maloy), Phon Nong Na, 8 March 1999, (pist.), Khamphone KP 366 (FRCL, K), 8 March 1999, (stam.), Khamphone KP 367 (FRCL, K) and 9 March 1999, (pist.), Khamphone KP 375 (FRCL, K).</p></div>
+<div type="biology_ecology"><p>Evergreen forest on flat ground, 500 - 550 m.</p></div>
+<div type="discussion"><p>The Lao material represents a moderately good match to the type description and is a remarkable extension of the known range. Many details as well as the general 'gestalt' of Plate 53 of Beccari (1908) are similar, but we note the following apparent differences shown by the Lao material: almost unbristled leaflet margins; more acuminate and slightly longer leaflets (reaching 43 cm); flagelliform male inflorescence (stated by Beccari to be 'rather rigid' but he had not seen it entire); rather shorter lowest male partial inflorescence (15 cm in Khamphone 367) which branches to one more order; the shorter rachillae (only 2 -3 cm long with the terminal ones longer, to 4 cm) and smaller male flowers (4 mm as opposed to 5 mm) which are crowded on the rachillae (approximately five/cm along each side, compared to 2.5/cm calculated from Beccari's figures). Several of these are rather modest differences in notably variable characteristics, others may represent differences at the varietal level, and the apparently smaller rachillae and smaller, more crowded flowers may indicate that Lao plants are best placed in a separate species. The presence of a short, bristly hispid ocrea was not reported by Beccari (1908) but is shown in his plate 53 and mentioned by Basu (1992). Until further material is available from the wide intervening area between the two populations we prefer to treat them as a single, variable species, but further work is certainly needed. There are strong similarities with the more delicate C. dioicus as interpreted by Beccari (1908), especially when Newman 178 is included under that species. Both taxa are poorly known but they are certainly distinct (see Key). Basu (1992) lists three Indian specimens in CAL not available to Beccari (although curiously not including the type), and also briefly describes the female inflorescences. That description is expanded below, using the Lao material: Female inflorescence flagelliform, ending in a flagellum, up to 3 m long excluding flagellum, branched to 2 orders and bearing 3 - 10 pendulous partial inflorescences. Peduncle armed at the base on the margins with straight spines to 0.5 cm and throughout on both surfaces, especially the abaxial, densely armed with tiny, straight or clawed prickles. Other primary bracts also densely armed with similar prickles in the distal half and many larger, hooked claws in the proximal half. Primary bracts ending in a short acute limb, tightly sheathing, entire in one specimen, but in the other often exceeding the base of the primary branch and in those cases splitting along one side and partly opening up to form an untidy, unlacerated limb of 2 - 6 cm. Partial inflorescences up to 20 cm, the base forming a small acute angle with the axis, bearing up to nine rachillae on each side, secondary bracts wholly unarmed, about 1 - 1.5 cm long, slightly conical and with an abrupt acute limb bent back by the rachilla. Rachillae arising just above the bract mouth, the basal ones up to 8 cm long, reducing gradually to 2.5 cm for the most distal, strongly recurved and dark in all parts when dry, quite stout and untidy in general appearance. Flowers at intervals of about 2.2 mm along each side of the rachilla, not quite touching. Rachilla bracts, involucrophores and involucres appear crowded and all have many strong, raised veins and wavy margins. Rachilla bracts irregularly funnel-shaped with a long, acute limb, involucrophores shallowly cupular with two pronounced points, partly inserted in the rachilla bract, involucres more deeply cupular. Sites for neuter flowerrs more than half as large as the involucres. Fruit not seen (see Basu 1992 for brief notes) but calyx of recently fertilised flowers splitting almost to the base with a pronounced thickened ring at the base.</p></div>
+<div type="vernacular"><p>wai leum (Lao Loum).</p></div>
+<div type="uses"><p>Suitable for handicrafts.</p></div>
+<div type="conservation"><p>Unknown. The only known site for this species in Laos is likely to be destroyed by flooding when the planned Nam Theun II hydro-electric dam is built. Since knowledge of the distribution of Lao rattans is so poor it seems likely that other populations will be found, given further research. The status of the Indian populations is also unknown.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus palustris</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 405 (1908);</citation>
+<bibref>Gagnep. &amp; Conrard in Gagnep. (ed.), Fl. Indo-Chine 6:1036 (1937)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 60 (2001).</bibref>
+<type>Vietnam, Cochinchina; Pierre; 4847</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="distribution"><p>Thailand (North, North-east, East, Central, South-east), Laos (all parts), Vietnam (Cochinchina) and Cambodia. Possibly also South and South-east Yunnan (Pei et al. 1989, 1991, but see below). Other varieties occur in India and the Thai-Malay Peninsula (Beccari 1908).</p></div>
+<div type="materials_examined"><p>THAILAND (NORTH): Chiengdao, 1 June 1921, (fr.), Kerr, A. 5546 (K, BM, BK); Doi Sutep, 14 Jan. 1912, (stam.), Kerr, A. 1618B (K, BM, FI).(NORTH-EAST): Nong Khai Province, Pon Pisai, 25 Feb. 1924, (fr.), Kerr, A. 8576 (K, BK); Loei, Phu Kradung, 8 Nov. 1997, (stam.), Hodel &amp; Vatcharakorn 1770 (BH). (EAST): Chaiyaphum, Pu Kio, 24 Feb. 1931, (stam.), Kerr, A. 20244 (K, BM, BK). (CENTRAL): Saraburi Province, Muang Distr., Sahm Lahn, 19 Jan. 1974, (stam.), Maxwell, J. E 74 - 46 (BK). (SOUTH-EAST): Koh Chang, Salak Kawk, 4 April 1923, (fr.), Kerr A. 6878 (K, BM, BK). LAOS (NORTH): Xayaboury Province, Phieng Distr., Ban Na Oum, near Houay Deua, 5 June 1999, (stam.), Oulathong OL 223 (FRCL, K). (CENTRAL): Bolikhamxay Province, Pakkading Distr., Ban Naphong, Houay Mouang, 5 Feb. 1999, (fr.), Khamphone KP 354 (FRCL, K). (SOUTH): Attapeu Province, Sanamxay Distr., Dongkase, 10 April 1992, (ster.), Oulathong OL 16 (FRCL, K); Attapeu Province, Sanxay Distr., Ban Tatkoum, Phou Lekfay, 15 May 1999, (fr.), Khamphone KP 403 (FRCL, K). VIETNAM (COCHINCHINA): Cochinchina, undated, (fr.). Pierre 4847 (P). CAMBODIA: Tpong Province, Kuang Repeu Mts, Sept. 1870, (fr.), Pierre 15 (P).</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 100 - 650 m (Laos), and up to 1300 m (Thailand).</p></div>
+<div type="discussion"><p>Beccari (1902) contains no information other than a specimen number and so cannot constitute a type description for C. palustris var. cochinchinensis, even though Beccari (1908) cites it as such. Calamus loeiensis is based on a tiny difference from the supposed typical form that does not exceed the normal within-individual variation in C. palustris var. cochinchinensis. Beccari (1913) diagnosed C. kerrianus from C. latifolius but made no mention of C. palustris. This was the very last species added to the 'latest additions' section of the supplement to his monograph, and one can well imagine that this great similarity was overlooked due to time pressures. The holotype of C. kerrianus and five other very similar specimens from Doi Sutep held at BKF all fall well within the range of individual variation seen in C. palustris var. cochinchinensis, so there is a clear need to synonymise them. We have examined two specimens from South Yunnan previously determined as C. palustris. We consider one unidentifiable (see Names of doubtful application, below) and the other (which had also at times been referred to C. latifolius) to be C. platyacanthoides. Pei et al. (1989) list two other collections from South Yunnan (Unknown collectors 18974 and 18866, the latter as var. palustris) and Pei et al. (1991) also list var. cochinchinensis from South-east Yunnan, but we have not been able to examine this material. We suggest that it merits reassessment. A review of the three non-Indochinese varieties (amplissimus Becc., malaccensis Becc. and the typical form) was outside the scope of the present study. Variation in robustness in Laos is quite large. Several very slender plants with sheath diameters of 7 - 12 mm have been collected, but none had begun to flower and such stems are expected to become thicker as they approach maturity. At the other extreme Khamphone 403 has a sheath diameter of 30 - 40 mm and leaves over 1.9 m long excluding the cirrus. It might belong in another variety. Most mature Lao stems we have seen have sheaths 15 - 25 mm diameter and leaves 0.7 - 1.1 m long excluding the cirrus.</p></div>
+<div type="vernacular"><p>wai hangnou, wai namleuang, wai khairt, wai kiyow, wai hom, wai namhang, wai tiukeng, wai savang, wai sard, wai kanebouang (Lao Loum), re tair (Alak), wai kring, wai saikai, wai tiukeng, wai plawk (Thailand).</p></div>
+<div type="uses"><p>The cane is of high quality and widely traded. The shoot is edible. There are reportedly plantations for cane production in Vietnam (Nguyen Truong Thanh &amp; Ngo Thi Min Duyen 1997).</p></div>
+<div type="conservation"><p>Of no concern.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

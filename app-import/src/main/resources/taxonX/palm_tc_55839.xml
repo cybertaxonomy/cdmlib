@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops serpentina</name>
+<author>J. Dransf.</author>
+<citation>Kew Bull. 36: 810 (1982)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Growing on serpentine rock</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering "stemless" rattan, with very short erect subterranean stem to 4 cm diam. Leaves ecirrate held very neatly and stiffly giving the whole plant a shuttle-cock like appearance, the whole leaf to 2.2 m including the sheath to 25 cm and petiole to 50 cm; leaf sheath pale buff tinged greenish, densely covered in reddish brown indumentum and armed with oblique &#177; reflexed partial whorls of narrow triangular laminar dark spines to 20 x 4 mm, and few partial whorls of spicules. Knee absent. Ocrea to 3 cm, ciliate hairy, disintegrating. Petiole armed with spine whorls as the sheath. Leaflets c 40 on each side of the rachis, very regular, neat, and stiffly held, coriaceous. The longest to 50 x 3 cm, acuminate in drip tips, the leaflet surfaces armed with black bristles along the main vein; transverse veiniets inconspicuous. Male and female inflorescences superficially similar, erect to 100 cm, with peduncle to 80 cm unarmed or very sparsely armed along the two lateral edges, densely reddish-brown indumentose; primary bracts papery, soon falling at anthesis; partial inflorescences 2 - 3 only; male rachillae crowded to c 25 mm only, &#177; zigzag; female rachillae to 60 mm with collar-like bracts. Fruit ovoid to 25 x 20 mm, beaked covered in pale brown scales; no seed details available. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Widespread on ultrabasic rock in Sabah. Endemic to the State.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>D. serpentina is confined to rather exposed areas of forest on ultrabasic rock in the lowlands - areas such as ridgetops and steep slopes where the light intensity reaching the forest floor is high. In the field the shuttlecock appearance of the whole plant is very distinctive.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

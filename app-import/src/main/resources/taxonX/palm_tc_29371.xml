@@ -1,0 +1,32 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus balingensis  Furtado</name>
+<author>Furtado</author>
+<citation>Gdns. Bull. Singapore 75 (1956) 240</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Baling - Gunung Baling in Kedah</p></div>
+<div type="vernacular"><p>rotan tanah (c.f.Furtado 1956)</p></div>
+<div type="description"><p>Solitary rattan with stem to 12 m tall, without sheaths about 1 cm in diameter, with sheaths to about 2 cm, with internodes about 10 cm in length. Sheaths rather densely armed with dark brown spines of varying length, reflexed or horizontal the longest to 5 cm long by 5 mm wide; spines around leaf sheath mouth erect, very large, to 10 cm long. Knee prominent. Ocrea inconspicuous. Flagellum to about ? 2 m long. Leaf ecirrate to 2 m long with petiole to 25 cm long, petiole and rachis densely furfuraceous and armed with scattered lateral spines. Leaflets about 50 on each side of the rachis, regular and close the largest to 28 cm by 1.6 wide; the upper surface with scattered bristles on 3 nerves, the lower surface very densely armed with minute bristles. Inflorescence, only male known; to about 2 m long with about 6 partial inflorescences, the longest to 20 cm with all bracts rather densely armed except for those subtending rachillae. Fruit unknown. Seedling unknown.</p></div>
+<div type="distribution"><p>Kedah: endemic. Only known from the type.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Nothing is known of the uses of this species.</p></div>
+<div type="discussion"><p>Nothing is known of the ecology of this imperfectly known species. It seems very distinctive in its leaf sheath armature, the ecirrate leaves and the leaflets densely spinulose below. It might be confused with C. setulosus but the latter is very much smaller in size and has different armature on the sheaths.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

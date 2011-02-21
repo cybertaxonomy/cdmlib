@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Notes on Pinanga (Palmae) in Sarawak</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 46, No. 4, pp. 691-698</mods:publisher>
+<mods:dateIssued>1991</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga pachyphylla</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 46: 695 (1991)</citation>
+<type>Borneo, Sarawak; Dransfield et al.; JD5912</type>
+<type_loc>Holotypus K; isotypi BH, SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>solitaria vel caespitosa P. strictae Becc., P. ligulatae Becc. et P. patulae Bl. verosimiliter affinis sed textura laminae folii crassa coriacea vel vix succulenta, foliolis distantibus inflorescentia compta rachillis divaricatis distincta.</p></div>
+<div type="description"><p>Moderate, solitary or clustering undergrowth palm with stems to 3 m tall, c. 2 cm diam., conspicuously marked with nodal scars, internodes c. 5-10 cm, the surface covered with caducous brown scales. Crown of c. 5 pinnate leaves, the sheaths forming a well-defined green crownshaft c. 30 x 2 cm; sheath 15-25 x 2 cm, rather succulent in texture when fresh, drying dull brown, striate, with caducous scattered scales, apparently lacking any ligule- like appendages; petiole c. 30 x 1 cm, bearing caducous scales as the sheath; rachis c. 90 cm, scaly as the petiole, bearing 9-20 very thick, stiff, almost succulent narrow rather divergent leaflets, bright green when fresh, drying silky dull green to brown, acuminate, mostly composed of single folds except for the compound terminal leaflet pair, the longest in mid-leaf to 50 x 2.2 cm, the apical pair c. 25 x 3 cm, both surfaces glabrous. Inflorescence spreading or pendulous, 14-20 cm long with 4-6 divergent rachillae held stiffly ± in one plane; prophyll not preserved; peduncle 10-20 x 6 mm just above the base; rachillae green at anthesis, glabrous, c. 11-17 x 0.4 cm, bearing strictly distichous triads subtended by minute scarcely visible bracts, rachilla becoming orange after fertilisation. Staminate flower irregularly flattened and curved by close-packing; calyx irregularly explanate and 3-lobed, ca. 1-2 mm high; petals irregular, very fleshy, two ± triangular-ovate, c. 8.5 x 4.5 mm, the third c. 8 x 2.5 mm; stamens about 10, filaments very short, 0.2-0.5 mm, anthers elongate 2.5 x 0.8 mm with broad connective. Pollen grains monosulcate, ellipsoid in apertural view; long axis (27-)30.3(-34) m, short axis (21-)23.0(-25) Am, wall thickness, c. 1-1.5 Am, sulcus membrane thin, underlying small finely reticulate insulae, sulcus shorter than long axis, exine semitectate, finely reticulate, lumina slightly reduced in diameter at sulcus margin. Pistillate flower globular depressed, c. 2 x 3 mm; calyx of 3 separate imbricate, rounded striate sepals, c. 2 x 2.5 mm, with imbricate, rounded, striate sepals, c. 2 x 2.5 mm, with minutely toothed margins; petals 3, imbricate, similar to the sepals; staminodes lacking; ovary rounded c. 1.5 mm diam., tipped with conspicuous curved, irregularly lobed stigma. Immature fruit green, broad-ellipsoidal, pointed at both ends, 9 x 5 mm; seed spherical, 4 mm diam., deeply ruminate. Seedling not known.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology">A rare palm found in lowland and submontane kerangas forest on sandstone.<p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>. pachyphylla is peculiar in its strange succulent texture. It is probably related to P. stricta Becc., P. ligulata Becc. and P. patula Bl., but is distinctive in the texture of the leaves, the distant leaflets and its neat inflorescence with stiff divergent glabrous rachillae.</p></div>
+<div type="materials_examined"><p>BORNEO. Sarawak: 1st Division, Bako National Park, Dransfield et al. JD5912 (holotype K; isotypes BH, SAR), Dransfield et al. JD740 (K); Serian District, Sabal Tapang Forest Reserve, G. Gaharu, Dransfield et al. JD6097 (BH, K, L, SAR).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

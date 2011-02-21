@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Trachycarpus oreophilus - The Thailand Trachycarpus</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Gibbons</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Spanner</mods:namePart>
+<mods:namePart type="given">T.W.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 41: 201-207</mods:publisher>
+<mods:dateIssued>1997</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Trachycarpus oreophilus</name>
+<author>Gibbons &amp; Spanner</author>
+<citation>Principes 41: 205 (1997)</citation>
+<type>Thailand, Doi Chiang Dao; Gibbons &amp; Spanner; s.n.</type>
+<type_loc>Holotypus K; isotypus BKF</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The specific epithet (L. oreophilus, cloud-loving) relates to the fact that this palm and its habitat are often totally obscured by clouds.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>Habitu, forma fructu T. fortunei, T. principi, T. takil et T. wagneriano similis sed vaginis foliorum brevibus, celeriter fatiscentibus et caducis, sine appendiculo, base petioli crassa, hastula prominentissima, lamina regulariter divisa, infra glauca, pedunculo inflorescentiae pistillatae longa differt.</p></div>
+<div type="description"><p>Solitary, very lightly armed, dioecious palm to about 9 m tall; trunk slender, erect, bare, brown, conspicuously ringed, 10-16 cm in diam., in young plants occasionally clothed in persistent, fibrous leaf sheaths. Leaves about 20, forming a dense upright, rather flat crown; marcescent leaves few, leafblade, petiole and leafsheath soon deciduous, the thick, almost bulbous leaf bases persistent at first, covering the trunk for about 50 cm below the crown, eventually deciduous; leafsheath fibrous, about 30 cm long, brown, fine, soft, rapidly disintegrating thinly tomentose below, separated into short single threads towards the apex, not forming an appendage petiole about 50 cm long, stiff, robust, 2 cm wide near the middle, flattish above, depressedly triangular to rounded below, margins minutely toothed and thinly tomentose base thick and robust; adaxial hastula prominent, to 3 cm long, triangular, acute; leafblade palmate, 3/4 to nearly 4/4 orbicular, about 70 cm long from the hastula and about 100 cm wide, leathery, green above, glaucous below, parted to a nearly even depth for more than 1/2 its length into about 60 stiff, deeply folded, linear segments, tapering towards the apex from their broadest point; central segments about 70 cm long, lateral segments gradually shorter to 40 cm, apex acute-notcheds, hortly bifid for a few centimeters. Inflorescence about 4, solitary, interfoliar, 90-100 cm long; staminate inflorescence erect, peduncle short; prophyll two-keeled, 25 cm long; peduncular and rachis bracts five, 15-25 cm long, base tubular, inflated distally, apex acute; rachillae short; flowers globose, very small; sepals very small, ovate, joined at the base for 1/4 to 1/5 of their length; petals rounded with a blunt tip, 2.5 times as long as the sepals; stamens 6; filaments ventricose; anthers broadly ovate-sagittate with nearly disjoint cells, not apiculate; pistillodes (2-) 3, half as long as the stamens; pistillate inflorescence stiff, slightly arching or nearly horizontal in fruit, densely branched to three orders; peduncle about 50 cm long oval in cross section, 3.5 X 2 cm; prophyll two-keeled, apex acute; peduncular bracts three, 35 cm long, long and tubular; rachis bracts two, the basal one 25 cm long, similar to peduncular bracts, the distal one small and much reduced; rachillae 3-10 cm long, greenish (in fruit); flowers not seen. Fruit on short stalks, reniform, wider than long, epicarp thin, green, not seen when fully mature; mesocar? thin, fibrous; seed reniform, wider than long, 6 mm long, ll mm wide; endocarpv ery thin, with a crustaceoussa nd like layer of small, irregular scales; endosperm homogenous. Germination remote-tubular, eophyll simple, plicate, papery, 1 cm wide. Seedling leaves narrow, erect and very finely divided. </p></div>
+<div type="distribution"><p>NW-THAILAND: Doi Chiang Dao, a large, isolated limestone mountain about 70 km N of Chiang Mai.</p></div>
+<div type="biology_ecology"><p>Forming large colonies on steep, rocky hillsides and exposed cliffs among lichen- and moss-covered shrubs and stunted trees on the mountain's several peaks, between 1700 and 2150 m.</p></div>
+<div type="conservation"><p>The population on Doi Chiang Dao is the only one known in Thailand and there is no evidence to suggest that it might occur in similar sites outside Thailand, in Burma for instance. The Doi Chiang Dao population consists of a few thousand trees and is protected in a forestry reserve. It appears to be in a good state though all the more accessible sites have long since been cleared of palms by tribes of people and there are no seedlings and few young plants present at them. However, the vast majority of the palms grow in very steep, practically inaccessible sites and as pressure on these stands by man or beast is negligible, their future seems secure.W e would categorizeit as "rare." Trctchycarpus oreophilus has only very recently been introduced into cultivation. There are no mature palms of this species outside its native habitat.</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>As there is no recent taxonomic treatment of the genus Trachycarpus (but see Beccari l93l and Kimnach 1977), relationships of T.oreophilus will be dealt with in a conspectus of the whole genus, which will appear in a later publication.</p></div>
+<div type="materials_examined"><p>Thailand, Doi Chiang Dao, 5500-5900 ft (1680-1800 m) a.s.l., Jan. 25th 1913, A. F. G. Kerr 28724 (K); 1700-2100 m a.s.l., Jun. 4th 1921, A. F. C. Kerr 5600 (K); 1700-2100 m a.s.l., Jun. 4th 1921, A. F. G. Kerr 5600 (K); A. S. Barfod, R. Pooma, T. Burholt 45209 (AAU); 2000 m a.s.l., Oct.1993, M. Gibbons, R. Pooma, T. W. Spanner s.n.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

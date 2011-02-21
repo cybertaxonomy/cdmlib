@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus densiflorus</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1892) 445.</citation> 
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 11 (1908) 376.</bibref>
+<bibref>Ridley in Fl. Mai. Peninsular 5 (1925) 53.</bibref>
+<bibref>Furtado in Gdns. Bull. Singapore 15 (1956) 250.</bibref>
+<synonymy>
+<name>Calamus neglectus</name>
+<author>Becc.</author>
+<bibref>Becc. in Hook, f., Fl. Br. India 6 (1892) 458.</bibref>
+<bibref>Ridley Fl. Mai. Pen. 5 (1925) 53.</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Dense - densely, flos - flower, with densely clustered flowers</p></div>
+<div type="vernacular"><p>rotan kerai</p></div>
+<div type="description"><p>Clustering high climbing moderate rattan with stems reaching 30-40 m tall. Stem without sheaths to 2.2 cm in diameter usually less; with sheaths to 4 cm. Internodes to 18 cm, usually much less in mature flowering stems. Sheaths bright to yellowish green armed densely with reflexed blackish-brown spines of various lengths, sometimes with hairy margins, to 2.2 cm long by 1 cm wide, the spine bases often joined by swollen ridges, and dense black caducous scales between spines. Knee prominent. Ocrea inconspicuous. Flagellum to 3.0 m. Leaf ecirrate, in juvenile specimens with petiole to 20 cm, in mature specimens usually no petiole. Whole leaf to 1.1 m, distinctly arcuate; leaflets regular close narrow and arcuate, up to about 60 on each side, the longest about Vi way up about 30 cm long by 1.5 cm wide, decreasing in size to c. 7 cm by 7 mm near the tip, conspicuously bristly on 3 nerves above, and on mid-nerve below, and along margins. Inflorescences male and female superficially similar, to 3 m long longly flagellate, with up to 6 rather distant partial inflorescences and sparsely spiny bracts. Partial inflorescences rather short, to 30 cm long, very dense flowered, with straight or slightly curved rachillae to 10 cm long. Ripe fruit ovoid, about 2 cm long and 1.2 cm wide, shortly beaked, covered in 18 vertical rows of straw-coloured scales. Seed somewhat angular pitted, ruminate. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>All states except Perlis, Kelantan and Penang. Singapore. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Medium sized cane of moderate quality entering trade as "rotan kerai" but as this name is applied to many species it is not certain how much of the cane comes from C. densiflorus.</p></div>
+<div type="discussion"><p>Calamus densiflorus is a very widespread rattan of the lowlands and hills with an altitudinal range of from sea level to about 600 m. It appears to avoid fresh water and peat swamp forest but is quite common along river banks; it is absent from very steep well-drained ridgetops. At Batu Caves, it is found high up on the limestone.This is a very common but rather confusing rattan; when mature, the sessile leaves are distinctive, but sucker shoots from the same plant may have petioles. It is best distinguished by the characters italicized above. It may be confused with C. ridleyanus but the latter has narrow &#177; upward pointing very hairy spines, a subcirrate leaf, and reflexed curving rachillae with densely spiny bracts.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

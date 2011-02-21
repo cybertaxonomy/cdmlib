@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia robusta</name>
+<author>Bl.</author>
+<citation>Rumphia 2: 170 (1843) (in part, other parts = K. laciniosa Griff, ex Mart.)</citation>
+<bibref>Beccari, in Ann. Roy. Bot. Gard. Calcutta 12(2): 148 (1918) (excluding synonym K. hispida Becc.)</bibref>
+<bibref>Dransfield, Kew Bull. 36:190 (1981)</bibref>
+<bibref>Dransfield, Ratt. Sabah 30 (1984)</bibref>
+<synonymy>
+<name>K. squarrosa</name>
+<author>Becc.</author>
+<bibref>Beccari, Philip. J. Sc. (Bot.) 4: 620 (1909)</bibref> 
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(2): 152 (1918)</bibref>
+</synonymy>
+<synonymy>
+<name>K. macrocarpa</name>
+<author>Becc.</author>
+<bibref>Ann. Roy. Bot. Gard. Calcutta 12(2): 49 (1918)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Robust</p></div>
+<div type="vernacular"><p>wi asas (Ib.), waeperah (Pen.)</p></div>
+<div type="description"><p>Robust clustering and branching rattan climbing to 30 m or more. Stem without sheaths to 2.5 cm diam., with to 3.5 cm diam., internodes to 20 cm. Sheaths mid green with scattered black spines to 1 cm and abundant floccose chocolate- and buff-coloured scales; ocrea very conspicuous, to 30 x 7 cm, pale brown, diverging from the stem at an acute angle, the margins tending to inroll, armed with abundant black spines to 2 cm and floccose chocolate coloured scales; ants usually abundant and very noisy. Leaf to 3 m long including the cirrus to 1.75 m and petiole to 20 cm; leaflets to 10 on each side of the rachis, broad rhomboid, to 25 x 10 cm, bright green on upper surface, whitish beneath. Inflorescences congested at the stem tip, forming a large club- like mass to 40 cm diam., bracts large and somewhat inflated; rachillae robust, to 15 x 3 cm, covered in conspicuous triangular bracts. Mature fruit to 4 x 2.5 cm, tipped by stigma to 6 mm, and covered in 18 vertical rows of mid brown scales with darker intramarginal bands and straw-coloured margins. Seed to 2.5 x 1.5 cm; endosperm homogeneous. Seedling leaf not known (Fig. 11).</p></div>
+<div type="distribution"><p>Widespread throughout the lowlands of Sarawak. Elsewhere widespread in Borneo; uncommon in Sumatra, also in Palawan.</p></div>
+<div type="biology_ecology"><p>K. robusta is particularly abundant in disturbed alluvial forest especially on the banks of slowly flowing rivers.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Coarse rotan merah.</p></div>
+<div type="discussion"><p>It and K. hispida together stand apart from other species of the genus by virtue of their ocreas which do not enclose the stem but diverge from it at an acute angle. K. robusta is easily distinguished from K. hispida by the absence of minute black spicules on the sheaths, ocreas and bracts, and by the very congested inflorescences' K. hispida and K. robusta are noisy rattans; ants in the ocreas when disturbed make a strange rustling noise by banging their abdomens against the dry ocreas. Ants in one ocrea are &#177; in unison, followed by ants in the next ocrea and so on. When disturbed too much the ants rush out, and, like those of other ant species of Korthalsia are very fierce, thus making this rattan very unpleasant and difficult to collect.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

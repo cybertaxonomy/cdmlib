@@ -1,0 +1,32 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus tumidus</name>
+<author>Furtado</author>
+<citation>Gdns' Bull. Singapore 15 (1956) 105</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Tumidus - swollen, referring to the greatly swollen leaf sheath knee</p></div>
+<div type="vernacular"><p>rotan manau tikus</p></div>
+<div type="description"><p>Solitary high climbing rattan with stems ultimately to 60 m or more in length, without sheaths about 1.2 cm near the base, and about 2.5 cm in the upper part of the mature plant, with sheaths to about 4.5 cm in diameter; upper internodes about 12 cm in length, lower internodes to 30 cm. Sheaths, when newly emerged rich reddish-brown quickly turning yellowish-green, bearing similarly coloured robust bulbous-based spines to 4 cm long by 7 mm wide, the spines scattered or only slightly grouped, with flocculent white waxy indumentum in conspicuous horizontal lines between the spines and on the upper and lower sides of the spine base. Ocrea short, rather inconspicuous. Knee immensely swollen, in the field visible from some distance. Leaf robust, cirrate, to about 4 m in length including the cirrus 1.5 m in length. Petiole about 30 cm in length semi-circular in T.S. armed along the two edges with large spines and indumentum as on the sheath, lower and upper petiole surfaces unarmed and without indumentum; petiole reddish-brown to crimson when newly emerged, quickly turning dull yellowish green. Leaflets about 25 on each side of the rachis grouped into pairs, pale yellowish green to glaucous, conspicuously white waxy on the lower surface when young, to about 40 cm long by 6 cm wide, black bristly along margins. Inflorescences, male and female superficially similar, to about 1 m long with spiny bracts and up to 8 partial inflorescences on each side of the rachis; rachillae about 15 cm long; mature fruit about 2.2 cm long by 1.8 cm long, somewhat oblong, shortly beaked, covered in 15 vertical rows of convex yellowish brown scales. Seed about 1.6 cm long by 1.2 cm wide by 1 cm thick, flattened, covered in yellowish green sarcotesta, irregularly pitted and deeply ruminate. Seedling leaf bifid.</p></div>
+<div type="distribution"><p>Trengganu, Pahang, Johore, Negri Sembilan. Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Excellent cane, the larger diameter specimens of which are included with "rotan manau" (Calamus manan). Smaller diameter specimens are still of excellent quality and are probably absorbed into the market with other smaller diameter canes.</p></div>
+<div type="discussion"><p>Calamus tumidus, only described in 1956, and very rarely collected for botanical purposes, is none the less a very common and distinctive rattan in the lowlands of the eastern part of the Malay Peninsula. It has also been collected in Jambi Province of Sumatra (see Dransfield 1973). It is most commonly found in freshwater swamp forest; it has also been found in peat swamp forest and on alluvial flats. It is apparently absent from hillslopes where Calamus manan replaces it. Very occasionally where steep hillslopes meet an alluvial flat, both species may be seen growing together. "Rotan manau tikus" is easily distinguished by the characters italicized in the description; the swollen knee is highly distinctive.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

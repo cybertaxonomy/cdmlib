@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia minor</name>
+<author>Becc.</author>
+<citation>Webbia 3: 137. 1910</citation>
+<type>Halemanu, Kauai, Hawaii, March 1909; Rack; s. n.</type>
+<type_loc>Holotype FI (photo!)</type_loc>
+<synonymy>
+<name>Pritchardia eriophora</name>
+<author>Becc.</author>
+<bibref>Becc., Webbia 4: 235. 1913</bibref>
+<type>Halemanu, Kauai, Hawaii; Rock (ex Wilder); 8846</type>
+<type_loc>Holotype FI?; isotype BISH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Styloma eriophora</name>
+<author>(Becc.) O. F. Cook</author>
+<bibref>(Becc.) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole with only a few fibers; leaf blade nearly flat, divided 1/3-1/2, abaxial surface completely covered with lepidia and appearing silvery grayish white, segment tips stiff or only slightly drooping in shade; inflorescences composed of 1 or 2 panicles, shorter than petioles in flower and fruit, panicles branched to 2 orders, rachillae permanently clothed with dense, pinkish brown, woolly indumentum; fruits 15-30 x 12-13 mm, ovoid to ellipsoid to obovoid.</p></div>
+<div type="distribution"><p>Moist to wet forests in valleys and on exposed slopes, western Napali Coast, Kokee, and Waimea Canyon, Kauai, 500-1300 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia minor is distinguished by its small fruits and panicles permanently clothed with thick, pinkish brown, woolly indumentum. One of the smaller species of the genus, Pritchardia minor is similar in habit to P. napaliens is, and their ranges may overlap slightly, but the latter differs in its leaf blades incompletely covered abaxially with lepidia and the panicles and rachillae lacking hairs. The type of Pritchardia minor consists of a few fruits that Rock collected on Kauai in 1909 and sent to nurseryman F. Franceschi in Santa Barbara, California who forwarded them to Beccari. After Beccari had named and given an unusually meager description of P. minor in 1910, Rock sent complete material to Beccari in 1911 upon which the expanded description in the 1921 monograph was based (Beccari &amp; Rock 1921). </p></div>
+<div type="materials_examined"><p>U.S.A. Kauai: Cranwell 3103, Degener 30209 (BISH), Gemmill 5 (PTBG), Rock s. n., March 1909, via D. Franceschi (Fl), Rock 5061 or 17319 (BISH); Halemanu, Rock 8846 (BISH); Honopu, E. rim, Degener 21512 (BISH), Wood 2825, 5051, 7721 (PTBG); Kaumuohua, Kalalau, Rock 17319 (BISH); Kaholuamanu, Opaiwela, Rock 8846a, 17098 (BISH); between Kalalau and Honopue, Fosberg 12703 (BI5H); Kalalau Trail, Meebold 26359 (BI5H); head of Kawaikoi, Bryan 1489 (BI5H); Koaie Canyon, Wood 3462 (PTBG); Kokee, Bishop 1253 (HAW), Chock 1120 (PTBG), Rock s. n., Feb. 1956 (BI5H), Wood 226, 245, 7946 (PTBG); Kokee, Kalalau Valley, Chapin 82 (PTBG), Flynn 3209, 3974 (PTBG), Hobdy 3050 (BISH), Wood 250, 1638, 7360, 7537 (PTBG); Kokee, NW. of Lehua Makawi, Degener 23957 (BI5H); Kokee, Honopu Ridge, Kalalau, Montgomery s. n., 22 Jan. 1991(BISH); Kokee, Kumuwela Ridge Jeep Trail, Bishop 1258 (HAW), Plucknett 3387 (BISH), St. fohn 13842 (BISH); Nualolo Valley, Bishop 1293 (HAW); Pihea, St. fohn 22916 (BISH); Pohakuao, Perlman 12690 (PTBG); Waimea Canyon, Degener 9722 (BlSH), Forbes 936 (BlSH), Lorence 5768 (PTBG). CULT. U.S.A. Hawaii. Oahu: Waimea Valley Audubon Center, 79p1074, Zona 1033 (HAW). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

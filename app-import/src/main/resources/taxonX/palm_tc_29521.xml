@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus flagellum</name>
+<author>Griff.</author>
+<citation>Mart., Hist. Nat. Palm. 3:333. 1853</citation>
+<bibref>Beccari in Hook. f. Fl. Brit. Ind. 6:439. 1892</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11:127. 1908 and Appendix PI. 4., 5. 1913</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Putli bet, Rabi bet, Reem</p></div>
+<div type="description"><p>A strong climber; stem cluster forming, with leafsheath to 4.5 cm in diameter. Leaves ecirrate; leafsheath with 6 - 7 m long heavily armed flagellum; ocrea marcescent; petiole terete, about 1 cm in diameter, armed with whorls of 1 - 3 cm long subulate spines; leaflets equidistant, many, green on both sides, broadly ens iform, prominently 1-nerved on upper side; middle leaflets longer, to 60 cm long; uppermost leaflets connate up to the middle; midnerve and marginal nerves bristly; rachis heavily armed on lower side with strong claws at intervals. Male and female inflorescences flagelliform, to 5 m or more long, simply-decompound; axial part of the inflorescence armed with claws; partial inflorescences about 1 m long with 3-4 rachillae on each side; primary bract tubular, closely sheathing, lacerate and fibrous at upper part; secondary bracts unarmed, tubular, narrowly funnel shaped, obliquely truncate with triangular appendage on one side; rachillae 10-25 cm long slightly compressed; each bearing 10-30 distichous to remote flowers; involucre cupular; male flowers 8 - 10 mm x 3 mm, curved outside; female rachillae remote, 20-25 cm long; involucrophorum unilaterally cupular, truncate, projected from the basal bract; involucre cupular, truncate, entirely sunken in involucrophorum; female flowers 7 mm long; calyx ovate, 3-dentate; petals lanceolate. Fruit about 3 cm long, broadly ovoid; fruit scales deeply channelled at middle; seed terete in cross section; embryo basal.</p></div>
+<div type="distribution"><p>INDIA (Sikkim, Assam, West Bengal, Meghalaya), BANGLA DESH, BHUTAN.</p></div>
+<div type="biology_ecology"><p>A component of mixed forests on lower and middle hills of the Eastern Himalaya.</p></div>
+<div type="cultivation"><p>A small number of cane bushes have been raised in North Bengal, under D.F.O. North Silviculture Division, West Bengal.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Unknown. The strength property of the cane is yet to be determined.</p></div>
+<div type="discussion"><p>Infrequent in its natural habitats.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

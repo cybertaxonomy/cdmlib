@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Plectocomia assamica</name>
+<author>Griff.</author>
+<citation>Calc. Journ. Nat. Hist. 5 :1845</citation>
+<bibref>Beccari in Hook. f. Fl. Brit. Ind.6:479. 1893</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 12(2): 38. 1918</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A high climbing rattan; stem clustering, with leafsheath about 3 cm in diameter. Leaves cirrate; leaflets up to 60 cm long, 6 - 6.5 cm broad at middle, whitish and scurfy below, non-filamentous at apices; petiole with stout marginal spines and smaller seriate spines on the dorsal side. Male inflorescence not seen. Flower branches in female inflorescence about 1 m long, thickly covered with rust-coloured tomentum; bracts on the flower branches distichous, cuneatc, oblong with triangular tips, 6 - 7 x 2.5 - 3 cm. Female flowers 3 - 7 in number in each bract, shortly pedicellate, bractcolatc; bractcoles 4-5 mm long. Fruits globose, slightly conically beaked, densely villous outside, about 2.5 cm in diameter; seed globose, 1.8 cm in diameter; fruiting perianth flat, not channelled at middle.</p></div>
+<div type="distribution"><p>INDIA (Assam, Arunachal Pradesh). Endemic.</p></div>
+<div type="biology_ecology"><p>A component of the moist hill forests up to 2000 m.</p></div>
+<div type="cultivation"><p>Not cultivated.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not used for furniture making. The tribal people of the forests use long canes for making hanging bridges over mountain streams and rivulets.</p></div>
+<div type="discussion"><p>This species is not well represented in the Indian herbaria. Due to absence of recent collections its present population in the forests is unknown.</p></div>
+<div type="materials_examined"><p>Upper Assam, : 11.3.1840, Jenkins s.n. (CAL !).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

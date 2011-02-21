@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Novelties of the Genera Parajubaea and Syagrus (Palmae) from Interandean Valleys of Bolivia</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Moraes</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Novon 6: 85-92</mods:publisher>
+<mods:dateIssued>1996</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Parajubaea torallyi var. microcarpa</name>
+<author>M.Moraes</author>
+<citation>Novon 6: 87 (1996)</citation>
+<type>Bolivia. Chuquisaca: Jatun Palmar, Palmar Grande, 10 km E of Soroma, ravines of río Pilcomayo, 2047 m, 26 May 1995; M. Moraes, E. Oviedo &amp; 0. Murguía; 2209</type>
+<type_loc>Holotype LPB; isotype NY</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The epithet refers to the small size of fruit, compared with P. torallyi van torallyi.</p></div>
+<div type="vernacular"><p>Janchi coco, palma de fruto chico.</p></div>
+<div type="diagnosis"><p>Flores masculini staminibus 13-15; flores feminei 1(-2) ad rhachillae basim. Fructus ovoideus 3.5-4.5 cm longus;
+putamine l(-2).</p></div>
+<div type="description"><p>Stem 10-20 m tall, 25-50 cm diam., smooth. Leaves 15-18, 4.5-5 m long, erect; sheath to 110 cm long, with few fibers to 15 cm long; petiole 70- 90 cm long; rachis 2.7-3.2 m long, triangular in cross section at apex; pinnae 80-89 per side, lanceolate, regularly inserted and spreading in the same plane, plicate at base, green and lustrous adaxially, glaucous abaxially; basal pinnae 56-75 X 0.6-1 cm; middle pinnae 60-65 X 1.2-1.5 cm; apical pinnae 68-72 X 0.8-1 cm. Inflorescences up to five per plant, 1.8-2.5 m long; buds erect, becoming pendulous at anthesis; prophyll ca. 1 m long; peduncular bract 1.1-1.3 m long, apiculate, inflated above, membranous, sulcate, brown externally, glabrous and light brown internally; peduncle 60-64 cm long, glabrous; rachis 40-46 cm long with a zig-zag and twisted shape, glabrous; rachillae 13-16 spirally arranged, spreading at anthesis, the basal ones 13-15 cm long, the apical ones 17- 19 cm long; staminate flowers pedicellate, 6-9 mm long; pedicel 1-4 mm long; sepals free, briefly connate- basally; petals broadly triangular, valvate; stamens 13-15, 5 mm long; filaments 3 mm long; an thers 2 mm long, medifixed, slightly sagittate; pistillode trifid; pistillate flowers l(-2) per rachillae, basally inserted, 8-12 mm long; sepals and petals broadly triangular to 9 mm long, petals slightly smaller than sepals; staminodial ring to 2 mm tall, with 3 short teeth; ovary brownish beige tomentose; stigmas to 1 mm long; ovule basal. Fruit ovoid 3-5 cm long, 2.5-3 cm diam.; epicarp light green, orange at apex; mesocarp very fibrous; endocarp with 3 inconspicuous ridges; seeds l(-2), 2.1 cm long. </p></div>
+<div type="distribution"><p>Endemic to Bolivia. Restricted to steep interandean valleys with xeric, often spiny vegetation {Prosopis, Aspidosperma, bromeliads), in the departments of Chuquisaca (Zudañez) and Potosí (Province Linares): (64°11'-64°55'W, 19°33'- 19°50'S). Monotypic stands are found between 2700 and 3400 m elevation. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>This species is not threatened because it regenerates prolifically and because there are few roads and human settlements.</p></div>
+<div type="uses"><p>According to local people, this palm is utilized for its fruits. Formerly, the stems were split in two and then cut into pieces 1 m long, in order to extract and grind the internal fibers with an ax, and finally to weave ropes from the fibers. Occasionally, baskets and fans are made from the leaves. </p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>BOLIVIA. Potosí: Prov. Linares, Jatun Palmar, 167 km E from the city of Potosí on road to Turuchipa, 19°50'S, 64°55'W, 2750-3300 m, 5 Apr. 1993, Torrico &amp; Peca 337 (BOLV, LPB). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

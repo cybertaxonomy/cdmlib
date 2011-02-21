@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Acanthophoenix in Réunion, Mascarene Islands</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Ludwig</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 50(2) 82-98</mods:publisher>
+<mods:dateIssued>2006</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name></name>
+<author></author>
+<citation></citation>
+<type>Réunion. Roussel Estate, Trois Mares, Le Tampon, on the side of a field path, alt. 610 m, 20 Apr 2006; N. Ludwig; 974-1</type>
+<type_loc>Holotype REU; isotypes K, P</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The specific epithet honors the Roussel family who owns the 202 hectare (500 acre) property where the species was first identified.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>a A. rubra staminibus plerumque 9 vice 11 vel plus, fructu curvato vice ellipsoideo differt, a A. crinita staminibus 9 vice 6, fructu multo majore et eophyllo pinnato vice bifido differt.</p></div>
+<div type="description"><p>Solitary pleonanthic monoecious palm with erect trunk to 15–25 m tall and 20–30 cm diam., surface light gray, rather smooth, only slightly marked with leaf scars; trunk base swollen in a characteristic “elephant foot.” Leaves pinnate, 15–20 in crown; crownshaft conspicuous, , sheaths 90–120 cm long, 45 cm wide at the base, up to 6 mm thick, abaxially dark brown, covered with dense furlike black hair 6–8 mm long, except on half length median axis where glabrous; petiole and rachis 2.50–3 m long, glabrous or with a fine indument abaxially in the distal part; leaflets 70–80 pairs, pendulous and regularly attached on both edges of the rachis, leaflet tip acute, olive green color on both surface, leaflet midrib adaxially armed with thin reddishbrown bristles 2–4 cm long, thin flexuous dotlike scales on abaxial side of midrib. Inflorescences infrafoliar, first enclosed in a tough unarmed brown prophyll; inflorescences ivory-colored, pendulous, 100–110 cm long, branching to 2 orders with 50–70 rachillae; peduncle base enlarged in a crescent shape where attached to the trunk; peduncle and rachis armed with strong sinuous black spines 2–3 cm long; rachillae bearing densely arranged triads of flowers, two staminate flowers flanking one pistillate flower, all sessile and glabrous. Staminate flowers 12 × 12 mm, ivory white turning to light yellow except pistillode and basal part of filaments pinkcolored; sepals 3, narrow triangular with acute tip, 1.5 mm long; petals 3, elliptic, valvate, 7 × 3 mm; stamens 9 (sometimes 8) with white sagittate anthers 3–4 mm long and coiled filaments 8 mm long; pistillode 2–3 mm with trifid tip. Pistillate flowers ivory-white, globose to subspherical, slightly asymetrical, smaller than staminate flowers 4.5 × 3–4 mm; sepals and petals similar, membranous, imbricate. Mature fruit black with persistent beige or light brown perianth, ellipsoidal and slightly curved, 15–20 × 8 mm; mesocarp thin, dark purple; endosperm homogenous, embryo basal. </p></div>
+<div type="distribution"><p>This species has a limited distribution within the town limits of Le Tampon. It grows in Trois Mares at an altitude of 600–850 m, in remnants of a transitional lowland forest ecosystem specific to the leeward side of the island.</p></div>
+<div type="biology_ecology"><p>See protologue pdf.</p></div>
+<div type="conservation"><p>See protologue pdf.</p></div>
+<div type="uses"><p>See protologue pdf.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

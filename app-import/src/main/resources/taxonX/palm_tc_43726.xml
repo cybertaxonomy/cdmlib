@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Clinostigma in New Ireland</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 26: 73-76</mods:publisher>
+<mods:dateIssued>1982</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Clinostigma collegarum</name>
+<author>J.Dransf.</author>
+<citation>Principes 26: 73 (1982)</citation>
+<type>New Ireland; Sands et al.; 2552</type>
+<type_loc>Holotype K</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The specific epithet honors my colleagues at Kew, Messrs. Sands, Pattison, and Wood.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>C. gronophyllo insulae Guadalcanal ut videtur affinis sed foliolis conspicue pendulis, inflorescentia multo robustiore rachillis pluribus, sepalis floris masculi petalas aequan tibus, fructu ovoideo differt.</p></div>
+<div type="description"><p>Single-stemmed robust, unarmed pleonanthic, monoecious palm with grey stem to 16 m tall, ca. 20 cm diam. at breast height, producing at the base a great mass of pale brown stilt-roots to 4 cm diam., with paler brown patches and conspicuous root caps; stilt-roots apparently at least 1 m long; pith of trunk flesh-colored; other trunk details not recorded; crownshaft to 2 X 0.2 m, scarcely swollen. Leaf sheaths grey-green without, plum-pink with a metallic sheen within, not represented in herbarium material so details of indumentum lacking; ca. 13 leaves in crown; whole leaf to 4 m including petiole 60-70 cm, the rachis only slightly curved; leaflets ca. 56 on each side of the rachis, strictly pendulous, very regularly arranged; basal leaflet on each side without fold, to 5 mm wide, continuing into reins to 2 m or more long, hanging conspicuously in the center of the crown; other leaflets all single fold; midleafleaflets ca. 5 cm distant, to 117 cm long X ca. 2.8 cm wide near the base and very gradually narrowing towards the very acuminate tip; tip split along the fold to ca. 6 cm (? always); adaxial lamina surface ± glabrous, longitudinally striate, drying with scattered prominent, very short transverse ridges 0.5-2 mm long; abaxial surface similar but also bearing conspicuous bifid, brown papery ramenta in dense clusters along the main vein near the base, and scattered to ca. 30 cm above the base, and minute scales all over the surface. Inflorescences infrafoliar, ± scopiform ca. 8 exposed at any time, erect at anthesis, ca. 70 cm long, increasing somewhat with age, and becoming ± horizontal; base of peduncle with 2 wings encircling the stem, to 14 cm wide in all; base of peduncle flattened at anthesis, swelling grossly as the fruit develops, to form a bulbous boss to ca. 4.5 cm thick, pushing the inflorescence away from the trunk; bracts 2 only, the inner partially preserved glabrous; first order branches spirally arranged, ca. 20 in all, the apical unbranched, the basal soon branching to produce up to 48 rachillae; rachillae glabrous, ± pendulous, angular, slightly zig-zag, at anthesis ca. 45 cm long, ca. 3 mm diam. near the base decreasing to ca. 1 mm near the tip, bearing triads each subtended by a minute triangular bract except near the tip where triads replaced by solitary or paired staminate flowers. Staminate flowers drying brown, ca. 6 mm long; sepals 3, free ± to the base, narrow, elongate, ±keeled, to 6 x 1.5-2 mm, tip and margins incurved; petals 3, valvate, free ± to the base, asymmetric, acute, strongly nerved, to 5 x 3 mm; stamens 6, somewhat shorter than the petals, with filaments to 1.5 mm and anthers to 3 X 0.7 mm; pistillode conical to 15 mm. Pistillate flower in bud globular, ca. 5 mm diam.; sepals 3 imbricate, ±rounded, to 3 X 3 mm; staminode minute; ovary somewhat conical. Fruit ripening from yellowish to scarlet, borne on the enlarged perianth whorls; mature fruit ± ovoid, to 12 X 8 mm, bearing the stigmatic remains on a short subapical beak to 2 X 1.5 mm, usually less; epicarp drying ±smooth; mesocarp apparently thin; endocarp thin. Seed ovoid, ca. 9 X 6 mm, with longitudinal hilum; endosperm homogeneous; embryo ± basal.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This is a striking and beautiful palm; it is to be hoped that it may eventually be introduced into cultivation.
+Clinostigma with about 13 species has a remarkable distribution occurring in a great arc from the Bonin Islands and Carolines in the north, south, and eastwards through the Western Pacific to the New Hebrides, Fiji and Samoa. The discovery of two new species in the Solomon Islands in 1965 helped to fill in a great gap between the New Hebrides and Ponape; C. collegarum helps further to fill in the arc, at the same time suggesting links between New Ireland and the Pacific rather than the more expected links with New Guinea.</p></div>
+<div type="materials_examined"><p>BISMARCK ARCHIPELAGO: NEW IRELAND; Manatanai Sub-Province, Hans Meyer Range, on steep ridge ca. 8 km WNW of Taron on East Coast (152°58'E, 4°26'S), montane forest of Syzygium, Podocarpus, with frequent thickets of bamboo, alt. 1,350 m, 26.10.1975, M. J. S. Sands, G. A. Pattison, J. J. Wood and J. Croft 2552 (holotype K; isotypes BH, BISH, BO, CANB, L, LAE, PNH, USF). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

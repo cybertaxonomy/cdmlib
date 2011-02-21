@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis andapae</name>
+<author>Beentje</author>
+<citation>in J. Dransfield &amp; H. Beentje, Palms of Madagascar: 300 (1995)</citation>
+<type>Madagascar, Beamalona, June 1992; Beentje and Andriampaniry; 4680</type>
+<type_loc>Holotypus K; isotypi MO, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>An entire-leaved species with large leaves and relatively small unbranched inflorescences. The specific epithet derives from the fivondronana, the local administrative unit.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Tsingovatrovatra (Tsimihety, a rather general name for small palms).</p></div>
+<div type="diagnosis"><p>Gregem palmunculorum foliis integris inflorescentiis spicatis pertinens D. coriaceae et D. tenuissimae habitu caespitosa foliis profunde lobatis 6 staminibus affinis sed vagina et lobis folii multo majoribus distincta.</p></div> 
+<div type="description"><p>Clustering palm in tufts of 4-6. STEMS to 1.2 m tall, 0.8-1.2 cm diam.; distal internodes 4-4.5 cm, glabrous. LEAVES 6-10 per crown, arching, entire, bifid; sheath 10-16 cm long, closed for 3/4, with some scattered scales, with 4-10 mm long narrowly triangular auricles; petiole 7-18 cm long, 2-3.5 mm diam., with densely scattered scales, lamina 29-48 cm long, midrib 10-22 cm long, lobes 18-28 x 3.3-7.5 cm, main veins 8-12, with small reddish scattered scales on major and minor veins, apices dentate over a width of 8-15 mm, the outer margins with some teeth as well. INFLORESCENCE interfoliar, unbranched; peduncle 22-33 cm long, 1.5-2.5 mm diam., glabrous or minutely puberulous; prophyll 13-22 cm long, 0.7-1.7 cm wide, borne at 1.5-5 cm above the base of the peduncle, open for 1-3 cm, with scattered scales; peduncular bract inserted at 10-15 cm from the base of the peduncle, 9-20 cm long, open for 25-50%, with scattered scales, sometimes with a beak of up to 5 mm long, tattering; rachilla 13-22 cm long, 1.5-2.5 mm diam., with stellate scales, with dense triads. STAMINATE FLOWERS with the free part of the sepals 0.6-1 x 0.5-0.8 mm, the connate part c. 0.5 mm; petals 1.5-2 x 0.7-1.1 mm; stamens 6, biseriate (offset 0.2 mm), filaments 0.5-0.8 mm, anthers 0.6-0.8 x 0.2-0.4 mm, versatile; pistillode &#60; 0.5 mm. PISTILLATE FLOWERS with sepals 0.7-1.2 x 0.7-1 mm; petals 1.5-2 x 0.8-1.5 mm; staminodes not seen; ovary c. 0.6-0.8 x 0.5 mm in bud. FRUIT orange, ellipsoid with rounded apex, 11-13 x 7-7.5 mm; endocarp with free fibers. SEED 9-11.5 x 4.5-5.5 mm, pointed at base and apex, with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Marojejy Mountains and Mandritsara area.</p></div>
+<div type="biology_ecology"><p>Submontane rain forest; steep mid slope; 850-1400 m.</p></div>
+<div type="conservation"><p>Rare. The distribution of this species is limited.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>In the group of small palms with entire leaves and unbranched inflorescences, closest (through clustering habit, deeply lobed leaf, 6 stamens) to D. coriacea and D. tenuissima, but distinct by a larger leaf-sheath and much larger leaf lobes.</p></div>
+<div type="materials_examined"><p>Andapa: from Ambatoharanana Valley to upper Antsahaberoka R. basin, Nov. 1959 (fl.), Humbert &amp; Saboureau 31703 (K, P); Beamalona, June 1992 (fr.), Beentje &amp; Andriampaniry 4680 (Holotype K; isotypes MO, P, TAN). Mandritsara: Antsiasiaka, April 1974 (bud), Morat 4499 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

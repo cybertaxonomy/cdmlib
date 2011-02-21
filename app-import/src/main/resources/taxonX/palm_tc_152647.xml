@@ -1,0 +1,44 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Monograph of Phoenix L. (Palmae: Coryphoideae)</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Barrow</mods:namePart>
+<mods:namePart type="given">S.C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1998</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 53, No. 3 (1998), pp. 513-575</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Phoenix andamanensis</name>
+<author>S. Barrow </author>
+<citation>Kew Bull. 53: 538 (1998)</citation>
+<type>Andaman Islands, North Andaman, Saddle Peak, 700 m alt., 14 Dec. 1990 (pist.); Ellis; 14189</type>
+<type_loc>Type K!</type_loc>
+<synonymy>
+<name>Phoenix sp.</name>
+<author>Kurz</author>
+<bibref>Kurz, Rep. Veg. Andaman Isl.: 7, 50 (1870)</bibref>
+<bibref>Kurz, Rep. Veg. Andaman Isl.: 7, 50 (1870)</bibref>
+<bibref>Brandis, Indian Trees: 646 (1906)</bibref>
+<bibref>C. E. Parkinson, A Forest Flora of the Andaman Isl.: 263 (1923)</bibref>
+</synonymy>
+</nomenclature>
+<div type="diagnosis"><p>P. rupicolae affinis, sed endospermio ruminato non homogeneo differt.</p></div>
+<div type="description"><p>Solitary tree palm. Stem 1.5 - 3.5 (5) m, without leaf sheaths c. 15 cm diam. Leaves to c. 2.4 m long; acanthophylls sparsely arranged in one plane, to c. 4 cm long; leaflets closely and regularly inserted in one plane, 14 - 45 x 0.4 - 2.5 cm; lamina concolorous with discontinuous white, scurfy ramenta in midrib region on the abaxial surface. Staminate inflorescence with prophyll to c. 30 x 5 cm, coriaceous; rachillae to c. 10 cm long. Staminate flowers not seen. Pistillate inflorescence with prophyll splitting twice between margins, to 60 x 4 cm; peduncle to 100 x 1.2 cm; rachillae to c. 23 cm long. Pistillate flowers spirally arranged in distal half of rachilla, c. 20 in number; calyx cupule 1.5 mm high; petals 3 - 4 x 6 mm. Fruit oblong, to 19 x 10 mm, colour at maturity not known. Seed elongate, to 14 x 7 mm; embryo lateral opposite raphe, slightly supra-equatorial; endosperm ruminate.</p></div>
+<div type="distribution"><p>Phoenix andamanensis has been recorded from one locality each in both North Andaman and Little Andaman, and from Cinque and Rutland Islands (Brandis 1906; Parkinson 1923). The modern distribution of the species is unknown. </p></div>
+<div type="biology_ecology"><p>Higher ground (c. 450 - 700 m) on the islands. A recent report (Balachandran, pers. comm.) noted that the species occurs in undisturbed 'scrub jungle' on the eastern side of Rutland Island and northern end of North Cinque Island.</p></div>
+<div type="materials_examined"><p>ANDAMAN IS. NORTH ANDAMAN. Saddle Hill, 450 m alt., 28 Sept. 1905 (stam., pist.), Osmaston (CAL!); Saddle Hill, 500 m alt., 1 Dec. 1976 (pist.), Balakrishnan &amp;•Nair 4771 (CAL!); Saddle Peak, 700 m alt., 14 Dec. 1990 (pist.), Ellis 14189 (K!). RUTLAND IS. precise locality unknown, 13 Feb. 1904 (pist.), Rogers 132 (FI-B!, K!); Headland, North Dyer Point, 19 May 1904 (pist.), Rogers 285 (FI-B!, K!). CINQUE ISLAND. precise locality unknown, 7 April 1911 (stam., pist.), Rogers s.n. (CAL!); Cinque and Rutland Is., 20July 1911 (seed), Rogers s.n. (K!). LITTLE ANDAMAN. Bumila Creek, Jan. 1903, Rogers s.n. (K!).</p></div>
+<div type="vernacular"><p>Not known.</p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="conservation"><p>The conservation status of P. andamanensis is unclear. It seems that the species was never common throughout the islands, but formed large populations in two localities. Brandis (1906) and Parkinson (1923) noted it as forming 'forests' on Cinque Island and north eastern Rutland Island. The fact that P. andamanensis was not found in a survey of palms of the Andaman and Nicobar Islands by Mathew &amp; Abraham (1994) suggests that the species might now be rare.</p></div>
+<div type="discussion"><p>The existence of a second species of Phoenix in the Andaman Islands, in addition to P. paludosa, was noted by Kurz (1870), Brandis (1906) and Parkinson (1923), but its identity was not ascertained. Beccari provisionally named three herbarium specimens (Rogers s.n., 132 and 285 at K) of the species as P. pusilla var. andamanensis (nom. in sched.), but Brandis (1906) compared it with P. rupicola. I have found P. andamanensis to be similar morphologically and anatomically to P. rupicola. Both species are solitary in habit and have broad leaflets (to 3 cm in width) which are closely and regularly inserted in one plane of orientation. The abaxial lamina surface of both species bears discontinuous, abaxial white ramenta in the midrib region. Despite similarities between P. andamanensis and R rupicola, the former is immediately distinguished by its seed with ruminate endosperm. The close relationship between P. andamanensis and P. rupicola supports the acknowledged similarity between the flora of the Andaman Islands with that of northeast India. Rao (1996) cited two rare orchid species from northeastern India, Porpax meirax King &amp; Pantl. and Ascocentrum ampullaceum Schltr., which are also found on Saddle Peak on North Andaman.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

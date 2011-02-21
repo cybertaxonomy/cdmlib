@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis schatzii</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 278 (1995)</citation>
+<type>Madagascar, Betampona; Schatz et al.; 2687</type>
+<type_loc>Holotypus K; isotypus MO</type_loc>
+</nomenclature>
+<div type="introduction"><p>This is a very handsome small undergrowth palm; it is named for the collector of the type, George Schatz of Missouri Botanical Garden, who has worked with us in the field, often helping greatly with logistic arrangements.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Tsinkara (Betsimisaraka).</p></div>
+<div type="diagnosis"><p>D. integraesimilis sed statura robustiore foliis majoribus inflorescentia ramosa triadibus confertim dispositis differt.</p></div>
+<div type="description"><p>Solitary or clustering palm. STEM(S) 2-3 m tall, to 1 cm diam.; internodes 2-6 cm long, distally with dense reddish scales, often with sheath remnants clothing the stem in its distal part. LEAVES 6-13 in the crown, entire or with 2 pinnae; sheath 8-12 cm long, dense reddish scaly, closed, with triangular auricles 0.6-1.2 cm long; petiole absent or up to 10 cm long, distally c. 2 mm wide, densely scaly; lamina dark green, when entire obovate, 17.5-41 cm long, 6.8-11 cm wide, with lobes 2.6-7 cm long; main veins 11-13, faint, only the midrib prominent; apices long-dentate, the teeth continuing along the outer margins to about halfway down the leaf, the teeth to 1 cm long, rarely a deep lacuna almost reaching the midrib; midrib densely scaly, minor veins with bands of scattered scales abaxially, as well as white-punctate abaxially which gives the abaxial side a silvery appearance; when pinnate with a rachis 18-22 cm long, leaflets 2 on each side of the rachis, the proximal 9-10 x 1.1-1.7 cm, acuminate, leaflet interval 2-3 cm, distal leaflets obovate 17-24 cm long, c. 7 cm wide, with 3-5 main veins, connate for &#62; 80%. INFLORESCENCE interfoliar, branched to 1 order; peduncle 28-31 cm long, distally 1.5-2 mm diam., densely reddish-scaly; prophyll 18-21 cm long, 6-7 mm wide, borne at c. 4 cm above the base of the peduncle, opening in the distal 1.5-2 cm, with scattered scales; peduncular bract inserted 14-18 cm from the base of the peduncle, 9-11 cm long, opening in the distal few cm, with scattered scales; non-tubular peduncular bracts 2-3 mm long, sometimes almost tubular; rachis 1-5 cm long, beige in fruit, with 3-6 first order branches; rachillae 6.5-13 cm long, minutely puberulous with reddish stellate scales and dense triads; rachilla bract 0.6-0.8 mm, rounded. STAMINATE FLOWERS with sepals 1.1-1.4 x 0.6-1.6 mm, the middle one very asymmetrical; petals 1.6-2 x 1.2-1.4 mm; stamens 6, slightly biseriate (offset &#60; 0.1 mm), filaments reflexed rachilla 2.5-3.5 cm long. The sepals are c. 0.7 mm long, and the stamens seem to be didymous;the plant is in young bud, so we are unable to reach a conclusion as to its identity.</p></div>
+<div type="distribution"><p>E Madagascar; only known from Betampona.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest, steep mid slope; 500-565 m.</p></div>
+<div type="conservation"><p>Vulnerable. Only known from a single site; numbers estimated to be less than fifty.</p></div>
+<div type="uses"><p>Stems used to make blowpipes.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Toamasina: Betampona, Dec. 1925 (bud), Perrier 17467 (P); idem, April 1989 (fr.), Schatz et al. 2687 (Holotype K; isotype MO, not seen); idem, Oct. 1991 (bud), Beentje 4487 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus radulosus</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1892) 443</citation>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 11 (1908) 174</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 57</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 221</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Radulosus - rasp-like</p></div>
+<div type="vernacular"><p>rotan ?</p></div>
+<div type="description"><p>? Solitary or ? clustering rattan climbing to 10-15 m. Stem without sheaths 1.5 cm in diameter, with sheaths to 3 cm. Internodes about 15 cm long. Sheaths densely armed with triangular swollen based spines about 6 mm long, obliquely aligned and somewhat upward pointing. Knee present. Ocrea inconspicuous. Flagellum present. Leaf ecirrate to about 1.5 m long; petiole absent. Leaflets numerous, regular, close, narrow, the longest to 45 cm long by 2.5 cm broad, the two terminal leaflets smallest, joined briefly. Female inflorescence ending in a flagellum, bearing partial inflorescences to 1 m long, bearing up to 15 rachillae on each side, with rachillae to 10 cm long. Bracts densely armed with small spines. Mature fruit not known.</p></div>
+<div type="distribution"><p>Perak: only known from the type (Scortechini 468b in Florence) and one collection by Kunstler (1871) from Gopeng.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This rattan has not been seen in the field. Its armature is very distinctive; otherwise it might be confused with C. demiflorus.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

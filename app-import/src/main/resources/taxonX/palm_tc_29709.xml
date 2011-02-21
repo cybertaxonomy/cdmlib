@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus mesilauensis</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 797 (1982)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>From the type locality</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering rattan climbing to c 10 m; stems without sheaths c 8 mm diam., with to 15 mm diam.; internodes to 20 cm. Sheaths pale green with scattered brown scales and armed with scattered large triangular dark brown spines to 10 x 5 mm with swollen yellowish bases and black hairy margins, and much smaller spines to 3 mm scattered in between or in short groups. Knee conspicuous. Ocrea short, fringed with stiff blackish hairs. Vestigial flagellum present to 5 cm. Leaf to 1.25 m including cirrus to 70 cm and very short petiole to 5 cm; cirrus armed with scattered not grouped spines; leaflets c 10 on each side of the rachis, irregularly arranged in four groups of 2 or 3; longest leaflets to 40 x 3.5 cm, plicate, unarmed except for a few black bristles at the tip. Male and female inflorescences superficially similar, to 50 cm, with a short peduncle to 11 cm; main bracts to 15 cm, dull dirty brown covered in brown scales and scattered spines, deeply split and tattering giving the whole inflorescence a dead appearance; male and female rachillae to c 4 cm. Ripe fruit large, wider than high, to 18 x 23 mm, tipped with a cylindrical beak to 1.5 x 1.5 mm and covered in 24 - 26 vertical rows of deep reddish brown scales; seed &#177; depressed globose to 12 x 17 mm; endosperm deeply ruminate. Seedling leaf unknown. (Fig. 54)</p></div>
+<div type="distribution"><p>Only known from lower montane forest on Kinabalu; endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known but of generally good appearance.</p></div>
+<div type="discussion"><p>The presence of a vestigial flagellum as well as a cirrus indicates that this species belongs to the group of species related to C. pogonacanthus. The highly tattered inflorescence bracts distinguish it from C. pogonacanthus and the &#177; unarmed leaflets differentiate it from C. hepbumii. A sterile specimen from Bt. Si lam (JD 5841) may possibly belong to C. mesilauensis.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

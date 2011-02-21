@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga aristata</name>
+<author>(Burret) J.Dransf.</author>
+<citation>Kew Bull. 34: 775 (1980)</citation>
+<type>Borneo, Kinabalu; J. and M. S. Clemens; 27259</type>
+<type_loc>holotype B†; isotype K</type_loc>
+<synonymy>
+<name>Pseudopinanga aristata</name>
+<author>Burret</author>
+<bibref>Burret in Notizbl. Bot. Gart. Mus. Berlin-Dahlem 13: 191 (1936)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

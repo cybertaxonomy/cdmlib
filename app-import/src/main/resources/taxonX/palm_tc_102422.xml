@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>New species and records of Iguanura (Palmae) from Sarawak and Thailand</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Kiew</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 1, pp. 143-145</mods:publisher>
+<mods:dateIssued>1979</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Iguanura chaiana</name>
+<author>Kiew</author>
+<citation>Kew Bull. 34: 144 (1979)</citation>
+<type>Borneo, Sarawak; Chai; S33784</type>
+<type_loc>Holotypus SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Takes its name from the collector, Paul Chai.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>ab L palmuncula Becc. var. magna Kiew foliolis numerosis angustis et antheris non lobatis differt.
+Palma humilis, foliis foliola numerosa 1-2-costata angusta ferentibus; inflorescentia ramosissima.</p></div>
+<div type="description"><p>Small palm with stem c. 3 m tall and 2 cm diam.; internodes to 1.25 cm long. Leaf sheath 16 cm long, tough and fibrous (? persistent), covered with a dense, reddish-brown tomentum; petiole 5 cm long; lamina 65-70 cm long with c. 27 pairs of narrow pinnae, 30 cm long and 1-2 cm broad with 1 or 2 main lateral veins. Inflorescences among the leaves to 60-75 cm long; with peduncle 35 cm long, densely tomentose; rachillae 9-11, the lowermost 25-40 cm long with 2-3 second-order branches; upper rachillae 16-20 cm long. Floral triads 2-4 mm apart. Staminate flowers yellow, calyx 1 mm long; corolla 2 mm long and ribbed; stamens with unlobed anthers, 1 mm long; pistillode columnar, 1 mm long. Pistillate flowers (immature) with calyx 1 mm long; corolla 1 mm long and ribbed; staminodes minute; ovary ovoid 0.75 mm long. Mature fruit unknown; immature fruit globose without ribs or ridges; epicarp minutely verrucose.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is distinguished by the combination of the numerous narrow leaflets and the much-branched inflorescence. Iguanura palmuncula Becc. var. magna Kiew has an inflorescence with 7-10 rachillae, the lowermost with second-order branching but the rachillae are much shorter (8-13 cm long) and the lamina is smaller (30-50 cm long) and has fewer (up to 5) pairs of pinnae; in addition the anthers are lobed and the fruit is strongly ridged. I. chaiana is known from a single specimen.</p></div>
+<div type="materials_examined"><p>BORNEO: SARAWAK. 2nd Division, Bukit Ubah-Ribu, Ulu Sg. Kaup, Lubok Antu, Chai S33784 (holotype SAR).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

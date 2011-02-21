@@ -1,0 +1,126 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Monograph of Phoenix L. (Palmae: Coryphoideae)</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Barrow</mods:namePart>
+<mods:namePart type="given">S.C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1998</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 53, No. 3 (1998), pp. 513-575</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Phoenix reclinata</name>
+<author>Jacq.</author>
+<citation>Fragm. Bot. 1: 27, t. 24 (1801)</citation>
+<bibref>Willd., Linn. Sp. P1. (ed. 4), 4(2): 731 (1806)</bibref>
+<bibref>Spreng., Syst. Veg. 2: 138 (1825)</bibref>
+<bibref>Kunth, Enum. P1. 3: 256 (1841)</bibref>
+<bibref>Mart., Hist. Nat. Palm. 3: 272, t. 164 (1849)</bibref>
+<bibref>Becc., Malesia 3: 349, t. 44, f. 1 (1890)</bibref>
+<bibref>Warb., Pflanzen. Ost-Afr.: 130 (1895)</bibref>
+<bibref>C. H. Wright in Oliv., Fl. Trop. Afr. 8: 103 (1901)</bibref>
+<bibref>Engl., Veg. Erde 2: 224, t. 10, fig. 149 (1908)</bibref>
+<bibref>L. H. Bailey, Stand. Cycl. Hort.: 2593 (1916)</bibref>
+<bibref>Blatt., Palms Brit. Ind.: 39, pl. 9, f. 5 (1926)</bibref>
+<bibref>Magalon, Contr. Etud. Palmiers Indoch.: 28 (1930)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 19, fig. 3 (1945)</bibref>
+<bibref>R. O. Williams, Useful &amp; Ornamental Plants in Zanzibar &amp;Pemba: 411 (1949)</bibref>
+<bibref>Eggeling, Indig. Trees Ugan. Prot., ed. 1: 164, photo. 36 (1940)</bibref>
+<bibref>F. W. Andrews, Fl. P1. Sudan 3: 304 (1956)</bibref>
+<bibref>Dale &amp; Greenway, Kenya Trees &amp; Shrubs: 12 (1961)</bibref>
+<bibref>H. E. Moore, Principes 7 (4): 157 (1963)</bibref>
+<bibref>T. A. Russell, Fl. W. Trop. Afr., ed. 2, 3: 169 (1968)</bibref>
+<bibref>Hamilton, Uganda For. Trees: 75 (1981)</bibref>
+<bibref>Troupin, Fl. Rwanda 4: 399, f. 170 (1987)</bibref>
+<bibref>J. Dransf., Fl. Trop. E. Afr., Palmae: 15, f. 1 (1986)</bibref>
+<bibref>M. F. Kinnaird, Conservation Biol. 6(1): 101 - 107 (1992)</bibref>
+<bibref>Beentje, Kenya Trees, Shrubs &amp; Lianas: 644 (1994)</bibref>
+<bibref>Thulin, Fl. Somalia 4: 271 (1995)</bibref>
+<bibref>S. Barrow in J. Dransf. &amp; Beentje, Palms of Madagascar: 47 (1995)</bibref>
+<bibref>P. Tuley, Palms of Africa: 16 (1995).</bibref>
+<synonymy>
+<name>Phoenix spinosa</name>
+<author>Schumach. &amp; Thonn.</author>
+<bibref>Schumach. &amp; Thonn., Beskr. Guin. PI.: 437 (1827)</bibref>
+<bibref>Mart., Hist. Nat. Palm. 3: 275 (1849)</bibref>
+<bibref>A. Chev., Rev. Int. Bot. Appl. Agric. Trop. 32: 223 (1952)</bibref>
+<type>Ghana; Thonning; 101</type>
+<type_loc>Holotype C</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix abyssinica</name>
+<author>Drude</author>
+<bibref>Drude, Bot. Jahrb. Syst. 21: 117 - 119 (1895)</bibref>
+<bibref>C. H. Wright in Oliv., Fl. Trop. Afr. 8: 102 (1901)</bibref>
+<bibref>Fiori, Boschire Piante Legnose dell Eritrea: 97, fig. 34 (1912)</bibref>
+<bibref>A. Chev., Rev. Int. Bot. Appl. Agric. Trop. 32: 217 (1952)</bibref>
+<type>Eritrea, Tigre, Nov. 1861 (pist.); Steudner; 1541</type>
+<type_loc>Type FI-B! ex Herb. Berol.</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix reclinata var. madagascariensis</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst., Beibl. 87, 38: 4 (1906)</bibref>
+<bibref>Jum. &amp; H. Perrier, Ann. Inst. Bot. Geol. Colon. Marseille 3, 1: 60 (1913)</bibref>
+<bibref>Becc., Palme Madagascar: 54, fig. 44 (1914)</bibref>
+<type>Loko-be, Nossi-be, Dec 1879 (stam.); Hildebrandt; 3304</type>
+<type_loc>Lectotype BM!, K!, P!</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix comorensis</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst., Beibl. 87, 38: 5 (1906)</bibref>
+<bibref>Becc., Palme Madagascar: 54 (1914)</bibref>
+<type>Mayotte, 1850 (pist.); Boivin; 3100</type>
+<type_loc>Lectotype K!, P!</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix dybowskii</name>
+<author>A. Chev.</author>
+<bibref>A. Chev., Fl. Afr. Centr., Enum. Pl. Recolt.: 331, nomen (1913)</bibref>
+<bibref>A. Chev., Rev. Int. Bot. Appl. Agric. Trop. 32: 224 (1952)</bibref>
+<type>Central African Republic, Ungourras plateau, 14 Nov. 1902 (ster.); Chevalier; 6152</type>
+<type_loc>Type P!</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix reclinata var. somalensis</name>
+<author>Becc.</author>
+<bibref>Becc., Chiov., Res. Sci. Somalia Ital. 176, 230, Tab. 43, fig. 3,4 (1916)</bibref>
+<type>Uagadi near Bulo Nassib, 29 June 1913 (stam.); Paoli; 430</type>
+<type_loc>Lectotype FT!.</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix djalonensis</name>
+<author>A. Chev.</author>
+<bibref>A. Chev., Explor. Bot. Afrique. Occ. Franc.: 672, nom. (1920)</bibref>
+<bibref>A. Chev., Rev. Int. Bot. Appl. Agric. Trop. 32: 223, descr. (1952)</bibref>
+<type>Guinea, Fouta Djallon, Kollangui, July 1906 (pist.); Chevalier; 12823</type>
+<type_loc>Type P!</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix baoulensis</name>
+<author>A. Chev.</author>
+<bibref>A. Chev., Rev. Int. Bot. Appl. Agric. Trop. 32: 224 (1952)</bibref>
+<type>Ivory Coast, Kodiokoffi Distr., Manikro, 6 Aug. 1909 (pist.); Chevalier; 22314</type>
+<type_loc>Type P!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="description"><p>Clustering palm, often thicket-forming. Stem 10 (12) m, erect or oblique, without leaf sheaths to 20 cm in diam., dull brown, with persistent leaf sheaths 1 - 2 m below crown, otherwise becoming smooth, irregularly marked with oblique internode scars, cracked vertically; injured stem exuding clear yellowish gum. Leaves arcuate, c. 2 - 3.5 m long; leaf sheath fibrous, reddish-brown; pseudopetiole rounded abaxially, smooth, often channelled adaxially, to 50 cm long; acanthophylls irregularly arranged, often congested proximally, c. 10 - 15 on each side of rachis, 3 - 9 cm long; leaflets regularly arranged distally in one plane of orientation but median and proximal leaflets in fascicles of 3 - 5 and often fanned, c. 80 - 130 on each side of rachis, 28 - 45 x 2.2- 3.6 cm; leaflet margin minutely crenulate; lamina concolorous, abaxial surface with white scurfy ramenta in midrib region. Staminate inflorescence erect; prophyll green-yellow in bud, strongly 2-keeled, coriaceous, splitting 1 or 2 times between margins, 40 - 60 x 5 - 6 cm; peduncle 10 - 30 x 1.3 cm, not greatly elongating beyond prophyll; rachis 17 - 30 cm; rachillae congestedly arranged in a narrow bush, numerous, 6 - 20 cm long. Staminate flowers creamy- white; calyx cupule 1 mm high; petals with apex acute-acuminate in shape and with jagged margins, 3 (rarely 4), 6 - 7 x 2 - 3 mm. Pistillate inflorescence erect, arching with weight of fruits; prophyll as for staminate inflorescence; peduncle green-yellow turning orange-brown, becoming pendulous on fruit maturity, to 60 - 1.5 cm; rachillae spirally arranged often in irregular horizontal whorls, c. 19 - 40 in number, to 6 - 55 cm long. Pistillate flowers usually only one carpel reaching maturity, 3 - 4 mm high. Fruit ovoid-ellipsoid or almost obovoid, ripening yellow to bright orange, 13 - 20 x 7 - 13 mm; mesocarp sweet, scarcely fleshy, c. 1 - 2 mm thick. Seed obovoid, with rounded apices, 12 - 14 x 5 - 6 mm; embryo lateral opposite raphe; endosperm homogeneous. </p></div>
+<div type="distribution"><p>Phoenix reclinata occurs throughout tropical and subtropical Africa, northern and southwestern Madagascar and the Comoro Islands. </p></div>
+<div type="biology_ecology"><p>Phoenix reclinata is a widely distributed species growing in a range of habitats, often seasonally water-logged or inundated, such as along watercourses, in high rainfall areas, in riverine forest, and even in rainforest areas (although always restricted to areas of sparse canopy). The species can also be found in drier conditions on rocky hillsides, cliffs and grasslands to 3000 m. The fruits of P. reclinata are animal-dispersed: their bright orange colour and sweet, slightly fleshy mesocarp is attractive to birds (parrots) (Schonland 1924), elephants (Corner 1966), lemurs (Petter et al. 1977), mangabey (forest monkeys) (Kinnaird 1992) and humans. </p></div>
+<div type="materials_examined"><p>ANGOLA. Lola Prov., Bibala, 14˚46'S, 13˚21'E, 1951 (stam.), Teixeira 497A (BM!). BENIN REPUBLIC. Goowe, 23 Feb. 1905, Le Testu 149 (BM!). BOTSWANA. Okavango R., 18˚27'S, 22˚30'E, 30 April 1975 (pist.), Biegel et al. 5042 (E!, K!). BURUNDI. Nkundarafe, Gitega-Ruyigi rd., 3˚36'S, 30˚06'E, 11 Oct. 1978 (pist., stam.), Reekmans 7146, 7147 (K!). CAMEROON. Mpalla, 12 km N of Kribi, 1968 (stam., pist.), Bos 3479 (K!). CENTRAL AFRICAN REPUBLIC. Ungourras Plateau, 14 Nov. 1952 (ster.), Chevalier 6152 (P!) [Type of P. dybowskii]. COMORO ISLANDS. Mayotte, (pist.), Boivin 3100 (K!, P!). ERITREA. Hamasen, 1570 m alt., 29 March 1909 (stam., pist.), Fiori 453 (FT!). ETHIOPIA. Kaffa Prov., 7 km E ofJimma, 1750 m alt., 7˚40'N, 36˚52'E, 26 Dec. 1961 (pist.), Meyer 7819 (K!). GABON. Maliba village, 24 Sept. 1969 (stam.), Villiers 365 (P!). GAMBIA. 1 March 1921 (stam., pist.), Dawe 70 (K!). GHANA. Aburi Hills, 5 Oct. 1899 (stam.), Johnson 459 (K!). GUINEA. Fouta Djallon, Mali region, Sept. 1954 (pist.), Schnell 7224 (P!). GUINEA-BISSAU. Mayombo, 11 May 1919 (stam., pist.), Gossweiler 8097 (BM!). IVORY COAST. Foro-Foro forest, c. 25 km N of Bouake, 26 Sept. 1963 (stam., K!; ster., P!), Oldeman 402 (K!, P!). KENYA. Teita Distr., Ngerenyi, 1700 m alt., 17 Sept. 1953 (pist.), Drummond &amp; Hemsley 4369 (FT!, K!). MADAGASCAR. 2 km S of Iharana, 13˚28'S, 49˚29'E, 24June 1992, Beentje &amp; Andriampaniry 4691, 4692 (K!). MALAWI. Blantyre Distr., Bangwe Hill, 4 km E of Limbe, 1260 m alt., 23 Nov. 1977 (pist.), Brummitt et al. 15156 (K!). MOZAMBIQUE.
+Maputo, Inhaça Is., 13 Dec. 1984 (pist.), Groenendijk &amp; Dungo 1587 (K!). NIGERIA. Muri Division, Mumye Distr., Gangoro Forest Reserve, 1350 m alt., 9 Feb. 1976 (pist.), Chapman 4127 (K!). RWANDA. Kibuye, 1978 (pist.), Troupin 15972 (K!). SAUDI ARABIA. Between Bani Sa'd and Jabal Ibrahim, Taif to Al Bahah road, 21 April 1988 (stam.), Collenette 6701 (K!). SENEGAL. Tambacounda region, Obadji to Kedougou road, 8 April 1993 (pist.), Sambou et al. 1569 (K!). SIERRA LEONE. No. 2 River Peninsula, 30 Sept. 1965 (stam.), Morton &amp;Jarr 2298, 2395 (SL, K!, GC, WAG, FHI, IFAN). SOMALIA. Giuba R. near Bardera, 12 Nov. 1913 (pist.), Paoli 824 (FT!). SOUTH AFRICA. Natal Prov., Kosi Bay, 20 Jan. 1977 (pist.), Balsinhas 3099 (K!). TANZANIA. Tanga Distr., Lwengara R., 2.5 miles E of Korogwe, 300 m alt., 16 July 1953 (stam., pist.), Drummond &amp; Hemsley 3342 (K!); N of Lembani on Korogwe- Moshi rd., 800 m alt., 15 Jan. 1976 (pist.), Dransfield 4832 (K!). UGANDA. Budongo Forest, 1200 m, alt., 28 Nov. 1938 (ster.), Loveridge 128 (K!). YEMEN. AlJabin to Suq Ar Ribat, 700 m alt., 22 March 1984 (pist.), Miller &amp; Long 5383 (E!). ZAiRE. Katanga Prov., Pweto, July 1957 (pist.), Devred 3699 (K!). ZAMBIA. 8 km N of Mwinilunga, 1975 (pist.), Brummit et al. 14040 (K!). ZIMBABWE. Mutare, Odzani R. valley N of Penhalonga, 18'46'S, 32?41'E, 19 Dec. 1994 (pist.), Wilkin 724 (K!).</p></div>
+<div type="vernacular"><p>KENYA. mkindu (Swahili), gonyoorriya (Boni), meti (Digo), gedo (Ilwana), makindu (Kikuyu), sosiyot (Kipsigis), othith (Luo), ol-tukai (Maasai), konchor (Orma), itikindu (Sanya), alol (Somali), mhongana (Taveta), kigangatehi (Taita), nakadoki (Turkana), [Beentje (1994)]; mangatche [Kilimanjaro Distr., Greenway 3037 (K!)]. MADAGASCAR. Dara, taratra, taratsy, [Jumelle &amp; Perrier (1913, 1945) ]; calalou, [Morondava, Greve 154 (P!) ]. NIGERIA. Kajinjiri, dabino biri (Hausa), [Northern Prov., Zaria, Conservator ofForests s.n. (K!)]; deli (Fulani), kabba (Hausa), [Mambila Plateau, Hepper 1705 (K!)]. RWANDA. Umukindo, [Troupin (1987)]. SIERRA LEONE. Shaka-Le (Sherbro), kundi (Mende), [Bonthe Is., Deighton 2397 (K!)]. SOUTrH AFRICA. Dikindu, makindu (Mbukushu), makerewa, shikerewa (Diriko), [Okavanga, De Winter &amp; Wiss 4800 (K!)]. TANZANIA. Daro, taratra, mkindwi (Swahili), [Lamu Distr., Dransfield 4799 (K!)]; Luchingu (Fipa), [Mbugwe, Bullock 3074 (K!)]; kihangaga (Urukindu), [Lake Prov., Tanner 5845 (K!)]. UGANDA. Itchi (Madi), lukindu (Luganda, Lunyoro), musansa (Luganda, Busoga dialect), [Eggeling (1940)]; Wild Date Palm, enkinu (Luamba), emusogot (Ateso), ekingol (Karamojong), lukindu, mukindu (Luganda, Lunyoro, Lutoro), makendu (Lugisu), muyiti (Lugwe), otit (Luo. Acholi and Lango dialects), tit (Luo, Lango and Jonam dialects), itchi (Madi), kikindu (Lunyuli), lusansa (Lusoga), [Hamilton (1981)]. </p></div>
+<div type="uses"><p>All parts of P. reclinata palms are used for a range of purposes. Trunks are used as beams and poles in construction. Whole leaves are used as door entrances and covers, or fans for stoking fires and repelling insects. The leaf rachis is used for making thatch, floor mats and fish traps. It also forms a component of wattle for the construction of mud houses. Leaflets from sucker shoots are harvested for making baskets, hats, brushes, building ties, woven dolls and ornaments. The fruits are eaten as a snack and the seeds can be dried and ground into flour (Sierra Leone, Deighton 2397, K!). The palm heart is occasionally eaten as a vegetable. The sap is fermented into an alcoholic beverage and has been recorded as a remedy against urinary infections [Lake Prov., Tanner 5845 (K!)]. For a detailed study of the uses of P. reclinata in Tanzania see Kinnaird (1992).</p></div>
+<div type="conservation"><p>Not threatened. </p></div>
+<div type="discussion"><p>The vegetative polymorphism of P. reclinata, which perhaps relates to ecological variation, has led to recognition of certain extreme phenotypes as distinct species or varieties (e.g., Chevalier 1952). This variation is such that delimitation of infraspecific taxa cannot be upheld by discrete characters.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

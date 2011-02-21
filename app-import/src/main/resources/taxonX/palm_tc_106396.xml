@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia paucijuga</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 12(2): 121 (1918)</citation>
+<bibref>Dransfield in Kew Bull. 36: 174 (1981)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Few pairs, i.e. of leaflets</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering slender rattan with stems climbing to 20 m, branching in the canopy. Stem without sheaths c. 5 mm diam., with sheaths to c. 10 mm diam., internodes c. 10 cm, longer in juvenile stems. Sheaths dull greenish-brown, bearing very few short triangular spines to c. 2 mm, or unarmed and with abundant deciduous.black scales; ocrea tightly sheathing, usually very short, scarcely more than 5 mm in mature stems, the free margin somewhat irregular. Leaf to 60 cm including the cirrus to 30 cm; petiole absent', leaflets 3 (rarely 4) on each side, broadly rhomboid with praemorse distal margins, often stalked, the middle leaflets c. 15 x 7 cm, the upper surface dark green, the undersurface with grey-white indumentum and minute scattered brown scales. Inflorescences produced from topmost c. 3 nodes; inflorescence bracts somewhat inflated, the rachillae few but held rather close together, c. 50 - 70 x 3 - 4 mm, the bracts rather conspicuous, the floral pits with very few hairs. Mature fruit rounded or top-shaped, c. 10 mm diam., with a short beak, and covered in 17 vertical rows of yellow-brown, darker-tipped scales. Seed ovoid c. 8 x 6 mm; endosperm deeply ruminate. Seedling leaf undivided with praemorse margins (Fig. 2).</p></div>
+<div type="distribution"><p>An infrequently collected rattan recorded from the 1st and 3rd Divisions. Elsewhere in Kalimantan and Sumatra.</p></div>
+<div type="biology_ecology"><p>K. paucijuga appears to be confined to peat swamp forest at low elevations.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane is fine and durable and were it more frequent, would be of greater importance.</p></div>
+<div type="discussion"><p>For differences between it and K. rigida see under the latter species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

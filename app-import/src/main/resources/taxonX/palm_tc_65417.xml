@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis cabadae</name>
+<author>(H.E.Moore) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 219 (1995)</citation>
+<type>Cuba, Soledad, cultivated at Atkins Garden; Moore; 6517</type>
+<type_loc>Holotype BH</type_loc>
+<synonymy>
+<name>Chrysalidocarpus cabadae</name>
+<author>Moore</author>
+<bibref>Moore, Principes 6: 108 (1962)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This species is widespread in cultivation, but unknown from the wild: it might be from Madagascar or the Comoro Islands.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Clustering palm in tufts of up to 14 stems. STEMS to 10 m tall, to 9 cm diam.; internodes 9-12.7 cm long, smooth, glossy, green, nodal scars prominent, pale. LEAVES c. 10 in the crown, arching distally; sheath 50-76 cm long, bright green with a glaucous bloom, sparsely dotted with reddish fimbriate scales but glabrescent, with square shoulders; petiole 25-33 cm long (-60 cm in young shoots) with a prominent callus pad at the base, glabrous, channelled, 1.7-2 x 2-2.2 cm diam. proximally, 2-2.3 x 1.7-1.9 cm distally; rachis to 1.7 m long, green adaxially, yellowish abaxially, glabrous, in mid-leaf 1-1.3 cm wide, slightly keeled; leaflets  regular, 24 (in young plants)-60 on each side of the rachis, those on opposite sides of the rachis at an angle of c. 45&#176; with each other, dark green, shiny, the proximal 42-57 x 1.6-2.1 cm, median 51-59 x 1.8-2.3 cm, distal 6-27 x 0.5-1.6 cm, midrib yellowish abaxially, with one or a few ramenta (1-4 mm long) proximally, otherwise glabrous, waxy, midrib and marginal veins prominent, apices acute. INFLORESCENCE interfoliar, branched to 3 orders, c. 1.5 m long, erect, green; peduncle 59-69 cm long, with dense to sparse minute rusty scales, proximally 4-5 x 1.2-2 cm, distally 1.5-2 x 1-1.2 cm diam.; prophyll green or glaucous, 44-52 cm long, 3.7-5 cm wide, borne at 11-13.5 cm above the base of the peduncle, splitting obliquely at the apex for about 50%, with dense to sparse minute rusty scales; peduncular bract green or glaucous, inserted at 29-34 cm from the base of the peduncle, 40-54 cm long, 4 cm wide, splitting on one side, closed for a 3 cm beak, with dense to sparse minute rusty scales, eventually deciduous; rachis c. 70 cm long, glabrous, with 20-22 branched and 8-10 unbranched first order branches, the proximal of these with a rachis of up to 40 cm; rachillae 8-18 cm long, c. 1 mm diam., glabrous; triads distant. STAMINATE FLOWERS with sepals green, 1.6-2.1 x 1.8-2.5 mm; petals yellow-green, connate for c. 0.8 mm, free for 2.2-2.6 x 1.6-2.1 mm; stamens 6, biseriate (offset c. 0.4 mm), the filaments 2.2-2.6 mm long, thin, the anthers 1.6-1.7 x 0.8-1 mm, versatile, the locules parallel; pistillode white, columnar, c. 3 mm long. PISTILLATE FLOWERS with sepals 1.4-1.7 x 1.8-2.2 mm; petals 2.2-2.7 x 2-2.8 mm; staminodes 0.3-0.4 mm; ovary not seen. FRUIT ellipsoid, scarlet, 9-12 x 4-6 mm, apex rounded; exocarp smooth, mesocarp thin and fleshy and fibrous, endocarp &#177; adherent to the seed, fibrous, anastomosing. SEED ellipsoid, 8-9 x 4-5 mm, pointed at the base, rounded at the apex; endosperm homogeneous, embryo lateral; raphe branches ascending from the base and loosely anastomosing. SEEDLING with eophyll bifid, occasionally with a few scales abaxially.</p></div>
+<div type="distribution"><p>Only known from cultivated plants; origin unknown.</p></div>
+<div type="biology_ecology"><p>Unknown.</p></div>
+<div type="conservation"><p>Unknown.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The affinities of this species seem to be with D. pembana from Pemba, but it is certainly not the same.</p></div>
+<div type="materials_examined"><p>Cuba: Soledad, Cienfuegos, Atkins Garden, Feb. 1952 (old infl., fr.). Moore 6101 (BH, paratype); idem, Feb. 1953 (fl., fr.), Moore 6517 (BH, holotype).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis moorei</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 354 (1995)</citation>
+<type>Madagascar, Antalaha: across Onive R from Ambatobe; Moore; 9918</type>
+<type_loc>Holotypus P; isotypi BH, K</type_loc>
+</nomenclature>
+<div type="introduction"><p>A massive undergrowth litter-trapping palm, known only from the type; named for Hal Moore (1917-1980), who discovered it.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Maroala (Betsimisaraka).</p></div>
+<div type="diagnosis"><p>D. perrieri affinis sed petiolo multo longiore rachide multo breviore inflorescentia glabra semel ramificanti pedunculo graciliore sepalis petalisque floris staminati majoribus differt. </p></div>
+<div type="description"><p>Solitary palm. TRUNK c. 1 m high, covered in old leaf bases. LEAVES ascending to erect; sheath fibrous; petioles green, c. 3.5 m long, distally c. 2 x 1.6 cm, channelled, densely scaly; rachis c. 1.4 m long, in mid-leaf c. 1.5 x 1.2 cm, glabrous, possibly slightly waxy; leaflets c. 54 on each side of the rachis, regular, directed forward (Moore), green on both surfaces, the proximal 61-66 x 1.4-1.7 cm, median 80-81 x 3.7-3.8 cm (interval 4-5.5 cm), distal 10-46 x 1.1-2.3 cm, main veins 3, with minute reddish scattered scales on the minor veins, apices attenuate or acute. INFLORESCENCE interfoliar, branched to 1 order, erect, c. 1.5 m    long; peduncle c. 90 cm long, c. 2.6 x 1.6 cm diam. medially, distally 1.7 x 1.1 cm, densely scaly; prophyll not seen; peduncular bract caducous, inserted high on the peduncle (fide Moore), c. 1.3 m long, green, drying brown; rachis 18-30 cm long, densely scaly; rachillae stiff, 42-51 cm long, c. 7 mm diam., densely scaly, slightly zigzag with distant triads. STAMINATE FLOWERS greenish white; sepals 3.3-4.5 x 4-4.9 cm, keeled, gibbous, imbricate; petals 5.7-7 x 3.5-4 mm; stamens 6, biseriate (offset c. 1 mm), filaments connate at the base for c. 0.2 mm, free for c. 2 mm, anthers 2.7-3 x 1.6-2.2 mm, latrorse and versatile, with parallel locules and a wide black connective; pistillode c. 1.3 x 1.2 mm. PISTILLATE FLOWERS with sepals 3.5-6 x 6-8 mm, the innermost widest; petals c. 8 x 7.5 mm in bud; staminodes 6, 0.8-1 mm high, flat; ovary slightly stalked, c. 6.5 mm x 2.8 mm. Mature FRUIT &#177; spherical, to 25 x 22 x 22 mm, stigmatic remains lateral or slightly below the equator; endocarp strongly fibrous. SEED 22 x 15 x 18 mm, endosperm deeply ruminate, embryo subbasal. EOPHYLL deeply bifid.</p></div>
+<div type="distribution"><p>Masoala Peninsula.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest with low canopy; c. 50 m?</p></div>
+<div type="conservation"><p>Endangered; only known from a single collection from an area which is known to be under severe threat of degradation.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>This species is somewhat near D. perrieri but differs in the petiole being much longer, the rachis much shorter, the inflorescence branching to 1 order only, with glabrous axes; the peduncle is much more slender; the staminate sepals and petals are larger.</p></div>
+<div type="materials_examined"><p>Antalaha: across Onive R from Ambatobe, April 1971 (fl.), Moore 9918 (Holotype P; isotypes BH, K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

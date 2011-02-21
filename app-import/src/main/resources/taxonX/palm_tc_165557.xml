@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia mitiaroana</name>
+<author>J. Dransf. &amp; Y. Ehrh.</author>
+<citation>Principes 39: 37. 1995</citation>
+<type>Mitiaro, Cook Islands, 26 April 1991; Ehrhart; s. n.</type>
+<type_loc>Holotype K (photo!); isotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole, moderately and coarsely fibrous; stem smooth, moderately to dark gray, slightly ventricose, emitting a hollow, resonating, drum-like sound when sharply struck with the knuckles of the closed fist; leaf blade slightly undulate, divided 1/4-1/3, abaxial surface white-waxy, abundantly but incompletely covered with lepidia, segment tips stiff or slightly drooping; inflorescences composed of 1 panicle, shorter than or about equaling petioles in flower and fruit, panicles branched to (3 or) 4 orders, rachillae glabrous; fruits 5-7 mm diam., globose. </p></div>
+<div type="distribution"><p>Moist forest on rough karst limestone, Mitiaro Island of the Cook Islands and Makatea and Niau islands of the Tuamotu Archipelago, French Polynesia, 5-100 m elev. On Mitiaro, Pritchardia mitiaroana occurs as scattered, dense colonies, the under story of which is completely covered with a thick layer of dead, fallen leaves of the palms. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The smooth, gray, slightly ventricose trunk, which emits a hollow sound when struck, is by itself sufficient to distinguish Pritchardia mitiaroana in life. The highly ramified, large panicles typically branched to four orders and very small fruits are also distinctive. Wilder (1934) erroneously referred to and illustrated this species as P. vuylstekeana. It is difficult to traverse the thick, scrubby vegetation (frequently with numerous Pandanus with their exceedingly prickly leaf margins) and rocky, sharp, uneven terrain where Pritchardia mitiaroana occurs on Mitiara and Makatea Islands. On Makatea it is especially difficult and even dangerous because the terrain is rather densely punctuated and pockmarked with precipitous depressions, many of them up to five meters deep or more unwary explorer. Although some of these holes are natural, many are the result of extensive phosphate mining that once occurred on Makatea. The mining and accompanying destruction of vegetation probably also devastated the populations of P. mitiaroana on the islandi relatively few individuals exist there today. Fortunately, the species is more common on Mitiara, and jean-Yves Mayer reported (pers. comm.) that on Niau, not too far from Makatea, it is especially abundant, with about 1000 reproductive individuals and numerous juvenile plants. </p></div>
+<div type="materials_examined"><p>COOK ISLANDS Mitiaro: Ehrhart s. n. 26 April 1991 (K); Flynn 7046 (PTBG). FRENCH POLYNESIA. Tuamotu Archipelago: Makatea, Wilder s. n. 28 Aug. 1929 (BISH), Wilder 1200 (BISH); Niau, Florence 10093 (P [photo]), 10178 (BISH, P [photo]). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

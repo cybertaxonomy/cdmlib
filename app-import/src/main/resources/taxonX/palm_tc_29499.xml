@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus exilis</name>
+<author>Griff.</author>
+<citation>Palms Br. India (1850) 51</citation>
+<bibref>Beccari in Hook, f., Fl. Br. India 6 (1893) 454</bibref>
+<bibref>Beccari, Ann. Rov. Bot. Gard. Calcutta 11 (1908) 330</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 58</bibref>
+<bibref>Furtado in Gdns. Bull. Singapore 15 (1956) 58</bibref>
+<synonymy>
+<name>Calamus curtisii</name>
+<author>Ridley</author>
+<bibref>Ridley in Mat. Fl. Mai. Pen. 2 (1907) 203</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus ciliaris var. pvninsularis </name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns. Bull. Singapore 15 (1956) 60</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus ciliaris</name>
+<author>Bl. sensu Ridley</author>
+<bibref>Bl. sensu Ridley, Trans Linn. Soc. 3 (1893) 392</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="Lat."><p>Exilis -slender</p></div>
+<div type="vernacular"><p>rotan paku</p></div>
+<div type="description"><p>Slender solitary or clustering rattan climbing to 6 m, rarely to 15 m tall. Stem without sheaths A-6 mm in diameter with internodes to 15 cm long; stem with sheaths to 15 mm diamater, exceptionally to 25 mm. Sheaths very variable in armature, dull grey brown in colour, always with a dense covering of minute scabrid spines, giving rough feel to leaf sheath; large spines often completely absent; sometimes, especially in the mountains, sheaths rather densely covered with dark grey-brown shiny spines, hairy margined when young to 12 mm long. Knee conspicuous. Flagellum to 1.75 m long. Leaf ecirrate very variable, to 30 cm long in extreme slender forms, to 50 cm long in more robust forms, with well-defined petiole to 15 cm long; rachis rather densely rusty hairy along its length on the upper surface; leaflets about 20-25 on each side, thin and delicate, very regularly arranged, to 15 cm long by 8 mm wide usually rather densely covered with fine pale bristles or ciliate hairs on both sides, rarely these bristles almost absent. Inflorescences superficially similar, to 70 cm, sometimes to 20 cm only, with a terminal flagellum, and 2-6 partial inflorescences; partial inflorescences reflexed arcuate in all parts when mature. Fruit on a large disk, this conspicuously stalked ("pedicelliform involucre") mature fruit ovate to oblong, with 15-18 vertical rows of straw-coloured scales. Seed ovate to oblong, flattened on one side rather deeply sinuose grooved like a brain, covered with a thin green intensely bitter and foetid sarcotesta. Seedling leaf pinnate, with rusty coloured hairs along rachis and about 10 leaflets on each side of the rachis, the uppermost leaflets much larger and broader than the lowermost.</p></div>
+<div type="distribution"><p>Perak, Penang, Trengganu, Pahang, Selangor, Malacca, Johore. Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>"Rotan paku" produces a good quality slender cane useful for binding purposes; mostly used locally, but it is also sold. The seedlings would make fine ornamentals.</p></div>
+<div type="discussion"><p>"Rotan paku" is found in a wide range of habitats from near sea-level to over 1,000 m altitude. It has been found in peat swamp forest (Sumatra) but is commonest on ridges in hill and lower montane forest.
+Although extremely variable, it is one of the easiest Malayan rattans to identify; the rough feel to the leaf sheaths and the delicate leaves with rusty hairy rachides are diagnostic. The very spiny form, sometimes found in hill forest, tends to be much more robust than other forms and the leaflets are less hairy - this was called C. curtisii by Ridley but there is a whole range of intermediates between this and other forms. The slender form with ovate rather than oblong fruit was long thought to be a form of Calamus ciliaris of Java and W. Sumatra; however this last is quite different in armature from the Malayan plant. Furthermore the main reason for referring the slender Malayan plant to C. ciliaris seems to have been the presence of a rounded rather than oblong fruit. If the type of C. ciliaris var. penin-sularis is examined carefully, the so-called rounded fruit is only rounded by virtue of being squashed and the fruit is in fact ovate.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

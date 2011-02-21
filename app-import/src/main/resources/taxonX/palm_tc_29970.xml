@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus tenuis</name>
+<author>Roxb.</author>
+<citation>Fl. Ind. 3: 780 (1832)</citation>
+<type>Bangladesh, Chittagong; Roxburgh; s.n.</type>
+<type_loc>Holotype K</type_loc>
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 262 (1908)</bibref>
+<bibref>Gagnep. &amp; Conrard in Gagnep. (ed.), Fl. Indo-Chine 6: 1033 (1937)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 28 (2001)</bibref>
+<synonymy>
+<name>Calamus horrens</name>
+<author>Blume</author>
+<bibref>Blume, Rumphia 3: 45 (1847)</bibref>
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 266 (1908) and (Suppl.): 39 (1913)</bibref>
+<type>Indonesia, Java; Blume; s.n.</type>
+<type_loc>Holotype L</type_loc>
+</synonymy>
+</nomenclature>
+<div type="distribution"><p>India (North-east and North-central), Bangladesh, Myanmar, Thailand (North), Laos (Central), Vietnam (Tonkin) and Indonesia (Sumatra and Java). Probably also Vietnam (Cochinchina) (Gagnepain &amp; Conrard 1937).</p></div>
+<div type="materials_examined"><p>INDIA (NORTH-CENTRAL): NWP, Dehra Dun Distr., Nov. 1892, (fr.), Gamble 24014 (K). (NORTH-EAST): Upper Assam, Banks of the [?] River, March 1870, (pist.), Mann, G. s.n. E102 (K). BANGLADESH: Megna, 13 Dec. 1850, (fr.), Hooker &amp; Thompson s.n. E95 (K); Chittagong, Roxburgh s.n. (K [illustration prepared for Fl. Ind.]). MYANMAR: Rangoon, undated, (fr.), McClelland s.n. E131 (K). THAILAND (NORTH): Chiang Rai Province, Mae Chan Distr., Ban Mai Pattana, 28 July 1988, (stam.), Maxwell, J. E 88 - 925 (BKF). LAOS (CENTRAL): Vientiane Municipality, Naxaithong Distr., Ban Nong Khankhou, 20 Feb. 1998, (fr.), Khamphone KP 121 (FRCL, K). VIETNAM (TONKIN): Hoaping Province, Mieu village, undated, (fr.), Chen, S. Y. 14442 (KUN). INDONESIA (SUMATRA): Djambi, 2 km upriver from town, undated, (ster.), Dransfield, J. 2546 (K, BO). (JAVA): E Java, Sukamade, Cagar Alam Meru/Betiri, 20 May 1973, (fr.), Dransfield, J. 3523 (K); Java, undated, Blume s.n. (L).</p></div>
+<div type="biology_ecology"><p>Scrub, often in areas which flood regularly, at 200 - 300 m.</p></div>
+<div type="discussion"><p>Beccari (1913) clearly stated that he considered C. horrens no more than the Javan representative of C. tenuis but for some reason did not formally synonymise them. We have examined the type and good modern material from Java and could find no differences from C. tenuis. Over 20 further specimens from Java were examined by JD in BO but are not cited here. The specimen above also represents the first published record from Sumatra. The inclusion of the Indonesian populations makes C. tenuis one of the most widespread of all rattans, with a range comparable to that of C. viminalis.</p></div>
+<div type="vernacular"><p>wai nyair, nyair (Lao Loum).</p></div>
+<div type="uses"><p>The cane is of high quality for handicrafts and accepted in trade. The shoot is edible. The cultivation of this species for the production of edible shoots is becoming increasingly widespread in Laos (Belcher 1999, Sengdala &amp; Evans 1999, Evans &amp; Sengdala in press) and also occurs in North-east Thailand.</p></div>
+<div type="conservation"><p>Unknown, but the wide range of the species suggests that it is likely to be secure in at least some areas. The Lao populations occur in densely-populated lowland floodplains and, although many plants remain, future intensification of land-use may reduce numbers greatly. The species is severely threatened in Java.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis viridis</name>
+<author>Jum.</author>
+<citation>Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 6 (1): 35 (1918)</citation>
+<bibref>Jum., Bull. Ac. Malgache 6: 13 (1923)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 14 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 42 (1945)</bibref>
+<type>Madagascar, Bay of Antongil; Perrier; 12057</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p>This is a most attractive slender clustering palm. Superficially it resembles a very slender form of Dypsis forficifolia, but the arrangement of the stamens in the present species is quite different. However, it can easily be distinguished, even when not in flower, by the numerous very slender stems in the clump, that are usually palest green, each internode marked with a vertical darker green stripe and by the irregularly divided leaflets of a thin dull green. We assume that the species name viridis (Latin - green) refers to the pale green colour that the plants assume on drying in the herbarium.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Slender clustering forest undergrowth palmlet. STEMS to 1.5 m tall, 3-8 mm diam., internodes 12-25 mm., very pale ivory-coloured but often with a vertical green stripe. LEAVES c. 6-7 in crown; sheath 5-6 cm long, 4-8 mm diam., pale ivory-coloured, very sparsely scaly, auricles not developed; petiole 3-7 cm long, c. 2 mm wide near the base, very sparsely scaly; rachis c. 11 cm long; leaflets drying pale green, 2-7 on each side of the rachis, rather irregular, small, 7-20 x 1-3.5 cm, abaxially with scattered bands of caducous scales, otherwise glabrescent. INFLORESCENCE branching to 1 (2) orders; peduncle 12-41 cm long, glabrescent, usually shorter than the leaves but occasionally longer; prophyll 8-24 x 0.2-0.3 cm, very sparsely scaly; peduncular bract exceeding the prophyll by 4-12 cm, otherwise similar; rachis 5-8 cm, sparsely caducous scaly; rachillae 7-11, spreading, 1.2-6 cm long, c. 0.5 mm diam., somewhat angular, minutely brown papillose, &#177; glabrous; triads c. 1-1.5 mm distant, rachilla bracts inconspicuous. STAMINATE FLOWERS c. 1.1 x 1 mm; sepals 0.5 x 0.8 mm, broad, rounded, imbricate, somewhat erose at margin, keeled; petals striate, 0.9 x 0.8 mm; stamens 3, antepetalous, alternating with 3 low triangular antesepalous staminodes, the filaments connate in basal 0.3 mm, anthers didymous 0.2 x 0.2; pistillode conical, minute. PISTILLATE FLOWERS known only in immature bud, c. 0.8 mm diam.; sepals broadly imbricate c. 0.5 x 0.5 mm; petals striate, c. 0.6 x 0.6 mm; other parts very immature. Ripe FRUIT cherry-red, ellipsoid, 10 x 5 mm. SEED 7 x 5 mm, endosperm homogeneous.</p></div>
+<div type="distribution"><p>NE Madagascar from the Bay of Antongil to Soanierana-Ivongo.</p></div>
+<div type="biology_ecology"><p>Lowland and hill rain forest on ridges; up to 400m.</p></div>
+<div type="conservation"><p>Vulnerable. At present the palm is known from very few localities and only at Antanambe is it within a protected area.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>This is one of the smallest and most slender of the three-staminate species of Dypsis. It is a very dainty palm. Although Perrier 12031 is labelled as the type in Paris, Jumelle &amp; Perrier (1945) explicitly cited Perrier  12057 as type. Both were cited as syn-   types in the protologue. Two further collections may be referable to this species. Perrier 17466, from Ambodiriana, collected in November 1925 (P) is vegetatively very similar to the type of D. viridis but has an entire bifid leaf. It was identified by Jumelle as D. hirtula and used as the basis of the illustration of this species in Jumelle &amp; Perrier (1945). It does not match the type of D. hirtula. Furthermore there are no staminate flowers to allow closer identification. D. hirtula has three antesepalous stamens while in D. viridis the three stamens are antepetalous. Cours 2513 from forest south of Mangabe, collected in January 1950 (K, P) is also similar to D. viridis in the position of the three stamens and in vegetative characters. The inflorescence has, however, more numerous and finer rachillae. It is tentatively determined as D. viridis.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Bay of Antongil, Aug. 1912, Perrier 12057 (holotype P); Fananehana, Aug. 1912, Perrier 12031 (P). Mananara Avaratra: 10km west of Antanambe, April 1992 (fl.), Beentje et al. 4621 (BH, K, MO, P, TAN), Oct. 1994 (fl., fr.), Dransfield &amp; Beentje JD7505 (BH, K, TAN). Soanierana-Ivongo: Soanierana to Antasibe, Dec. 1938 (fl.), Lam &amp; Meeuse 5857 (L).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

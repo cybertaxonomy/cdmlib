@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wettinia maynensis</name>
+<author>Spruce</author>
+<citation>J. Proc. Linn. Soc., Bot. 3: 191 (1859)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Subcanopy or canopy palm.  Stem solitary, 6-15 m tall and 8-15 cm in diameter, smooth.  Leaves 3-5 m long; pinnae 30-45 on each side, entire, pendulous, with a rusty pubescence, especially below, the central ones 85-125 cm long and 8-13 cm wide, with 14-25 prominent veins.  Inflorescences 3-9 per node; peduncle 15-30 cm long; rachis 1-3 cm long; branches 4-8, to 30 cm long.  Male flowers ca. 1 cm long, with 9-18 stamens.  Female flowers densely crowded along the branches, 10-15 mm long.  Fruits minutely warty and hairy, ca. 2.5-3.5 cm long and 1.5-2 cm in diameter, forming 4-8 sausage-like clusters.</p></div>
+<div type="distribution"><p>E slopes of the Andes from S Colombia to S Peru.  Common in Ecuador, especially in the Andean foothill region, at elevations between 500-1000 m.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>An unusual population of this species with clustered stems is known from S Ecuador (Zamora-Chinchipe: Borchsenius # 325).</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

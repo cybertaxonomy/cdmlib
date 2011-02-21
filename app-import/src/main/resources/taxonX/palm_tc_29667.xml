@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus luridus</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1892) 445</citation>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11 (1908) 243 and Appendix (1913) 33</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 56 (in part)</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 236</bibref>
+<synonymy>
+<name>Calamus distant</name>
+<author>Ridley</author>
+<bibref>Ridley, in Fl. Malay. Pen. 5 (1925) 56</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus belumutensis</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 223</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus laxiflorus</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Card. Calcutta 11 (Appendix) (1913) 13</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 238</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Luridus - livid</p></div>
+<div type="vernacular"><p>rotan kerai</p></div>
+<div type="description"><p>Variable slender clustering rattan climbing to 15 m tall. Stem without sheaths to 8 mm in diameter with internodes to 25 cm, with sheaths to 2 cm in diameter. All parts turning dark on drying. Leaf sheath bright to dull or dark green armed with rather regular broadly triangular reflexed spines to 1 cm long by 8 mm wide, with broad somewhat bulbous bases, the bases sometimes &#177; confluent, indumentum lacking in old sheaths. Ocrea poorly developed. Knee conspicuous. Flagellum to 1.5 m long. Leaf ecirrate, to 1.25 m long bearing regular narrow to broad distant or close leaflets, 12 to 50 on each side, leaflets 20 cm long by 1 cm wide to 30 by 2.5 cm wide. Inflorescence to about 75 cm long with up to 5 partial inflorescences to 25 cm long; all bracts rather distantly and regular armed with reflexed spines. Mature fruit rounded or somewhat oblong, to about 1 cm long by 7.5 mm wide, shortly beaked, covered in 15-17 vertical rows of dull yellowish brown scales. Seed about 7 mm long by 5 mm wide, rather deeply sinuous grooved. Endosperm very shallowly ruminate. Seedling leaf unknown.   I</p></div>
+<div type="distribution"><p>Kelantan, Perak, Pahang, Trengganu, Selangor, Negri Sembilan, Johore, Singapore. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Moderate quality rattan (5 -10 mm) apparently rarely long enough to be utilized extensively.</p></div>
+<div type="discussion"><p>Calamus luridus is a very variable species, varying in the length of its petiole from petiole almost absent to well-developed, and in the width and number of leaflets varying from short narrow and numerous, to long narrow and numerous, to long broad and few. C. luridus as originally described by Beccari has few broad leaflets and a well-defined petiole; specimens with many narrow leaflets were described as C. laxiflorus and a specimen with very short leaflets and no petiole from G. Blumut was described as C. belumutensis. I have found intermediates between these taxa, intermediate in inflorescence structure as well as vegetative structure so I have included all taxa in one species C. luridus. C. belumutensis may be regarded as an extreme from montane summit forest.
+ C. luridus is found in a wide range of habitats from the lowlands near sea-level up to about 1,400 m altitude in lower montane forest. It appears to favour sites, such as ridgetops, with deep mor-humus layers. It may be readily identified by the italicized characters above.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

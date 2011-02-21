@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small clustering palms of southern China and northern Vietnam, distinctive in the leaf lacking a hastula and the tubular membranous rachilla bracts.</p></div>
+<nomenclature>
+<name>Chuniophoenix</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 13: 583 (1937).</citation>
+<type>Type; Chuniophoenix hainanensis; Burret.</type>
+</nomenclature>
+<div type="etymology"><p>Commemorates W.Y. Chun who was director of the Botanical Institute, College of Agriculture, Sun Yatsen University, Canton, China, by combining his name with phoenix — a general name for a palm.</p></div>
+<div type="description"><p>Small, clustered, unarmed, pleonanthic, hermaphroditic or occasionally polygamo-dioecious palms. Stem slender to moderate, erect, ringed with leaf scars. Leaves induplicate, palmate, apparently marcescent; sheath tubular at first, later splitting opposite the petiole, in Chuniophoenix hainanensis with a triangular cleft at the base of the petiole, usually covered with floccose indumentum; petiole well developed, grooved, margins smooth; hastulae absent; blade irregularly divided almost to the base into single- to several-fold segments with entire or shallowly toothed apices, segments thin, with prominent ad- and abaxial ribs, and sparse floccose indumentum, blade margins decurrent on petiole, midribs prominent abaxially, transverse veinlets abundant. Inflorescences among the leaves, spicate or with up to 2 orders of branching; peduncle well developed, adnate at the base to the internode above the subtending node; prophyll short, persistent, tubular, 2-keeled; peduncular bracts several, persistent, tubular, tightly sheathing, distant; rachis (where present) shorter to much longer than the peduncle; rachis bracts like the peduncular; rachillae erect or spreading, bearing ± imbricate, ± spirally arranged, persistent, tubular bracts with short triangular limbs, each subtending a flower group. Flowers solitary or arranged in a condensed cincinnus of 1–7 flowers, each flower in turn exserted from the rachilla bract on a columnar pedicel, and bearing a 2-keeled tubular (later splitting) bracteole; calyx tubular, somewhat chaffy, shallowly 2–3-lobed, tending to split irregularly in the distal part; corolla with a long stalk-like base and 3 triangular, valvate, later reflexed, fleshy lobes; stamens 6, the antesepalous free, the antepetalous adnate to the base of the petals, filaments elongate, fleshy, the antepetalous ones much wider basally than those opposite the sepals, anthers oval to oblong, introrse; gynoecium tricarpellate, ovary somewhat stalked, elongate, with septal nectaries at the base, style 3-grooved, elongate, trifid at the tip, the stigmas somewhat divergent, ovules anatropous (very rarely 2 present in 1 carpel — ?as a monstrosity), attached to the inner carpel wall at the base; ovary or pollen aborting in polygamodioecious individuals. Pollen ellipsoidal, with slight to obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, perforate and micro-channelled, or perforate-rugulate, aperture margin slightly finer; infratectum columellate; longest axis 33–45 µm; post-meiotic tetrads tetrahedral [2/2]. Fruit small, ± rounded, 1-seeded, green when immature, scarlet when ripe, with apical stigmatic remains; epicarp smooth, lustrous, or somewhat pebbled on drying, mesocarp fleshy, endocarp thin. Seed irregularly globose, basally attached with short hilum, grooved along raphe, and with sparse anastomosing grooves corresponding to the raphe branches, endosperm ruminate or homogeneous; embryo basal. Germination remote-ligular (Chavez 2003); eophyll entire. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>Three species occurring in Vietnam, south China, and Hainan Island.</p></div>
+<div type="anatomy"><p>Root (Seubert 1997). </p></div>
+<div type="relationships"><p>Chuniophoenix is strongly supported as monophyletic (Bayton 2005), but there is some conflict regarding its position relative to the other three genera of Chuniophoeniceae. There is high support for a sister relationship between Chuniophoenix and Kerriodoxa (Uhl et al. 1995, Bayton 2005), but this conflicts with other studies that place Kerriodoxa as sister to both Nannorrhops with low to moderate support (Asmusen et al. 2006, Baker et al. in review) and Tahina with moderate support (Dransfield et al. 2008). Only the study of Dransfield et al. contains all four genera of Chuniophoeniceae, whereas Bayton’s work is based on the largest sampling of DNA regions. </p></div>
+<div type="uses"><p>Uses not recorded but certainly desirable ornamentals.</p></div>
+<div type="taxonomic accounts"><p>Burret (1937). See also Tang and Wu(1977). </p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Chuniophoenix is a most remarkable genus. The two orthree species are clearly congeneric but they display a range ofvariation in morphology unusual in such a small genus. Therachillae with their completely tubular, conspicuous bracts,have an almost calamoid appearance. The lack of a hastula is also noteworthy. 
+</p></div>
+<div type="vernacular"><p>Common names not recorded.</p></div>
+<div type="biology_ecology"><p>Undergrowth palms in forest.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Synopsis of the Genus Korthalsia (Palmae: Lepidocaryoideae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 36, No. 1, pp. 163-194</mods:publisher>
+<mods:dateIssued>1981</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia brassii</name>
+<author>Burret</author>
+<citation>J. Arn. Arb. 20: 191 (1939)</citation>
+<bibref>Essig, Palm Fl. New Guinea Prelim. Anal.: 13 (1977)</bibref>
+<type>New Guinea, Palmer River; Brass;6864</type>
+<type_loc>Holotype ?B; isotype BM, L</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Burret based his new species on beautiful complete material, so there is much less difficulty in interpreting it than is usually the case with his species. Korthalsia is represented in New Guinea by two taxa which appear to be very distinct based on the herbarium material available to me. Specimens with tattered fibrous ocreas bearing laminar spines, and with inflorescences with laciniate first-order bracts and first-order branches bearing crowded rachillae with ciliate bracts and very inconspicuous indumentum are equated with K. zippelii. Specimens with entire triangular-tipped ocreas unarmed or bearing short triangular spines, with inflorescences with + entire first-order bracts and first-order branches bearing lax rachillae with entire bracts and very conspicuous indument match the type of K. brassii. One specimen, Zieck NGF 36204 in Leiden, has all the features of K. brassii but the inflores- cence is congested-though this may be due to damage to the apex. On the basis of the characters enumerated above, K. brassii appears to be a very distinctive species, but it would be useful to have more material to illustrate the range of variation of the two taxa. Mention should also be made of a specimen of an anomalous New Guinea Korthalsia which seems not to fit either K. zippelii or K. brassii. This is C. L. Leefers BW 5377 in L, from 'Bodem, Subdivision Sarmi, Division Hollandia', from forest on clay derived from serpentine. The specimen is sterile and bears a marked resemblance to a slender juvenile of Korthalsiajala, in having loose net-like ocreas. I have seen no fertile material corresponding with this juvenile; it may represent a juvenile form of K. zippelii or a distinct species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

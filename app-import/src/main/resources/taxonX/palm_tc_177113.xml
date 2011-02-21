@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Diminutive to moderate, solitary or clustered pinnate-leaved palms with fibrous sheaths and no crownshaft, native to Central and northern South America, the leaves often with ‘windows’ and the fruit 1-seeded.</p></div>
+<nomenclature>
+<name>Reinhardtia</name>
+<author>Liebm. in Mart.</author> 
+<citation>Hist. nat. palm. 3: 311 (1849).</citation>
+<type>Type; Reinhardtia elegans; Liebm.</type>
+<synonymy>
+<name>Malortiea</name>
+<author>H. Wendl.</author>
+<bibref>H. Wendl., Allg. Gartenzeitung 21: 25 (1853).</bibref>
+<type>Type; Malortiea gracilis; H.Wendl.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Not explained by original author but thought to be named for a family of Danish naturalists.</p></div>
+<div type="description"><p>Very small to moderate, solitary or clustered, unarmed, pleonanthic, monoecious palms. Stem erect, rarely exceeding 8 m tall, usually very much less, sometimes stilt-rooted at the base, with very short to moderately long internodes and conspicuous leaf scars. Leaves undivided and pinnately ribbed, with a very short or conspicuous apical notch, or pinnate, sometimes ‘windowed’, marcescent or abscising under their own weight; sheaths tubular but not forming a crownshaft, expanding and drying into an interwoven mass opposite the petiole, brown-scaly, produced beyond the level of the petiole into a membranous or fibrous ligule, in age the fibres often disintegrating; petiole well developed, adaxially concave or flattened, abaxially rounded or angled, or narrowed and almost winged along margins, bearing caducous brown scales; leaflets 1–several-fold, where single-fold the tips bifid, where compound, the tips appearing obliquely and sharply toothed, subpraemorse, veins conspicuous in the expanding leaf, in some species short splits (‘windows’) occurring next to the rachis along the abaxial folds in the otherwise unsplit compound leaflets, caducous brown scales present along the ribs in expanding leaves, transverse veinlets obscure. Inflorescences solitary, interfoliar, apparently protandrous, spicate or branching to 1 or 2 orders, shorter than or as long as the leaves; peduncle very slender to moderate, continuing to elongate after anthesis; prophyll tubular, membranous, 2-keeled, distally with 2 triangular lobes, usually ± included within the subtending leaf sheath (except perhaps Reinhardtia elegans); peduncular bract single, tubular or not, elongate, papery, at first included within the prophyll, eventually carried out by peduncular elongation and disintegrating, rarely a second peduncular bract also present; peduncle extending into a simple spike (R. koschnyana) or bearing a few crowded unbranched rachillae at its tip, the rachillae long, exceeding the rachis, each subtended by a narrow triangular bract, or the proximal branches once branched, all axes greenish at first, covered in caducous brown scales, after fertilization becoming orange-red to bright red; rachilla bracts spirally, subdistichously, or distichously arranged, short, triangular, each subtending a triad borne in a shallow depression, except distally subtending solitary or paired staminate flowers. Staminate flowers bearing a 2-keeled, irregularly lobed and split bracteole; sepals 3, distinct, imbricate, obtuse, concave, striate on drying; petals 3, to 2–3-times as long as the sepals, valvate, connate at the very base, striate when dry; stamens 8–40, filaments short, slender, briefly connate at the base and adnate to the base of the petals, anthers basifixed or medifixed, elongate, the apices acute or bifid, latrorse; pistillode lacking. Pollen ellipsoidal or oblate triangular, slight or obvious asymmetry; aperture a distal sulcus or trichotomosulcus; ectexine tectate, finely perforate, or perforate and micro-channelled, and rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 37–53 µm [2/6]. Pistillate flowers bearing a prophyllar bracteole; sepals 3, distinct, subglobose, imbricate, becoming striate when dry; petals 3, exceeding the sepals, slightly imbricate and partially connate at the base, valvate distally, or valvate throughout, distally grooved on the adaxial surface, the upper ca. 1/2 of the petals spreading at anthesis; staminodes connate at the base, adnate to the petals very shortly or to 1/2 the petal length, distally each portion of the staminodal ring bearing 2–5 teeth, the teeth usually erect, projecting, conspicuous at anthesis; gynoecium ovoid or ellipsoidal, trilocular at the base, triovulate, style robust, stigmas recurved at anthesis, ovules attached slightly above the base, form unknown. Fruit 1-seeded, black, borne on the enlarged reddish-tinged rachillae, usually ovoid or ellipsoidal, stigmatic remains apical; epicarp smooth, mesocarp fleshy with 2 layers of flattish longitudinal fibres, endocarp thin, fragile. Seed ovoid or ellipsoidal, basally or laterally attached, usually furrowed by sparse vascular strands, raphe superficial or impressed, endosperm homogeneous or ruminate; embryo basal. Germination adjacent-ligular; eophyll simple or bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>Six species, distributed from Mexico to Panama, one species reaching northwest Colombia. </p></div>
+<div type="anatomy"><p>Tomlinson (1961), root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>Reinhardtia is monophyletic with high support (Baker et al. in review). For relationships, see tribe Reinhardtieae. For species relationships, see Henderson (2002a). </p></div>
+<div type="uses"><p>No local uses appear to have been recorded; all species are ornamental and have been rather widely cultivated by enthusiasts. </p></div>
+<div type="taxonomic accounts"><p>Moore (1957b), Henderson (2002a). </p></div>
+<div type="fossil record"><p>Two monosulcate palm pollen types are recovered from the Pliocene, Gatun Lake Formation, Panama (Graham 1991). The first of these types, asymmetrical and scabrate tectate, is compared with pollen of Aiphanes,Manicaria, Reinhardtia or, possibly, Acrocomia. It is a verycommon arecoid pollen type, and difficult to place. Of thesuggested genera, Reinhardtia is the most probable. </p></div>
+<div type="discussion"><p>Small habit, sometimes subpraemorse leaflets, andnumerous stamens combine with a triovulate condition tomake this a distinctive genus.</p></div>
+<div type="vernacular"><p>Window palm, reinhardtia. </p></div>
+<div type="biology_ecology"><p>Undergrowth palms, usually found in lowland tropical rain forest. Reinhardtia elegans and R. gracilis var. tenuissima are found at altitudes of 1000–1500 m. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

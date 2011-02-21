@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops geniculata</name>
+<author>(Griff.) Mart.</author>
+<citation>Hist. Nat. Palm. 3 (1850) 329</citation>
+<bibref>Beccari in Hook, f., Fl. Br. Ind. 6 (1893) 470</bibref>
+<bibref>Ann. Roy. Bot. Card. Calcutta 12 (1911) 186</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 44</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 110</bibref>
+<synonymy>
+<name>Calamus geniculatus</name>
+<author>Griff.</author>
+<bibref>Griff. in Calc. J. Nat. Hist. 5 (1845) 67</bibref>
+<bibref>Griff., Palms Br. India (1850) 77</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Geniculus - a little knee, referring to the highly characteristic but only slightly swollen knee.</p></div>
+<div type="vernacular"><p>rotanjahaca</p></div>
+<div type="description"><p>Extremely variable moderate sized rattan with stem, usually solitary, apparently rather rarely clustering, to 20 m tall, usually much less, and frequently flowering when only 1 or 2 m tall. Stem without sheaths to 2 cm in diameter with internodes to 10 cm long, usually very much less, stem with sheaths to 3.5 cm. Sheaths dark shiny green with abundant grey-brown indumentum, armed with oblique almost diagonal partial whorls of reflexed flattened black spines mixed with fine spines, the longest spines to about 4 cms long, the spines joined at their bases to form a low collar which persists long after the spines have eroded away, on the old leaf sheaths; all spines covered in brown indumentum. Spines around leaf sheath mouth greatly enlarged and obliquely upward pointing, to 10 cm long and frequently paler in colour than the other leaf sheath spines. Knee only very slightly developed, bright green, &#177; unarmed and hence very conspicuous. Leaf very variable, often to 3 m long. Petiole to 1 m long, sometimes much less, armed below with large horizontal straw-coloured spines to 7 cm long. (These sometimes not greatly developed), armed above with scattered groups of 2-3 reflexed spines. Leaflets up to 40 on each side of the rachis, usually irregularly arranged in groups of 3-10 leaflets, sometimes &#177; regular, dark green, to 35 cm long by 2.0 cm wide newly emerged leaf with abundant white indumentum which quickly falls. Cirrus 40 to 100 cm long. Very variable. Inflorescence pendulous about 60 cm long with conspicuous peduncle to 40 cm armed with short lateral spines to 1.5 cm long. Bracts thin, almost papery very quickly disintegrating, armed with groups of fine almost horse-hair-like spines. Male inflorescence with densely crowded flowers; female inflorescence more lax with fewer, scattered flowers. Ripe fruit rounded, tipped with a short beak, to about 2.2 cm in diameter, covered in vertical rows of pale straw-coloured scales tinged with red fleckings. Seed rounded, somewhat flattened on one side, finely pitted. Seedling leaf with 4-6 leaflets.</p></div>
+<div type="distribution"><p>Kedah, Perak, Penang, Kelantan, Trengganu, Pahang, Selangor, Negri Sembilan, Malacca, Johore, Singapore. Sumatra. ? Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>A more or less useless species with poor quality cane.</p></div>
+<div type="discussion"><p>Daemonorops geniculata is one of the commonest rattans in Malaya and because it often flowers while still small, and is very conspicuous when in flower, it is often collected and herbaria have disproportionately large samples of this and one or two other short rattans. It grows in a wide range of habitats from near sea-level up to 1000 m or more in the mountains. It has been found in valley bottoms, in peat swamp forest, lower and upper hillslopes and ridgetops and must hence be considered about the most catholic Malayan rattan in its ecological requirements. Bornean D. collarifera of Beccari is closely related if not conspecific.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

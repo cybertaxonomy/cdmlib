@@ -1,0 +1,67 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Monograph of Phoenix L. (Palmae: Coryphoideae)</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Barrow</mods:namePart>
+<mods:namePart type="given">S.C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1998</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 53, No. 3 (1998), pp. 513-575</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Phoenix sylvestris</name>
+<author>(L.) Roxb.</author>
+<citation>Hort. Bengal.: 73 (1814) </citation>
+<bibref>Roxb., Fl. Ind. ed. 2: 787 (1832)</bibref>
+<bibref>Royle, Ill. Bot. Himal. Mts.: 397, nom. (1840)</bibref>
+<bibref>Griff., CalcuttaJ. Nat. Hist. 5: 350 (1845)</bibref>
+<bibref>Mart., Hist. Nat. Palm. 3: 270, t. 136 (1849)</bibref>
+<bibref>Griff., Palms Brit. E. Ind.: 141, t. 228 (1850)</bibref>
+<bibref>Aitch., Cat. P1. Punjab Sindh: 143 (1869)</bibref>
+<bibref>Brandis, Forest Fl. N.W. India: 554 (1874)</bibref>
+<bibref>Becc., Malesia 3: 364, t. 43, 3, f. 25 - 36 (1890)</bibref>
+<bibref>Becc. &amp; Hook. f., Fl. Brit. India 6: 425 (1892)</bibref>
+<bibref>Gamble, Man. Ind. Timb.: 731 (1902)</bibref>
+<bibref>Brandis, Indian Trees: 645 (1906)</bibref>
+<bibref>L. H. Bailey, Stand. Cycl. Hort.: 2594 (1916)</bibref>
+<bibref>Blatt., Palms Brit. Ind.: 3, pl. 2, 3, (1926)</bibref>
+<bibref>Osmaston, Forest Fl. Kumaon: 544 (1927)</bibref>
+<bibref>C. Fischer, Fl. Madras 3: 1559 (1931)</bibref>
+<bibref>Kashyap, Lahore Fl.: 250 (1936)</bibref>
+<bibref>H. E. Moore, Principes 7 (4): 157 (1963)</bibref>
+<bibref>Mahab. &amp; Parthasarathy, J. Bombay Nat. Hist. Soc. 60 (2): 374 (1963)</bibref>
+<bibref>H. G. Champion &amp; S. K. Seth, A Revised Survey of Forest Types of India (1968)</bibref>
+<bibref>H. E. Moore &amp;J. Dransf., Taxon 28 (1, 2/3): 67 (1979)</bibref>
+<bibref>K. M. Matthew, Mat. Fl. Tamilnadu Carnatic: 367 (1981) </bibref>
+<bibref>Roxb.Fl. Tamilnadu Carnatic 3: 1674 (1983)</bibref>
+<bibref>Malik in Nasir &amp; Ali (eds.), F1. W. Pakistan 153: 24 (1984)</bibref>
+<bibref>Noltie, Fl. Bhutan 3 (1): 416 (1990)</bibref>
+<synonymy>
+<name>Elate sylvestris</name>
+<author>L.</author>
+<bibref>L., Musa Cliff.: 11 (1736) and Sp. Pl.: 1189 (1753)</bibref>
+</synonymy>
+<synonymy>
+<name>Katou Indel</name>
+<author>Rheede ex Buch.-Ham.</author>
+<bibref>Rheede ex Buch.-Ham., Trans. Linn. Soc. London 15: 82 - 87 (1826)</bibref>
+</synonymy>
+</nomenclature>
+<div type="description"><p>Solitary tree palm. Stem to 10 - 15 (20) m tall, without leaf sheaths c. 20 - 30 cm diam., with persistent, diamond-shaped leaf bases; stem base with mass of roots. Crown hemispherical, with more than 50 leaves. Leaves c. 1.5 x 4 m long; leaf sheath reddish-brown, fibrous; pseudopetiole 40 - 50 cm long x 3 - 5 cm wide at base; acanthophylls closely inserted, arranged in several planes, c. 13 - 18 on each side of rachis, conduplicate, yellow-green, very sharp, 4 - 14 cm long; leaflets irregularly fascicled, arranged in several planes, c. 80 - 90 on each side of rachis, concolorous, greyish-green, often waxy, very sharp, 18 - 35 x 1.2 - 2.4 cm. Staminate inflorescences to 25 per plant, erect, not extending far beyond prophyll; prophyll coriaceous, bright orange internally when young, splitting first adaxially (side adjacent to trunk), 25 - 40 x 6 - 15 cm; peduncle 20 - 30 x 1.2 - 2.2 cm; rachis 13 - 18 cm long with numerous, congestedly arranged rachillae, each 4 - 16 cm long. Staminate flowers white-yellow, musty-scented; calyx a deep cupule to 2 - 2.5 mm high with 3 poorly defined lobes; petals 3 (rarely 4), apices obtuse, slightly hooded, 6 - 10 x c. 3 mm; anthers 3 - 4 mm long. Pistillate inflorescences erect, arching on fruit maturation; peduncle green and upright, becoming golden-orange and arching on fruit maturation, to c. 90 x 2 cm; prophyll papery, short, splitting twice between margins, c. 24 x 5 cm; rachillae arranged in irregular horizontal whorls, c. 50 - 60 in number, yellow-green in colour, c. 8 - 34 cm long. Pistillate flowers creamy-white, c. 40 - 50 mostly restricted to distal half of rachilla; calyx cupule 1.5 - 2.5 mm high; petals 3 - 4 x 4 - 5 mm. Fruit obovoid, 15 - 25 x 12 mm, ripening from green to orange-yellow, with mesocarp moderately fleshy and astringent. Seed obovoid with rounded apices, 15 - 20 x 7 - 10 mm; embryo lateral opposite raphe; endosperm homogeneous. </p></div>
+<div type="distribution"><p>Phoenix sylvestris is common, wild or cultivated, in the plains of India and Pakistan. </p></div>
+<div type="biology_ecology"><p>Phoenix sylvestris thrives from the plains to the coast in low-lying wastelands, scrub forest and areas that have been disturbed or are prone to periodic or seasonal inundation with water, causing water-logging. In its native habitat P. sylvestris flowers at the beginning of the hot season from January to April, and fruits ripen from October to December. </p></div>
+<div type="materials_examined"><p>BANGLADESH. Chittagong, 10 Jan. 1851 (pist., stam.), Hooker 526 (K!); Chittagong (stam.), Hooker s.n. (K!). INDIA: BIHAR. Chota Nagpur, Feb. 1876 (stam., pist.), Wood s.n. (CAL!, DD!). PUNJAB. between Meerut and Delhi, 19 March 1962 (stam.), Nair 20818 (BSD!). RAJHASTHAN.Jhalawar, Batta rd., 28 May 1965 (pist.), Wadhwa 9519 (CAL!); Udaipur, Barman Hill, 4 Jan. 1986 (pist.), Swami 779 (BSD!). TAMIL NADU. Jaupore Distr., Negapatam, 25 July 1932 (pist.), Jacob s.n. (K!); Trichy Distr., Srirangam Is., 1 April 1976 (pist.), Matthew 1843 (RHT!); Trichy Fort Station, 30 Jan. 1995 (pist.) Matthew &amp; Barrow 58, 59 (K!). WEST BENGAL. Dholutupur, Comilla, 5 Feb. 1943 (stam.), Sinclair 2840 (E!). UTTAR PRADESH. Moradabad, March 1844 (stam.), Thomson (K!). NEPAL. Kamali valley, btn. Manona and Badalkot, 25 April 1952 (pist.), Polunin et al. 3974 (BM!). </p></div>
+<div type="vernacular"><p>INDIA. Ita chettu (Telinga), [Beccari (1890)]; khurjjuri, kharjura, madhukshir (Sanscrit), khujjoor, kajar, kejur (Bengali), khaji, sendhu, kejur, khajur, khaji, salma, thalma, thakil (Hindi), ichal, kullu, ichalu mara (Kanara), khejuri (Uriya), itchumpannay, periaitcham, itcham-nar, itham pannay (Tamil), ita, pedda-ita, itanara, ishan-chedi (Telinga), [Blatter (1926)]; eechamaram, periya eecham (Tamil), [Matthew (1983)]; kubong, rotong (Lepchas), [Noltie (1994)]. PAKISTAN. Khaji, khajoor, [Malik (1984)]; taree- khajoor, [Aitchison (1869)]. </p></div>
+<div type="uses"><p>In parts of India, particularly West Bengal, sweet sap is tapped from the stem of P. sylvestris and drunk fresh or processed into a dark sugar (gur or jaggery) or alcoholic toddy (Davis 1972). The astringent fruits are rarely eaten fresh but are processed as jellies and jams. Blatter (1926) noted the fruits to comprise one constituent of a natural restorative, and the seeds when ground up with the root of Achyranthes aspera L. (Amaranthaceae) and chewed with betel leaves (Areca catechu L., Palmae) are considered a remedy for 'ague'.</p></div>
+<div type="conservation"><p>Not threatened. </p></div>
+<div type="discussion"><p>Phoenix sylvestris was first described as Katou-Indel by Rheede (1678 - 1703) in Hortus Indicus Malabaricus, upon which Linnaeus' description of Elate sylvestris in Musa Cliffortianus (Linnaeus 1736) was entirely based. The description of Elate sylvestris in Species Plantarum (Linnaeus 1753), comprised two elements: Palma dactylifera minor humilis sylvestris fructu minori, Hin Ind. Zeylaneus of Hermann (1698) in Paradisi Batavi Prodomus 361, and Palma sylvestris malabarica, folio acuto, fructu prunifacie in Historia Plantarum 1364 (Ray 1686 - 1704). The latter was based entirely on Rheede's Katou-indel. Roxburgh (1832), in transferring Elate sylvestris to Phoenix, failed to acknowledge these two elements and based Phoenix sylvestris solely upon Katou-indel. The name Phoenix sylvestris is thus correctly typified by Katou-indel of Rheede's Hortus Indicus Malabaricus. Hamilton (1827) recognised the two elements in Elate sylvestris but it was Martius (1823 - 53) in Historia Naturalis Palmarum who formally separated them. Palma dactylifera minor humilis sylvestris fructu minore, Hin Ind. Zeylaneus of Hermann was included by Martius in P. pusilla Gaertn., and Katou-indel was taken to refer only to P. sylvestris Roxb.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

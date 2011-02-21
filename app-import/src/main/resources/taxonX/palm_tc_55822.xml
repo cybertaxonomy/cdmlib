@@ -1,0 +1,33 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops rarispinosus</name>
+<author>Renuka and Vijayakumaran</author>
+<citation>Rheedea 4:125, 1994</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering, medium diameter rattan. Stem 20 m long or more,with sheaths 2.5 cm in diameter, without sheaths 2 cm in diameter. Leaves to 1 m long, cirrate: sheath light yellow, sparingly armed with downwardly directed spines, spines 1.5 cm, triangular, flat; knee prominent; ocrea not seen; petiole spiny at margins, spines 1 cm long; rachis with a row of reflexed spines at the adaxial side; leaflets narrow, regular, 40 x 1.7 cm., green,midrib prominent, margins with bristles, lateral veins ciliate above. Inflorescence erect, 40 cm long, covered by a primary armed bract. Fruit globose, 1.3 cm in diameter; scales in 18 vertical rows, golden yellow, channelled; endosperm ruminate.</p></div>
+<div type="distribution"><p>Common species of Daemonorops at Little Andaman Island. (Map 6).</p></div>
+<div type="biology_ecology"><p>Flowering not known. Fruiting April- June.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Used in furniture industry and also for making 'lathies'.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>20th km, Little Andamans, 14.4.1992, fr., Vyoyo/cu-moron 6637 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

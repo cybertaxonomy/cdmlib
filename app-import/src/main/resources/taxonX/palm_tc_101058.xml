@@ -1,0 +1,56 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Loo</mods:namePart>
+<mods:namePart type="given">A.H.B.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele ramsayi</name>
+<author>(Becc.) W.J.Baker and Loo, </author>
+<citation>Kew Bull. 59: 67 (2004)</citation>
+<type>Northern Territory, Port Essington; Ramsay; s.n.</type>
+<type_loc>Holotype MEL; isotype fragment FI</type_loc>
+<synonymy>
+<name>Gulubia ramsayi</name>
+<author>Becc.</author>
+<bibref>Becc., Webbia 3: 159 (1910)</bibref>
+</synonymy>
+<synonymy>
+<name>Kentia ramsayi</name>
+<author>(Becc.) Becc.</author>
+<bibref>(Becc.) Becc., Webbia 4: 148 (1913)</bibref>
+</synonymy>
+<synonymy>
+<name>Gronophyllum ramsayi</name>
+<author>(Becc.) H. E. Moore</author>
+<bibref>(Becc.) H. E. Moore, Gentes Herb. 9: 265 (1963)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

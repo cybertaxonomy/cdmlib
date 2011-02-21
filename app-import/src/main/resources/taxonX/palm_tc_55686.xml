@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops angustifolia</name>
+<author>(Griff.) Mart.</author>
+<citation>Hist. Nat. Palm 3 (1850) 329</citation>
+<bibref>Beccari in Hook, f., Fl. Br. India 6 (1893) 464</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 12 (1911) 69</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925)</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 58</bibref>
+<synonymy>
+<name>Daemonorops carcharodon</name>
+<author>Ridley</author>
+<bibref>Ridley in Mat, Fl. Mai. Pen. 2 (1907) 178</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 40</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops hygrophilus</name>
+<author>Griff.</author>
+<bibref>Griff., in Mart. Hist. Nat. Palm 3 (1850) 204</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops angustispathus</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Str. Sett. 9 (1937) 161</bibref>
+<bibref>Furtadoin Gdns' Bull. Singapore 14(1953) 61</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Angustis-narrow, folium - leaf</p></div>
+<div type="vernacular"><p>rotan getah</p></div>
+<div type="description"><p>Clustering moderately robust high climbing rattan producing dense thickets, ultimately climbing to 40 m. Stem without sheaths to about 2.5 cm in diameter, with sheaths to 4 cm; internodes to 35 cm. Sheaths dull greenish brown densely armed with triangular black spines to 2.5 cm long by 5 mm wide, and abundant red-brown to dark brown indumentum. Knee conspicuous. Ocrea poorly developed. Whole leaf to 3.5 m long including petiole to 30 cm and cirrus to 1.25 m. Petiole armed with black spines along edges and near edges on upper surface, and along the mid-line below. Leaflets up to about 100 on each side regular, narrow crowded, up to 35 cm long by 1.5 cm wide, armed with bristles on three nerves above and main nerve below. Inflorescences male and female very similar, sessile &#177; erect to 35 cm long by 15 cm wide, terminating in a beak to 15 cm long, all inner bracts enclosed within the outermost; outermost bract rather evenly and not very densely armed with spines similar to those on the leaf sheath to 3 cm long by 4 mm wide. Ripe fruit rounded to 1.8 cm in diameter, shortly beaked, covered in 15-18 vertical rows of reddish brown scales with darker tips. Seed rounded but somewhat flattened on two sides, to 1.3 cm in diameter; endosperm deeply ruminate. Seedling leaf with about 10 crowded pinnae.</p></div>
+<div type="distribution"><p>Widespread throughout the lowlands of Malaya but not recorded for Perlis or Penang.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Produces a coarse cane, useful for rather low quality furniture, and also used rather extensively for core.</p></div>
+<div type="discussion"><p>"Rotan getah", so-called because of the abundant white latex exuding from cut surfaces (not a diagnostic character) is an abundant rattan of the lowlands, growing especially along streams and at edges of swamps. It is rather rarely found on dry land except where disturbed. We may suppose its natural habitat to be riverbanks. From D. grandis, D. angustifolia may be distinguished by its very narrow leaflets, bright green and usually shiny and from D. melanochaetes by its broad triangular bract spines.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

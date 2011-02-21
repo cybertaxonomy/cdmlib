@@ -1,0 +1,181 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Loo</mods:namePart>
+<mods:namePart type="given">A.H.B.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele pinangoides</name>
+<author>(Becc.) W.J.Baker and Loo</author>
+<citation>Kew Bull. 59: 66 (2004)</citation>
+<type>Indonesia, Papua, Ramoi; Beccari; 430 </type>
+<type_loc>Holotype FI</type_loc>
+<synonymy>
+<name>Nenga pinangoides</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 1: 28 (1877)</bibref>
+</synonymy>
+<synonymy>
+<name>Leptophoenix pinangoides</name>
+<author>(Becc.) Becc.</author>
+<bibref>(Becc.) Becc., Ann. Jard. Bot. Buitenzorg 2: 82 (1885)</bibref>
+</synonymy>
+<synonymy>
+<name>Gronophyllum pinangoides</name>
+<author>(Becc.) Essig and B. E. Young</author>
+<bibref>(Becc.) Essig and B. E. Young, Principes 29: 135 (1985)</bibref>
+</synonymy>
+<synonymy>
+<name>Nenga calophylla</name>
+<author>K. Schum. and Lauterb.</author>
+<bibref>K. Schum. and Lauterb., Fl. Schutzgeb. Sfidsee: 208 (1900)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella calophylla</name>
+<author>(K. Schum. and Lauterb.) Becc.</author>
+<bibref>(K. Schum. and Lauterb.) Becc., Bot. Jahrb. Syst. 52: 27 (1914)</bibref>
+<type>Papua New Guinea, Morobe, Sattelberg; Lauterbach; 564</type>
+<type_loc>Holotype B†; type photo FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Leptophoenix minor</name>
+<author>Becc.</author>
+<bibref>Becc., Webbia 1: 298 (1905)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella minor</name>
+<author>(Becc.) Burret</author>
+<bibref>(Becc.) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 315 (1936)</bibref>
+<type>Papua New Guinea, San Giuseppe R.; Loria; 10</type>
+<type_loc>Holotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Gronophyllum densiflorum</name>
+<author>Ridl.</author>
+<bibref>Ridl., Trans. Linn. Soc. London, Bot. 9: 232 (1916)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella densiflora</name>
+<author>(Ridl.) Burret</author>
+<bibref>(Ridl.) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 316 (1936)</bibref>
+</synonymy>
+<synonymy>
+<name>Leptophoenix densiflora</name>
+<author>(Ridl.) Burret</author>
+<bibref>(Ridl.) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 205 (1936)</bibref>
+<type>Indonesia, Papua, Mt Carstenz; Kloss; s.n.</type>
+<type_loc>Holotype BM; isotype K</type_loc>
+</synonymy>
+<synonymy>
+<name>Leptophoenix incompta </name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 58: 452 (1923)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella incompta</name>
+<author>(Becc.) Burret</author>
+<bibref>(Becc.) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 316 (1936)</bibref>
+<type>Papua New Guinea, East Sepik, Ettapenberg; Ledermann; 9017</type>
+<type_loc>holotype B†</type_loc>
+</synonymy>
+<synonymy>
+<name>Leptophoenix pterophylla</name>
+<author>Becc.</author>
+<bibref>Becc., Atti Soc. Tosc. Sci. Nat. Pisa Processi Verbali 44: 131 (1934)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella pterophylla</name>
+<author>(Becc.) Burret</author>
+<bibref>(Becc.) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 316 (1936)</bibref>
+<type>Cultivated in Bogor Botanic Garden ex New Guinea; X D; 114</type>
+<type_loc>holotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Leptophoenix yulensis</name>
+<author>Becc.</author>
+<bibref>Becc., Atti Soc. Tosc. Sci. Nat. Pisa Processi Verbali 44: 130 (1934)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella yulensis</name>
+<author>(Becc.) Burret</author>
+<bibref>(Becc.) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 316 (1936)</bibref>
+<type>Papua New Guinea, Central; von Mueller; s.n.</type>
+<type_loc>holotype MEL; isotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Leptophoenix macrocarpa</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 12: 340 (1935)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella macrocarpa</name>
+<author>(Burret) Burret</author>
+<bibref>(Burret) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 316 (1936)</bibref>
+<type>Papua New Guinea, Central, Mafulu; Brass; 5299</type>
+<type_loc>holotype B†; isotype BRI</type_loc>
+</synonymy>
+<synonymy>
+<name>Leptophoenix brassii</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin- Dahlem 12: 339 (1935)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella brassii</name>
+<author>(Burret) Burret</author>
+<bibref>(Burret) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 316 (1936)</bibref>
+</synonymy>
+<synonymy>
+<name>Gronophyllum leonardii</name>
+<author>Essig and B. E. Young</author>
+<bibref>Essig and B. E. Young, Principes 29: 134 (1985)</bibref>
+<type>Papua New Guinea, Western, Kubuna; Brass; 5631</type>
+<type_loc>Holotype A; isotypes BRI, BO, NY</type_loc>
+</synonymy>
+<synonymy>
+<name>Leptophoenix microcarpa</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 12: 342 (1935)</bibref>
+</synonymy>
+<synonymy>
+<name>Nengella microcarpa</name>
+<author>(Burret) Burret</author>
+<bibref>(Burret) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 316 (1936)</bibref>
+<type>Papua New Guinea, Central, Dieni; Brass; 3998</type>
+<type_loc>holotype B†; isotypes A, NY, BRI, BO</type_loc>
+</synonymy>
+<synonymy>
+<name>Nengella rhomboidea</name>
+<author>Burret</author>
+<bibref>Burret, J. Arnold Arbor. 20: 207 (1939)</bibref>
+<type>Papua New Guinea, Western, Palmer R.; Brass; 7201</type>
+<type_loc>Holotype A; isotype BRI</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Essig and Young (1985) accepted Gronophyllum leonardii, a nomen novum that they established to account for a name, Nengella brassii (Burret) Burret (syn. Leptophoenix brassii Burret), that could not be recombined in Gronophyllum due to a pre-existing publication of the name Gronophyllum brassii (Burret 1939). Having seen the type of Leptophoenix brassii, we are convinced that it falls within the wide range of variation that is encompassed by the complex species Hydriastele pinangoides, in particular in terms of leaf morphology, and we place it in synonymy accordingly.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

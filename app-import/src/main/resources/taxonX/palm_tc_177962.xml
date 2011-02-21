@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis gracilis</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Mus. Berlin. 10: 883–884. 1930</citation>
+<type>China, Guangdong, Win Foo; S.S. Sin; 5338</type>
+<type_loc>Holotype SYS or IBSC; isotype IBSC</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem height not recorded, with sheaths 6–8 mm diam. without sheaths 3–5mm. Leaf sheath with very fine, wavy fibers with a square mesh, ligule sometimes remaining intact at maturity; petiole to 1.8 mm wide, margin usually smooth sometimes bearing minute brown papillae; blade small, with V-shaped outline, without a palman, segments 2–4, folds 11–15, longest to 180 mm, apices oblique with secondary splitting, primary splits to within 3–15 mm of the blade base, both surfaces similar in colour, green with white tinge, transverse veinlets very conspicuous. Inflorescence, the male and female similar in general appearance with few rachillae, branching to 2 orders; prophyll and 2 rachis bracts similar in appearance, tubular, overlapping the base of the next bract, medium thickness, reddish brown, inner surface shiny, outer dull, lacking tomentum; rachis overall length to 200 mm, narrow, to 2 mm diam., few rachillae, occasionally with sparse tomentum where the rachis is adnate to the peduncle, medium brown. Flowers, 2–3 mm apart. Male flowers obovoid, to 4.3 × 2.2 mm; calyx to 2 mm, lobes acute to 1.1 mm with regular margin; corolla with a receptacular-stalk to 1 mm; filaments, shorter row to 1.2 mm, longer to 1.6 mm, to 0.3 mm diam. Female flowers only immature seen, to 3.1 × 2.1 mm; calyx to 2.6mm, margin regular, lobes acute to 1.1 mm; corolla with a receptacular-stalk to 0.2 mm. Fruit to 8 mm diam., borne on a receptacular-stalk to 2.5 mm; epicarp dull, papillose.</p></div>
+<div type="distribution"><p>South China, Guangdong; Laos.</p></div>
+<div type="biology_ecology"><p>Habitat. 160 m at the foot of limestone hills.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is similar vegetatively to Rhapis subtilis but differs in the flowers, notably in possessing acute calyx lobes. Burret recorded a fruit receptacular-stalk to 5 mm, a character which also distinguishes it from R. subtilis. Only two herbarium specimens were available for study, including an isotype. The heights of the specimens were not recorded on the labels; however, it is likely from the other measurements taken that this is smaller than Rhapis subtilis. According to specimen label data the fruit is green-blue.</p></div>
+<div type="materials_examined"><p>Representative specimens. SOUTH CHINA: Guangdong, S.S. Sin, 5338 female (IBSC). LAOS: Cammon (northern part is now Bolikhamsay, southern part is Khammuane) El Colani s.n. 1930 male (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

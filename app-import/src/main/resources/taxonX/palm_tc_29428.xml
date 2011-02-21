@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus corneri</name>
+<author>Furtado</author>
+<citation>Gdns. Bull. Singapore 15 (1956) 219</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>(E.J.H. Corner, the eminent tropical botanist)</p></div>
+<div type="vernacular"><p>rotan perut ayam</p></div>
+<div type="description"><p>Slender clustering rattan climbing to about 20 m. Stem without sheaths about 5 mm in diameter, with sheaths to about 12 mm, sometimes much less. Internodes to about 12 cm long. All parts turn dark on drying. Sheaths rich dark green densely covered in very short ascendent triangular spines about 2 mm high and close transverse rugae. Knee prominent. Ocrea tattering flagellum to 1 m in length. Leaf to 60 cm long usually less, ecirrate and with no petiole. Leaflets close, regularly arranged, dark green, to about 25 on each side somewhat arcuate, the longest near the base to 16 cm long by 1 cm wide; sparsely armed with bristles on the mid-nerve above and 3 nerves below. Male and female inflorescences superficially similar, to 1.25 m long with up to 6 partial inflorescences to 30 cm long, all bracts rather densely armed with very short spine and minute scabridity. Rachillae to about 6 cm long. Almost mature fruit rounded about 6 mm in diameter dark green, covered in 16 vertical rows of scales. Seed rounded, flattened on one side, wrinkled, the wrinkles representing shallow ruminations. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Very rare; Trengganu (Ulu Kemaman), Pahang (near Kuantan). Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Apparently a good cane but too rare to be of significance.</p></div>
+<div type="discussion"><p>Calamus corneri is a very rare rattan of gentle slopes in lowland Dipterocarp forest on the East Coast. It is immediately distinguisheable from the other "rotan perut ayam" (species with rugose leaf sheaths) by the sessile very finely pinnate leaf. I have collected a species of Calamus growing with typical C. corneri in Ulu Kemaman, but differing in being much more robust and in having long petioles. The material was sterile and it is still not certain where its affinities lie.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

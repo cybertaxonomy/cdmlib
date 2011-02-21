@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus perakensis Becc. var. perakensis</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1893) 451</citation>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11 (1908) 290 and appendix (1913) 47</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 58</bibref>
+<bibref>Furtado in Gdns. Bull. Singapore 15 (1956) 152</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Named after the State of Perak</p></div>
+<div type="vernacular"><p>rotan dudok</p></div>
+<div type="description"><p>Clustering acaulescent to very shortly climbing rattan with stems decumbent, rarely rigidly erect, to 3 m long. Stem without sheaths about 2 m in diameter, with sheaths to 4 cm or more. Sheaths cinnamon brown, armed with long or short darker brown spines to 3 cm long and dense brown indumentum; spines around leaf sheath mouth much large, papery, erect, to 12 cm Icing. Knee absent. Flagellum absent. Leaf ecirrate, arcuate to 2 m long including the petiole to 40 cm long; petiole armed with short reflexed, triangular spines, to 1 cm long, those near the base occasionally much longer; brown indumentum abundant between the spines. Leaflets rather close, regular, to about 40 on each side of the rachis the longest near the base, to 25 cm long by 2 cm wide, decreasing markedly to tip where terminal leaflets are about 10 cm long by 1 cm wide, usually nearly divergent. Inflorescences male and female superficially similar, usually erect, but sometimes arcuate, varying considerably in size and degree of branching, but always with conspicuous cinnamon brown bracts, with tattered limbs; partial inflorescences 2-6 in number. Rachillae about 3 cm long. More or less mature fruit rounded about 2 mm in diameter, shortly beaked covered in 18-20 vertical rows of red-brown scales. Seed rounded. Endosperm homogeneous. Seedling leaf bifid.</p></div>
+<div type="distribution"><p>Perak, Pahang, Selangor. West Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Occasionally used for making walking sticks.</p></div>
+<div type="discussion"><p>Calamus perakensis var. perakensis is usually confined to steep ridgetops on &#177; pod-solized soils in lower montane forest at altitudes between 900 and 1500 m above sea-level, where it forms thickets in the undergrowth.Calamus perakensis is extraordinarily variable. Several taxa I have already separated out and described or given tentative names. This whole species complex requires intensive and extensive taxonomic study.
+I have distinguished three varieties within C. perakensis, var. perakensis, var. niger and var. crassus. It is possible that with further study the last two may have to be given specific status.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

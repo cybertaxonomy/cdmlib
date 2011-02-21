@@ -1,0 +1,39 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Two new species of rattan (Palmae: Calamoideae) from the forests of West and Central Africa</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Sunderland</mods:namePart>
+<mods:namePart type="given">T.C.H</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 58, No. 4, pp. 987-990</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Laccosperma korupensis</name>
+<author>Sunderl.</author>
+<citation>Kew Bull. 58: 989 (2003 publ. 2004)</citation>
+<type>Cameroon, Korup National Park; Sunderland; 2303</type>
+<type_loc>Holotypus K!; isotypi SCA! YA! NY! WAG!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>This species is named after the Korup region, which includes the National Park. The word Korup is derived from the ethnic group, the Korop, who have inhabited the cross-border area of Cameroon and Nigeria for the past 200 years (Grimes 1996).</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>L. opacum (G. Mann and H. Wendl.) Drude affinis sed vagina parce armata; foliolis lanceolatis basi cuneatis apice apiculatis ad mucronatis, cirrho aculeis recurvatis armato, acanthophyllis carentibus differt.</p></div>
+<div type="description"><p>Clustering slender palm climbing to 10 m. Stem, not circular in cross section, but somewhat oval, without sheaths up to 12 mm in diameter, with sheaths c. 15 mm; internodes 12 - 15 cm long. Leaf sheath very sparsely to moderately armed with very fine, black tipped, downward-pointing spines; sheaths near leaf junction occasionally unarmed; black caducous indumentum present on mature sheaths; ocrea 7- 10 cm long, gradually tapering at the apex, papyraceous and tattering, pale straw-coloured without, dark shiny brown within, armed with very fine black-tipped spines. Leaves up to 1.0 m long; petiole to 12 x 0.8 cm, abaxially rounded, adaxially flattened, armed along the edges with up to 1 cm long, inequidistant, black spines with pale bulbous bases, spreading or reflexed; rachis to 50 cm long, rounded or somewhat angular in cross section, armed as the petiole, the spines decreasing in size distally; cirrus to 70 cm long armed as the rachis, although spines becoming sparse distally; leaflets 10 - 18 on each side of the rachis, inequidistant, usually sub-equidistant proximally and borne in pairs distally, lanceolate, finely acuminate at apex, bluntly cuneate at base, 12 - 20 cm long x 1.5 - 1.5 cm broad at widest point, ? concolorous, with prominent transverse veinlets and numerous, rather distant, small reflexed spines on the margins; acanthophylls absent. Flowers and fruits unknown.</p></div>
+<div type="distribution"><p>Restricted to the coastal forests of Cameroon, L. korupensis is particularly abundant in the Korup National Park. Future scheduled fieldwork in Nigeria will undoubtedly confirm the presence of this species in the Cross River National Park. </p></div>
+<div type="biology_ecology"><p>Like Laccosperma opacum, L. korupensis is a species of the forest understorey.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Despite the availability of vegetative material only, there is little doubt that this species is a member of the genus Laccosperma, with its significant morphological similarities to both L. opacum and L. laeve. However, this taxon is unique within the genus in the fact that the reduced leaflets forming grapnel hooks on the cirrus (known as acanthophylls), which are a common character in the rattan genera endemic to Africa, are absent.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

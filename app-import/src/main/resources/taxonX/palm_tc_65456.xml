@@ -1,0 +1,50 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis humblotiana</name>
+<author>(Baill.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 221 (1995)</citation>
+<type>Comoros, Grand Comore, Combani forest; Humblot; 1338 or 338</type>
+<type_loc>Holotype P; isotype K</type_loc>
+<synonymy>
+<name>Chrysalidocarpus humblotianus</name>
+<author>(Baill.) Beccari</author>
+<bibref>(Baill.) Beccari, Bot. Jahrb. Syst. 38 Beibl. 87: 33 (1906)</bibref>
+<bibref>Becc., Palme del Madagascar 40 (1914)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 100 (1945)</bibref>
+</synonymy>
+<synonymy>
+<name>Phlogella humblotiana</name>
+<author>Baill.</author>
+<bibref>Baill., Bull. Soc. Linn. Paris: 1174 (1894)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>INSUFFICIENTLY KNOWN SPECIES The material of this species is too scanty for us to say much about it, or to include it in the key. The name refers to the collector of the type, L&#233;on Humblot.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>TRUNK to 15 m tall, to 15 cm diam. LEAVES with the rachis in mid leaf 1.5-2 cm wide, keeled, glabrous; leaflets probably regular with an interval of 1.7-2.3 cm, median 64-70 x 2.7-3 cm, occasionally with a single ramentum to 1 cm long proximally, otherwise glabrous, main vein 1, and thickened margins, apices unequally acute. INFLORESCENCE branched to 2 or more orders, probably to 3 orders; rachillae 9-12 cm long, c. 1.5 mm diam., glabrous, with distant superficial triads, with proud rachilla bracts with rounded apices. STAMINATE FLOWER buds (very young) with sepals 1.3-1.5 x 1.2-1.5 mm; petals &#60; 0.8 x 0.8 mm; stamens 6, uniseriate (at least at this stage), &#60; 0.7 mm high. PISTILLATE FLOWERS not seen. FRUIT not seen.</p></div>
+<div type="distribution"><p>Comoro Islands: Grand Comore.</p></div>
+<div type="biology_ecology"><p>Forest; no further data.</p></div>
+<div type="conservation"><p>Unknown.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Labels on the type sheets bear the number 338 in profusion, but the single label with date and locality has the number 1338.</p></div>
+<div type="materials_examined"><p>Grande Comore: Combani forest, Oct. 1884 (bud), Humblot 1338 or 338 (K, P; type).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

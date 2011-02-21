@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis rivularis</name>
+<author>(Jum. &amp; H. Perrier) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 232 (1995)</citation>
+<type>Madagascar, Boina; Perrier; 11970</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Chrysalidocarpus rivularis</name>
+<author>Jum. &amp; H. Perrier</author>
+<bibref>Jum. &amp; H. Perrier, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 40, t. 20 (1913)</bibref>
+<bibref>Jum., Ann. Inst. Bot.- G&#233;ol. Colon. Marseille s&#233;r. 10, 3: 20 (1922)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 11 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 116 (1945)</bibref> 
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A charming palm, but with a rather untidy look to it, due to the irregular grouping of the leaflets. The name indicates its habit of growing along rivers. This species may be in cultivation in Queensland, where JD has seen juveniles of a palm that seem to match the herbarium specimens from the wild.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Sarimadiovozona (Sakalava).</p></div>
+<div type="description"><p>Solitary palm, with untidy crown and stilt roots. TRUNK 4-5.5 m, 4.5-15 cm diam., internodes 3.5-6 cm long, near the crown c. 2 cm. LEAVES spirally inserted, arching, 7-14 in the crown; sheath 3/4 open, 26-43 cm, yellow with few scattered reddish scales and erose ligules c. 1 cm long; petiole absent or up to 2 cm; rachis c. 1.4 m long, proximally 1.5-2 cm wide, in mid-leaf 0.8-1.3 cm wide, reddish with dense pale flaking indument, glabrescent; leaflets c. 32 on each side of the rachis, in groups of 2-5 in the proximal and middle part of the leaf to almost over the entire length of the leaf, the groups 8-19 cm apart, but often with the leaflets in the distal half or third regular; proximal leaflets 12-64 x 0.3-3.7 cm, median 42-68 x 3.3-6 cm (interval within groups 1.5-3.5 cm), distal 13-36 x 0.6-2.8 cm, main veins 5-7, veins with many minute reddish scales abaxially and sometimes adaxially, few or no ramenta, apex (unequally) attenuate. INFLORESCENCE interfoliar at anthesis to infrafoliar in fruit, c. 90 cm, branching to 3 orders; peduncle 43-46 cm, densely puberulous, proximally c. 8 x 3 mm, distally c. 7 x 4 mm diam.; prophyll 39-56 cm, borne at 8-14 cm above the base of the peduncle, 1.6-4.5 cm wide, with rather dense reddish scales and sometimes with a waxy bloom; peduncular bract inserted at c. 26 cm, 20-32 cm long, beaked for c. 1 cm, with scattered scales, deciduous; rachis 30-50 cm, densely reddish puberulous, with 17-20 branched and 3-7 unbranched first order branches; proximal first order branches to 50 cm long, with 7-10 branched and 10 unbranched second order branches, proximally to 1.5 x 0.7 cm diam.; rachillae 3-19 cm, densely puberulous, c. 1 mm diam.; triads distant, superficial, with entire rounded bract. STAMINATE FLOWERS unknown at anthesis, but in young bud with sepals 0.7-1 x 1-1.3 mm, ciliolate; petals 1.2-1.6 x 1.2-1.4 mm; stamens 6, biseriate, with filaments 0.4-0.5 mm long, cylindrical, with didymous anthers 0.5-0.6 x 0.5 mm; pistillode &#60; 0.5 mm. PISTILLATE FLOWERS yellow, without discernible scent, with sepals 0.8-1.1 x 1.4-1.8 mm, broadly elliptic, rounded, minutely ciliate; petals 1.8-2.6 mm long, with the lower part membranous, concave, 1-1.4 x 1.3-2 mm, the upper part fleshy, triangular, flat, 0.8-1.2 x 1.2-1.4 mm; staminodes 6, 0.2-0.3 mm; ovary 1.5-1.8 mm high, asymmetrical, 1.8-2.2 mm diam., with very divergent stigmas 0.5-0.6 mm long. FRUIT ellipsoid, slightly curved, 12-14 x 5-7 mm, asymmetrical; base and apex rounded; endocarp fibrous, the fibres hardly anastomosing. SEED 10-11 x 4.5-5 mm, rounded at base, slightly pointed at apex, with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Mananjeba River, Manongarivo, Ankarafantsika.</p></div>
+<div type="biology_ecology"><p>Moist forest stream edge, among boulders; alt. 130-300 m.</p></div>
+<div type="conservation"><p>Vulnerable. Only known from two recent sites; total population estimated at less than a hundred.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>There are some differences between the type (which is from the Ankarafantsika) and the Manongarivo populations. These consist of the width of the leaflets (much wider in the type: 6 cm as opposed to 3-4 cm) and the length of the rachillae (shorter in the type: 3-7 cm as opposed to 8.5-19 cm). However, we feel these differences can be attributed to variation between populations, and we do not believe they warrant taxonomic distinction, since the similarities between the type and the other population are large. 
+Jumelle describes the palm as 5-10 m tall. This information does not appear on any of the Perrier specimen labels, and we have not included it in the description. There are recent but unsubstantiated reports of a population of large palms growing along a river in the Ankarafantsika, which might confirm Jumelle's data. He also describes the male flowers as having sepals 1.35 x 1.5 mm; petals 2 x 2 mm; anthers with short, wide filaments and a connective projecting beyond the locules, which are said to be divergent at the base. We have only been able to find young staminate buds on Perrier 15803; these differ from Jumelle's description.</p></div>
+<div type="materials_examined"><p>Ambilobe: upper basin of Mananjeba R., July 1913 (fl., y.fr.), Perrier 15803 (P). Ambanja: SE of Beraty, May 1989 (y. bud, fr.), B. Du Puy et al. MB 176a (K, TAN); Ambalafary, Jan. 1992 (fl.), Beentje et al. 4562 (BH, K, MO, P, TAN); idem, Feb. 1992 (y.fr.), Beentje et al. 4581 (K, MO, TAN). Marovoay: Ankarafantsika, without date, (y.fr.), Perrier 11970 (Holotype, P; the label only says Boina, but publications give the above site). Ambato-Boeni: Tsaramandroso, April 1952 (fl.), Ramamongisana 4185 RN (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

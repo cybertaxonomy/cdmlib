@@ -1,0 +1,63 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Acaulescent, or erect, diminutive or robust palms of Southeast Asia to New Guinea, with crownshafts, with entire or lobed leaflet tips and a single large bract in the inflorescence, the pistillate flowers borne throughout the rachillae, seed with basal hilum.</p></div>
+<nomenclature>
+<name>Pinanga</name>
+<author>Blume</author>
+<citation>Bull. Sci. Phys. Nat. Néerl. l: 65 (1838).</citation>
+<type>Lectotype; Pinanga coronata; (Blume ex Mart.) Blume</type>
+<synonymy>
+<name>Cladosperma</name>
+<author>Griff.</author>
+<bibref>Griff., Not. pl. asiat. 3: 165 (1851).</bibref>
+</synonymy>
+<synonymy>
+<name>Ophiria</name>
+<author>Becc.</author>
+<bibref>Becc., Ann. Jard. Bot. Buitenzorg 2: 128 (1885).</bibref>
+<type>Type; Ophiria paradoxa; (Griff.) Becc.</type>
+</synonymy>
+<synonymy>
+<name>Pseudopinanga</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 188 (1936).</bibref>
+<type>Type; Pseudopinanga insignis; (Becc.) Burret</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Latinization of the Malay vernacular name, pinang, applied to the betel palm, Areca catechu and species of Areca, Pinanga and Nenga in the wild.</p></div>
+<div type="description"><p>Very small to robust, solitary or clustered, acaulescent or erect, unarmed, pleonanthic, monoecious palms. Stem very slender to moderate, with elongate or short internodes and conspicuous leaf scars, occasionally stilt-rooted. Leaves undivided and pinnately ribbed, with or without an apical notch, or pinnate; sheaths tubular, forming a well-defined crownshaft, with leaves neatly abscising, very rarely leaves marcescent and crownshaft not well developed; petiole present or absent, adaxially rounded or channelled, abaxially rounded, glabrous or variously indumentose; leaflets 1 to several-fold, regularly to irregularly arranged, acute, acuminate, or lobed, the lobes corresponding to the folds, the apical leaflets almost always lobed, blade occasionally mottled, sometimes paler beneath, often with a wide variety of scales and hairs, transverse veinlets usually obscure. Inflorescence mostly infrafoliar, rarely interfoliar in acaulescent species with marcescent leaves, very rarely bursting through marcescent leaf sheaths (Pinanga simplicifrons), usually rapidly becoming pendulous, occasionally erect, protogynous, unbranched or branching to 1 order only; peduncle usually short, dorsiventrally flattened, glabrous or tomentose; prophyll thin, membranous, 2-keeled, enclosing the inflorescence in bud, quickly splitting to expose the flowers except in P. simplicifrons and P. cleistantha where persistent and enclosing inflorescence up to almost mature fruiting; peduncular bracts absent; rachis usually longer than the peduncle; rachis bracts triangular, usually very inconspicuous; rachillae bearing spiral or distichous triads throughout, or triads in 4 or 6 vertical rows, or, more rarely, spiral proximally and distichous distally; triads sometimes partially sunken in the axis of the rachilla, but well-defined pits not present; floral bracteoles minute. Staminate flowers asymmetrical, sessile, rarely stalked at the base, very rarely the stalk of one flower much longer than the other (P. cleistantha); calyx cupular with 3 triangular, frequently unequal lobes; petals 3, triangular, frequently unequal, joined briefly basally, valvate in bud, much exceeding the calyx lobes, usually very fleshy; stamens rarely 6, usually 12–68, filaments short, anthers linear, latrorse; pistillode absent. Pollen usually ellipsoidal, occasionally oblate triangular, with at least one plane of symmetry, less frequently without symmetry; aperture either a distal sulcus, a distal trichotomosulcus, an extended sulcus or a presumed meridional zonasulcus (rare); ectexine either tectate, semitectate, or intectate; ectexine tectate or semitectate pollen finely to coarsely perforate, finely rugulate-reticulate, finely to coarsely reticulate (in some species the muri perforate or reticulate), discrete, psilate ring-like elements, dense supratectal clavae (in some species vertically striate), or finely reticulate with large smooth, broad-based supratectal spines; ectexine of intectate pollen with semi-coalesced mushroom-like pilae interspersed with dense granulae or spinulae, spines interspersed with dense granulae or small clavae, small and large gemmae interspersed or, urceolae interspersed with small dense clavae; infratectum columellate; longest axis 26–60 µm; post-meiotic tetrads tetragonal, and possibly also tetrahedral [50/128]. Pistillate flowers usually globose, symmetrical, much smaller than the staminate; sepals 3, membranous, striate, imbricate, distinct, or connate proximally with 3 broad, sometimes imbricate lobes distally; petals 3, distinct, imbricate, membranous; staminodes absent; gynoecium unilocular, uniovulate, globose, stigma usually convolute, sessile or on a short style, ovule basally attached, anatropous. Fruiting rachillae usually brightly coloured (reddish or orange). Fruit globose, or ellipsoidal to spindle-shaped, sometimes narrow spindle-shaped and curved (P. salicifolia and others), bright crimson, scarlet, orange or black, very rarely dull brown or green, frequently passing through pink to crimson to black at maturity, stigmatic remains apical; epicarp usually smooth, shiny, with a silky sheen, or dull, mesocarp usually thin, fleshy, sweet, rarely greatly expanding (e.g., P. keahii), endocarp of longitudinal fibres, usually adhering to the seed, becoming free at the basal end only (see Nenga), fruit without a solid beak. Seed conforming to the fruit shape, but usually slightly hollowed at the base, with conspicuous basal hilum and anastomosing raphe branches, endosperm deeply ruminate or, very rarely, subruminate or homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid or rarely entire with a minute apical cleft. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>About 131 species ranging from the Himalayas and south China to New Guinea, with the greatest diversity in the wet areas of the Sunda Shelf; very poorly represented in Papuasia. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a, 1998b), and fruit (Essig and Young 1979). </p></div>
+<div type="relationships"><p>The monophyly of Pinanga is strongly supported (Loo et al. 2006). For relationships, see Areca. </p></div>
+<div type="uses"><p>Stems may be used as laths, and leaves as thatch; fruit are rarely used as a betel substitute. </p></div>
+<div type="taxonomic accounts"><p>Beccari (1886) is the last monograph of this genus and many species have been described since, for example, by Furtado (1934), Dransfield (1980b, 1991c), Fernando (1994), and Hodel (1997). There is a useful regional account for Malaya (Lim 2001) and for Java and Bali (Witono et al. 2002). A modern monographic account is much needed. </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>This is a wonderfully diverse genus as far as habit is concerned, but it seems to show rather little variation in inflorescence presentation and form. The pollen, however, is extremely varied (Ferguson et al. 1983). Pollination, where casually observed, appears to be by beetles. </p></div>
+<div type="vernacular"><p>Pinang, bunga. </p></div>
+<div type="biology_ecology"><p>Almost all species are plants of the forest undergrowth; a few massive species such as Pinanga insignis contribute to the lower part of the forest canopy. In altitude, the genus ranges from sea level to ca. 2800 m in the mountains. Some species may be associated with various rock types, including limestone and ultramafics, but the greatest diversity appears to be in primary forest developed on sandstones on Borneo, where in some rich localities, as many as nine species may be found growing sympatrically. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Phytelephas tenuicaulis</name>
+<author>(Barfod) A.J.Hend.</author>
+<citation>Palms Amazon: 291 (1995)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Stems usually clustered, up to 8 together, each to 7 m tall and 8-10 cm in diameter.  Leaves 2-4.5 m long; pinnae 35-75 on each side, inserted regularly and opposite each other on the two sides, spreading in one plane, with inconspicuous marginal veins, the central ones 30-60 cm long, and 2.5-3 cm wide.  Male inflorescence 60-100 cm long, covered by densely crowded, sessile male flowers.  Fruiting heads 15-40 cm in diameter, with ca. 10 fruits, each 6-9 cm long.  Seeds ca. 5 per fruit.</p></div>
+<div type="distribution"><p>W Amazon region in Colombia, Ecuador and Peru.  Common throughout the E lowlands, both on river plains and on terra firme.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This taxon was originally described as a subspecies of P. macrocarpa, a species distributed in the W Amazon region in Peru and Bolivia, but is distinct in its taller and more slender stems, and smaller size of the crown.  Plants from terra firme forest tend to have few stems and individuals with a solitary stem occasionally occur.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

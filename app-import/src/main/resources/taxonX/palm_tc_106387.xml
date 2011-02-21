@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia jala</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 183 (1981)</citation>
+<bibref>Dransfield, Ratt. Sabah 22 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 28 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Latinised from the Malay for a casting net</p></div>
+<div type="vernacular"><p>Wi Danan (Ib.)</p></div>
+<div type="description"><p>Robust clustering and branching rattan climbing high into the forest canopy with stems to 60 m long; stem without sheaths to 4 cm diam., with sheaths to c. 6 cm diam., usually less, internodes to c. 20 cm. Sheath &#177; unarmed basally, in upper part rather densely armed with brittle flat pale brown spines to 20 &#215; 2 mm and abundant pinkish brown indumentum and chocolate-coloured scales; ocrea very large and conspicuous, expanded, funnel-shaped, net-like, to 30 cm long, enclosing the stem, the mouth c. 15 cm diam., pale brown, spiny in the lower part. Leaf to 2.75 m long including the cirrus to 1 m and petiole to 40 cm; leaflets broadly rhomboid to 33 &#215; 19 cm, c. 7 on each side of the rachis, with rather short stalks, bright green on the upper surface, chalky-white beneath. Inflorescence to 75 cm, highly branched; rachillae to 11 &#215; 0.6 cm, dark brown tomentose. Ripe fruit not known. Seedling leaf not known. (Fig. 5, Pl. 2B).</p></div>
+<div type="distribution"><p>Local in the lowlands. Elsewhere widespread in Sabah, rare in Sarawak; endemic to Borneo.</p></div>
+<div type="biology_ecology"><p>K. jala occurs in mixed dipterocarp forest at altitudes up to 400 m.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Produces a large rotan merah.</p></div>
+<div type="discussion"><p>It is a wonderful and unmistakable rattan; the strange net-like ocrea may give protection to the stem apex.</p></div>
+<div type="materials_examined"><p>TEM: Amo, K.Belalong, Dransfield J. 6712. TUT: Lamunin, Ladan Hills F.R., Wong 515; Lamunin, Ladan Hills F.R., Wong 516</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+<mods:dateIssued>1995</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis acaulis</name>
+<author>J.Dransf.</author>
+<citation>in J. Dransfield &amp; H. Beentje, Palms of Madagascar: 409 (1995)</citation>
+<type>Madagascar, Antalaha, Masoala, Marambo; Perrier; 12044</type>
+<type_loc>Holotypus P; isotypus K</type_loc>
+</nomenclature>
+<div type="introduction"><p>A very distinctive stemless palm, known only from a single herbarium specimen collected by Perrier de la B&#226;thie on the Masoala Peninsula. This is one of the very few palms in Madagascar that has whitish undersides to the leaves. This combined with the habit, the undivided blade and the spicate inflorescence should make it easy to identify. Despite this, it has not been refound. The species name (Latin for stemless) refers to the habit of this palm.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Acaulescens, procumbens, foliis bifidis pagina inferiore laminae indumento griseo tecta, inflorescentia spicata, longe pedunculata, floribus staminatis triandris staminibus antepetalis bene distincta.</p></div>  
+<div type="description"><p>Acaulescent forest undergrowth palm. STEM probably solitary, procumbent, 5 cm long, c. 18 mm diam., circular in cross section, drying pale buff; roots cylindrical, c. 3 mm diam. at insertion. LEAVES entire, bifid; sheath open to the base, 6 x 3 cm (opened out at the base), pale brown covered with reddish brown tomentum and dark brown punctiform scales; petiole c. 26 x 0.4 cm, triangular in cross section, adaxially shallowly channelled, the margins quite sharp, &#177; glabrescent, pale buff or with sparse reddish brown tomentum; costa of leaf 18 cm long, outer leaf margins 45 cm long, inner margins c. 28 cm, the two lobes 4.5-5.5 cm wide, the tips irregularly dentate or subpraemorse; lamina with c. 8-9 major adaxial folds, adaxial surface drying grey, transverse veinlets conspicuous but short, abaxially covered in dense grey indumentum and red-brown punctiform scales. INFLORESCENCE spicate to c. 22 cm; peduncle c. 13 cm, c. 2 mm diam.; prophyll tightly tubular, 9 x 0.3 cm; peduncular bract c. 15 x 0.3 cm, both covered in scattered brown lacerate scales; spike to 9 x 0.3-0.4 cm, cylindrical, densely covered in thick red-brown tomentum entirely obscuring bracts and flowers, only very faintly showing impressions of bracts; bracts scarcely 1 mm high forming pits. STAMINATE FLOWERS 0.7 mm high; sepals 3, c. 0.25 mm, margins ciliate, chaffy, buff-coloured; petals 3, dark, c. 0.7 x 0.3 mm, longitudinally striate; stamens 3, antepetalous, anthers didymous, staminodes 3, dentiform, between the fertile stamens; pistillode minute, pyramidal. FRUIT (lost), said to be bright red, fusiform, 20 x 6 mm. (Plate: see next page).</p></div>
+<div type="distribution"><p>NE Madagascar, Masoala Peninsula.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; 40 m.</p></div>
+<div type="conservation"><p>Presumed extinct. Not collected for more than eighty years.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Known only from material with very young staminate flower buds.</p></div>
+<div type="materials_examined"><p>Antalaha: Masoala, Marambo, towards Antalaha, Aug. 1912 (buds), Perrier 12044 (Holotype P; isotype K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

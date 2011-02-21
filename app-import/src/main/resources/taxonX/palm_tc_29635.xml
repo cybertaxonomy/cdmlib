@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans of the Western Ghats. A Taxonomic Manual.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+			<mods:dateIssued>1992</mods:dateIssued>
+			<mods:publisher>Kerala Forest Research Institute</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus lakshmanae</name>
+<author>Renuka</author>
+<citation>J. Econ. Tax. Bot., 14: 719</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kannada: Halubetha</p></div>
+<div type="description"><p>Clustering, high climbing canes. Stems to 20 m or more long, with sheaths to 1 -2.5 cm in diameter, without to 1 cm. Sheath yellowish green to green, densely armed with spines, spines to 1 cm long, yellowish, bulbous-based, pointing horizontally or upwards, distal younger sheaths with less spines and with brown markings] knee present; ocrea not seen. Leaf to 1.65 m long including petiole, ecirrate, petiole to 22 cm, armed with small sometimes curved spines; rachis biconvex towards the basal portion.triangular in the upper portion, with many small recurved spines; leaflets to 45 x 2 cm, regular, linear - lanceolate, tip not ciliate, terminal pair ca 17 x 0.8 cm, confluent to more than half of its length, 3-veined, lateral veins ciliate on the dorsal surface, midvein ciliate below, spinulose at margin. Inflorescence long, pendulous; primary sheath tightly sheathing, with small spines, partial inflorescence to 60 cm long, attached well above the mouth of sheath; secondary sheaths to 3.5 cm long, tubular-infundibuliform, lightly sheathing, narrow at base, inner side flat, distal region with 3 or 4 small prickles ; rachillae to 10 cm long, attached above the mouth of secondary sheath; involucrophorum not stalked; involucre cup-shaped; fruiting perianth slightly callous at base. Fruit 1x0.7 cm, ovate, stigma 3 mm long, scales in 26 rows, channeled along the middle, when young bright green. Endosperm ruminate.</p></div>
+<div type="distribution"><p>Evergreen forests at about 85 m above MSL. Makkut and Honaver Ranges. (Fig. 5).</p></div>
+<div type="biology_ecology"><p>Fruiting April - May.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>A good cane used in furniture industry.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Makkut, 14.3.89, fr, Renuka 4086 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

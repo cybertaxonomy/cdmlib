@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Dioecious pinnate-leaved palm from Queensland, Australia; similar to Ceroxylon and Juania but differing in the combination of distinct petals, six stamens and basal stigmatic remains.</p></div>
+<nomenclature>
+<name>Oraniopsis</name>
+<author>(Becc.) J. Dransf., A.K. Irvine and N.W. Uhl</author>
+<citation>Principes 29: 57 (1985).</citation>
+<type>Type; Oraniopsis appendiculata; (F.M. Bailey) J. Dransf., A.K. Irvine and N.W. Uhl</type>>
+<synonymy>
+<name>Orania Zipp. subgenus Oraniopsis</name>
+<author>Becc. in Becc. and Pic.Serm.</author>
+<bibref>Becc. in Becc. and Pic.Serm., Webbia 11: 172 (1955).</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Orania — the palm genus, opsis — similar to; originally a section of Orania with which it has, in fact, no relationship.</p></div>
+<div type="description"><p>Medium, solitary, unarmed, pleonanthic, dioecious palm. Stem erect, sometimes quite tall, becoming bare, leaf scars apparently not very conspicuous. Leaves numerous, reduplicately pinnate, ± upward-pointing, marcescent, several dead leaves hanging vertically for some time, forming a skirt below the crown before falling completely; sheath apparently tubular at first, soon splitting opposite the petiole, the leaf base then open; petiole short, adaxially channelled, ± glabrous, abaxially rounded, densely covered with scales and tomentum, the margins smooth and rather sharp; rachis ± stiffly held, adaxially flattened or channelled near the base, abaxially rounded, distally angled adaxially, a minute flange present at the junction between the flattened and angled areas of the rachis, both surfaces of the rachis bearing scattered scales; leaflets very numerous, single-fold, regularly arranged, ± stiff, ± linear, unevenly acute or acuminate, the basal-most few on each side short, narrow and crowded, adaxial surface ± glabrous or with scattered scales along the midrib, abaxial surface covered with dot-like scales and a dense felt of indumentum; transverse veinlets not evident. Inflorescences solitary, axillary, interfoliar, shorter than the leaves, staminate and pistillate superficially similar, branching to 4 orders; prophyll short, obscured by the leaf bases, incompletely tubular, 2-keeled, ± leathery, becoming fibrous and disintegrating distally, sparsely tomentose, the basal margins decurrent; peduncle elongate ± flattened and winged at the base, distally ± elliptic in cross-section, sparsely to densely tomentose; peduncular bracts 3–5, elongate, the first inserted near the prophyll, the rest ± evenly spaced along the peduncle, the distal 2–3 ± enclosing the inflorescence in bud, ± beaked, leathery, tubular at first, then splitting longitudinally and becoming flattened, sparsely to densely tomentose, eventually caducous, leaving circular or crescentic scars; rachis slightly shorter than the peduncle; rachis bracts numerous, inconspicuous, short, triangular, acute or acuminate, membranous, incomplete, each subtending a first-order branch; first-order branches with a basal bare portion, distally bearing spirally arranged second-order branches each subtended by a minute incomplete bract; rachillae crowded, ± twisted or zigzag at anthesis, the pistillate spreading but remaining rather zigzag in fruit, bearing rather distant, spirally arranged or subdistichous, minute triangular bracts, each subtending a short stalk bearing a minute, membranous, incomplete, triangular bracteole and terminating in a solitary flower. Staminate flowers symmetrical, or somewhat misshapen from close packing, open from early in development; sepals 3, very small, triangular, membranous, connate basally and forming a cup; petals 3, distinct, fleshy, much longer than the sepals, narrow, triangular; stamens 6, almost as long as or longer than the petals, the antesepalous inserted between the petals in, apparently, the same whorl, the antepetalous epipetalous, filaments very fleshy with ± conical, swollen bases, tapering to the connective, anthers oblong, versatile, basally sagittate, latrorse; pistillode usually very much shorter than the filaments, 3-angled, apically trifid. Pollen ellipsoidal, slightly asymmetric; aperture a distal sulcus; ectexine tectate, foveolate, aperture margin broad scabrate and finely perforate; infratectum columellate; longest axis ranging from 33–40 µm [1/1]. Pistillate flowers like the staminate but with slightly broader sepals and petals; staminodes like the stamens, the empty anthers large; gynoecium tricarpellate, triovulate, conspicuously 3-lobed, stigmas apical, short, becoming recurved; ovules laterally attached, ?hemianatropous. Fruit developing from 1 carpel, rounded, the stigmatic and carpel remains basal; epicarp smooth, yellow at maturity; mesocarp ± fleshy, with horizontal fibres and stone cells; endocarp obsolescent. Seed, rounded, the integuments thick, ± woody, with a basal short spur, and few sparsely branched, impressed vascular strands; endosperm homogeneous with a narrow central hollow; embryo lateral to subbasal. Germination adjacent-ligular; seedling leaf bifid with entire tips. Cytology not studied.</p></div>
+<div type="distribution"><p>Queensland, Australia.</p></div>
+<div type="anatomy"><p>Root (Seubert 1996b). </p></div>
+<div type="relationships"><p>Oraniopsis is sister to Ravenea with moderate support in some studies (Asmussen et al. 2006, Baker et al. in review), but in others it is sister to a clade of Ceroxylon and Juania with moderate support (Uhl et al. 1995, Trénel et al. 2007). </p></div>
+<div type="uses"><p>The palm has proved to be a handsome but very slow growing ornamental. </p></div>
+<div type="taxonomic accounts"><p>Dransfield et al. (1985a). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>The palm is very slow growing and seems to stay in the rosette stage for at least 20–30 years. In dense rain forest, rosettes may even be twice this age with erect leaves 3–8 m long. Unless growth rates accelerate markedly when a trunk is produced, tall-stemmed individuals must be several hundred years old. </p></div>
+<div type="vernacular"><p>Not recorded. </p></div>
+<div type="biology_ecology"><p>The single species Oraniopsis appendiculata, occurs in rain forests of mountain ranges from the upper Tully River area (15º40' S) northwards to the Big Tableland (17º50' S). The species occurs mostly above 300 m up to ca. 1500 m altitude, on soils of granitic and metamorphic origin; the palm also occurs on shallow basaltic soils with impeded drainage, but is usually absent from deep, well-drained basalt soils.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

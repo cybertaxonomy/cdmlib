@@ -1,0 +1,23 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus oxleyanus var. montanus</name>
+<author>Furtado</author>
+<citation>Gdns' Bull. Singapore 15 (1956) 84</citation>
+</nomenclature>
+<div type="description"><p>Differs from the typical form in having broader leaflets, ovoid rather than rounded fruit, and oblong rather than rounded seed. This is a robust mountain rattan, found on G. Padang in Trengganu. There is only one collection and the status of this variety may have to be reviewed if more material becomes available.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

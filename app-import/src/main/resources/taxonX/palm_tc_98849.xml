@@ -1,0 +1,40 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The genus Heterospathe (Palmae: Arecoideae) in the Philippines</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 45, No. 2, pp. 219-234</mods:publisher>
+<mods:dateIssued>1990</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Heterospathe brevicaulis</name>
+<author>(Becc.) Fernando</author>
+<citation>Kew Bull. 45: 226 (1990)</citation>
+<type>Luzon, Aurora Prov., Baler, Saipon; Fernando; 534</type>
+<type_loc>Holotypus K; isotypi BH, LBC</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>H. intermediae affinis sed habitu brevicauli, vaginis foliorum petiolisque persistentibus et rachillis brevioribus gracilioribus differt.</p></div>
+<div type="description"><p>Solitary, short-stemmed, undergrowth palm to 2.5 m tall. Stem erect to 50 cm long, c. 8 cm diam.; internodes to 1.5 cm long. Leaves pinnate, to 8 in crown; young leaves reddish-brown; leaf including petiole and sheath to 2 m long, sheaths not forming a well-defined crownshaft, each to 17 cm long, fibrous and marcescent; petiole yellowish-green, c. 70 x 1.5 cm, deeply channelled adaxially, the edges sharply angled, convex abaxially and sparsely puncticulate; sheath and petiole persistent on the stem; mid-rachis triangular, sharply angled adaxially, flattened to convex abaxially, very sparsely puncticulate. Leaflets to 33 on each side of the rachis, unicostate, regularly arranged, spaced to 4 cm apart, long-acuminate, with prominently elevated mid-costa and distinct secondary nerves, the margins slightly thickened; ramenta prominent along midrib on undersurface; basal leaflets c. 22 x 0.9 cm; middle leaflets c. 50 x 2.8 cm; apical leaflets c. 24 x 1.2 cm. Inflorescence interfoliar, usually ascending, to 50 cm long, branching to 2 orders; peduncle c. 28 x 0.8 x 0 - 4 cm, densely covered with brown lepidote-tomentose scales, the surface drying striate; prophyll c. 38 x 2 cm, tubular, 2-keeled laterally, and splitting abaxially and apically, the surface brown-puncticulate; peduncular bract attached below middle of peduncle, to c. 34 x 1.5 cm, caducous; only up to 2 basal first-order branches further branching with 2 rachillae, others as rachillae, c. 7-11, arranged spirally along axis, each c. 24 x 0.3 cm, terete, covered with brown lepidote- tomentose scales as peduncle; triads borne spirally along rachilla and subtended by low, lip-like bracts. Staminate flower oblong, 4 x 2.5 mm, yellowish; sepals 3, broadly imbricate, much shorter than the petals, 1.5 x 2 mm; petals 3, valvate, unequal, striate when dry, acute at tip, 3.5 x 1.5 mm; stamens 6, anthers dorsifixed, 1 mm long, filaments white, 2 mm long; pistil 2 mm long; pistillode conical, 2 x 1 mm. Pistillate flower rounded in bud, shorter than the staminate flower, 2.5 x 2 mm; sepals 3, broadly imbricate, rounded, ciliolate along the margins, 2.25 x 1.5 mm; petals 3, imbricate at base, rounded with acute tips, 2 x 1.5 mm; pistil ovoid-conical 2 x 1 mm; staminodes minute, tooth-like, borne at base of pistil. Infructescence with slightly arching rachillae. Fruits spirally arranged in up to 5 lax series, ripening yellow then red, ovoid, c. 8 x 6 mm, stigmatic residue obliquely apical, epicarp drying granulose with sclerosomes. Seed ovoid, 3.5 x 3 mm, with prominent hilum; endosperm ruminate.</p></div>
+<div type="distribution"><p>Luzon (Aurora Prov.)</p></div>
+<div type="biology_ecology"><p>In lowland stream valley forest with large boulders; c. 50 m. Endemic.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is superficially similar to H. intermedia in leaf and inflorescence features, but is easily distinguished by its short-stemmed habit, the persistent leaf sheaths and petioles on the stem, and the generally shorter and much more slender rachillae and smaller fruits.
+</p></div>
+<div type="materials_examined"><p>LUZON. Aurora Prov., Baler, Saipon, Fernando 534 (holo-type K; isotypes BH, LBC) and 568 (K, LBC).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

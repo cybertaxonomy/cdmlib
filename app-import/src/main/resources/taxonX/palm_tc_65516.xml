@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis pulchella</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 297 (1995)</citation>
+<type>Madagascar, Mahanoro, lower Mangoro; Perrier; 18046</type>
+<type_loc>Holotypus P</type_loc>
+</nomenclature>
+<div type="introduction"><p>An attractive undergrowth palmlet with very much the appearance of D. louvelii, but with shorter inflorescences and staminate flowers with six rather than three stamens. The species name refers to the pretty appearance of the three known specimens.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>D. louveliifoliis et inflorescentiis superficialiter similis, sed pedunculo breviori floribus staminatis 6 staminibus biseriatis bene distincta.</p></div>
+<div type="description"><p>Slender ?clustering palm of the forest undergrowth. STEMS probably not exceeding 1 m tall, 4-7 mm diam., internodes 8-13 mm, with sparse scattered dark brown scales. LEAVES 5-8 in crown; sheath 3-6 cm long, c. 1 cm diam., covered with scattered dark brown scales, auricles triangular, to 15 x 5 mm, membranous, soon disintegrating; petiole absent or to 2 cm long, c. 2 mm wide, with scattered dark brown scales; blade entire, bifid, plicate, 20-23 cm long, 8-10 cm wide, divided to just under to over half the length, costa 6-11 cm long, the two lobes 12-15 x 2.5-3 cm, adaxially with scattered brown punctiform scales, abaxially densely covered with brown punctiform scales and larger laciniate scales in bands, leaf tips shallowly lobed. INFLORESCENCE interfoliar, shorter than the leaves, branched to 1 order; peduncle 13-17 cm long, 1-1.5 mm diam., with scattered dark brown laciniate scales; prophyll inserted c. 2.5 cm above the base of the peduncle, 5-12 cm long, c. 7 mm wide, membranous, with scattered dark brown scales; peduncular bract inserted 3-8 cm above the prophyll insertion, 6-9 cm long, c. 7 mm wide; rachis 2.5-4 cm long, straight or somewhat zigzag, bearing scattered dark brown scales; rachillae 6-9, 2.5-3.5 cm long, c. 1 mm diam., dark brown scaly, triads c. 1-3.5 mm distant, rachilla surface with scattered dark laciniate scales and minutely papillose. STAMINATE FLOWER c. 2.5 x 1.5 mm; sepals rounded, 1.1 x 1.1 mm, irregularly keeled; petals triangular, 1.6 x 1.3 mm, striate; stamens 6, biseriate, antepetalous filaments 0.8 x 0.2 mm, antesepalous filaments 0.5 x 0.2 mm, anthers didymous, the antesepalous c. 0.4 x 0.4 mm, the antepetalous smaller; pistillode scarcely evident. PISTILLATE FLOWER bud immature, c. 1 mm diam. FRUIT, only immature known, fusiform, 6-7 x 2-3 mm.</p></div>
+<div type="distribution"><p>E Madagascar, Andasibe and lower Mangoro.</p></div>
+<div type="biology_ecology"><p>Rain forest; 300-1000 m.</p></div>
+<div type="conservation"><p>Presumed extinct. Not seen</p></div>
+<div type="uses"><p>Not recorded</p></div>
+<div type="discussion"><p>S. This taxon was included in the folders of D. louvelii in the Paris Herbarium. However, the inflorescence has a relatively shorter peduncle and the sometimes zigzag rachis gives the inflorescence a different appearance, but it is the staminate flowers which immediately separate the taxon from D. louvelii. There are six biseriate stamens, in form reminiscent of those of D. nodifera. The two collections from the lower Mangoro are clearly conspecific; the collection from Andasibe differs slightly in having a zigzag inflorescence rachis.</p></div>
+<div type="materials_examined"><p>Moramanga: Andasibe, Feb. 1925 (fl., fr.), Perrier 17216 (P). Mahanoro: Mangoro, Oct. 1927 (fl.), Perrier 18045 (P); idem (fl.), Perrier 18046 (Holotype P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

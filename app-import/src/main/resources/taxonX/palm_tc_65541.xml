@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis trapezoidea</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 283 (1995)</citation>
+<type>Madagascar, Ifanadiana, Vatovavy; Dransfield et al.; JD7512</type>
+<type_loc>Holotypus K; isotypi AAU, BH, MO, NY, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>A beautiful species known at present only from the isolated hill, Vatovavy, southwest of Mananjary. First collected by Bosser, we had initially included it within the variation of D. thiryana, but newly collected specimens show abundant differences between the two. This would be a beautiful ornamental. The species name refers to the leaflets that are almost trapezoid in outline.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Statura et habitu solitario foliolis praemorsis D. thiryanae affinis sed petiolo longiore, foliolis latioribus, inflorescentiae rachidi rachillas breviores aequanti vel excedenti et fructu duplo-majore differt.</p></div>
+<div type="description"><p>Solitary slender palm of forest undergrowth. STEM to 1.2 m tall, c. 8-12 mm diam. at the base, c. 4-7 mm diam. distally, often conspicuously stilt-rooted at the base, dark grey brown and vertically cracked at the base, dull green distally, internodes 8-18 mm with scattered dark brown scales, nodal scars c. 1-2 mm wide. LEAVES c. 7 in crown; sheaths 5-6.5 cm long, c. 1-1.2 cm diam., dull green with scattered evenly spaced thin brown scales, auricles absent; petiole 9-19 cm long, c. 2 mm wide, densely silvery scaly, especially when newly emerged; rachis 21-36 cm, scaly as the petiole; leaflets c. 7-10 on each side of the rachis, mostly arranged in pairs, somewhat trapezoid in outline, with conspicuous praemorse tips, basal leaflets with proximal margin 5.5-6 cm, distal margin 7-9 cm and praemorse margin 0.8-2 cm; mid-leaf leaflets with proximal margin 6.5-8 cm, distal margin 7-11 cm and praemorse margin 2-3 cm; apical leaflet pair much shorter than the rest with proximal margin 3.5-4 cm, distal margin 2.5-3 cm and praemorse margin 2-3.5 cm; leaflets drying pale green, adaxially with scattered brown punctiform scales, abaxially covered with dense white punctiform scales, abaxially also with a band of grey indumentum along the proximal and distal margins. INFLORESCENCE interfoliar, much shorter than the leaves, branched to 1 order; peduncle 7-12.5 cm, c. 2 mm wide, densely covered with brown scales; prophyll 9-10 x 0.4-0.6 cm, sparsely scaly; peduncular bract exceeding the prophyll by 4-5 cm; rachis 5-8 cm, densely scaly as the peduncle; rachillae 5-6 (-8), equalling or shorter than the   rachis, diverging at right angles, at maturity c. 3.5-5.5 cm, much shorter when newly emerged, c. 1.5 mm diam., sparsely papillose and scaly, bearing triads c. 1-4 mm distant, rachilla bracts round-ed-triangular, c. 1 mm high. STAMINATE FLOWER buds (still immature) rounded, c. 1.2 mm diam.; sepals rounded, imbricate, irregularly keeled, c. 0.8 x 0.8 mm, margins sparsely scaly; petals triangular, 0.9 x 0.7 mm; stamens 6, immature anthers 0.5 x 0.2 mm; pistillode columnar. PISTILLATE FLOWERS, only very young buds known. Mature FRUIT cherry-red, fusiform, 18 x 6 mm. SEED c. 15x 4 mm, endosperm homogeneous.</p></div>
+<div type="distribution"><p>Known only from Vatovavy, Ifanadiana.</p></div>
+<div type="biology_ecology"><p>Steep rocky slope at foot of cliff, primary lowland forest.</p></div>
+<div type="conservation"><p>Critical. Single-site locality; site</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Because of the praemorse leaflets this species appears very similar to D. thiryana. It can be distinguished by the consistently solitary habit, the sparse evenly distributed scales on the sheaths (rather than thick patchy scales), the much longer petioles, the wider, almost trapezoid leaflets and the more numerous but much shorter rachillae that are shorter than the inflorescence rachis (rather than being few, and much longer than the rachis). The mature fruit is also more or less twice the size of that of D. thiryana.</p></div>
+<div type="materials_examined"><p>Mananjary: Mt. Vatovavy, Nov. 1994 (buds, fr.), Dransfield et al. JD7512 (Holotype K; isotypes AAU, BH, MO, NY, P, TAN). idem, Jan. 1964, Bosser 18905 (P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

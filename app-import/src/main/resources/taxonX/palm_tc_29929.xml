@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus setulosus</name>
+<author>J.Dransf.</author>
+<citation>Malay. Forester 41 (1978) 343</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Setulosus - with small brjstles, referring to the bristles on the undersides of the leaflets</p></div>
+<div type="vernacular"><p>rotan kerai (incorrectly "rotan getah")</p></div>
+<div type="description"><p>Slender ? clustering rattan. Stem without sheaths about 7 mm in diameter, with sheaths to 1.1 cm; internodes 8.5 cm long. Sheaths, in dried specimen, dull straw-coloured with scattered dark indumentum and various spines, usually reflexed, scattered, rather sparse, 1-10 mm long. Knee conspicuous with short 2 mm long spines along keel; petiole base unarmed on abaxial face; spines around leaf sheath mouth conspicuous, upward pointing. Ocrea inconspicuous. Flagellum about 60 cm. Leaf to 85 cm long, ecirrate; petiole to 11 cm long, armed with short spines to 2 mm long spaced evenly along the margins; leaflets about 60 on each side of the rachis, narrow, regular, close, the largest to 13 cm long by 1 cm wide; leaflets bristly on 3 nerves above and along margins, and very densely bristly along 5 nerves below. Inflorescence, only female known, to 105 cm long with a long terminal flagellum and three partial inflorescences to about 7 cm long; immature fruit somewhat wider than high, about 5 mm high, 4 mm wide covered in 21 vertical rows of reflexed brownish scales.</p></div>
+<div type="distribution"><p>Perak: known from two collections only. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>This species has been recorded once from a low hillside and once from forest on limestone.
+ It seems closest to C. balingensis but may be distinguished by its much smaller size, the narrow bristly leaflets, and the spine-free petiole base.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

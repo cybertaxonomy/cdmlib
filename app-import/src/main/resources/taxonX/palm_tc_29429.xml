@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus corrugatus</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2:201 (1902)</citation>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 11: 187 (1908)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Corrugated</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering rattan climbing to 15 m; stem without sheaths 2-4 mm diam., with sheaths to 5 mm diam., internodes to 12 cm long, usually less. Sheath dull brownish-green, reddish- tinged when young, unarmed but bearing rather regularly arranged low ridges, the sheath thus appearing corrugated', knee present; ocrea very short. Flagellum to c. 40 cm. Leaf ecirrate, to 35 cm long, but usually much shorter;petiole absent', rachis bearing rusty-red hairs; leaflets 4-8 on each side of the rachis, broadly lanceolate, acute or acuminate, usually strictly opposite, the basal 1 or 2 on each side smaller than the rest and swept back across the stem, the apical pair joined together for over half their length, the mid leaf leaflets to 13 x 2.5 cm, usually much less, transverse veinlets quite conspicuous; young leaf pinkish-tinged. Inflorescence without a terminal flagellum, to c. 90 cm, only the female known; partial inflorescences 2-3, borne towards the tip of the inflorescence; rachillae 3 - 5 cm long. Mature fruit ovoid, 10 x 7 mm, tipped with a conspicuous cylindrical beak to 2.5 mm; scales pale yellowish-brown, arranged in 14 vertical rows. Seed c. 8 x 4 mm, irregularly scalloped and faceted. Seedling leaf not known (Fig. 77).</p></div>
+<div type="distribution"><p>Known from a few collections from the 1st Division (G Pueh, G Matang, Bako, Sabal Tapang, Semengoh) and one collection from the Hose Mountains. Not known elsewhere. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of excellent quality.</p></div>
+<div type="discussion"><p>C. corrugatus is a very elegant species found in mixed dipterocarp forest and forest transitional to kerangas, from sea level to c. 900 m altitude. It is very easily identified by the neat, broad lanceolate leaflets and absence of petiole, together with the corrugated leaf sheath.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

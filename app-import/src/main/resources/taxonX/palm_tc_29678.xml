@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus malawaliensis</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 805 (1982)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>After the type locality</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Very slender rattan with stems climbing to 7 m; stem without sheaths to 4 mm, with to 7 mm diam.; internodes to 11 cm. Leaf sheaths drying very pale bluish-green, with very sparse indumentum and densely armed with short black-tipped spines to 5 mm with conspicuously swollen bases. Knee poorly developed. Ocrea inconspicuous. Leaf cirrate to 76 cm including petiole to 18 cm and cirrus to 18 cm; leaflets c. 10 on each side of the rachis, arranged irregularly in 5 groups of 1-3, fanned within the groups, the longest to 16 x 1.5 cm, unarmed, drying pale bluish-green. Only &#177; mature infructescence known, to 22 cm, thus much shorter than the leaves, erect, unarmed, with 4 partial inflorescences to 5 cm long; rachillae to 1 cm. Mature fruit sphejical c 7 mm diam., tipped with a beak to 0.8 x 0.8 mm and covered in 13 vertical rows of shiny convex straw-coloured scales with dark brown margins. Seeds 2, hemispherical, c. 4 mm diam. Seedling leaf unknown, unknown. (Fig. 52)</p></div>
+<div type="distribution"><p>Known only from 2 collections from Pulau Malawali; endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Useless according to the collectors, Charles Phillipps and Dewol Sundaling.</p></div>
+<div type="discussion"><p>C. malawaliensis is most closely related to C. microsphaerion; it lacks the brown scales on the sheaths of the latter, and the whole plant dries pale bluish-green. The rachillae are much smaller and the fruit has shiny convex scales. It is not known if the fruit always contains two seeds. Pulau Malawali is ultrabasic, so the habitat is probably similar to that of C. microsphaerion.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

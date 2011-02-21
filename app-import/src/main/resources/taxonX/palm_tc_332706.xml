@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Dypsis delicatula</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Britt</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 49(1): 40-44</mods:publisher>
+<mods:dateIssued>2005</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis delicatula</name>
+<author>Britt &amp; J.Dransf.</author>
+<citation>Palms Palms 49(1): 40-44. (2005)</citation>
+<type>Madagascar, Toamasina, Betampona, 14 Mar. 2003; Britt et al.; 2</type>
+<type_loc>Holotypus K; isotypi AAU, P, MO, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>The subject of this paper is a wonderfully delicate new species of Dypsis, hence the species epithet. Britt was aware of this palm being widespread in the forest under-story whilst working at Betampona from 1997-2002. Baker and Dransfield visited Betampona in 1999 and made a collection of it; however, at the time of their visit only dead inflorescences were available. Britt was able to collect in 2000, but his collections remained in Madagascar until additional material was collected in 2003 and finally shipped to Kew. Britt also located this species in further forest fragments around the Betampona area. Thus it appears to have very restricted distribution in the remnants of low-altitude rain forest in the Betampona region, northwest of Toamasina.</p></div>
+<div type="etymology" lang=""><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>inter speciebus minimis inflorescentia ramosa rachillis tenuissimis brevibusque, floribus minutissimis remotisque staminibus oppositipetalis antheris rotundatis bene distincta;  D. viridi  similis sed habitu minore, foliis angustioribus, rachillis gracilioribus floribus minoribus sphericis recedit.</p></div>
+<div type="description"><p>Slender, clustering palmlet of forest undergrowth. Pale to dark green stem 46-110 cm ca. 5-10 mm diam., internodes 12-52 mm long. Leaves 6-19 in crown, sheaths 1-3.6 cm long, petiole absent or up to 2.6 cm long, ca. 1mm diam., leaf blade entire bifid, 10-18 cm long, with 13-18 abaxial ribs diverging at an angle of about 30° from the rachis, blade divided to one fifth to one quarter, ca. 36-64 mm wide just below the sinus, apical segments shallowly toothed on outer surface with up to 11 teeth, rachis 7.6-14 cm long, lamina bearing sparse scattered minute gray scales abaxially. Inflorescences interfoliar, very slender, 1 or 2 per stem, never exceeding leaves, branching to 2 orders; peduncle 5.0-6.5 cm long; prophyll 2-5 mm long; peduncular bract 2.4-3.8 mm long; first order branches 14-21; second order branches 4, the proximal 2 branched to 2 orders; rachillae very slender, ca. 0.3 mm diam., bearing scattered dark brown scales; triads ca. 3 mm distant near the base of the floriferous portion of the rachilla, ca. 1-2 mm distant distally; rachilla bracts very slender, acuminate, ca. 0.5 x 0.2 mm. Staminate flowers globose ca. 0.7 mm diam.; sepals ca. 0.3 x 0.3 mm, imbricate, broadly triangular with rounded bases, irregularly keeled, emarginate, faintly striate; petals rounded, gibbous, very fleshy, 0.6 x 0.6 mm, glabrous; stamens 3, antepetalous, alternating with and connate with 3 antesepalous staminodes, free stamen filament ca. 0.2 mm high, ca. 0.2 mm wide, connective broad, anthers pendulous, didymous, ca. 0.15 x 0.10 mm, staminodes somewhat club-shaped, flattened, the connective wider at the tip, anthers lacking; pistillode conical, 3-lobed, ca. 0.2 mm wide, minutely trifid at the apex. Pistillate flower globose, ca. 0.7 x 0.7 mm; sepals ca. 0.3 x 0.3 mm, striate, irregularly emarginated and keeled; petals broad, rounded, ca. 0.6 x 0.6 mm, valvate but slightly imbricate at the base, very fleshy; staminodes not seen; ovary eccentrically spherical, ca. 0.4 x 0.4 mm, stigmas 3, ca. 0.1 mm high. Fruit unknown.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p>Mid-slopes and in valley bottoms at elevations of 300-600 m above sea-level, locally abundant at Betampona.</p></div>
+<div type="conservation"><p></p></div>
+<div type="discussion"><p>The palm we describe here and name as  Dypsis delicatula  has already been illustrated, as  D. hirtula,  in Beccari (1912-1914) and in Jumelle and Perrier de la Bathie (1945).  Dypsis hirtula  was described and named by Martius, based on a collection  (Poivre s.n.)  in the Jussieu Herbarium in the Museum d'Histoire Naturelle in Paris. In Dransfield and Beentje (1995), D.  hirtula  was discussed at length and included in synonymy with  D. forfidfolia  Noronha ex Mart. In 'Palme del Madagascar', Beccari (1912-1914) had interpreted  D. hirtula  differently, accepting it as a species distinct from D.  forficifolia.  He illustrated the species, not with a photograph of the type, but instead with a photograph of a collection made by Majastre in Tamatave, preserved in Hamburg herbarium. This  D. forficifolia  (syn.  D. hirtula).  However, the identity of the Majastre collection has no bearing on the nomenclatural problem, as it is not the type of  D. hirtula.  Jumelle and Perrier de la Bathie (1945) accepted  D. hirtula  as a distinct species, probably basing their concept of the species on Beccari's illustration of the Majastre collection, and illustrated it with a habit drawing based on  Perrier 17466,  collected at Betampona; the taxon illustrated is clearly the taxon we describe here as new. They do not appear to have examined the holotype of  D. hirtula,  and we suspect, also, that they did not dissect the flowers of  Perrier 17466.  The position of the stamens is crucial to identifying the species of  Dypsis  with three stamens. In the informal classification of Dransfield and Beentje (1995), taxa with stamens opposite the sepals belong to either Majastre collection, not traced by Dransfield the sepals; however, unusually, he does not and Beentje, bears a remarkable resemblance indicate which collection provided the to the palm we describe here. Beccari also material for his analytical drawing. Dransfield described and illustrated the staminate flowers, and Beentje suggested that the Majastre clearly showing the stamens to be opposite to collection was more likely to be D.  viridis  than Group 12  (Dypsis  sensu strictu), Group 13  (Adelodypsis)  or Group 14 (group without a previously published name), while those taxa with stamens opposite the petals belong to Group 18  (Trichodypsis).  The Betampona taxon has stamens opposite the petals and thus its affinities are with taxa such as  D. viridis, D. hildebrandtii, D. mocquerysiana  etc., while the type of D.  hirtula  (= D.  forficifolia)  has stamens opposite the sepals. Whatever the identity of the Majastre collection, the Betampona dwarf palm is clearly in need of being described and named.</p></div>
+<div type="materials_examined"><p>Madagascar, Toamasina, RNI Betampona, Piste Principale 2200 m, 6 Nov. 2000,  Britt 22  (MO, K); Madagascar, Toamasina, RNI Betampona, Piste Principale 1700 m, 17°54'57&quot;S/49°12'1.38&quot;E, alt. 450 m, 14 Mar. 2003,  Britt et al. 2  (Holotypus K; isotypi AAU, P, MO, TAN); 17°55'54&quot;S/49°12'12&quot;E, alt. 350 m, 19 Nov. 1999,  Baker &amp; Dramftetd WJB1033  (K, MO, NY, P, TAN); growing specimens at RNI Betampona, Jan. 2002.
+Specimens seen: Sept. 2001: Antanamalaza Foret Classe (17°50'S/49°11'E), Ambakaka forest (17°52'S/49°10'E).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

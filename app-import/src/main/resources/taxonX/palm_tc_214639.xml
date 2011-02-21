@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wettinia kalbreyeri</name>
+<author>(Burret) R.Bernal</author>
+<citation>Caldasia 17: 368 (1995)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Canopy palm.  Stem solitary, 5-20 m tall and 10-15 cm in diameter, smooth.  Leaves 3-5 m long; pinnae 20-25 on each side, somewhat hairy, especially below, longitudinally divided into 2-7 segments, these spreading in different planes, 80-130 cm long and 2.5-10 cm wide in the central part of the blade.  Inflorescences 3-7 per node; peduncle 15-40 cm long; rachis 8-40 cm long; branches 15-30; male inflorescence branches to 30 cm long, the female to 60 cm long, pendulous.  Male flowers 5-10 mm long, with 6-22 stamens.  Female flowers dispersed along the branches, 5-6 mm long.  Fruits green, minutely warty, glabrous or hairy, 2.5-3.5 cm long and 2-3 cm in diameter.</p></div>
+<div type="distribution"><p>Andean slopes in Colombia (both sides) and Ecuador (W side only), at 500-2000 m elevation.  It is often a conspicuous component of the premontane wet forest.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Occasionally individuals with clustered stems are encountered (Cotopaxi: Bergmann #97809).</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

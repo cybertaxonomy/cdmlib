@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus laxissimus</name>
+<author>Ridley</author>
+<citation>in Mat. Fl. Mai. Pen. 2 (1907) 210</citation>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 63</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 11 (Appendix) (1913) 32</bibref>
+<bibref>Furtado in Gdns. Bull. Singapore 15 (1956) 155</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Very lax</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary shortly climbing rattan with stems to 3 m only. Stem without sheaths c 7 mm in diameter, with sheaths to 1.1 cm. Internodes to about 10 cm long. Sheaths mid green armed with scattered blackish spines of length varying from 2-15 mm and caducous pale brown indumentum; area of sheath at base of petiole usually unarmed; spines around leaf sheath mouth erect, brown, much longer than the other spines, to 5 cm long. Knee absent; some non-developing inflorescences appear as flagellum, but true hooked flagellum absent. Leaf ecirrate, to 2 m long with petiole to 40 cm; petiole sparsely armed with short reflexed spines. Leaflets to 25 on each side, distant, rigid, opposite above and divaricate; the longest to 35 cm long by 1.5 cm wide, dark green, unarmed on upper and lower surfaces, shortly bristly along margins. Inflorescences male and female superficially similar, to 75 cm very slender with peduncle to 40 cm, armed with grouped horizontal spines below. Bracts closely tubular except for a short triangular limb armed with crowded erect papery flat brown spines to 3 cm long by 2 mm wide. Partial inflorescences lax up to 15 cm long with few rachillae, the female to 7 cm long, the male somewhat curved very short fruit and seedling leaf unknown.</p></div>
+<div type="distribution"><p>Johore, Pahang, Kelantan.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is distinguished from other members of the C. perakensis complex by the long and narrow divaricate leaflets, combined with armed inflorescence peduncle and lack of armature on the abaxial surface of the petiole base.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,60 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis pilulifera</name>
+<author>(Becc.) Beentje &amp; J.Dransf. </author>
+<citation>Palms of Madagascar: 160 (1995)</citation>
+<type>Madagascar, anno 1841; Lastelle; s.n.</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Chrysalidocarpus piluliferus</name>
+<author>Becc</author>
+<bibref>Becc. in Bot. Jahrb. Syst. 38, Beibl. 87: 37 (1906)</bibref> 
+<bibref>Jum. &amp; H. Perrier in Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 45 (1913)</bibref>
+<bibref>Becc. in Palme del Madag.: 46, t. 45, fig. 37 (1914)</bibref>
+<bibref>Jum. in Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 10, 3: 21 (1922)</bibref>
+<bibref>Jum. in Cat. Pl. Madagascar, Palmae: 11 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier in Fl. Madagascar 30: 118 (1945)</bibref>
+</synonymy>
+<synonymy>
+<name>Chrysalidocarpus paucifolius</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 10, 3: 9 (1922)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 11 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 102 (1945)</bibref>
+<type>Madagascar, Analamazaotra; Perrier; 12004</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A large and beautiful tristichous palm, virtually unknown until a few years ago, but found recently in several places.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Ovomamy (Tsimihety), Lavaboko (Marojejy), Hozatanana (Mantady).</p></div>
+<div type="description"><p>Solitary palm. TRUNK 8-30 m, 10-40 cm diam., 10-12 cm diam. near crownshaft, internodes 20-60 cm proximally, 2-3 cm near the crownshaft, green becoming greyish or dark brown, conspicuously ringed, nodal scars c. 1.5 cm; wood medium hard. LEAVES 4-9, tristichous, slightly arching; sheath 1.1-1.7 m long, 3 mm thick, abaxially green, pale brown to peach-coloured with some wax and with slightly sunken large (3-8 x 1-2 mm) reddish-tomentose scales, the continuous cover flaking and glabrescent, with disintegrating auricles of c. 4 x 6 cm; petiole absent or up to 40 cm long, with the same indument as the sheath but with only remnants of the scales present, 7 x 4 cm in diam., canaliculate; rachis 2.9-5 m long, in mid-leaf c. 2 x 1.5 cm, with small scattered scales, proximally canaliculate, distally keeled; leaflets grouped and fanned or slightly irregular, 70-144 on each side of the rachis, closely set, the proximal 56-160 x 0.5-1.8 cm, median 88-124 x 2.4-3.7 cm, distal 10-44 x 0.4-2 cm, glabrous or with minute scattered scales, with distant red ramenta, main vein 1, with unequally acute apices. INFLORESCENCE infrafoliar, branched to 3-4 orders, erect in bud, pendulous in fruit; peduncle c. 23 cm long, 8 x 3.5 cm diam.; prophyll 40-50 x 9-15 cm, borne at c. 3 cm above the base of the peduncle, beaked for up to 10 cm, pale brown abaxially, chestnut brown adaxially; peduncular bract inserted at c. 7 cm above the base of the peduncle, 37-70 x 6.5-13 cm, split over its length but closed in the distal part which forms a beak 10 cm long; rachis with up to 20 first order branches; rachillae cream, (7-) 20-40 cm long, 2.5- 3 mm diam., with quite dense triads in pits. STAMINATE FLOWERS (from detached material) with sepals 1-1.2 x 1.5-2 mm; petals 1.8-2 x   1.4 x 0.7 mm, versatile; pistillode columnar, 1.8 x 0.7 mm. PISTILLATE FLOWERS with sepals 1.3-2.1 x 1.4-2.2 mm, hooded and rounded; petals 2-2.9 x 1.8-2.5 mm; staminodes six, 0.2-0.6 mm high; gynoecium 2-2.8 mm high, 1.5-2.3 mm diam., slightly asymmetrical with spreading terminal stigmas. FRUIT globose, 5-7 mm, with fibrous endocarp, the fibres anastomosing. SEED globose or nearly so, 4-5 mm, rounded at base and apex with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Sambirano region, Marojejy, and Mantady.</p></div>
+<div type="biology_ecology"><p>Moist submontane forest; slight or steep mid slopes; alt. 750-950 m.</p></div>
+<div type="conservation"><p>Vulnerable. Though the populations in the Marojejy and Mantady occur within protected areas, the harvest of the palm-heart continues, with fatal consequences for the trees.</p></div>
+<div type="uses"><p>Good palm heart, and cut down for this.</p></div>
+<div type="discussion"><p>Despite the fact that the type of D. pilulifera consists of an inflorescence with fruits and lacks any vegetative material, it is one and the same as the other populations from the North, rather than D. mananjarensis. Another collection by de Lastelle (the type of D. lastelliana) is also without locality, but judging by the distribution of that species, must have been from NE Madagascar. Beccari and Jumelle state that the type of D. pilulif-(Photo: D.N. Cooke). era was called Neodypsis lastelliana by Baillon, 
+but    in fact Baillon compared it to that taxon, and wrote that it was quite likely a different species.  
+The material of Chrysalidocarpus paucifolius is scanty, but a second collection made in the type area some seventy-five years later is conspecific, and allows us to state with almost complete certainty that this taxon is identical to D. pilulifera. 
+Close to D. mananjarensis, from which it can be distinguished by the indument: reddish tomentose scales in D. pilulifera, against large white waxy scales in D. mananjarensis.</p></div>
+<div type="materials_examined"><p>Ambanja: Manongarivo, May 1909 (fl., fr.), Perrier 11961 (P); idem, Bekolosi, Feb. 1992 (fl., sd.), Beentje et al. 4574 (BH, K, MO, P, TAN); Antsatrotro, March 1993 (fl.), Malcomber et al. 2309 (K, P). Andapa: Marojejy Est, Nov. 1989 (bd., fr.), Dransfield et al. JD6766 (K, TAN). Moramanga: Analamazaotra, sine die (fl.), Perrier 12004 (P; type of C. paucifolius); Mantady, April 1992 (dead infl.), Beentje et al. 4654 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

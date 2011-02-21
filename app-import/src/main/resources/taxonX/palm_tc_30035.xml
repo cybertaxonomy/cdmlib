@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus zonatus</name>
+<author>Becc.</author>
+<citation>Nelle Foreste di Borneo 609 (1902)</citation>
+<bibref>Beccari, Rec. Bot. Surv. India 21: 203 (1902)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 173 (1908) </bibref><bibref>Dransfield, Ratt. Sabah 155 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 171 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Banded</p></div>
+<div type="vernacular"><p>Wi Pagau (Ib.)</p></div>
+<div type="description"><p>Slender to moderate solitary or clustered rattan climbing to 10 m; stem without sheaths to 7 mm diam., with sheaths to 20 mm diam., usually less, internodes to 20 cm. Sheaths dull dark green with caducous pale brown indumentum and covered in wavy ridges encircling the sheath, the ridges to 1 mm high and bearing very dense minute tooth-like spines and scattered larger triangular spines to 4 &#215; 4 mm; knee conspicuous, armed as the rest of the sheath; ocrea well developed, to 20 mm, brown, armed with ridges, becoming tattered and eventually disappearing. Flagellum to 2 m. Leaf ecirrate to c. 1 m, usually curving; petiole absent or short, rarely more than 7 cm; leaflets to 10-25 on each side of the rachis, regularly arranged, curved, dark green, shining, drying dirty green, the longest to c. 30 &#215; 2.5 cm, &#177; unarmed except for a few bristles on the main nerves on the upper leaf surface; young leaves pale green. Inflorescences to 3 m, with about 4 distant limply pendulous partial inflorescences to 60 cm; male rachillae 2-6.5 cm long, held &#177; horizontally; female rachillae c. 4-15 cm long, distant and &#177; reflexed; bracts on partial inflorescences unarmed or with minute prickles, bracts on rachillae minutely ridged. Mature fruit rounded, c. 8 mm diam., with a beak to 1 &#215; 0.8 mm, and covered in c. 15 rows of greenish-white scales. Seed &#177; ovoid, c. 7 &#215; 5 mm, endosperm homogeneous. Seedling leaf not known. (Fig. 63).</p></div>
+<div type="distribution"><p>Widespread throughout the lowlands of Brunei. Elsewhere in Sabah, Sarawak and Kalimantan. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Apparently used locally in binding and weaving.</p></div>
+<div type="discussion"><p>C. zonatus is a common rattan in lowland dipterocarp forest at altitudes up to c. 800 m; it has not been found in peat swamp forest. For differences between this and other species with ridged sheaths see under C. muricatus.</p></div>
+<div type="materials_examined"><p>TEM: Amo, Wong 1736; Amo, Bt.Belalong, Dransfield J. 7133; Amo, Bt.Belalong, Wong 1408; Amo, Kuala Belalong, Stockdale 34. TUT: Lamunin, Ladan Hills F.R., Wong 508; Rambai, Sg.Tutong, Simpson 2635.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis thiryana</name>
+<author>(Becc.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 282 (1995)</citation>
+<type>Madagascar, anno 1904; Thiry; </type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Neophloga thiryana</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 38, Beibl. 87: 23 (1906)</bibref>
+<bibref>Becc.,Palme del Madagascar 24, fig. 17, t. 22 (1912)</bibref>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 6 (3): 42 (1929)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 23 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 82, fig. 23 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This is not only one of the most attractive small palms from Madagascar but also one of the most easily identified. The small wedge-shaped praemorse leaflets are found only in this species and in D. trapezoidea. In the field it can easily be overlooked as the leaflets give the leaves a rather unpalm-like appearance, one more reminiscent of a fern.This would clearly be a wonderful palm to grow as a pot plant; sadly, ripe fruit seem very rarely to be produced in quantity. The name refers to the collector of the type; we have been unable to find any details about him.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Tsinkiara, Sinkarambolavo maroampototra, Taokonampotatra (Betsimisaraka).</p></div>
+<div type="description"><p>Clustering palm in tufts of 2-4 (solitary according to Miller &amp; Lowry 3942, Benoist 862, and in the last specimen confirmed by roots). STEMS 0.1-1 m high (the type states 5 m, which we find hard to believe), 0.4-0.6 cm diam.; internodes 0.4-4 cm, brown, densely red-scaly; nodal scars 1-2 mm. LEAVES 8-10 in the crown, porrect; sheath 6-11 cm long, c. 0.6 cm diam., open for 1-2 cm, distally with dense red-brown and pale white scales, with rounded shoulders or with small triangular bumps to 2 mm high; petiole 1-18 cm long, 1.5-2 mm diam., densely scaly or with scattered scales; rachis 14-30 cm long, in mid-leaf 1-1.5 mm diam., densely scaly or with scattered scales; leaflets 9-14 on each side of the rachis, rich shiny green to dark green, almost regular or (more often) in groups of 2-3, the group interval 1-4 cm, the proximal 2-7 x 0.2-1.2 cm, the median 3-11 x 0.6-1.3 (-2.5) cm, cuneate at the base, with 1 (3) main vein(s), unequally praemorse and dentate at the apex, the distal half prolonged and with a dentate acumen, with some basal scales but glabrescent, rarely with the distal margin scaly,   distal 3-10 x 0.8-3.2 cm, connate for 1.2-3.2 cm, with 4 main veins, truncate and dentate for up to 4 cm. INFLORESCENCE interfoliar, erect, branched to 1 order (one unbranched in Perrier 17214); peduncle 12-26 cm long, 1.5-2 mm diam., &#177; glabrous; prophyll 10-17 cm long, to 3 mm wide, borne at up to 5 cm above the base of the peduncle, opening only near the apex, pale brown with scattered scales; peduncular bract inserted at 7-15 cm from the base of the peduncle, 6-11 cm long, opening only in the distal 2-3 cm, pale brown with scattered scales; second tubular peduncular bract often (always?) present at 12-20 cm from the base of the peduncle, 0.9-2.5 cm long, shortly tubular with a long acumen; non-tubular bract sometimes present near the rachis, 1.6 mm long; rachis 0-2.5 (-11.5) cm long, glabrous, with (1-) 2-4 (-8) rachillae; rachillae (2.5-) 6-15 cm long, c. 1 mm diam., glabrous, with distant superficial triads and white flowers. STAMINATE FLOWERS with sepals 0.7-1 x 0.8-1 mm, the outer more keeled than the inner, orbicular, ciliolate; petals on a 0.6 mm high receptacle, 1.9-2.2 x 1-1.3 mm, elliptic or ovate, acute, striate; stamens 6, with the antepetalous filaments inserted slightly above the antesepalous ones, filaments connate for 0.15 mm, 0.8-0.9 mm long, thin, anthers dorsifixed and versatile, 1.1-1.2 x 0.4 mm, the locules parallel, slightly apiculate; pistillode c. 0.5 x 0.2 mm. PISTILLATE FLOWERS with sepals imbricate, 1-1.3 x 1.3-1.5 mm, orbicular, ciliolate; petals proximally ovate and imbricate, distally triangular, fleshy and valvate, 2.1-3.3 x 1.2-2.6 mm, striate; staminodes 6, 0.2-0.3 mm; ovary 1-2 x 0.8-1.5 mm, ovoid or ellipsoid with pointed apex. FRUIT bright red, ellipsoid, 9-11 x 3-5 mm. SEED c. 9 x 2-3 mm, with homogeneous endosperm. (Plate on next page).</p></div>
+<div type="distribution"><p>Marojejy and Masoala to Anosibe-an-Ala.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest, slight to steep slope or ridgetop; 220-900 m.</p></div>
+<div type="conservation"><p>Rare. Spread over a fairly large area, though never common; usually a few individuals per population.</p></div>
+<div type="uses"><p>Meller says the plant is used for thatching; his specimen is all of 60 cm tall, roots included, and we would doubt his statement.</p></div>
+<div type="discussion"><p>The Tsinkiara on the type has been taken for a locality, but is actually a Betsimisaraka name for any small palm.  Baker briefly mentions the Meller specimen in a note under N. rhodotricha in J. Linn. Soc. 22: 526 (1887) as distinct, but refrains from naming it.</p></div>
+<div type="materials_examined"><p>Andapa: Marojejy NE, E of Ambalamanasy II, Nov.-Dec. 1948 (fl.), Humbert &amp; Capuron 22171 (K, P); Marojejy E, NW of Mandena, Feb. 1989 (fl.), Miller &amp; Lowry 3942 (K, P); idem, Nov. 1989 (fl.), Dransfield et al. JD6750 (K, TAN). Maroantsetra: Antongil Bay area, Oct. 1912 (fl.), Perrier 11978 (P); Sahavary, Feb. 1988 (fl.), Dransfield et al. JD6460 (K, TAN); Hiaraka, Oct. 1986 (old infl.), Dransfield et al. JD6377 (K, TAN). Mananara Avaratra: 10 km W of Antanambe, April 1992 (y.fr.), Beentje et al. 4648 (K, TAN); idem, Oct. 1994 (fr.), Beentje &amp; Dransfield 4811 (K, TAN). Soanierana-Ivongo: Soanierana to Antasibe, Dec. 1938 (fl.), Lam &amp; Meeuse 5858 (L). Ampasimanolotra: Ambila, March 1951 (bud), Benoist 862 (P). Moramanga: Beforon (Beforona), July 1862 (ster.), Meller s.n. 31.7.1862 (K). Anosibe-an-Ala: near confluence of Mangoro R and Onive R, Feb. 1923 (y.fr.), Perrier 17214 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

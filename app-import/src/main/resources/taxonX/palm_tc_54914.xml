@@ -1,0 +1,97 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A monograph of Cyrtostachys (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name  type="personal">
+<mods:namePart type="family">Heatubun</mods:namePart>
+<mods:namePart type="given">Ch.D.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Mogea</mods:namePart>
+<mods:namePart type="given">J.P.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.M.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Tjitrosoedirdjo</mods:namePart>
+<mods:namePart type="given">S.S.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin 64: 67-94</mods:publisher>
+<mods:dateIssued>2009</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Cyrtostachys renda</name>
+<author>Blume</author>
+<citation>Bull. Sci. Phys. Nat. Néerl. 1: 66 (1838).</citation>
+<type>Indonesia, Sumatra, East Sumatra, around Indrapura; Korthals; s.n.</type>
+<type_loc>Lectotype L!; isolectotype K!</type_loc>
+<synonymy>
+<name>Areca erythropoda</name>
+<author>Miq.</author>
+<bibref>Miq., J. Bot. Néerl. 1: 6 (1861).</bibref>
+<type>Indonesia, Sumatra, Bangka Island, Djebus; Teisjmann; s.n.</type>
+<type_loc>Holotype BO!</type_loc>
+</synonymy>
+<synonymy>
+<name>Cyrtostachys lakka</name>
+<author>Becc.</author>
+<bibref>Becc., Ann. Jard. Bot. Buitenzorg 2: 141 (1885)</bibref>
+<type>Malaysia, Borneo, Sarawak, Kuching, Nov. 1866; Beccari; PB 2674</type>
+<type_loc>Lectotype FI!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Thailand: kap daeng, mark-dang (Thai). Malay Peninsula: pinang rajah (Malay). Sumatra: pinang renda or rende’ (Indrapura); pinang rimbou (Sibolga); pinang lempiauw or pinang lepiaw (Bangka island). Borneo: malawaring, raring (Brunei). Trade names: pinang merah, palem merah, (Malay/Indonesia); sealing wax palm, lipstick palm (English); hsing hsing yeh tzu (Chinese); rode palm (Dutch).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Slender, clustering tree palm with up to c. 3 or more adult stems up to 15 (– 20) m high. Stem c. 6 – 10 cm diam., green with greyish stripes or yellow with somewhat greenish and purplish stripes, internodes 15 – 24 cm long, crown appearing shuttle-cock shaped. Leaves 7 – 10 in crown, erect, stiff, to 150 cm long; sheath tubular, c. 100 cm long, forming distinct crownshaft, scarlet to bright red, with scattered black thick scales; petiole elongate, 5 – 50 cm long, 1.5 – 2.5 cm wide and 1 – 2 cm thick at the base, channelled adaxially, rounded abaxially, red, indumentum as sheath; leaflets regularly arranged, leathery, 26 – 40 leaflets on each side, 56 – 107 × 3 – 6 cm at middle portion, apical leaflets 10 – 20 × 1 – 2 cm, briefly pointed with long tip and sometimes notched at apices, green, discolorous when dried, glaucous adaxially, waxy white abaxially, mid-vein with discontinuous membranous brown scales. Inflorescence strongly divaricate, to 90 cm long, branched to 2 (possibly 3) orders, creamy, green to dark purplish-red; peduncle 5 – 8 cm long; rachilla 27 – 73.5 cm long and 4 – 6 mm diam., calyx persistent on rachillae when fruits fallen off; pits 2 – 5 mm diam., 5 – 7 pits per 1 cm rachilla length. Staminate flowers 2 – 2.5 × 2 – 3 mm, asymmetrical; sepals 1.8 – 2 × 2 mm, imbricate, rounded, strongly keeled; petals 1 – 2 × 1 – 1.8 mm, triangular, brown at apex and base; stamens 12 – 15; filaments 0.7 – 1 × 0.2 – 0.3mm; anthers 1 – 1.5 × 0.5 – 0.8mm; pollen size, long axis 36 – 43 μm, short axis 27 – 33 μm, proximal wall thickness 1.5 – 2 μm, distal wall thickness not observed, tectum surface microfossulate-rugulate, trichotomosulcate grains present; pistillode 0.7 – 1 × 0.2 – 0.5 mm, trifid. Pistillate flowers 4 – 5 × 3 – 4 mm; sepals 3 – 4 × 2 – 3 mm, imbricate, strongly keeled, dark brown to black; petals 3 – 3.5 × 2 – 2.5 mm; gynoecium 3.5 × 1.5 mm (including three recurved stigma 0.5 – 1 mm); staminodes circular, 0.5 – 1 mm height. Fruits 7 – 10 × 4 – 7 mm, ellipsoid to ovoid, light green becoming black when ripe. Seeds 4 – 5 × 3 – 5 × 3 – 5, ellipsoid to ovoid. </p></div>
+<div type="distribution"><p>This is the only species found to the west of Wallace’s Line, occurring in the southern part of Thailand, Malay Peninsula, Sumatra and Borneo.</p></div>
+<div type="biology_ecology"><p>Cyrtostachys renda grows in lowland peat swamp forest, especially in coastal areas, but more rarely occurs in peat swamps in uplands from 0 – 500 m above sea level.</p></div>
+<div type="conservation"><p>Vulnerable (VU). See Dransfield &amp; Johnson (1991), Kiew (1991), and Mogea (1991) for conservation status assessment.</p></div>
+<div type="uses"><p>This palm has limited traditional uses; stems are used for flooring and leaves for thatch. It is, however, a highly desirable and widely cultivated ornamental for tropical regions.</p></div>
+<div type="discussion"><p>Cyrtostachys renda differs from all other species in the bright red crownshaft and leaf sheath, the lowest number of leaflets (26 – 40 on each side), the leaflets being waxy white abaxially, the inflorescence branched mostly to 2 orders (possibly up to 3), the tectum surface of pollen rugulate, and its preferred habitat in lowland peat swamp forest in southern Thailand, Malay Peninsula, Sumatra and Borneo. In the protologue of Cyrtostachys renda, no material is cited although a reference is made to Blume’s account in Rumphia, published some years later, in which the Korthals specimen is mentioned (Blume 1838, 1843). We formally designate this specimen as lectotype. In the case of C. lakka, Beccari (1885) cited two specimens, Beccari PB 2674 and 4038, both of which are extant at FI. Harold E. Moore annotated Beccari PB 2674 (FI) as lectotype in 1956, but to our knowledge did not publish this lectotypification. We have formalised this typification here. The transfer of Cyrtostachys lakka to a synonym of C. renda has already been made by Whitmore (1982). The bright green stems and brilliant red to orange crownshafts make Cyrtostachys renda a highly desirable and widely cultivated ornamental. Infraspecific taxa have been described from cultivation and the number of these could increase in parallel to horticultural demand. Ellison &amp; Ellison (2001) introduced two cultivars, C. renda ‘Apple’ and C. renda ‘Orange Crownshaft’, followed by Waddel (2002) with his C. renda ‘Theodora Buhler’. Before them, Tucker (1992) reported, that in Singapore Botanic Garden grew C. renda ‘Ruby’ and that it was one of the most treasured specimens of all, and he also discussed a strange brown crownshafted form of C. renda in Florida. All the cultivars of C. renda were described based on different stem and crownshaft colours. </p></div>
+<div type="materials_examined"><p>THAILAND. Narathiwat Province: Tak Ban, Phru Kok Daam, March 1985, Niyondham 852 (BKF, K!); Tho daeng, c. 30 km SE of Narathiwat, 50 – 100 m a.s.l., Nov. 1990, Barfod &amp; Ueachirakan 41772 (AAU, BKF, K!, PSU); to Daeng, 75 m a.s.l., Oct. 1996, Barfod et al. 43888 (AAU!, BKF, PSU). N of Sritamerat, Ta Samet, c. 50 m a.s.l., Jan. 1928, Kerr 14332 (K!). SUMATRA. Aceh, Asdat 171 (BO!); Asahan, Polak s.n. (BO!); Bangka Island, Djebus Teysmann s.n. (BO!); Bengkalis, Selat panjang, 3 m a.s.l., Nov. 1919, Bequin 457 (L!, BO!); near Indrapura, Korthals s.n. (L!, K!; the type); Riau, Widyatmoko 399 (BO!); Widyatmoko 400 (BO!); South Sumatra, Dransfield JD 1252 (BO!); Natuna Island, Mogea 2990 (BO!). MALAY PENINSULA. Selangor: Telok swamp forest, Klang, March 1968, Dransfield 713 (K!). SINGAPORE.”cultivato nel giardino del Sig. Whampoa”, Anon. (holotype FI!). BORNEO. SABAH: Kudat distr., Pulau Balembangan, NE inner side Telok Lung, 10 m a.s.l., BCS-EFA-LM et. al. SAN 86702 (K!, KEP, L!, SAR, SING); Sandakan, Jan. 1921, Wood 1111 (A!, PNH, SAN). SARAWAK: Kuching, Nov. 1866, Beccari PB 2674 (FI!); 1865 – 1869, Beccari PB 3438 (K!); Bintulu, Sept. 1867, Beccari PB 4038 (FI!); 1929, Clemens 21377 (A!, BO!, K!); Miri distr., Rian road, 50 m a.s.l., April 1959, Saleh 1214 (K!, L!, S, SAR). BRUNEI DARUSSALAM: Belait, Labi, km 20 Labi road, burnt over white sand forest, level land, 50 m a.s.l., March 1992, Dransfield JD 7279 (K!); Bukit Bakong, Oct. 1992, Bernstein 278 (K!); Maruntungan, May 1932, Keith 2491 (K!). CULTIVATED. Indonesia: North Sumatra, Sibolangit Botanic Garden, 500 m a.s.l., Sept. 1927, Lörzing 12083 (L!); West Java, Bogor Botanic Garden, origin from Banka Island, loc. V. K. 37, April – May 1936, Furtado SFN 3/1/68 (BO!, K!, L!, SING); loc. V. G. no. 4., May 1903, Schoute s.n. (L!); Jan. 1906, n.n. (L!); n.n. (BO!). Malaysia: Penang Botanic Garden, Sept. 1900, Curtis 3527 (K!). UK: Royal Botanic Gardens Kew, Palm House, May 1998, 1982-5882 (K!). Seychelles: Victoria, Mali, Dec. 1971, Elizabeth 111 (K!). Singapore: Singapore Botanic Garden, Lawn K, Sept. 1929, Furtado s.n. (K!, SING). Thailand: Peninsular Botanic Garden Khao Chong, Trang, Barfod s.n. (AAU (photo)!). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

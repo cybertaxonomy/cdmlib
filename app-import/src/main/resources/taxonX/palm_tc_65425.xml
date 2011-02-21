@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis confusa</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 288 (1995)</citation>
+<type>Madagascar, Masoala, Antalavia, Feb 1988; Dransfield and Staniforth; JD6481</type>
+<type_loc>Holotypus K; isotypi MO, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>The specific epithet derives from the fact that of the first four specimens we saw two had been named as Neophloga, and the other two as Dypsis and Phloga respectively. It is indeed a palm looking like several other taxa at the same time!</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Tsikara (Betsimisaraka); Tsimikara (Sihanaka).</p></div>
+<div type="diagnosis"><p>D. scottianae superficialiter similis sed foliolis infra squamis dispersis infra tectis petalis floris staminati longioribus differt, a D. hiarakae rachillis brevioribus recedit.</p></div>  
+<div type="description"><p>Solitary or clustering palm. STEMS 3-7 m tall (Cours 1904 says 15 m), 1-4 cm diam.; internodes 1-11 cm long, green with some brown scales distally; nodal scars c. 5 mm; crownshaft c. 40 cm long, pale green with brown or reddish scales; wood white, hard. LEAVES 5-8 in the crown, pinnate; sheath 12-25 cm long, pale green, densely red-scaly but glabrescent (Perrier 15012: with irritant hairs), with rounded, ragged shoulders or with auricles to 1.5 cm long, the outer half open; petiole 3-32 cm long, 3-6 x 2-4 mm diam., with scattered brown scales; rachis 49-86 cm long, in mid-leaf 2.5-5 mm wide, with scattered scales or glabrous; leaflets 11-28 on each side of the rachis, in groups of 2-4 (-8) and in one plane or in slightly ascending fans, group interval 4-14 cm, the proximal 14-37 x 0.2-3.2 cm, median 21-36 x 0.7-2.6 cm, distal 8-20 x 0.2-2.6 cm, connate for 1.5-3 cm, main veins 1 (-3), in the distal pair 2-3, ramenta rarely present, faint reddish glands/scales present on the minor veins, plus occasionally in marginal bands, apices attenuate, unequal, distal pair dentate over a width of 5-6 mm. INFLORESCENCE interfoliar, branched to 2 orders, erect; peduncle 20-37 cm long, 2.5-12 x 2-6 mm diam., densely reddish pubescent; prophyll 13-29 cm long, 0.9-1.5 cm wide, borne at 5-14 cm above the base of the peduncle, with scattered scales, open in the distal 1.5-7 cm; peduncular bract inserted at 2-25 cm from the base of the peduncle, 17-24 cm long, green with scattered scales, split over its B   length, with a beak of up to 1.5 cm, circumscissile; rachis 10-36 cm long, scaly, with 8-18 branched and 8-17 unbranched first order branches, the proximal with an axis of up to 8 cm long and with up to 11 second order branches; rachillae yellow to orange, 2.5-15 cm long, c. 1 mm diam., minutely scaly/puberulous to glabrous. STAMINATE FLOWERS with sepals 0.6-1 x 0.7-1.3 mm; petals 1.9-2.5 x 1.2-1.7 mm, orange; stamens 6, 1- to biseriate, filaments 0.9-1 mm, thin, anthers 1.1-1.4 x 0.6-0.7 mm, dorsifixed, not versatile; pistillode 0.6- 0.8 x 0.3-0.5 mm. PISTILLATE FLOWERS with sepals 0.8-1 x 1.1-1.3 mm; petals 1.8-2.3 x 1.8-2.2 mm; staminodes 0.2-0.4 mm; pistil only seen as young fruit. FRUIT orange to red, ellipsoid with a pointed apex, 6-10 x 3-5 mm. SEED 3-5 x 2.5-3.5 mm, with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Masoala, Mananara and Betampona.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest or peat swamp forest; flat ground or ridge top; 5-300 (-900) m.</p></div>
+<div type="conservation"><p>Rare, possibly Vulnerable. Found in several sites, but only one of these is in a protected area. Numbers are thought to be low.</p></div>
+<div type="uses"><p>Stems used to make blowpipes (fide Cours).</p></div>
+<div type="discussion"><p>Most of all this species reminds us of D. scottiana from which it differs in the leaflets with scattered scales abaxially, and the longer staminate petals; the rest is gradual: rachis, group interval, leaflets and rachillae are as long as, or slightly longer than specimens of D. scottiana. It also resembles D. hiarakae, from which it is only distinct by the length of the rachilla.  
+Moramanga: Mantady, Dec. 1991 (fl.), <author>Beentje</author> &amp; Andriampaniry 4545 (K, TAN) keys out as this taxon, but looks quite different. It is clustering with overhanging stems; petiole 0.5-1 cm, leaflets 23-26 on each side of the rachis, almost regular, the median 13-16 x 0.9-1 cm; rachillae 10-13 cm. Similar are: Mandritsara/Andilamena: N of Andilamena, Nov. 1929 (bud), Perrier 15012 (P). Ambatondrazaka: Ambatondrazaka, Dec. 1944 (bud), Homolle 548 (K, P).</p></div>
+<div type="materials_examined"><p>Maroantsetra: Hiaraka, Oct. 1986 (dead infl.), Dransfield et al. JD6383 (K, TAN); Ambanizana, Oct. 1986 (fl.), Dransfield et al. JD6386 (K, TAN); idem, Feb. 1989 (fl.), Schatz &amp; Lowry 2616 (K, TAN); Andronabe, Feb. 1992 (fl., y.fr.), Zjhra &amp; Hutcheon 163 (K); Antalavia, Feb. 1988 (fl.), Dransfield &amp; Staniforth JD6481 (Holotype K; isotypes MO, TAN). Mananara Avaratra: Antanambe, April 1992 (y.fr.), Beentje et al. 4627 (BH, K, MO, P, TAN). Toamasina: Ambodiriana, Dec. 1944 (bud), Cours 1904 (K, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus thwaitesii</name>
+<author>Becc.</author>
+<citation>Hook. f. Fl. Brit. Ind. 6 : 441. 1892</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11 : 137. 1908 and Appendix PI. 10,11,12,13,1913</bibref>
+<bibref>Basu in Journ. Econ. Tax. Bot. 6 : 229. 1985</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A strong climber, about 10 m or more long; stem cluster forming, with leafsheath to 4.5 cm in diameter; exposed stem smooth, yellowish green with 30 - 40 cm long internodes. Leaves ecirrate, about 4 m long in full grown plants; leafsheath and petiole covered with light brown felt-like coating, armed with series of flattened, broad-based, blackish spines jointed at their base; ocrea absent; rachis channelled above, armed with groups of flattened straight spines on upper side and recurved claws with black tips, most conspicuous on lower side; leaflets elongate, ensiform, basal leaflets in groups of 2 - 3 leaflets on each side of the rachis; middle and upper leaflets to 80 cm long, to 5 cm wide at middle, more or less regular and equidistant on rachis with conspicuous black bristles on margins; terminal leaflets smallest, jointed at their base. Male and female inflorescences flagelliform, simply branched; partial inflorescences 60-80 cm long, with 40 - 50 cm space in between the partial inflorescences; axial portion of the partial inflorescences armed with whorls of black tipped claws; primary bract funnel-shaped, lacerate at mouth; secondary bracts on their exposed parts covered with small spines with tuberculateba.se. Male rachillae yellow, flattened, to IS cm long, inserted within the mouth of the respective basal bracts; male flowers distichous, 20-30 in number, narrowly oblong, 8-10 mm x 3 mm, obliquely trigonous at base; calyx campanulate, divided half way into triangular lobes; female rachillae to 30 cm long; bracteoles funnel-shaped, truncate, prolonged on one side into triangular points; involucrophorum cupular; involucre regularly cupular; female flowers ovate,? - 8 mm long; fruiting perianth non-stalked; base of the calyx hardens to form a cushion. Fruits 2.2 x 2.5 cm, ellipsoid to ovoid, suddenly contracted into a solid beak, fruit scales brownish along the margin, broadly channelled at middle, arranged in 12 longitudinal series; seed one, suborbicular, 12 mm x 11 mm; endosperm homogeneous.</p></div>
+<div type="distribution"><p>INDIA (Kerala, Tamil Nadu, Goa, Maharastra, Karnataka), SRI LANKA.</p></div>
+<div type="biology_ecology"><p>Frequent in moist forest, on slopes and high valleys of the Western Ghats.</p></div>
+<div type="cultivation"><p>Cultivated in the Indian Botanic Garden, Howrah. Experimental cultivation exists in the Kerala Forest Research Institute, Pecchi, Kerala, it is also cultivated in trial plots of the Kodagu Forest Division, Kamataka.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Due to the highly glossy surface and strength, the cane is used for making good quality furniture; one of the most exploited rattans of South India.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

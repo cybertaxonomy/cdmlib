@@ -1,0 +1,64 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis lutescens</name>
+<author>(H. Wendl.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 212 (1995)</citation>
+<type>Madagascar, Ambila-Lemaitso; Dransfield et al.; JD6441</type>
+<type_loc>Holotype K; isotypes BH, P, TAN</type_loc>
+<synonymy>
+<name>Chrysalidocarpus lutescens</name>
+<author>H.Wendl.</author>
+<bibref>H.Wendl. Bot., Zeitg. 36 8: 117 (1878)</bibref>
+<bibref>Beccari, Bot. Jahrb. 38 Beibl. 87: 32 (1906)</bibref> 
+<bibref>Beccari, Palme del Madagascar 38 (1914)</bibref> 
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseilles&#233;r. 10, 3: 13 (1922)</bibref> 
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 9 (1938)</bibref> 
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 103, fig. 29 (1945)</bibref> 
+</synonymy>
+<synonymy>
+<name>Chrysalidocarpus baronii var. littoralis</name>
+<author>Jum. &amp; H Perrier</author>
+<bibref>Jum. &amp; H Perrier, Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 3, 1 (1): 35 (1913)</bibref> 
+<type>Madagascar, near Tampolo R mouth; Perrier; 12058</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+<synonymy>
+<name>Chrysalidocarpus glaucescens</name>
+<author>Waby</author>
+<bibref>Waby, Kew Bull. 1923:376 (1923)</bibref> 
+<type>Cult. Victoria Gardens, Trinidad; Waby; 9849</type>
+<type_loc>Holotype K</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>One of the best-known Madagascar palms (at least under its old name): this species is very widespread in cultivation all over the tropics, doing well under a wide range of conditions. This is in strange contrast to its native country, where it is restricted to a special habitat: white sand forest in a narrow strip close to the sea. The name means 'becoming yellow' and refers (probably) to the leaf sheath, petiole and rachis.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Rehazo, Lafahazo, Lafaza (Betsimisaraka).</p></div>
+<div type="description"><p>Graceful clustering palm in tufts of 4-20 plants. STEMS 1-7 m high, occasionally with 1-2 small branches, 5-12 cm diam., the base occasionally with a swelling to 30 cm high, 40 cm diam.; internodes 2-12 cm, yellowish or pale grey-brown, more distally green to grey with waxy white bloom. LEAVES 5-11, spiral or more often tristichous, porrect and strongly arching; sheath yellowish with white waxy bloom, (28-) 39-60 cm, 11-15 cm diam., abaxially with dense scattered scales distally, adaxially orange and glabrous, with slight ligules (to 3 mm) or with rounded shoulders; petiole 19-37 cm long, proximally 1.7-3.5 x 2.5 cm, distally 0.7-2 x 0.8-2 cm, channelled with sharp edges, yellow or yellowish orange, with few abaxial scales, proximally on the adaxial side with a triangular swollen extension to the sheath lining; rachis 1.1-1.9 m long, proximally channelled, in mid-leaf keeled and 1.5-1.8 x 0.9 cm diam., yellow or yellow-orange, with small scattered scales; leaflets 44-59 on each side of the rachis, regular, stiff, in one plane on each side of the rachis but the leaflets on opposite sides at an angle of 90-120&#176;, adaxially green, abaxially slightly waxy and grey, the proximal 35-66 x 0.6-1.8 cm, median 44-70 x 1.3-3 cm (interval 1.7-4 cm), distal   7-37 x 0.6-1.5 cm (terminal pair joined for up to 3.5 cm), the apices attenuate, with 5-9 faint veins but with only the midrib very prominent on both surfaces, with a few tufts of large ramenta on the abaxial midrib, and with many small scattered glands in long lines on the minor veins (these sometimes absent?). INFLORESCENCE interfoliar, sometimes the fruiting stage infrafoliar, spreading, with spreading rachillae, branched to 3 orders (rarely to 2 or 4 orders); peduncle 34-88 cm long, flattened, proximally 2.7-6 x 1-3 cm, distally c. 1.3-2.7 x cm diam., glabrous; prophyll 31-102 cm, borne at 5-47 cm above the base of the peduncle, 3.3-4.2 cm wide, with narrow wings, split only at the apex for 7-16 cm, with scattered scales; peduncular bract inserted at 38-68 cm from the base of the peduncle, 48-60 cm long, cm wide, closed for the distal 10 cm, with a beak of 2-5 cm, pale brown, waxy and glabrous or with a few scattered scales, abscising and carried up by the lengthening inflorescence and rather quickly deciduous; non-tubular peduncular bracts few, 3-5 x 10-12 mm; rachis 20- 110 cm, glabrous, with 5-13 branched and 8-14 unbranched first order branches, the proximal of these with flattened bases 1-1.5 x 0.6- cm and sub-tended by bracts of 6-7 mm high; rachillae 6-30 cm long, 2-5 mm diam.; triads distant proximally, more dense distally, inserted in shallow pits; rachilla bracts proud, acute. STAMINATE FLOWERS with sepals 1.6-1.8 x 2-2.4 mm, hooded, rounded, gibbous, keeled; petals connate for 1-1.3 mm to the receptacle, free for 1.3-2.2 x 2-2.3 mm, ovate, acute; stamens 6, uniseriate, the filaments 2.8- mm long, anthers 1.6-1.8 x 0.8 mm, dorsifixed; pistillode 2.5-2.8 x 0.4-0.5 mm. PISTILLATE FLOWERS with sepals 2-2.2 x 2.4-2.5 mm, hooded, neither gibbous nor keeled; petals free, 2.8-3.2 x 2.3-3 mm, orbicular or broadly ovate, with small apicula; staminodes 0.3-0.4 mm, thin, empty; ovary c. 3 x 1.4 mm, with short stigmas. FRUIT yellow, ellipsoid to obovoid, 12-18 x 7-10 mm, with a pointed apex; endocarp long-fibrous, the fibres almost free. SEED ovoid with an obtuse apex and a pointed base, 11-16 x 6-9.5 mm, with homogeneous endosperm. Germination adjacent-ligular; eophyll bifid.</p></div>
+<div type="distribution"><p>E Madagascar.</p></div>
+<div type="biology_ecology"><p>Littoral forest or heath vegetation on white sand, also on rock; persists in secondary growth and may be locally common. Alt. 5-35 m.</p></div>
+<div type="conservation"><p>Not threatened. Total numbers of this palm in the wild are estimated at more than a thousand.</p></div>
+<div type="uses"><p>Local uses not recorded, but this is one of the most important ornamental palms in commerce.</p></div>
+<div type="discussion"><p>Wendland described the genus Chrysalidocarpus and the species <name>Chrysalidocarpus lutescens</name> at the same time; he also mentioned that this was a common indoors palm in Europe, known as Areca or Hyophorbe indica or lutescens, and also as Areca borbonica or A. dicksoni (= Dictyospermum album); none of these names refers to the Madagascar material. [<name>Chrysalidocarpus lutescens</name> is not based on the Bory name Hyophorbe lutescens, since Wendland states categorically that he is describing the species as distinct from Hyophorbe. Areca lutescens Bory was described from specimens from R&#233;union, and is a synonym of Hyophorbe indica Gaertn. Areca borbonica is an old garden name for Dictyosperma album (Bory) 
+H. Wendl. &amp; Drude. None of these palms conforms to the description Wendland gave for his new species, with its green leaf-sheaths with a waxy bloom combined with a clustering habit]. 
+With D. arenarum and D. psammophila it forms a complex that requires further study, particularly since all three taxa occur in the same area and almost in the same habitat. This complex seems close to D. baronii and D. onilahensis, to which it bears an uncanny resemblance.  We are tentatively including Chrysalidocarpus glaucescens Waby in synonymy. This species was based on a particularly glaucous and robust plant cultivated in Trinidad. It is certainly larger in all its parts than D. lutescens but we do not think it can be anything else.</p></div>
+<div type="materials_examined"><p>Sambava: 7km NE of Anjangoveratra, June 1992 (sd.), Beentje &amp; Andriampaniry 4690 (K, TAN, MO). Maroantsetra: Maroantsetra For. Sta., Oct. 1963 (ster.), Moore 9018 (TAN); Manambia, Oct. 1986 (y. infl.), Dransfield et al. JD6407 (K, P, TAN). Mananara Avaratra: Tapolo (Tampolo) R mouth, Oct. 1911 (bud), Perrier 12058 (P); Antanambe, Oct. 1991 (fl.), Beentje 4460 (BH, K, MO, P, TAN). Toamasina: Mahatsara For. Res., Feb. 1992 (fr.), Noyes et al. 922 (K. P); Foulpointe (Mahavelona), Dec. 1962 (fl.), Bosser 16826 (P); 45km N of Toamasina, Feb. 1975 (fl.), Croat 32483 (P, TAN). Ampasimanolotra: Ambila, May 1928 (fr.), Decary 6303 (K, P, TAN); 5km S of Ambila-Lemaitso, Nov. 1986 (fl.), Dransfield et al. JD6441 (K, P, TAN). Manakara: 5km S of Manakara, May 1992 (old infl.), Beentje &amp; Andriampaniry 4676 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

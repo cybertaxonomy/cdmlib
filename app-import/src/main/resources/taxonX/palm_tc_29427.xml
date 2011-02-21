@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus convallium</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 800 (1982)</citation>
+<bibref>Dransfield, Ratt. Sabah 128 (1984)</bibref> 
+<bibref>Dransfield, Ratt. Sarawak 129 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Of deep narrow valleys</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Moderate clustering rattan tending to form rather low open thickets, occasionally high climbing to 20 m long; stem without sheaths 10-15 mm diam., with sheaths to 25 mm diam., internodes to 15 cm long. Sheaths dull green, armed with rather sparse brittle black flattened spines to 25 &#215; 5 mm, spine margins conspicuously fringed with hairs, deciduous pale brown scales present between the spines; knee conspicuous, usually unarmed; ocrea scarcely developed. Flagellum absent in juveniles, reaching 1.3 m only in mature stems, sometimes reduced to a short vestige. Leaf curved, conspicuously subcirrate to 1.5 m including petiole to 30 cm, the petiole armed with distant reflexed black spines along the margins; leaflets lanceolate, somewhat acuminate, 12-20 on each side of the rachis, in the proximal part arranged in very distant pairs, strongly divergent within the pairs, less distinctly paired near the tip, the longest leaflets to 40 &#215; 5 cm, those near the tip very much smaller, the smallest c. 4.5 &#215; 0.4 cm; leaflets armed along the margins only, transverse veinlets conspicuous. Male inflorescence to 1.5 m, bearing 5 evenly spaced partial inflorescences to 16 cm, bracts tightly sheathing, armed with scattered spines, the margins fringed with hairs; rachillae conspicuouslyrecurved; male flowers globular. Female inflorescence much shorter than the male with 1-3 short partial inflorescences. Mature fruit ovoid c. 4 &#215; 2.5 cm, with a conical beak and covered in c. 16 vertical rows of chestnut brown scales. Seedling leaf not known. (Fig. 46).</p></div>
+<div type="distribution"><p>Known from a single collection from Temburong. Otherwise known from scattered localities in Sabah and Sarawak. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known, though the cane appears to be of good quality.</p></div>
+<div type="discussion"><p>C. convallium is an infrequent rattan usually confined to the bottoms of small valleys, growing on small alluvial flats at altitudes up to 1400 m in Sabah, but usually in the lowlands. It is a very odd rattan; the paired concolorous leaflets suggest at first Daemonorops didymophylla but the leaf is subcirrate and there is a flagellum or flagellar vestige.</p></div>
+<div type="materials_examined"><p>TEM: Amo, Wong 1917.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

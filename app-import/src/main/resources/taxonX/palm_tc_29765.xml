@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus nielsenii</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 35: 843 (1981)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Ivan Nielsen, Danish Botanist, collector of the type</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender ?clustering rattan climbing to 1 m only; stem without sheaths 4 mm diam., with sheaths to 8 mm diam., internodes to 30 mm only. Sheath dull green, armed with numerous scattered brown stiff spines, 4- 8 mm long, with bulbous bases, those around the sheath mouth longer, to 10 mm, pale buff indumentum abundant between the spines; knee inconspicuous; ocrea well developed, tubular at first, later splitting to give auricles. Flagellum not seen, but inflorescences flagellate. Leaf ecirrate to 38 cm long including the petiole c. 8 cm long; petiole armed with scattered reflexed spines to 2 mm and abundant reddish-brown hairs; leaflets acuminate, &#177; linear or narrow lanceolate, 1 on each side of the rachis, grouped in 2's or 3's, the longest to 18 x 1.4 cm, apical leaflets to 13 x 1 cm, joined together at the base; lower leaflet surface bearing scattered reddish-brown hairs particularly at the base, leaflet tips bristly. Inflorescence only the male known, flagellate, longer than the leaves, to 95 cm, with 5 partial inflorescences; peduncle c 35 cm, very slender, bracts tightly sheathing, inconspicuous; rachillae few, c. 35 mm long, purplish brown, bearing distichous rather lax flowers. Other parts not known (Fig. 78).</p></div>
+<div type="distribution"><p>Known only from the type collection from G Mulu National Park, 4th Division. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>C. nielsenii grows in sclerophyllous ridge top vegetation on limestone at an altitude of c. 275 m above sea level. Its affinities are obscure though it may be related to C javensis.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

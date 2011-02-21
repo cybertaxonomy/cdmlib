@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis lantzeana</name>
+<author>Baill.</author>
+<citation>Bull. Soc. Linn. Paris 2:1163 (1893)</citation>
+<bibref>Becc., Bot. Jahrb. Syst. 38 Beibl. 87: 13 (1906)
+</bibref>
+<bibref>Becc., Palme del Madagascar 11 (1912)</bibref>
+<bibref>Jum. in Ann. Inst.Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 6 (1): 30 (1918)</bibref>
+<bibref>Jum., Bull. Acad. Malgache 6: 7 (1923)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 13 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 12 (1945)</bibref>
+<type>Madagascar, Bay of Antongil, 7 Oct 1871; Lantze; s.n.</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Dypsis lantzeana var. simplicifrons</name>
+<author>Becc.</author>
+<bibref>Becc., Bot Jahrb Syst 38 Beibl 87: 13 (1906)</bibref> 
+<bibref>Becc., Palme del Madagascar 13 (1912)</bibref>
+<type>Madagascar; Mocquerys; 332</type>
+<type_loc>Syntypes G-DC</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This is a common palm in the rain forests surrounding the Bay of Antongil. It grows in the forest undergrowth and rarely exceeds about 4 m tall. It could be confused with D. forficifolia but can be distinguished by its very hairy rachillae. It is in cultivation in the Palm House of the Royal Botanic Gardens, Kew. This is a most attractive species with its neat habit, young leaves tinged reddish and cherry-red inflorescence branches. The species is named for the collector of the type.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Slender solitary or clustered forest undergrowth palm. STEM to 4 m tall, 0.7-2 cm diam., internodes 0.8-3 cm long, stem surface with scattered brown scales. LEAVES 6-15 in crown; sheath 8-9 x 1.5-2 cm, pale green to ivory-coloured, striate, with abundant caducous dark scales, auricles present, to 8 x 4 mm, or not evident; petiole absent or to 10 cm, c. 3.5 mm wide with scattered dark brown scales; rachis 19-47 cm; blade entire bifid to 40 x 15 cm, split to half its length, or leaflets 3-9 on each side of the rachis, generally leaflets somewhat sigmoid, tinged pink when newly emerging, 4.5-26 x 0.5-7 cm, sometimes several very small leaflets crowded at base of rachis, apical leaflets 10-16 x 3.5-6 cm, diverging at a rather wide angle, adaxial surface sparsely dotted with minute brown scales, abaxially with scattered punctiform scales and often with conspicuous ramenta to 20 mm long on ribs. INFLORESCENCE interfoliar, branching to 2-3 orders, the branches often somewhat reflexed; peduncle 21-50 cm long, c. 2.5 mm diam. near base; prophyll 10-30 x c. 0.7 cm, membranous, sparsely scaly; peduncular bract exceeding prophyll by 7-25 cm; rachis 21-35 cm; rachillae c. 50 to over 120 in number, 2-6 cm long, c. 0.8-1 mm diam., often reflexed, usually cherry-red when young, densely covered with long branched brown hairs, triads c. 1.5 mm distant, rachilla bract laciniate, it and flowers almost completely obscured by rachilla hairs. STAMINATE FLOWERS spherical, c. 1x 0.85 mm; sepals imbricate, rounded, irregularly splitting, c. 0.3 x 0.4 mm; petals 1.0 x 0.8 mm; stamens 3 (rarely 2 or reduced to 1), antesepalous, filaments connate in basal 25 mm, free filaments c. 0.3 mm, anthers sagittate, c. 0.1 x 0.1 mm, staminodes absent; pistillode dome-like. PISTILLATE FLOWERS c. 1.2 mm diam.; sepals 0.3 x 0.4 mm, broadly imbricate, irregularly erose; petals striate, triangular c. 1.2 x 1.0 mm; staminodes 6; ovary globular c. 0.7 mm diam. Mature FRUIT ellipsoid, cherry-red ripening dark purple, 10 x 7 mm. SEED 7 x 4 mm, endosperm homogeneous, embryo lateral near the base.</p></div>
+<div type="distribution"><p>Northeastern Madagascar, particularly around the Bay of Antongil.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; up to 350 m.</p></div>
+<div type="conservation"><p>Vulnerable. The distribution is limited, and the forests are under some threat from shifting cultivators.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>In the habit, leaf form and inflorescence branching, D. lantzeana is very similar to D. forficifolia. The rachillae of the present species are densely covered in trichomes, whereas in the latter they are usually glabrescent and only rarely with scattered trichomes. Furthermore, the rachilla bracts in the present species are usually so hairy that the bracts and the sub-tended flowers are partially obscured. In one remarkable collection, Dransfield JD6363, staminate flowers consistently (at least in the Kew duplicate) have only one stamen. This is a particularly tomentose form. It would be interesting to investigate further into this unistaminate condition. In another collection Henderson et al. 756, some staminate flowers have only two stamens.  We have pondered at length over the correct orthography of the specific epithet. Baillon originally published "lantzeana"; the type annotation and all subsequent authors have used "lanceana". We suggest, however, that because Baillon used the spelling Lantze, the collector must have been Lantze rather than Lance (though it is not certain to us whether these are different collectors or the same), and thus favour the former rather than the latter spelling.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Bay of Antongil, Oct. 1871 (buds), Lantze s.n. (in part - leaf on second sheet = probably D. fibrosa) (holotype P); idem, Aug. 1912, Perrier 12048 (P); Maroa, 1897 (fl.), Mocquerys 332 (type of var. simplicifrons, FI); Nosy Mangabe, 1897 (fl.), Mocquerys 412 (FI); idem, Mocquerys 418 (FI); idem, Feb. 1988 (fl.), Henderson et al. 756 (K, MO, NY, P, TAN); idem, April 1988 (fl.), Schatz &amp; Gentry 2097 (K, MO, TAN); Masoala, May 1974, Morat 4954 (P); Masoala, Hiaraka, Oct. 1986, Dransfield et al. JD6363 (BH, K, MO, P, TAN). Mananara Avaratra, 10 km west of Antanambe, Oct. 1991, Beentje 4465 (BH, K, MO, P, TAN); idem, April 1992, Beentje et al. 4619 (BH, K, MO, P, TAN); 2 km east of Andravolasoa, April 1992 (fr.), Beentje et al. 4641 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

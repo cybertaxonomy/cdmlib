@@ -1,0 +1,38 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus ruvidus</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 202 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 169 (1908) </bibref>
+<bibref>Dransfield, Ratt. Sarawak 176 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Latinization of ruvido (Italian) rough or coarse</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary or clustering rattan climbing to 25 m; stem without sheaths to 15 mm diam., with sheaths to 25 mm diam., internodes 15-25 cm long. Sheaths dark green armed with triangular spines with swollen decurrent bases and very low ridges, indumentum abundant between the spines, sheath drying dull blackish-brown beneath the indumentum; knee conspicuous; ocrea membranous, soon tattering. Flagellum to 2.5 m. Leaf ecirrate, conspicuously curved, to 80 cm; petiole to 15 cm in juveniles, very short or absent at maturity; leaflets to c. 20 on each side of the rachis, regularly arranged, lanceolate, rather distant, the basalmost held across the stem, the longest to 35 &#215; 4 cm; apical pair joined for c. 1/4 their length, leaflets drying dull green, transverse veinlets obscure. Inflorescences c. 2 m long with up to 5 partial inflorescences; partial inflorescences rather diffuse; bracts subtending rachillae minutely roughened; male rachillae 20-50 &#215; 1.5 mm bearing strictly distichous flowers; female rachillae 30-80 &#215; 3 mm bearing strictly distichous flowers. Young fruit rounded, covered in 16 vertical rows of dull brown scales. Seedling leaf not known.</p></div>
+<div type="distribution"><p>Known from a single collection. Elsewhere in Sarawak. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of good quality.</p></div>
+<div type="discussion"><p>A poorly known species. See notes under C. muricatus.</p></div>
+<div type="materials_examined"><p>Without prov.: BRUN 15066.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

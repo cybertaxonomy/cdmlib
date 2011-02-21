@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis tsaratananensis</name>
+<author>(Jum.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 225 (1995)</citation>
+<type>Madagascar, Tsaratanana; Perrier; 15265bis</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Neodypsis tsaratananensis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 2 (2): 15 (1924)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 19 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 140, fig. 38 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A rare clustering palm from a montane habitat. The name refers to the type locality, Tsaratanana.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kindro (Antankarana).</p></div>
+<div type="description"><p>Clustering palm, intermediate in size between D. lutescens and D. baronii (Perrier). LEAVES: sheath 18 cm or more long, pale brown, distally with small scales, 5.5 cm wide when flat; petiole 12-46 cm long, proximally 1.5 x 0.4 cm, distally 1.1 x 0.3 cm, with sparse scales; rachis in mid-leaf 1.3-1.5 cm wide, keeled, sub-glabrous or with some white waxy scales; leaflets 55-60 on each side of the rachis, in groups of 1-4, group interval 3.5-8 cm, the proximal 40-70 x 0.7-0.9 cm, median 55-60 x 1.5-1.7 cm (interval &#60; 0.5 cm), distal 13-30 x 0.5-1.7 cm, main vein 1, margins thickened, glabrous, apices unequally bifid, attenuate. INFLORESCENCE interfoliar, branched to 2 orders (more?), recurved; peduncular bract (fide Perrier) beaked, deciduous; rachis c. 24 cm long, with 9 branched and 16 unbranched first order branches; first order branches seen (distal?) with a rachis to 4 cm long, 8 x 3 mm diam., with 5 rachillae, glabrous; rachillae 9-19 cm long, c. 2 mm diam., glabrous, with distant superficial triads; rachilla bract rounded. STAMINATE FLOWERS with sepals 2.3-2.5 x 1.8-2 mm; petals connate to the receptacle for 1.8-2.2 mm, free parts 4.3-4.8 x 2-3 mm; stamens 6, uniseriate, filaments 3.6-4.5 mm, flattened, anthers 1.5-1.6 x 0.6-0.8 mm, versatile, obtuse; pistillode 2-2.3 x 0.8-1 mm. PISTILLATE FLOWERS with sepals 2.5-2.7 x 2.2-3.5 mm; petals 3-3.8 x 3 mm; staminodes  c. 0.4 mm; ovary 2 x 1.2 mm. FRUIT ellipsoid, 12-15 x 9-11 mm, rounded at the apex; endocarp fibrous, the fibres much anastomosing. SEED 13-14 x 9-10.5 mm, with few ruminations to 1 mm deep, corresponding to slight grooves on the outside.</p></div>
+<div type="distribution"><p>Only known from Mt Tsaratanana.</p></div>
+<div type="biology_ecology"><p>1000-1700 m.</p></div>
+<div type="conservation"><p>Uncertain. Not seen for more than seventy years, but this mountain has not been</p></div>
+<div type="uses"><p>Palm-heart edible and highly esteemed.</p></div>
+<div type="discussion"><p>Data in protologue, not apparent in type or its label: inflorescence branched to 2 or 3 orders.  The flowers (present in one of the syntypes) are not described in the protologue, which is most unusual; Jumelle only mentions buds. 
+The leaves, and local name, are reminiscent of D. madagascariensis, but the inflorescence and fruit look more like D. baronii. This species is close to  D. oreophila.</p></div>
+<div type="materials_examined"><p>Ambanja/Bealanana: Tsaratanana massif, Dec. 1922 (fl., fr.), Perrier 15265 (P, syntype); idem, May 1924 (fr.), Perrier 15265bis (P, lectotype).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

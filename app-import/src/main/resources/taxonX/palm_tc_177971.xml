@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis multifida</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Mus. Berlin. 13: 588. 1937</citation>
+<bibref>Mart., Hist. Nat. Palm, 3: 254. 1850</bibref>
+<bibref>Becc., Ann. Roy. Bot. Gard., Calcutta 13: 247. 1931</bibref>
+<type>China, Guangxi, Chen Bien; S.P. Ko; 56092</type>
+<type_loc>Holotype probably SYS or IBSC</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems recorded to 2.5 m tall, diam. not recorded. Leaf sheath fibers close together with coarse outer fibers partially obscuring finer inner ones, producing a diagonal-lined mesh, ligule often remaining intact at maturity; petiole to 4 mm wide, margin smooth; blade large, with conspicuous palman, segments 14, folds 30, the longest segments to 450 mm, narrow (1 or 2 folds), tapering, apices pointed with secondary splitting, primary splits to within 23–66 mm of the blade base, thick in texture. Inflorescence, male not seen, female branching to 2 orders; prophyll similar in appearance to rachis bracts; rachis bracts 3 or 4, large, tubular, overlapping the base of the next rachis bract, relatively thick in texture, dark brown, lacking tomentum, sometimes also a distal incomplete rachis bract present; rachis greatly exceeding the bracts, overall length to 560 mm, broad 8–10 mm diam., rachillae densely packed on the rachis, those of the second order held at right angles to those of the first order, relatively short and narrow, pale brown with pale rusty brown tomentum. Male flowers unavailable. Female flowers 3–5 mm apart, to 4.5 × 3.0 mm; calyx to 2 mm, tomentose, lobes to 0.8 mm with pale edged irregular margin; corolla darkly pigmented, with a long receptacular-stalk to 2.5 mm; staminodes present. Fruit to 8 mm diam., borne on a receptacular-stalk to 5 mm long; epicarp shiny translucent papillose, apical region with conspicuous lenticels. </p></div>
+<div type="distribution"><p>South China, West Guangxi, South East Guangdong.</p></div>
+<div type="biology_ecology"><p>Habitat. 1000–1500 m, shrub in mixed forest on rocky slopes.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The specimens seen indicate that this is probably the largest and most robust species of Rhapis. Complete stem width, blade shape and colour of abaxial surface were not available from the specimens or recorded on the notes on the sheets. All the specimens seen with inflorescence were female; one was in flower and the others were in fruit. The fruit is yellow according to Feng 13462. The distinctive large number of segments which do not split close to the blade base produce a conspicuous palman. A notable characteristic of this species is the relatively long receptacular-stalk of the fruit. </p></div>
+<div type="materials_examined"><p>Representative specimens. SOUTH CHINA: Guangxi, S.K. Lau 38648 female post-fruit (A); A.N. Steward &amp; H.C. Cheo 158 female (A); Guangdong, K.M. Feng 13462 female (in fruit) (A). CULTIVATED: Japan: Honshu, Izu, M. Mizushima 874 (A).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

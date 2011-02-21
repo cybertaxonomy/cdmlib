@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Plectocomiopsis triquetra</name>
+<author>(Becc.) J.Dransf.</author>
+<citation>Bot. J. Linn. Soc. 81: 6 (1980)</citation>
+<bibref>Dransfield, Kew Bull. 37: 250 (1982)</bibref>
+<bibref>Dransfield, Ratt. Sabah 43 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 215 (1992)</bibref>
+<synonymy>
+<name>Calamus triqueter</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 3: 62 (1886)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Three-angled</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Moderate, clustering high-climbing rattan with stems to 40 m; stem without sheaths distinctly 3-angled, to 8 mm diam., with sheaths to 20 mm diam., internodes to 30 cm long, shorter in exposed stems. Leaf sheath dull to bright green, very sparsely armed with golden yellow horizontal spines to 1 cm arranged in a vertical line below the petiole and along the other 2 angles, also with scattered brown indumentum; knee absent; ocrea conspicuous, usually bright yellowish-brown, up to 2 cm, tightly enclosing the stem, distinctly longer on the side opposite to the petiole, tending to form a triangular limb. Leaf to 1.2 m including the petiole to 15 cm and cirrus to 60 cm, leaflets 5-10 on each side of the rachis, &#177; regularly arranged, narrow lanceolate, to 30 &#215; 3 cm with very sparse marginal bristles. Inflorescences about 5 produced simultaneously, the male more finely branched than the female, to 35 cm, bearing pendulous branches to 18 cm; flowers in groups of 4-7. Mature fruit as in P. mira; details of scales not available. Seedling leaf not known. (Fig. 81, Pl. 16A, 16B).</p></div>
+<div type="distribution"><p>Known from one collection. Elsewhere in Sarawak, Sabah and Kalimantan. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>Plectocomiopsis triquetra is confined to peat swamp forest and kerapah in the lowlands. For differences between this species and P. mira see under the latter.</p></div>
+<div type="materials_examined"><p>BEL: Seria, Badas F.R., Dransfield J. 7282</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

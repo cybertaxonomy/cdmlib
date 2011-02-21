@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis soanieranae</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 266 (1995)</citation>
+<type>Madagascar, Soanierana-Ivongo, Ambahoabe; Lam and Meeuse; 5659</type>
+<type_loc>Holotypus L</type_loc>
+</nomenclature>
+<div type="introduction"><p>The description of this species is not complete, but the single long fat rachilla makes it so distinct that we feel obliged to give it a name, which refers to the locality.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Tsinkary (a rather general Betsimisaraka name for smaller palms).</p></div>
+<div type="diagnosis"><p>D. boivinianae affinis folio pinnato foliolis fasciculatis sed inflorescentia spicata rachilla longa distincta.</p></div>
+<div type="description"><p>Solitary palm. STEM 4-5 m tall, distally with internodes 4-6.5 cm long, c. 1.5 cm diam., distally with dense scales; nodal scars 2-5 mm. LEAVES pinnate; sheath 16-17.5 cm long, with scattered scales and ragged shoulders; petiole 13-13.5 cm long, 5-6 x 3-5 mm diam., flat adaxially, with scattered scales but glabrescent; rachis 71-95 cm long, with scattered scales, in mid-leaf 2-4 mm wide; leaflets 19-21 on each side of the rachis, in groups of 2-3, group interval 6-9 cm, the most proximal 17 cm below the next, proximal 17-25 x 0.4-0.8 cm, median 21-37 x 1.3-1.9 cm (interval 0.3-2 cm), distal 16-22 x 1.2-2.2 cm, lanceolate or slightly sigmoid, main veins 1-3, with faint reddish scattered scales on the minor veins, apices attenuate, distal pair joined for 1-3 cm, with 2-3 main veins and narrowly (&#60; 4 mm) dentate apices. INFLORESCENCE interfoliar, unbranched; peduncle 40-47 cm long, dense red-pubescent, 3-4.5 mm in diam.; prophyll 20-28 x 0.8 cm, with scattered scales, open for the distal 1-2.5 cm, borne at c. 9 cm above the base of the peduncle; peduncular bract 22-27+ cm exserted from the sheath, opening in the distal 3-9 cm, densely scaly; rachilla (16 cm in Perrier, bud?) c. 72 cm long, 4-5 mm diam., densely puberulous, with rather densely packed triads. STAMINATE FLOWERS with sepals 1.7-2.2 x 1.2-1.5 mm; petals 2.7-3.2 x 1.6-1.8 mm; stamens 6, slightly biseriate (offset 0.1 mm), filaments 1-1.2 mm, thin, anthers 1.4-1.7 x 0.6-0.7 mm, versatile to slightly sagittate; pistillode 0.4-1.2 x 0.2-0.5 mm, trifid. PISTILLATE FLOWERS not seen. FRUIT not seen.</p></div>
+<div type="distribution"><p>Only known from Soanierana-Ivongo.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest, 75 m.</p></div>
+<div type="conservation"><p>Probably extinct. Not seen since 1938, in an area where the forest has been severely fragmented and is under continuing pressure.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Distinct among all Dypsis species by its unbranched inflorescence combined with the large pinnate leaf and long rachilla. The inflorescence reminds us of a long version of that of D. pervillei.</p></div>
+<div type="materials_examined"><p>Soanierana-Ivongo: Ambahoabe, Dec. 1938 (fl.), Lam &amp; Meeuse 5659 (Holotype, L); Simianona (Simiane) R., Sept. 1912 (bud?), Perrier 12065 (FI, photo at K; absent from P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

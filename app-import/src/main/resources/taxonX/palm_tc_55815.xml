@@ -1,0 +1,44 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Two new species of Daemonorops (Arecaceae) from Vietnam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 56, No. 3, pp. 661-667</mods:publisher>
+<mods:dateIssued>2001</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops poilanei</name>
+<author>J. Dransf.</author>
+<citation>Kew Bull. 56: 663 (2001)</citation>
+<type>Vietnam, Annam, massif de Cô Inh, Nhatrang; Poilane; 2715 </type>
+<type_loc>Holotypus P</type_loc>
+<synonymy>
+<name>Daemonorops geniculata</name>
+<author>Conrard, non (Griff.) Mart.</author>
+<bibref>Conrard, non (Griff.) Mart., in Gagnepain and Conrard, Fl. Gen. de l'Indochine 6: 1054 (1937)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>Statura mediocris fructu et forma inflorescentiae D. geniculatae (Griff.) Mart. similis sed collis spinarum vaginae folii carentibus, petiolo spinis elongatis carenti et rachillis conspicue fractiflexis differt.</p></div>
+<div type="description"><p>edium-sized rattan climbing to 3 - 4 m tall; stem without sheaths 12 mm diam., with sheaths 20 - 23 mm diam.; internodes 13 - 15 cm long. Leaves cirrate, 2.8 m long including the cirrus; sheaths densely armed with solitary and grouped, but not whorled spines of various sizes, the longest reflexed, pale straw colour, flattened, 20 - 45 x 5 mm often with wavy margins and scarcely swollen bases, intermingled with much smaller spines, slightly reflexed or horizontal, to 3 - 10 x 1 - 2 mm, caducous brown indumentum present between spines; knee only slightly swollen, armed as the rest of the leaf sheath; thin membranous caducous auricles to 10 x 5 mm present on emerging leaf-sheaths; petiole to 70 cm long, 11 - 12 mm wide near the base, tapering very slightly distally, ± flattened adaxially near the base, slightly concave distally, abaxially rounded, abaxially armed with scattered large spines 10 - 20 mm long near the base and much shorter spines to 3 x 1 mm, adaxially very densely armed with short thick spines to 3 x 1 mm particularly near the base, distally very sparsely armed abaxially and with rather regular single or paired spines to 10 mm towards the margins, scattered brown scales also present; rachis sparsely armed with reflexed groups of 1 - 3 spines; leaflets linear-lanceolate, 28 - 36 on each side of the rachis, arranged in groups of 2 - 5, 3 - 5 cm distant within the groups, the longest to 40 - 60 x 3 - 3.7 cm, very sparsely armed along margins, transverse veinlets numerous, sinuous, conspicuous. Inflorescences (only pistillate known), to 65 cm long; peduncle 11 - 15 cm long, c. 8 - 10 x 4- 5 mm in section, armed along the margins with regularly arranged reflexed or horizontal spines 5 - 15 mm long with swollen bases, sometimes accompanied by much shorter spines, caducous brown indumentum also present; prophyll 30- 33.5 cm long, 2.7 - 3.4 cm wide, 2-keeled, adaxially unarmed, abaxially near the base armed with pale straw-coloured spines 5 - 20 mm long along the keels, distally armed with rather dense spines to 3 mm all over the abaxial face, also bearing dense caducous brown indumentum; subsequent bracts not 2-keeled and bearing much sparser armature, the distalmost bracts scarcely armed; partial inflorescences up to 7, the longest near the base to 12 cm long, bearing 6 - 8 zigzag rachillae 2 - 5 cm long, 1 - 3 mm diam., dense caducous brown indumentum abundant between flowers, especially in bud. Sterile staminate flower 6.5 x 2 mm; calyx tubular, 2.5 mm, shallowly 3-lobed, striate, sparsely scaly; petals 6 x 1.5 mm, very sparsely scaly; filaments 3 x 0.4 mm, empty anthers 2.5 x 0.3 mm. Pistillate flower 9 x 4 mm; calyx truncate, 4.5 mm high, very shallowly 3-toothed, striate, membranous, with sparse grey indumentum; corolla tubular in basal 4 mm, lobes 5 x 4 mm, striate, sparsely scaly; staminodes borne at the mouth of the corolla tube with empty anthers 2 x 0.4 mm; ovary c. 4 mm diam., stigmas 4 x 1.5 mm. Mature fruit spherical, c. 20 - 24 mm diam, with a conspicuous beak to 3 x 3 mm; scales arranged in 15 vertical rows, pale brown, shining, with dark margins, and deep central grooves. Seed spherical c. 15 - 17 mm diam; endosperm deeply ruminate; embryo basal.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The species is somewhat reminiscent of D. geniculata but differs in the armature of the leaf sheaths, in the markedly zigzag rachillae and the more robust distally explanate perianth of the pistillate flowers. In D. geniculata the sheaths have a distinctive armature consisting of slender spines that are borne on distinct collars; furthermore there are strikingly long, slender golden spines along the margins of the lower part of the petiole that help to trap litter falling into the crown of the palm - these are lacking in D. poilanei. A sterile collection in K, made by Mark Newman in 1990 (Newman 227) 2 km NW of Cat Bin [a forest police substation in Cam Xuyen District, Nghe Tinh Prov. (now split into two provinces)] is almost certainly this species. </p></div>
+<div type="materials_examined"><p>VIETNAM. Annam: massif de C6 Inh, Nhatrang, rocky gravelly soil, alt. 700 m, 16 Sept. 1922, Poilane 4586 (P); 5 March 1922, Poilane 2715 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

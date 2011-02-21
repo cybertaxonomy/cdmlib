@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis thermarum</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 376 (1995)</citation>
+<type>Madagascar, Fianarantsoa, Ranomafana National Park, Nov 1994 (fl); Dransfield and Beentje; JD7511</type>
+<type_loc>Holotypus K; isotypi BH, MO, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This is clustering undergrowth palm that is abundant in the undergrowth in deep valleys of the Ranomafana National Park. It can easily be distinguished by its few narrow and long leaflets and the densely hairy short inflorescences. It forms rather untidy clumps at the foot of steep slopes. The species name is the Latin for "of the hot springs", a translation of the Malagasy ranomafana.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Fanikara (Tanala).</p></div>
+<div type="diagnosis"><p>Inflorescentia gregem specierum floribus staminatis triandris staminibus antepetalis, staminodiis antesepalis alternantibus similis, sed floribus staminatis 6 staminibus biseriatis, antheris didymis differt, D. angustae similis sed inflorescentia rachillis numerosioribus longioribus differt, D. anovensi similis sed textura folii forma inflorescentiae diversa differt. </p></div>
+<div type="description"><p>Slender solitary or clustering undergrowth palm, forming small clumps of up to 8 stems. STEMS to 2 m tall, 4-9 mm diam., internodes 10- 42 mm long, dark green with pale yellow-green vertical striping, glabrescent, or with very sparse pale brown scales. LEAVES c. 6 in crown; sheaths 6-8 cm long, 0.6 -1 cm diam., sparsely brown scaly, whitish or pale yellow-green, forming a welldefined crownshaft, auricles present, rather narrow, 6-11 x 4-5 mm; petiole 4-14 cm long, 2 mm diam., sparsely scaly; rachis 8-14 cm; leaflets 2-5 on each side of the rachis, &#177; equal, mostly composed of a single fold, occasionally with up to 4 folds, sometimes slightly irregular, 15-35 x 0.4-2.5 cm, adaxially lamina with scattered pale brown punctiform scales, abaxially with abundant pale brown punctiform scales and scattered bands of caducous dark brown scales. INFLORESCENCE branching to 1, very rarely to 2 orders, much shorter than the leaves; peduncle 10-16 cm long, c. 2 mm wide; prophyll 9-12 x 0.5-0.7 cm, rather densely covered in reddish brown indumentum; peduncular bract similar to prophyll,    exceeding it by 0.5-4 cm; rachis 5-10 cm, c. 2 mm diam., very densely covered in long laciniate dark red-brown hairs; rachillae 11-28, tending to diverge &#177; at right angles, short and rather stocky, 1.5-4 cm long, c. 1.5 mm diam., increasing slightly in diameter in fruit, somewhat angular, densely covered in red-brown laciniate hairs; rachilla bracts c. 2 mm apart, short with numerous marginal laciniate hairs. STAMINATE FLOWERS rounded, c. 1.5 mm diam.; sepals rounded, irregularly keeled, 0.9 x 0.9 mm; petals triangular, striate, 1.2 x 1.4 mm; stamens 6, biseriate, antesepalous filaments 0.4 x 0.3 mm, antepetalous 0.5 x 0.3 mm, anthers didymous, 0.3 x 0.3 mm; pistillode absent. PISTILLATE FLOWERS globular, c. 1.3 mm diam.; sepals 1 x 0.4 mm, imbricate, keeled; petals 1.4 x 1.3 mm, broadly imbricate at the base, striate; staminodes 3 or more, irregular, minute; ovary c. 1 mm diam., with slightly eccentric stigmas. FRUIT orange at maturity, fusiform, 11 x 4 mm. SEED 7 x 3.5 mm; endosperm homogeneous, embryo lateral near the base.</p></div>
+<div type="distribution"><p>Only known from Ranomafana National Park.</p></div>
+<div type="biology_ecology"><p>Humid montane rain forest, on steep slopes; 800-1400 m.</p></div>
+<div type="conservation"><p>Rare, probably not at present under threat, despite being geographically restricted.</p></div>
+<div type="uses"><p>Stems used for making traps to catch crayfish.</p></div>
+<div type="discussion"><p>This species appears to be a common palm of the forest undergrowth on steep slopes in the National Park at Ranomafana. It resembles D. angusta but can be distinguished by the staminate flowers having six rather than three stamens. The leaflets are also of a different texture. D. anovensis, known only from its type, is superficially similar, but has an inflorescence of very different form. Collections made in November 1994 (Dransfield &amp; Beentje JD7511) have flowers at staminate anthesis, and these flowers appear to have six fertile stamens. Despite this, the affinities of the palm remain with the species formerly included in Trichodypsis.</p></div>
+<div type="materials_examined"><p>Fianarantsoa: Ranomafana National Park, Nov. 1994 (fl.), Dransfield &amp; Beentje JD7511 (Holotype K; isotypes BH, MO, P, TAN); idem, July 1992 (fl.), Beentje &amp; Beentje 4734 (BH, K, MO, P, TAN); idem, Dec. 1986, Marion Nicoll 203 (K, MO, P, TAN); idem, March 1992, Malcomber &amp; Schatz 1309 (K, MO, P, TAN); idem, April 1993, Malcomber et al. 2446 (K, MO, TAN); idem, March 1991 (fl., fr.), Beentje 4420 ( K, BH, MO, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

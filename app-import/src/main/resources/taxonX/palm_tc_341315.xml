@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Loo</mods:namePart>
+<mods:namePart type="given">A.H.B.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele boumae</name>
+<author>W.J.Baker and D.Watling</author>
+<citation>Kew Bull. 59: 62 (2004)</citation>
+<type>Fiji, Taveuni, Bouma, Cakaudrove, Oct. 2001; Watling; 170127</type>
+<type_loc>Holotypus K; isotypi L, NY, SUVA</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Niuniu, a common generic name for tree palms in many parts of Fiji.</p></div>
+<div type="diagnosis"><p>H. vitiensi affinis sed fructu majore oblongo, triadibus decussatis dispositis et foliis indivisis in submaturitate longe persistentibus differt.</p></div>
+<div type="description"><p>Robust, solitary tree palm to 32 m. Stem 26 - 28 cm diam., brown, nodal scars inconspicuous, adventitious root growth forming an expanded cone at base of stem c. 15 cm in height. Leaf to 2.4 m long including petiole, to c. 3 m in juveniles; sheath 90 cm long, forming distinct crownshaft, green, with thin, caducous, powdery indumentum of fine, white scales, interspersed with white, filamentous scales and scattered, dark brown scales; petiole 33 - 35 cm (to 1.2 m in juveniles), 60 x 14 mm at base, channelled adaxially, rounded abaxially, indumentum as sheath; rachis c. 2 m, arcuate, strongly so in canopy-emergent individuals, indumentum as sheath; leaflets 52 - 57 on each side of rachis, briefly praemorse and sometimes notched at apices, adaxial surface dull green, abaxial surface silvery grey-green, mid-rib yellow, arranged regularly, ascending, not drooping at tips, lamina entire or nearly so in non-emergent individuals up to 12 m or more in height, longest leaflet at middle of rachis to c. 97 x 3.5 cm, apical leaflets c. 13 x 0.6 cm, ramenta not observed. Inflorescence infrafoliar, c. 70 cm long at anthesis including c. 10 cm peduncle, branched to 2 (possibly 3?) orders, protogynous; prophyll not seen, caducous; peduncular bracts c. 3, first peduncular bract caducous, not seen, but most likely closely resembling prophyll, remaining peduncular bracts and rachis bracts consisting of low membranous flanges, to 16 x 2 mm, sometimes bearing an acutely apiculate extension; primary branches c. 17, to c. 50 cm long, closely spaced, inserted at a narrowly acute angle to the rachis; rachillae to c. 45 x 0.4 cm, somewhat arching; rachilla bracts very inconspicuous; triads 2 - 5 mm apart, decussate. Staminate flowers 10 - 11 x 3.5 - 4.5 mm shortly before anthesis, asymmetrical, white; calyx with 3 triangular, imbricate sepals c. 1 x 1.5 mm; corolla with 3 narrowly triangular to lanceolate, valvate petals 8 - 10 x 3 - 3.5 mm, outer surface spotted at base; stamens 6, filaments 0.6 - 1 x 0.5 - 0.6 mm, anthers 5 - 5.8 x 1 - 1.2 mm; pistillode minute, trifid. Pistillate flowers c. 4 x 3 mm at anthesis, cream white; perianth forming low, leathery cupule, calyx with 3 rounded, imbricate sepals c. 2 x 3 - 3.5 mm; corolla with 3 rounded, imbricate petals to 1.5 - 1.8 x 2.5 - 3 mm; staminodes 1 - 3, minute; ovary 2.5 x 2.5 mm, globose, protruding from perianth cupule at anthesis, style absent, stigmas minutely trifid. Fruit oblong, 10 - 14 x 6- 8 mm, pericarp c. 0.5 mm thick, epicarp yellowish white when ripe, with persistent perianth forming a narrow cylinder at base, 3 - 3.5 mm diam. Seed c. 9 x 6 mm, oblong; endosperm homogeneous; embryo basal.</p></div>
+<div type="distribution"><p>Restricted to the island of Taveuni, Fiji. Currently known with certainty only from the Bouma area, but unconfirmed reports suggest it also occurs in the Soqulu area (R. Phillips, pers. comm.).</p></div>
+<div type="biology_ecology"><p>Undisturbed forest and mature secondary forest between 50 and 800 m.</p></div>
+<div type="conservation"><p>Data deficient (Fuller 1997).</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The existence of an undescribed species of Hydriastele from the island of Taveuni in Fiji has been suspected for some time (Fuller 1997). Recent collections have allowed us to compare this palm with other species in the region. It most closely resembles H. cylindrocarpa and H. vitiensis, but is readily distinguished from both. The new taxon is separated from the other Fijian species, H. vitiensis, by its rachillae with decussate triads as opposed to triads arranged in alternating whorls of three, by fruit morphology (10 - 14 x 6 - 8 mm and symmetric oblong in the former, c. 10 x 3 mm and slightly curved cylindrical in the latter), and, most strikingly, by its leaves remaining subentire to entire until the crown emerges from the forest canopy. Individuals over 12 m in height have been observed bearing scarcely divided leaves. The leaves of H. cylindrocarpa from Vanuatu behave in a similar way, but the fruit of this species differs from that of the new taxon in bearing an open cupule of enlarged, persistent perianth, while the persistent perianth of the new taxon is not enlarged and forms a small, narrow cylinder at the base of the fruit. The new species, H. boumae, is named after Bouma, the district of Taveuni in which it grows.</p></div>
+<div type="materials_examined"><p>FIJI. Taveuni: Wakolotu, nr. Bouma Village, May 1995, McClatchey 1143 (FTG, SUVA); Bouma, Cakaudrove, Oct. 2001, Watling 170127 (holotype K; isotypes L, NY, SUVA), March 2002, Watling 170129 (K, SUVA).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

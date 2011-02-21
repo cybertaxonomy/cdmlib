@@ -1,0 +1,60 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia lowreyana</name>
+<author>Rock</author>
+<citation>Mem. Bernice P. Bishop Mus. 8: 53. 1921</citation>
+<type>Waialeia cliffs, Molokai, Hawaii, June 1918; Rock; s. n.</type>
+<type_loc>Holotype BISH!; isotype FI</type_loc>
+<synonymy>
+<name>Pritchardia brevicalyx</name>
+<author>Becc. &amp; Rock</author>
+<bibref>Becc. &amp; Rock, Mem. Bernice P. Bishop Mus. 8: 56. 1921</bibref>
+<type>Wailau Valley, Molokai; Rock; 16000</type>
+<type_loc>Holotype FI; isotype BISH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia lowreyana var. turbinata</name>
+<author>Rock ex Becc.</author>
+<bibref>Rock ex Becc., Mem. Bernice P. Bishop Mus. 8: 55. 1921</bibref>
+<type>Waialeia Ridge, Molokai, Hawaii; Rock; 17344</type>
+<type_loc>Holotype BISH!; isotype GH</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia donata</name>
+<author>Caum</author>
+<bibref>Caum, Occas. Pap. Bernice P. Bishop Mus. 9(5): 12. 1930</bibref>
+<type>Cult., Honolulu, Oahu, Hawaii; Caum; 152</type>
+<type_loc>Lectotype BISH!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole with moderate fibers; leaf blade slightly undulate, divided 2/5-1/2, abaxial surface incompletely covered with scattered lepidia, segment tips drooping to occasionally stiff; inflorescences composed of 1-3 panicles, equaling or exceeding petioles in flower, exceeding petioles or equaling leaf blades in fruit, panicles branched to 2 or 3 orders, rachillae glabrous to clothed with scurfy indumentum in flower, glabrous in fruit or rarely with scurfy indumentum; fruits 35-60 x 30-45 mm, globose to ovoid. </p></div>
+<div type="distribution"><p>Wet to moist forests in valleys and on exposed slopes and sea cliffs, eastern Molokai, 250-1000 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia lowreyana is distinctive in its leaf blades incompletely covered abaxially with lepidia, inflorescences equaling to exceeding petioles in flower and exceeding petioles to equaling leaf blades in fruit, glabrous rachillae, and large fruits. On Molokai it occurs with or near P.forbesiana, but the latter differs in its petioles with a greater abundance of fibers proximally and inflorescences shorter than or equal to the petioles. One anomalous collection, Rock 17346 from Waiakapua Valley, Molokai, is rather striking in its fruiting rachillae densely clothed with scurfy indumentum. This well-documented species from Molokai has frequently been identified as or confused with Pritchardia gaudichaudii and P. macrocarpa (see the account of the former under P. martii and the latter in the section on dubious or insufficiently known species for an explanation). In Beccari and Rock (1921), photographs of P. lowreyana are erroneously captioned as P. gaudichaudii ( PI. VIII A, B) and as P. macrocarpa (Pl. XII A, B). Pritchardia lowreyana has long been cultivated in Honolulu, the most famous plant being the tree at Hillebrand's former residence, now Foster Botanical Garden of the Honolulu Botanical Gardens system, and has official designation as an Exceptional Tree of Hawaii (Belknap 1982). The holotype of Pritchardia lowreyana at BISH is unnumbered while the isotype at Fl is numbered Rock 14075. St. John (1984, p. 479) selected one of the syntypes of P. donata (Caum 152) as the lectotype for this binomial. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Molokai: Kahanui Ridge, Bishop 1684, 1685 (HAW); Waialeia, Rock s. n., March 1918 (BISH), Rock s. n. June 1918 (BISH), Rock 17344 (BISH); Waiakapua Valley, Rock 17346 (BISH); Wailau, Degener 9713 (BISH), Forbes 542 (BISH), Fosberg 9673 (BISH), Rack 16000 (BISH), St. fohn 23337, 23522 (BISH); Kapailoa, above Haupu Bay, Woad 9233 (PTBG). CULT. U.S.A. Hawaii. Molokai: Meyer Residence at Kalae, Rack 17340 (BISH). Lanai: beginning of trail to Haalelepaakai Summit, Woad 7516 (PTBG). Oahu: Honolulu, Caum 152 (BISH), Caum 153 (BISH); Wahiawa Botanical Garden, Annable 3637 (BISH); Mary Foster's Garden (Foster Garden, HBG 71.500), Bishop 1673 (HAW), Rack 12800, 12817 (BISH), Sinego s. 11., 25 Sept. 1995 (BISH); Bishop Museum, Bishop s. n., 31 March 1971 (BISH). Kauai: National Tropical Botanical Garden, NTBG 890138.005, ex ridges above Wallau, Chapin 65 (PTBG), O'Rourke 5 (PTBG), Tangalin 1 (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

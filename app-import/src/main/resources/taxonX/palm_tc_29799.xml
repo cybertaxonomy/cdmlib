@@ -1,0 +1,31 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay peninsula</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus padangensis</name>
+<author>Furtado</author>
+<citation>Gdns' Bull. Singapore 15 (1956) 62</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Named after G. Padang, the type locality</p></div>
+<div type="vernacular"><p>rotan ?</p></div>
+<div type="description"><p>Slender ? clustering rattan. Stem without sheaths to 4 mm in diameter internodes to 15 cm long (? juvenile stems) with sheaths to 7 mm in diameter. Sheaths dull greenish brown armed with sparse, horizontal to slightly reflexed uniform spines 5-10 mm long with slightly bulbous bases, and caducous grey scales scattered between spines; minute spicules absent. Ocrea smooth, to 2 mm high. Knee well developed. Flagellum to 60 cm long. Leaf ecirrate to 40 cm long, including petioles to 16 cm long; petiole armed with very sparse short lateral spines to 2 mm long and remote reflexed hooks on underside. Leaflets about 20 on each side of the rachis, close and regular, &#177; equal sized throughout, to 13.5 cm long by 5 mm wide, with a dense tuft of orange-brown hairs on the underside at the point of origin, unarmed below, with scattered pale bristles on the nerves on the upperside; rachis with scattered red brown hairs. Only male inflorescence known, to 35 cm long with 1 partial inflorescence bearing arcuate rachillae to 2.5 cm.</p></div>
+<div type="distribution"><p>Trengganu: G. Padang - known only from the type (Kiah and Moysey 33,376).</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>This species was found at 1,300 m altitude on G. Padang, in Trengganu. It is very close to Calamus exilis but differs in the absence of small rough spines on the sheaths and in the presence of scattered relatively long spines. It may prove to be only a variety of C. exilis, but in the absence of more material it seems wise to retain it as distinct.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga mooreana</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 34: 783 (1980)</citation>
+<type>Borneo, Sarawak; Dransfield; JD 5313</type>
+<type_loc>Holotypus K; isotypus SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Named for my friend and frequent mentor, Prof. H. E. Moore Jr,</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>P. malaianae affinis sed habitu robustissimo, foliis majoribus foliolis colore texturaque dissimilibus, inferne non albescentibus, a rachide angulo majore abeuntibus differt; inflorescent- iae rachillae 5-8 (in P. malaiana 1-4); fructus maturans forma dissimilis, colore viridi, tum flavo, tum aurantiaco, maturitate atropurpureo (in P. malaiana colore eburneo, tum roseo, tum cerasino, maturitate atro- purpureo).</p></div>
+<div type="description"><p>Clustering, unarmed, pleonanthic, monoecious palm. Stem with basal suckers forming rather close clumps; stem robust to 8 m or more tall, to 2.5 cm diam. just above the nodes, to 3.5 cm diam. just below the nodes, rarely with greater diameter; nodal scars very conspicuous, about 1.5 cm wide, whole internode to 9 cm long; stem surface dull purplish-brown above, grey-brown below, in young parts densely covered with chocolate-coloured scales. Crownshaft to 1.25 m long, slightly swollen, dull purplish-brown. Leaves 6-8 in crown; leaf sheath to 75 cm long, dull purplish-brown, densely covered with chocolate-coloured scales; leaf without sheath to 3 m long; petiole 35-100 cm, slightly channelled adaxially, rounded abax- ially, c. 1.5 cm in diam., with caducous chocolate-coloured scales; leaflets to 25 on each side of the rachis, regularly arranged, rather stiff, diverging from the rachis at an angle of about 60 degrees, mostly 2-ribbed except for occasional 1- or 3-ribbed leaflets, and the apical compound pair; lowermost leaflets to 33 x 2 cm, long-acuminate; mid lamina leaflets to 65 x 4 cm, very gradually narrowed towards the tip; uppermost 2-3 leaflets on each side with lobed tips corresponding to the major ribs; apical leaflet pair joined along mid line for about 15 cm of rachis, with lower margin to 33 cm long, and upper margin to 23 cm long, to 10 cm wide, conspicuously lobed with adaxial splits to 1 cm deep and abaxial splits to 4 cm deep; lamina dull dark green, coriaceous when fresh, drying dull green-brown, only slightly paler on abaxial surface, very slightly rugose when dried, glabrous except for very sparse brown scales along abaxial ribs on abaxial surface. Inflores- cence infrafoliar, pendulous; prophyll not known; peduncle to 5 cm long, flattened, 2 x 0.5 cm wide at the prophyll scar; rachillae 5-8 held ± in the same plane, the longest to 27 cm long, flattened, 6 x 3 mm in T.S.; triads arranged distichously, to 10 mm distant with subtending bracts very inconspicuous. Staminate flowers unknown. Pistillate flower depressed globose; calyx with 3 rounded, imbricate, ciliate-margined lobes to 2.5 mm long, 5 mm wide, joined for c. 0.5 mm at the very base; corolla with 3 rounded, imbricate, ciliate-margined lobes to 2.25 mm long, 4.5 mm wide; staminodes absent; ovary rounded, about 3 mm diam., tipped with irreg- ularly lobed and flattened stigma. Half-mature fruit greenish, with black calyx and corolla, borne on a yellowish-green rachilla, the fruit ± cylindrical, 15 x 5 mm. Maturing fruit turning yellowish, then orange, finally deep purplish-black, the rachillae eventually yellowish to orange. Mature fruit broadly ellipsoid, very slightly curved, to 3 x 1.5 cm, with a distinct low collar surrounding the apical stigmatic remains; epicarp smooth but not satiny; endocarp with conspicuous longitudinal fibres; seed adhering to the endocarp, to 2 x 1 cm, attached basally; endosperm deeply and irregularly ruminate; embryo basal.</p></div>
+<div type="distribution"><p>So far P. mooreana is known only from the 4th and 5th Divisions of Sarawak.</p></div>
+<div type="biology_ecology"><p>So far P. mooreana is known only from the 4th and 5th Divisions of Sarawak where it seems to be confined to lowland forest. In the G. Mulu National Park it is one of the characteristic features of alluvial forest; in the Bintulu area, however, I have collected it at the edge of kerangas forest.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pinanga mooreana, named for my friend and frequent mentor, Prof. H. E. Moore Jr, is closely related to the highly polymorphic Pinanga malaiana (Griff.) Scheff. It differs from the latter in being very robust in all its parts, with leaf much larger with leaflets of a different texture and coloration, not greyish below, and diverging from the rachis at a much greater angle; the inflorescence has 5-8 rachillae as opposed to 1-4 (very rarely more) in P. malaiana, and the fruit is of a different shape in its development, and changes in colour from green to yellow to orange to purplish-black rather than cream to pink to red to purplish-black. Furthermore the fruit of P. malaiana has a curiously satiny texture which is absent in P. mooreana.</p></div>
+<div type="materials_examined"><p>SARAWAK. 4th Division, G. Mulu National Park, proposed extension, Sg. Buda near Sg. Medalam, alluvial forest, 100 m, DransfieldJD 5313. (holotype K; isotype SAR). Ulu Sg. Berar, Tii Puan Ching S 39580 (BH, K, SAR) Paul Chai S 39531 (BH, K, KEP, L, SAN, SAR); Miri: Lambir National Park, Awang Morshidi S 24085 (BH, K, SAR), Banyeng and Sibat S 24467 (BH, K, L, SAR, SING); 21st Mile, Lambir-Subis, Sylvester Tong S 36593 (K, SAR); Niah, Ulu Sg. Batu, Ilias Paie S 39047 (BH, K, L, SAN, SAR); Marudi, Batang Tinjar at Long Palau, Fuchs 21218 (A, G, K, L, SAR); Bintulu: Sg. Geraes, H. E. Moore 9148 (BH, K, SAR); Ulu Stiran, Labang, Ashton S 18076 (K, SAR); Nanga Sapulan, Segan F. R., Ilias Paie S 27019 (BH, K, L, SAR); Bt. Urang, Dransfield 776 (K); N Setungan, Ulu Segan, Ashton S 22006 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis robusta</name>
+<author>Burret</author>
+<citation>Notizibl. Bot. Gart. Mus. Berlin. 13: 587. 1937</citation>
+<type>China, Guanxi, Lungchow; S.P. Ko; 55429</type>
+<type_loc>Holotype SYS or IBSC; isotype IBSC</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem height not recorded, with sheaths to 11 mm diam., without to 6 mm. Leaf sheath fibers close together with outer coarse fibers, obscuring finer inner ones, producing a diagonal-lined mesh, ligule remaining intact at maturity; petiole to 1.2 mm wide, smooth; blade, with conspicuous palman, segments 4, folds 17–19, the longest to 218 mm, broad, sides curved, tapering at base and apex, apices oblique, with shallow secondary splitting, primary splits to within 16–37 mm of the blade base. Inflorescence, male unavailable, female branching to 2 orders; prophyll unavailable, rachis bracts 2, sometimes with a distal incomplete rachis bract, tubular, not overlapping the base of the next bract, relatively thin (papery), reddish brown, darker at the base, glabrous, tightly sheathing the rachis; rachis overall length to 220 mm, narrow, 2 mm diam., rachillae few, narrow to 0.5 mm diam., occasionally with sparse rusty tomentum. Flowers, male unavailable, female small to 1.8 × 1 mm; corolla tightly closed with a long receptacular-stalk to 0.9 mm; carpel to 1 mm long. Fruit unavailable. </p></div>
+<div type="distribution"><p>South China, Guangxi.</p></div>
+<div type="biology_ecology"><p>Habitat. Forest undergrowth.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Only one specimen of this species was available for study; more specimens are needed in order to gain a more complete picture. A notable characteristic of this specimen is that the apices of the bracts do not overlap with the base of the bract distal to them. The height was not recorded on the specimen label, but it is likely from the other measurements taken that this species is smaller than the other species and the specimen seen was more slender than any of the other specimens of the genus. According to the specimen label, the flowers are light green and the fruit is green. </p></div>
+<div type="materials_examined"><p>Representative specimens. SOUTH CHINA: Guanxi, S.P. Ko 55429 female (IBSC)</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

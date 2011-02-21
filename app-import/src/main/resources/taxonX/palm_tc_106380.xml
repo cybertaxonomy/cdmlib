@@ -1,0 +1,38 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia flagellaris</name>
+<author>Miq.</author>
+<citation>J. Bot. Néerl. 15 (1861)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(2): 143 (1918)</bibref>
+<bibref>Dransfield, Man. Ratt. Mal. Pen. 42 (1979)</bibref>
+<bibref>Dransfield, Kew Bull. 36: 180 (1981)</bibref>
+<bibref>Dransfield, Ratt. Sabah 20 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 25 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Bearing a whip</p></div>
+<div type="vernacular"><p>Wi Danan (Ib.)</p></div>
+<div type="description"><p>Robust clustering and branching rattan with stems climbing to 40 m or more, confined to peat swamp forest. Stems without sheaths to 2.5 cm diam. or more, with sheaths to 4 cm or more, internodes to 30 cm, longer in juveniles. Sheath &#177; unarmed, dull reddish-brown, covered in caducous black scales and pale brown hairs; ocrea tightly sheathing, unarmed, covered in scales and indumentum as the sheaths, tending to split opposite the petiole. Mature leaf to 2.5 m including the cirrus to 1 m and petiole to 15 cm. Leaflets 8-20 on each side of the rachis, borne on long stalks, narrow, to 30 &#215; 4.5 cm, dark bluish-green on the upper surface, brownish on the undersurface, with frequent bands of deciduous chocolate-coloured scales. Inflorescences to 75 cm, highly branched; rachillae numerous, to 12 &#215; 0.7 cm, dull brown tomentose. Fruit to 20 &#215; 12 mm, covered in 19-21 vertical rows of straw-coloured scales. Seed 12 &#215; 9 mm; endosperm deeply ruminate. Seedling leaf entire; juvenile leaves often very large and entire with blades reaching 100 &#215; 30 cm. (Fig. 4, Pl. 1A).</p></div>
+<div type="distribution"><p>Throughout the peat-swamps of Brunei at low elevations. Elsewhere throughout Borneo, Sumatra and Peninsular Malaysia.</p></div>
+<div type="biology_ecology"><p>K. flagellaris is confined to peat swamp forest where it is often the most conspicuous rattan.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Produces a good quality rotan merah.</p></div>
+<div type="discussion"><p>It is unmistakable with its robust habit, narrow leaflets that quiver in the wind and tightly sheathing, &#177; unarmed ocreas.</p></div>
+<div type="materials_examined"><p>BEL: Sungai Liang, Labi Road, Dransfield J. 6727. Without prov.: BRUN 15069.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

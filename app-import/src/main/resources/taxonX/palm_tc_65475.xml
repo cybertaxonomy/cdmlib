@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis louvelii</name>
+<author>Jum. &amp; H. Perrier</author>
+<citation>Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 21 (1913)</citation>
+<bibref>Becc., Palme del Madagascar. 59 (1914)</bibref>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille Fasc. 1: 38 (1918)</bibref>
+<bibref>Jum., Bull. Ac. Malgache 6: 19 (1923)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 13 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 24 (1945)</bibref>
+<type>Madagascar, Analamazaotra; Perrier; 11968</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p>A neat palmlet of the undergrowth of montane forest, first collected at Analamazaotra, Andasibe (Perinet). This is an easily distinguished species because of its deeply bifid leaf and slender inflorescence with few short rachillae. It has frequently been collected at the type locality where it is no longer very common near to the main trails. Louvel, after whom the palm is named, was a Forest Officer at the old French Forestry Station at Perinet (modern day Andasibe).</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Solitary slender palm of the forest undergrowth, rarely exceeding 1 m tall. STEM 7-10 mm diam., internodes 4-10 mm long, surface glabrous. LEAVES c. 5-10 in crown, tending to be held &#177; horizontally; leaf sheath 6-7 long, 1.0-1.4 cm diam., drying dull brown, bearing abundant dark brown scales, the mouth with two short triangular auricle to 4 x 3 mm; petiole absent or very short, not exceeding c. 2 cm; blade entire bifid, rather plicate, or, very rarely, divided into 3 distant narrow leaflets on each side; blade 19-50 cm long with a spread of 4.5-10 cm, the two lobes diverging at a very acute angle, 10-25 x 1.5-4 cm, where divided into leaflets, the leaflets 17-21 x 0.7-0.9 cm, adaxially with sparse punctiform scales, abaxially densely covered with brown punctiform scales. INFLORESCENCE interfoliar, arcuate, branching to 1 order, rarely the lowermost 1 or 2 first order branches branched to the second order; peduncle 20-35 x 0.15-0.2 cm, sparsely brown scaly; prophyll sometimes borne up to 2 cm above base of peduncle, 6-10 x 0.3-0.5 cm; peduncular bract exceeding the prophyll, 9-23 x 0.4 cm; rachis usually conspicuously shorter than the peduncle, 5-10 cm; rachillae generally few in number, 9-17, generally somewhat reflexed, 1.3-4 cm long, c. 1 mm diam., sparsely brown scaly, bearing rather densely arranged triads. STAMINATE FLOWERS at anthesis &#177; ovoid, 1.6 mm long; sepals rounded to broadly triangular, c. 0.7 x 0.7 mm, strongly keeled, inconspicuously dentate at the margins, abaxially slightly papillose, obscurely striate; petals connate in basal 0.25 mm, the lobes triangular, to 1 x 1 mm, abaxially smooth, glabrous; stamens 3 antesepalous, filaments to 0.75 x 0.3 mm, basally joined in the lowermost 0.2 mm, anthers somewhat sagittate, 0.5 x 0.3 mm, introrse; pistillode conical, minute, c. 0.1 mm high. PISTILLATE FLOWERS at anthesis c. 1.6 mm diam.; sepals rounded to broadly triangular, c. 0.7 x 0.7 mm, strongly keeled, inconspicuously dentate at the margins, abaxially slightly papillose, obscurely striate; petals c. 1.5 x 1.5 mm, rounded to broadly triangular; staminodes 3, free, irregularly strap-shaped 0.2-0.4 x 0.2 mm; ovary irregularly reniform, c. 1.2 mm at widest point, stigmas 3, eccentric near the apex, c. 0.1 mm long. Immature fruit narrowly fusiform. Mature FRUIT scarlet, irregularly ellipsoidal, apically somewhat pointed, 14 x 8 mm; epicarp minutely papillose, mesocarp soft, fleshy; endocarp broad fusiform, 12 x 5   mm, 0.5 mm thick, with brown, sparsely anastomosing fibres. SEED 11 x 4 mm, conforming to the endocarp shape; endosperm homogeneous; embryo lateral.</p></div>
+<div type="distribution"><p>Central Madagascar, Analamazaotra and environs.</p></div>
+<div type="biology_ecology"><p>Lowland and montane forest, usually in valley bottoms; 300-1100 m.</p></div>
+<div type="conservation"><p>Vulnerable; all recent collec tions are from one small area.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>No specimens were cited in the protologue (Jumelle &amp; Perrier 1913). Of the three specimens cited by Jumelle (1918), we have found only Perrier 11968 and thus designate this collection as type.  This is a beautiful, distinctive species, characterised by its dwarf habit, usually with narrow, rather plicate, entire bifid leaves and inflorescences with long arcuate peduncle and short rachis, bearing rather few somewhat reflexed short rachillae. The staminate flowers have three antesepalous stamens with short sagittate anthers, no staminodes and a very small, scarcely discernible pistillode. At present the species seems to have a very restricted distribution.</p></div>
+<div type="materials_examined"><p>Moramanga: Andasibe, Analamazaotra, (fl.), Perrier 11968 (holotype P); idem, Feb. 1921 (fl.), Perrier 15984 (K, P); idem, Dec. 1932 (fl.), Leandri 719 (P); idem, March 1991 (fl., fr.), Beentje &amp; Raharilala 4401 (BH, K, MO, P, TAN); Mantady, Dec. 1991 (fl.), Beentje &amp; Andriampaniry 4540 (K, MO, TAN); idem, April 1992 (fl., fr.), Beentje &amp; Dransfield 4655 (K); idem, Dec. 1992, Beentje &amp; Andriampaniry 4772 (K, TAN). Ampasimanolotra: Ct. d'Ambalarondra, Andranampony, April 1951 (fl.), Cours 4522 (P). Toamasina: Tampina, au sud de Tamatave, March 1942 (fl.), Decary 17691 (K, P). Ambohimanga Atsimo: Route d'Ambohimanga, 1952-1955 (fl.), Dequaire 27714 (K, P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

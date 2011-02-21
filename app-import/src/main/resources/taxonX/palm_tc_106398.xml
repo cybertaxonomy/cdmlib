@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia rigida</name>
+<author>Bl.</author>
+<citation>Rumphia 2: 167 (1843)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 18(2): 124 (1918)</bibref>
+<bibref>Furtado, Gard. Bull. Singapore 13: 315 (1951)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 38 (1979)</bibref>
+<bibref>Dransfield, Kew Bull. 36: 172 (1981)</bibref>
+<bibref>Dransfield, Ratt. Sabah 15 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 19 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Rigid</p></div>
+<div type="vernacular"><p>Wi Dahan (Ib.)</p></div>
+<div type="description"><p>Moderate rattan, clustering, frequently branching in the canopy, climbing to 50 m or more. Stem without sheaths to 2 cm diam., usually less, with sheaths to 2.5 cm, internodes to 20 cm or more. Sheaths dull green, densely covered with persistent grey indumentum and deciduous chocolate-coloured scales, and sparsely armed with triangular spines to 10 mm, rarely densely armed (juvenile shoots); ocrea to c. 4 cm long, tightly sheathing, &#177; truncate with a narrow tattering margin, rarely splitting, usually unarmed. Leaf to c. 1.5 m long, including the petiole to 10 cm and cirrus to 75 cm. Leaflets c. 5-7 on each side of the rachis, shining dark green on upper surface, bluish-grey beneath, the longest to 15 &#215; 8 cm, borne on a short stalk to 2.5 cm, chocolatecoloured scales occasionally present on ribs on the undersurface. Inflorescences produced from topmost up to 12 nodes, highly branched to 80 cm, bearing c. 8 partial inflorescences on each side, each with about 10 rachillae; rachillae slender, inconspicuously tomentose, to 150 &#215; 5 cm, dull dark brown. Fruit rounded, c. 1 cm diam., with 15 vertical rows of dark green to dull brown scales. Seed c. 8 mm diam., irregularly ruminate. Seedling leaf simple, dark shiny green on upper surface, grey beneath. (Fig. 1, Pl. 2A).</p></div>
+<div type="distribution"><p>Widespread throughout Brunei at altitudes up to about 500 m above sea level. Elsewhere throughout Borneo, Palawan, Sumatra, Malay Peninsula and south Thailand.</p></div>
+<div type="biology_ecology"><p>K. rigida is found in lowland and hill dipterocarp forests at altitudes up to 900 m but appears to avoid peat swamp forest.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Mainly local use.</p></div>
+<div type="discussion"><p>It may be confused with the closely related K. paucijuga, not yet recorded for Brunei, but the latter is much more slender, has no petiole, only 3-4 leaflets on each side of the rachis and a very small inflorescence with inflated primary bracts.</p></div>
+<div type="materials_examined"><p>BEL: Melilas, Bt.Batu Patam, Dransfield J. 6579.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

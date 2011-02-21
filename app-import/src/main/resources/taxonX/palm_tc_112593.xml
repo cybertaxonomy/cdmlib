@@ -1,0 +1,71 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Linospadix in Australia, with the Description of a New Species</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dowe</mods:namePart>
+<mods:namePart type="given">J.L.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Irvine</mods:namePart>
+<mods:namePart type="given">A.K.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 41: 192-197, 211-217</mods:publisher>
+<mods:dateIssued>1997</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Linospadix monostachyos</name>
+<author>(Mart.) H.Wendl.</author>
+<citation>Linnaea 39: 199 (1875)</citation>
+<type>Lectotype: Mart., Hist. Nat. Palm. 3: T. 155. figure 4. 1837.</type>
+<synonymy>
+<name>Areca monostachya</name>
+<author>Mart.</author>
+<bibref>Mart., Hist. Nat. Palm. 3: 178 (1838)</bibref>
+<bibref>F. Muell., Fragm. 5: 49. 1865</bibref>
+</synonymy>
+<synonymy>
+<name>Bacularia monostachya</name>
+<author>(Mart.) F.Muell.</author>
+<bibref>(Mart.) F.Muell., Fragm. 7: 103 (1870)</bibref>
+<bibref>Bentham, Fl. Austral. 7: 136. 1874</bibref>
+</synonymy>
+<synonymy>
+<name>Kentia monostachya</name>
+<author>(Mart.) F.Muell.</author>
+<bibref>(Mart.) F.Muell., Fragm. 7: 82 (1870)</bibref>
+<bibref>F. M. Bailey, Queensl. fl. 5: 1679. 1902</bibref>
+<bibref>Domin, Biblioth. Bot. 20(85): 499. 1915</bibref>
+<bibref>Evans &amp; Johnson, Contrib. NSW Herb. 21: 6. 1962</bibref>
+<bibref>Stanley &amp; Ross, Fl. South-east Queensl. 3: 270. 1989</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>In reference to the inflorescence being a single spike.</p></div>
+<div type="vernacular"><p>Walking-stick palm.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Solitary small to moderate palm. Stem 1.3-6 m tall,2-5 cm diam.; internodes elongate, green to grey with age; crown with 5-10 leaves; leaf bases persistent immediately below crown. Leaves to 130 cm long, irregularly segmented with united or single pinnae, or regularly pinnate with single pinnae; petiole 24-80 cm long, 5.5-8 mm wide; pinnae 10-30 per leaf, to 30 cm long, 5-200 mm wide, glossy mid- to dark green above, lighter green below, truncate with toothed apices; midrib and veins prominent on both surfaces; lamina, when backlit under 10X magnification, has numerous circular clear "cells" to 0.1 mm wide, linearly parallel to midrib and veins. Inflorescence to 100 cm long; peduncle 30-60 cm long; prophyll 20-30 cm long; rachis to 50 cm long. Staminate flowers pointed in bud, angular/pyramidal, 6-13 mm long; petals rigid, apically pointed, acutely heeled, green at anthesis, not widely opening at anthesis, 6-13 X 7-10 mm, with deep longitudinal striations in the dried state; stamens 8-12; connective apiculate and extending beyond attachment of anthers; anthers subulate. Fruit globose to ovoid to elongate/cylindrical1, 2-15 X 5-10 mm, red at maturity; epicarp smooth. Seed elongate/ellipsoid.</p></div>
+<div type="distribution"><p>From just north of Gympie (Qld)- Home Logging area-at 26˚05'S to John's Mt. just north of Taree (NSW) at 31˚30'S.</p></div>
+<div type="biology_ecology"><p>In rain forest from sea level to 1200 m elevation, primarily on basalt soils, less common on metamorphics and alluvial soils. Phenology: Fruiting December to June.</p></div>
+<div type="conservation"><p>Not threatened or rare.</p></div>
+<div type="uses"><p>Stem once used for walking-sticks and umbrella handles.</p></div>
+<div type="discussion"><p>Martius' (1837) protologue for L. monostachya (as Areca monostachya) refers to an unnumbered A. Cunningham collection from the Hastings River, New South Wales. This collection appears to be no longer extant, and therefore Martius' illustration Tab. 155. figure 4 has been designated here as the lectotype. Linospadix monostachya is a common species occurring in the rain forests of southern Queensland and northern New South. It is the largest species of the genus in Australia, and is distinguished by pointed angular/pyramidal staminate buds, mature flowers that are approximately twice the size as those in other species, globose fruit, and solitary habit. </p></div>
+<div type="materials_examined"><p>Representative specimens. QUEENSLAND: Wide Bay. Home Logging Area, SF 502, N of Cympie, 26˚05'S, 152˚43'E, 170 m alt., 5 Oct 1993, Bean 6681 (BRI); Moreton. Mooloolah R., Jowarra Reserve, on Track #1, 1 km from start, 26˚50'S, 152˚55'E,20 m alt., 1 Apr 1996, Dowe 0305 (BRI); Main Range NP, SW side of Mt. Bell, Terriot Brook, 28˚l3'S, 152˚29'E, 880 m alt. 9 Aug 1995, Forster 17409 (BRI): Mt. Barney, saddle between peaks, 28˚17'S, 152˚41'E, I 100 m alt., 7 Oct 1992, Forster 11909 (BRI). NEW SOUTH WALES: Mt. Warning, SE slopes, on track to summit, 28˚25'S, 153˚20'E, 600 m alt., 3l Mar 1996, Dowe 0302 (BRI, FTG); Mt. Warning, SE slopes, on track to summit, 28˚25'S, 153˚20'E, 850 m alt., 31 Mar 1996, Dowe 0303 (BRI, FTG); Whian Whian SF, 1953-58, Webb &amp; Tracey s.n. (BRI); Byron Bay, 28˚30'S, 153˚30'E, 30 Nov 1970, Bell 311 (BRI); Brunswick R., main arm, 27 Aug 1936, White 10516 (BRI); Dorrigo SF, 830 m alt., 4 Oct 1930, White 7472 (BRI); John's R., Jul 7915, Boorman s.n. (NSW [47061]). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

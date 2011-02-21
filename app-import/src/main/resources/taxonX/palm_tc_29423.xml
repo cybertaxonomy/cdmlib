@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus concinnus</name>
+<author>Mart.</author>
+<citation>Hist. Nat. Palm 3 Ed. 1 (1838) 208</citation>
+<bibref>Martius, Hist. Nat. Palm 3 Ed. 2 (1850) 332</bibref>
+<bibref>Beccari, Ann. Roy. Hot. Card. Calcutta 11 (1908) 201</bibref>
+<bibref>Beccari, Ann. Roy. Hot. Card. Calcutta Appendix (1913) 21</bibref>
+<bibref>Ridley, Fl. Mai. Pen. 5 (1925) 50  (in part)</bibref>
+<bibref>Furtado, Gdns Bull. Singapore 15 (1956) 211</bibref>
+<synonymy>
+<name>Plectocomiopsis ferox</name>
+<author>Ridley</author>
+<bibref>Ridley, Fl. Mai. Pen. 5 (1925) 66.</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Concinnus - nicely formed, harmonious</p></div>
+<div type="vernacular"><p>rotan ?</p></div>
+<div type="description"><p>Very short, perhaps rarely climbing, rattan. Stem diameter not known, but apparently forming a large rosette. Leaf sheaths apparently open throughout length, heavily armed with large straw-coloured flat, triangular spines to 2.5 cm long by 1 cm wide, occasionally longer and narrower. Knee absent. Ocrea tattering, somewhat fibrous. Flagellum absent. Petiole at least 50 cm long, armed with spines longer than those of the leaf sheath, reaching 5 cm in length. Leaflets numerous, total on each side of rachis not known, grouped in Ts to 5's, sometimes almost regular, drying pale dull green, armed with pale bristles on margins and upper side of main vein and lower surface of 3 veins, the longest to about 50 cm long by 4 cm wide. Inflorescences male and female superficially similar but the male more highly branched, apparently shorter than the leaves with perhaps 4-5 partial inflorescences. Bracts conspicuous, tattering, with reflexed triangular spines to 3 cm long by 1 cm wide. Partial inflorescence in female to 25 cm long with rachillae to 10 cm long; in male to 15 cm long with rachillae to 2.5 cm. Ripe fruit to about 8 mm in diameter rounded, conspicuously beaked, covered in 15-18 vertical rows of straw-coloured scales. Seed rugose; endosperm &#177; homogeneous only slightly penetrated by furrows.</p></div>
+<div type="distribution"><p>Perlis, Kedah(Langkawi), Perak. S. Thailand, Burma.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>This is a rarely collected, little known palm of northern Malaya. Nothing is known of its ecological preferences except that it has been found growing on limestone in South Thailand (pers. obs.). It appears usually to be a stemless species, and if so, will be a very distinctive easily recognized species with the combination of stemless habit, irregularly grouped leaflets and short highly branched inflorescences.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

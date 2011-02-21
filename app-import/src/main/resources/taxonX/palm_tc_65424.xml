@@ -1,0 +1,72 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis concinna</name>
+<author>Baker</author>
+<citation>J. Linn. Soc. 22: 526 (1887)</citation>
+<type>Central Madagascar; Baron; 3413</type>
+<type_loc>Lectotype K; isolectotype P</type_loc>
+<synonymy>
+<name>Neophloga concinna</name>
+<author>(Baker) Becc.</author>
+<bibref>(Baker) Becc. Bot. Jahrb. Syst. 38 Beibl. 87: 27 (1906)</bibref> 
+<bibref>Becc., Palme del Madagascar 31, fig. 24, t. 30 (1912)</bibref> 
+<bibref>Jum., Ann. Inst. Bot. G&#233;ol. Colon. Marseille s&#233;r. 4, 6 (3): 38 (1929)</bibref> 
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 20 (1938)</bibref> 
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 84, fig. 24 (1945)</bibref> 
+</synonymy>
+<synonymy>
+<name>Neophloga triangularis</name>
+<author>Jum. &amp; H.Perrier</author>
+<bibref>Jum. &amp; H.Perrier, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 32, pl. 14 (1913)</bibref> 
+<type>Analamazaotra; Perrier; 11971 or 11992</type>
+</synonymy>
+<synonymy>
+<name>Neophloga concinna forma triangularis</name>
+<author>(Jum. &amp; H.Perrier) Jum.</author>
+<bibref>(Jum. &amp; H.Perrier) Jum., Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 4, 6 (3): 40 (1929)</bibref> 
+<bibref>Jum &amp; H Perrier, Fl Madagascar 30: 86 (1945), as var triangularis, in error, synon nov</bibref> 
+</synonymy>
+<synonymy>
+<name>Neophloga tenuisecta</name>
+<author>Jum &amp; H Perrier</author>
+<bibref> Jum &amp; H Perrier, Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 3, 1 (1): 30, pl 13 (1913)</bibref> 
+<type>Analamazaotra, 800 m, collines des bois; Perrier; 11972</type>
+<type_loc>Holotype P; isotype K</type_loc>
+</synonymy>
+<synonymy>
+<name>Neophloga microphylla</name>
+<author>Becc.</author>
+<bibref>Becc., Palme del Madagascar 36 (1914)</bibref> 
+<type>Madagascar, prairies près de Mantawa (?), Emyrne, mid January 1889; ?Catat;</type>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A species with very narrow leaves which is locally common over a fairly small area. JD has seen beautiful plants of this species in cultivation in Queensland; it is most decorative and appears to be easily cultivated. The name concinna is Latin for neat or pretty.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Solitary or clustering palm. STEMS to 2 m, 5-8 mm diam., erect or leaning, internodes 1-5 cm, densely to sparsely scaly with red-brown scales; nodal scars c. 1 mm. LEAVES 5-12 in the crown, porrect, within one population pinnate or entire (in Beentje 4535), shiny rich green; sheath 7-11 cm long, closed, densely to sparsely scaly with long laciniate reddish scales, with small auricles to 5 mm high and with laciniate-scaly margins; petiole absent or up to 3 cm long (to 9 cm in some entire leaves), 2-3 mm diam., with scattered scales; rachis 11-29 cm long, in mid-leaf 1.5-2 mm wide, densely pubescent or with scattered scales on all surfaces; lamina when entire 13-30 x 3-5.3 cm, the lobes 4.5-21 x 1.5-2.4 cm, dentate over a width of 0.6-1 cm, the margins occasionally with a lacuna of 50-95% of the width between midrib and margin, with minute glands on minor veins, with 4-5 main veins; when pinnate with 11-25 leaflets on each side of the rachis, irregular or in groups of 2-7, in one plane, the group interval 1-6 cm, the leaflet interval 0.3-0.8 cm, the proximal leaflets 1-7 x 0.2-0.7 cm, median 3.5-10 x 0.4-1.3 cm, distal 2.5-6 x 0.3-1.7 cm, main vein 1, with faint or clear scattered scales on minor veins and distally with larger marginal scales, apices unequally acute to attenuate, terminal pair joined for 0.2-2.3 cm, with 2-3 main veins and dentate over a width of 0.4-1.5 cm, rarely with a large leaflet (10-12 x 1-1.5 cm) among the normal ones, either proximal or median, connate for up to 3.5 cm with the midrib. INFLORESCENCE interfoliar, branched to 1 order (rarely with up to three bifurcate rachillae), arching; peduncle 12-28 cm long, 1.5-2 mm diam. distally, glabrous or densely red-pubescent (only in JD6435); prophyll 7-22 cm long, 3-6 mm wide, with scattered scales, borne at 2-10 cm above the base of the peduncle, open for 1-3 cm at the apex; peduncular bract often quickly deciduous, inserted at 6-15 cm from the base of the peduncle, 4-9 cm long, 3-4 mm wide, with scattered scales, open for the distal 1-4 cm; rarely a non-tubular peduncular bract near the apex of the peduncle, 3-12 mm long; rachis absent or up to 10 cm long, with 2-9 rachillae (and occasionally with 1-3 more branched ones at the base of the rachis); rachillae 3-12 cm long, 1-1.5 mm diam., glabrous, with distant superficial triads. STAMINATE FLOWERS with sepals 0.6-1.1 x 0.7-1.3 mm, the middle one sometimes very asymmetrical; petals 1.5-2 x 1.1-1.4 mm; stamens 6, biseriate (offset 0.1-0.2 mm), the filaments 0.6-0.8 mm, thin, with anthers 0.9-1.3 x 0.3-0.6 mm, parallel and dorsifixed; pistillode 0.5-0.8 mm high, 0.2-0.4 mm diam., conical. PISTILLATE FLOWERS with sepals 0.8-1.3 x 0.8-1.8 mm; petals 2.3-3 x 1.7-3 mm; staminodes 6, 0.2-0.6 mm; pistil 2.2-2.3 x 1.2-1.8 mm. FRUIT red, ellipsoid, 6-16 x 3.5-7 mm, with fibrous endocarp, the fibres anastomosing little. SEED 5.5-8.5 x 3-4.5 mm, obtuse at both ends; endosperm homogeneous.</p></div>
+<div type="distribution"><p>Zahamena and the Moramanga/ Mantady area.</p></div>
+<div type="biology_ecology"><p>Submontane rain forest, often with much bamboo; gentle slopes or ridge tops; 800-1120 m.</p></div>
+<div type="conservation"><p>Vulnerable. Although the species is common at Analamazaotra, its distribution area is small.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>One of the syntypes of N. concinna, Baron 1286, is D. heterophylla. These taxa are close, there is an overlap in variation, but still our feeling is that they are distinct species. N. microphylla Becc. was distinguished from N. concinna by having only one inflorescence bract; it was put into synonymy by Jumelle in 1929. In the same publication N. tenuisecta was synonymized, and N. triangularis was reduced to a form of N. concinna. Perrier erroneously cited this taxon in the Flora (1945) as var. triangularis Jumelle. These entire-leaved forms are quite variable in their degree of lobing.  Dransfield et al. JD6435 has almost regular leaflets. Anosibe-an-Ala: confluence of Onive and Mangoro R., Feb. 1925 (y.fr.), Perrier 17217 (P) has the sheath 6.2 cm long; the lobes 3-4.5 x 3-3.5 cm; and the rachillae are puberulous rather than glabrous; it has the look of a slightly strange D. concinna. Dequaire 27728 (piste de Besalana, possibly Ifanadiana/Ambohimanga area?) is probably D. concinna, but has the rachis 42.5 cm with 28 leaflets on each side, the median to 10.5 cm long; the peduncular bract is 10.3-10.5 cm long, the inflorescence rachis 4.5-7.5 cm, the rachillae to 12.5-14 cm long, or to 18 cm long in fruit. Cours 4713 (Didy to Brickaville) has 3-9 branched rachillae, a longer rachis than normal, and more leaflets than normal. This is an extreme form of D. concinna; the few specimens with bifurcate proximal rachillae (Rakotovao RN 12115, Cours 4410) already have slightly longer rachis and slightly more leaflets than the stricly 1order branched specimens. Cours 2312 (Andringitra massif, Ambodibaiso forest, Jan. 1945 in bud and fruit, P) looks like this taken to extremes: it is described as 7 m high and being used to make blowpipes; the leaf sheath is 17 cm, its inflorescence branches to 2 orders with a rachis of 5-20 cm and 3-5 branched + 6-10 unbranched first order branches. It certainly cannot be called D. concinna any more but does not match anything else either.</p></div>
+<div type="materials_examined"><p>Ambatondrazaka: Ambatosoratra, Jan. 1962 (fr.), Rakotovao RN 12115 (P). Moramanga: Analamazaotra, anno 1912 (fl.), Perrier 11972 (P; type of Neophloga tenuisecta); idem, Feb. 1924 (fl.), Perrier 15983 (P); Andasibe, Feb. 1971 (fl.), Cremers 1419 (P); idem, April 1971 (ster.), Moore &amp; Mabberley 9913 (P); idem, Nov. 1986 (bud), Dransfield et al. JD6411 (K, TAN) &amp; JD6416 (K, TAN); idem, March 1988 (bud), Dransfield et al. JD6489 (K, TAN) &amp; JD6488 (K, TAN) &amp; JD6489 (K, P, TAN); idem, Dec. 1991 (fl.), Beentje 4535 (BH, K, MO, P, TAN); Anranumenabe, Nov. 1986 (fl.), Dransfield et al. JD6435 (K, TAN); Mantady, Dec. 1991 (bud), Beentje &amp; Andriampaniry 4539 (K, TAN) &amp; 4550 (K); idem, April 1992 (old fl., fr.), Beentje &amp; Andriampaniry 4653 (BH, K, MO, P, TAN); idem, Dec. 1992 (fl.), Beentje &amp; Andriampaniry 4550 (K, TAN); Rahobevava to Andasibe, March 1951 (fr.), Cours 4410 (P); Lakato, Dec. 1932 (fl.), Leandri 717 (P) and (fl.) 720 (P); idem, Sept. 1942 (fl.), Decary 18222 (K, P); Lakato road, June 1964 (ster.), Bosser 19739 (P); S of Moramanga, Feb. 1930 (bud), Decary 7082 (P) and (y.fr.) 7218 (P); idem, Nov. 1952 (old infl.), Leandri 1659 (P). Central Madagascar, anno 1885 (fr.), Baron 3413 (K, P, lectotype of  N. concinna); idem, comm. Oct. 1882 (y.fr.), Baron s.n. (K). Without any locality, anno 1875? (y.fr.), Pool s.n. (K, syntype of N. concinna; identification not quite certain, a wretched specimen).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

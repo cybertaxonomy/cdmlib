@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A revision of the Calamus aruensis (Arecaceae) complex in New Guinea and the Pacific</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Bayton</mods:namePart>
+<mods:namePart type="given">R.P</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Maturbongs</mods:namePart>
+<mods:namePart type="given">R.A</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin 58: 351-370</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus dasyacanthus</name>
+<author>W.J. Baker, Bayton, J.Dransf. &amp; Maturb.</author>
+<citation>Kew Bulletin 58: 351-370</citation>
+<type>Indonesia, Papua, Mimika Regency, Timika, between Ajkwa and Otomona Rivers, on road Timika to Mile 38, Feb. 1998; Baker et al.; 827</type>
+<type_loc>Holotypus K!; isotypi AAU!, BH!, BO!, L!, MAN!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Warar (Biak)</p></div>
+<div type="diagnosis"><p>C. aruensi affinis sed spinis vaginarum foliorum numerosis laceratis fimbriatisque, spinis cirri regulariter dispositis statim distinguenda</p></div>
+<div type="description"><p>Robust, solitary rattan climbing to 15 m. Stem with sheaths 36 – 45 mm diam., without sheaths 20 – 23 mm diam.; internodes 10 – 25 cm. Leaf cirrate, to 5 m long including cirrus and petiole; sheath green, with scattered, thin, caducous indumentum of matted brown fibrous scales, spines numerous, 2.5 – 47 × 1 – 10 mm, orange-brown, planar, parallel-sided, flexible, somewhat papery, apices truncate, apices and margins distinctly lacerate and fimbriate, spine bases slightly swollen adaxially, spines of various sizes, forming partial whorls of few to many spines, sheath mouth densely armed with numerous spines; knee 50 – 70 mm long, 37 – 45 mm wide, moderately to densely armed, colour and indumentum as on sheath; ocrea 8 – 10 mm, forming a low, woody, brown, armed, persistent collar, base of ocrea extending along petiole to an acute angle; flagellum absent; petiole 0 – 30 mm, 16 – 23 mm wide and 8 – 10 mm thick at base, channelled or flat adaxially, rounded abaxially, indumentum as on sheath, with few to many short triangular spines or spines as sheath; rachis 2 – 3 m, with few to many spines as petiole, with grapnel spines abaxially; leaflets 14 – 25 each side of rachis, irregular or arranged in widely spaced pairs, the leaflets in each pair sometimes slightly divergent, broadly lanceolate, cucullate, longest leaflets near middle of leaf, 28.5 – 40 × 4 – 6.8 cm, apical leaflets 20.5 – 29 × 2 – 3 cm, distal leaflets widely spaced, basal leaflets small, leaflet surfaces lightly armed with few bristles 0.8 – 2 mm on adaxial surface of mid-rib and major veins near leaflet base, leaflet margins unarmed or with few bristles 0.3 – 2.6 mm near leaflet apex, transverse veinlets inconspicuous; cirrus 1.5 – 2 m, cirrus grapnel spines arranged regularly. Staminate inflorescence similar to pistillate inflorescence, but branched to 3 orders, up to 1.3 m long including c. 27.5 cm peduncle, branched to 3 orders; prophyll c. 28 × 1.3 cm, strictly tubular, with 2 conspicuous keels, prophyll mouth entire, with narrow, acute, triangular limb to one side, subtending primary branch (always?), indumentum as on sheath, moderately armed with short spines; peduncular bracts absent, rachis bracts not seen; primary branches up to c. 28 cm long, strongly recurving, bracts on primary and secondary branches funnel-shaped; rachillae c. 4.5 – 21 × 1 mm, sublinear, glabrous; rachilla bracts c. 0.7 × 1.2 mm, distichous, glabrous; floral bracteole c. 0.8 × 1.2 mm. Staminate flowers c. 3.6 × 2.2 mm in early bud; calyx c. 2.2 mm diam., tubular in basal c. 1.4 mm, with 3 lobes c. 0.4 × 1.5 mm, glabrous; corolla c. 3.2 × 2 mm in bud, tubular in basal c. 0.8 mm, glabrous; stamens 6, filaments c. 1.2 × 0.3 mm, anthers c. 1.5 × 0.7 mm; pistillode c. 0.3 mm. Pistillate inflorescence up to 2 m long including 26 – 44 cm peduncle and 31 – 48 cm sterile tip; prophyll 21 – 27 × 1.4 – 2.2 cm, similar to staminate prophyll, sometimes subtending primary branch; peduncular bracts absent, rachis bracts 9 – 30 × 0.6 – 1.6 cm, similar to prophyll; primary branches 4 – 8, to 36 cm long, 11 – 23 cm apart, moderately to strongly recurving, with up to 27 rachillae, bracts on primary branch funnel-shaped; rachillae 3.5 – 15.5 × 0.1 – 0.2 cm, sublinear or irregular; rachilla bracts 0.8 – 1.5 × 1 – 2.2 mm, subdistichous, sometimes with scattered indumentum as on sheath; flower clusters sometimes distinctly stalked, stalk 0.3 – 1.5 mm long, proximal floral bracteole c. 1.6 × 1.2, distal floral bracteole 1.5 – 1.8 × 1.2 – 2 mm, glabrous, scar from sterile staminate flower c. 0.2 mm diam. Pistillate flowers c. 3.7 × 2.2 mm at anthesis; calyx c. 2.2 mm diam., tubular in basal c. 2.7 mm, with 3 lobes to c. 0.5 × 1 mm, glabrous; corolla c. 3 × 1.5 mm, tubular in basal c. 2 mm, with 3 lobes to c. 1 × 0.7 mm, glabrous; staminodes 6, c. 0.8 mm long, staminodal ring c. 1 mm high; ovary c. 1.5 × 1.2 mm, globose, style c. 1 mm long, stigmas c. 1 mm long. Sterile staminate flowers not seen. Fruit globose, 9 – 12.8 × 8.5 – 10 mm including beak 1.5 – 2 mm, with 18 – 19 longitudinal rows of white to pale yellow, shallowly channelled scales with entire margins, sometimes with dark tips. Seed (sarcotesta removed) 7 – 7.8 × 7 – 7.8 × 5.6 – 6 mm, globose, with a deep, narrow pit on one side, the surface covered with numerous deep pits and irregular channels; endosperm homogeneous; embryo basal. Fig. 2.</p></div>
+<div type="distribution"><p>Known from three localities, two on the south coast of New Guinea and the third on Biak</p></div>
+<div type="biology_ecology"><p>Various types of primary and secondary forest vegetations, 30 – 150 m.</p></div>
+<div type="conservation"><p>Data deficient</p></div>
+<div type="uses"><p>Not known</p></div>
+<div type="discussion"><p>The species epithet of this extraordinary new rattan refers to the shaggy appearance of its lacerate, fimbriate leaf sheath spines. The papery spines are numerous and apically truncate, giving the impression that they have been roughly trimmed with scissors. Although known from only four collections, the large distances between the three localities suggests that C. dasyacanthus is widespread, if not common, in the western half of New Guinea. Further collecting efforts in the lowlands of west New Guinea, especially in Merauke and Mimika Regencies in Papua Province, would very likely yield new records</p></div>
+<div type="materials_examined"><p>INDONESIA, Papua. Biak Numfor Regency: Biak, beside main road to Korem, June 2001, Maturbongs et al. 687 (AAU!, BO, K!, MAN). Mimika Regency: Timika, between Ajkwa and Otomona Rivers, on road Timika to Mile 38, Feb. 1998, Baker et al. 827 (AAU!, BH!, BO!, K!, L!, MAN!, type); mile 39 on road from Timika to Tembagapura, March 1998, Baker et al. 983 (BO!, K!, MAN). PAPUA NEW GUINEA. Western Province: Nomad Subdistrict, 2 km from Nomad, April 1978, Essig &amp; Young LAE 74018 (LAE!).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

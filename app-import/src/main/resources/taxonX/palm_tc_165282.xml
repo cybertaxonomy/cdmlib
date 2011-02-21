@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Prestoea decurrens</name>
+<author>(H.Wendl. ex Burret) H.E.Moore</author>
+<citation>Gentes Herb. 9: 286 (1963)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stems clustered, 1.5-5 m tall, and 4-8 cm in diameter, often yellowish green.  Leaf sheathes partly closed, green, often persisting; petiole 30-80 cm long; blade 120-220 cm long; pinnae 50-80 on each side, the central ones 30-60 cm long and 3-5 cm wide, abrubtly narrowed at the tip into a 3-5 cm long filamentous point.  Inflorescence with peduncle 8-40 cm long; rachis 20-50 cm long; branches 10-70, 25-50 cm long, 2-5 mm in diameter, with numerous simple, white hairs, especially when young.  Fruits black, globose, 7-11 mm in diameter.  Seedling leaves pinnately divided.</p></div>
+<div type="distribution"><p>Central America to Ecuador W of the Andes, in moist to wet forest below 1000 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Plants from central and S Ecuador are smaller than typical for the species, and strongly resemble P. schultzeana</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

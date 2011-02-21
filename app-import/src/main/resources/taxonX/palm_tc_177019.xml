@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ravenea moorei</name>
+<author>J.Dransf. &amp; N.W.Uhl</author>
+<citation>Principes 30 (4): 159 (1986)</citation>
+<bibref>Beentje, Kew Bull. 49: 637 (1994)</bibref> 
+<type>Comoro Islands, Grand Comore; Moore and Moelevoce; 9028</type>
+<type_loc>Holotype BH; isotypes K, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>One of the two Comoro Ravenea species; this is the larger of the two, the other (R. hildebrandtii) is much smaller. Before 1986 this palm was grown under the name R. hildebrandtii, but that taxon is almost unknown in cultivation outside Fairchild Tropical Garden. The species is named after Professor H.E. Moore, the great expert on palms, who collected the type.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Inazi (fide St. John, but this resembles Swahili for coconut).</p></div>
+<div type="description"><p>Robust tree palm. TRUNK to 20 m, 11-35 cm diam., with a hemispherical base up to 105 cm across and some 40 cm high, diameter near the crown c. 13 cm (from a photo), scars visible, internodes c. 20 cm long in the lower trunk, much shorter towards the apex; nodal scars not very prominent; bark grey-brown; base of crown bulbous. LEAVES 11-19 in crown, porrect or spreading, straight, held on edge in distal half, 2.26-3 m long; sheath up to 60 x 19.5 cm, soon splitting, margins with long fine fibers, abaxial surface covered with thick tomentum, white in unexposed areas, turning brown on exposure, becoming thinner distally; petiole 10-25 cm long, 2.4-4.5 cm wide, 1-1.5 cm thick, adaxially flattened, abaxially &#177; rounded, sparsely tomentose abaxially, glabrous adaxially; rachis 1.3-2.4 m long, abaxially rounded, adaxially shallowly grooved or keeled (keel to 10 mm wide, narrowing in the more distal part to a sharp narrow keel), laterally grooved, sparsely tomentose to whitewaxy abaxially, in mid-leaf 1.7-2 x 1.2 cm across; leaflets 60-80 on each side of the rachis, the proximal very crowded, 15-54 x 0.8-1.7 cm, median 49-70 x 2-2.5 cm (interval 2.5-2.8 cm), distal 12-43 x 0.4-1.7 cm, main veins c. 5, the midrib the largest, prominent adaxially, abaxially bearing a few conspicuous, close, regularly arranged large pale ramenta, transverse veinlets obscure, caducous tomentum present abaxially near the base. STAMINATE INFLORESCENCE solitary (only known dead) c. 90 cm long, branched to 2 orders; peduncle c. 35 cm long, 1.5 cm across, rounded in cross section, bracts not known; rachillae numerous, slender, up to 15 cm 1.5 mm. PISTILLATE INFLORESCENCE solitary, c. 1.5 m long, spreading or pendulous, branched to 1 order; peduncle 60-90 cm, ellipsoid in cross-section, proximally 1.9-2 x 12 mm, distally c. 15 x 11 mm, green with caducous, soft brown tomentum; prophyll tubular, 2-keeled, c. 20 x 5 cm, rather thin, bearing caducous pale brown tomentum, tattering and becoming fibrous with age; peduncular bracts with the longest one c. 130 x 5 cm; rachis c. 60 cm long, glabrous and dotted; rachillae numerous, c. 100, rather stiff, straight, glabrous, green, the proximal ones 30-47 cm with flattened base 7 x 3.5 mm, the distal ones 15-20 cm; bracteole at lowermost rachilla ovate and attenuate, c. 45 x 11 mm, pedicels 0.5-5 x 1-1.5 mm; pistillate flowers not known. FRUIT yellow to orange, globose, c. 16 mm (when dry 11-14 mm), one-seeded, stigmatic remains lateral to sub-basal, persistent sepals triangular, c. 1.2 x 1 mm; persistent petals similar but smaller; epicarp smooth, wrinkling on drying, mesocarp fleshy, c. 1.3 mm thick, endocarp not differentiated. SEED spherical, 9-11 mm diameter, dark brown.</p></div>
+<div type="distribution"><p>Comoro Islands: Grande Comore.</p></div>
+<div type="biology_ecology"><p>Secondary moist forest; 500-800 m.</p></div>
+<div type="conservation"><p>Endangered. Seed of this species was collected by DeArmand Hull in October 1993 at the north end of Grand Comore at c. 500 m, above Mitsamouli; only two female trees were seen by Mr. Hull. He considers them highly endangered due to continuing agricultural pressure on the forest in this area.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Probably closely related to R. robustior of Madagascar.</p></div>
+<div type="materials_examined"><p>Grande Comore: between Boboni &amp; Kafeni below the chemin du Capt. Dubois, Nov. 1963 (fr., dead stam.), Moore &amp; Moelevoce 9028 (Holotype BH; isotypes K, P, TAN); idem, Aug. 1961 (fr.), St.John 26542 (BH, K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

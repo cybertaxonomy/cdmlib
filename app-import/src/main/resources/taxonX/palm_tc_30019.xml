@@ -1,0 +1,49 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus wailong</name>
+<author>S. J. Pei &amp; S. Y Chen</author> 
+<citation>Acta Phytotax. Sin. 27 (2): 138 (1989)</citation>
+<bibref>S. J. Pei &amp; S. Y Chen, Fl. Reip. Pop. Sinicae 13 (1): 94 (1991)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 66 (2001)</bibref>
+<type>China, Yunnan, Mengla; Yang, Z. H.; 12405</type>
+<type_loc>Holotype HITBC</type_loc>
+<synonymy>
+<name>Calamus platyacanthus</name>
+<author>auct. non. Warb. ex Becc. non Mart.</author>
+<bibref>auct. non. Warb. ex Becc. non Mart., C. F. Wei, Guihaia 6: 36 (1986)</bibref>
+</synonymy>
+</nomenclature>
+<div type="distribution"><p>Indochinese endemic. China (South Yunnan), Thailand (North and North-east) and Laos (North and Central).</p></div>
+<div type="materials_examined"><p>CHINA (SOUTH YUNNAN): Mengla, Yaoqu, undated, (fr.), Yang, Z. H. 12405 (HITBC). THAILAND (NORTH): Nan, Ban Tin, 4 March 1921, (stam.), Kerr, A. 5003 (K, BM, BK). (NORTH-EAST): Phetchaboon, undated, (fr.), Vongkaluang, I. 220 (K). LAOS (NORTH): Bokeo Province, Houayxai Distr., Ban Toup, 26 March 2000, (stam. &amp; fr.), Evans, T TDE 65 (FRCL, K). (CENTRAL): Khammuane Province, Nakay Distr., Ban Malua (map name Ban Maloy), Phon Nong Na, 8 March 1999, (stam.), Khamphone KP 372 (FRCL, K), (ster.), Khamphone KP 374 (FRCL, K) and (pist.), Khamphone KP 376 (FRCL, K).</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 350 - 600 m (Laos), 600 - 1000 m (Thailand) and 600 - 950 m (Yunnan).</p></div>
+<div type="discussion"><p>One specimen listed in the protologue (Tong 24898) has irregularly pinnate leaves with large voids between groups; it may not belong in this species and is perhaps C. platyacanthoides. The Thai material in mature fruit links the type specimen to the Lao material, none of which is in ripe fruit but where sheath and leaf characters are well represented. Fieldworkers will find two striking vegetative features useful to identify C. wailong. One is that the leaflets are regularly arranged on virtually all the leaves of climbing stems. The other is that the sheaths on lower parts of the plant are often armed very differently from those higher up the stem (see photograph in Evans et al. 2001b). Typically, sheaths lower down are weakly armed, bearing very few to many tiny, tubercular spines (giving a rasp-like texture), occasionally with one or two incongruous long spines among them. They also show a distinctive pattern of marbled white indumentum, recalling the flank pattern of Bar-backed Partridge Arborophila brunneopectus, which explains the widespread local name 'wai nokkhor' (= partridge rattan). More distal sheaths bear progressively more large spines until in mature, fruiting parts of the stem they are thickly armed. On such sheaths the marbled pattern is invisible. Until one has seen the whole range on a single stem it is very hard to believe that all these sheaths can belong to the same species. Evans, T 65 includes the full range of sheath types from a single individual. It also illustrates the wide variability in the size of the inflorescence. One male individual bore complete, fertile inflorescences ranging from 1.2 - 3.0 m, the shortest ones more or less erect, the longest ones with an erect axis but drooping branches. Some inflorescences end in a clawed appendix, others do not. Pei et al. (1989) chose the attractive Dai language name as the specific epithet for this species. As an illustration of the variability of local names for rattans in the region it is relevant that in central Bokeo province, Laos, where people speak Lao Leu, a dialect similar to Dai, we found that C. wailong is referred to as 'wai nokkhor' but the name 'wai long' is also in use there, for a large unidentified flagellate Calamus species (either C. flagellum or C. rudentum).</p></div>
+<div type="vernacular"><p>wai nokkhor, wai khor, wai lai, wai namhang, wai namleuang, wai khairt (Lao Loum), kloong (Phong), kateng koday (Hmong).</p></div>
+<div type="uses"><p>The cane is of high quality and widely traded. The shoot is edible.</p></div>
+<div type="conservation"><p>Unknown, but probably of relatively low concern given the large populations present in Laos.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

@@ -1,0 +1,33 @@
+﻿ <taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus acanthochlamys</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 45: 85 (1990)</citation>
+<bibref>Dransfield, Ratt. Sarawak 138 (1992)</bibref>
+</nomenclature>
+<div type="etymology" lang="el"><p>Spiny cloak, referring to the very spiny inflorescence bracts</p></div>
+<div type="description"><p>Solitary stout rattan climbing to 7 m tall; stem without sheaths to 25 mm diam., with sheaths to 50 mm diam., internodes short, c. 50 mm long. Sheath bright green, armed with robust brown spines to 25 × 4 mm, scattered or arranged in partial whorls, pale brown hairs abundant between the spines, spines around the sheath mouth large, crowded, ± horizontal, 20-50 × 4 mm; knee absent; ocrea soon tattering. Flagellum absent. Leaf ecirrate, to 3 m including petiole; petiole to 1.5 m, armed laterally with regular horizontal spines, 20-50 × 4 mm; leaflets regularly arranged, 40-75 on each side of the rachis, stiff, narrow, linear, the longest in mid leaf, c. 50 × 2.5 cm, the apical divaricate, c. 12 × 1 cm, drying dull reddish or dirty brown, the lower surface with short regular bristles on 3 nerves. Inflorescences 1-1.5 m long or more, arching; prophyll very robust, armed with lateral groups of spines and abundant tomentum, expanded apically to form a tattered limb at least 15 × 4 cm, bearing abundant long brown spines 10-40 × 3 mm; primary bracts tubular at the base, splitting and expanded to form spiny limbs, the whole bract frequently longer than the inflorescence; male rachillae distichous, rather crowded, ± reflexed, to 12 ×2 mm; female rachillae distichous, stiff, ± reflexed, 20-50 × 4 mm; rachilla bracts very hairy. Mature fruit ± broad ellipsoid, 10 × 8 mm, beaked, covered in 18 vertical rows of chestnut brown scales.</p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>C. acanthochlamys is found on hill slopes and ridge tops in lowland dipterocarp forest at altitudes up to 100 m. From other types of wi tulang it is distinguished by the very spiny prophyll and primary bracts and by the robust rachillae.</p></div>
+<div type="materials_examined"><p>6542; Labi, Wong 538; Melilas, Bt.Batu Patam, Dransfield J. 6607. TEM: Amo, Bt.Belalong, Wong 1364; Batu Apoi, Dransfield J. 6932; Batu Apoi, Selapon, Dransfield J. 7459. TUT: Rambai, Bt.Bahak, Coode 7056; Rambai, Bt.Bahak, Coode 7090.
+</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

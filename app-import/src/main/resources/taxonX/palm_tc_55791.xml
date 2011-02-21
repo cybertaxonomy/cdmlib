@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops monticola</name>
+<author>(Griff.) Mart.</author>
+<citation>Hist. Nat. Palm 3 (1850) 328</citation>
+<bibref>Beccari in Hook, f., Fl. Br. India 6 (1893) 465</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 12(1911)84</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 37</bibref>
+<bibref>Furtado in Gdns' Bull., Singapore 14(1953) 83</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Monticola - dwelling on mountains</p></div>
+<div type="vernacular"><p>rotan getah lumpit</p></div>
+<div type="description"><p>Clustering rattan climbing to 5 m tall Stem without sheaths 2cm, with sheaths to 3.5 cm, with internedes to 20 cm. Sheaths pale green armed with pale brown indumentum and oblique whorls of black spines. Knee poorly developed. Ocrea inconspicuous. Whole leaf to 3 m; petiole to 60 cm; cirrus to 75 cm. Leaflets about 60 on each side of the rachis, very fine and regular, the longest to 40 cm long by 1.5 cm wide, armed with bristles on 3 nerves above, and on mid-vein only beneath and along margins. Inflorescences tending to be somewhat crowded on stems, probably not hapaxanthic, but stems relatively short-lived; inflorescences male and female similar, to 40 m long by 15 cm wide, longly beaked, the outermost bract enclosing all the inner; the outermost bract very densely armed with fine grey black spines to 3 cm long and dense chocolate-coloured indumentum. Ripe fruit rounded to 1.5 cm in diameter covered in 15 vertical rows of cinnamon brown scales. Seed about 1.3 cm in diameter; endosperm deeply ruminate.</p></div>
+<div type="distribution"><p>Penang, Johore. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>This is possibly not distinct from D. lewisiana and may represent an extremely robust form. However the armature of the bracts is much finer and denser and the leaf sheath spines are more clearly whorled than in D. lewisiana. In Penang I have observed it growing in a valley bottom at 600 m altitude.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

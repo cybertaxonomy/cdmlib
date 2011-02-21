@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus spectatissimus</name>
+<author>Furtado</author>
+<citation>Gdns' Bull. Singapore 15 (1956) 64</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>From spectatus - approved - this allusion is not understood</p></div>
+<div type="vernacular"><p>rotan semut (c.f. Furtado 1956 but this name normally applied to species of Korthalsia).</p></div>
+<div type="description"><p>Clustering high climbing moderate sized rattan with stems to 20 m tall. Stems without sheaths about 1 cm in diameter, with sheaths to 1.7 cm. Internodes to 40 cm long. Sheaths dull green, rather densely armed with dull green swollen based spines of variable length, the longest to 1.5 cm long, horizontal or slightly reflexed. Ocrea obscure. Knee well developed. Flagellum to 1.5 m. Leaf ecirrate to 1 m long including petiole to 30 cm long; petiole armed with scattered spines below. Leaflets about 40 on each side of the rachis, close and regular, the longest to 35 cm long by 1.5 cm wide, &#177; unarmed above, but densely armed with short bristles beneath. Inflorescence male and female similar, both generally not much longer than the leaves, often much shorter, with 3-6 partial inflorescences. Subtended by rather wide loose bracts. Partial inflorescences with rather crowded rachillae bearing relatively very large flowers to 1 cm long. Ripe fruit about 2 cm in diameter rounded, covered in dark chestnut brown non-channelled shiny scales. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Perak (Kroh - 1 collection). Sumatra (Komering Ulu - 1 collection). Borneo (Kalimantan Timur, near Balikpapan - 1 collection).</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Nothing known.</p></div>
+<div type="discussion"><p>A very rare rattan known from 3 collections only. Easily distinguished by the variable spine length of the leaf sheath spines, the ecirrate leaves with leaflets densely setose below, the inflorescence with almost inflated bracts, and the flowers very large in size. It is perhaps more closely related to Calamus conirostris than to C. exilis where Furtado placed it.
+ In Sumatra and Borneo it was found on lower slopes in lowland Dipterocarp forest.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

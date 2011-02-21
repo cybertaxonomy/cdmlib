@@ -1,0 +1,48 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis canaliculata</name>
+<author>(Jum.) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 149 (1995)</citation>
+<type>Madagascar, Bas-Sambirano, W base of Mt Kalabenono; Perrier; 15413</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Neodypsis canaliculatus</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4,924)</bibref>
+<bibref>Jumelle, Cat. Pl. Madagascar, Palmae: 17 (1938)</bibref>
+<bibref>Jumelle &amp; H. Perrier Fl. Madagascar 30: 141 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This species is something of a mystery. It has not been found since 1951, and the flowers are unknown to science. The two collections made so far are far apart geographically, but seem to belong to the same taxon. The name was given to indicate that the leaf rachis is channelled in its lower half, but this is not so exceptional as Jumelle seemed to think!</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Lopaka (Antankarana); Monimony (Betsimisaraka).</p></div>
+<div type="description"><p>Solitary palm. TRUNK 10-15 m high, 30-40 cm diam.; nodal scars very visible. LEAVES with sheath c. 1 m long, glabrous, whitish-green and waxy; petiole absent; rachis 3-4 m long (fide Perrier) or c. 6 m (fide Cours), in mid-leaf 2.5-3.5 cm wide, waxy, channelled adaxially at least proximally, rounded abaxially; leaflets bright green, grouped and fanned within the groups, the group interval 2-3 cm, very many, not stiff, interval 0.2-1.3 cm, proximal not seen, median 75-116 x 2.6-3.1 cm, distal to 13-30 x 0.3-0.8 cm, glaucous, with many ramenta proximally, the ramenta bifid, to 2 mm long, 2-3 mm high, and with minute reddish scales over the entire abaxial surface, main vein 1, apex unequally attenuate. INFLORESCENCE infrafoliar, branched to 2 orders, short and pendulous; parts seen include first (?) order branches with a glabrous rachis of up to 20 cm, proximally up to 1.7 x 0.8 cm diam., with up to 8 rachillae; rachillae 35-48 cm long, 5-6 mm diam., glabrous, waxy, with distant triads in pits, the rachilla bracts proud, rounded or obtuse. STAMINATE FLOWERS unknown. PISTILLATE FLOWERS unknown. FRUIT ellipsoid or rounded, 25-30 x 17-21 mm when dry. SEED subglobose, 15-21 x 12-16 mm; endosperm deeply and densely ruminate.</p></div>
+<div type="distribution"><p>Only known from the Manongarivo area and from near Ampasimanolotra.</p></div>
+<div type="biology_ecology"><p>Forest on sandstone; c. 200 m.</p></div>
+<div type="conservation"><p>Possibly extinct; not seen since 1951.</p></div>
+<div type="uses"><p>Palm-heart bitter, said to be poisonous by some.</p></div>
+<div type="discussion"><p>The protologue states the type is Perrier 1541, but this is changed in the Flora to 15413 (which is correct). The type at P is currently without fruit or flowers.  
+In the protologue there are the following data not on the type label: trunk green, 10-15 m high, 30-40 cm diam. Leaves 3-4 m long; sheath green, glabrous; petiole absent, rachis 2.5 cm wide; leaflets irregularly grouped (group interval c. 2 cm), distal 30 x 0.7-0.8 cm. Inflorescence branched to 2 orders; rachillae c. 50 cm. 
+This taxon resembles D. bejofo, but is distinct in the almost continuous ramenta on the midrib and the scattered scales, and by the absence of a petiole.  
+The Cours specimen is rather poor, and is included with some doubt. The fruit in this specimen has densely and irregularly ruminate endosperm, distinct from that of D. bejofo.</p></div>
+<div type="materials_examined"><p>Ambilobe: W base of Mt Kalabenono, no date (infl. only), Perrier 15413 (P, type). Ampasimanolotra: near Anivoranokely and Andrambolahikely, April 1951 (fr.), Cours 4494 (K, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Clustering high-climbing and aerially branching pinnate-leaved hapaxanthic rattan palms of Southeast Asia and Malesia; the sheaths end in an elaborated ocrea and leaflets are usually rhomboid and praemorse at their tips; flowers are hermaphroditic and borne singly in catkin-like rachillae.</p></div>
+<nomenclature>
+<name>Korthalsia</name>
+<author>Blume</author>
+<citation>Rumphia 2: 166 ([‘1836’] 1843).</citation>
+<type>Lectotype; Korthalsia rigida; Blume</type>
+<synonymy>
+<name>Calamosagus</name>
+<author>Griff.</author>
+<bibref>Griff., Calcutta J. Nat. Hist. 5: 22 (1844). Mart.) (see H.E. Moore 1963c).</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Commemorates Pieter Willem Korthals (1807–1892), Dutch botanist and explorer in Indonesia.</p></div>
+<div type="description"><p>Slender to moderate, clustered, spiny, high-climbing and aerially branching, hapaxanthic, hermaphroditic rattan palms. Stem eventually becoming partly bare, the inner epidermis of the leaf sheaths tending to adhere to the stem surface, internodes elongate, nodal scars often very uneven, shallowly hollowed, aerial branching possibly due to equal forking (dichotomy), basal suckering leaf opposed at 130° from the petiole in at least one species. Leaves pinnate, with a cirrus; sheath tubular, sometimes splitting longitudinally opposite the petiole, unarmed, or variously armed with spines, usually with abundant scales and floccose indumentum; knee absent; ocrea always well developed, unarmed or variously spiny, tightly sheathing, or expanded into a loose funnel-shaped net of fibres, or sheathing but distally grossly swollen to form an ant nest-chamber, or diverging from the stem with inrolled margins, also forming an ant chamber; petiole present or absent; rachis and cirrus armed with scattered and grouped, reflexed grapnel spines; leaflets relatively few, single-fold, linear, lanceolate to rhomboid, praemorse, often densely white indumentose beneath, regularly arranged, distant, very rarely a single pair only, frequently borne on short pseudopetiolules (‘ansae’), midrib inconspicuous, the main veins radiating from the leaflet base, transverse veinlets conspicuous or obscure. Inflorescences produced simultaneously in the axils of the most distal few, frequently reduced leaves; sometimes bursting through the leaf sheaths, rarely unbranched, usually branching to 1–2 orders; peduncle adnate to the internode above the subtending leaf; prophyll 2-keeled, tightly sheathing, usually included within the leaf sheath, sometimes subtending a branch; rachis much longer than the peduncle; rachis bracts tubular, tightly sheathing, sparsely armed or unarmed, frequently densely covered with indumentum; bracts on first-order branches similar to rachis bracts; rachillae usually distant, rarely aggregated into a head, cylindrical, and catkin-like, bearing a few empty basal bracts and a tight spiral of imbricate bracts, connate laterally to each other, or, more rarely, distinct, the rachillae then with a looser appearance, each rachilla bract forming a pit, usually densely filled with multicellular hairs, and including a 2-keeled membranous bracteole, densely hairy on the abaxial surface, a minute triangular bracteole, and a single flower. Flowers apparently protandrous; calyx tubular at the base, with 3 valvate lobes distally; corolla tubular basally with 3 valvate lobes apically, circumscissile in fruit at the level of the ovary equator, carried up on the top of the developing fruit, disintegrating or persisting to mature fruiting; stamens 6–9, borne at the mouth of the corolla tube, filaments fleshy, elongate, anthers short to elongate, introrse or latrorse; gynoecium tricarpellate, triovulate, rounded, scaly, style conical or narrow pyramidal with 3 stigmatic lines, ovule anatropous, basally attached. Pollen spheroidal; apertures either equatorial di-porate or presumed meridional zonasulcate; ectexine intectate, psilate clavae or gemmae, striate and/or spinulose gemmae, or granular and interspersed with long pointed or apically branched spines, occasionally vertically ridged, aperture margins similar to surrounding ectexine; longest axis 25–60 µm [12/26]. Fruit globose to ovoid, 1-seeded, stigmatic remains apical; epicarp covered with vertical rows of reflexed, imbricate scales, mesocarp thinly fleshy, sweet, endocarp not differentiated. Seed attached basally, seed coat thin, not fleshy, endosperm homogeneous or ruminate, with a conspicuous pit; embryo lateral. Germination adjacent-ligular; eophyll undivided or bifid, margins praemorse. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>About 26 species, centred on the perhumid areas of the Sunda Shelf with outliers north as far as Indochina, Burma, and the Andaman Inlands, and southeastward to Celebes and New Guinea.  </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1996a). </p></div>
+<div type="relationships"><p>The monophyly of Korthalsia has not been tested. For relationships, see Korthalsiinae. </p></div>
+<div type="uses"><p>Species of Korthalsia produce very hard durable canes much used in local basketware and for binding in house construction. The cane, however, is disfigured by large irregular nodal scars and the inner epidermis of the sheaths closely adheres to the cane surface; these two cane features are responsible for the limited importance of Korthalsia in the rattan trade. </p></div>
+<div type="taxonomic accounts"><p>Dransfield (1981a). </p></div>
+<div type="fossil record"><p>Dicolpate clavate pollen apparently referable to present-day Korthalsia, K. rigida or K. laciniosa (Muller 1979), has been recorded from the Upper Miocene of northwestern Borneo. However, Thanikaimoni (1970) described the pollen of both of these species as diporate and more or less spheroidal (see also Harley and Baker 2001). Nevertheless, it is highly probable that the fossil pollen does represent a species of Korthalsia, but this cannot be confirmed without access to the fossil grain or images. The small clavate zonasulcate Paravuripollis first described by Rao and Ramanujam (1978) from the Miocene Quilon beds of Kerala State, India, closely resembles the pollen of some of species of Korthalsia. Paravuripollis is well known from a number of Tertiary sites in Kerala State (Ramanujam 1987, Ramanujam et al. 1991b, 1992, Ramanujam and Rao 1977, Rao and Ramanujam 1978). </p></div>
+<div type="discussion"><p>Korthalsia is distinguished by the solitary hermaphroditic flowers borne in catkin-like rachillae and by hapaxanthy. </p></div>
+<div type="vernacular"><p>Ant rattans; for Malay names see Dransfield (1979a). </p></div>
+<div type="biology_ecology"><p>All species are confined to lowland and hill tropical rain forest and are absent in montane forest. Most species have, however, a very wide ecological range, and although abundant in primary forest, also seem to be peculiarly well adapted to withstanding forest disturbance: they are a conspicuous feature of old secondary forest or regenerated logged forest. It has been suggested that the hapaxanthic habit may be an adaptation to colonizing secondary habitats (Dransfield 1978b). A few species have very narrow ecological limits, e.g., Korthalsia concolor, which seems to be confined to forest on ultrabasic rock in Sabah, Borneo. Several species in which the ocrea is inflated or divergent from the stem have very close associations with ants. The ants husband aphids on young tissue within the ocreas of the distal portion of the stem, using the older dry ocreas as brood chambers; in some species (e.g., K. robusta and K. hispida), the ants produce alarm signals by banging their mandibles on the dry ocreas. The significance of the ant–rattan relationship has not been fully investigated, but there is much to suggest that the relationship provides protection of the rattan against herbivores (Dransfield 1981a). Bees have been observed visiting the flowers of K. laciniosa, and Southern pied hornbills (Anthracoceros convexus) feed on the ripe fruit of the same species (Rubeli in Dransfield 1981a).</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,38 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus acuminatus</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11 (Suppl.): 16 (1913)</citation>
+<synonymy>
+<name>C. acuminatissimus</name> 
+<author>Becc. ex Gibbs</author>
+<bibref>Becc. ex Gibbs, J. Linn. Soc. Bot. 42: 170 (1914). (as an incorrect citation).</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Pointed, referring to the leaflet shape</p></div>
+<div type="vernacular"><p>"rotan padas", "rotan peladas"</p></div>
+<div type="description"><p>Slender clustering rattan with stems climbing to 10 m or more; stem without sheaths to 4 mm, with sheaths to 8 mm; internodes to 20 cm. Sheaths mid-green, with scattered brown scales, unarmed, or rarely with a few scattered spines. Knee well-developed. Ocrea conspicuous, especially on young sheaths, to 15 mm. Flagellum to 1 m. Leaf ecirrate, to 35 cm, with no petiole; leaflets up to 12 on each side of the rachis, regularly arranged, narrow lanceolate to 16 x 2 cm, the lowermost somewhat smaller and swept back across the stem, bright green, shining; terminal leaflet pair joined for under 1/2 of their length; young leaves tinged pink. Male and female inflorescences similar, very similar to those of C. javensis but with more branches. Mature fruit small, spherical, c. 6 mm diam., with a short beak to 1 x 1 mm, and covered in 18 vertical rows of pale straw-coloured scales; seed rounded c 4 mm diam.; endosperm homogeneous. (Fig. 67)</p></div>
+<div type="distribution"><p>Widespread throughout the State, but particularly abundant in the Tenom and Keningau districts.  Endemic to Sabah.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Widespread local use as twine, perhaps receiving a rudimentary cultivation near villages.</p></div>
+<div type="discussion"><p>Very close to C. javensis but differing in the consistently &#177; regular narrow lanceolate leaflets and the very small spherical fruit. This is very much a feature of the secondary forests of the Tenom / Keningau valleys. It is abundant in roadside belukar, and one can often see its cane for sale in bundles at roadside stalls and in "tamu" (weekly markets).</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

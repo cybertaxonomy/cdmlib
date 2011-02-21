@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Orania longisquama</name>
+<author>(Jum.) J.Dransf. &amp; N.W.Uhl</author>
+<citation> Principes 28 (4): 164</citation>
+<type>Madagascar, Masoala Peninsula, Marambo, November 1912; Perrier; 11937</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Sindroa longisquama</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Mus. Colon. Marseille s&#233;r. 5, 1 (1): 11 (1933)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 25 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 160, fig. 45 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>From a distance this palm looks slightly like Ravenea   madagascariensis, but on closer inspection can immediately be  distinguished by the praemorse leaflet tips. This species can be   quite variable in size, from a compact, small palm to a canopy tree.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Sindro, Anivona, Ovobolafotsy (Betsimisaraka), Vakapasy (Antaimoro);</p></div>
+<div type="description"><p>Solitary palm. TRUNK 4–20 m high, 10–25 cm diam., often with surface roots and a basal boss to 40 cm diam.; internodes 5–10 cm long, near the crown 1–2 cm long, brown, often with a reddishgreen indumentum; nodal scars obvious or obscure, 1–6 cm high. Crownshaft absent. Wood yellowish, hard through a dense ring of reddish fibres just inside the bark. LEAVES spirally inserted, (6–7 fide Perrier) 8–15 (rarely with a few marcescent leaves), arching, slightly held on edge in their distal part; base of crown bulbous, 16–30 cm across; sheath 26–40 cm long, green with white indumentum turning pale brown to rusty on exposure, interface with petiole continuous, with a few marginal fibres; sheath and petiole together 80–103 cm; apparent petiole 33–120 cm long, 3–5.5 x 2.5–4 cm diam., channelled, (pale) red-brown, with a pale dense indumentum and fibrous margins; rachis 1.3–2 m long, channelled in the proximal part, in mid-leaf 2–3 x 1–1.3 cm and keeled, white- to reddish-brown-pubescent or with scattered pale scales or with white bloom; leaflets regular, 47–65 on each side of the rachis, stiff or not very stiff, those on opposite sides of the rachis at an angle of 60–120 with each other, the proximal 38–84 x 0.4–4.5 cm, median 56–88 x 1.7–5 cm (interval 1.5–4 cm), distal 3.5–32 x 0.5–2.7 cm, mid-green, with yellow veins adaxially, with a thin whitish covering abaxially, main vein 1, with large (15–25 mm long) red-brown to whitish ramenta in patches to almost continuous along the midrib (rarely absent, HB 4730), with lines of scattered scales along the minor veins, bases sometimes thickened (HB 4616), apices praemorse, distal pair connate for 0.5–5 cm. INFLORESCENCE interfoliar, branching to 3 orders, erect to arching, with spreading branches (to almost pendulous in fruit); peduncle 25–50 cm long, proximally 3.5–10 x 2–6 cm diam., green with much red to brown pubescence; prophyll 26–45 cm long, 6–12 cm wide, borne 4–5 cm above the base of the peduncle, split abaxially, with toothed margins, green, brown-lepidote; peduncular bracts one or two (one in HB 4706, 4730, two in HB 4616, JD 6479), quickly deciduous, inserted at respectively 7–16 and 13–21 cm from the base of the peduncle, each 55–72 cm long and 6–14 cm wide, beaked for 6–12 cm, thin red-pubescent; rachis 58–69 cm long, zigzag, with scattered brown scales, with 12–22 branched and 6–12 unbranched first order branches, the proximal of these with an axis of up to 35 cm long and 1.8–4 x 0.6–2.2 cm diam., with up to 20 second order branches; rachillae pale green, turning blushing pink in fruit, 8–36 cm long (possibly lengthening in fruit stage), 3–7 mm diam., glabrous or with scattered red scales; triads distant. STAMINATE FLOWERS with the sepals connate for 0.6–0.8 mm, free for 1.6–2.2 mm, 1.3–1.8 mm wide; petals 5.5–9.5 x 3–4.5 mm; stamens 12–20 (possibly in three antepetalous bundles– sometimes falling off in equal groups, with the removal of the petal), filaments 0.8–1.5 mm long with slightly bulbous base, anthers almost basifixed, 3–6 x 0.7–1 mm, some unequally sagittate, others equally sagittate; pistillode not seen. PISTILLATE FLOWERS with the sepals 1.3–3.2 x 2.2–5.2 mm; petals 3.5–7 x 3.6–6.7 mm, fleshy; staminodes 8–10, 1–2.5 mm long, narrowly triangular; ovary 3–9 mm high, 3.2–14 mm diam., with three styles 0.5–1 mm long and papillose or pubescent. FRUIT green, globose or obovoid, occasionally (as in JD 6375) 2- or 3-lobed, or with two abortive lobes basally, 4–5.5 x 3–4.5 cm. SEED globose with a basal conical bump, 3.1–4.4 x 3.2–4.2 cm, with large central lacuna when almost mature, this filled with sweet to slightly bitter fluid, later turning to homogeneous endosperm. GERMINATING SEEDS with elongate white cotyledonary petiole.</p></div>
+<div type="distribution"><p>NW and E Madagascar.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; slope base, mid   slope or ridge-crest; 40-550 m.</p></div>
+<div type="conservation"><p>Rare. Fairly widespread, though nowhere really common.</p></div>
+<div type="uses"><p>Palm heart not edible or even said to be poisonous; HB has drunk some fruit sap without any ill effects. Wood used for house walls.</p></div>
+<div type="discussion"><p>The leaf sheath sometimes splits to leave a tongue-like structure, reaching up to   the proximal leaflets, producing an apparent petiole.</p></div>
+<div type="materials_examined"><p>Analalava:   NNE of Maromandia, July 1992 (fl., y.fr.), Beentje &amp; Andriampaniry 4706   (BH, K, MO, P, TAN). Antalaha: Marambo, Nov. 1912 (fl.), Perrier 11937 (type; P); Mahavinitra near Ambatobe, Dec. 1972 (fr.), Moore 10118 (P,   TAN). Maroantsetra: Hiaraka, Oct. 1986 (y.fr.), Dransfield et al. JD6375 (K, TAN); idem, April 1989 (fr.), Du Puy &amp; Du Puy MB 152 (K, TAN); Antalavia, Feb. 1988 (bud), Dransfield et al. JD6479 (K, P, TAN). Mananara Avaratra: Antanambe, Oct. 1991 (fr.), Beentje 4455 (BH, K, MO, P, TAN); idem, April 1992 (bud), Beentje et al. 4616 (K, TAN). Toamasina: Betampona, Oct. 1991   (fr.), Beentje 4493 (BH, K, MO, P, TAN). Ifanadiana: Ambinanindrano,   July 1992 (fl., fr.), Beentje &amp; Andriampaniry 4730 (BH, K, MO, P, TAN). Manakara: Amby, May   1992 (fl., fr.), Beentje &amp; Andriampaniry 4678 (BH, K, MO, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

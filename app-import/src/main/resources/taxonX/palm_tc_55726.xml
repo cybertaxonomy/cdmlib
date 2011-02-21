@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops formicaria</name>
+<author>Becc.</author>
+<citation>Nelle Foreste di Borneo 608 (1902)</citation>
+<bibref>Beccari, Rec. Bot. Surv. India 2: 226 (1902)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 170 (1911)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 69 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Pertaining to ants</p></div>
+<div type="vernacular"><p>Uwai Singkurung (Dus.)</p></div>
+<div type="description"><p>Slender to moderate, solitary or clustered ant rattan, climbing to 20 m; stem without sheaths 8-10 mm diam., with sheaths to 20 mm diam., internodes c. 15 cm long. Sheath shiny green, reddish-brown tinged when young, bearing several collars with long horse-hair-like black spines to 8 cm long, 2-4 pairs of collars interlocking to form ant galleries, the spines bearing deciduous brown indumentum. Leaf cirrate, to 1.5 m (usually less), including petiole 25-40 cm and cirrus to 60 cm; petiole bearing groups of short spines to 4 mm, at the base intermingled with longer horsehair like spines; leaflets c. 20-50 on each side of the rachis, very close and regular, stiff, &#177; parallel-sided and abruptly narrowed at the base, the longest to c. 22 &#215; 1.5 cm, usually narrower, conspicuously bristly on 3 veins and the margins on the upper surface, very sparsely bristly beneath. Inflorescences short or of moderate length, 15-30 cm long, peduncle short, unarmed or only very sparsely armed; prophyll and primary bracts deciduous, usually bearing horse-hair-like spines; flowers rather conspicuously stalked. Mature fruit rounded or slightly obovoid, c. 14 mm diam., very briefly beaked, covered in c. 15 vertical rows of pale brown scales with darker margins (pale green with reddish-brown margins when immature). Seed rounded, c. 10 mm diam.; endosperm deeply ruminate. Seedling leaf pinnate with very fine close leaflets. (Fig. 22, Pl. 4A, 7B).</p></div>
+<div type="distribution"><p>Widespread in Brunei. Also in Sarawak. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane is of good quality and is used split in basketry. The fruit can be eaten.</p></div>
+<div type="discussion"><p>D. formicaria is an elegant ant rattan found in a variety of habitats from valley bottoms to the tops of ridges in the lowlands at up to about 250 m above sea level. The ant galleries combined with the close rather stiff, very regular leaflets make this species easily distinguishable.</p></div>
+<div type="materials_examined"><p>BEL: Melilas, Bt.Batu Patam, Dransfield J. 6573; Sungai Liang, Andulau F.R, Wong 323. TUT: Ulu Tutong, Bukit Bahak, Kirkup 470; Rambai, Tasek Merimbun, Bernstein 487.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

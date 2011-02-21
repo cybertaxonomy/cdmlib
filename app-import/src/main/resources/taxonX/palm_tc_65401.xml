@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis angustifolia</name>
+<author>(H. Perrier) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 336 (1995)</citation>
+<type>Madagascar, Toamasina, Ambodiriana, Betampona; Perrier; 17468</type>
+<type_loc>Holotype P</type_loc>	
+<synonymy>
+<name>Dypsis humbertii H. Perrier var. angustifolia</name>
+<author>H. Perrier</author>
+<bibref>H. Perrier in Humbert Not. Syst. 8: 47 (1939)</bibref>
+<bibref>Jumelle &amp; H. Perrier Fl. Madagascar 30: 30: 28 (1945).</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A diminutive palm of the forest undergrowth known from Betampona and environs northeast of Toamasina. This is one of three species of Dypsis that have highly condensed inflorescences with very short fat flower-bearing branches that appear almost catkin-like. The species name is Latin for having narrow leaves.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Slender, clustering undergrowth palm. STEMS to 1 m tall, 6-10 mm diam., internodes 12-25 mm diam., bearing scattered brown scales. LEAVES 6-7 in crown; sheaths 9-12 x 0.8 cm, tardily abscising, &#177; marcescent, striate, with scattered punctiform scales, auricles small, membranous, soon tattering; petiole 4-23 cm, c. 2 mm wide, &#177; triangular in cross section; blade entire bifid, distinctly plicate on drying, 28-50 cm, deeply cleft to about three quarters of the overall length, the two lobes 20-40 x 1.5-3 cm, occasionally one lobe further divided into 2 narrow leaflets, segment tips shallowly lobed, adaxially with scattered punctiform scales, abaxially paler and with abundant brown punctiform scales. INFLORESCENCES interfoliar, erect or curved, branched to 1 order only; peduncle 15-32 cm long, c. 1-2 mm diam., sparsely covered with red scales in exposed portion; prophyll 10-25 x 0.5 cm, membranous, sparsely scaly; peduncular bract inserted far above and exceeding the prophyll by 5.5-9 cm, otherwise similar; rachis 3.5-10 cm, densely brown hairy; rachillae 5-9, inserted at right angles, 1-3 cm long, c. 2 mm diam.; rachilla bracts inconspicuous, c. 0.5 x 1 mm, almost entirely obscured by dense red-brown hairs. STAMINATE FLOWER buds c. 1 mm diam., spherical; sepals 3, free, imbricate, rounded, c. 0.6 mm diam., striate, irregularly cleft at margin; petals &#177; free, longitudinally striate, broad triangular, valvate, 0.8 mm long, 0.8 mm wide at the very base; stamens 3 antesepalous, filaments united in a ring 0.2 mm high, free part 0.2 mm long, anthers didymous, c. 0.2 x 0.1 mm, introrse; pistillode conical, minute. PISTILLATE FLOWERS globular; sepals broad, imbricate, 1 x 1 mm, margins erose; petals striate, valvate at tips, irregularly imbricate at base, c. 1.5 x 1.5 mm; staminodes 3, minute; ovary c. 1 mm diam. FRUIT unknown.</p></div>
+<div type="distribution"><p>Central part of East Coast lowlands, Betampona and environs.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; 400-500 m.</p></div>
+<div type="conservation"><p>Endangered; occurring in two sites in low numbers.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>This species is closely related to D. zahamenae from which it can be distinguished by the blade being narrow and divided to three quarters rather than one third of its length, by the inflorescence rachis being usually more elongate with more distant rachillae, by the rachilla bracts being inconspicuous and almost entirely obscured by hairs, rather than being large and conspicuous, and by the staminate flower buds being rounded rather than pointed with striate rather than smooth shining petals. In all but one collection (one of the two specimens collected under Beentje 4494) there is a well developed long petiole, whereas in D. zahamenae the petiole is usually very short or absent. Previously considered to be a variety of D. humbertii (= D. zahamenae) we consider it to be sufficiently distinct to be elevated to specific rank.</p></div>
+<div type="materials_examined"><p>Toamasina: Ambodiriana, Betampona, Dec. 1925 (fl.), Perrier 17468 (Holotype P); idem, 25 Oct. 1991 (fl.), Beentje 4494 (BH, K, MO, P, TAN); Route from Didy to Ampasimanolotra, received April 1954 (fl.), Cours 4926 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

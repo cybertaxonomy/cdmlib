@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus conirostris</name>
+<author>Becc.</author>
+<citation>Beccari, Hooker f., Fl. Br. India 6: 461 (1893)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 480 (1908)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 186 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 123 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 126 (1992)</bibref>
+<synonymy>
+<name>Cornera conirostris</name>
+<author>(Becc.) Furtado</author>
+<bibref>(Becc.) Furtado, Gard. Bull. Singapore 14: 519 (1955)</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus brachystachys</name>
+<author>Becc.</author>
+<bibref>Becc., Ann. Roy. Bot. Gard. Calcutta 11: 485 (1908)(in part - the other part = Calamus lobbianus)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Conical beak, referring to the fruit</p></div>
+<div type="vernacular"><p>Uwai Pegit (Dus.), Wi Danum (Ib.)</p></div>
+<div type="description"><p>Moderate clustering short-stemmed rattan with stems rarely exceeding 10 m, usually much less; stem without sheaths c. 10 mm diam., with sheaths to 35 mm diam., internodes to c. 35 cm long. usually much less. Sheaths dull green, armed with dull green, horizontal or reflexed sparse to abundant spines to 30 mm long and erect very large spines to 180 mm long around the leaf sheath mouth, pale brown indumentum abundant on young sheaths; knee conspicuous; ocrea inconspicuous. Flagellum to 75 cm. Leaf curved, subcirrate, to 2.5 m long including the petiole to 50 cm; petiole sparsely armed with short lateral spines; leaflets curved, regular, rather distant, c. 35 on each side of the rachis, the largest to c. 40 &#215; 2 cm, decreasing in size towards the subcirrate tip, bristly on 3 nerves on the undersurface. Inflorescences erect or curving, c. 60 cm with 1-3 partial inflorescences only, the partial inflorescences appearing as continuations of the axis and the true axis appearing as a branch; rachillae congested; flowers relatively large, to 7 mm. Ripe fruit top-shaped, c. 30 &#215; 20 mm, tapering to a pronounced conical beak, and covered in 15 vertical rows of jet-black unchannelled scales with toothed margins. Seed ovoid, c. 15 &#215; 10 mm; endosperm ruminate. Seedling leaf not known. (Fig. 44).</p></div>
+<div type="distribution"><p>Widespread and locally abundant in Brunei. Elsewhere widespread throughout Borneo, local in Sumatra, rare in Peninsular Malaysia.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Local use only.</p></div>
+<div type="discussion"><p>C. conirostris is found from the lowlands up to c. 900 m in the mountains; it is usually most abundant in poor ridge top forest or in forest transitional between kerangas and lowland dipterocarp forest. It is usually easily identified by its subcirrate leaf, the large spines around the leaf sheath mouth and the curious zigzag inflorescence.C. leloi can appear very similar but has an ecirrate leaf, is usually densely spiny and has a spherical rather top-shaped fruit.</p></div>
+<div type="materials_examined"><p>BEL: Bukit Sawat, Merangking Buau, Coode 7679; Melilas, Bt.Batu Patam, Dransfield J. 6575; Melilas, Bt.Batu Patam, Dransfield J. 6587; Melilas, Bt.Batu Patam, Dransfield J. 6590; Sungai Liang, Arboretum Reserve, Wong  945. TEM: Amo, Stockdale 17; Amo, Stockdale 46; Amo, Stockdale 67; Amo, Wong 479; Amo, Belalong, Stockdale 4; Amo, Belalong, Stockdale 8; Amo, Kerangan Meritam, BRUN 15632. Without prov.: BRUN 15093; BRUN 15341; BRUN 15399.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

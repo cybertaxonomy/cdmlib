@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus laevigatus var. mucronatus  (Becc.)  J.Dransf.</name>
+<author>(Becc.) J.Dransf.</author>
+<citation>Bot. J. Linn. Soc. 81: 8 (1980)</citation>
+<bibref>Dransfield, Ratt. Sabah 104 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 106 (1992)</bibref>
+<synonymy>
+<name>Calamus mucronatus</name>
+<author>Becc.</author>
+<bibref>Becc., Rec. Bot. Surv. India 2: 213 (1902)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 420 (1908)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Bearing an abruptly narrowed tip</p></div>
+<div type="vernacular"><p>Rotan Peladas (Br.), Uwai Padas (Dus.), Wi Anak (Ib.)</p></div>
+<div type="description"><p>Very slender solitary rattan climbing to great heights, often over 60 m in length; stem without sheaths c. 4 mm diam., with sheaths to 8 mm diam.; internodes to 13 cm, frequently less in exposed stems. Sheaths dull dark green with very few triangular spines to 3 mm, often with wart-like bases; knee well developed; ocrea to 3 mm fringed with hairs. Leaf cirrate to 90 cm including the cirrus to 45 cm, often the whole leaf to only 30 cm in exposed stems; petiole absent or very short, c. 1 cm; leaflets c. 8 on each side of the rachis, lanceolate and abruptly narrowed at the tip, irregularly arranged in pairs or singly, the basal 1 or 2 reflexed across the stem, the longest to 13 &#215; 2 cm, dark green (drying pale), &#177; cucullate, transverse veinlets conspicuous. Inflorescences without terminal flagellum, to 45 cm with c. 8 partial inflorescences in all, in detail very similar to that of the type variety but much smaller. Mature fruit ovoid (? always), c. 15 &#215; 10 mm, with a short beak and covered with 14 vertical rows of straw-coloured scales with darker margins. Seed ovoid c. 12 &#215; 8 mm; endosperm deeply ruminate. Seedling leaf bifid. (Fig. 36).</p></div>
+<div type="distribution"><p>Widespread in Temburong District. Elsewhere widespread in Borneo, but never very abundant. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Uses; an excellent very small diameter cane for binding purposes.</p></div>
+<div type="discussion"><p>C. laevigatus var. mucronatus is one of the most slender species of rattan in Brunei; it has a very dark colour when fresh, but dries pale green. It is usually found on ridge tops on rather poor soils at altitudes up to 900 m above sea level.</p></div>
+<div type="materials_examined"><p>TEM: Amo, Bt.Belalong, Dransfield J. 7109; Amo, Bt.Belalong, Wong 1360; Amo, Bt.Belalong, Wong 1388; Amo, K.Belalong, Stockdale 13; Amo, K.Belalong, Stockdale 54; Bangar, Bt.Biang, Ashton A 169.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

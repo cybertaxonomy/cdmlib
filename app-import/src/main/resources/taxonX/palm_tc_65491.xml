@@ -1,0 +1,55 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis mocquerysiana</name>
+<author>(Becc.) Becc.</author>
+<citation>Palme del Madagascar 15 (1913)</citation>
+<bibref>Jum., Cat. Pl. Madagascar Palmae: 14 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier Fl. Madagascar 30: 33 (1945)</bibref>
+<type>Madagascar, Bay of Antongil; Mocquerys; 333</type>
+<type_loc>Holotype G-DC; isotype FI</type_loc>
+<synonymy>
+<name>Trichodypsis mocquerysiana</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 38, Beibl. 87: 15 (1906)</bibref>
+</synonymy>
+<synonymy>
+<name>Dypsis manaranensis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 3, 6 (1): 32 (1918)</bibref>
+<bibref>Jum., Bull Ac Malgache 6: 6 (1923)</bibref>
+<bibref>Jum., Cat Pl Madagascar, Palmae: 14 (1938)</bibref>
+<bibref>Jum &amp; H Perrier, Fl Madagascar 30: 34 (1945)</bibref>
+<type>Madagascar, Mananara; Perrier; 12067</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>An attractive small solitary palm of the undergrowth of very humid rain forests in the lowlands surrounding the Bay of Antongil. D. mocquerysiana has been grown at Kew since 1986, where it flowers regularly and once</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Slender solitary (or clustering, fide Jumelle) palm of the forest undergrowth, not exceeding 2 m tall. STEM 7-9 mm diam.; internodes &#65533;.c. 7 mm diam., stem surface with scattered caducous scales. LEAVES 4-8 in crown, tending to be held &#177; horizontally; sheath to 10 cm long, 1 cm diam., densely covered with thick caducous dark brown indumentum, the sheath mouth sometimes with two short irregular triangular auricles (1-3 cm, fide Jumelle 1923); petiole absent or very short, not exceeding 6 cm long, c. 4 x 3 mm in section, densely covered in caducous dark brown indumentum as the sheath; rachis (or costa) 8-19 cm long, tapering along its length, bearing caducous dark brown indumentum as the petiole; blade entire bifid or with 2 broad leaflets on one or both sides of the rachis; blade to 50 cm long, bifid for 50% to almost 80% of the length, the two lobes (or apical lobes) diverging from the rachis at an angle of about 10-15&#176;, held flat or &#177; cucullate, somewhat plicate, to 30 x 3.5-5.5 cm, adaxially glabrous, abaxially with minute, scattered punctiform dark brown scales and a few bands of caducous laciniate scales, and usually with conspicuous dark ramenta on major veins, 2-5 mm long. INFLORESCENCE protandrous, erect at anthesis, held above the leaves, bent down in fruit, branching to 1-2 orders; peduncle 17-37 cm long,  &#65533;.c. 1.5-3 mm diam., bearing abundant caducous chocolate-brown laciniate scales when young in exposed parts; prophyll sometimes borne 2-3 cm above base of peduncle, 9-18 x 0.4-0.8 cm, very sparsely scaly; peduncular bract borne 2-5 cm above the prophyll, 17-27 x 0.7-0.8 cm, similar to prophyll; rachis usually elongate, 9-22 cm long, bearing numerous short first-order branches, the basal few branched further to the second order, the whole branching portion of the inflorescence &#177; narrow rectangular in outline, axes sparsely to very densely covered in shaggy dark brown scales; rachillae usually numerous (c. 90), short, rarely exceeding 4 cm long, c. 1 mm diam., surface covered with minute punctiform scales and larger shaggy dark brown scales; triads 1-1.5 mm distant; rachilla bracts c. 0.5-1 mm, triangular, entire or long laciniate. STAMINATE FLOWERS c. 0.7-1 mm diam.; sepals 0.5-0.7 mm long, irregularly triangular or rounded, keeled, margins entire, or laciniate; petals 0.8 x 0.5 mm, striate; stamens 3, antepetalous, filaments 0.2 x 0.1 mm, basally connate in a ring with staminodes, anthers c. 0.2 mm, didymous, staminodes clublike, c. 0.1 mm; pistillode a low dome. PISTILLATE FLOWERS c. 1.5 mm diam.; sepals imbricate, c. 0.5 mm, margins laciniate; petals triangular, 1.3 x 1 mm, striate; staminodes 6, irregularly dentiform, minute; ovary (post anthesis) c. 1.5 mm diam.. Mature FRUIT bright red, 13 x 5.5 mm, epicarp shiny, mesocarp thin fleshy, endocarp thin with few scattered longitudinal fibres. SEED 11 x 4 mm; endosperm homogeneous; embryo lateral near the base.</p></div>
+<div type="distribution"><p>NE Madagascar: Masoala and Mananara Avaratra.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest, usually in humid val- ley bottoms; 50-400 m.</p></div>
+<div type="conservation"><p>Vulnerable. Occurs in a restricted area, where shifting cultivation is increasing.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Beccari cited two syntypes, Mocquerys 333 and Mocquerys 419. As he used the latter for his "Dypsis mocquerysiana dissecta", we interpret this as selecting Mocquerys 333 as representing the typical facies (i.e., the type) of the species. In the protologue of D. mananarensis, Jumelle cited two collections: Perrier 12067 and Perrier 12064; of these the former is selected here as lectotype, as it is the more complete collection. Of the six leaves represented in the two syntypes, five are entire bifid, while the sixth, in Perrier 12064, has a blade split on one side of the rachis to give two broad leaflets. The plate in the Flora of Madagascar is thus most misleading, as it represents a leaf with four segments, and the description also mentions that the blade has most often four segments. On the label attached to the lectotype, Perrier 12067, Perrier has written "Parait differer de D11 (No.11963)"; we have found no trace of this collection. Jumelle cited the type locality as "Manarana" and the specific epithet as "manaranensis". The misspelling of the specific epithet was later corrected to "mananarensis" on the type sheet Perrier 12067. Jumelle distinguished D. mananarensis from D. mocquerysiana on the dissection of the blade, decurrence of segments and the absence of fimbriate bracts subtending the flower clusters (as illustrated by Beccari). However, even within populations of D. mocquerysiana on the Masoala Peninsula, the degree of fimbriation of the rachilla bracts varies greatly from strongly fimbriate to almost lacking fimbriation, and there seem to be no significant differences between dissected-bladed  D. mocquerysianaand D. mananarensis. Lam &amp; Meeuse 5861, from Soanierana-Antasibe, differs from other collections of D. mocquerysiana in being rather large, in having a petiole about 6 cm long, in the leaf lacking ramenta on the undersurface and in the rachillae bearing rather longer shaggier hairs. We have only tentatively included it here. Heim s.n. has ramenta on the undersurface of the leaves, but has petioles about 6 cm long, a relatively short inflorescence and the the rachilla hairs are shaggier than those found in typical D. mocquerysiana. Furthermore, the collection was made in the Matitanana, far to the south of the main area of distribution around the Bay of Antongil. This collection is not complete and is only tentatively included here.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Masoala Peninsula, Maroa, Bay of Antongil, (fl.), Mocquerys 333 (Holotype G-DC, isotype FI); Nosy Mangabe, (fl.), Mocquerys 419 ( G-DC, FI); Hiaraka, Oct. 1986 (fl., fr.), Dransfield et al. JD6368 (BH, K, MO, TAN); Antalavia, April 1988 (fl.), Gentry &amp; Schatz 62172 (K, MO); Andranofotsy River, Sahavary, Feb. 1988 (fl., fr.), Dransfield et al. JD6454 (K, TAN). Mananara Avaratra: Mananara, Aug. 1912 (fl.), Perrier 12067 (lectotype of D. mananarensis, P); idem, Perrier 12064 (P). Tentatively included specimens: Soanierana-Ivongo: Antasibe, Dec. 1938 (fl.), Lam &amp; Meeuse 5861 (L) (see note above); Matitanana, for&#234;t de Tsianovoka, Ampenetra, Sept. 1934 (fl.), Heim s.n. (P) (see notes). CULTIVATED: ex Masoala, Ambanizana, Royal Botanic Gardens, Kew, Sept. 1991 (fl.), Cooke 95 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

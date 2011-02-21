@@ -1,0 +1,80 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>The Date Palms. Solitary or clustering dioecious pinnate-leaved palms of the Old World, usually in arid or semi-arid areas, sometimes in mangrove or monsoon forest, instantly recognisable by the induplicate leaflets with spine-like tips, and the acanthophylls at the leaf base; inflorescence with a single large bract.</p></div>
+<nomenclature>
+<name>Phoenix</name>
+<author>L.</author> 
+<citation>Sp. pl. 1188 (1753).</citation>
+<type>Type; Phoenix dactylifera; L.</type>
+<synonymy>
+<name>Elate</name>
+<author>L.</author>
+<bibref>L., Sp. pl. 1189 (1753).</bibref>
+<type>Type; Elate sylvestris; L.</type>
+</synonymy>
+<synonymy>
+<name>Palma</name>
+<author>Mill.</author>
+<bibref>Mill., Gard. Dict. abr. ed. 4 (1754).</bibref>
+<type>Lectotype; Palma dactylifera; (L.) Mill.</type> 
+</synonymy>
+<synonymy>
+<name>Phoniphora</name>
+<author>Neck.</author>
+<bibref>Neck., Elem. Bot. 3: 302 (1790).</bibref>
+</synonymy>
+<synonymy>
+<name>Dachel</name>
+<author>Adans.</author>
+<bibref>Adans., Fam. pl. 2: 25, 548 (1763).</bibref>
+</synonymy>
+<synonymy>
+<name>Fulchironia</name>
+<author>Lesch. in Desf.</author>
+<bibref>Lesch. in Desf., Tabl. École Bot., ed. 3: 29 (1829).</bibref>
+</synonymy>
+<synonymy>
+<name>Zelonops</name>
+<author>Raf.</author>
+<bibref>Raf., Fl. Tellur. 2: 102 (1837).</bibref>
+<type>Type; Zelonops pusilla; (Gaertn.) Raf.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Latin transcription of phoinix, date palm or palm; the name is often used in combination with other epithets in palm generic names.</p></div>
+<div type="description"><p>Dwarf or creeping to large, solitary or clustered, armed, pleonanthic, dioecious palms. Stem, when developed, often clothed with spirally arranged leaf bases. Leaves induplicate, pinnate, usually marcescent; sheath forming a fibrous network; petiole very short to well developed, adaxially channelled to flattened or ridged, abaxially rounded; rachis elongate, tapering, adaxially rounded or flat to angled, abaxially rounded to flat, usually terminating in a leaflet; leaflets single-fold, acute, regularly arranged or variously grouped, the proximal few modified as spines (acanthophylls), parallel-veined, midrib usually evident abaxially, often bearing scales, emergent leaves frequently with brown floccose indumentum and/or wax, transverse veinlets obscure. Inflorescences interfoliar, branching to 1 order, the staminate and pistillate superficially similar; peduncle flattened, short to elongate, in the pistillate frequently elongating after fertilization, bearing an often caducous, sometimes bivalved, 2-keeled, glabrous or floccose-hairy prophyll; other bracts inconspicuous; rachis flattened, usually shorter than the peduncle; rachillae unbranched, numerous, often in groups in a spiral along the rachis, somewhat adnate above small triangular bracts, the rachillae bearing spirally arranged, low triangular bracts, each subtending a solitary flower. Staminate flowers with 3 sepals connate in a low cupule; petals 3, ± valvate, acute or rounded, much exceeding the calyx; stamens usually 6 (rarely 3 or 9), filaments short, erect, the anthers linear, latrorse; pistillode absent, or of 3 abortive carpels, or a minute trifid vestige. Pollen ellipsoidal, bi-symmetric or very slightly asymmetric; aperture a distal sulcus; ectexine tectate, coarsely perforate, finely reticulate, foveolate, or perforate-rugulate; aperture margin slightly finer, psilate or scabrate; infratectum columellate; longest axis 17–30 µm [11/13]. Pistillate flowers globose; sepals connate in a 3-lobed cupule; petals imbricate, strongly-nerved, about twice as long as the calyx or more; staminodes usually 6, scale-like or connate in a low cupule; carpels 3, distinct, follicular, ± ovoid, narrowed into a short, recurved, exserted stigma, ovule attached adaxially at the base, anatropous. Fruit usually developing from 1 carpel, ovoid to oblong with apical stigmatic remains; epicarp smooth, mesocarp fleshy, endocarp membranous. Seed elongate, terete or plano-convex, and deeply grooved with intruded seed coat below the elongate raphe, hilum basal, rounded, endosperm homogeneous or rarely ruminate (Phoenix anadamanensis); embryo lateral or subbasal. Germination remote-tubular; eophyll undivided, narrowly lanceolate. Cytology: 2n = 32, 36.</p></div>
+<div type="distribution"><p>14 species ranging from the Atlantic islands through Africa, Crete, the Middle East and India to Hong Kong, Taiwan, Philippines, Sumatra and Malaya. Widely cultivated as ornamentals, one species, Phoenix dactylifera, the date palm, is a major economic plant, now widespread in semi-arid areas as a fruit tree. </p></div>
+<div type="anatomy"><p>Central vascular bundles of the petioles with a single phloem strand (Parthasarathy 1968). Leaf (Tomlinson 1961), roots (Seubert 1997), floral (Uhl and Moore 1971, 1977a, DeMason et al. 1982), axillary bud, inflorescence, offshoot (Hilgeman 1954), seed (Werker 1997).</p></div>
+<div type="relationships"><p>Asmussen et al. (2006) found strong support for the monophyly of Phoenix. Interspecific relationships in the genus are discussed by Barrow (1998, 1999). For relationships, see tribe Phoeniceae. </p></div>
+<div type="uses"><p>The genus is immensely important from an economic point of view. It includes not only the date palm, the major crop of several Middle Eastern countries and of lesser importance elsewhere, but also other species that are widely used as sources of fibre for weaving, starch, sugar, and a multiplicity of purposes such as thatch and fuel. Many species are widely grown as ornamentals. Phoenix roebelenii is commercially important as a pot plant. Species are known to hybridise freely. For references on uses, see Johnson (1983a, 1984). For a summary of uses, see Johnson (1985). </p></div>
+<div type="taxonomic accounts"><p>Barrow (1998). </p></div>
+<div type="fossil record"><p>The oldest records of Phoenix-like fossils are probably from the Deccan Intertrappean of India (although the age span of these volcanic deposits is controversial, see c	d Chapter 5). These records include a sheathing leaf base of Phoenicicaulon mahabalei (Bonde et al. 2000) and seeds (Ambwani and Dutta 2005). Ancibor (1995) describes fruit and stem wood, Palmoxylon valchetense, from the Upper Cretaceous of Argentina, although identifying stem wood to generic level is rarely conclusive. Fossils attributed to Phoenix occur throughout the Tertiary; for example, a leaf and staminate inflorescence from the Eocene of France recorded as Phoenix aymardii (Saporta 1878, 1879, 1889). It is noted that the fossil leaf Hemiphoenicites from the Tertiary of Italy (Visiani 1864) was placed by Read and Hickey (1972) in the synonomy of Phoenicites, a genus redefined by these authors as not having induplicate leaves (see below). Fossil palm wood from the Oligocene–Miocene of Louisiana (USA) has been compared with Phoenix (Schmidt 1994), although palm wood is notoriously difficult to define below family level. Fruits and seeds are described from the Middle to Upper Eocene and Lower Oligocene of southeastern and eastern USA, Phoenicites occidentalis (Berry 1914a, 1924); from the Middle Eocene of Germany, Phoenix hercynica (Mai 1976); and from the Lower Miocene of Central Europe, Phoenicites bohemica (Bu°z˘ek 1977). A pistillate inflorescence from the Eocene, Bournemouth Beds, UK was regarded as date palm by Gardener (1882, cited in Chandler 1963); and from the Bernstein flora of Germany, a palm-like flower embedded in Eocene Baltic amber is questionably assigned to Phoenix: P. eichleri (Conwentz 1886). Notably, Poinar (2002b) also describes a palm flower from the Baltic amber, which, “resembles the one described by Conwentz (1886)”, although he does not comment on affinity. Small monosulcate grains, Palmaemargosulcites fossperforatus, from palm flower compression fossils, recovered from the Middle Eocene oil shales of Messel, Germany, have been compared with pollen of a number of coryphoid genera, but most favourably with Phoenix (Harley 1997); and small dispersed Phoenix-like pollen occurs sporadically in the UK Eocene London Clay Basin (Khin Sein 1961). Pleistocene subfossils of Phoenix leaves (Lacroix 1896) were discovered in ancient volcanic ash deposits on the island of Phira (Santorini). 
+(N.B. Read and Hickey [1972] redefined the fossil genus Phoenicites as pinnate with reduplicate plication and lower-most pinnae not spine-like. Their taxonomic recommendation that Phoenicites should, henceforth, be reserved or applied to non-Phoenix-like pinnate leaves is, perhaps, more than a little confusing to the unwary.) </p></div>
+<div type="discussion"><p>Easily distinguished from all other palms by the induplicate pinnate leaf with the lower leaflets modified as spines. A modern developmental study of the unique leaf is badly needed.</p></div>
+<div type="vernacular"><p>Variously designated as date palms, as wild date (Phoenix sylvestris), roebelin or miniature date (P. roebelenii). </p></div>
+<div type="biology_ecology"><p>Most species are plants of semi-arid regions but grow near water courses, oases, or underground water sources; a few species are found in tropical monsoonal areas. Phoenix paludosa occurs in the Asian perhumid regions, where it is confined to the landward fringe of mangrove forest. Phoenix roebelenii grows as a rheophyte on the banks of the Mekong and some of its tributaries. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

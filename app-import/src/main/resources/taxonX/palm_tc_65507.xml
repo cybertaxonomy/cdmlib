@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis pervillei</name>
+<author>(Jum.) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 269 (1995)</citation>
+<type>Madagascar, NW region, anno 1841; Pervillé; </type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Haplodypsis pervillei</name>
+<author>Baill.</author>
+<bibref>Baill., Bull. Soc. Linn. Paris 147: 1167 (1894)</bibref> 
+</synonymy>
+<synonymy>
+<name>Neophloga pervillei</name>
+<author>(Baill.) Becc.</author>
+<bibref>(Baill.) Becc., Bot Jahrb Syst 38, Beibl 87: 26 (1906)</bibref>
+<bibref>Becc, Palme del Madagascar 29, fig 22, t 28 (1912)</bibref>
+<bibref>Jum., Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 4, 6 (3): 28 (1929)</bibref>
+<bibref>Jum., Cat Pl Madagascar, Palmae: 22 (1938)</bibref>
+<bibref>Jum. &amp; H Perrier, Fl Madagascar 30: 71 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>Another of those rare palms with unbranched inflorescences, not seen for many years. The name refers to the collector of the type, Auguste Pervill&#233;, who collected in Madagascar between 1837 and 1841.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>No data about habit. LEAVES: sheath 8-9 cm long, distally redpubescent or with scattered scales, with auricles 3-15 mm high and triangular; petiole 2-9 cm long, 2-3.5 mm diam., with scattered reddish scales; rachis 19-35 cm long, in mid-leaf 1.5-2 mm wide, with scattered scales; leaflets 9-12 on each side of the rachis, in groups of 2-5, interval within the groups 0.5-0.7 cm, interval between the groups 4-9 cm, proximal leaflets 8-16 x 0.4-1.3 cm, median 11-23 x 0.8-1.5 cm, sigmoid, main vein 1, long acuminate, with scattered scales on minor veins on the abaxial side but glabrescent, with scattered scales on margins, distal pair 9-15 x 1-2 cm, connate for 2-2.5 cm, apices 5-10 mm wide and truncate and dentate, with 2-3 main veins. INFLORESCENCE unbranched, 25-60 cm; peduncle 12-31 cm long, 2-4 mm diam., densely red-scaly; prophyll 8-14 cm long, 6-7 mm wide, borne at 1-4 cm above the base of the peduncle, with dense white or reddish scales, glabrescent, opening at the very apex; peduncular bract inserted at 4-11 cm from the base of the peduncle, 6-18 cm long, open in the distal 1-3.5 cm, with scattered scales; rachilla 14-24 cm long, 2-3 mm diam., densely puberulous; triads in slight pits. STAMINATE FLOWERS with sepals 1-1.6 x 0.9-1.7 mm; petals 2.6-2.8 x 1.3-1.5 mm; stamens 6, not seen, described by Baillon and Beccari as: filaments slender, biseriate according to Baillon but &#177; equal according to Beccari, anthers dorsifixed, versatile, oblong, obtuse, the locules parallel or slightly divergent at the base. PISTILLATE BUDS with sepals 1.2-1.4 x 1.3-1.9 mm; petals c. 3 x &#60; 1 mm; staminodes at least four, 0.2-0.5 mm; gynoecium 2-2.5 x 1-1.7 mm. FRUIT unknown.</p></div>
+<div type="distribution"><p>The only certain site is Betampona.</p></div>
+<div type="biology_ecology"><p>Forest.</p></div>
+<div type="conservation"><p>Presumably extinct. Not seen for seventy years.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>On the type sheet labels (underneath the "Madagascar N. O. 1841" in ink) there is a note in pencil "plus probable Ste. Marie". In a little pocket on one of the type sheets there is some anther material (with some loose staminate petals 2-2.4 x 1.2 mm) with uniseriate filaments c. 1 mm long and thin, and anthers 1.4-1.5 x 0.7-0.8 mm, dorsifixed with parallel locules. Though difficult to key out from D. heterophylla (except for the rachilla), we feel this is nevertheless a distinct species, related to D. curtisii and D. soanieranae.</p></div>
+<div type="materials_examined"><p>NW Madagascar, without further locality, 1841 (fl.), Pervill&#233; s.n. (P, type). Toamasina: Betampona, Dec. 1925 (bud), Perrier 17470 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

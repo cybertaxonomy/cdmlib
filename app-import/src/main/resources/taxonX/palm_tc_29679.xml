@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus manan</name>
+<author>Miq.</author>
+<citation>J. Bot. Neerl. 1 (1861) 23</citation>
+<bibref>Miquel in Prodr. Fl. Sum. (1861) 256, 595</bibref>
+<bibref>Beccari in Rec. Bot. Surv. Ind. 2 (1902) 211</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 53</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 11 (1908) 438</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 109</bibref>
+<bibref>Dransfield in Mal. For. 40 (1977) 199</bibref>
+<synonymy>
+<name>Calamus giganteus</name>
+<author>Becc.</author>
+<bibref>Becc. in Hook, f., Fl. Br. Ind. 6 (1893) 460</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11 (1908) 440 and Supplement (1913) 109</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 111</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Manan - from manau the Malay name, though apparently Miquel misread manau for manan</p></div>
+<div type="vernacular"><p>rotan manau</p></div>
+<div type="description"><p>Solitary massive high climbing rattan reaching eventually lengths of over 100 m. Stem without sheaths to 8 cm in diameter, sometimes quite slender (2.5 cm) at the very base, with sheaths to 11 cm in diameter; internodes to 40 cm long. Sheaths dull grey green densely armed with black laminate hairy edged triangular spines arranged in lateral groups or scattered, the largest to J cm long by 1 cm wide at the base, and with numerous much smaller spines to 5 mm long between; spines horizontal or slightly reflexed; thin white wax abundant between spines. Knee conspicuous armed as leaf sheath. Ocrea ill-defined. Leaf cirrate very massive to 8 m long including the cirrus to 3 m long; petiole short, to 12 cm long by  5&amp;nbsp; cm wide in mature plants, much longer in juveniles armed densely as is the rachis with short triangular spines both on the upper surface and beneath, with scattered grey in dumentum between. Leaflets irregular in juvenile leaves, regular in mature leaves, limply pendulous and versatile, to 45 on each side, pale grey-green, the largest to 60 cm long by  6&amp;nbsp; cm wide bristly near the tips. Inflorescences massive, the male much more finely branched than the female, to 2.5 m long with up to 9 partial inflorescences on each side to 70 cm long; all bracts rather densely armed with triangular spines to 3 mm high and red-brown in dumentum. Rachillae to 15 cm long. Ripe fruit rounded to ovoid, to 2.8 cm long by 2.0 cm wide shortly beaked, and covered in 15 vertical rows of yellowish scales with blackish brown margins. Seed ovoid, to 1.8 cm long by 1.2 cm wide, with finely pitted surface; endosperm densely and deeply ruminate. Seedling leaf with 2 divergent leaflets cucullate with a waxy blue-grey bloom on a pale dull green surface.</p></div>
+<div type="distribution"><p>Perak, Selangor, Kelantan, Pahang, Trengganu, Negri Sembilan, Johore. Sumatra, Borneo, ? S. Thailand.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The premier large size furniture cane of unsurpassed quality.</p></div>
+<div type="discussion"><p>"Rotan manau" is widespread, but usually confined to steep slopes in hill Dipterocarp forest. It is rather rarely found in lowland Dipterocarp forest, and there, nearly always on steep slopes. It has an altitudinal range of about 50-1000 m and is at present most abundant between 600 and 1000 m altitude. It is likely however that it was formerly much more widespread, with its range being limited now by over exploitation. Seedlings are very characteristic and often abundant in hill forest. Calamus manan is variable in size and coloration. Beccari originally separated Malayan material as a separate species (C. giganteus) but I consider this to be conspecific with C. manan. Novices sometimes confuse "rotan manau" with "rotan dok" which is also very large and often grows with it. However, "rotan dok" is immediately distinguished because it has a flagellum and no cirrus whereas "rotan manau" has a cirrus but no flagellum. Calamus tumidus is very close to C. manan but can be separated on its smaller size, different leaf sheath armature and the very large bulbous, swollen knee.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

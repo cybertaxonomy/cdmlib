@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops macrophylla</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1893) 470</citation>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta. 12 (1911) 185</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 46</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 130</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Makros - large, phullon - leaf, referring to the very broad unusually large leaflets</p></div>
+<div type="vernacular"><p>rotan cincin</p></div>
+<div type="description"><p>Clustering moderate-sized high climbing rattan reaching to 20 m or more in the canopy. Stem without sheaths to 1.5 cm in diameter, with sheaths to 3 cm, internodes to 10 cm in length. Sheaths bright green very densely armed with green collars and black and brown horse-hair-like spines of varying length, mostly about 2 cm long, or 5 cm long at least 1 pair of collars interlocking to form an ant tunnel (these usually 2-3 each sheath); pale to dark brown indumentum abundant between spines. Knee present, obscured by the spines. Ocrea inconspicuous. Leaf to 2.25 m long including the petiole and the 1.25 m long cirrus. Petiole rather long, to 50 cm or more armed with reflexed groups of tiny black spines and larger yellowish spines. Leaflets up to about 10 on each side, much fewer in juveniles, irregularly arranged, the lowermost 2 very large and broad, to 60 cm long by 10 cm wide, the upper leaflets much narrower to 50 cm long by 2.5 cm wide in pairs or 3's or 4's with sparse marginal bristles. Inflorescences male and female superficially similar, the prophyll usually long persisting, very heavily armed with collars and black bristles as the leaf sheath, the other bracts quickly falling at anthesis; whole inflorescence to 60 cm and more. Mature fruit ovoid 2.1 by 1.5 cm, very briefly beaked, covered in 16-18 vertical rows of yellowish brown reflexed scales. Seed ovoid, about 1.5 cm long by 1.1 cm wide, slightly flattened on one side, densely pitted. Endosperm deeply ruminate. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Perak, Trengganu, NegriSembilan, Pahang, Selangor, Johore: Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Produces a cane of moderate quality, sometimes collected and mixed in with "rotangetah".</p></div>
+<div type="discussion"><p>Daemonorops macrophylla is immediately recognized among the rattans with ant tunnels by the very large broad lowermost leaflet^. Daemonorops sabut is closely related but differs mainly in the very narrow leaflets.Daemonorops macrophylla is widespread but found mostly on slopes near valley bottoms, from 50 to 800 m altitude. It does not usually occur in lowland swamps, where D. sabut seems to replace it.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

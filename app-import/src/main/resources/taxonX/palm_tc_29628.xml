@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans of the Western Ghats. A Taxonomic Manual.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus lacciferus</name>
+<author>Lakshmana &amp; Renuka </author>
+<citation>J. Econ. Tax. Bot. 14: 719</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kannada: Neerubetha</p></div>
+<div type="description"><p>Clustering, high climbing canes. Stems to 15 m or more in length, very thin at the base, ca 0.5 to 0.8 cm in diameter, getting thicker upwards, distally with sheaths to 3.5 cm in diameter, without sheaths to 1.5 cm, basal nodes producing new shoots. Sheath green in the basal portions and greyish green distally, sparingly spiny, spines to 0.5 cm long, bulbous at base; knee very conspicuous, unarmed. Leaf to 2 m long, ecirrate; petiole ca 30-40 cm long, biconvex, armed with small spines; rachis with recurved spines on the under surface, when cut exudes milky latex; leaflets ca 65 x 2.8 cm, gradually becoming smaller towards the tip, the terminal pair ca 20 x 1.2 cm, slightly united at the base, regular.linear-lanceolate, ciliated at tip, 3-veined, midvein ciliated above on the upper half of leaflets, lateral veins ciliate below on the upper half. Inflorescence long, flagellate, flagella often getting modified into suckers; primary sheath tightly sheathing, spiny; partial inflorescence to 15 cm long;secondary sheaths tubular, inflated at the mouth; rachillae to 5 cm long, arched and recurved, the upper ones gradually diminishing to 1 cm long; involucrophorum stalked, conspicuously callous at its axilla next to the axis, involucre disc shaped; fruiting perianth pedicellate. Fruits 2x2 cm, globose, scales in 19 rows, deeply channeled in the middle, yellow with brown border, shiny. Endosperm ruminate.</p></div>
+<div type="distribution"><p>Evergreen forests at about 950 m., usually seen near water course. Behaves like a runner. Agumbe state forests, Samse, Koppa. (Fig 4).</p></div>
+<div type="biology_ecology"><p>Flowering November -December. Fruiting May-June.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not used.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Kenganahonda, 15.5.88, fr., Renuka 4078 (KFRI); Agumbe, 18.3.89, Renuka 4096 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Calamus maturbongsii, an unusual new rattan species from New Guinea</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bull. 57: 725-728</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus maturbongsii</name>
+<author>W.J. Baker &amp; J. Dransf.</author>
+<citation>Kew Bull. 57: 725-728</citation>
+<type>Indonesia, Papua, Sorong; Maturbongs; 286</type>
+<type_loc>Holotype K!; isotype MAN</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>a ceteris speciebus papuanis foliis ecirratis, petiolo brevissimo, foliolis basalibus longissimis, inflorescentia flagello apicale carenti, bracteis rachidis maximis laceratis, ramis primariis congestis bene distincta</p></div>
+<div type="description"><p>Moderately robust, clustering rattan climbing to 30 m.  Stem with sheaths 16 – 22 mm diam., without sheaths to 10 – 11 mm diam.; internodes c. 48 cm. Leaf ecirrate, to 1 m long including petiole; sheaths with very thin, white, cobweb-like indumentum, unarmed or armed with very few, scattered, minute, easily detached, triangular spines to 1 mm; knee 13 – 22 × 16 – 21 mm, unarmed, with conspicuous ridge at the base, both ends of ridge somewhat deflexed; ocrea 3 – 5 mm, forming a low collar almost entirely encircling stem, persistent, drying woody, brittle, unarmed; flagellum to 1.7 m, with numerous grapnel spines arranged subregularly to irregularly; petiole 3 – 5 mm long, 6 – 11 × 3 – 6 mm at base, flat adaxially, rounded abaxially, unarmed; rachis with grapnel spines arranged subregularly, abaxial surface with indumentum as sheath, adaxial surface with numerous dark purple-brown scales; leaflets 7 – 12 each side of rachis, arranged regularly, lanceolate with cucullate apices, longest leaflet near leaf base 26 – 36 × 4.5 – 5 cm, the basal pair of leaflets almost as large as longest leaflets, mid-leaf leaflets 24.5 – 26 × 4.3 – 5.5 cm, apical leaflets 5.5 – 12 × 0.7 – 2 cm, apical leaflet pair not united or united to one quarter of their length, leaflets glabrous and unarmed or with exceedingly few bristles on margin or tip, transverse veinlets conspicuous. Staminate inflorescence not seen. Staminate flowers not seen. Pistillate inflorescence 62 – 81 cm long including 33 – 46 cm peduncle and 5 – 14 cm tip lacking primary branches, branched to 2 orders; prophyll 36 × 0.6 – 2 cm, with triangular limb at apex, not splitting, with indumentum as sheath, unarmed, prophyll and other primary bracts strongly overlapping; peduncular bract 1, c. 17.5 × 1.5 cm, similar to prophyll, but splitting to one half of its length, with indumentum as sheath, unarmed; rachis bracts 6 – 16.5 × 0.6 – 2 cm, similar to peduncular bract, but splitting to base and tattering due to emergence of primary branches, sometimes splitting on one side of inflorescence only, otherwise splitting irregularly, with indumentum as sheath, unarmed; primary branches 3 – 7, to 7 cm long, 3 – 6.5 cm apart, only briefly adnate to inflorescence axis above subtending bracts, straight and forming narrowly acute angle with inflorescence axis, rather congested, with up to 17 rachillae, bracts unarmed, primary branch and bracts with indumentum as rachillae; rachillae 3 – 20 × 1 mm, straight and forming acute angle with primary branch; rachilla bracts 1 × 1 mm, subdistichous, with dark indumentum and narrow brown scales; proximal floral bracteole 1 × 0.75 mm, distal floral bracteole 2 × 2 mm, triangular, scar of sterile staminate flower inconspicuous. Pistillate flowers 4.5 × 3.5 mm shortly after anthesis, available material somewhat decayed; calyx 3.5 mm diam., tubular in basal 3 mm, with 3 lobes to 0.75 × 1.5 mm, glabrous; corolla 2.75 mm, with 3 lobes; staminodes 6. Fruit subspherical to broadly ellipsoid, 15 × 12 mm including beak 0.5 mm, with 15 – 17 longitudinal rows of orange, scarcely channelled scales with finely erose margins. Seed (sarcotesta removed) 9 × 8 × 5 mm, globose, compressed, with a deep pit on one side, with a small, rounded appendage at apex; endosperm homogeneous; embryo basal.</p></div>
+<div type="distribution"><p>Known only from Klasaman near Sorong in western New Guinea</p></div>
+<div type="biology_ecology"><p>Lowland forest from 100–200 m.</p></div>
+<div type="conservation"><p>Data deficient. It should be noted that this species is known only from an active logging concession</p></div>
+<div type="uses"><p>Not known</p></div>
+<div type="discussion"><p>Although known only from one pistillate and one sterile collection, C. maturbongsii is unlike any other rattan species, possessing striking features in both leaf and inflorescence morphology (Fig. 1). The inflorescence is rather short, lacks a terminal flagellum and bears primary branches that are congested and held almost parallel to the main axis of the inflorescence. When the primary branches expand, the rachis bracts which subtend them are split into tatters. A similar mechanism of inflorescence expansion occurs in two diminutive species from eastern New Guinea, Calamus anomalus Burret and C. essigii W.J. Baker. In these two taxa, the primary branches burst through the subtending bracts, creating a split at the base of each bract, but, unlike C. maturbongsii, the bract remains intact at its apex. Vegetatively, C. maturbongsii has little in common with these species.� There is some resemblance to another Papuasian rattan, C. nannostachys, but in this species the inflorescence bracts, though inflated and split, do not tatter. In overall structure, the inflorescence of C. maturbongsii resembles those of the group of largely short-stemmed or acaulescent Calamus species belonging to Furtado�s section Platyspathus (Furtado 1956) that are restricted to West Malesia, except that the bracts in this group split neatly rather than tatter.� While the similarities described above are noteworthy, the relationships of C. maturbongsii remain uncertain.
+In the majority of pinnate palm leaves, the leaflets near the base of the leaf gradually reduce in size towards the petiole.� In Calamus maturbongsii, the largest leafletsoccur very near the base, with the basal pair almost as large.� This feature together with the very short petiole and almost entirely unarmed leaf sheath must lend the palm a very distinctive appearance. The species is named after our friend and counterpart, Rudi Maturbongs of Universitas Negeri Papua, who has discovered this and many other remarkable new palm species during his field research and has done so much to build collaboration between Papuan botanists and the Royal Botanic Gardens, Kew</p></div>
+<div type="materials_examined"><p>INDONESIA, Papua. Sorong Regency: Sorong, Klasaman, Intimpura Co. Concession, Nov. 1994, Maturbongs 32 (K!, MAN), Sept. 1995, Maturbongs 286 (K!, MAN)</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

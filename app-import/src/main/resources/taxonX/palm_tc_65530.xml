@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis serpentina</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 205 (1995)</citation>
+<type>Madagascar, Mananara Avaratra Biosphere Reserve; Beentje et al.; 4646</type>
+<type_loc>Holotypus K; isotypi BH, MO, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>In its habit this is a most unusual and curious, rather than beautiful species.The stems appear to flop over under their own weight, and branch, the branches being of smaller diameter than the axes below the branching point. In this way the plant develops into a thicket of aerial stems that flop about the surrounding vegetation. Not strictly a climber, this palm is nevertheless scarcely self-supporting. The name reflects the habit of the palm: snaking through the undergrowth, and also alludes to the soil type, although it grows on ultramafic soils rather than true serpentine ones.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>D. baronii et D. andrianatongae similis sed foliolis aggregatis et petiolo longo, a D. baronii vagina breve et caule ramificanti, a D. andrianatongagrana minore bractea pedunculi breviore differt.</p></div>
+<div type="description"><p>Solitary or clustering rather floppy palm. STEMS 5-6 m, 3-4 cm diam., starting vertical, then leaning over with almost horizontal part, the apex again vertical; nearly all stems seen branched twice or more, with the branches closely parallel; internodes distally 1-8.5 cm, glabrous, proximally corky, cracked vertically with lenticels, dull grey-brown, the upper branches green; nodal scars 0.8-1.2 cm, brown. LEAVES c. 6 in the crown, spirally inserted; sheath 21-26 cm long, green with a white bloom, with a few scattered scales distally; petiole 43-75 cm long, distally 2-3 mm wide, with scattered scales; rachis 50-120 cm long, in mid-leaf 0.2-0.3 cm wide; leaflets 7-17 on each side of the rachis, irregular or in groups, the group interval 4-9 cm, proximal leaflets 40-70 x 2.4-3.5 cm, median 25-46 x 1-1.6 cm, distal 13-20 x 0.7-1.7 cm, main veins 1-2 (distal 2-3), but in multifold leaflets 3-5, few ramenta, otherwise glabrous, some sinuous transverse veins, distal leaflets connate for c. 2 cm, dentate over a width of c. 2 mm, distal pair joined for  c. 0.6 cm. INFLORESCENCE infrafoliar, branched to 1 order, recurved; peduncle 8-10 cm long, distally 0.4-0.5 x 0.3-0.5 cm diam., stel-late-scaly; prophyll 12-18 cm long, 1.5-2 cm wide, borne at 2-3 cm above the base of the peduncle; peduncular bract inserted at 5-7 cm from the base of the peduncle, 7-12.5 cm long; rachis 2.5-3 cm long, with scattered stellate scales, with 5-7 branches; rachillae 4-8 cm long, 1-2 mm diam., with scattered scales; triads distally distichous. STAMINATE FLOWERS with sepals 1.9-2 x 1.5-1.8 mm, the innermost the widest; petals in young bud c. 1.8 x 1.3 mm; stamens 6, uniseriate?, filaments in bud 0.3 mm, anthers 0.6-0.8 x 0.3 mm; pistillode c. 0.8 x 0.2 mm. PISTILLATE FLOWERS with sepals 3-3.2 x 2.6-3.3 mm; petals 3.5-4 x 2.8-3.2 mm; staminodes 0.8-1 mm; gynoecium c. 4.2 x 2 mm. FRUIT purplish-tinged, ovoid, 12-14 x 9-10 mm. SEED c. 11 x 8.5 mm, endosperm ruminate, the ruminations 1-2.5 mm deep, distant, embryo lateral near the base.</p></div>
+<div type="distribution"><p>Only known from the Mananara Biosphere Reserve.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; may form thickets on steep mid slopes or in heath-like forest on ridgetops, with Satranala and Pandanus on very thick humus layer on ultramafic soil; 240-280 m.</p></div>
+<div type="conservation"><p>Vulnerable. Single-site status, but is fairly abundant in this site, which is protected.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Related to D. andrianatonga and D. baronii.</p></div>
+<div type="materials_examined"><p>Mananara Avaratra: Antanambe, April 1992 (fl.), Beentje et al. 4646 (type; BH, K, MO, P, TAN); idem, Oct. 1994 (fr.), Dransfield &amp; Beentje JD7502 (K, TAN); idem, Oct. 1994 (fl, fr.), Beentje &amp; Dransfield 4813 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

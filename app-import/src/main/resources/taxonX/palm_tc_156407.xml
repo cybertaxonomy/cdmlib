@@ -1,0 +1,39 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga dumetosa</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 34: 781 (1980)</citation>
+<type>Borneo, Sarawak; Dransfield; JD 5340</type>
+<type_loc>Holotypus K; isotypi BH, KEP, L, SAN, SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>a ceteris speciebus borneensibus Pinangae habitu dumetoso, foliolis miro modo lanceolatis cucullatis a rachide angulo acutissimo divergentibus, et inflorescentia erecta florum triades spiraliter vel distiche gerenti, floribus masculis persistentibus calyce paupere evoluto differt, P. brevipedi et P. crassipedi similis sed caule evoluto et charac- teribus folii valde distincta.</p></div>
+<div type="description"><p>Clustering, low, thicket-forming, unarmed, pleonanthic, monoecious palm. Stems suckering at the base, rarely more than 1 m long, frequently decumbent with only the terminal portion and the crownshaft erect, to 1.3 cm diam. just above the node, to 1.6 cm diam. just below the node, with nodes prominent and about 6 cm distant; stem surface dull green, bearing abundant dark reddish-brown, pale buff-edged scales. Crownshaft elongate, to 25 cm long, scarcely swollen, up to 2 cm diam., dull greenish-brown, rather densely covered in reddish-brown scales as the stem, becoming striate on drying; about 7-8 leaves in crown. Whole leaf including the sheath c. 1.5 m long; leaf sheath c. 25 cm long terminating in an irregularly tattering very short ligule; petiole up to c. 75 cm long, 6 mm wide, triangular in cross-section when fresh, diverging from the crownshaft at an acute angle, dull green, covered in scattered reddish-brown scales as on the sheath; leaflets 6-8 on each side of the rachis, diverging at an acute angle, sub- opposite or alternate; lowermost pair of leaflets narrower than the rest, to 37 x 3.5 cm, frequently narrower; mid-leaf leaflets noticeably lanceolate, not sigmoid, ± parallel sided, to 40 x 5 cm, sometimes wider, with up to 5 main ribs; terminal pair diverging only slightly, joined for up to 14 cm, to 35 x 6 cm, lanceolate, cucullate, the apex shortly toothed with teeth corresponding to the main ribs (up to 9 of them); all leaflets somewhat plicate, dull green, same colour on both surfaces, glabrous except for scattered brown scales along the main veins on the lower surface near the leaflet tips; leaflets rarely much narrower and more numerous, but still detectably lanceolate. Inflorescence infrafoliar, erect, remaining so even to fruit maturity, rarely somewhat spreading; prophyll 6.5 x 3 cm, ovate, strongly 2-keeled, cream-coloured when fresh, quickly turning brown; peduncle scarcely exceeding 1 cm, branching to one order to give up to 8 rachillae to 6 cm long, densely grey tomentose when young; triads rather irregularly arranged, spirally below, distichously above, or distichously throughout, or subdistichously throughout. Staminate flowers not caducous, frequently persisting as shrivelled remains at mature fruiting, the whole flower asymmetric, sometimes very shortly pedicellate, usually sessile; calyx very poorly developed, present as a reflexed, bilobed, undulate collar partly fused with the petal bases, the lobes sometimes interlocking round the pistillate flower, the calyx rarely more than 1 mm high; corolla with 3 well- developed triangular lobes 5 x 2 mm, joined shortly below; stamens about 16; filaments 0.5 mm long; anthers 5 x 1.75 mm. Pistillate flower sessile; calyx cup-shaped, 3 mm diam., with 3 low triangular ciliate lobes to 1.25 mm high; corolla with 3 cucullate free ± rounded ciliate petals 2 mm high; ovary rounded, 2 mm diam., tipped with a subtrigonou cristate stigma. Rachillae becoming orange-red at fruit maturity, glabrescent. Mature fruit turning from crimson to purplish-black, fusiform, 15 x 7 mm; epicarp glabrous; mesocarp thinly fleshy; endocarp fibrous; seed with basal embryo and deeply ruminate endosperm.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This is a curious species, probably most closely related to P. brevipes, P. crassipes, P. latisecta and P. angustisecta. All these species, however, are acaulescent. It is interesting to note that, as in P. dumetosa, the triads in P. latisecta also may be either spiral or distichous, and the staminate flowers are persistent (Dransfield 1974).</p></div>
+<div type="materials_examined"><p>SARAWAK. 1st Division, Serian District, Sabal Tapang F.R., DransfieldJD 4657 (K, SAR); lst/2nd Division boundary, G. Buri, Martin and O. Ismawi S 36931 (K, SAR); 3rd Division, Kapit District, Bt. Raya, G. Smith S 28217 (A, BH, K, KLU, L, SING, SAN, SAR). 5th Division, G. Mulu National Park proposed extension, foot of G. Buda, alluvial forest at 150 m Dransfield JD 5340 (holotype K; isotypes BH, KEP, L, SAN, SAR).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

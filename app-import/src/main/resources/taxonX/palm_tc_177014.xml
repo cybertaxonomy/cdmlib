@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ravenea lakatra</name>
+<author>(Jum.) Beentje</author>
+<citation>Kew Bull. 49: 662 (1994)</citation>
+<type>Madagascar, Analamazaotra, Anevoka; Perrier; 12022</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Louvelia lakatra</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 5 (1): 50 (1927)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 15 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 164 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This species can be recognized immediately by the woody "steps" on its trunk - actually remains of the leaf sheaths. All woody parts of this species are rock-hard. The scientific name is taken from the local name.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Lakatra; Tsilanitafika (cannot be cut down by an army).</p></div>
+<div type="description"><p>Moderate-sized palm. TRUNK 4.5-14 m, 13-17 cm diam., to 11 cm across near the crown; nodal scars c. 1 cm (to 3.5 cm near crown), internodes 10-16 cm (c. 2 cm near crown), light brown; wood very hard, with black fibre layer; sheath remnants clothing distal part of trunk; short, erect woody sheath base remnants set at nodes over the whole length of trunk, very hard, to 7 cm long; base of crown c. 22 cm across. LEAVES 8-10 in the crown, porrect, slightly arching, held on edge in distal part of leaf; sheath 75-80 x 16 cm, with down-pointing fibres on margins, white-tomentose, with black internal fibres; petiole 80-160 cm, proximally 5-6 x 3-6 cm across, distally 4 x 3 cm across, channelled, with very sharp (almost sawtooth) edges, proximally closely den- ticulate, with white or grey tomentum but glabrescent; rachis 2.3-3.5 m, in mid-leaf 1.2-2.2 x 1.3 cm, with white to grey tomentum but quickly glabrescent; leaflets stiff, in one plane, mid-green, 87-98 on each side of the rachis, the proximal 42-102 x 0.8-3.8 cm, the median 66-77 x 2.7-4.7 cm (interval 3-4 cm), distal 23-49 x 0.7-2.3 cm, few small ramenta near the rachis, but these deciduous, sinuous transverse veinlets clearly visible. STAMINATE INFLORESCENCE interfoliar, solitary, branched to 1 order (only seen as dead); peduncle not seen; prophyll not seen; peduncular bracts seen 89, 103 cm; rachis c. 92 cm; rachillae 6-30 cm, 1-1.5 mm across; pedicel 1.2-1.6 mm. STAMINATE FLOWERS with the calyx connate for 1 mm, with free lobes 0.8 x 0.2-0.3 mm; petals probably connate for 1.8 mm, free lobes 5-5.5 x 1.3 mm; stamens ? in 2 series, the epipetalous ones adnate for/inserted at 2.2-2.5 mm, the filaments absent, the anthers 1.5 x 0.5 mm. PISTILLATE INFLORESCENCE solitary, erect, interfoliar among old leaf bases in fruit, branched to 1 order; peduncle 82-130 cm, proximally 3.5-4 x 1.5-2 cm, distally 2.5 x 1.5 cm, densely white-brown pubescent; prophyll 10-25 x 5 cm, tattering, white, membranous; peduncular bracts 20-43 cm, 30-40 cm (inserted at 22-24 cm from the base of the peduncle), 140 cm (inserted at 48 cm), 88-119 cm (inserted at 60-87 cm), all densely white- to brown-pubescent abaxially, glabrous adaxially; rachis 44-86 cm, white-tomentose, with 50-70 porrect rachillae; rachillae 7-65 cm, 2 mm across, sinuous, proximally 11 x 5 mm; pedicels 3-6 mm; bracteole 1.5 x 1.5 mm, connate for up to 1 mm. PISTILLATE FLOWERS with the calyx connate for 2-2.5 mm, 3.5 mm across, the free lobes 0.8-2 x 0.9-1.2 mm; petals 5-8 x 2.5-5.5 mm. FRUIT blackish, slightly depressed    globose, 15-20 x 18-21 mm, with terminal stigmatic remains, 1-/2/3-seeded; each seed with sclerified layer 8-11 mm and 6-10.6 mm across with sharp distal acumen 2.5-3 mm, the layer 0.3-0.35 mm thick. SEED 9-10 mm, 5-10 mm across, with distal acumen of 1.5 mm; seedcoat black, 0.2 mm thick.</p></div>
+<div type="distribution"><p>E Madagascar: between Andasibe and Vangaindrano.</p></div>
+<div type="biology_ecology"><p>Moist lowland forest on slight mid slope or ridge crest; 90-850 m</p></div>
+<div type="conservation"><p>Endangered. Occurs in a very limited number of sites, several of which are being destroyed rapidly. The population at Mantady consists of pruned rosettes; the two southern populations have less than 20 trunked trees.</p></div>
+<div type="uses"><p>At Andasibe extensively used as a source of fibre for weaving high-quality hats, the young leaves being harvested; this prevents the trees from growing, and most populations are pruned to a perpetually juvenile rosette stage.</p></div>
+<div type="discussion"><p>The type and the material found much further south agree perfectly as for the leaf and inflorescence details. The Flora (Jumelle &amp; Perrier 1945), but not the protologue, describes the tree as being 15-30 m high, and with a diameter of 15-30 cm, while the wood is described as white and soft. We treat these later additions with suspicion. The seed is unique within the genus in having a sharp pointed apex.</p></div>
+<div type="materials_examined"><p>Moramanga: Andasibe, Nov. 1986 (juv.), Dransfield et al. JD6424 (K, P, TAN); Anevoka, (prob. Dec. 1914) (fr.), Perrier 12022 (Holotype P). Manakara: 39 km NNE of Manakara, July 1992 (fr.), Beentje &amp; Andriampaniry 4726 (BH, K, MO, P, TAN). Farafangana: Manombo, Nov. 1991 (yfr.), Beentje 4523 (BH, K, MO, P, TAN); idem, Jan. 1993 (old stam.), Beentje &amp; Andriampaniry 4793 (K, TAN).   ;</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

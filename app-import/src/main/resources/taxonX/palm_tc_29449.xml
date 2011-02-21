@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus diepenhorstii Miq. var. diepenhorstii</name>
+<author>Miq.</author>
+<citation>Prod. Fl. Sum. 594 (1860)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 322 (1908)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 246 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 191 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>H. Diepenhorst, 1811-1860, Assistant Resident in W Sumatra</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering rattan climbing to 20 m; stem without sheaths to c. 15 mm diam., with sheaths to 30 mm diam., internodes to c. 15 cm. Sheaths dull, often brownish-green, drying brown, armed with long black flattened spines to 40 mm, usually less, sometimes with conspicuous swollen bases, brown scales abundant between the spines; knee conspicuous; ocrea poorly developed. Flagellum to 2 m long. Leaf ecirrate, curved, to 1.2 m long including the petiole 20-40 cm long; leaflets c. 15-30 on each side of the rachis, regularly arranged, curved, linear, the longest (in one form) to 35 &#215; 1.4 cm, or (in another form) to 50 &#215; 2 cm, bristly on main vein on upper surface, armed with 3 rows of bristles or densely covered with bristles on the lower surface. Inflorescence to 4 m with c. 5 very distant, partial inflorescences, long pendulous; male rachillae c. 50 &#215; 2 mm; female rachillae c. 70 &#215; 3 mm. Mature fruit rounded, c. 22 mm diam., briefly beaked and covered in 16-21 vertical rows of brown scales. Seed rounded; endosperm ruminate. Seedling leaf bifid. (Fig. 71).</p></div>
+<div type="distribution"><p>Known from two collections in Ulu Ingei. Elsewhere in Sabah (as var. major J. Dransf.), Sarawak, widespread in Peninsular Malaysia and Sumatra, in Philippines as a distinct variety.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of good quality but it is not known whether it is used.</p></div>
+<div type="discussion"><p>C. diepenhorstii var. diepenhorstii occurs in kerangas on ridge tops in the Ulu Ingei. It is a common rattan in Peninsular Malaysia, where it is used extensively (as rotan kerai), but it appears to be too rare in Brunei and elsewhere in Borneo, to be of any significance in the rattan trade.</p></div>
+<div type="materials_examined"><p>BEL: Melilas, Bt.Batu Patam, Dransfield J. 6583; Melilas, Bt.Batu Patam, Dransfield J. 6604.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops oblata</name>
+<author>J.Dransf.</author>
+<citation>Bot. J. Linn. Soc. 81: 18 (1980)</citation>
+<bibref>Dransfield, Ratt. Sabah 70 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 72 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Spherical but flattened at the poles</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Moderate clustering short-stemmed rattan to 10 m tall, usually less; stems without sheaths to 20 mm diam., with sheaths to 40 mm diam., internodes c. 8 cm long. Sheaths of a very thick texture, dull to bright yellowish-brown, covered in reflexed triangular black-tipped spines to 3 cm long, and abundant black scales; knee present but only slightly swollen, armed along the mid line with a row of reflexed spines continuing up the petiole. Leaf cirrate to 2 m including the cirrus to 75 cm and petiole to 40 cm; petiole yellowish green armed laterally with &#177; regularly arranged bulbous-based horizontal or slightly reflexed spines to 2 cm; leaflets acuminate, very stiff and coriaceous, up to 15 on each side of the rachis, regular but distant, the longest at the base to 50 &#215; 2 cm, decreasing to 28 &#215; 2 cm near the tip, slightly plicate, unarmed but with short distant teeth along the margins, transverse veinlets conspicuous. Inflorescences to 50 cm long; bracts to 25 &#215; 5 cm, pale brown, extremely tough and almost woody; 1st order branches c. 5, in the female up to 10 cm long; secondary bracts inconspicuous. Mature fruit very large, to 2 &#215; 2.5-2.8 cm, distinctly oblate, shortly beaked, pale green to ivory-coloured when fresh, straw-coloured on drying, covered in 20-24 vertical rows of scales. Seed dull brown, oblate, to 1 &#215; 2.2 cm; sarcotesta sweet; endosperm deeply ruminate. Seedling leaf not known. (Fig. 24).</p></div>
+<div type="distribution"><p>Known from a few collections from kerangas in Temburong and Belait Districts. Elsewhere in Sarawak (4th and 5th Divisions) and Sabah. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>D. oblata is a rare rattan, apparently confined to certain facies of kerangas at low elevations. The strange tough texture and yellowish colour of the sheaths, the poorly developed knee and the very distant leaflets are of diagnostic value for sterile material. The large oblate fruit is very distinctive, but immature fruit have a distinctly conical beak.</p></div>
+<div type="materials_examined"><p>TEM: Batu Apoi, Dransfield J. 6954. TUT: Telisai, Wong 147. Without prov.: BRUN 15380.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

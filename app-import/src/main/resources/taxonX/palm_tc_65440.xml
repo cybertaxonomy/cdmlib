@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis fasciculata</name>
+<author>Jum.</author>
+<citation>Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 6 (1): 36 (1918)</citation>
+<bibref>Jum., Bull. Acad. Malgache 6: 18 (1923)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 12 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 39 (1945)</bibref>
+<type>Madagascar, Antalaha, 50 m alt., Nov. 1912; Perrier; 12042</type>
+<type_loc>Type ?P</type_loc>
+</nomenclature>
+<div type="introduction"><p>This species occurs in lowlands near the coast; recently made collections are for the most part from forest developed on white sands, poor in nutrients, but the palm will also grow on laterite soils. When growing vigorously this can be quite a handsome species but it is usually rather untidy, with narrow grouped leaflets. Superficially it resembles a depauperate form of Dypsis nodifera. The species name refers to the grouped leaflets.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Solitary or clustering palm of the forest undergrowth. STEMS 3-6 m tall, c. 15-40 mm diam., internodes to 40 mm long near base,  
+c. 15 mm long in mature stems near the crown, green with scattered dark brown scales. LEAVES c. 8 in crown; crownshaft well developed; sheaths 13-24 x 1.5-2.5 cm, densely covered with dark red-brown scales, these sometimes in vertical patches; auricles sometimes present, soon tattering; petiole 8-35 cm long, 5-10 x 3-5 mm in cross section, bearing abundant caducous choco-late-brown scales; rachis 70-90 cm or more long; leaflets 11-23 on each side of the rachis, conspicuously grouped in 2s-6s (usually 3s-4s), c. 10-20 cm between the groups, the proximal few leaflets usually very slender and short (to 16 x 0.3), mid-leaf leaflets 20-47 x 1-4 cm, including the long attenuate drip tip, apical leaflets 10-20 x 2.5-6 cm; leaflet surfaces glabrous. INFLORESCENCE interfoliar, shorter than the leaves, branching to 2 orders; peduncle to c. 50 cm long, 0.8-1.5 cm wide at base, tapering to c. 4 mm widedistally, densely covered in red-brown scales; prophyll inserted c. 6-11 cm above base, 10-40 x 0.8-1.2 cm, sparsely dark scaly; peduncular bract inserted to 14 cm above prophyll, exceeding the prophyll tip by c. 8-11 cm; rachis 20-46 cm, basally scaly as the peduncle, distally glabrescent; rachillae spreading or pendulous, 16-30 in number, 20-c. 50 cm long, c. 1.5-2 mm diam. at anthesis, increasing to c. 3 mm diam. in fruit, glabrous, rachilla bracts rounded, very inconspicuous, triads c. 2 mm distant, in shallow pits. STAMINATE FLOWERS c. 2 x 1.5 mm; sepals c. 1.4 x 0.6 mm, irregularly split and keeled; petals c. 1.6 x 1.2 mm, striate; stamens 3 antesepalous, filaments broad 1.0 x 0.6 mm, anther thecae free, &#177; pendulous, c. 0.7 x 0.2 mm; pistillode pyramidal, 0.7 x 0.4 mm. PISTILLATE FLOWERS c. 2.5 x 1.9 mm; sepals rounded, c. 1.1 x 1.1, striate, irregularly erose; petals rounded triangular, irregularly imbricate, c. 2 x 1.8 mm; staminodes 3 (4), minute, toothlike, 0.2 x 0.1 mm; ovary rounded to top-shaped, 2 x 1.8 mm. FRUIT green (?still immature), 14 x 7.5 mm. SEED 10 x 4 mm; endosperm homogeneous; embryo lateral near the base.</p></div>
+<div type="distribution"><p>NE Madagascar, from Antalaha and Marojejy to Betampona.</p></div>
+<div type="biology_ecology"><p>Lowland forest near the coast, often on white sands, rare inland; 5-225 m.</p></div>
+<div type="conservation"><p>Vulnerable. This is quite widespread but occurs in coastal forests that are often affected by fire.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The interpretation of this name has caused particular problems because we have been unable to locate the type, Perrier 12402, from Antalaha, which, we assume, should be in Paris. Using Jumelle's imperfect description, we have here applied the name to a taxon from forest near the Bay of Antongil, further to the south from Antalaha, that keys out to D. fasciculata and which more or less fits the protologue. Perhaps most significant is Jumelle's description of the stamen form. He describes the thecae as being pendulous, a most unusual stamen type in Dypsis; those collections cited here that have staminate flowers also have stamens of this form. Should the type ever be found, then the conspecificity of the newly collected material will have to be checked. We have also recently made two collections of this taxon on &#206;;le Sainte Marie, one (sterile) from the For&#234;t de Kalalao, near to the historic locality Tafondro where Boivin collected, and one (fertile) from the For&#234;t d'Ambohidena (see notes under Dypsis thouarsiana). 
+As interpreted here, this is a distinctive, easily distinguished species, with fascicled leaflets and inflorescences branched to two orders, with lax spreading or pendulous rachillae and staminate flowers with only three stamens with pendulous and divergent thecae. Miller 3327 from Marojejy differs from the other collections cited in being rather small and slender in all its parts. Neverthess it seems to belong here.</p></div>
+<div type="materials_examined"><p>Andapa: Marojejy, along trail to Marojejy East from Mandena, Oct. 1988 (fl.), Miller 3327 (MO). Maroantsetra, Masoala Peninsula, Antalavia, Feb. 1988 (fl.), Dransfield et al. JD6466 (K, TAN); idem, Feb. 1988 (fl, young fruit), Dransfield et al. JD6472 (K, TAN). Mananara Avaratra: Mananara, Aug. 1917 (fl.), Perrier 12045 (P); 5 km south of Antanambe, April 1992 (fl., fr.), Beentje &amp; Dransfield 4636 (BH, K, MO, P, TAN). &#206;;le Sainte Marie: For&#234;t de Kalalao, Nov. 1994 (sterile), Dransfield et al. JD7521 (K, TAN); For&#234;t d'Ambohidena, Nov. 1994 (buds), Dransfield et al. JD7528 (K, TAN). Toamasina: Betampona, near Ambodiriana, Dec. 1925 (fl.), Perrier 17477 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,33 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops aureus</name>
+<author>Renuka and Vijayakumaran</author>
+<citation>Rheedea 4 : 122, 1994</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering, large diameter rattan. Stem 20 m long or more, with sheaths 3.5 cm in diameter, without sheaths 2 cm in diameter. Leaves 2 m long, cirrate; sheath yellowish green, very sparingly armed, 8-10 spines on a sheath below the knee; knee very stout and prominent; ocrea not seen; petiole 30 cm long, spiny along the margins, spines 1 cm long; leaflets regular, the largest co. 45 x 2.5 cm, lateral veins ciliate, cilia 0.5 cm long. Inflorescence erect, 30 cm long, all inner bracts enclosed in the outermost; outer most bract armed with black spines; spines 3 cm long. Fruit globose, 1.5 cm in diameter, scales in 18 vertical rows, golden yellow even in younger stages, deeply channelled in the middle; endosperm ruminate.</p></div>
+<div type="distribution"><p>In evergreen forests of Shoal Bay, South Andamans.</p></div>
+<div type="biology_ecology"><p>Flowering not known. Fruiting April - May.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Used in furniture industry.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Shoal Bay, South Andamans, 2.4.1993, fr., Renuka and Vijayakumaran 7050 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

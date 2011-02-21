@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans of the Western Ghats. A Taxonomic Manual.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+			<mods:dateIssued>1992</mods:dateIssued>
+			<mods:publisher>Kerala Forest Research Institute</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus stoloniferus</name>
+<author>Renuka</author>
+<citation>J. Econ. Taxon. Bot. 14:701. 1980</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kannada: Jedubetha.</p></div>
+<div type="description"><p>Clustering, stoloniferus, high climbing canes, Stems with sheaths to 3 cm in diameter, without sheaths to 1.2 cm. Sheath green, sparingly spiny, spines to 2 cm long; knee present, devoid of spines; ocrea present in young stages. Leaf to 1.75 m long, ecirrate; petiole 15-85 cm long; rachis spiny, spines to 2.5 cm, distally with recurved spines below; leaflets ca 45 x 3.5 cm, seedling leaflets upto 5.5 cm wide, linear lanceolate, the terminal pair confluent basally, apical 5-6 leaflets crowded together, more obtuse, margin spinescent, 3-5 veined, midvein sparsely ciliate. Inflorescence long, flagellate; primary sheath in male inflorescence expanded into a laminar structure at the mouth, in female inflorescence tapering at the mouth; secondary sheath tightly sheathing, in male produced into a point at one side at the mouth, not spiny; male and female rachillae to 9 cm long, attached at the mouth of the sheath; involucrophorum not stalked; involucre cup-shaped. Fruit, ca 1 cm accross, spherical, scales in 16 rows, not channeled, yellow with brown border. Endosperm not ruminate.</p></div>
+<div type="distribution"><p>Evergreen forests at about 85 m. Makkut in Karnataka. (Fig. 6)</p></div>
+<div type="biology_ecology"><p>Flowering November - December. Fruiting March - April.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>A good quality cane, but not available in sufficient quantities.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Makkut, 14.3.1989. fr. Renuka 4085 (KFRI); 19.2.1984, Vajravelu 77800 (MH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

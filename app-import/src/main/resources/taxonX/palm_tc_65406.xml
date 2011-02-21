@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis arenarum</name>
+<author>(Jum.) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 215 (1995)</citation>
+<type>Madagascar, Tampina; Perrier; 13292</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Chrysalidocarpus arenarum</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 10, 3: 17 (1922)</bibref>
+<bibref>Jumelle, Cat. Pl. Madagascar Palmae: 8 (1938)</bibref>
+<bibref>Jumelle &amp; H. Perrier, Fl. Madagascar 30: 98 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This species can easily be confused with D. lutescens, which grows in the same area, but has a longer petiole and fewer leaflets; the seed is also much smaller. The name means 'of the sands', since the species occurs on sand near the sea.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Hirihiry (fide Perrier).</p></div>
+<div type="description"><p>Clustering palm in tufts of c. 5. STEMS 5-6 m tall, 6.5 cm diam.; internodes 6-8 cm; bark dark green, on older trunks brown; wood quite hard, slightly pinkish, moist. LEAVES c. 10 in the crown, porrect, slightly arched distally, with opposite leaflets at an angle of 90° with each other; sheath 20-47 cm, whitish green to pale yel-low-brown abaxially and distally with wax and scattered reddish scales, reddish brown and glabrous adaxially, turning into the petiole after a small sharp bend but without obvious ligules; petiole 60-72 cm, 1.8-2 x 1.5-1.6 cm proximally, 1.5 x 1.2 cm distally, channelled with sharp edges, pale brown with minute scattered scales; rachis 1.5-1.7 m, in mid-leaf 0.9-1.6 x 0.7-1.2 cm, keeled, pale brown with minute scattered scales to glabrescent; leaflets 28-30 on each side of the rachis, regular, stiff and straight, pendulous in their most distal part, the proximal 81-129 x 0.9-2.5 cm, median 67-80 x 2.2-3.6 cm (interval 4-6.5 cm), distal 16- 36 x 0.9-2.1 cm, the terminal pair not or hardly (up to 0.5 cm) joined and with briefly   (c. 0.3 cm) truncate and dentate apices, apices of median leafletsunequally bifid for 2-3 cm and attenuate, glaucous, with tufts of large redbrown ramenta to 4 mm long proximally and abaxially on the midrib, and with many minute scattered scales on the veins (invisible in Guillaumet 2527), main veins 1-5, faint; young leaves reddish. INFLORESCENCE interfoliar, the part outside the leaf sheath arching through 180°, branched to 2 orders; peduncle 34-57 cm long, proximally c. 2 x 0.5 cm, distally 1.5-2.3 x 0.6-1.2 cm, distally with scattered scales, glabrescent; prophyll 42-75 cm long and 4-5.5 cm wide, borne at 5-17 cm above the base of the peduncle, open for 16-25 cm and hooded distally with an acute apex, coriaceous, ?slightly waxy, abaxially pale brown with scattered scales, adaxially red-brown and glabrous; peduncular bract inserted at 27-34 cm from the base of the peduncle, 39-53 cm long, not or hardly beaked, split over its entire length or closed in the distal part, distally hooded and 12 cm wide, pale brown with scattered scales, not deciduous but remaining contiguous with the prophyll for the most part and similar to the prophyll; non-tubular peduncular bracts near the apex of the peduncle, 1.3-2 cm long, triangular, acute; rachis 11-28 cm long, glabrous, with 5-14 branched and 12-20 unbranched first order branches; first order branches subtended by rachis bracts to 1 x 0.5 cm, with a secondary rachis of up to 6 cm long and with flattened base 9-17 x 3-8 mm and with 2-8 rachillae; rachillae porrect, 10-31 cm, 2-4 mm diam., with rather dense triads in slight pits and with distinct, entire, triangular, acute rachilla bracts. STAMINATE FLOWERS with sepals 2-2.2 x 1.8-2 mm; petals connate for c. 0.5 mm, 3.1-3.4 x 1.9-2 mm; stamens 6, slightly unequal with the antepetalous ones with filaments slightly wider at the base, filaments 1.6-2 mm long and cylindrical, anthers 1.8-2 x 0.6 mm, the locules parallel and obtuse, dorsifixed and versatile; pistillode c. 2.4 mm high, 0.6 mm diam. PISTILLATE FLOWERS with sepals 2.7-3 x 2.4-3.4 mm; petals 3.5-4.2 x 3-4 mm; staminodes 0.6-0.8 mm, flat; gynoecium 3.2-3.6 x 2.9-3 mm. FRUIT ovoid to ellipsoid with a rounded apex, 10-12 x 8-9 mm, with anastomosing fibrous endocarp. SEED slightly obovoid with rounded apex and apiculate base, 8-9.5 x 5.5-6 mm, with subaequatorial depression; endosperm homogeneous.</p></div>
+<div type="distribution"><p>Between Soanierana-Ivongo and Vatomandry.</p></div>
+<div type="biology_ecology"><p>Littoral forest near fresh water; alt. 1-15 m.</p></div>
+<div type="conservation"><p>Critical. The distribution area is small, the numbers of this species are thought to be very low, and the vegetation type is threatened by development and fires.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Differs from D. lutescens (which occurs in the same localities, in the same habitat) in the longer petiole, the smaller number of leaflets, the longer petals and the more robust rachillae; the inflorescence branches to 2 orders, while in D. lutescens it usually branches to 3 orders (but occasionally is branched to 2 orders). From D. psammophila it differs in the generally larger leaves (petiole, rachis, leaflets) with many scattered scales; the much longer prophyll and stouter rachillae.</p></div>
+<div type="materials_examined"><p>Fenoarivo Atn.: Tampolo, Feb. 1970 (fr., young leaf), Guillaumet 2527 (K, P). Ampasimanolotra: Tampina, Nov. 1920 (fl.), Perrier 13292 (P, type) and (fr.), Perrier 15988 (P); 8 km S of Ambila-Lemaitso, Sept. 1991 (dead infl.), Beentje 4445 (BH, K, MO, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

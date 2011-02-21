@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus tanakadatei</name>
+<author>Furtado</author>
+<citation>Gdns' Bull. Singapore 15 (1956) 225</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Prof. Hidezo Tanakadate, - who helped protect the Botanic Gardens, Singapore and other Scientific Institutions during the Japanese Occupation</p></div>
+<div type="vernacular"><p>rotan tekok</p></div>
+<div type="description"><p>Solitary or clustering rattan with stems to 20 m tall. Stem without sheaths to 1 cm in diameter, with sheaths to 1.75 cm, with internodes to 20 cm long. All parts drying shiny dirty green to blackish. Sheaths dark green armed with horizontal rough ridges and rarefy with scattered dark green spines to 5 mm long and abundant buff-coloured indumentum between the spines. Knee conspicuous. Ocrea sometimes well developed, to 1 cm high. Flagellum to 1.5 m. Leaf ecirrate to 80 cm long, with no petiole or petiole to 15 cm long; leaflets generally broad and somewhat plicate, rather rarely narrow, 11-18 on each side the longest to 30 cm long by 4 cm wide, &#177; unarmed except for sparse bristles near the tip. Inflorescences male and female superficially similar, to 3 m long with up to 7 partial inflorescences to 30 cm long. Mature fruit not known.</p></div>
+<div type="distribution"><p>Trengganu, Pahang, Selangor, Negri Sembilan, Johore. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Good cane of 7-10 mm size class, but probably too local to be of much significance.</p></div>
+<div type="discussion"><p>Calamus tanakadatei is found predominantly in the south of the Peninsula. It is found in a variety of habitats from near sea-level to about 500 m altitude on steep slopes and gently undulating topography. It apparently avoids swamp forest.
+ This species is still not very well known. It is very close to C. holttumii from which however it may be distinguished by the leaves drying shiny dirty green to blackish and the very sparse spines on the leaf sheath.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

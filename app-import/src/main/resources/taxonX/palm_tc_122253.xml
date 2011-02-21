@@ -1,0 +1,52 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate clustered palms of South America with erect stems armed with root spines; leaves palmate, with segments of equal width; inflorescences are robust, the staminate rachillae catkin-like, each rachilla bract subtending a single staminate flower.</p></div>
+<nomenclature>
+<name>Mauritiella</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 12:609 (1935)</citation>
+<type>Type; Mauritiella aculeata; (Kunth) Burret</type>
+<synonymy>
+<name>Lepidococcus</name>
+<author>H. Wendl. and Drude ex A.D. Hawkes</author>
+<bibref>H. Wendl. and Drude ex A.D. Hawkes, Arq. Bot. Estado São Paulo ser. 2, 2: 173 (1952) (non Lepidococca Turcz. 1848).</bibref>
+<type>Type; Lepidococcus aculeatus; (Kunth) H.Wendl. &amp; Drude</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Combining the generic name Mauritia with the diminutive ending — ella.</p></div>
+<div type="description"><p>Moderate clustered, armed, pleonanthic, dioecious, tree palms. Stem erect, partly obscured by marcescent leaf sheaths above, becoming bare at the base, the internodes frequently bearing spine-like adventitious roots. Leaves moderate, reduplicate, briefly costapalmate; sheath splitting opposite the petiole; petiole conspicuous, adaxially channelled near the base, otherwise circular in cross-section, smooth, unarmed, frequently waxy; a hastula-like crest present adaxially at the base of the blade; blade ± orbicular in outline, divided along abaxial folds almost to the insertion into numerous crowded single-fold segments, very briefly bifid at their tips, adaxial surface glabrous, abaxial surface usually covered with white wax and short bifid scales, midribs prominent, transverse veinlets inconspicuous. Inflorescences solitary, interfoliar, the staminate and pistillate superficially similar; peduncle short, ± elliptical in cross-section; prophyll short, tubular, 2-keeled, with 2 short, striate, triangular lobes; peduncular bracts numerous, overlapping, distichous, striate, each with a triangular limb; rachis much longer than the peduncle; rachis bracts similar to the peduncular, each subtending a ± pendulous or spreading first-order branch; the first-order branch bearing a short 2-keeled, striate, tubular prophyll and 1–few empty distichous bracts; subsequent bracts tubular, short, ± flaring, each subtending a very short, straight or recurved rachilla; staminate rachilla catkin-like, bearing a basal, tubular, 2-keeled prophyll and crowded, ± rounded, spirally arranged rachilla bracts, connate shortly at the base, each subtending a single staminate flower bearing a tubular, 2-keeled bracteole; pistillate rachilla very short, ± catkin-like, bearing a basal, 2-keeled prophyll and spiral to subdistichous rachilla bracts, each subtending a solitary pistillate flower bearing a flattened 2-keeled bracteole. Staminate flower symmetrical; calyx tubular, briefly 3-lobed, often scaly; corolla tubular at the very base with 3 elongate, valvate, leathery lobes much exceeding the calyx; stamens 6, the filaments distinct, thick, ± angled, elongate, anthers elongate, basifixed, latrorse; pistillode minute. Pollen spheroidal; aperture monoporate; ectexine intectate, surface very finely granular, interspersed with long, thin, slightly bottle-shaped spines set in, and loosely connected to cavities in a wide foot layer, distinctly separated into an upper typically solid layer and a slightly wider strongly lamellate inner layer bulging slightly beneath each spine, aperture margin similar; longest axis 40–55 µm [2/3]. Pistillate flowers larger than the staminate; calyx tubular, striate, briefly 3-lobed, often scaly; corolla tubular in the basal 1/3–1/2 with 3 elongate, valvate lobes; staminodes 6, connate laterally by their flattened broad filaments and adnate to the corolla at the mouth of the tube; gynoecium trilocular, triovulate, ± rounded, covered in vertical rows of reflexed scales, style short, conical, stigmas 3, ovules anatropous, basally attached. Fruit ± rounded, usually 1-seeded, with apical stigmatic remains, perianth persistent; epicarp covered in many neat vertical rows of reddish-brown reflexed scales, mesocarp rather thick, fleshy, endocarp scarcely differentiated. Seed ± rounded to ellipsoidal, attached basally, apically with an elongate knob, and thin testa, endosperm homogeneous; embryo basal. Germination adjacent ligular; eophyll with a pair of divergent leaflets (?always). Cytology: 2n = 30.</p></div>
+<div type="distribution"><p>Three species in northern SouthAmerica. </p></div>
+<div type="anatomy"><p>Root (Seubert 1996a).</p></div>
+<div type="relationships"><p>The monophyly of Mauritiella has not beentested. For relationships, see Lepidocaryum.</p></div>
+<div type="uses"><p>Leaves are used for thatching and the fruit eaten.</p></div>
+<div type="taxonomic accounts"><p>Henderson 1995, Henderson et al. 1995.</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>See under Mauritia. Fossil record not differentiatedfrom Mauritia.</p></div>
+<div type="vernacular"><p>Buriti. </p></div>
+<div type="biology_ecology"><p>Species of Mauritiella are predominantly lowland palms, often characteristic of the banks of black-water rivers.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

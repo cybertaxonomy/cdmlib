@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Clustering high-climbing pinnate-leaved rattan palms of Southeast Asia; sheaths are densely to very sparsely armed and an ocrea is present; hapaxanthic and dioecious, the staminate flowers are borne in dense clusters representing condensed rachillae, each flower solitary, the pistillate flowers also in clusters, but with fewer flowers, each individual flower solitary; fruit relatively large, covered with conspicuous scales.</p></div>
+<nomenclature>
+<name>Plectocomiopsis</name>
+<author>Becc. in Hook.f.</author> 
+<citation>Fl. Brit. India 6: 479 (1893).</citation>
+<type>Lectotype; Plectocomiopsis geminiflora; (Griff.) Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Combining the generic name Plectocomia with the ending -opsis — similar to.</p></div>
+<div type="description"><p>Moderate to robust, clustered, high-climbing, spiny, hapaxanthic, dioecious, rattan palms. Stem eventually becoming bare, often 3-angled, with long internodes and conspicuous nodal scars, basal branches borne in an axillary position. Leaves of mature climbing stems pinnate, cirrate; leaf sheath tubular, rather sparsely armed or unarmed, usually bearing caducous indumentum; knee absent; ocrea present, sometimes tattering, but usually remaining entire and conspicuous; flagellum absent; petiole present or absent, it and the proximal part of the rachis deeply channelled and sparsely spiny; cirrus and distal part of rachis abaxially armed with regularly arranged groups of reflexed grapnel spines; leaflets few to numerous, single-fold, lanceolate, entire, regularly arranged, sometimes armed along margins and/or midrib with conspicuous bristles and bands of caducous scales, midribs evident, transverse veinlets conspicuous. Inflorescences produced simultaneously from the axils of the most distal, often reduced leaves, branched to 2 (3) orders, inflorescence axis adnate to the proximal part of the internode above the subtending node, emerging from the leaf sheath mouth; peduncle short; prophyll tubular, 2-keeled, included within the leaf sheath; peduncular bracts absent (?always); rachis much longer than the peduncle; rachis bracts tubular, ± distichous, each subtending a horizontal or ± pendulous, first-order branch; first-order branches with basal, 2-keeled prophyll and close, distichous, tubular bracts with triangular limbs, each subtending a flower cluster (except in Plectocomiopsis corneri where inflorescences diffusely branched to 3 orders, and flowers borne on axes of all 3 orders); flower cluster monopodial, representing a condensed rachilla. Staminate flowers borne ± distichously in clusters of up to 32 flowers, each flower in the axil of a cup-like rachilla bract and bearing a cup-like, 2-keeled bracteole; calyx thick, very leathery, tubular, with 3 short lobes, the abaxial surface often covered in scale-like trichomes; corolla thick, leathery, tubular through most of its length, split distally to form 3 approximate triangular lobes, covered in scale-like trichomes; stamens 6, epipetalous, united laterally to form a tube tipped with 6 short, reflexed, free filaments bearing short, rounded to oblong, medifixed, introrse anthers; pistillode minute. Pollen ellipsoidal, bi-symmetric; apertures equatorially disulcate; ectexine tectate or semitectate, finely perforate rugulate, or reticulate, alternatively exine intectate with angular clavae interspersed with granulae, aperture margins similar to or slightly finer than surrounding ectexine; infratectum columellate; longest axis 19–34 µm [5/5]. Pistillate flowers rarely solitary, or borne in groups of 2–4 (rarely more), each in the axil of a cup-like rachilla bract and bearing a 2-keeled, cup-like bracteole and rarely a minute second bracteole; calyx tubular, thick, leathery, divided into 3 low lobes, frequently bearing scale-like trichomes, persisting into fruiting stage, enlarging, splitting and cracking irregularly; corolla thick, leathery, densely scaly, divided into 3 short lobes, later splitting irregularly; staminodial ring epipetalous, bearing 6 very short lobes and pendulous empty anthers; gynoecium ovoid to cylindrical, at anthesis scaly only near the base of the 3 apical stigmas, locules 3, incomplete, each with 1 anatropous, basally attached p vule. Fruit 1 (very rarely 2)-seeded, perianth whorls persistent and enlarging, stigmatic remains apical; epicarp covered in somewhat irregular vertical rows of reflexed scales, mesocarp thin, endocarp not differentiated. Seed basally attached, usually depressed, globose, sarcotesta thick, but not juicy, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid, lamina composed of several folds. Cytology not studied.</p></div>
+<div type="distribution"><p>Five species distributed in south Thailand (1 species), the Malay Peninsula (4), Sumatra (2) and Borneo (3). </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961).</p></div>
+<div type="relationships"><p>The monophyly of Plectocomiopsis has not been
+tested. For relationships, see Plectocomia.</p></div>
+<div type="uses"><p>The apex of Plectocomiopsis geminiflora, though bitter, is highly esteemed in Borneo as a vegetable; opinions vary concerning other species,with some villagers regarding them as good, others aspoisonous. The stems are of little value being prone to splitwhen bent and are used only in coarse basketry.</p></div>
+<div type="taxonomic accounts"><p>Dransfield (1982b).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>See Myrialepis.</p></div>
+<div type="vernacular"><p>Rattan, rotan. </p></div>
+<div type="biology_ecology"><p>All species, like Myrialepis, seem to be adapted to colonizing disturbed habitats within primary forest. Plectocomiopsis triquetra and P. wrayi are confined to lowland peatswamp forest in Borneo and the Malay Peninsula, respectively; P. corneri and P. mira are local plants of lowland dipterocarp forest up to about 700 m altitude, whereas P. geminiflora is found in a wide range of forest types up to about 1200 m altitude.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

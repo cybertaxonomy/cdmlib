@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A revision of the Calamus aruensis (Arecaceae) complex in New Guinea and the Pacific</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Bayton</mods:namePart>
+<mods:namePart type="given">R.P</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Maturbongs</mods:namePart>
+<mods:namePart type="given">R.A</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin 58: 351-370</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus pachypus</name>
+<author>W.J.Baker, Bayton, J.Dransf. &amp; Maturb.</author>
+<citation>Kew Bulletin 58: 351-370</citation>
+<type>Indonesia, Papua, Manokwari Regency, Warmare, Valley of River Prafi, road to Manyambo (S O˚ 47', E 133˚ 58'); Dransfield et al.; JD7600</type>
+<type_loc>Holotypus K!; isotypi BO, FTG, MAN</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Hele bu (Yali), kour (Biaru), kur (Karkar), mambile (Yali), meya (Arfak Plains), tendu mundu (Berap)</p></div>
+<div type="diagnosis"><p>a ceteris speciebus C. aruensi affinis, sed spinis vaginarum foliorum flexilibus triangularibus basin valde tumidis, foliolis plerumque geminatis recedit</p></div>
+<div type="description"><p>Robust, solitary rattan climbing to 26 m. Stem with sheaths 25-60 mm diam., without sheaths 13-30 mm diam.; internodes 18-33 cm. Leaf cirrate, to 4 m long including cirrus and petiole; sheath dark green, drying brown, with abundant, caducous indumentum of irregular brown, fibrous scales, spines few to numerous, 1-60 x 0.3-5 mm, red-brown to black, planar, triangular, flexible, often curving, tapering distinctly at base then attenuate to a narrowly acute apex, margins sometimes sinuous, spines sometimes united at their margins to form compound spines, spine bases yellow, swollen, often distinctly so in larger spines, spine surface with indumentum as on sheath, spines of various sizes, in irregular partial whorls of up to 14 interspersed with solitary spines, spine impressions on sheath sometimes conspicuous, sheath mouth armed with numerous small spines; knee 6-100 mm long, 24-45 mm wide, unarmed or lightly armed with short spines, colour and indumentum as on sheath; ocrea 2-11 mm, forming a low, woody, brown, lightly armed, persistent collar, base of ocrea extending along petiole to an acute angle; flagellum absent; petiole 5-90 mm, 14-23 mm wide and 7-15 mm thick at base, channelled or flat adaxially, rounded abaxially, indumentum as on sheath, with few to many triangular spines; rachis 1.3-2.2 m, with spines and indumentum as petiole, with grapnel spines abaxially; leaflets 1-17 each side of rachis, usually arranged in widely spaced pairs, rarely regular or subregular, when paired the leaflets in each pair sometimes divergent, broadly lanceolate, cucullate, longest leaflets near middle of leaf, 27-46 x 4.4-6.5 cm, apical leaflets 13-30 x 0.6-4.8 cm, distal leaflets widely spaced, basal leaflets small, leaflet surfaces with very few bristles 0.6-2 mm on adaxial surface of mid-rib and other major veins, leaflet margins unarmed or with very few bristles 0.5-2.5 mm near apex, with indumentum as on sheath sometimes present on both surfaces of leaflet base, transverse veinlets inconspicuous; cirrus 80-160 cm, cirrus grapnel spines arranged regularly. Staminate inflorescence limited material seen, similar to pistillate inflorescence, but branched to 3 orders, bracts on primary and secondary branches funnel-shaped; rachillae 3-44 x 0.5-2 mm, sublinear, glabrous; rachilla bracts c. 0.6 x 1.2 mm, distichous, glabrous; floral bracteole 0.6 x 1 mm. Staminate flowers not seen. Pistillate inflorescence, up to c. 4 m long including 27-72.5 cm peduncle and 25-90 cm sterile tip, branched to 2 orders, usually inserted near to sheath apex, but sometimes emerging from sheath mouth; prophyll 16-33.5 x 1.6-2.3 cm, strictly tubular, with 2 conspicuous keels, prophyll mouth entire, with acute, triangular limb to one side, sometimes subtending primary branch, indumentum as on sheath, lightly to moderately armed with short spines; peduncular bracts absent, rachis bracts 9.5-38 x 0.6-2.1 cm, similar to prophyll, unarmed to moderately armed as prophyll; primary branches 6-9, to 70 cm long, 19-32 cm apart, strongly recurving, with up to 43 rachillae, bracts on primary branch funnel-shaped; rachillae 4-20 x 0.2 cm, sublinear or arcuate; rachilla bracts 1.5 x 1.7-2 mm, subdistichous, with scattered scales as sheath; flower clusters rarely distinctly stalked, stalk to c. 1.5 mm long, proximal floral bracteole obscured by distal bracteole, distal floral bracteole 1.5-1.6 x 1.6-1.7 mm, glabrous, scar from sterile staminate flower c. 0.2 mm diam. Pistillate flowers 4-4.5 x 2.5 mm shortly after anthesis; calyx 2.5 mm diam., tubular in basal 1.7-3.5 mm, with 3 lobes to 0.7-0.8 x 1-1.5 mm, glabrous; corolla 2-3.3 x 2 mm, tubular in basal 0.7-1.7 mm, with 3 lobes 1.3-1.6 x 1.5 mm, glabrous; staminodes 6, c. 0.8 mm long, staminodal ring c. 1 mm high; ovary c. 2 x 2 mm, globose, style c. 0.5 mm long, stigmas c. 1 mm long. Sterile staminate flowers not seen. Fruit globose, 10-15 x 8.5-13.5 mm including beak 1.5-2 mm, with 16-19 longitudinal rows of light green to white, shallowly chanelled scales with entire, but uneven margins. Seed (sarcotesta removed) 7.3-8 x 7-9.5 x 6-8 mm, globose, with a deep, narrow pit on one side, the surface covered with numerous deep pits and irregular channels; endosperm homogeneous; embryo basal or sub-basal. Fig. 1.</p></div>
+<div type="distribution"><p>Known from scattered records throughout mainland New Guinea with one collection from New Ireland</p></div>
+<div type="biology_ecology"><p>Various types of primary and secondary forest vegetations, 100-1500 m with more than half of the records above 600m</p></div>
+<div type="conservation"><p>Least concern</p></div>
+<div type="uses"><p>Cane used for making bridges and waist hoops, split cane for general cordage, for making arrows and bow strings, and for fire-making</p></div>
+<div type="discussion"><p>This distinctive new species is readily distinguished from its relatives by its leaf sheath armature. The spines on the sheath are flexible, triangular and distinctly swollen at the base (Fig. 1D). While both large and small spines occur on the sheath, very long spines (up to 60 mm) are almost always present. Leaflet arrangement is variable, but the most frequent form bears leaflets grouped in pairs.
+Although C. pachypus is recorded from low elevations, it is more frequently found in submontane and montane vegetations. While the species is known from a relatively limited number of collections, it is apparently widespread in New Guinea and is recorded from both eastern and western extremes of the island. Outside mainland New Guinea, it is known from a single collection from New Ireland</p></div>
+<div type="materials_examined"><p>INDONESIA, Papua. Jayapura Regency: Jayapura, Berap, May 1994, Upessy 7 (K!); Cyclops Mts, Angkasa, Aug. 1998, Heatubun et al. 288 (AAU!, BO, K!, MAN, NY!); Papua, Jayapura, N Cyclops Mts, Jan. 2001, Desianto 7 (AAU!, K!, MAN). Manokwari Regency: Warmare, valley of river Prafi, new road to Manyambo, Aug. 1995, Dransfield et al. JD 7600 (BO, FTG, K!, MAN, type); Mubri Lama, near Arfak Mts, April 1995, Maturbongs 47 (K!, MAN); Manokwari, Mubri, April 1995, Maturbongs 46 (K!, MAN); Arfak Plains, Settlement Unit Seven, (satuan Pemukiman Tujuh), April 1994, Mogea 6245 (BO, K!, L!, MAN, NY!). Merauke Regency: Between Mindiptanah and Imko, Aug. 1957, Dijkstra BW 6630 (L!). Wamena Regency: 6km SW of Bernhard Camp, Idenburg River, Feb. 1939, Brass 12963 (A, L!); Abenaho Subdistrict, Jayawijaya, Nov. 1999, Maturbongs et al. 644 (AAU!, K!, MAN); Snow Mountains, E of Baliem Valley, vicinity of Panggema, Oct. 1992, Milliken 1435 (K!). PAPUA NEW GUINEA. Madang Provice; Karkar Island, Mom, Sept. 1970, Zieck NGF 36248 (BH, K!, L!, LAE). Milne Bay Province: junction of Ugat and Mayu Rivers, near Mayu Island, July 1972, Streimann &amp; Katik NGF 28669 (BH, L!, LAE!). Morobe Province: locality unknown, 1989, Taurereko 209 (K!); Wau Subdistrict, Kanis, between Tori-Korwa, Biaru Valley, June 1969, Zieck NGF 36225 (LAE!); Wau Subdistrict, Bulolo-Watut, June 1969, Zieck NGF 36221 (L!, LAE), March 1964, Moore &amp; Womersley 9278 (LAE!). New Ireland Province: Logagon Subdistrict, N Schleinitz Range, 5 km S of Logagon, Oct. 1974, Croft LAE 65582 (A, BH, BRI, E, K!, L!, LAE). Southern Highlands Provice: Moro, Iagifuago, Path along water pipeline from well site down to road, Feb. 1996, Baker &amp; Kage 659 (K!, LAE!). Western Province: Yat, June 1967, Henty et al. NGF 33042 (BH, CANB!, LAE!)</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

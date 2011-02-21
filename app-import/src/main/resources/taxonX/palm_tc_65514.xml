@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis procera</name>
+<author>Jum.</author>
+<citation>Ann Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 6 (1): 33 (1918)</citation>
+<bibref>Jum., Bull. Ac. Malgache 6: 7 (1923)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 14 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 36 (1945)</bibref>
+<type>Madagascar, Fananehana; Perrier; 12089</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Dypsis longipes</name>
+<author>Jum.</author>
+<bibref>Jum., Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 3, 6 (1): 37 (1918)</bibref>
+<bibref>Jum., Bull Ac Malgache 6: 18 (1923)</bibref>
+<bibref>Jum., Cat Pl Madagascar, Palmae: 13 (1938)</bibref>
+<bibref>Jum &amp; H Perrier, Fl Madagascar 30: 24 (1945)</bibref>
+<type>Madagascar, Rantabe; Perrier; 12030</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>D. procera is an attractive palm of the undergrowth of the very humid forests that surround the Bay of Antongil. The leaf sheaths with their discrete patches of red-brown scales are distinctive. Leaf dissection varies greatly. There are some particularly beautiful forms with entire bifid leaves that would make splendid ornamentals. D. procera is cultivated in several Australian collections (and probably elsewhere), where it has been misidentified as D. hildebrandtii (see Stewart 1994, p. 97). The species name, procera, meaning very tall, or high, seems inappropriate for this undergrowth palm, but it is one of the taller of the palms that belong to Dypsis in the restricted sense, rather than the present broad sense.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Moderate-sized clustering (very rarely solitary) palm of forest undergrowth, tending to form diffuse colonies by few short stolons. STEMS erect, to 6 m tall, 1-2.5 cm diam., internodes 2-10 cm long, when young green, with scattered caducous brown scales. LEAVES c. 8 in crown; leaf-sheaths forming a crownshaft; sheath 17-31 cm long, 1.5-2.5 cm diam., pale green, covered in caducous red-brown scales, these frequently in irregular vertical patches c. 3-22 x 1 mm, leaf sheath mouth with irregularly tattering ligule; petiole rarely very short (3-4 cm), usually 10-25 x 0.5-0.8 cm, bearing scattered, caducous red-brown scales; rachis 38-60 cm long (?rarely more); blade entire bifid or irregularly divided into 2-8 narrow to broad leaflets; basal leaflets 43-80 x 2-15 cm, mid-leaf leaflets 25-50 x 1.2-8.5 cm, apical leaflets 23-55 x 1.5-15 cm; lamina surfaces bearing numerous minute punctiform scales along main and minor veins. INFLORESCENCE interfoliar, branched to 2 orders; peduncle 35-46 cm long, 0.5-0.7 cm diam., brown scaly; prophyll 21-36 x 0.5-0.7 cm, borne 5-12 cm above the base of the peduncle, membranous, bearing caducous scales; peduncular bract, rarely preserved, usually abscising before expansion of rachillae from bud, borne at least 12 cm above prophyll, to 16 x 7 cm; rachis 14-35 cm long, scaly as the peduncle, bearing 8-13 first order branches, lower 2-6 branched; rachillae 10-18 in number, 15-50 cm long, 1.2 mm diam., densely covered in redbrown branched trichomes, triads c. 2 mm distant. STAMINATE FLOWERS c. 2 x 1.3 mm; sepals rounded-triangular, 0.8 x 0.7 mm, keeled, glabrous; petals &#177; elliptic, valvate, striate, 2 x 1.4 mm; stamens 3, antesepalous, filaments 1.1 x 0.4 mm, strap-like, anthers sagittate to subpendulous, 0.9 x 0.5 mm; pistillode conical, to 3 mm. PISTILLATE FLOWERS in very young bud c. 1 mm diam., rounded; sepals broadly imbricate, 1 x 1.1 mm; petals triangular-rounded, striate, 1.1 x 0.5 mm; staminodes 3, minute, irregularly dentiform; immature ovary c. 0.5 x 
+0.2 mm. Mature FRUIT unknown; immature fruit ellipsoid, 7 x 3 mm, green. SEED with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Around the Bay of Antongil.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest, usually on flat land, sometimes on slopes; to 600 m.</p></div>
+<div type="conservation"><p>Vulnerable. Restricted in distribution in an area where the forest is unprotected and under some threat by shifting cultivators.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Jumelle distinguished <name>Dypsis longipes</name> from all other species of Dypsis sensu stricto by the combination of entire bifid leaf and spicate inflorescence borne on a long peduncle. However, the inflorescence of the holotype clearly displays six scars near the base of the "spike" where branches have been broken off, and there is no doubt that the inflorescence originally bore several long flexuous branches. With this spurious difference removed, <name>Dypsis longipes</name> is clearly conspecific with D. procera. Furthermore, of the leaf blades in the type one appears to be entire bifid, the other has two leaflets on one side of the rachis; however, in both cases the rachis at the base of the lamina is much narrower than the petioles on the same sheath, suggesting that, far from being whole laminae, the two leaf samples represent the apical portions of two pinnate leaves. D. procera is a distinctive but rather variable taxon that occurs with some frequency in forest surrounding the Bay of Antongil, in the lowlands and up to altitudes of about 400 m. It is a colonial palm tending to form diffuse clumps by short stolons. Lamina dissection varies from narrowly to broadly and irregularly pinnate, to entire bifid, the entire-bifid forms being particularly striking and beautiful. In most collections the leafsheaths bear scales in distinctive irregu lar vertical patches. Dransfield JD6397 differs from other col lections in being rather smaller in all its parts, with a short entire bifid leaf and with leaf 
+sheaths that lack the distinctive patches of scales, but are nevertheless scaly; the rachillae are similar to those of</p></div>
+<div type="materials_examined"><p>Maroantsetra: Masoala Peninsula, Hiaraka, Oct. 1986 (fl.), Dransfield et al. JD6365 (K, TAN); idem, Oct. 1986 (fl.), Dransfield et al. JD6369 (K, TAN); Ambanizana, Oct. 1986 (fl.), Dransfield et al. JD6397 (K, TAN) (see note above); Antalavia, Feb. 1988 (fl.), Dransfield et al. JD6471 (K, NY, TAN); idem, Nov. 1989 (fl.), Dransfield et al. JD6743 (K, TAN); Nosy Mangabe, Feb. 1964 (fl.), Dransfield JD6464 (K, TAN); Andranofotsy River, Sahavary, Feb. 1988 (fl.), Dransfield et al. JD6455 (K, TAN); idem, Feb. 1988 (fl.), Dransfield et al. JD6449 (K, TAN); hill 5 km west of Maroantsetra town, Oct. 1986 (fl.), Dransfield et al. JD6361 (K, TAN); Fananehana, Bay of Antongil, Aug. 1912 (fl.), Perrier 12089 (Holotype P); Rantabe, Bay of Antongil, Aug. 1912 (fl.), Perrier 12030 (Type of <name>Dypsis longipes</name> Jum., holotype P). Ampasimanolotra: Ambalarondra, Andranampony, April 1951 (fl.), Cours 4537 (K, P).   1</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

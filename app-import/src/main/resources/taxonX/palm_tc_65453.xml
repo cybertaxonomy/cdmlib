@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis zahamenae</name>
+<author></author>
+<citation></citation>
+<type>Madagascar, Massif d'Andrangavolo; Humbert; 17776</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang=""><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Slender undergrowth palm, whether solitary or clustered not known. STEMS 0.5-1.2 m tall, 7-8 mm diam., internodes 12-18 mm with scat- tered chestnut-brown scales. LEAVES 6-8 in crown; sheaths 7-9 cm long, 7-13 mm diam., striate, covered in caducous chocolate-brown scales, apically with 2 narrow triangular auricles 7-9 x 3-4 mm, these soon disintegrating; petiole absent or to 7 cm long, 2 mm wide, triangular in cross section, densely covered in soft brown scales; blade entire bifid, 20-35 x 12 cm, with apical cleft not exceeding one third of blade length, or irregularly divided into broad leaflets, up to 3-4 on each side of the rachis; rachis 11-18 cm; leaflets 10-26 x 1.5-4 cm, apical pair (or tips of entire bifid blades) shallowly lobed, c. 1 cm wide; lamina abaxially with abundant caducous brown scales along rachis and main ribs and with abundant punctiform scales, adaxially very sparsely punctiform scaly. INFLORESCENCE interfoliar, erect, branching to 1 order; peduncle 11-23 cm long, c. 1.5-2 mm diam.; prophyll c. 10 x 0.5 cm, sparsely brown scaly; peduncular bract similar, exceeding prophyll by up to 6 cm; rachis 3-4 cm, densely brown hairy; rachillae 6-10, short, stout, condensed, usually diverging from rachis at right angles, 10-25 x 3 mm; rachilla bracts very close, conspicuous, rounded, 1.5 x 3 mm, densely covered in laciniate pale grey to brown hairs. STAMINATE FLOWER buds pointed, 1.5 x 1 mm; sepals imbricate, rounded, 1 x 1 mm, slightly keeled, margin erose; petals shining, not striate, 1.3 x 0.6 mm; stamens 3 antesepalous, staminodes absent, filaments connate into a tube c. 0.7 mm high, anthers didymous, c. 0.15 x 0.35 mm; pistillode minute. PISTILLATE FLOWERS known only in very immature bud. FRUIT unknown.</p></div>
+<div type="distribution"><p>Known only from mountains east of Lac Aloatra in Zahamena Reserve.</p></div>
+<div type="biology_ecology"><p>Humid lower montane forest; 700-1000 m.</p></div>
+<div type="conservation"><p>Vulnerable; only known from a small, though protected area, with some threat of shifting cultivation to the forests.</p></div>
+<div type="discussion"><p>This is a very curious species with its highly condensed stubby rachillae. Such rachillae are known elsewhere only in D. angustifolia (previously described as variety angustifolia of D. humbertii Perrier) and in D. pachyramea. D. zahamenae and D. angustifoliahave antesepalous stamens and no sta minodes whereas D. pachyramea has antepetalous stamens and antesepalous staminodes.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="materials_examined"><p>Ambatondrazaka: Zahamena, Massif de l'Andrangovalo, Oct. 1937 (fl.), Humbert &amp; Cours 17776 (Holotype of D. humbertii var. humbertii, P); Chutes du Maningory, Dec. 1944 (fl.), Homolle s.n. (K, P); between waterfalls and Ambodivoangy, Dec. 1944 (fl.), Cours 1848 (K, P); Ambatondrazaka, June 1961 (fl.), Rakotovao 11899 (K, P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

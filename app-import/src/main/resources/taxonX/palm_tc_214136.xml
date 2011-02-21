@@ -1,0 +1,59 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Wallichia (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Taiwania 52(1) 1-11</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wallichia oblongifolia</name>
+<author>Griff.</author>
+<citation>Calcutta J. Nat. Hist. 5: 486 (1845)</citation>
+<type>INDIA. Assam, unknown locality, no date; Masters; s. n.</type>
+<type_loc>Lectotype NY!</type_loc>
+<synonymy>
+<name>Harina oblongifolia</name>
+<author>(Griff.) Griff.</author>
+<bibref>(Griff.) Griff., Palms Brit. E. Ind.: 175 (1850)</bibref>
+</synonymy>
+<synonymy>
+<name>Wallichia densiflora</name>
+<author>Mart.</author>
+<bibref>Mart., Hist. Nat. Palm. 3: 190 (1845)</bibref>
+</synonymy>
+<synonymy>
+<name>Harina densiflora</name>
+<author>(Mart.) Walp.</author>
+<bibref>(Mart.) Walp., Ann. Bot. Syst. 3: 1032 (1853)</bibref>
+<type>Not designated.</type>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Mihua walizong (China); takoru (Bhutan, Nepal); araru, chilputtal, ipathi, lemi (India); zanong (Myanmar); khareto (Nepal).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems clustered, short and subterranean or to 1 m tall, to 40 cm diameter, stems bearing staminate and pistillate inflorescences about equal in length. Leaves 7-10, spirally arranged; sheaths and ligules disintegrating into black fibers; petioles to 2 m long; rachis 1.5-2.5 m long; pinnae 16-17 per side of rachis, regularly and alternately arranged, spreading in the same plane, proximal 2-3 pinnae in a cluster, the smallest erect, pinnae from middle of leaf 45-56 cm long, 7-12 cm wide, widest near the apex, approximately oblong, with several lobes. Inflorescences unisexual, staminate and pistillate borne on separate stems; staminate inflorescences pendulous, not seen in their entirety; prophyll not seen; peduncle not seen; peduncular bracts several, covering and compressing the rachillae at anthesis; rachillae numerous, at least to 12 cm long, 2 mm diameter, glabrous; staminate flowers 7-10 mm long; sepals 5-7 mm long, connate into a cupular calyx; petals to 7 mm long, free except for the basal 2 mm, there forming a solid tube with the stamens inserted; stamens 6; pistillate inflorescences to 100 cm long, horizontally spreading; prophyll not seen; peduncle to 70 cm long; peduncular bracts several (at least 3); rachillae 16-32, to 35 cm long, 4.5-6.5 mm diameter; pistillate flowers to 6 mm long; sepals 1 mm long; petals 5 mm long; gynoecium to 5 mm long; fruits ovoid to ellipsoid, to 1.5 cm long, to 0.8 cm diameter, greenish-brown to reddish.</p></div>
+<div type="distribution"><p>Bangladesh, Bhutan, China (Yunnan), India (Arunachal Pradesh, Assam, Manipur, Meghalaya, Mizoram, Nagaland, Sikkim, Tripura, Uttaranchal), Myanmar (Kachin, Sagaing), and Nepal.</p></div>
+<div type="biology_ecology"><p>Lowland or montane rain forest, especially in rocky places on steep slopes, 200-1200 m elevation.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The leaves are used for thatching and making brooms.</p></div>
+<div type="discussion"><p>This species has usually been known as Wallichia densiflora Mart. This name was published in September 1845 in the second printing of the third volume of Historia Naturalis Palmarum (Martius, 1845; see also Dransfield and Moore, 1982). Here Martius refers to page 189 of the first printing of the third volume, published in 1838, but no reference to Wallichia densiflora appears on that page, at least not in the copy at NY (contra Dransfield and Moore, 1982). Page 189, in fact, contains the treatment of Iriartea, and that of Wallichia is on page 188. However, even on that page there is no reference to W. densiflora. Wallichia oblongifolia was published in January 1845 (Griffith, 1845), and thus precedes W. densiflora. Wallichia oblongifolia is distinctive in its large, approximately oblong pinnae (Fig. 2G). Inflorescences of W.oblongifolia appear to be either staminate or pistillate and no specimen has been seen with both staminate and pistillate flowers on the same inflorescence. There is no evidence of inflorescences being subtended by reduced leaves. In the field plants have been seen with either staminate or pistillate inflorescences, never both, and thus there is a possibility that this species is dioecious. </p></div>
+<div type="materials_examined"><p>INDIA. Assam: Garo Hills, Chokphot, 1300 ft., no date, Parry 876 (K). Manipur: Mount Sirhoi, 13 Oct 1948, Kingdon-Ward 18231 (NY). Meghalaya: Khasi Hills, Barapani, 3000 ft., 5-14 Jun 1949, Thakur Rup Chand 1658 (BH); Khasi Hills, Burnihat, 15 Mar 1955, Thakur Rup Chand 8330 (BH); Khasi Hills, no date, Hooker &amp; Thomson s. n. (A, P). Sikkim: Tista, Mar 1874, Gamble 2969 (K); Chumbai, 7 May 1876, Gamble s. n. (K); no locality, 1000-3000 ft., no date, Hooker &amp; Thomson s. n. (A, P). Uttaranchal: Kumaon, 1000-2500 ft., no date, Strachey &amp; Winterbottom s. n. (A, K, P). BANGLADESH. Chittagong, Pharoha, 28 Feb 1879, Gamble 6765b (K); Chittagong, Sitakund, 1000 ft., no date, Hooker &amp; Thomson s. n. (K). CHINA. Yunnan: Labang, near YinJiang on border with Myanmar, 24°45’N, 97°34’E, 16 Jul 2003, Henderson et al. 3111 (NY): Jiang Cheng, Tu Ka river, 18 Dec 1991, Tao 49085 (HITBC); YinJiang, Xi Ma, Na Bang Na near La Zha river, 10 Dec 1978, Tao 17894 (HITBC); YinJiang, Xi Ma, Na Bang Ba, 30 Oct 1988, Chen 660 (KUN). BHUTAN. Sankosh: 2 km W of Pinkhua, 26°44’N, 90°02’E, 360 m, 16 Mar 1982, Grierson &amp; Long 3786 (A, K). Samchi: Khagra Valley near Gokti, 26°49’N, 89°12’E, 600 m, 2 Mar 1983, Grierson &amp; Long 3409 (K). NEPAL. Chitwan National Park, Siwalik Hill (Churiya Hill), ca 8 km SE of Bhimpur Siwalik, 350 m, Oct 1993, Rijal 800 (K). MYANMAR. Kachin: Ledo road, 3 km N of Shinbwiyang, 26°43’N, 96°11’E, 260 m, 16 Jan 2005, Henderson et al. 3132 (K, MAND, NY, RAF, RANG); Ledo road, Mile 8 Camp, between Namyung and Shinbwiyang, 26°46’N, 96°12’E, 847 m, 27 Jan 2005, Henderson et al. 3156 (K, MAND, NY, RAF, RANG); Ledo road, between Mile 8 Camp and Shinbwiyang, 26°43’N, 96°12’E, 350 m, 29 Jan 2005, Henderson et al. 3164 (MAND, NY, RAF, RANG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

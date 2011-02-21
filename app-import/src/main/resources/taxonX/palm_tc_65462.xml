@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis laevis</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 386 (1995)</citation>
+<type>Madagascar, East Coast, Farafangana, Manombo; Beentje and Andriampaniry; 4785</type>
+<type_loc>Holotypus K; isotypus TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This species, known only from its type, is distinctive in its epetiolate leaves with minute basal leaflets and long lax inflorescence with glabrous axes. The species name is Latin for smooth, referring to the lack of hairs on the inflorescence branches.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Inter species floribus staminatis triandris staminibus antepetalis, staminodiis antesepalis alternantibus D. ambilaensi affinis, sed forma folii et inflorescentia longa laxa glabra differt. </p></div>
+<div type="description"><p>Slender, solitary forest undergrowth palm. STEM to 3 m tall, c. 15 mm diam., internodes 15 - 30 mm, green with scattered dark red brown to blackish scales. LEAVES 9 in crown, porrect; sheath 8-9 cm long, c. 13 cm diam., pale green with scattered red-brown scales, auricles membranous, rounded-triangular, c. 8 x 8 mm, disintegrating; petiole absent; rachis 26-38 cm, c. 4 mm wide at the very base, with scattered caducous dark scales; leaflets 5-7 on each side of the rachis, the proximal 1-4 very small and slender, 1-9 x 0.1-1.0 cm, mid-leaf leaflets broad, somewhat irregular in arrangement, 9-20 x 1.8-7 cm, somewhat sigmoid, acuminate in a long drip-tip, apical pair to 12 x 4 cm, joined for 5-7 cm along rachis, conspicuously lobed along the margins, adaxial surface glabrous, abaxial surface with minute scattered red-brown punctiform scales. INFLORESCENCE longer than the leaves, branched to 2 orders, all axes reddish brown, glabrous; peduncle 37-46 cm long, c. 2-3 mm diam.; prophyll borne c. 2 cm above base of peduncle, 22 cm long, c. 1 cm wide, very sparsely and minutely punctate scaly; peduncular bract borne c. 9 cm above base of peduncle, to 26 cm long, similar to prophyll, exceeding it by 14 cm; rachis 30 cm; branches rather lax and distant; rachillae c. 45 in number, 6-7.5 cm long, 0.7-0.8 mm diam., triads c. 1 mm apart, rachilla bracts inconspicuous. STAMINATE FLOWER still immature, c. 0.7 mm diam.; sepals 0.3 x 0.3 mm, rounded, smooth, keeled, margins erose; petals striate, c. 0.6 x 0.5 mm; stamens still very young, 3, antepetalous, alternating with 3 antesepalous staminodes; pistillode minute. PISTILLATE FLOWER c. 1.2 mm diam.; sepals broadly imbricate, 5 x 7 mm, margins erose; petals striate, 1 x 0.8 mm, basally imbricate; staminodes 6, strap-shaped, minute; ovary gibbous c. 0.8 mm diam., stigmas &#177; lateral. Immature FRUIT curved, 6 x 3 mm. SEED 5 x 1.5 mm; endosperm homogeneous, embryo basal.</p></div>
+<div type="distribution"><p>Central east coastal Madagascar, known only from Manombo near Farafangana.</p></div>
+<div type="biology_ecology"><p>Lowland forest.</p></div>
+<div type="conservation"><p>Critical. The small protected area where this species occurs is severely threatened with illegal logging and shifting cultivation.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The position of the three stamens allies this species with those species previously included in Dypsis &#167; Trichodypsis. It perhaps most resembles D. ambilaensis but differs in the leaf form and in the long, lax, glabrous inflorescences.</p></div>
+<div type="materials_examined"><p>Farafangana: Manombo Forest, Jan. 1993 (fl., fr.), Beentje &amp; Andriampaniry 4785 (Holotype K; isotype TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

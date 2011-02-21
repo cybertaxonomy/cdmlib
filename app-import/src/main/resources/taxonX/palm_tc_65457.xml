@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis ifanadianae</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 171 (1995)</citation>
+<type>Madagascar, Ifanadiana: 34km E of Ifanadiana; Beentje and Beentje; 4729</type>
+<type_loc>Holotypus K; isotypi MO, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>A rather slender tree palm reminiscent of D. Lastelliana through the pendulous leaflets, but immediately distinct from that species by its green leaf-sheath. The name comes from the nearest large town and administrative unit.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Palma insignis habitu D. lastellianae superficialiter similis sed vagina folii viride non brunneo-tomentosa, D. nauseosae affinis sed   fructu parvo endospermio homogeneo differt</p></div>
+<div type="description"><p>Slender solitary palm. TRUNK 15-24 m tall, conspicuously stepped and ringed, 18 cm diam.; internodes 12 cm long, orange-brown with white nodal scars 1.5 cm broad, with age the whole trunk becoming pale grey to almost white; upper internodes green with white scars. LEAVES 7 in the crown, spirally inserted, porrect with leaflets in one plane but curving downwards; sheath 72 cm long, at the base 20 cm wide (when flattened), green, 50-75% open, with minute scattered scales, with brown triangular ligules 5 x 2.3 cm; petiole 30 cm long, proximally 6 x 4 cm, distally 4 x 3 cm, channelled with sharp edges, waxy and with minute scattered scales; rachis c. 3 m long, proximally channelled, in mid-leaf 1.4-2.5 cm diam., sharply keeled, waxy and ? with minute scattered scales; leaflets regular, c. 55 on each side of the rachis, the proximal 90-108 x 1-3 cm, median 104-110 x 4.3-5 cm (interval 4 cm), distal 15-37 x 0.4-2.2 cm, glaucous and glabrous, with attenuate apices, main veins 5, prominent. INFLORESCENCE infrafoliar, with curved peduncle, branched to 3 orders; peduncle 57 cm long, proximally 4 x 2 cm, distally 3 x 2 cm diam.; prophyll c. 89 cm, borne at c. 5 cm above the base of the peduncle, 10 cm wide, 2-winged; peduncular bract inserted at 26 cm from the base of the peduncle, 65 cm long, the distal 18 cm closed, beaked for 4 cm; rachis 60 cm long, with c. 21 branched and c. 16 unbranched first order branches, these proximally 2.8 x 1.6 cm; rachillae 12-33 cm long, 3-4 mm diam., with distant triads in slight pits, with triangular, entire bracts. STAMINATE FLOWERS unknown. PISTILLATE FLOWERS with imbricate sepals 2.5-3 x 2.5-3.5 mm, orbicular, rounded, slightly spurred at the base; petals    4-4.5 x 3-5 mm, hooded, orbicular with minute acute apex; staminodes 0.8-1.3 mm, flat and narrow; ovary c. 3.5 x 4.5 mm, asymmetrical, the stigmas slightly lateral and 1.3 mm high. FRUIT 8 x 7-10 mm; endocarp with anastomosing fibres. SEED transversely ellipsoid, broader in one plane than in the other, 6.5 x 5.5 x 8-9 mm, with homogeneous endosperm. EOPHYLL bifid.</p></div>
+<div type="distribution"><p>Only known from the Ifanadiana area.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; steep mid slopes; 200-450 m.</p></div>
+<div type="conservation"><p>Critical. Restricted to a small area, where clearing of forest is continuing apace; less than fifty trees known.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>This species is rather close to D. nauseosa but distinct by its small fruit with homogeneous endosperm.</p></div>
+<div type="materials_examined"><p>Ifanadiana: 34km E of Ifanadiana, July 1992 (fl., fr.) Beentje &amp; Beentje 4729 (Holotype K; isotypes MO, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

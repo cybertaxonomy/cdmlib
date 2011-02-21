@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus sabensis</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11: 245 (1908)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species was based on a leaf and an infructescence fragment collected by Ridley at Bongaya, Labuk Bay, in 1897. No other material matching the type has been collected. Beccari stated that it approached C. scabridulus Becc. of Malaya but that the inflorescence bracts are not scabrid; in leaf form Beccari thought it approached Malayan C. luridus Becc. but the infructescence is quite different. In leaf form C. sabensis approaches C. pratermissus of Sabah but certainly the infructescence does not match. Could it be a mixture? If it is a mixture, I have still to be able to name the infructescence, and it could yet be a distinct species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

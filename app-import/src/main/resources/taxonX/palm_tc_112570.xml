@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small or clustering undergrowth palms of rain forest in New Guinea andeastern Australia, with spicate inflorescences with the peduncular bractinserted far above the prophyll at the base of the flower-bearing part ofthe inflorescence; seed with ruminate endosperm.</p></div>
+<nomenclature>
+<name>Linospadix</name>
+<author>H. Wendl. in H. Wendl. and Drude</author> 
+<citation>Linnaea 39:177, 198 (1875).</citation>
+<type>Type; Linospadix monostachyos; (Mart.) H.Wendl.</type>
+<synonymy>
+<name>Bacularia</name>
+<author>F. Muell. ex Hook.f.</author>
+<bibref>F. Muell. ex Hook.f., Bot. Mag. 6644 (1882)</bibref>
+<type>Type; Bacularia monostachya; (Mart.) F.Muell.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Linon — flax or thread, spadix — branch or frond, but in botany, inflorescence,referring to the slender spicate inflorescence.</p></div>
+<div type="description"><p>Small to very small, solitary or clustered, unarmed, pleonanthic,monoecious palms. Stem erect, slender, eventually becoming bare, Distribution of Linospadixconspicuously ringed with leaf scars. Leaves bifid to pinnate, neatlyabscising or marcescent, a crownshaft not well developed; sheaths soon surfaces, transverse veinlets usually obscure. Inflorescences solitary,splitting opposite the petiole, bearing scattered scales, the margins often interfoliar, ± erect, protandrous, unbranched; peduncle winged at thebecoming fibrous, a tattering ligule sometimes present; petiole ± absent base; prophyll inserted near the base of the peduncle, tubular, 2-or very short to long, usually scaly; rachis very short to long; blade bifid keeled, ± included within the subtending leaf sheath, persistent,with acute, acuminate or lobed tips, or divided into 1–several fold becoming tattered and fibrous; peduncular bract 1, inserted in theleaflets, the leaflets regular or irregular, acute, acuminate, bifid or distal part of the peduncle or at its very tip, tubular, ± beaked, ±irregularly lobed and praemorse, often bearing minute scales on both enclosing the spike in bud, soon splitting longitudinally, deciduous; spike short to elongate, variously scaly, bearing dense to lax, spirally arranged, broad, ± triangular bracts forming the lower lips of very shallow floral pits, each bearing a triad except at the tip where bearing solitary or paired staminate flowers, the flowers exposed, not enclosed by the pit; floral bracteoles minute. Staminate flowers ± sessile, ± symmetrical, both of a triad apparently developing ± at the same time; sepals 3, distinct, broadly imbricate, ± keeled; petals 3, distinct, about twice as long as the sepals, with very thick valvate tips, internally marked with stamen impressions; stamens 6–12 erect, filaments very short, anthers dorsifixed, ± linear, apically acute, basally ± sagittate, latrorse; pistillode very small, minutely 3-pointed. Pollen ellipsoidal, slightly asymmetric to lozenge-shaped; aperture a distal sulcus; ectexine tectate, coarsely perforate, or coarsely perforate-rugulate, aperture margin slightly finer; infratectum columellate; longest axis 24–41 µm [3/9]. Pistillate flowers eventually much larger than the staminate; sepals 3, distinct, broadly imbricate; petals 3, distinct, slightly exceeding the sepals, with broad imbricate bases and conspicuous, thickened, triangular, valvate tips; staminodes 3–6, irregularly lobed and tooth-like; gynoecium unilocular, uniovulate, ± ovoid, with 3 short stigmas, becoming recurved, ovule laterally attached near the base, hemianatropous (?always). Fruit ellipsoidal to spindle-shaped, rarely curved, bright red (?always) at maturity, perianth whorls persistent, the stigmatic remains apical; epicarp smooth, mesocarp thin, fleshy, with thin fibres next to the endocarp, endocarp very thin, closely adhering to the seed. Seed subbasally attached, the raphe extending ca. 1/3 the seed length, or less, the branches free or anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Nine species, two species in New Guinea, the rest in Australia. </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b) and fruit (Essig 2002). </p></div>
+<div type="relationships"><p>Linospadix is strongly supported as monophyletic (Savolainen et al. 2006, Baker et al. in prep.) and also highly supported as sister to a moderately supported clade of Howea and Laccospadix (Savolainen et al. 2006, Norup et al. 2006, Baker et al. in prep.). An alternative, less robust phylogeny places Howea as sister to a clade of Laccospadix and Linospadix (Baker et al. in review). </p></div>
+<div type="uses"><p>Stems of Linospadix monostachyos have been used as walking sticks. The ‘cabbage’ is edible and the mesocarp, though thin, is pleasantly acid to taste. </p></div>
+<div type="taxonomic accounts"><p>Dowe and Ferrero (2001) and Dowe and Irvine (1997). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Linospadix is immediately distinguished from the smaller species of Calyptrocalyx by the insertion of the peduncular bract towards the apex of the peduncle just below the flower-bearing portion of the spike, and by the fact that the bract is caducous. </p></div>
+<div type="vernacular"><p>Walking stick palms. </p></div>
+<div type="biology_ecology"><p>Minute to small palms of the undergrowth of tropical rain forest, especially at higher elevations. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

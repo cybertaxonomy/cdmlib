@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia kahukuensis</name>
+<author>Caum</author>
+<citation>Occas. Pap. Bernice P. Bishop Mus. 9(5): 13. 1930</citation>
+<type>Pupukea-Malaekahana Trail, Kahuku, Oahu, Hawaii; Caum; 154</type>
+<type_loc>Holotype BISH!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 15(-25) m tall; proximal margins of petiole with few, coarse, tan, papery, fibers or ligules; leaf blade slightly undulate, divided 1/3-1/2, adaxial surface glossy green, abaxial surface completely but thinly covered with lepidia and appearing grayish, segment tips drooping; inflorescences composed of one panicle, erect and slightly shorter than leaf blades in flower, arching and about equaling or slightly exceeding leaf blades in fruit, panicle branched to 2(3) orders, rachillae permanently clothed with short, dense reddish brown hairs; fruits 15 x 11 mm, ellipsoid to ovoid. </p></div>
+<div type="distribution"><p>Wet forest at the northwestern end of the Koolau Mountains, Oahu, 500-550 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Long included as a synonym of Pritchordia l1lortii (Read &amp; Hodel 1999), this unusual species with large, tall trunks and full, heavy crowns of leaves occurs sparingly as widely scattered individuals on steep slopes and ridge tops at the very northwest end of the Koolau range on Oahu. It grows with or close to forms of P. martii with inflorescences greatly exceeding the leaf blades in fruit, which at I times in the past had been erroneously referred to P. kahukuensis. Pritchardia martii differs, however, in its leaf blades wilh stiff segment tips, generally hemispherical crowns of leaves, and, in this region, inflorescences greatly exceeding the leaf blades in fruit. With its full, spherical crown of leaves with drooping segment tips, Pritchardia kahukuensis is similar in habit to P. waialealeana, P. schattaueri and P. gordonii, all three of which differ in their leaf blades incompletely covered abaxially with lepidia. The paucity of collections of P. kahukuensis may be more apparent than real because characters for distinguishing it from P. martii are not readily apparent in the herbarium. Although Caum originally described the fruits of Pritchardia kahllkuensis as "15 mm long, 11 mm in diameter", and there are fruits of this size in the type collection, additional fruits in the type collection are much larger, to 45 x 35 mm. However, Leland Miyano and I visited the type locality and, while we were unable to find mature fruits on the tree, we observed rateaten, apparently full-sized fruits under several trees that were the size that Caum noted in his original description. The much larger fruits in the type collection were likely placed there in error and probably represent P. martii. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Oahu: Koolau Mts., Malaekahana opposite Kahuku, Brash s. n., 1 April 1962 (BlSH); Pupukea, Hodel 2017,2018 (BISH), Stone 2824 (BISH); Pupukea-Malaekahana Trail, Kahuku, Caum 154 (BISH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

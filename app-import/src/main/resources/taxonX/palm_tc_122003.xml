@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+		<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Masoala kona</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 425 (1995)</citation>
+<type>Madagascar, Ifanadiana: 3 hrs walk E of Tsaratanana, March 1991; Beentje and Andriampaniry; 4437</type>
+<type_loc>Holotypus K; isotypi BH, MO, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>A new species with a leaf resembling that of Marojejya insignis, but in the inflorescence clearly congeneric with Masoala madagascariensis, though it is much smaller than that species. The name derives from the local name for this plant.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kona, kogne (Tanala)</p></div>
+<div type="diagnosis"><p>A M. madagascariensi statura minore foliis irregulariter pinnatis segmentis proximalibus latis, inflorescentia paucis rachillis floribus pistillatis semper proximalibus et floribus staminatis semper distalibus differt.</p></div>
+<div type="description"><p>Solitary palm. TRUNK 1.2-9 m, the whole or in older trees the upper part with persistent leaf bases, c. 35 cm diam. when covered in old leaf bases, 13-20 cm diam. when bare; internodes 1-2 cm long, dark brown, nodal scars 1-2 cm high; wood hard. LEAVES spirally arranged, marcescent, 13-17 living ones in the crown, erect, plus 5-15 dead ones; sheath litter-accumulating, c. 28 x 24 cm, abaxially yellow-brown to red-brown with dense red-brown tomentum, adaxially yellow-brown; auricles and petiole absent, though an apparent petiole of up to 30 cm may be present; proximal part of leaf litter-accumulating; rachis 2.8-4.5 m long, proximally 3-4.6 x 1-3 cm diam. and channelled with a central ridge, in mid-leaf c. 1.5 cm wide and keeled, with scattered scales abaxially; leaflets 6-15 on each side of the rachis, the proximal large and multi-fold, 165-250 x 13-24 cm and attached to the rachis for up to 1.5 m, the more distal ones irregularly alternating between thin single-fold and wide multi-fold leaflets, 73-130 x 2.5-16 cm (interval 6-12 cm), distal pair 55-88 x 4-16 cm, connate for 8-18 cm, main veins 3-5 in single-fold leaflets, with scattered scales on minor veins, apices in distal pair long-dentate over 1.5-4 cm, in others acute. INFLORESCENCE interfoliar, erect, 0.7-1.2 m long, branching to 1 or 2 order(s), possibly occasionally multiple (personal observation under difficult circumstances, HB 4437), protogynous (HB 4525); peduncle 22-56 cm long, 2.2-3 x 1.3-2.2 cm diam., with dense red-brown scales; prophyll c. 32 cm long, c. 9 cm wide, with scattered scales; peduncular bracts 3 (always?) 20-62 cm long, 7-8 cm wide, with dense red-brown scales and a beak of up to 2 cm, the most proximal inserted only a few mm from the base of the peduncle and sub-woody; rachis 27-30 cm long, with 0-3 branched and c. 10 unbranched first order branches; rachillae dark brown, 22-60 cm long, with pistillate flowers occupying the proximal half  to two-thirds of its length and single or paired staminate flowers the distal part; the interface between the two sexes mixed, not sharp, and occasionally with some triads here; also most pistillate buds at an early stage appearing to be flanked by staminate buds which later abort. STAMINATE FLOWERS yellow, the sepals 4.5-5.5 x 2.8-3.8 mm, keeled, acute, with ragged edges; petals connate for 2-3.3 mm, free parts 5-6 x 3.2-4.6 mm, with fleshy and thickened proximal margins; stamens and pistil connate for the proximal 2-3 mm with the petals; stamens equal, the filaments 2.2-3 x 1.2-1.3 mm, fleshy with wider base, angular, anthers 3-3.7 x 1.2-1.4 mm, dorsifixed, latrorse, slightly versatile, the locules slightly divergent; pistillode 4.5-5 x 1.5-1.6 mm. PISTILLATE FLOWERS with 4 bracts, 2.8-6 x 3-6 mm; between innermost bracts and sepals there is a ring of up to 2 mm high, thin, ?glandular hairs; sepals 7-10 x 5.5-7.5 mm, not keeled; petals 11-18 x 6-14 mm, with laciniate margins; staminodes 6, connate for the proximal 0.1-0.3 mm, triangular and flat, 0.6-1 mm high; ovary 12-15 x 5-6 mm, trifid for c. 3 mm, the inner surfaces papillose. FRUIT only seen empty, ellipsoid, 25-40 x 12-14 mm, topped by the persistent style/stigma mass. EOPHYLL deeply bifid; scale leaves two.</p></div>
+<div type="distribution"><p>Ifanadiana area.</p></div>
+<div type="biology_ecology"><p>Mid-altitude low-canopy rain forest; steep to slight mid slopes or near ridge crests, on sandy/quartz soils; 450-550m.</p></div>
+<div type="conservation"><p>Endangered. The species is confined to a small area; populations are small, and the forest in this area is disappearing steadily, due to shifting cultivation.</p></div>
+<div type="uses"><p>A leaf of this taxon, when stuck in a bamboo pole is thought by some to ward off thunder-clouds.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Ifanadiana: 3 hrs walk E of Tsaratanana, March 1991 (bud), Beentje &amp; Andriampaniry 4437 (Holotype K; isotypes BH, MO, P, TAN); idem, Nov. 1991 (fl.), Beentje &amp; Andriampaniry 4524 (K, MO, TAN); idem, Nov. 1991 (fl.), Beentje &amp; Andriampaniry 4525 (K, MO, P, TAN); Ambinanindrano, Jan. 1993 (old infl.), Beentje &amp; Andriampaniry 4799 (K, MO, P, TAN); idem, Nov. 1994 (old infl.), Beentje &amp; Dransfield 4839 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,38 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus pilosellus</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 208 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 333 (1908)</bibref>
+<bibref>Dransfield, Ratt. Sabah 119 (1984) and Ratt. Sarawak 121 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Sparsely covered with ascending hairs</p></div>
+<div type="vernacular"><p>Wi Labu (Ib.)</p></div>
+<div type="description"><p>Slender clustering rattan with stems to 10 m tall; stem without sheaths to 6 mm diam., with sheaths to 15 mm diam., internodes to c. 15 cm long, usually much less. Sheaths dark green, smooth, with occasional grey scales and very few spines to 4 mm long; knee conspicuous; ocrea forming a low membranous ridge to 4 mm. Flagellum to 1.5 m. Leaf ecirrate to 60 cm including the petiole to 10 cm; petiole very sparsely armed; rachis covered with dense rusty-coloured hairs; leaflets c. 33-40 on each side of the rachis, regularly arranged, close, relatively short, the longest to 14 &#215; 1.25 cm, the upper surface usually with abundant very fine bristles, the margins usually ciliate, with hairs of adjacent leaflets interlocking, the lower surface usually minutely scabrid. Inflorescences to 80 cm, curving, with only short terminal flagellum and 5 strongly curved partial inflorescences, bearing curved rachillae; rachillae to 20 mm with conspicuous cups of bracteoles and rather distant flowers. Mature fruit rounded, covered in 15 vertical rows of orange-yellow scales; sarcotesta intensely bitter. Seedling not known.</p></div>
+<div type="distribution"><p>In Brunei known from three collections from Temburong. Elsewhere in Sabah, Sarawak and Kalimantan. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of good quality and may be used for binding.</p></div>
+<div type="discussion"><p>C. pilosellus occurs in kerangas forest and on ridge tops on poor soils. It is closely related to C. sarawakensis.</p></div>
+<div type="materials_examined"><p>TEM: Amo, Bukit Belalong, Stockdale 56; Bt. Patoi, Dransfield J. 6620; Bt. Patoi, Dransfield J. 6621.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

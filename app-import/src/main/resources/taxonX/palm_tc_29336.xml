@@ -1,0 +1,89 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus acanthospathus</name>
+<author>Griff.</author> 
+<citation>Calcutta J. Nat. Hist. 5: 39 (1844)</citation>
+<type>India, Khasia Hills; Griffith; 503</type>
+<type_loc>Holotype K</type_loc>
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 283 (1908)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 34 (2001)</bibref>
+<synonymy>
+<name>Calamus montanus</name>
+<author>T. Anderson</author>
+<bibref>T. Anderson, J. Linn. Soc., Bot. 9: 7 (1869)</bibref>
+<type>India, Sikkim; Anderson T; presumed, but no type nominated</type>
+</synonymy>
+<synonymy>
+<name>Calamus feanus</name>
+<author>Becc.</author>
+<bibref>Becc. in Hook., Fl. Brit. India 6: 448 (1892)</bibref>
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 286 (1908) and (Suppl.): 45 (1913)</bibref>
+<type>Myanmar, Tenasserim; Fea; s.n.</type>
+<type_loc>Holotype FI-B</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus feanus var. medogensis</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 2): 137 (1989)</bibref>
+<type>China, Tibet, Medog; Exped. Qinghai-Xizang; 74- 4275</type>
+<type_loc>Holotype PE</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus yunnanensis</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 134 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, and Fl. Reip. Pop. Sinicae 13 (1): 90 (1991)</bibref>
+<type>China, Yunnan; Chen, S. Y; 14325</type>
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus yunnanensis var. densiflorus</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 135 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, Fl. Reip. Pop. Sinicae 13 (1): 91 (1991)</bibref>
+<type>China, Yunnan; Tao, G. D. &amp; J. K. Tan; 14291</type>
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus yunnanensis var. intermedius</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 137 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, Fl. Reip. Pop. Sinicae 13 (1): 91 (1991)</bibref>
+<type>China, Yunnan; Mao; 03650</type>
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+</nomenclature>
+<div type="distribution"><p>India (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North).</p></div>
+<div type="materials_examined"><p>INDIA (NORTH-EAST): Sikkim, undated, (fr.), Hooker s.n. E72 (K); Khasia, undated, (pist.), Griffith 503 (K). BHUTAN: Sarbhang Distr., 2.5 km below Getchu on Chirang Road, 12 March 1982, (ster.), Grierson &amp; Long 3679 (K). MYANMAR: Tenasserim, Man Ngyan, undated, (fr.), Burkill 21007 (FI); Tenasserim, mountains W of Mooleyeh, Feb. 1887, (fr.), Fea s.n. (FI-B). CHINA (TIBET): Medog, Exped. Qinghai-Xizang 74 - 4275 (PE). (SOUTH-EAST YUNNAN): Pingbian, Maweichong, undated, (pist.), Mao 03650 (HITBC). (SOUTH YUNNAN): Mengla, Nagongshan, undated, Tao, G. D. &amp; Tan, J. K. 14291 (HITBC); Jinghong, Damanglong, undated, (pist.), Chen, S. Y 14325 (HITBC). THAILAND (NORTH): Doi Intanon, 1 May 1921, (fr.), Kerr, A. 5293 (K, BM, BK). LAOS (NORTH): Huaphanh Province, Viengthong Distr., Ban Sakok, Phou Loeuy Noy, 21 June 1999, (fr.), Oulathong OL 231 (FRCL, K).</p></div>
+<div type="biology_ecology"><p>Evergreen forest. In Laos at 1800 m, in Thailand at 1500 - 1700 m, in South Yunnan at 1600 m.</p></div>
+<div type="discussion"><p>Beccari (1908) confidently synonymised C. montanus under C. acanthospathus on the basis of the protologue and some detached fruits at K. They match well but that specimen has no nomenclatural standing. Anderson (1869) referred to several localities but did not nominate a type. Since his description includes most parts of the plant it seems inappropriate to elect the K fruits as a type. A better lectotype may perhaps be found in CAL. When Beccari (1908) named C. feanus he had seen only a single specimen of it. He was perhaps influenced in splitting the two forms by his belief that C. acanthospathus was non-climbing, an idea based on a stout, erect, flowering stem sent to him by Prain. We propose that the Prain specimen should be interpreted as a potentially climbing stem which had begun flowering unusually early. This is because there is now strong evidence that the species is usually climbing. For example, there are now several flagellate specimens from Sikkim, Khasia and Bhutan, Basu (1992) knew it as a high climbing plant and Anderson (1869) also described the probably synonymous C. montanus as a high climber. Apart from habit, the differences noted by Beccari were general size, sheath armature (C. feanus showing longer spines mixed amongst the tubercular prickles) and channelling of the fruit scales. There is clearly great variation in robustness within the Indian material, yet this variation is no greater than the authors have observed in many other species (e.g. C. viminalis, C. poilanei, C. palustris, C. nambariensis and C. wailong). Based on our observations of living plants we consider such individual variation to be commonplace among rattans due to their plastic responses to environmental variation. The sheath armature of the type of C. feanus does not differ substantially from the range of variation shown by the Indochinese and Indian material; in fact all have a mix of longer and shorter spines, the former often snapped off but leaving their much thicker bases. The predominantly unchannelled scales of Fea s.n. cannot be a diagnostic character because they are a normal feature of the immature fruit of C. acanthospathus (sensu lato); for example, the fruits of Fea s.n. are only about 16 mm long, whereas the (fully ripe) 22 - 23 mm long fruits of Burkill 21007, also from Tenasserim, are strongly channelled. We have examined extensive herbarium material of C. yunnanensis and observed fruiting plants at the type locality in company with Professor Chen Sanyang. We suggest that the three varieties are not unambiguously recognisable from one another and instead represent arbitrary divisions in a continuum between more and less robust individuals. There is no doubt about their identity with C. acanthospathus, a conclusion also reached by Wei (1986).</p></div>
+<div type="vernacular"><p>wai hom (Lao Loum), blong eur (Khamu), wai hawm (Thailand)</p></div>
+<div type="uses"><p>This species is highly valued for its excellent quality small-diameter cane throughout its range. There are small trial plantations in South Yunnan.</p></div>
+<div type="conservation"><p>Of moderate concern. In Indochina it apparently produces at most one or two additional stems and so probably regenerates poorly after harvesting, putting it at elevated risk even though it is widespread and occurs in high altitude forests, which are less threatened by agriculture and logging. It had declined severely due to harvesting in Sikkim over 100 years ago (Anderson 1869).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

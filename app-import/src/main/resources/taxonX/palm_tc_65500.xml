@@ -1,0 +1,50 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis oreophila</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 226 (1995)</citation>
+<type>Madagascar, Tsaratanana; Perrier; 16076</type>
+<type_loc>Lectotype P</type_loc>
+<synonymy>
+<name>Neodypsis gracilis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille 1, 1: 19 (1933)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 17 (1938)</bibref>
+</synonymy>
+<synonymy>
+<name>Phloga gracilis</name>
+<author>(Jum.) H.Perrier</author>
+<bibref>(Jum.) H.Perrier, Fl Madagascar 30: 126 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>Another clustering, montane species, with distinctive small inflorescences. The epithet oreophila means mountain-loving, a reference to the habitat. This is a very attractive species.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kindro, Lafaza (Antankarana); Fitsiriky (Sambirano Sakalava).</p></div>
+<div type="description"><p>Clustering palm, occasionally appearing solitary. TRUNK 2-8 m high; diam. 3-4 cm, stepped and ringed, with some of the bark corky (diseased?); internodes distally dark green, 1-3.5 cm, scars 0.2-1.2 cm wide, pale brown; crownshaft conspicuous, pale green with wax. LEAVES 6-8 in the crown; young leaves tinged pink; sheath pale brown, 18-55 cm long, with rounded shoulders, pale green or brown, waxy, distally with few to many reddish scales; petiole 2-50 cm long, proximally 0.5-1.5 x 0.3-0.9 cm, distally 0.5-0.9 x 0.4-0.5 cm diam., with many scattered reddish scales, proximally with a triangular adaxial extension to the sheath lining; rachis 0.5-1.5 m long, in mid-leaf 0.3-1.6 cm wide, slightly keeled, with many reddish scales or only with some white waxy scale remnants; leaflets 25-45 on each side of the rachis, in groups of 2-5 in mid-leaf, group interval 2.5-12 cm, fanned within the groups, the proximal 8-33 x 0.4-1.8 cm, median 14-46 x 1.1-2.7 cm (interval 0.3-2 cm), distal 5.5-30 x 0.3-2.6 cm, main vein 1, plus thickened margins, with scattered scales to glabrous, or with a few ramenta 3-5 mm long, apices bifid, unequally attenuate. INFLORESCENCE infrafoliar, recurved, branched to 1-2 orders; peduncle 6- 11.5 cm, proximally 9-10 x 4-5 mm diam., distally c. 5 x 5 mm, glabrous; prophyll 8-34 cm x 1.2-4 cm, borne at 2-4.5 cm above the base of the peduncle, split over most of its length, pale brown, waxy, with scattered scales to glabrous; peduncular bract inserted at 3.5-7 cm from the base of the peduncle, 10-24 cm long, splitting over its entire length except for the 1-5 cm long beak, sometimes deciduous, pale brown, waxy, with scattered scales or glabrous; non-tubular peduncular bract c. 4.5 cm long; rachis 1.5-9 cm long, glabrous, with 0-9 branched and 5-19 unbranched first order branches, the proximal of these with a rachis up to 2 cm long, 5-8 x 3-4 mm diam., with up to 4 rachillae; rachillae 3.5-14.5 cm, green to cream at anthesis, sinuous, 2-3 mm diam., with scattered reddish scales or glabrous, the triads spirally arranged, quite dense, slightly sunken; rachilla bract rounded or acute, 1.5-2 mm; flowers cream or reddish, without scent. STAMINATE FLOWERS with sepals 2.8-3 x 2.6-3.2 mm, broadly ovate, proximally gibbous, keeled, acute or obtuse, ciliolate; petals connate to a receptacle 1.8 mm high, free for 2.8-3 x 2.6-3 mm, triangular and acute; stamens 6, equal, the filaments connate at their base for 0.3-0.5 mm, 2.8- 3.3 x 0.8 x 0.3 mm, flattened with reddish specks, the anthers 1.7-2 x 0.8-0.9 mm, dorsifixed, versatile, the locules parallel and obtuse; pistillode conical-columnar, 2.4-2.8 mm high, 0.6-1.2 mm diam. PISTILLATE FLOWERS with sepals 1.8-3.5 x 2.3-3.8 mm, keeled, rounded, ciliolate;petals 2.8-4.5 x 2.6-4.6 mm, ciliolate; staminodes six, flat, elongate, 0.6-1.3 mm long; ovary c. 3.8 x 3.2 mm. FRUIT subglobose to slightly obovoid, rounded at base and apex, 5-11 x 3-8 mm; mesocarp 0.5 mm thick; endocarp fibrous, densely anastomosing. SEED ellipsoid, 6-7.5 x 3.5-7 mm, pointed at the base, rounded at the apex, with a slight subbasal depression, the surface with anastomosing channels; endosperm ruminate, the intrusions somewhat dense, irregular, 1.5-2.5 mm deep.</p></div>
+<div type="distribution"><p>Tsaratanana, Marojejy, high ground near Maroantsetra and Mandritsara.</p></div>
+<div type="biology_ecology"><p>Moist montane forest, on steep slopes; 500-1700 m. Said to be frequent in the forests of the Tsaratanana peaks, between 1000-1600 m (protologue).</p></div>
+<div type="conservation"><p>Vulnerable. The distribution area is limited. The fact that the palm-heart is highly esteemed bodes ill for the future. Numbers unknown.</p></div>
+<div type="uses"><p>Palm-heart edible, highly esteemed. The hollowed out stems are used for blowpipes.</p></div>
+<div type="discussion"><p>Close to D. tsaratananensis, but differs in the much shorter inflorescence rachis (6-9 rather than 24+ cm), fewer leaflets (25-45 on each side of the rachis,    rather than 55-60 on each side of the rachis, smaller leaflets (median 14-46, not 55-60 cm), fruit (5-11 x 3-8, not 12-15 x 9-11) and seed (6-8 x 3-7, not 13-14 x 9-11). Most of these characters are not very strong, except for the fruit and seed ones, which in our opinion are important. Maybe further collections will blur the distinctions.  It is rather unclear why this was included in Phloga in the Flora (Jumelle and Perrier, 1945). Staminate flowers were unknown, so the only reason must have been its size. Jumelle and Perrier (1945) included Phloga sambiranensis as a synonym, but this has a much longer inflorescence and we believe this is wrong.
+NOTE: the specific epithet was predated in Dypsis; Adelodypsis gracilis Becc from 1906 is a synonym of D pinnatifrons</p></div>
+<div type="materials_examined"><p>Ambanja/Ambilobe/Bealanana: Massif de Tsaratanana, Jan. 1923 (y.fr.), Perrier 15647 (P, syntype); idem, April 1924 (bud, fr.), Perrier 16076 (P, syntype). Andapa: Marojejy East Peak, NW of Mandena, Oct. 1988 (fl., y.fr.), Miller 3510 (P); idem, Feb. 1989 (fr.), Miller &amp; Lowry 3975 (K, MO); idem, Nov. 1989 (fl.), Dransfield et al. JD6756 (K, P, TAN); W slopes of Mt Beondroka, Oct. 1989 (fr.), Miller &amp; Randrianasolo 4378 (K). Maroantsetra: Mafaipoza, Oct. 1912 (fr.), Perrier 12055 (P). ?Mandritsara: between Andalimena and Mandritsara, Nov. 1922 (bud, y.fr.), Perrier 14980 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

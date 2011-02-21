@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small or moderate, solitary pinnate-leaved palms, native to Fiji and Samoa, all with crownshafts and praemorse leaflets, with long peduncles and generally with a 4–5-ridged seed.</p></div>
+<nomenclature>
+<name>Balaka</name>
+<author>Becc.</author> 
+<citation>Ann. Jard. Bot. Buitenzorg 2: 91 (1885).</citation>
+<type>Lectotype; Balaka perbrevis; (H. Wendl.) Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Derived from the Fijian vernacular name, balaka.</p></div>
+<div type="description"><p>Small to moderate, solitary, unarmed, pleonanthic, monoecious palms. Stem erect, slender, ringed with rather prominent leaf scars. Leaves pinnate, somewhat arched and spreading; sheath tubular, forming a prominent crownshaft, covered with brown scales; petiole very short to moderate, nearly terete or channelled adaxially, rounded abaxially, covered in tattered brown scales; rachis channelled to ridged adaxially, rounded abaxially, densely covered in tattered, brown scales; leaflets elongate to sigmoid or wedge-shaped and little tapered, alternate in one plane, single-fold, oblique or truncate apically, praemorse, with brown scales along ribs abaxially and scattered on bases of ribs adaxially, several veins about equal in size to midrib and marginal veins prominent, transverse veinlets not evident. Inflorescences infrafoliar, branched to 2 orders basally, 1 order distally, spreading; peduncle long; prophyll rather short and slender, 2-keeled laterally, slightly beaked, opening apically; peduncular bract inserted well above and much longer than the prophyll, terete, beaked, both bracts usually caducous before anthesis and bearing brown scales or tomentum; rachis shorter than the peduncle, bearing spirally arranged, pointed bracts subtending rachillae; rachillae rather short, bearing distichously arranged, low, rounded bracts subtending triads of flowers nearly throughout, a few solitary staminate flowers distally; floral bracteoles prominent, margins somewhat jagged. Staminate flowers symmetrical, bullet-shaped in bud; sepals 3, distinct, glabrous or red-brown tomentose, rounded, imbricate, margins toothed; petals 3, briefly united at the base, ovate, valvate, grooved adaxially; stamens numerous (24–50), filaments erect in bud, awl-shaped, anthers elongate, dorsifixed near the base, bifid apically, briefly sagittate basally, latrorse; pistillode bottle-shaped with a long neck, often ±flexuous apically at anthesis. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, perforate, or perforate-finely rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis ranging from 33–41 µm [5/11]. Pistillate flowers ovoid; sepals 3, distinct, imbricate, margins toothed; petals 3, distinct, widely imbricate, toothed laterally, pointed apically; staminodes usually 6, small, ± united, tooth-like with jagged tips; gynoecium ovoid, unilocular, uniovulate, stigmas apparently short, ovule pendulous, form unknown. Fruit irregularly ovoid, tapered distally or at both ends, often angled, ± beaked, reddish-orange at maturity, drying pebbled, stigmatic remains apical; epicarp thin, mesocarp with outer sclereid layer, inner fleshy layer, and a single series of vascular bundles with thick fibrous sheaths next to the endocarp, endocarp thin, not operculate. Seed elongate, pointed, ridged, 4–5-angled in cross-section, hilum elongate, lateral, raphe branches few, endosperm homogeneous, embryo basal. Germination and eophyll not recorded. Cytology not studied.</p></div>
+<div type="distribution"><p>About 11 species, six endemic to Fiji and five in Samoa.</p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b) and fruit (Essig 1977). </p></div>
+<div type="relationships"><p>Balaka is resolved as monophyletic with moderate support (Lewis et al. in prep.) and placed as sister to Solfia with high support (Norup et al. 2006, Baker et al. in review, Lewis et al. in prep.). One study, however, suggests that Solfia is nested within a paraphyletic Balaka (Baker et al. in prep.). </p></div>
+<div type="uses"><p>The straight stems have been used for walking sticks and spears, and the kernel is reported to be edible. Some species (e.g., Balaka seemannii) are widely grown as ornamentals in Fiji and elsewhere. </p></div>
+<div type="taxonomic accounts"><p>Moore (1979) and Whistler (1992). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Differing from Veitchia in having ridged seeds and often angled and tapered fruit, and from Ptychosperma in having a more elongate peduncle and a peduncular bract that is exserted well above and is much longer than the prophyll.</p></div>
+<div type="vernacular"><p>Balakwa (Fiji), balaka palms.</p></div>
+<div type="biology_ecology"><p>These palms occur in various types of forest up to about 1000 m altitude. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

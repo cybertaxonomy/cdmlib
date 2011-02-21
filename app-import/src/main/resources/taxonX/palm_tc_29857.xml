@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus pseudotenuis</name>
+<author>Becc.</author>
+<citation>Hook. f. R Brit. Ind. 6: 445. 1892</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11 : 223. 1908 and Appendix PI. 69. 1913.</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A slender to moderately robust climber; stem cluster forming with leafsheath 1.5 - 2.5 cm in diameter; exposed part of the stem smooth with internodes 20 - 35 cm or more long, 1 - 2 cm in diameter; leafsheath dull green in colour, armed with straight, subulate spines, 2 - 3 cm long, slightly bulbous at base; with deep brown scurf in between the spines; leafsheath flagellum to 3 m long; ocrea about 10 cm long, petiole up to 15 cm long in older leaves, armed with 3-4 cm long yellowish, straight spines; rachis armed on lower part with straight spines at or near the attachment of leaflets; dorsal part of rachis armed with strong claws; leaflets many, nearly regular, linear-lanceolate, attenuate at apical part; basal leaflets longest, to 45 cm long, 2 cm broad at middle with 3-distinctly bristly upper nerves. Male inflorescence flagelliform, highly branched; primary bracts tubular, armed with scattered, broad-based 5 - 9 mm long deflexed hooks; axial part of the inflorescence armed at intervals with paired, broad-based, 8 mm - 1 cm long spines; partial inflorescence twice or thrice branched; primary rachillae 12-15 cm long; secondary rachillaescorpioid bearing flowers in glomerules. Female inflorescence simply decompound; partial inflorescences attached at the mouth of the respective bracts, 90 cm -1.5 mm long with many slender, to 25 cm long rachillae on each side, attached at the mouth of the respective basal bracts. Fruits ovoid to sub-ovoid, abruptly conical and beaked, 10 mm x 7 mm, ascending from the rachilla; fruit scales straw yellow in colour with broad, very dark intermingled band, arranged in 18 longitudinal series without channelled at middle; fruiting perianth flattened.</p></div>
+<div type="distribution"><p>INDIA (Karnataka, Kerala, Tamil Nadu), SRI LANKA.</p></div>
+<div type="biology_ecology"><p>Grows in the moist hill forests of Western Ghats up to 1500 m.</p></div>
+<div type="cultivation"><p>Kerala and Karnataka forest departments have experimental cultivation of Calamus pseudotenuis. This species is also cultivated in the Indian Botanic Garden, Howrah.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The slender cane of this species is strong and used for making baskets etc.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,33 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemenorops wrightmyoensis</name>
+<author>Renuka and Vijayakumaran</author>
+<citation>Rheedea 4: 125, 1994</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering, large diameter rattan. Stem 20 m long or more, with sheaths 4.5 cm in diameter, without sheaths 3 cm in diameter. Leaf 3 m or more, cirrate; sheath yellow at the knee, armed with spines; spines dimor-phic.spines below the knee brown, to 4 x 0.5 cm, triangular, flat.base upraised, spines above the knee black, to 0.2 x 1 cm; knee prominent; ocrea not prominent, mouth of the sheath with few papery spines, spines to 6 cm long; petiole armed below and margins with a row of spines; leaflets regular, to 55 x 2 cm, white powdery beneath, midrib prominent, margins with bristles, lateral veins ciliate above except at the basal portion. Inflorescence erect; all inner bracts enclosed within the outermost; male inflorescence 60-80 cm long, ultra- decompound, male flowers 4 mm long; female inflorescence 30 cm long. Fruit oblong, cal x 1.5 cm; scales in 18 vertical rows, brown with dark brown tips, slightly channelled: endosperm ruminate.</p></div>
+<div type="distribution"><p>Evergreen forests at Wright myo.  South Andamans. (Map. 9).</p></div>
+<div type="biology_ecology"><p>Flowering not known. Fruiting April-June.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Used in furniture industry.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Wrightmyo, South Andamans, 5.4.1988, fr., Renuka 4055 (KFRI). Wrightmyo, South Andamans, 5.4.1988, male fls., Renuka 4057 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus subinermis</name>
+<author>H.Wendl. ex Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 212 (1902)</citation>
+<bibref>H. Wendland ex Beccari in Ann. Roy. Bot. Card. Calcutta 11: 459 (1908).</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Almost unarmed : the type specimen and some.extant populations have almost unarmed leaf sheaths, but most populations are conspicuously spiny</p></div>
+<div type="vernacular"><p>"rotan batu"</p></div>
+<div type="description"><p>Solitary or clustering robust rattan with stems climbing to 40 m or more; stem without sheaths 18-30 mm, with sheaths to 50 mm; internodes to 20 cm; stem surface smooth, yellowish, very even. Sheaths dull green with thin to abundant greyish indumentum, unarmed or very sparsely armed or densely armed with scattered horizontal fine black spines to 15 x 1 mm with pale swollen bases. Knee conspicuously unarmed. Ocrea forming a low ridge to 5 mm. Leaf cirrate, to 4 m including cirrus to 2 m, and petiole; petiole short in mature climbing stems, c 10 cm, longer in juveniles semicircular in cross section, the upper surface unarmed to densely armed with erect rigid black spines to 10 mm, the margins and mid line of lower surface also sometimes armed; leaflets c 25 on each side, regularly arranged &#177; pendulous when exposed, rather stiff, broadly lanceolate, the longest to 40 x 6.5 cm, rather conspicuously armed with black spines to 3 mm along the main veins on the upper surface and margins, especially near the tip, unarmed on the lower surface; transverse veinlets moderately conspicuous. Male and female inflorescences superficially similar, without terminal flagella, arching, to c 1 m with c 5 partial inflorescences, in the male branching to 2 orders, in the female to 1 order; male rachillae more crowded than in female, to 4Q x 1.5 mm, bearing distichous flowers; female rachillae to 120 x 3 mm, bearing rather distant flowers. Mature fruit rounded c 10 mm diam., tipped with a beak to 1x1 mm, and covered in 15 vertical rows of pale greenish to ivory scales with pale brown margins. Seed c 7x6x5, deeply pitted, the pits penetrating the endosperm, which is thus subruminate. Seedling leaf forked. (Fig. 43)</p></div>
+<div type="distribution"><p>Confined to offshore islands and dry coastal hills, except for a few records from swampy village margins near the coast; not recorded outside Sabah, but closely related if not conspecific rattans occur in Palawan and elsewhere in the Philippines. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The best large diameter rattan native to Sabah. Were the stems of greater diameter, this would rival "rotan manau" (Calamus manan). Certainly a species of great economic potential, and one which requires urgent silvicultural assessment. Present stocks are limited and their exploitation requires strict control.</p></div>
+<div type="discussion"><p>C. subinermis is a magnificent rattan; well-grown plants as found on Pulau Gaya present a beautiful spectacle. Although the leaf sheaths vary so much in armature, there should be little difficulty in distinguishing this species, as it is the only really large high-climbing rattan with regularly arranged broad leaflets borne on a cirrate leaf, with well-defined leaf sheath knees, to be found in Sabah. It is possible that the few plants recorded from swampy village margins near Penampang and Tuaran have been planted long ago. Much research is required before plantations of "rotan batu" can be set up - research especially into the clumping behaviour; casual observations suggest clumps rarely have more than one long aerial stem, and some individuals are in fact solitary. Nevertheless, this is such a good species and does have some clumping propensity, that it perhaps offers more silvicultural potential than "rotan manau"; it is also, of course, a Sabah native whereas "rotan manau" seed has to be imported from elsewhere.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

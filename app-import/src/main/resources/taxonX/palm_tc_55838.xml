@@ -1,0 +1,59 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops sepal</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1893) 465</citation>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 12 (1911) 77</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 36</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 91</bibref>
+<synonymy>
+<name>? Daemonorops scortechinii</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Card. Calcutta 12 (1911) 81</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 89</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops imbellis</name>
+<author>Becc.</author>
+<bibref>Becc. in Rec. Bot. Survey Ind. 2 (1902) 220</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 12 (1911) 80</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 41</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 69</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops kiahii</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 73</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops nurii</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 85</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Sepal - origin unknown</p></div>
+<div type="vernacular"><p>rotan getah gunung</p></div>
+<div type="description"><p>Clustering moderate rattan climbing to 10 m tall, often less, sometimes producing thickets. Stem without sheaths about 2 cm in diameter, with sheaths to about 3.5 cm. Inter-nodes about 20 cm long. Sheaths dull green very densely armed with dull brown spines to 3 cm long, these sometimes grouped, and very dense chocolate-coloured indumentum, the spines often paler than the indumentum. Knee well developed; ocrea inconspicuous. Whole leaf to about 2.5 m long; petiole to 30 cm long armed with scattered spines along edges. Leaflets close, regular rather narrow, about 80 on each side of the rachis the longest to about 35 cm long by 1.5 cm wide, armed with bristles on three nerves above, along margins, and on mid-nerve below. Inflorescences male and female very similar, sessile or with a short peduncle to 3 cm long, erect or sometimes nodding when fruiting, to 30 cm long by 10 cm wide, with a relatively short beak to 10 cm, all inner bracts enclosed within the outermost; outermost bract very densely armed with slender black spines to 3.5 cm and dense chocolate-coloured indumentum. Ripe fruit rounded relatively large to about 3 cm in diameter covered in 15-18 vertical rows of bright green, turning rich brown, pale margined scales. Seed to 2.5 cm in diameter somewhat angular. Endosperm deeply ruminate. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Perak, Pahang, Trengganu, Kelantan, Selangor: Endemic. Closely related to D. singalana of Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Coarse rattan rarely used.</p></div>
+<div type="discussion"><p>Daemonorops sepal is a common rattan of ridgetops and steep slopes in lower and upper montane forest. It can occasionally produce dense thickets. It is distinguished from D. angustifolia and D. melanochaetes by its very much denser covering of spines, the generally much larger fruit, and the often pedunculate inflorescence. It may be regarded as a montane replacement to these two species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

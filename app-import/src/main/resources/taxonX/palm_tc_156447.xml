@@ -1,0 +1,54 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga lepidota</name>
+<author>Rendle</author>
+<citation>Journ. Bot. 39: 177 (1901)</citation>
+<bibref>Merrill in Bibl. Enum. Born. Pl. 85 (1921)</bibref>
+<type>Borneo, Baram; Hose; 702</type>
+<type_loc>Holotype BM</type_loc>
+<synonymy>
+<name>Pinanga baramensis</name>
+<author>Furtado</author>
+<bibref>Furtado in Feddes Repert. 35: 277 (1934)</bibref>
+<type>Borneo, Baram, Sept. 1907; Hewitt;</type>
+<type_loc>Holotype K</type_loc>
+</synonymy>
+<synonymy>
+<name>Pinanga barramensis</name>
+<author>Becc. ex Martelli</author>
+<bibref>Becc. ex Martelli in Atti Soc. Tosc. Sci. Nat. Res. Pisa Mem. 44: 124 (1934)</bibref>
+<type>Borneo, Baram; Foxworthy; 511</type>
+<type_loc>Lectotype FI</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pinanga lepidota was based by Rendle on a specimen collected by Charles Hose on the Baram, 4th Division, Sarawak, in April 1895. One sheet in Kew of Pinanga collected by Hose on the Baram on 17 April 1895, but without number, is identical to the type of P. lepidota except in the dissection of the leaf; the type has a lamina with a large entire terminal portion and two small basal leaflets while that of the Kew specimen has 3 subequal leaflets on each side of the rachis. I believe this second sheet represents a variant of P. lepidota as it differs only in leaf dissection, usually a very variable character in the genus. As in the previous species, Martelli and Furtado published almost simul- taneously. In Martelli's paper (1934) Pinanga barramensis was based on a collection from the Baram in Sarawak, probably 'Foxworthy 511, Baram, May-June 1908' in Florence. In Kew, there is another specimen, annotated by Beccari, Pinanga barramensis, with no collector's name, but further annotated 'Baram, Sept. 07' almost certainly collected by Hewitt. A second collection in Kew, also collected by Hewitt on the Baram in Sept. 1907, is the holotype of Pinanga baramensis Furtado, published in 1934 just before Beccari's P. barramensis (cf. notes under P. ridleyana). All these specimens differ from P. lepidota only in variations of leaf dissection. Recent collections from other northern parts of Borneo display a range of leaf form from entire through to dissected into 3-4 leaflets on each side of the rachis. I therefore have no doubt that P. baramensis and P. barramensis must be included in synonymy under P. lepidota.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ravenea xerophila</name>
+<author>Jum.</author>
+<citation>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 5, 1 (1): 28 (1933)</citation>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 25 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 176 (1945)</bibref>
+<bibref>Beentje, Kew Bull. 49: 659 (1994)</bibref>
+<type>Madagascar, between Menarandra (Tranasoa) and Manambovo (Ankoba) Rivers; Perrier; 18653</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p>One of the rarest Ravenea species. This would probably be an excellent species for cultivation, as it grows in very dry sites, and is an extraordinarily beautiful palm. The Latin name means "dry-loving".</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Ahaza, Anivo (Mahafaly); Anivona (Antandroy).</p></div>
+<div type="description"><p>Solitary medium-sized palm. TRUNK 1.5-8 m, 13-30 cm diam., widened at the very base; distal half of trunk (or in smaller trees the entire trunk) covered in densely packed sheath remnants; near crown c. 10 cm diam.; bark brown; internodes 2.5-8 cm; nodal scars 0.5-1 cm, occasionally with tattered sheath remnants appearing as threads; wood hard; trunk sometimes producing a yellow latex-like substance when slashed. LEAVES (11-) 18-22 per crown, glaucous, gracefully arching, with stiff segments, the old leaves marcescent; sheath 36-55 x 13-20 cm, white- to dark brown tomentose, the tomentum quickly deciduous, the distal part waxy-white; petiole 22-60 cm long, proximally 2.8-6 x 2.0-3.5 cm, distally 1.4-3.0 x 1.4-2 cm, slightly channelled adaxially, with rather sharp edges, proximally red-brown tomentose, distally glabrous and yellow or with whitish bloom when dry, abaxially strongly convex; rachis 1-2.1 m long, in mid-leaf 0.9-2 x 0.8-1.6 cm, pale green with white bloom; leaflets pale green, stiff, coriaceous, the leaflets on opposite sides of the rachis at an angle of 90&#176; with each other,     slightly glaucous, acuminate, 47-55 on each side of the rachis, regular, coriaceous, glaucous, the proximal ones 33-110 x 0.3-1.5 cm, median 43-64 (94) x 1.3-2.4 cm (interval 3.5-4 cm), distal 11-44 x 0.3-1.3 cm, secondary veins very visible, tertiary veins indistinct, ramenta red-brown or grey, elongate, 1-2 (-3) near the base of lower leaflets, to large patches of dense ramenta in the proximal third of the midrib, upper 12 pairs without ramenta. STAMINATE INFLORESCENCE solitary, 55-58 cm, branched to 1 order; peduncle 15-19 (or more) cm, distally 5 x 3 mm across; prophyll not seen; peduncular bracts seen 31 cm, 41-62 cm, 44-62 cm; rachis 29-40 cm, with c. 100 branches; rachillae 1.5-7.5 cm, 0.6-1 mm across; pedicels c. 0.2 mm long, 0.7 mm across, with a 1-1.3 mm bracteole. STAMINATE FLOWERS with the calyx connate for 0.3 mm, free lobes 1.9 x 0.3 mm; petals 6-7 x 2.4-2.5 mm, connate by the fila-mental callus of the antesepalous stamens; stamens in 2 series, the antesepalous ones with a filamentous callus 0.6 x 0.4 mm, anthers 2 0.9 mm; antepetalous ones adnate to the petals for c. 1.1 mm, with no free filament, anthers 1.9-2 x 0.9 mm. PISTILLATE INFLORESCENCE solitary, 60-80 (or more) cm, branched to 1 order; peduncle 36-40 cm, proximally 8-13 mm across, 6-13 x 3-9 mm across distally, usually with whitish bloom, occasionally puberulous, glabrescent; prophyll not seen; peduncular bracts white to brown- pubescent, (in bud 15, 21, 20-32 x 1 cm, 31-40 x 1 cm), densely white-tomentose, more brown distally, the most distal one inserted at 21 cm from the base of the peduncle; rachis 20-35 cm long; rachillae porrect, 22-41 in number, 5-33 cm long, 1-2.2 mm across, with slightly bulbous base, proximally 4-7 x 2-5 mm, sinuous, more distally zigzag, with spaced flowers; pedicels 0.5-8 mm long. PISTILLATE FLOWERS with the calyx connate for 0.9-1.2 mm, with free lobes 1-1.3 mm; petals 4-6 x 1.5 mm, narrowly triangular, acute; staminodes 1.7 mm; ovary broadly ovoid to conical, 2 mm. FRUIT 15-22 x 17-27 mm, yellowish, 1-, 2- or 3-seeded, 20-26 mm across in 1seeded fruit, lobed in the more-seeded ones and then 22-23 x 22-34 mm; stigmatic remains subapical to lateral; endocarp slightly sclerified, loose and rather thin. SEED 16-18 x 12-18 mm, globose, hemispherical or in the shape of a third of a sphere, yellow-brown, with white endosperm with small central lacuna.</p></div>
+<div type="distribution"><p>S Madagascar, between Ampanihy and the Ampingaratra Mts.</p></div>
+<div type="biology_ecology"><p>Dry spiny Didiereaceae/Euphorbia bush or dry low forest (Humbert), on laterite or gneiss; 200-700 m. May grow in groups.</p></div>
+<div type="conservation"><p>Endangered. 65 trees with trunks seen, and some 80 seedlings in the two populations known in recent times. The Tranoroa site is being destroyed by overgrazing.</p></div>
+<div type="uses"><p>Leaves used to weave winnowing baskets and hats.</p></div>
+<div type="discussion"><p>The Humbert collections are from a different habitat than the other collections (i.e. dry forest) and, in some instances, have larger leaflets, longer rachillae and smaller fruits. The protologue mentions an epi- phytic orchid found associated with this palm; HB believes the same orchid grows in the population he visited, where it seemed restricted to the leaf sheaths of this palm. It is probably a species of Cymbidiella  (D. Du Puy, pers. comm.)</p></div>
+<div type="materials_examined"><p>Beloha?: between Menandra R. and Manambara R., June 1932 (pist.), Perrier 18653 (Holotype P). Amboasary Atsimo: Mandrare valley, Anadabolava, Dec. 1933 (fr.), Humbert 12491 (P); Mananara basin, W slopes of mountains between Andohahela and Elakelaka R., between Ampahiso and Mahamaro, early 1934 (fr.), Humbert 13698 (P, TAN); Manambolo valley, near Isomono, Dec. 1933 (fr.), Humbert 13017 (P). Ampanihy: 3 km W of Saboko near Tsimilofo, March 1988 (ster.), Willing 64 (K, MO); idem, Jan. 1990 (ster.), B. &amp; D. Du Puy MB 575 (K, MO, P, TAN); idem, Feb. 1992 (ster.), Beentje 4590 (K, MO, TAN). Ambovombe: Andalatanosy, Dec. 1992 (dead stam.), Beentje &amp; Andriampaniry 4751 (K, MO, P, TAN), (stam.) Beentje &amp; Andriampaniry 4753 (K, TAN), (fr.) Beentje &amp; Andriampaniry 4754 (K, TAN); 17 km N of Antanimora, March 1992 (dry fr.), Phillipson 3991 (TAN). Without locality, 1986 (seed only), Razafindratsira s.n. (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

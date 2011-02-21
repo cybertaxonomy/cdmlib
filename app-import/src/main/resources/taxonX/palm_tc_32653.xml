@@ -1,0 +1,57 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small to moderate, solitary or clustering undergrowth palms of rain forest in the Moluccas and New Guinea, with spicate inflorescences with the peduncular bract inserted just above the prophyll at the base of the peduncle.</p></div>
+<nomenclature>
+<name>Calyptrocalyx</name>
+<author>Blume</author>
+<citation>Bull. Sci. Phys. Nat. Néerl. 1: 66 (1838).</citation>
+<type>Type; Calyptrocalyx spicatus; (Lam.) Blume</type>
+<synonymy>
+<name>Linospadix</name>
+<author>Becc. ex Hook.f. in Benth. and Hook.f.</author>
+<bibref>Becc. ex Hook.f. in Benth. and Hook.f., Gen. pl. 3: 903 (1883) (non H. Wendl. 1875).</bibref>
+<type>Lectotype; Linospadix arfakianus; Becc.</type>
+</synonymy>
+<synonymy>
+<name>Paralinospadix</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 12: 331 (1935).</bibref>
+<type>Lectotype; Paralinospadix arfakianus; (Becc.) Burret</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Calyptra — a veil, calyx — outer perianth of flower, in reference to the way the outermost sepal covers the rest of the flower in bud.</p></div>
+<div type="description"><p>Solitary or more often clustering, small to moderate, unarmed, pleonanthic, monoecious palms. Stem erect, usually becoming bare, conspicuously ringed with leaf scars. Leaves undivided with bifid apices and pinnately ribbed, or pinnate, marcescent or neatly abscising, a crownshaft scarcely developed; sheaths soon splitting opposite the petiole, scaly or not, the margins usually fibrous; petiole absent, short or long, adaxially channelled, abaxially rounded; lamina bifid with acute or lobed tips, or leaflets 1–several ribbed, acute, acuminate or sometimes toothed, concolorous, variously scaly or glabrous. Inflorescences solitary or multiple, interfoliar, protandrous, spicate; peduncle winged at the base, erect or pendulous, elongate; prophyll inserted at the very base, ± included within the sheaths, common to all axes where inflorescences multiple, tubular, flattened, ± 2-winged, tending to disintegrate into fibres apically; peduncular bract inserted near the peduncle base, tubular, open apically, shorter than the spike and not enclosing it, persistent or rotting on the inflorescence; spike short to elongate bearing a dense spiral of low, rounded bracts forming the lower lips of usually deep floral pits, each enclosing a triad except at the apex where enclosing paired or solitary staminate flowers, flowers exserted one at a time; floral bracteoles small, included. Staminate flowers sessile or briefly pedicellate; sepals 3, distinct, imbricate, often keeled; petals 3, distinct, about twice as long as the sepals, valvate, marked within by stamen impressions; stamens 6–140, filaments elongate, linear, erect or usually inflexed at the apex in bud, distinct or, in Calyptrocalyx doxanthus, united for 3/4 their length to form a staminal tube, anthers dorsifixed, erect or versatile, mostly deeply sagittate basally, latrorse; pistillode sometimes lacking or slender and ± club-shaped, about as long as stamens. Pollen ellipsoidal, asymmetric to pyriform; aperture a distal sulcus; ectexine tectate, perforate, or perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 36–61 µm [4/27]. Pistillate flowers ± globular; sepals 3, distinct, imbricate; petals 3, distinct, exceeding the sepals, broadly imbricate except at the minutely valvate tips; staminodes (2–)3–9; gynoecium unilocular, uniovulate, ellipsoidal with apical button-like or trifid stigma, ovule hemianatropous, attached laterally above the middle of the locule. Fruit small to large, orange, bright red, pink or purplish black at maturity, perianth whorls persistent, stigmatic remains apical or slightly eccentric; epicarp smooth, fragile, glabrous or rarely pilose or with scattered scales, mesocarp fleshy or dry, white or pink, endocarp thin, closely adhering to or separating from the seed. Seed subbasally to laterally attached, hilum short to elongate, raphe branches anastomosing, endosperm homogeneous or ruminate; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>About 27 species, one widespread in the Moluccas, the remainder in New Guinea. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a, 1998b), and fruit (Essig 2002). </p></div>
+<div type="relationships"><p>Calyptrocalyx is strongly supported as monophyletic (Savolainen et al. 2006, Baker et al. in prep.). See earlier discussion under subtribe Linospadicinae. The relationships between Calyptrocalyx and genera from outside subtribe Linospadicinae are never strongly supported. The most robust of these places Calyptrocalyx as sister to subtribe Archontophoenicinae with moderate support (Baker et al. in prep.). </p></div>
+<div type="uses"><p>Not recorded. </p></div>
+<div type="taxonomic accounts"><p>Dowe and Ferrero (2001). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>The structure of the inflorescence and the insertion of major bracts are constant features that bind together a series of species that exhibit marked differences in habit, foliage and to some degree habitat. </p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="biology_ecology"><p>Undergrowth palms of primary rain forest occurring at elevations from sea level to ca. 1000 m in mountains, usually on montane slopes with well-drained soils, more rarely along streams or sometimes gregarious in swampy or poorly drained areas. </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

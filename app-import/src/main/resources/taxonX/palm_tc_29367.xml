@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus bacularis</name>
+<author>Becc.</author>
+<citation>Nelle Foreste di Borneo 609 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11:288(1908).</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>From baculum, a walking stick</p></div>
+<div type="vernacular"><p>witulang (Ib.)</p></div>
+<div type="description"><p>Solitary short-stemmed erect or stemless rattan, rarely more than 2 m tall; stem without sheaths 15 - 30 mm diam., with sheaths 30 - 50 mm diam., internodes very short. Sheaths pale green, sparsely to densely armed with short to long brown spines 1-5 cm long, those bordering the sheath mouth much larger and more crowded and tending to point upwards, the longest to 10 cm long, gradually intergrading with the petiole spines; knee absent', ocrea absent. Flagellum absent. Leaf ecirrate, to 3 m long including the petiole to 1 m; petiole armed with regularly spaced, rather distant large spines 4-10 cm long, in 3 rows, 2 lateral, 1 along mid line on the lower surface, spines decreasing in size towards the tip; leaflets up to c. 50 on each side of the rachis, regularly arranged, linear to linear-lanceolate, the longest to 35 x 3 cm, armed with spinules on both surfaces, apical leaflets rather small, rather strongly divergent, transverse veinlets not very conspicuous. Inflorescences usually shorter than the leaves, erect at first, becoming pendulous, to c. 1 m long, with up to 7 partial inflorescences, usually fewer especially in the female, prophyll tubular, somewhat inflated, armed with papery spines especially along the margins and at the tip, other primary bracts tending to split and somewhat expanding, &#177; unarmed except for groups of papery spines near the tip', partial inflorescences rather lax, to 20 cm long; male rachillae usually very short, c. 3 - 4 mm long, borne on branches to 80 mm long; female rachillae c. 70 mm long. Mature fruit rounded, c. 6 mm diam., strongly beaked, covered in c. 15 vertical rows of reddish-brown scales. Seed rounded; endosperm homogeneous. Seedling leaf not known (Fig. 65).</p></div>
+<div type="distribution"><p>A local palm of the 1st Division. Not known elsewhere. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The stem makes a good walking-stick.</p></div>
+<div type="discussion"><p>C. bacularis is a plant of hill slopes and ridge tops in dipterocarp forest at altitudes up to about 600 m. It may be distinguished from other wi tulang by "the numerous narrow leaflets, the lax inflorescence and the rather sparsely armed sheaths. The leaflets usually dry a distinctive reddish-brown. In kerangas at Semariang grows a rattan intermediate between C. bacularis and C. myriacanthus combining the leaflet form of the former with the sheath armature of the latter. It could be a hybrid.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

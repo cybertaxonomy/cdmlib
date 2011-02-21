@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia perlmanii</name>
+<author>Gemmill</author>
+<citation>Novon 8: 18. 1998</citation>
+<type>Waioli Valley, Kauai, Hawaii; Wood; 1545</type>
+<type_loc>Holotype PTBG!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 5 m tall; proximal margins of petiole sparsely to moderately fibrous; leaf blade nearly flat, divided 2/5-1/2, abaxial surface completely covered with lepidia or nearly so, appearing silvery grayish white, segment tips stiff or slightly drooping; inflorescences composed of 1 panicle, shorter than or equaling petioles in flower, equaling petioles to equaling leaf blades in fruit, panicle branched to 2 orders, rachillae glabrous; fruits 19-40 x 12-21 mm, obovoid.</p></div>
+<div type="distribution"><p>Wet forest on the northeastern slope of the Waialeale massif and the Makaleha Mountains, Kauai, 600-800 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia perlmanii is distinguished by its flat leaf blades completely covered abaxially with lepidia, glabrous rachillae, and small fruits. I interpret P. perlmanii more broadly than did Lorence and Gemmill (2004). I refer collections from the Power Line Trail and the Makaleha Mountains to P. perlmanii while they referred these to P. flynnii, which differs in its undulate leaf blades and rachillae clothed with felt-like indumentum. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Kauai: Lumahai Valley, Perlman 16270, 16271, 16272, 16343 (PTBG), Wood 7331,7343 (PTBG); Power Line Trail, Chapin 76 (PTBG); Wainiha, Christensen 289 (BISH, PTBG), Wood 2347 (PTBG); Hanalei River headwaters, Wood 2448 (PTBG); Makaleha Mountains, Lorence 7413, 7424, 8380, 8383 (PTBG), Perlman 16260 (PTBG), Wood 2501,2675,7304,7306 (PTBG); Wainiha Valley, Taylor 1 (PTBG); upper Waioli Valley, Perlman 12935 (PTBG); Wood 1545 (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

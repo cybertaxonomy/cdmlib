@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Calamus longipinna (Arecaceae: Calamoideae) and its relatives in New Guinea</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bull. 57: 853-866</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus vestitus</name>
+<author>Becc.</author>
+<citation>Malesia 3: 59 (1886)</citation>
+<type>Indonesia, Papua, Manokwari, Andai; Beccari; P.P.771</type>
+<type_loc>Holotype FI!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Ensyake (Nuni), Keboe (Nimboran), Kumisi (Yamur), Mafoni ngekobra (region of Wariori and Waramoi Rivers).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>North-west to north central New Guinea</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p>Primary and secondary lowland forest, often on alluvium near rivers, 10 - 600 m</p></div>
+<div type="conservation"><p>Least concern. Calamus vestitus is widespread and occurs in both primary and disturbed forest.</p></div>
+<div type="uses"><p>General use as cordage, for tying roofs, cane split for use as bush nails.</p></div>
+<div type="discussion"><p>Well known from the vicinity of Manokwari, this distinctive species is widespread from north-west to north central New Guinea with records from Sorong, Nabire and Jayapura, reaching its easterly limit in Sandaun Province of Papua New Guinea (Map 1). Beccari (1908) suggests that a specimen collected by D'Albertis on the Fly River consisting of a leaf apex and some fruit may be referred to C. vestitus. Although we have not yet seen this specimen, it seems more likely that it is attributable to C. reticulatus Burret which shares many leaf and reproductive features with C. vestitus. It is difficult to distinguish the two species in the absence of material bearing an ocrea (see below). As stated above, this species is most easily confused with C. longipinna, but can be recognised on account of distinctive ocrea and leaf sheath spine morphology. The ocrea of C. vestitus is not split congenitally as in C. longipinna and C. wanggaii, but is tubular. Although it is papery in texture, the ocrea tends to separate into fibres, allowing it to stretch and expand a little. It is also rather fragile, disintegrating readily, and is unarmed, except in rare instances where very few, minute spines are present. The numerous leaf sheath spines are planar with parallel sides and jagged apices, and are of various sizes. Unarmed leaf sheaths are not known in this species. The seed is striking, with angular grooves and ridges on one side and a shallow, open pit on the other. The seed of C. longipinna, though ornamented, is more rounded with smooth ridges and a deep, narrow pit on one side.</p></div>
+<div type="materials_examined"><p>Papua. Fak Fak Regency: Etna Subdistr., Yamur, km 27 P.T. Kaltim Hutama Logging Road, Jan. 2001, Maturbongs et al. 662 (BO, K!, MAN); Etna Subdistr., Yamur, Jepre R., km 45 P.T. Kaltim Hutama Logging Road, Feb. 2001, Maturbongs et al. 672 (BO, K!, MAN). Manokwari Regency: Andai, Beccari P.P. 771 (FI); Nuni, Sungai Asai, Aug. 1995, Dransfield et al. JD 7587 (BO!, FTG!, K!, MAN!); Andai R., 2 km upstream near Manokwari, Aug. 1957, Faber BW 2299 (L!); Wariori river flood plain, April 1994, Johns et al. 8233 (BO, K!, MAN); Kebar Valley, between Anjai 1 and Akmuni, May 1994, Johns et al. 8328 (BO, K!, MAN); mouth of Prafi R., Warbefor, Jan. 1996, Maturbongs 294 (K!, MAN); main road Manokwari- Sorong, between Wariori R. and Waramoi R., April 1994, Mogea 6256 (BO, K!, MAN), Mogea 6358 (BO, K!, MAN, NY); Arfak Plains, settlement unit seven, April 1994 Mogea 6247 (BO, K!, L, MAN, NY); Kebar, trail from Kampong Akai to hot springs, May 1994, Sands et al. 6616 (A, BH, BO, FTG, K!, L, MAN); Prafi, May 1958, Sijde BW 5574 (L!), Sijde BW 5575 (L!). Jayapura Regency: Nemo, Aug. 1955, Rappard BW 876 (L!), April 1957, Runteboy BW 3349 (L!). Nabire: Napan, Makimi, Sungai Musairo, May 1985, Mogea 5561 (BO, K!). Sorong Regency: Warsamsom R., 25 km E of Sorong, Sept. 1957, Schram BW 5988 (L!). PAPUA NEW GUINEA. Sandaun Province: Ossima, March 1964, Sayers NGF 13254, (BRI, L!, LAE).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

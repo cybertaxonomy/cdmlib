@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops grandis</name>
+<author>(Griff.) Mart.</author>
+<citation>Hist. Nat. Palm 3 (18SO) 327</citation>
+<bibref>Beccari in Hook, f., Fl. Br. India 6 (1893) 463</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcultta 12 (1911) 58</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 38</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 65</bibref>
+<synonymy>
+<name>Daemonorops intermedia</name>
+<author>(Griff.) Mart</author>
+<bibref>(Griff.) Mart Hist. Nat. Palm 3 (1850) 327</bibref>
+<bibref>Beccari in Hook, f., Fl. Br. India 6 (1893) 464</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 12 (1911) 173</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 69</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops laciniata</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 75</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Grandis - large</p></div>
+<div type="vernacular"><p>rotan sendang</p></div>
+<div type="description"><p>Clustering robust rattan climbing to 20 m tall. Stem without sheaths to about 3 cm in diameter, with sheaths to about 5 cm, occasionally very much thinner; internodes to about 25 cm long. Sheaths pale green to pale brownish armed with scattered or partially whorled blackish spines to 5 cm long, usually less, and scattered dark brown indumentum. Knee conspicuous; ocrea poorly developed. Whole leaf to 3.5 m long, occasionally even more; petiole to 40 cm armed with short grouped spines along the edges; rachis and petiole tinged crimson when young; cirrus to 1.75 m. Leaflets about 30 cm each side of the rachis, rather distant, broad dull bluish green, not shining, when young, very dark green when old, the longest to 50 cm long by 4.5 cm wide, very sparsely bristly or unarmed. Inflorescences male and female very similar, sessile &#177; erect, to 40 cm long by 15 cm wide, terminating in a beak to 15 cm long, all inner bracts enclosed in the outermost; outermost bract rather densely armed with black spines scattered and grouped, and dense chocolate-coloured indumentum. Ripe fruit rounded to 2.5 cm in diameter, shortly beaked, covered in 14-16 vertical rows of pale yellowish brown scales with dark margins (greenish when immature). Seed rounded or somewhat angular, to about 2 cm in diameter, deeply ruminate. Seedling leaf with about 6 broad pinnae, dull, bluish green in colour.</p></div>
+<div type="distribution"><p>Perak, Pahang, Selangor, Negri Sembilan, Malacca, Singapore: Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Poor quality cane sometimes collected for coarse work.</p></div>
+<div type="discussion"><p>"Rotan sendang" is a plant of dryland - generally of steep slopes in the foothills to about 900 m altitude. At higher altitudes populations often consist of a plethora of forms of different sizes varying from very slender (about 1.5 cm in diameter) to very robust; yet the range of intermediates allows the extremes to be identified as D. grandis.
+
+ This rattan is easily distinguished in the field by its broad leaflets with bluish green colour, and the crimson tinge to the young petiole and rachis. In the herbarium, identification is more difficult, but leaflet size is &#177; diagnostic.
+
+ I have included in D. grandis, D. laciniata and D. intermedia: though both these taxa have narrower leaflets than typical D. grandis their leaflets are still broad and of the same texture as those of the typical plant.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

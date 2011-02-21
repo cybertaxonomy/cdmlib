@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>The Chilean Wine palm, native to Central Chile, and one of the most massive of all palms; the peduncular bract is smooth and there are 18 stamens in the staminate flowers.</p></div>
+<nomenclature>
+<name>Jubaea</name>
+<author>Kunth in Humb., Bonpl. and Kunth</author>
+<citation>Nova gen. et sp. 1: quarto edition 308; olio edition 247 (1816) (‘1815’).</citation>
+<type>Type; Jubaea  spectabilis; Kunth</type>
+<synonymy>
+<name>Molinaea</name>
+<author>Bertero</author>
+<bibref>Bertero, Mercurio Chileno 13: 606 (1829), (non Comm. ex Juss. 1789).</bibref>
+<type>Type; Molinaea micrococos; Bertero</type>
+</synonymy>
+<synonymy>
+<name>Micrococos</name>
+<author>Phil.</author>
+<bibref>Phil., Bot. Zeit. 17: 362 (1859).</bibref>
+<type>Type; Micrococos chilensis; (Molina) Phil.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Honours Juba II (ca. 50 BC–24 AD), king of Numidia 29–25 BC.</p></div>
+<div type="description"><p>Massive, solitary, unarmed, pleonanthic, monoecious palm. Stem erect, very stocky, eventually bare and marked with close, oblique leaf scars and vertical cracking. Leaves pinnate, many in the crown, neatly abscising in mature-trunked individuals; sheaths soon disintegrating into fibres and eventually becoming open; petiole short to long, sometimes hardly distinguishable from the sheath, edged with disintegrated leaf sheath fibres except near the tip where almost smooth, adaxially flattened, abaxially rounded or angled, bearing thin or thick white wax or glabrous; rachis stiff or gently curving, proximally adaxial face flattened, angled distally, abaxially rounded, bearing scattered caducous scales distally; leaflets numerous, single-fold, close but irregularly grouped, held ± all in the same plane, linear, very stiff, the tips often with a reflexed hook-like flange representing a fragment of the rein, irregularly obliquely bifid or regularly bifid, thinly glaucous, adaxially bearing caducous scales along the main vein and very few scattered scales and wax on the blade surface, abaxially with abundant caducous scales and bifid ramenta throughout the length of the main vein, transverse veinlets obscure. Inflorescences solitary, interfoliar, large, branching to 1 order, protandrous; peduncle elongate, ± circular in cross-section, maroon when fresh, covered in dense, caducous tomentum; prophyll short, tubular, 2-keeled, opening distally, becoming fibrous with age; peduncular bract inserted near the prophyll, much exceeding it, enclosing the entire inflorescence until shortly before anthesis, tubular, woody, with a short solid beak, at anthesis splitting down ± the entire length, expanding and becoming cowl-shaped, adaxially smooth, glabrous, creamy-yellow when fresh, abaxially not grooved, only faintly striate, densely covered in soft, brown tomentum; rachis shorter than the peduncle, bearing numerous, elongate, spreading, spirally arranged rachillae, each subtended by a short, inconspicuous triangular bract; rachillae maroon, swollen at the very base and with a short basal bare portion, above which bearing numerous, spirally arranged triads in the proximal ca. 1/5–1/4 and paired or solitary staminate flowers distally, the distal-most rachillae sometimes entirely staminate; floral bracteoles very small. Staminate flowers slightly asymmetrical; calyx with a solid, elongate, stalk-like base and 3, narrow, triangular keeled lobes; petals 3, much longer than the calyx, distinct, valvate, ± boat-shaped with triangular tips; stamens ca. 18, filaments slender, fleshy, elongate, cylindrical, apically inflexed, anthers medifixed, versatile, ± rectangular, latrorse; pistillode small, trifid. Pollen ellipsoidal, frequently elongate, usually with either slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, perforate and micro-channelled, or perforate-rugulate, aperture margin similar; infratectum columellate; longest axis 46–54 µm [1/1]. Pistillate flowers globular, only slightly larger than the staminate; sepals 3, distinct, rounded, broadly imbricate, the outermost ± keeled; petals 3, distinct, rounded, broadly imbricate except at the short triangular valvate tips; staminodal ring low, ± shallowly lobed, forming a collar surrounding the gynoecium; gynoecium trilocular, triovulate, ± broadly ovoid, stigmas closely appressed, ovules hemianatropous, laterally attached to the ventral angle of the locules. Fruit usually 1-seeded, orange-yellow, ± ovoid, with a short beak and apical stigmatic remains; epicarp smooth, mesocarp thick, fleshy, sweet, endocarp smooth, thick, bony, with 3 low crests and 3 pores lateral below the equator. Seed basally attached, closely adhering to the endocarp, endosperm homogeneous with large central cavity; embryo opposite one of the endocarp pores. Germination adjacent-ligular; eophyll entire, lanceolate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>One species, now much restricted and threatened in central Chile; widely cultivated in warm temperate regions. </p></div>
+<div type="anatomy"><p>Leaf, readily identified by the anatomy of the lamina and showing some resemblances to Butia (Tomlinson 1961), root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>For relationships, see Butia. </p></div>
+<div type="uses"><p>Formerly trunks of Jubaea were felled and tapped for wine and sugar, the yield from a single trunk being prodigious. The palm is a widespread and important ornamental in dry warm temperate regions. </p></div>
+<div type="taxonomic accounts"><p>Glassmann (1987). </p></div>
+<div type="fossil record"><p>Subfossil endocarps, Paschalococos disperta (Dransfield 1991a), were described from a cave floor on Easter Island (Poike Peninsula) by Dransfield et al. (1984). Although represented only by endocarps, these are sufficiently well-preserved to determine them as belonging to the Attaleinae, and very closely related to Jubaea. However, until more remains of the extinct palm become available, it is impossible accurately to equate the palm with any known extant genus (Dransfield 1991a). </p></div>
+<div type="discussion"><p>Jubaea chilensis is one of the most massive palms. It differs from Butia in the lack of spines on the petioles, in having stalked rather than sessile staminate flowers, and in having more than six stamens; and from Jubaeopsis in its solitary habit and stalked staminate flowers with connate sepals.</p></div>
+<div type="vernacular"><p>Chilean wine palm. </p></div>
+<div type="biology_ecology"><p>Growing on sides of ravines and ridges in dry scrubby woodland. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

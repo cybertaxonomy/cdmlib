@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis mangorensis</name>
+<author>(Jum.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 263 (1995)</citation>
+<type>Madagascar, Mangoro Basin; Perrier; 18042</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Neophloga mangorensis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 6 (3): 34 (1929)</bibref>
+<bibref>Jum., Fl. Madagascar 30: 78 (1945)</bibref> 
+</synonymy>
+<synonymy>
+<name>Neophloga littoralis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 4, 6 (3): 41 (1929)</bibref> 
+<bibref>Jum., Fl Madagascar 30: 80 (1945)</bibref> 
+<type>Madagascar, Mananara Basin; Perrier; 12049</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A medium-sized palm with entire or little-dissected leaves. The name comes from the Mangoro River, where the type was found; currently, the area is devoid of natural vegetation.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Slender clustering palm in tufts of up to 7. STEMS 1-6 m high, 1.2-3 cm diam.; internodes c. 8 cm, near crown 2.5-3 cm, green, with flaking scales; crownshaft "eau-de-nil". LEAVES spirally inserted, c. 10 in the crown, entire or with up to 3 pairs of leaflets; sheath 9-13 cm long, pale green turning red-brown, with scattered to distally dense dark red scales, and sometimes with some wax, with narrowly triangular auricles to 15 mm; petiole 10-25 cm long, 2-3 mm diam., red-brown with scattered scales; rachis 17-35 cm long, with scattered scales, in mid-leaf c. 2 mm wide; lamina entire and then 35-51 cm long, connate for 8-14 cm, lobes 28-37 x 5.5-8.2 cm, the apices truncate over a width of 0.5-1 cm (also dentate on distal outer margins), main veins 7-11, with a scaly midrib and with (faint) scattered scales on minor veins; or pinnate with 2-3 leaflets on each side of the rachis, the proximal 35-40 x 2-4.7 cm and acuminate, interval to median c. 10 cm, the median 24-28 x 1.1-1.7 cm, long-acuminate, interval to distal 0.2-6 cm, distal 22-32 x 1.8-4.2 cm, connate for 2-6 cm, main veins 5-7, apices truncate, 10-15 mm wide, dentate, glabrous or with a few scattered scales proximally. INFLORESCENCE interfo-liar, branched to 1 order, porrect to spreading; peduncle 14-53 cm long, proximally 6-8 x 2-4 mm, distally 2-5 mm diam., densely to sparsely pubescent; prophyll 15-35 x 0.7-1.3 cm, borne at 2-13 cm above the base of the peduncle, open in the distal 2-6 cm, glabrous or with scattered scales; peduncular bract 15-30 cm long, inserted at 13-22 cm from the base of the peduncle, open in the distal 2-4 cm or for more than halfway, with a few scattered scales, quickly deciduous; nontubular peduncular bract occasionally present and c. 3 mm long; rachis 1.8-22 cm long, pubescent to glabrous, with 3-11 rachillae; rachillae 13-27 cm long, 1-2 mm diam., minutely puberulous to glabrous. STAMINATE FLOWERS with sepals 0.8-1.3 x 0.8-1.1 mm; petals 2-2.7 x 1.6-2.1 mm; stamens 6, in one series, the filaments 1-1.2 x 0.5 mm, cylindrical, the anthers 1.3-1.5 x 0.7-0.8 mm, dorsifixed, versatile, the locules parallel; pistillode 0.7-1.2 mm high, 0.4-0.6 mm diam. PISTILLATE FLOWERS unknown. FRUIT and SEED unknown.</p></div>
+<div type="distribution"><p>Mananara Biosphere Reserve, and an old collection from the lower Mangoro River.</p></div>
+<div type="biology_ecology"><p>Littoral or lowland rain forest; flat, or mid slope; 5-300 m.</p></div>
+<div type="conservation"><p>Critical. There is only one recent sighting; we saw less than twenty individuals in an area surrounded by agriculture, and probably under threat of agricultural conversion.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Remarkably like D. faneva, which however has didymous stamens.
+NOTE: Dypsis littoralis Jum of 1918 would have priority; this is now a synonym of D forficifolia Mart</p></div>
+<div type="materials_examined"><p>Mananara Avaratra: Mananara, Oct. 1912 (fl.), Perrier 12049 (P, type of N. littoralis); Mananara, Oct. 1912 (y. bud), Perrier 12050 (P); Andravolasoa, April 1992 (old infl.), Beentje et al. 4639 (BH, K, MO, P, TAN). Mahanoro: Mangoro basin, Oct. 1927 (bud), Perrier 18042 (P, type of N. mangorensis).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

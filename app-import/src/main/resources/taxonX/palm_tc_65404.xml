@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis antanambensis</name>
+<author>Beentje</author>
+<citation>in J. Dransfield &amp; H. Beentje, Palms of Madagascar: 368 (1995)</citation>
+<type>Madagascar, Antanambe; Beentje, Dransfield and Andriampaniry; 4629</type>
+<type_loc>Holotypus K; isotypi BH, MO, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This is a new species in the "Vonitra" group; it thrives on steep slopes and on ridge tops in low-canopy forest on ultramafic rock. It tends to branch near ground level and have several more or less equal rather slender trunks that are clothed in long persistent short piassava fibre. The leaves are distinctive having rather short leaflets that diverge from the rachis at an acute angle and tend to be held rather stiffly. The name is derived from the type locality. As far as we know, this species is not in cultivation.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>inter species inflorescentia semel ramosa D. pusillae Beentje &amp; J. Dransf. accedens sed statura majore, foliolis pluribus, inflorescentia longiore ab ea recedens.</p></div> 
+<div type="description"><p>Palm apparently basally branched to give clumps of up to 3 otherwise unbranched aerial stems. STEMS up to 4 m high, covered for their whole length with a dense fibrous layer c. 12 cm diam., without layer c. 5.5 cm diam., internodes 1.5-2.5 cm, bark conspicuously stepped and ringed; wood brown, quite hard. LEAVES c. 12 in the crown, porrect, with stiff leaflets; sheath c. 48 x 3 cm, pale brown with white bloom and orange-red scales, with many marginal fibres; petiole c. 66 cm long, proximally 1.1-2 x 1.4-1.6 cm diam., distally 1-1.6 x 0.8-1.1 cm, red-brown, margins sharp, abaxially convex with patches of brown scales, adaxially channelled; rachis c. 2.5 m, in mid-leaf keeled, 0.8-1.1 x 0.6-0.9 cm; leaflets c. 49 on each side of the rachis, regular, stiff, erect, those on opposite sides of the rachis at an angle of c. 90° with each other, the proximal 36- 37 x 0.4-0.7 cm, some with long pendulous reins, median 52-53 x 2.8 cm (leaflet interval 4 cm), distal 15-38 x 0.4-1.9 cm; leaflets glabrous, the apices unequally acuminate, bifid for 3-4 cm with one tip 5-7 cm longer, main veins 5-7, midrib prominent adaxially. INFLORESCENCE interfoliar, spreading, branched to 1 order, in bud c. 225 cm long; peduncle c. 160 cm, distally 1.2 x 0.9 cm diam., with dense small red-brown scales; prophyll c. 131 x 2.2-3 cm, cylindrical, 2-keeled, split only at the apex; peduncular bract 102-122 cm (inserted at c. 100 cm), deciduous and carried upwards by the lengthening inflorescence, glabrous, ?beaked for c. 6 cm; rachis c. 41 cm, with c. 20 branches and scattered red-brown scales; rachillae 34-60 cm long, 3.5-5 x 2 mm diam., somewhat pitted, bare at the base, densely covered in tiny stellate scales, with distant triads, more distally with paired flowers only; rachilla bracteoles c. 3 x 0.6 mm. STAMINATE FLOWERS with sepals 1.4-1.6 x 1.4 mm; petals (in bud) 1.7-1.8 mm long; stamens 6, biseriate, the outer (antesepalous) series sessile, the inner series with filaments c. 0.6 mm long, anthers c. 0.6 x 0.4 mm, dorsifixed, locules parallel. PISTILLATE FLOWERS with sepals 1.4-1.6 x 1.4 mm; petals (in bud) 1.7-1.8 mm long; gynoecium c. 0.8 x 0.5 mm; staminodes c. 0.2 mm. FRUIT unknown, except for: endocarp very fibrous, 15-25 x 12-18 mm. SEED with deeply ruminate endosperm, the ruminations many and up to 5 mm deep. EOPHYLL pinnate.</p></div>
+<div type="distribution"><p>Only known from one small area in the Mananara Avaratra Biosphere Reserve.</p></div>
+<div type="biology_ecology"><p>Rather open rain forest, on ultramafic soils on steep mid slopes and ridge tops; 250-290 m.</p></div>
+<div type="conservation"><p>Endangered. Despite its occurrence in a protected area, the number of individuals seems to be less than fifty.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Among the species of the Vonitra-group this species can be distinguished by its short, stiff leaflets, the inflorescence branched to 1 order resembling D. pusilla but is much larger, has a greater number of leaflets and a larger inflorescence.</p></div>
+<div type="materials_examined"><p>Mananara Avaratra: Antanambe, April 1992 (bud), Beentje et al. 4629 (Holotype K; isotypes BH, MO, P, TAN, type); idem, Oct. 1994 (sd.), Beentje &amp; Dransfield 4809 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

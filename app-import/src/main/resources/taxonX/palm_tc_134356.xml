@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary pinnate-leaved palms from Fiji and Vanuatu, with a single large peduncular bracts and curious vertical rather than horizontal arrangement of the staminate flowers on the rachilla.</p></div>
+<nomenclature>
+<name>Neoveitchia</name>
+<author>Becc.</author> 
+<citation>Palme Nuova Caledonia 9 (1920); and Webbia 5: 77 (1921).</citation>
+<type>Type; Neoveitchia storckii; (H. Wendl.) Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Neo — new and Veitchia, the palm genus; Neoveitchia storckii was first described under Veitchia but then moved to the new genus, Neoveitchia.</p></div>
+<div type="description"><p>Moderate, solitary, unarmed, pleonanthic, monoecious tree palms. Stem erect, becoming bare, conspicuously ringed with leaf scars. Leaves pinnate, neatly abscising; leaf sheath ± split opposite the petiole, not forming a well-developed crownshaft, bearing scattered scales, the mouths irregularly fibrous; petiole flattened or shallowly channelled adaxially, abaxially rounded, bearing scattered caducous scales; rachis ± curved, flattened, strongly 2-keeled, splitting apically long before anthesis while densely minutely dotted abaxially, deciduously floccose adaxially; leaflets still enclosed within the leaf sheath, allowing the peduncular bract to numerous, regularly arranged, single-fold, acute, with conspicuously protrude, eventually deciduous; peduncular bract about twice as long as thickened margins, adaxially glabrous, abaxially with few ramenta along the prophyll, beaked, tubular, entirely enclosing the inflorescence, the midrib near the base, transverse veinlets not visible. Inflorescences splitting longitudinally at anthesis, then deciduous, 1 (or 2) smaller, infrafoliar, branching to 3 orders, apparently protandrous; peduncle incomplete, ± triangular, peduncular bracts also present; rachis ± the same winged at the base, somewhat swollen, rapidly tapering, distally ± circular length as the peduncle; rachis bracts spirally arranged, small, low, in cross-section; prophyll inserted near the base of the peduncle, tubular, triangular; first-order branches with a basal bare portion; rachillae rather stiff, curved, eventually pendulous, somewhat angled, basally bearing rather few, distant, ± superficial triads, the 2 staminate flowers ± distal (rather than lateral) to the pistillate flower, distally the rachilla bearing ± 7 vertical series of floral pits, each partially enclosing a vertical (rather than lateral) pair of staminate flowers, the staminate portion of the rachilla deciduous at fruiting stage; floral bracteoles small, included within the pits. Staminate flowers asymmetrical, those originating from triads with flattened pedicels, those from staminate pairs ± sessile; sepals 3, strongly keeled or winged, distinct, strongly imbricate, or frequently 1 distinct, and 2 joined for 3/4 their length into a 2-keeled prophyll-like structure, or all 3 joined but retaining 2 distinct imbricate margins, the margins coarsely toothed; petals 3, distinct, triangular-ovate, valvate, smooth; stamens 6, filaments distinct, rather short, narrow, fleshy, inflexed in bud, anthers short, rectangular, medifixed, ± versatile, latrorse, the connective broad, conspicuous; pistillode columnar, striate, truncate, as long as the stamens. Pollen ellipsoidal asymmetric, occasionally lozenge-shaped; aperture a distal sulcus; ectexine tectate, perforate and micro-channelled or finely perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 46–58 µm [1/2]. Pistillate flowers very much larger than the staminate, ± spherical; sepals 3, distinct, broadly imbricate; petals 3, distinct, broadly imbricate except for the minute, triangular, valvate tips; staminodes 3, very small, triangular, tooth-like; gynoecium unilocular, uniovulate, ovoid, stigmas 3, very small, reflexed, ovule laterally attached, form unknown. Fruit ellipsoidal, rather large, becoming reddish-yellow at maturity, perianth whorls persistent, stigmatic remains apical; epicarp smooth, mesocarp fleshy with abundant close longitudinal fibres, endocarp thin, bony, closely adhering to the seed. Seed laterally attached, hilum elongate, running ±the length of the seed, raphe branches abundant, anastomosing, endosperm homogeneous; embryo basal. Germination and eophyll not recorded. Cytology not studied.</p></div>
+<div type="distribution"><p>Two species: Neoveitchia storckii isconfined to a very limited area in Naitasiri Province, Viti Levu, Fiji Islands, where it is in danger of extinction, and N. brunnea restricted to Vanuatu.  </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b), and fruit (Essig et al.1999). </p></div>
+<div type="relationships"><p>The monophyly of Neoveitchia has not beentested. For relationships, see Carpoxylon.</p></div>
+<div type="uses"><p>In Fiji trunks have been used as posts in house construction; the young fruit is eaten.</p></div>
+<div type="taxonomic accounts"><p>Moore (1957a, 1979) and Dowe andCabalion (1996).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>The arrangement of the staminate flowers, one abovethe other, is unique.</p></div>
+<div type="vernacular"><p>Vileito, in Fiji.</p></div>
+<div type="biology_ecology"><p>Neoveitchia storckii is a canopy emergentin secondary forest on alluvial plains and nearby foothills; much of its habitat has already been converted for agricultureor forestry plantation (Watling 2005). In Vanuatu, N. brunnea is found in rain forest in high rainfall areas, on red clay soil atabout 300 m elevation (Dowe and Cabalion 1996).</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

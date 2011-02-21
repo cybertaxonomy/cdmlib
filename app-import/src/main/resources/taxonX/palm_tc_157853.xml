@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Plectocomiopsis wrayi</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Brit. Ind. 6 (1893) 480</citation>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 12 (2) (1918) 55</bibref>
+<bibref>Ridley in Fl. Mal. Pen. 5 (1925) 65</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 13 (1951) 329</bibref>
+<synonymy>
+<name>Plectocomiopsis dubius</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Card. Calcutta 12 (2) (1918) 56</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 66</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 13 (1951) 331</bibref>
+<bibref>Dransfield in Malay. Forester 41 (1978) 326</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>L. Wray Jr. 1853 -1942 Curator of Perak Museum 1883 -1908</p></div>
+<div type="vernacular"><p>rotan pepe</p></div>
+<div type="description"><p>Clustering moderate-sized hapaxanthic rattan with stems to about 30 m tall forming rather dense thickets. Stem without leaf sheaths triangular in cross-section up to about 1.3 cm in diameter, with sheaths to 2 cm. Internodes to 40 cm long below, to about 20 cm long above. Leaf sheaths dull green armed with evenly scattered, 3 mm long slightly upward pointing golden spines, and sparse reddish-brown indumentum. Knee absent. Ocrea very short, to 5 mm tall, truncate, golden brown in colour. Leaf to 2 m long, including the cirrus about 1 m long. Petiole well-developed about 15 cm long rather densely covered in red-brown caducous scales. Leaflets 15-20 on each side, arranged regularly, somewhat distant (ca. 5 cm)., to 30 cm long by 3 cm wide, acuminate in long drip tips the leaf surface with rather conspicuous lateral veins, and armed along the upper surface of the main vein with short golden spinules to 2 mm long. Inflorescences male and female superficially similar but the male more highly branched than the females, crowded together one each in the axils of the uppermost reduced leaves. Inflorescence to 30 cm long with arcuate rachillae bearing bracteoles subtending groups of flowers. Male flower about 2 mm long. Female flower not seen. More or less ripe fruit about 2.5 cm high and 3 cm wide obscurely trigonous, shortly beaked, covered in 14 vertical rows of reflexed yellow-brown scales with dark margins. Seed about 2 cm wide by 1.5 cm wide. Endosperm homogeneous. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Perak, Selangor. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None.</p></div>
+<div type="discussion"><p>Rotan pepe is a highly distinctive rattan found in peat and freshwater swamp forests in Perak and Selangor where it can form large thickets. The lack of knee, very short ocrea and rather densely armed sheaths, and narrow leaflets are characters useful for identifying it. I have examined the types of Pl. wrayi and Pl. dubius and have come to the conclusion that they represent the same species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

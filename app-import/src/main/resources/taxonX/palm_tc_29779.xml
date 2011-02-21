@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus optimus</name>
+<author>Becc.</author>
+<citation>Nelle Foreste di Borneo 610 (1902) (in part)</citation>
+<bibref>Beccari, Rec. Bot. Surv. India 2: 211 (1902)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11(1): 425 (1908) and Suppl. 105 (1913) (all in part)</bibref>
+<bibref>Dransfield, Kew Bull. 36: 791 (1982)</bibref>
+<bibref>Dransfield, Ratt. Sabah 100 (1984)</bibref>
+<bibref>Dransfield, Sarawak 102 (1992)</bibref>
+<synonymy>
+<name>Calamus stramineus</name>
+<author>Furtado</author>
+<bibref>Furtado, Gard. Bull. Str. Settlements 8: 258 (1935)</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus stramineus var. megalocarpus</name>
+<author>Furtado</author>
+<bibref>Furtado, Gard. Bull. Str. Settlements 8: 259 (1935)(in part)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>The best</p></div>
+<div type="vernacular"><p>Wi Sego (Ib.)</p></div>
+<div type="description"><p>Moderately robust clustering rattan climbing to great heights, reaching 50 m or more; stem without sheaths 15 mm diam., with to 30 mm diam. internodes to 30 cm, sometimes longer in juvenile stems. Leaf sheaths dark green, armed with scattered large, convex-based, triangular, flattened, dark green, black-tipped spines and abundant caducous black scales; knee grossly swollen; ocrea small, c. 5 mm. Leaf cirrate, to 2.5 m including the cirrus to 1.5 m; petiole very short, scarcely exceeding 5 cm; leaflets up to 8 on each side of the rachis, arranged in 2&amp;rsquo;s or 3&amp;rsquo;s, large, narrow ovate or spathulate, cucullate, the largest to 85 &#215; 11 cm, very stiff and coriaceous, somewhat plicate, dark green on the upper surface, covered in buff indumentum on the lower surface, very rarely concolorous, the margins armed with short black bristles, transverse veinlets conspicuous. Inflorescence only fragments of the female known, but probably very like that of C. caesius; rachillae to 8 cm, with close distichous bracts and c. 12 flowers on each side. Ripe fruit ovoid, c. 14 &#215; 11 mm, tipped with a short beak to 1.5 mm and covered in 15 vertical rows of pale yellowish-brown scales. Seed to 10 &#215; 8 mm; endosperm deeply ruminate. Seedling leaf with 2 parallel leaflets joined for much of their length. (Fig. 33, Pl. 10C).</p></div>
+<div type="distribution"><p>Known from two collections, both in Belait. Elsewhere scattered throughout Borneo, but never common. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>According to Beccari, the best rattan in Borneo. The cane is similar to that of C. caesius (curiously absent from Brunei) but is generally of slightly larger diameter and is usually not so highly regarded.</p></div>
+<div type="discussion"><p>C. optimus has been found in lowland dipterocarp forest and alluvial forest at elevations up to 170 m above sea level. Populations in some areas in the 1st Division of Sarawak lack the conspicuous buff indumentum present in populations further east. Otherwise they do not appear to differ. As the cane properties are the same as those of rotan sega (C. caesius), C. optimus tends to be included with sega and may thus be overlooked. However, when viewed closely, it is most distinctive and beautiful, distinguishable from C. caesius by upper part of leaf. C: infructescence. D: details of rachilla bracts. E: fruit. F: seed. G: vertical section of seed. the more robust habit, the massive spines and black scales, and the much larger leaflets, usually covered on the lower surface with buff rather than white indumentum.</p></div>
+<div type="materials_examined"><p>BEL: Labi, Wong 524; Melilas, Bt.Batu Patam, Dransfield J. 6614.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

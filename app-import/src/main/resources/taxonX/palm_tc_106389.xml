@@ -1,0 +1,35 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia laciniosa</name>
+<author>(Griff.) Mart.</author>
+<citation>Hist. Nat. Palm. 3(ed. 1): 212. 1838</citation>
+<bibref>Beccari in Hook, f., Fl. Brit. Ind. 6: 475. 1893</bibref>
+<bibref>Basu, Rattans in India Monogr. Rev.: 24. 1992</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Led beth</p></div>
+<div type="description"><p>Clustering, medium diameter rattan. Stem branching, 25 m or more, with sheaths 2.1 cm in diameter,without sheaths 1.7 cm. Leaf 1.2 m long, cirrate: sheaths brown or red with very few spines to 0.6 cm long, disintegrating into embracing fibres; knee absent: ocrea very prominent, elongate, originally dry and membraneous but very soon distintegate into filaments: petiole very short: adaxial side of the rachis with two rows of spines; spines 0.7 cm long; leaflets 22 x 12 cm, equidistant, cuneate-rhomboid, irregularly toothed, dark green above, pale below, narrowed to a short petiole. Inflorescence large, twice or thrice branched; primary and secondary sheaths not tightly sheathing,distal end papery; rachilla densely tomentose; flowers arranged in longitudinal rows. Fruit widely depressed ovate, ca, 2 x 1.5 cm; scales in 13 vertical rows, orange red; endosperm ruminate.</p></div>
+<div type="distribution"><p>Widely spread all over South Andaman and Nicobar Islands (Maps 7 and 10).</p></div>
+<div type="biology_ecology"><p>Flowering October-November. Fruiting April - May.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Used in furniture industry.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Mannarghat, South Andamans, 3.4.92, fr., Vijayakumaran 6625(KFRI); 4 th Km., Little Andamans, 13.4.1992, fr., Vijayakumaran 6634 (KFRI); Great Nicobar, 10.4.93, fr., Renuka and Vijayakumaran 7041 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

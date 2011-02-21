@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops korthalsii</name>
+<author>Bl.</author>
+<citation>Rumphia 3: 23 (1847)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 148 (1911)</bibref>
+<bibref>Dransfield, Ratt. Sabah 63 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 53 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>P. W. Korthals, 1807-92, Dutch botanist</p></div>
+<div type="vernacular"><p>Wi Taram (Ib.)</p></div>
+<div type="description"><p>Clustering moderately robust rattan climbing to 15 m; stem without sheaths to 15 mm diam., with sheaths to 30 mm diam., internodes to 12 cm or more. Leaf sheaths dull green, rather sparsely and evenly armed with black spines to 30 mm, tending to be rather uniform in length in any given plant, deciduous brown indumentum abundant on young sheaths, spines around the sheath mouth erect and larger than the rest but generally rather few in number; knee conspicuous, armed as the rest of the sheath; ocrea inconspicuous. Leaf cirrate, to 3 m including the petiole to 50 cm and cirrus to 1 m; petiole evenly armed with scattered spines on the upper surface and sometimes with a row of larger regular spines on either edge; leaflets c. 60 on each side of the rachis, neatly and regularly arranged, the longest to 35 &#215; 1.5 cm, armed with bristles on 3 nerves on the upper surface, usually rather densely bristly on the undersurface. Inflorescences pendulous, to 40 cm, cylindrical in bud, primary bract quickly falling at anthesis, armed with grouped triangular spines to 5 mm; female rachillae to 6 cm long, usually stiff and &#177; divaricate, bearing inconspicuous bracts; male rachillae very slender to 3 cm long. Mature fruit ovoid to somewhat oblong, to 15 &#215; 10 mm, covered in c. 18 vertical rows of pale brown scales (greenish when immature). Seed ovoid, somewhat flattened on two sides; endosperm deeply ruminate. Seedling leaf pinnate with c. 6 leaflets on each side of the rachis. (Fig. 14).</p></div>
+<div type="distribution"><p>Widespread throughout the lowlands of Brunei. Elsewhere widespread throughout Borneo. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not specifically known, but the cane appears to be of medium quality.</p></div>
+<div type="discussion"><p>D. korthalsii is a member of the complex of rattans related to D. hystrix (Griff.) Mart. - a complex which has proved to be taxonomically difficult. D. korthalsii is perhaps most distinctive in the scattered spines on the sheath and the relatively few spines around the sheath mouth. It is found in lowland and hill mixed dipterocarp forest at elevations up to 700 m above sea level.</p></div>
+<div type="materials_examined"><p>TEM: Amo, Stockdale 39; Amo, K.Belalong, Dransfield J. 6655; Amo, Kuala Belalong, Stockdale 36; Amo, Kuala Belalong, Stockdale 48. TUT: Lamunin, Kpg.Lamunin, Wong 65.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

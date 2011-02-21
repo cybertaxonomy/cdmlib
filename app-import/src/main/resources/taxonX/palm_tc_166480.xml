@@ -1,0 +1,89 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Pseudophoenix</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Zona</mods:namePart>
+<mods:namePart type="given">S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 46(1) 19-38</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pseudophoenix sargentii</name>
+<author>H. Wendl. ex Sarg.</author>
+<citation>Bot. Gaz. 11: 314. 1886</citation>
+<type>USA, Florida, Elliott Key, 16 Apr 1886; Sargent; s.n.</type>
+<type_loc>Holotype A!; isotype GH!; type (photo) BH!</type_loc>
+<synonymy>
+<name>Chamaephoenix sargentii</name>
+<author>H. Wendl. ex A. H. Curtiss</author>
+<bibref>H. Wendl. ex A. H. Curtiss, Florida Farmer &amp; Fruit Grower 1(8): 1. 1887</bibref>
+</synonymy>
+<synonymy>
+<name>Cyclospathe northropii</name>
+<author>O.F.Cook</author>
+<bibref>O.F.Cook [as “northropi”], Mem. Torrey Bot. Club 12: 25. 1902</bibref>
+<type>Bahamas, Andros Island; J.I. &amp; A.R. Northrop; 508</type>
+<type_loc>Lectotype NY!; isolectotype US!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pseudophoenix saonae</name>
+<author>O.F.Cook</author>
+<bibref>O.F.Cook, Jour. Washington Acad. Sci. 13: 406. 1923.</bibref>
+</synonymy>
+<synonymy>
+<name>Pseudophoenix sargentii subsp. saonae</name>
+<author>(O.F.Cook) Read</author>
+<bibref>Gentes Herb. 10: 210. 1968</bibref>
+<type>Dominican Republic, Saona Island; Taylor; 513</type>
+<type_loc>Holotype US!; isotype NY!; type (fragment) BH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pseudophoenix linearis</name>
+<author>O.F.Cook</author>
+<bibref>O.F.Cook, Jour. Washington Acad. Sci. 13: 407. 1923</bibref>
+<type>Cuba, Cayo Romano; Shafer; 2644</type>
+<type_loc>Holotype US!; isotype NY!; type (fragment) BH!; type (photo) FTG!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pseudophoenix gracilis</name>
+<author>Ekman ex Burret</author>
+<bibref>Ekman ex Burret, Sv. Vet. Akad. Handl. ser. 3: 28. 1929</bibref>
+<type>Haiti, Ile de La Gonâve; Ekman; H-9622</type>
+<type_loc>Holotype S!; isotypes A!, DA, K!, NY!, S!, US!)</type_loc>
+</synonymy>
+<synonymy>
+<name>Pseudophoenix navassana</name>
+<author>Ekman ex Burret</author>
+<bibref>Ekman ex Burret, Sv. Vet. Akad. Handl. ser. 3: 27. 1929</bibref>
+</synonymy>
+<synonymy>
+<name>Pseudophoenix sargentii var. navassana</name>
+<author>(Ekman) Read</author>
+<bibref>(Ekman) Read, Gentes Herb. 10: 211. 1968</bibref>
+<type>Navassa Island; Ekman; H-10302</type>
+<type_loc>Holotype S!; isotypes K!, NY!, US!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem 1–8 m tall, cylindrical, 9.5–25.0 cm dbh, gray, with prominent leaf scars when young. Leaves 7–16 in the crown, spreading or ascending; leaf 0.9–2.2 m long; sheath 18–41 cm long, green with silvery gray scales near the apex; petiole 24–119 cm long; rachis 64–165 cm long, often with brown scales along its margin; leaf segments 37–122 per one side of the rachis; middle leaf segment 29–64 cm long, 0.9–3.2 cm wide, lanceolate with an acuminate tip, gray-green, glaucous abaxially, glaucous to glossy adaxially, ramenta present on the abaxial surface of the midvein at the base of the leaf segment. Inflorescence erect, ascending or horizontal, branched to 3 or 4 orders, 100–150 cm long; peduncle often hidden by the leaf bases, 60–88 cm long, 1.7–1.8 cm diam., glabrous; prophyll 24–105 cm long, 2.6–6.0 cm wide, bearing dark brown scales along both edges (keels); inner bract 10–74 cm long, 1.6–5.0 cm wide, bearing dark brown scales along both edges; rachillae 1.3–5.5 (–9.0) cm long and 0.4–1.4 mm diam., strongly divaricating. Flower pseudopedicel 2.2–7.6 mm long, 0.4–1.0(–1.7) mm diam., green to glaucous; calyx a shallow triangular cupule, 2.1–4.2 mm diam., green to glaucous, margins hyaline; petals ovate, 4.8–6.6 mm long, 3.2–4.8 mm wide, green, glaucous abaxially, spreading, with ca. 7–13 major veins; filaments 2.2–3.7 mm long, basally connate forming a short staminal tube, anthers ovoid, 2.4–4.1 mm long, 0.8–2.5 mm wide, yellow; gynoecium (in bisexual flowers) 3.0–4.2 mm long, 1.0–2.3 mm diam. (pistillode in staminate flowers smaller), green. Fruit 10.6–17.1 mm long, 9.1–16.1 mm diam. (in single-seeded fruits); endocarp 7.9–13.5 mm long, 6.8–11.8 mm diam., 0.1–0.2 mm thick. Seed 6.4–10.5 mm long, 6.6–9.6 mm diam.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p>Pseudophoenix sargentii is found in coastal habitats, although one site in southern Quintana Roo, Mexico, is more than 30 km inland (where the palm population is thought to represent relic populations along an ancient coastline) (Quero 1981). It occurs on limestone or dune sand over limestone in seasonally dry forest, tropical hammock, coastal scrub, etc. (Seifriz 1943, Ledin et al. 1959, Read 1968, Quero 1981). Under harsh conditions, it grows very slowly such that mature individuals have trunks less than 50 cm tall. It grows easily but slowly in cultivation, a situation which has contributed to the destructive practice transplanting wild specimens to gardens and landscapes. </p></div>
+<div type="conservation"><p>On the northern coast of the Dominican Republic, near Sosua, P. sargentii has been extirpated by coastal development. (Zanoni 1986). Several populations of this species are endangered, one critically so. In Florida, small populations remain on Elliott Key (Lippencott 1992), where they are protected, but have been extirpated from Long and Sands Keys, where they once grew. In Mexico, populations are threatened by coastal develop-ment and agriculture (Quero 1981, Durán 1995). The most seriously threatened population is that from the island of Navassa. Zanoni and Buck (1999) reported that Pseudophoenix on Navassa is now reduced to a single adult palm. Introduced goats prevent reproduction by eating seeds and seedlings. Unless immediate action is taken, this unique population will be lost in the wild (offspring from Navassa palms survive in cultivation). </p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Read (1968, 1969) recognized several infraspecific taxa whereas a recent field guide (Henderson et al. 1995) recognize only one. Read himself (as quoted in Lippencott 1992) suggested that the infraspecific taxa do not deserve formal taxonomic rank, a suggestion endorsed here. The taxonomic disposition of this, the most widespread taxon, is not uncontroversial. Some populations from small islands (Navassa, Gonâve, Saona) were previously recognized at some taxonomic rank, e.g., Pseudophoenix navassana, Pseudophoenix gracilis, Pseudophoenix saonae. Indeed these populations share a morphological trait – slightly larger fruits and seeds – that allow them to be distinguished from other populations of P. sargentii. Recognizing each island population as a distinct taxon seems misleading, as specimens cannot be readily distinguished from one another without knowledge of their geographic origin. Placing all of the populations in a single taxon is equally unsatisfactory, as such an action would imply that these island populations share a single common ancestor. In fact, these island populations are likely to have polytypic origins. The characters of the inflorescence posture and length, along with primary bract length relative to the peduncle length, were employed by Read (1968, 1969). While there is certainly variation in these characters, the variation appears to have no geographic or population base. One population that I examined on Whale Key, Bahamas, had palms in which the inflorescence was either erect, horizontal or pendulous, and one-third to onehalf as long as the leaves and in which the primary bract was one-half the length of the peduncle. Although this population corresponds to Read’s Pseudophoenix sargentii ssp. saonae var. saonae, the bract length character alone corresponds to Read’s P. sargentii ssp. sargentii. Quero (1981) noted similar difficulties in applying Read’s taxonomic criteria to populations in the Yucatan Peninsula, Mexico. </p></div>
+<div type="materials_examined"><p>BAHAMAS. Locality unknown, Nickerson &amp; Gross 3044 (A, FTG, MO); Andros, High Point Cay, Brace 5301 (NY), Purser Point, Wide Opening, edge of marsh, Brace 6771 (NY), Big Cabbage Creek, west side, Northrop &amp; Northrop 671 (NY), Loggerhead Creek, Northrop &amp; Northrop 508 (NY, US), small key near Mastic Key, Bailey 1047 (BH); North Andros, ca. 8 mi. S of Fresh Creek, coppice, Correll, Fehling &amp; Stevenson 49397 (FTG, NY); Berry Islands, Whale Key, coppice, Britton &amp; Millspaugh 2197 (NY); S. Bimini, Millspaugh 2398 (NY); Eleuthera, S of Glass Window, scrub, Webster &amp; Williams 10727 (FTG, S, US), Cape Eleuthera, coppice, Correll &amp; Hill 45332 (FTG, NY), 0.5 mi SE of Glass Window, Proctor 30906 (IJ); Hummingbird Cay, Kessler et al. 2754 (A, FTG); Great Exuma, between George Town airstrip and the coast, Correll &amp; Correll 47937 (FTG); Inagua, Miner’s Tent to Balsom Hill, scrubland, Nash &amp; Taylor 1290 (FTG, NY); Little San Salvador, Britton &amp; Millspaugh 5671 (NY); Long Is., 2–6 mi S of Galloway’s Landing, along Diamond Crystal Salt Company road, Hill 2398 (FTG, NY); Mayaguana, SE point, Wilson 7563 (GH, NY); New Providence, S of Fox Hills, coppice, Britton &amp; Brace 547 (K, NY), ca. 3 mi E of airport, Corell 44313 (FTG). BELIZE. Ambergris Cay, off the north coast, Turner 33 (BH). CUBA. Oriente [Camagüey or Guantánamo], north coast, Natenson 25008 (HAJB); Camagüey: Cayo Guajaba, hills SE end, Shafer 2815 (NY) and Shafer 680 (A, GH, NY); Cayo Romano, Lomo de Loro, Shafer 2644 (NY, US; fragment at BH, photo FTG), Alto del Aji, Shafer 2790 (NY); Cayo Sabinal, Ekman 18572 (S); Guantánamo: Maisí, León 16291 (GH, HAJB, US); Maisí, Sabana, León 16662 (GH, HAJB, US) and León 16748 (HAJB, US), Cuesta del Chivo, Legrá s.n. (FTG); Las Tunas: Puerto Padre, El Copey, Curbelo 16660 (HAJB); Santa Clara: Caibarién, Cayo Francés, Ekman 18572 (S). DOMINICA. Near Mero, dry hill overlooking Castaways Hotel, Read 2008 (US); Mero Estates, Mero, Garvue et al. s.n. (FTG). DOMINICAN REPUBLIC. La Altigracia: Isla Saona, SW shore of island, Loomis 23 (US), in woods, Liogier &amp; Liogier 21878 (NY) and Liogier &amp; Liogier 27279 (NY), interior, N of Playa El Canto de la Playa (on S side, E of Mano Jaun), 18°07’N 68°40’W, Zanoni, Mejía &amp; Ramírez 15154 (NY), Banks of salt lake, Taylor 513 (NY, US; fragment and photo at BH); 2 km N of Guaraguao on road to Bayahibe, in wetland, Zanoni &amp; Mejía 16970 (NY); Puerto Plata: Sosua at Punta Goleta, coastal thickets, Ekman H14526 (K, NY, S, US). HAITI. Ile de La Gonâve, hills above Pointe à Raquettes, Ekman H-9622 (A, FTG, K, NY, S, US). MEXICO. Quintana Roo. Res. Sian Xa’an, 8 km NE of Vigia Chico, 19°48’N 87°31’W, Sanders &amp; Frame 1720 (NY, FTG); 2 km inland from Puerto Juarez on road to Valladolid, Moore 8087 (BH); Isla Mujeres, 21°15’27”N 86°45’06”W, Flores &amp; Ucán 8815 (CICY); 0.5 km N of Xel-Ha, Quero 2373 (MO); Yucatán: W of El Cuyo, among dunes, Read et al. 79-012 (US); Mpio. Río Lagartos, cruce de playa Las Coloradas hacia Río Lagartos, Orellana et al. 396 (CICY); Parque Natural Ría Lagartos, near Las Coloradas, Leal &amp; Espejel 205 (CICY); Mpio. Tizimin, road to El Cuyo, Espejel &amp; Ucán 200 (CICY); 6 km W of El Cuyo, Ucán &amp; Espejel 779a (CICY); entrance to town of El Cuyo, 21°30’45”N 87°40’46”W, Chan 5179 (CICY), 3 km E of El Cuyo, Quero 2382 (MO); 8–10 km W of El Cuyo, 21°32’00”N 87°45’50”W, Escalante 733 (CICY). NAVASSA ISLAND (USA). Kiem &amp; Pitt s.n. (BH), E of the lighthouse, Ekman H10802 (FTG, K, NY, S, US) PUERTO RICO. Mona Island: 0.8 km WNW of Uvero, Proctor et al. 45905 (FTG). TURKS &amp; CAICOS ISLANDS. East Caicos. Jacksonville, Buden s.n. (A); Middle Caicos, Proctor 34073 (IJ). USA. Florida: locality unknown (probably Elliott or Long Key), Curtiss s.n. (A), locality unknown (sent to Beccari by Sargent), Anonymous s.n. (FI); Miami-Dade Co., Elliott Key, Simpson 541 (GH), Small &amp; Nash s.n. (NY), Mr. Filer’s place, 19 Apr 1886, Sargent s.n. (A; photo BH), ca. 2 mi south of northern end, in dense thicket, Ward &amp; Ward 1579 (BH), Small, Matthaus &amp; Mosier 9499 (NY, US); Long Key, Curtiss (?) s.n. (A), near E end, high sandy hammock, Small, Bailey, Matthaus 11592 (MO, NY), Bailey &amp; Bailey 6128 (BH, FTG), Curtiss 5637 (BH, GH, K, MO, NY, US), Sands Key, hammock, Small &amp; DeWin Keller 10770 (GH, NY). CULTIVATED. BAHAMAS. New Providence, Nassau, garden, Brace 381 (K, NY). CUBA. La Habana: Santiago de las Vegas (cultivated?), Anonymous 343 (US); La Habana: Menocal estate, near Havana, Bailey &amp; Bailey 12532 (BH). DOMINICAN REPUBLIC. Prov. unknown: Arenoso near Santiago, Bailey 311 (BH); Puerto Plata: Puerto Plata, (cultivated?), Read s.n. (FTG). MEXICO. Yucatán: Mpio. Río Lagartos, Río Lagartos, Espejo et al. 4614 (CICY); Mérida, Espinosa 2 (CICY), Espinosa 18 (CICY), Narváez 1171 (CICY), Narváez 1322 (CICY), 21°01’30”N 89°38’30”W, Simá 1710 (CICY). USA. Florida: locality unknown, imported as adult trees from the Bahamas, Hudson s.n. (FI); Miami-Dade Co., Miami, Franceschi s.n. (FI), Anonymous s.n. (US), Bessey s.n. (FI), Read s.n. (BH), Hotel Royal Palm, Andrews s.n. (A), old Miami cemetery, Dahlbert s.n. (BH), Key Largo, Read s.n. (BH); Fairchild Tropical Garden, Moore 5838 (BH), Moore 5839 (BH), Moore 5840 (BH), plot 113, CA-1104B, Hull H-15 (BH, FTG), 58-872 (transplanted from wild population on Elliott Key), Sanders 1667 (BH), plot 88, P4059D, Hull H-31 (BH, FTG), 58-872, Read 759 (BH, FTG), RM1522B (source: Cuba), Zona s.n. (FTG), 53-198A, Zona 828 (FTG), 60-171C, Balick et al. 3382 (NY), 58-80D, plot 166, Houghton 1376 (FTG), 60-171N, plot 189B, Zona &amp; Kernan 798 (FTG), RM1522C, plot 68, Hull H-82 (FTG), 59-504, Balick 3383 (NY), 60- 171J, Beck &amp; Beck 1106 (FTG, NY); Monroe Co., Upper Matecumbe Key, Small &amp; Britton 9326 (BH), transplanted from Long Key, Miller 1703 (US). Read (1968, 1969) recognized several infraspecific taxa whereas a recent field guide (Henderson et al. 1995) recognize only one. Read himself (as quoted in Lippencott 1992) suggested that the infraspecific taxa do not deserve formal taxonomic rank, a suggestion endorsed here. imported as adult trees from the Bahamas, Hudson s.n. (FI); Miami-Dade Co., Miami, Franceschi s.n. (FI), Anonymous s.n. (US), Bessey s.n. (FI), Read s.n. (BH), Hotel Royal Palm, Andrews s.n. (A), old Miami cemetery, Dahlbert s.n. (BH), Key Largo, Read s.n. (BH); Fairchild Tropical Garden, Moore 5838 (BH), Moore 5839 (BH), Moore 5840 (BH), plot 113, CA-1104B, Hull H-15 (BH, FTG), 58-872 (transplanted from wild population on Elliott Key), Sanders 1667 (BH), plot 88, P4059D, Hull H-31 (BH, FTG), 58-872, Read 759 (BH, FTG), RM1522B (source: Cuba), Zona s.n. (FTG), 53-198A, Zona 828 (FTG), 60-171C, Balick et al. 3382 (NY), 58-80D, plot 166, Houghton 1376 (FTG), 60-171N, plot 189B, Zona &amp; Kernan 798 (FTG), RM1522C, plot 68, Hull H-82 (FTG), 59-504, Balick 3383 (NY), 60- 171J, Beck &amp; Beck 1106 (FTG, NY); Monroe Co., Upper Matecumbe Key, Small &amp; Britton 9326 (BH), transplanted from Long Key, Miller 1703 (US). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis ambanjae</name>
+<author>Beentje</author>
+<citation>in J. Dransfield &amp; H. Beentje, Palms of Madagascar: 299 (1995)</citation>
+<type>Madagascar, Sambirano; Perrier; 12070</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Phloga sambiranensis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 5, 1 (3): 18 (1933)</bibref>
+<bibref>Jum. Cat. Pl. Madagascar, Palmae: 23 (1938)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>One of the mysteries of the genus, only known from the type, and not seen for over eighty years. The species name comes from the town of Ambanja.
+NOTE: The epithet sambiranensis is predated in Chrysalidocarpus in the same publication (Jumelle, 1933), but in an earlier fascicle (later combined as Dypsis sambiranensis, a synonym of D pinnatifrons) The new epithet derives from the nearest large town and administrative unit in which the type was found</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Clustering palm. Stems 4-5 m tall, 5-6 cm diam.; internodes distally 2.5-3.5 cm long, nodal scars c. 0.2 cm, distal diameter of stems c. 2.3 cm. LEAVES pinnate; sheath c. 32 cm, proximally glabrous and waxy, distally with scattered scales, with rounded opening, auricles absent; petiole 13-27 cm long, proximally (in a young leaf) 8 x 7 mm, distally 4 x 6 mm, channelled adaxially; rachis slender, in a young leaf 1 m long, in mid-leaf 3-5 mm wide, slightly keeled, almost glabrous; leaflets c. 47 on each side of the rachis, in groups of 2-6, the group interval 4-5 cm, rather stiff, linear, in a young leaf the proximal 38-40 x 0.3-0.5 cm, median 34-36 x 0.6-0.8 cm, distal 8-23 x 0.3-0.6 cm, main vein 1, ramenta few, 1-3 mm long, or absent, rest of leaf glabrous, apices unequally bifid, attenuate. INFLORESCENCE branched to 2 orders; peduncle c. 42.5 cm long, distally curved, proximally c. 8 x 3 mm diam., distally c. 7 x 4 mm diam.; prophyll c. 52 cm long, 3 cm wide, borne at c. 23 cm above the base of the peduncle, waxy, glabrous, open in its upper 20 cm; peduncular bract inserted at c. 35 cm from the base of the peduncle, 29-40 cm long, opening over its length except for the beak of 5 mm; rachis c. 18 cm long, glabrous with c. 8 branched and 13 unbranched first order branches, the proximal of these with a secondary rachis up to 2.5 cm long and proximally 4 x 2 mm diam., with up to 4 rachillae; rachillae 4-11 cm long, c. 1.5 mm diam., glabrous, sinuous, with distant superficial triads; rachilla bracts c. 1 mm, acute. STAMINATE FLOWERS unknown. PISTILLATE FLOWERS with sepals 1.8-2.2 x 2.8-3 mm; petals 3-3.3 x 3.3-3.6 mm; staminodes 0.6-0.7 mm; ovary 2.5-3.3 x 1.8-2 mm. FRUIT ellipsoid or slightly obovoid, 11-14 x 8-11 mm, the apex rounded; endocarp very fibrous, with interwoven fibres. SEED ellipsoid, 11.5-12.5 x 9.5-10 mm, pointed at the base with a sub-basal depression, rounded at the apex; endosperm ruminate, the ruminations distant and c. 1 mm deep.</p></div>
+<div type="distribution"><p>Only known from the type, from the upper Sambirano River.</p></div>
+<div type="biology_ecology"><p>Rain forest; c. 500 m.</p></div>
+<div type="conservation"><p>?Extinct. Not collected for over 80 years.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>According to the Flore de Madagascar, this is synonymous with P. gracilis (now D. oreophila), and the description is a hotchpotch - the small fruit of D. oreophila is not mentioned, nor is the type of D. sambiranensis. The look of the plant is different, and the inflorescence is much larger; we believe this is a taxon in its own right.</p></div>
+<div type="materials_examined"><p>Ambanja: upper Sambirano, Dec. 1912 (fl., fr.), Perrier 12070 (P, type).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

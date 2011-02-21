@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Plectocomiopsis mira</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 37: 247 (1982)</citation>
+<bibref>Dransfield, Ratt. Sabah 40 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 212 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Surprising</p></div>
+<div type="vernacular"><p>Wi Matar (Ib.)</p></div>
+<div type="description"><p>Moderately robust high-climbing rattan with stems to 40 m; stem without sheaths slightly triangular in section, 15-20 mm diam., with sheaths to 35 mm, internodes to 40 cm in juvenile shoots, less in mature climbing stems. Sheaths rich bright green, with a thin covering of silvery grey indumentum and very sparse spines or unarmed; knee absent; ocrea very conspicuous, to 3 cm, orange-yellow, truncate, horizontal not tattering. Leaf to 2.75 m including the cirrus to 1.25 m; leaflets c. 9 on each side of the rachis, broad, spathulate, to 30 &#215; 7 cm, bright green. Inflorescences produced simultaneously from the topmost c. 5-10 nodes, male and female superficially similar but the male more finely branched, to 30 cm, with curving &#177; divaricate branches. Fruit &#177; oblate, c. 2.5 &#215; 3 cm, covered in 30 -35 vertical rows of bright orange-brown scales. Seed c. 2 &#215; 2 cm with thin sarcotesta. Seedling leaf bifid with very thin texture. (Fig. 80, Pl. 16C, 16D).</p></div>
+<div type="distribution"><p>A local rattan found in scattered localities throughout Brunei. It grows in lowland and hill dipterocarp forest on a variety of soils at altitudes up to 800 m above sea level. Elsewhere in scattered localities in Borneo, Sumatra and Peninsular Malaysia.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>The lack of a knee and the curious ocrea set this and P. triquetra apart from other rattans in Brunei; P. triquetra is more slender than P. mira, usually has more spines on the leaf sheath, the ocrea is longer on the side opposite the petiole, the leaflets are more slender and the plant is known only in peat swamp forest and kerapah. Vegetatively P. mira is identical to P. corneri Furt. of Peninsular Malaysia and can only be identified with certainty when inflorescences are available.</p></div>
+<div type="materials_examined"><p>BEL: Sungei Liang, Andulau F.R., Dransfield J. 7248.TEM: Kuala Belalong, Stockdale 12.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

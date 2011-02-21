@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus semierectus</name>
+<author>Renuka &amp; Vijayakumaran</author>
+<citation>Rheedea 4: 122, 1994</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary, large diameter rattan. Stem to 15 m long, basal part stand erect, rest climbing, with sheaths 5 cm in diameter without sheaths 3 cm in diameter, basal nodes with exposed roots. Leaves 2 m long, cirratejuvenile leaf not cirrate; sheath yellow, armed with spines; spines jet black, in tufts below the knee, arranged on a raised rim in semicircles, mouth of the sheath with longer spines; knee present; ocrea not seen; petiole armed with black spines: rachis with small spines to 0.5 cm long: leaflets c.o. 55 x 3.5 cm, regular, linear lanceolate, 3 veined, veins ciliate on the ventral side, cilia to 0.8 cm long. Inflorescence long flagellate; primary sheath upper part papery; partial inflorescence 50 cm long; secondary sheath upper part papery; splits open; involucrophorum present, involucre cup shaped; fruiting perianth stalked. Fruit ovoid - elliptic, ca. 1.5x1 cm; scales in 15 vertical rows, brown with light brown margin, not channelled in the middle; endosperm not ruminate.</p></div>
+<div type="distribution"><p>Evergreen forests at Car Nicobar (Map 3).</p></div>
+<div type="biology_ecology"><p>Flowering November - December. Fruiting April - May.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Used in the construction of huts.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Car Nicobar, 7.4.1993, fr., Renuka and Vijayakumaran 7037 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

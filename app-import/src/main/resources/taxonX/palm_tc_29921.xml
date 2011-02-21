@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus sedens</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 33 (1979) 528</citation>
+<synonymy>
+<name>Calamus ramosissimus</name>
+<author>sensu Becc. non Griff.</author> 
+<bibref>Becc., in Hook, f., Fl. Br. India 6 (1893) 450</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11 (1908) 202</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 58</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 145</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Sedens - sitting, from the Malay name</p></div>
+<div type="vernacular"><p>rotan duduk</p></div>
+<div type="description"><p>Solitary acaulescent or short stemmed palm, hardly climbing rarely more than 2 m tall. Stem without sheaths to about 4.5 cm in diameter with internodes 2-3 cm long. Stem with sheaths up to 6 cm in diameter. Sheaths dull green, densely covered in paler green spines of varying length, usually up to 4 cm long but much longer round the leaf sheath mouth where up to 20 cm long and upward pointing; sheath also densely covered with brownish scales between the spines; knee absent; spines usually sparser just below petiole. Ocrea ill-defined. Leaf ecirrate to 3 m long. Petiole 60-100 cm long armed with robust lateral spines to 4 cm long and scattered smaller spines on upper and lower surfaces. Leaflets 20-30 on each side of rachis, rather distant, broad and rather conspicuously plicate, to 50 cm long by 5 cm wide in mid-section of leaf, decreasing above, the uppermost pair about 15 cm long by 2 cm wide, markedly diverging. Inflorescence without flagellum, confusingly variable; peduncle often to 60 cm or more in length; in both male and female primary bracts exceeding and partly enclosing the whole inflorescence, bright mid-brown in colour armed with spines at the base only, densely scaly outside, shiny darker brown inside. Flowers small and densely crowded. Sometimes inflorescence very short, not more than 20 cm long including peduncle. Mature fruit rounded relatively small, to 8 mm diameter covered in 15-18 vertical rows of bright red-brown scales. Seed round with thin sweet sarcotesta; endosperm homogeneous. Seedling leaf bifid, with noticeably divergent leaflets.</p></div>
+<div type="distribution"><p>Kedah, Perak, Kelantan, Trengganu, Pahang, Selangor, Negri Sembilan, Johore: Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Stem rarely used in making walking sticks.</p></div>
+<div type="discussion"><p>Calamus sedens is commonest on lower hillslopes in hill Dipterocarp forest &amp; upper hill Dipterocarp forest at altitudes up to 1,100 m. It is rare in the lowlands. It appears to avoid ridgetops except in montane areas where ridgetops catch mist. This is an extremely distinctive and interesting rattan. That many specimens are incorrectly determined as Daemonorops in the herbarium suggest that botanists confuse the large inflorescence bracts with those of Daemonorops section Cymbospatha. However in Calamus sedens and other members of section Platyspathus, though the bracts are large and split longitudinally, they do not fall early as in section Piptospatha of Daemonorops and the bracts have free tips rather than all being enclosed inside the tip of the outermost one as in Daemonorops section Cymbospatha. The combination of solitary short-stemmed rattan with ecirrate leaves with broad plicate leaflets is strongly diagnostic of this species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

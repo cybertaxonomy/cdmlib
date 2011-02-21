@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis interrupta</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 327 (1995)</citation>
+<type>Madagascar, East Coast, Ifanadiana, Ambinanindrano; Beentje; 4528</type>
+<type_loc>Holotypus K; isotypus TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>A strikingly beautiful small palm of the forest undergrowth, known as yet from a single collection from the lowlands in the southeast of the island. The species name refers to the interrupted sequence of otherwise regularly arranged leaflets on each side of the rachis.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Inter species floribus staminatis triandris staminibus antesepalis pistillodio conico foliolis linearibus numerosis in quoque latere rachidis interrupte dispositis distinctissima.</p></div>
+<div type="description"><p>Solitary palm of forest undergrowth. STEMS to 3 m tall, c. 12 mm diam.; internodes 60-70 cm long. LEAVES 7 in crown; sheaths forming a well defined crownshaft; sheath 19-20 cm long, 1.5 cm diam., with sparse scattered dark brown scales; low auricles present but apparently soon tattering; petiole 9-12 cm long, c. 4 x 2 mm in cross section, deeply channelled, rather densely covered in discrete dark brown scales; rachis 64-70 cm long, scaly as the petiole; leaflets 24-29 on each side of the rachis, all except the apical pair single-fold, linear, grouped in proximal part of the leaf, regularly arranged distally, regularly arranged within the groups, the leaflet series thus appearing interrupted rather than fascicled, mid-leaf leaflets 15-23 x 0.8-1.5 cm, apical pair slightly shorter, basalmost leaflets 6-8 x 0.4-0.8 cm, leaflet midrib prominent adaxially, texture membranous. INFLORESCENCE interfoliar, branched to 2 orders, arching with pendulous rachillae; peduncle 50 cm long, c. 4 mm wide at the base, tapering to 2.5 mm wide, glabrous; prophyll inserted 14.5 cm above the base of the peduncles, 30 x 1.5 cm, membranous, striate, very sparsely scaly; peduncular bract inserted c. 20 cm above the prophyll, otherwise not known; rachis c. 30 cm long, glabrous; rachillae slender, c. 20, 19-30 cm long, glabrous, c. 1.5 mm diam., triads c. 3 mm apart, rachilla bract c. 0.8 mm high, rounded, glabrous. FLOWERS very immature in available specimen. STAMINATE FLOWERS with 3 ?sagittate antesepalous stamens and a conical pistillode. FRUIT unknown.</p></div>
+<div type="distribution"><p>Ifanadiana area.</p></div>
+<div type="biology_ecology"><p>Hill forest; 510 m.</p></div>
+<div type="conservation"><p>Critical. The extraordinary forests of Ambinanindrano are gradually being destroyed by shifting cultivation.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>.This taxon, although known only from a single specimen, is so distinctive that we have considered it important to name it, even though several
+parts are not represented. Among the species of Dypsis with three sagittate antesepalous stamens and a conical pistillode, D. interrupta is immediately distinguishable by its numerous linear leaflets arranged in an interrupted series on each side of the rachis. This is clearly a very beautiful species and it would be desirable not only to recollect it to complete our understanding of it as a species, but also to introduce it into cultivation. It was found growing on a steep slope in open forest.</p></div>
+<div type="materials_examined"><p>Ifanadiana: 1 km S of Ambinanindrano, 17-19 Nov. 1991 (fl. buds), Beentje 4528 (holotype K; isotype TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

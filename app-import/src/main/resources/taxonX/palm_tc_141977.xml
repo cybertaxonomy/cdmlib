@@ -1,0 +1,75 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Oraniopsis appendiculata, a Previously Misunderstood Queensland Palm</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Irvine</mods:namePart>
+<mods:namePart type="given">A.K.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.W.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 29:56-63</mods:publisher>
+<mods:dateIssued>1985</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Oraniopsis appendiculata</name>
+<author>(F.M.Bailey) J.Dransf., A.K.Irvine &amp; N.W.Uhl</author>
+<citation>Principes 29: 61 (1985)</citation>
+<type>Queensland, Bellenden-Ker in 1889; F. M. Bailey; s.n.</type>
+<type_loc>Type BRI</type_loc>
+<synonymy>
+<name>Areca appendiculata</name>
+<author>F.M.Bailey</author>
+<bibref>F.M.Bailey, Dept. Agric. Bot. Div. Bull. 4: 18 (1891)</bibref>
+</synonymy>
+<synonymy>
+<name>Orania appendiculata</name>
+<author>(F.M.Bailey) Domin</author>
+<bibref>(F.M.Bailey) Domin, Biblioth. Bot. 85: 498 (1915)</bibref>
+</synonymy>
+<synonymy>
+<name>Orania beccarii</name>
+<author>F.M.Bailey</author>
+<bibref>F.M.Bailey, Queensland Agric. J. 23: 35 (1909)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Trunk up to 20 m tall, 20-45 cm diam. at breast height, gray, irregularly marked with leaf scars. Leaves ca. 8-15 in crown, up to ca. 6 m long; sheathing base cuplike, rather short ca. 20 cm wide at the base, tapering to ca. 15 cm wide, and then narrowing into the petiole; petiole up to ca. 65 cm long, up to ca. 7.0 x 6.0 em in section, the margins ± winged, ca. 12 cm deep, sharp, abaxially brown tomentose; rachis becoming adaxially ridged at ca. half its length; leaflets up to ca. 110 on each side of the rachis, the apical pair composed of 2-4 folds, the rest all singlefold, basal leaflets ca. 15-20 x 0.5-0.8 cm, mid-leaf leaflets to ca. 100 x 4.5 cm, apical pair up to ca. 43 x 4.5 cm, leaflets held at ca. 60° from the rachis except near the tip where ca. 30°; adaxial surface dark green, abaxial surface mealy, grey-white, tinged brown, with numerous small, dark brown' scales. Inflorescences 80-120 em long; peduncle up to ca. 75 em long, up to ca. 4 x 2 em in crosssection, strongly flattened and winged at the base; prophyll borne near the base of the peduncle, ca. 25 x 6 em, abaxially open to the base, adaxially splitting irregularly; peduncular bract 1 inserted 6-13.5 em above the base, up to ca. 60 cm long, split abaxially, opening out somewhat, ca. 10 em wide at widest point, strongly keeled; peduncular bract 2 inserted ca. 20-26 cm above the base, 60-135 x 812 cm; peduncular bract 3 inserted ca. 25-50 em above the base, slightly smaller than bract 2; peduncular bract 4, where present, inserted up to 70 cm above the base, either similar to bract 3, up to 87 em long or dissimilar, triangular, membranous, ca. 5 cm long, incompletely sheathing with long decurrent margins; peduncular bract 5, where present, inserted up to 70 cm from the base, membranous, subulate, ca. 6 em long; rachis ca. 3545 cm long; rachis bracts triangular, membranous, easily disintegrating, the basal to 4 x 1 em, the distal very small and inconspicuous; first-order branches ca. 70 in staminate, 30-40 in pistillate inflorescence, spirally arranged; rachillae very numerous, staminate ca. 3-5 x 0.15 cm, pistillate ca. 4-10 x 0.2 em. Staminate flowers cream-colored, borne on pedicels ca. 1.2 x 1.2 mm; calyx ca. 1 mm high with lobes to 0.5 mm; petals ca. 6 x 2 mm; filaments ca. 3-3.5 mm long, ca. 1 mm diam. at the base, anthers ca. 5 x 1 mm; pistillode ca. 1 mm high, sometimes longer. Pistillate flower similar to staminate; pedicel ca. 2 x 2 mm; calyx ca. 1 mm high with lobes to 0.5 mm; petals 5 x 2.2 mm; filaments of staminodes 1.5 x 1 mm, empty anthers ca. 3 x 0.8 mm; ovary strongly 3-lobed, ca. 2 x 3.5 mm, the stigmas ca. 0.8 x 0.3 mm, mature fruit 2.7-3.4-2.3 x 2.4-2.9 cm borne on pedicels 3 x 3-4 mm; epicarp bright yellow; mesocarp ca. 2.7-3.0 mm thick, the outer ca. 1.7 mm wide layer semiclear, the inner layer white pulpy; seed globose, ca. 2.2 cm diam., the integument black, ca. 0.5 mm thick; endosperm with a small central hollow ca. 2 mm wide. </p></div>
+<div type="distribution"><p>Oraniopsis appendiculata occurs in rain forests of mountain ranges between the upper Tully River area (15°40'S), northwards to the Big Tableland (17°50'S) about 25 km south of Cooktown with the most inland occurrence being on the Great Dividing Range, southwest of Atherton, some 75 km inland, above 1,100 m altitude. </p></div>
+<div type="biology_ecology"><p>The species occurs mostly above 300 m up to ca. 1,500 m altitude, and also in narrow gorges and gullies at the foot of abruptly descending coastal ranges, but does not extend on to the broader coastal plains. Rainfall is mostly above 1,800 mm per annum, with frequent cloud mist compensating rainfall in the 1,800 mm regions. Soil types are mostly of granitic and metamorphic ori• gin; the palm also occurs on shallow basaltic soils with impeded drainage. The palm is usually absent from deep, well-drained basalt soils. It occurs in the following rain forest types (Tracey and Webb 1975): Simple Microphyll Vine Fern Thicket, Simple Notophyll Vine Forest, Upland Mesophyll Vine Forest and Complex Mesophyll Vine Forest. Seeds begin to germinate after 200400 days, but some may continue to germinate 3-4 years after sowing. The palm is very slow growing and seems to stay in the rosette stage for at least 20-30 years. In dense rain forest rosettes may even be twice this age with erect leaves 3-8 m long. Unless growth rates accelerate markedly when a trunk is produced, tall stemmed individuals must be several hundred years old. </p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Oraniopsis is very closely related to Ceroxylon; indeed the only differences between the two genera are the presence in Oraniopsis of a bracteole on the pedicel, the incomplete rather than closed prophyll, the free petals, and the curious position of the antesepalous stamens. The differences between the genera of the Ceroxyleae are best displayed in the following key. </p></div>
+<div type="materials_examined"><p>AUSTRALIA: North Queensland: Upper Mossman River, 20.9.1936, H. Flecker 2324 (QRS); Eastern slope of Mt. Bartle Frere, 29.10.1939, H. Flecker 6405 (QRS); Harvey Creek, 9.11.1947, H. Flecker 11788 (&#9792;) (QRS); Boonjie Logging Area, State Forest Reserve 1230, Western foothills of Mt. Bartle Frere, 4.4.1972, A. K. Irvine 179 (&#9794;) and 180 (&#9792;) (QRS); Mt. Lewis, State Forest Reserve 143, 22.8.1972, A. K. Irvine 310 (&#9792;) and 311 (QRS); Boonjie Logging Area, State Forest Reserve 1230, 23.1.1973, A. K. Irvine 444
+(&#9792;) (QRS); Topaz, 7.2.1983, A. K. Irvine s.n. (&#9792;) (BH, BRI, K); Millaa Millaa, Watson Road, 13.3.1984, A. K. Irvine s.n. (&#9792;) a&#9794;) (K); Topaz, 14.3.1975, G. Unwin 2 (&#9792;) and (&#9794;) (QRS); Mt. Bellenden-Ker, 1914, L. S. Gibbs 6316 (K); </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

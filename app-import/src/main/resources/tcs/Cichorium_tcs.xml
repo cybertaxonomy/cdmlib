@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--XML-Beispieldatei von XMLSpy generiert v2010 rel. 3 sp1 (http://www.altova.com)-->
+<DataSet xsi:schemaLocation="http://www.tdwg.org/schemas/tcs/1.01 file:///C:/localCopy/schema/tcs/v101.xsd" xmlns="http://www.tdwg.org/schemas/tcs/1.01" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<MetaData>
+		<Simple>Cichorium Example</Simple>
+	</MetaData>
+	<Specimens>
+		<Specimen id="type10">
+			<Simple>Herb. Linn. No. 962.4 (LINN)</Simple>
+			<!--Collection identifier="linn">Herb. Linn.</Collection-->
+			<SpecimenItem identifier="type10item"/>
+		</Specimen>
+	</Specimens>
+	<Publications>
+		<Publication id="ref1">
+			<Simple>EDIT Cichorieae</Simple>
+		</Publication>
+		<Publication id="ref2">
+			<Simple>Sp. Pl.</Simple>
+			<PublicationDetailed>
+				<Title>Sp. Pl.</Title>
+				<DatePublished>1753</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref3">
+			<Simple>Voyage Yemen 1889</Simple>
+			<PublicationDetailed>
+				<Title>Voyage Yemen</Title>
+				<DatePublished>1889</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref4">
+			<Simple>in Schweinfurth, Beitr. Fl. Äthiop.</Simple>
+			<PublicationDetailed>
+				<Title>in Schweinfurth, Beitr. Fl. Äthiop.</Title>
+				<DatePublished>1867</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref5">
+			<Simple>Consp. Fl. Graec. 2</Simple>
+			<PublicationDetailed>
+				<Title>Consp. Fl. Graec. 2</Title>
+				<DatePublished>1902</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref6">
+			<Simple>in Willdenowia 37</Simple>
+			<PublicationDetailed>
+				<Title>in Willdenowia 37</Title>
+				<DatePublished>2007</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref7">
+			<Simple>Observ. Bot. 4</Simple>
+			<PublicationDetailed>
+				<Title>Observ. Bot. 4</Title>
+				<DatePublished>1771</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref8">
+			<Simple>Syn. Gen. Compos.</Simple>
+			<PublicationDetailed>
+				<Title>Syn. Gen. Compos.</Title>
+				<DatePublished>1832</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref9">
+			<Simple>Compos. Ind.</Simple>
+			<PublicationDetailed>
+				<Title>Compos. Ind.</Title>
+				<DatePublished>1876</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref10">
+			<Simple>Prodr. Stirp. Chap. Allerton.</Simple>
+			<PublicationDetailed>
+				<Title>Prodr. Stirp. Chap. Allerton.</Title>
+				<DatePublished>1796</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref11">
+			<Simple>in Lamarck &amp; Candolle, Fl. Franç. ed. 3, 4</Simple>
+			<PublicationDetailed>
+				<Title>in Lamarck &amp; Candolle, Fl. Franç. ed. 3, 4</Title>
+				<DatePublished>1805</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref12">
+			<Simple>Prodr. 7</Simple>
+			<PublicationDetailed>
+				<Title>Prodr. 7</Title>
+				<DatePublished>1838</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref13">
+			<Simple>Fl. Portug. 2</Simple>
+			<PublicationDetailed>
+				<Title>Fl. Portug. 2</Title>
+				<DatePublished>1825-1828</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+		<Publication id="ref14">
+			<Simple>in Komarov, Fl. SSSR 29</Simple>
+			<PublicationDetailed>
+				<Title>in Komarov, Fl. SSSR 29</Title>
+				<DatePublished>1964</DatePublished>
+			</PublicationDetailed>
+		</Publication>
+	</Publications>
+	<TaxonNames>
+		<TaxonName nomenclaturalCode="Botanical" id="n1">
+			<Simple>Cichorieae Lam. &amp; DC.</Simple>
+			<Rank code="fam"/>
+			<CanonicalName>
+				<Simple>Cichorieae</Simple>
+				<Uninomial>Cichorieae</Uninomial>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Lam. &amp; DC.</Simple>
+				<Authorship>
+					<Simple>Lam. &amp; DC.</Simple>
+					<Authors>
+						<AgentName>Lam.</AgentName>
+						<AgentName>DC.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n2">
+			<Simple>Cichoriinae Dumort</Simple>
+			<Rank code="trib"/>
+			<CanonicalName>
+				<Simple>Cichoriinae</Simple>
+				<Uninomial>Cichoriinae</Uninomial>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Dumort</Simple>
+				<Authorship>
+					<Simple>Dumort</Simple>
+					<Authors>
+						<AgentName>Dumort</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n3">
+			<Simple>Cichorium L.</Simple>
+			<Rank code="gen"/>
+			<CanonicalName>
+				<Simple>Cichorium</Simple>
+				<Uninomial>Cichorium</Uninomial>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>L.</Simple>
+				<Authorship>
+					<Simple>L.</Simple>
+					<Authors>
+						<AgentName>L.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n4">
+			<Simple>Cichorium bottae Deflers</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium bottae</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>bottae</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Deflers</Simple>
+				<Authorship>
+					<Simple>Deflers</Simple>
+					<Authors>
+						<AgentName>Deflers</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref3"/>
+			<MicroReference>159</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n5">
+			<Simple>Cichorium calvum Asch.</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium calvum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>calvum</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Asch.</Simple>
+				<Authorship>
+					<Simple>Asch.</Simple>
+					<Authors>
+						<AgentName>Asch.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref4"/>
+			<MicroReference>143</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n6">
+			<Simple>Cichorium endivia L.</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium endivia</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>endivia</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>L.</Simple>
+				<Authorship>
+					<Simple>L.</Simple>
+					<Authors>
+						<AgentName>L.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref2"/>
+			<MicroReference>813</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n6s1">
+			<Simple>Cichorium intybus var. endivia (L.) C. B. Clarke</Simple>
+			<Rank code="var"/>
+			<CanonicalName>
+				<Simple>Cichorium intybus var. endivia</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>intybus</SpecificEpithet>
+				<InfraspecificEpithet>endivia</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>(L.) C. B. Clarke</Simple>
+				<BasionymAuthorship>
+					<Simple>L.</Simple>
+					<Authors>
+						<AgentName>L.</AgentName>
+					</Authors>
+				</BasionymAuthorship>
+				<CombinationAuthorship>
+					<Simple>C. B. Clarke</Simple>
+					<Authors>
+						<AgentName>C. B. Clarke</AgentName>
+					</Authors>
+				</CombinationAuthorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref9"/>
+			<MicroReference>250</MicroReference>
+			<Basionym>
+				<RelatedName ref="n6"/>
+			</Basionym>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n6s2">
+			<Simple>Cichorium esculentum Salisb.</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium esculentum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>esculentum</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Salisb.</Simple>
+				<Authorship>
+					<Simple>Salisb.</Simple>
+					<Authors>
+						<AgentName>Salisb.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref10"/>
+			<MicroReference>183</MicroReference>
+			<Basionym>
+				<RelatedName ref="n6"/>
+			</Basionym>
+			<PublicationStatus>
+				<RuleConsidered>nom. illeg.</RuleConsidered>
+				<Note>nom. illeg.</Note>
+			</PublicationStatus>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n6s3">
+			<Simple>Cichorium endivia var. angustifolium DC.</Simple>
+			<Rank code="var"/>
+			<CanonicalName>
+				<Simple>Cichorium endivia var. angustifolium</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>endivia</SpecificEpithet>
+				<InfraspecificEpithet>angustifolium</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>DC.</Simple>
+				<Authorship>
+					<Simple>DC.</Simple>
+					<Authors>
+						<AgentName>DC.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref11"/>
+			<MicroReference>68</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n6s4">
+			<Simple>Cichorium endivia var. crispum DC.</Simple>
+			<Rank code="var"/>
+			<CanonicalName>
+				<Simple>Cichorium endivia var. crispum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>endivia</SpecificEpithet>
+				<InfraspecificEpithet>crispum</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>DC.</Simple>
+				<Authorship>
+					<Simple>DC.</Simple>
+					<Authors>
+						<AgentName>DC.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref11"/>
+			<MicroReference>68</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n6s5">
+			<Simple>Cichorium endivia var. latifolium DC.</Simple>
+			<Rank code="var"/>
+			<CanonicalName>
+				<Simple>Cichorium endivia var. latifolium</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>endivia</SpecificEpithet>
+				<InfraspecificEpithet>latifolium</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>DC.</Simple>
+				<Authorship>
+					<Simple>DC.</Simple>
+					<Authors>
+						<AgentName>DC.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref11"/>
+			<MicroReference>68</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n6s6">
+			<Simple>Cichorium endivia var. sativa DC.</Simple>
+			<Rank code="var"/>
+			<CanonicalName>
+				<Simple>Cichorium endivia var. sativa</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>endivia</SpecificEpithet>
+				<InfraspecificEpithet>sativa</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>DC.</Simple>
+				<Authorship>
+					<Simple>DC.</Simple>
+					<Authors>
+						<AgentName>DC.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref12"/>
+			<MicroReference>84</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n7">
+			<Simple>Cichorium hybridum Heldr. ex Halácsy</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium hybridum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>hybridum</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Heldr. ex Halácsy</Simple>
+				<Authorship>
+					<Simple>Heldr. ex Halácsy</Simple>
+					<Authors>
+						<AgentName>Halácsy</AgentName>
+						<AgentName role="ex">Heldr.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref5"/>
+			<MicroReference>179</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n8">
+			<Simple>Cichorium intybus L.</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium intybus</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>intybus</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>L.</Simple>
+				<Authorship>
+					<Simple>L.</Simple>
+					<Authors>
+						<AgentName>L.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref2"/>
+			<MicroReference>813</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n8s5">
+			<Simple>Cichorium glaucum Hoffmanns. &amp; Link</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium glaucum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>glaucum</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Hoffmanns. &amp; Link</Simple>
+				<Authorship>
+					<Simple>Hoffmanns. &amp; Link</Simple>
+					<Authors>
+						<AgentName>Hoffmanns.</AgentName>
+						<AgentName>Link</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref13"/>
+			<MicroReference>178</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n8s6">
+			<Simple>Cichorium intybus subsp. glaucum (Hoffmanns. &amp; Link) Tzvelev</Simple>
+			<Rank code="ssp"/>
+			<CanonicalName>
+				<Simple>Cichorium intybus subsp. glaucum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>intybus</SpecificEpithet>
+				<InfraspecificEpithet>glaucum</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple> (Hoffmanns. &amp; Link) Tzvelev</Simple>
+				<BasionymAuthorship>
+					<Simple>Hoffmanns. &amp; Link</Simple>
+					<Authors>
+						<AgentName>Hoffmanns.</AgentName>
+						<AgentName>Link</AgentName>
+					</Authors>
+				</BasionymAuthorship>
+				<CombinationAuthorship>
+					<Simple>Tzvelev</Simple>
+					<Authors>
+						<AgentName>Tzvelev</AgentName>
+					</Authors>
+				</CombinationAuthorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref14"/>
+			<MicroReference>29</MicroReference>
+			<Basionym>
+				<RelatedName ref="n8s5"/>
+			</Basionym>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n9">
+			<Simple>Cichorium pumilum Jacq.</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium pumilum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>pumilum</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>Jacq.</Simple>
+				<Authorship>
+					<Simple>Jacq.</Simple>
+					<Authors>
+						<AgentName>Jacq.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref7"/>
+			<MicroReference>3</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n10">
+			<Simple>Cichorium spinosum L.</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Cichorium spinosum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>spinosum</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>L.</Simple>
+				<Authorship>
+					<Simple>L.</Simple>
+					<Authors>
+						<AgentName>L.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref2"/>
+			<MicroReference>813</MicroReference>
+			<Typification>
+				<Simple>Lectotype (designated by Alavi 1983:322): Herb. Linn. No. 962.4 (LINN)</Simple>
+				<TypeVouchers>
+					<TypeVoucher typeOfType="lecto">
+						<VoucherReference ref="type10"/>
+						<LectotypePublication>Alavi in Jafri &amp; El-Gadi, Fl. Libya 107. 1983</LectotypePublication>
+						<LectotypeMicroReference>322</LectotypeMicroReference>
+					</TypeVoucher>
+				</TypeVouchers>
+			</Typification>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n10s1">
+			<Simple>Acanthophyton spinosum (L.) Less.</Simple>
+			<Rank code="sp"/>
+			<CanonicalName>
+				<Simple>Acanthophyton spinosum</Simple>
+				<Genus>Acanthophyton</Genus>
+				<SpecificEpithet>spinosum</SpecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>(L.) Less.</Simple>
+				<BasionymAuthorship>
+					<Simple>L.</Simple>
+					<Authors>
+						<AgentName>L.</AgentName>
+					</Authors>
+				</BasionymAuthorship>
+				<CombinationAuthorship>
+					<Simple>Less.</Simple>
+					<Authors>
+						<AgentName>Less.</AgentName>
+					</Authors>
+				</CombinationAuthorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref8"/>
+			<MicroReference>128</MicroReference>
+			<Basionym>
+				<RelatedName ref="n10"/>
+			</Basionym>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n11">
+			<Simple>Cichorium intybus L. subsp. intybus</Simple>
+			<Rank code="ssp"/>
+			<CanonicalName>
+				<Simple>Cichorium intybus subsp. intybus</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>intybus</SpecificEpithet>
+				<InfraspecificEpithet>intybus</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>L.</Simple>
+				<Authorship>
+					<Simple>L.</Simple>
+					<Authors>
+						<AgentName>L.</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref2"/>
+			<MicroReference>813</MicroReference>
+		</TaxonName>
+		<TaxonName nomenclaturalCode="Botanical" id="n12">
+			<Simple>Cichorium intybus subsp. spicatum I. Ricci</Simple>
+			<Rank code="ssp"/>
+			<CanonicalName>
+				<Simple>Cichorium intybus subsp. spicatum</Simple>
+				<Genus>Cichorium</Genus>
+				<SpecificEpithet>intybus</SpecificEpithet>
+				<InfraspecificEpithet>spicatum</InfraspecificEpithet>
+			</CanonicalName>
+			<CanonicalAuthorship>
+				<Simple>I. Ricci</Simple>
+				<Authorship>
+					<Simple>I. Ricci</Simple>
+					<Authors>
+						<AgentName>I. Ricci</AgentName>
+					</Authors>
+				</Authorship>
+			</CanonicalAuthorship>
+			<PublishedIn ref="ref6"/>
+			<MicroReference>142</MicroReference>
+		</TaxonName>
+	</TaxonNames>
+	<TaxonConcepts>
+		<TaxonConcept id="tc1">
+			<Name scientific="true" ref="n1"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc2">
+			<Name scientific="true" ref="n2"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc1"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc3">
+			<Name scientific="true" ref="n3"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc2"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc4">
+			<Name scientific="true" ref="n4"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc3"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc5">
+			<Name scientific="true" ref="n5"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc3"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc6">
+			<Name scientific="true" ref="n6"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc3"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has synonym">
+					<ToTaxonConcept ref="tc6s3"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has synonym">
+					<ToTaxonConcept ref="tc6s4"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has synonym">
+					<ToTaxonConcept ref="tc6s5"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has synonym">
+					<ToTaxonConcept ref="tc6s6"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc6s3">
+			<Name scientific="true" ref="n6s3"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc6s4">
+			<Name scientific="true" ref="n6s4"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc6s5">
+			<Name scientific="true" ref="n6s5"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc6s6">
+			<Name scientific="true" ref="n6s6"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc7">
+			<Name scientific="true" ref="n7"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc3"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc8">
+			<Name scientific="true" ref="n8"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc3"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has synonym">
+					<ToTaxonConcept ref="tc8s5"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has vernacular">
+					<ToTaxonConcept ref="tc8cn1"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has vernacular">
+					<ToTaxonConcept ref="tc8cn2"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has vernacular">
+					<ToTaxonConcept ref="tc8cn3"/>
+				</TaxonRelationship>
+				<TaxonRelationship type="has vernacular">
+					<ToTaxonConcept ref="tc8cn4"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc8s5">
+			<Name scientific="true" ref="n8s5"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc8cn1">
+			<Name scientific="false" language="Albanian">Çikore</Name>
+			<AccordingTo>
+				<Simple>Vangjeli, J., Flora e Shqipërisë 4. 1999</Simple>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc8cn2">
+			<Name scientific="false" language="Albanian">Kore</Name>
+			<AccordingTo>
+				<Simple>Vangjeli, J., Flora e Shqipërisë 4. 1999</Simple>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc8cn3">
+			<Name scientific="false" language="Arabic">هِنْدَبا بَرِّيَّة</Name>
+			<AccordingTo>
+				<Simple>Nehmé, M., Dictionnaire Etymologique de la Flore du Liban. 2000</Simple>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc8cn4">
+			<Name scientific="false" language="Arabic">هِنْدَبا بَرِّيَّة</Name>
+			<AccordingTo>
+				<Simple>Nehmé, M., Etymological Dictionary of Syrian Flora. 2008</Simple>
+			</AccordingTo>
+		</TaxonConcept>
+		<TaxonConcept id="tc9">
+			<Name scientific="true" ref="n9"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc3"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc10">
+			<Name scientific="true" ref="n10"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc3"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc11">
+			<Name scientific="true" ref="n11"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc8"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+		<TaxonConcept id="tc12">
+			<Name scientific="true" ref="n12"/>
+			<AccordingTo>
+				<Simple>EDIT Cichorieae</Simple>
+				<AccordingToDetailed>
+					<PublishedIn ref="ref1"/>
+				</AccordingToDetailed>
+			</AccordingTo>
+			<TaxonRelationships>
+				<TaxonRelationship type="is child taxon of">
+					<ToTaxonConcept ref="tc8"/>
+				</TaxonRelationship>
+			</TaxonRelationships>
+		</TaxonConcept>
+	</TaxonConcepts>
+</DataSet>

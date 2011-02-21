@@ -1,0 +1,78 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Clustering high-climbing pinnate-leaved rattan palms of Equatorial West Africa; sheaths densely armed; hapaxanthic and hermaphroditic, the flowers are borne in pairs, with leathery perianths but not inflated.</p></div>
+<nomenclature>
+<name>Laccosperma</name>
+<author>(G. Mann and H. Wendl.) Drude</author>
+<citation>Bot. Zeit. 35:632, 635 (1877).</citation>
+<type>Type; Laccosperma opacum; Drude</type>
+<synonymy>
+<name>Calamus subgenus Laccosperma</name>
+<author>G. Mann and H. Wendl.</author> 
+<bibref>G. Mann and H. Wendl., Trans. Linn. Soc. London 24: 430 (1864).</bibref>
+</synonymy>
+<synonymy>
+<name>Ancistrophyllum</name>
+<author>(G. Mann and H. Wendl.) H. Wendl. (non Göpp. 1841) in Kerch.</author>
+<bibref>(G. Mann and H. Wendl.) H. Wendl. (non Göpp. 1841) in Kerch., Les Palmiers: 230 (1878).</bibref>
+<type>Type; Ancistrophyllum secundiflorum; (P.Beauv.) G.Mann &amp; H.Wendl.</type>
+</synonymy>
+<synonymy>
+<name>Calamus subgenus Ancistrophyllum</name>
+<author>G. Mann and H. Wendl.</author>
+<bibref>G. Mann and H. Wendl., Trans. Linn. Soc. London 24: 432 (1864). </bibref>
+</synonymy>
+<synonymy>
+<name>Ancistrophyllum subgenus Laccosperma</name>
+<author>(G. Mann and H. Wendl.) Hook.f. in Benth. and Hook.f.</author>
+<bibref>(G. Mann and H. Wendl.) Hook.f. in Benth. and Hook.f., Gen. Pl. 3: 937 (1883).</bibref>
+</synonymy>
+<synonymy>
+<name>Ancistrophyllum subgenus Ancistrophyllum</name>
+<author>Hook.f. in Benth. and Hook.f.</author>
+<bibref>Hook.f. in Benth. and Hook.f., Gen. Pl. 3: 937 (1883).</bibref>
+</synonymy>
+<synonymy>
+<name>Neoancistrophyllum</name>
+<author>Rauschert</author>
+<bibref>Rauschert, Taxon 31: 557 (1982).</bibref>
+<type>Type; Neoancistrophyllum secundiflorum; (P.Beauv.) Rauschert</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Laccos — hole or pit, sperma — seed, referring to the deeply pitted seeds of some of the species.</p></div>
+<div type="description"><p>Clustered, spiny, high-climbing, hapaxanthic, hermaphroditic, rattan palms. Stem sometimes branching aerially, eventually becoming bare, with long internodes, circular in cross-section, sucker shoots apparently axillary. Leaf pinnate with a cirrus; sheath strictly tubular, variously armed with scattered spines and abundant caducous indumentum; ocrea conspicuous, split opposite the leaf, scarcely sheathing, sometimes slightly inflated with inrolled edges and ant-infested, unarmed or armed like the sheath; knee absent; petiole present, usually armed with scattered or grouped spines abaxially and along margins, and frequently indumentose, rarely unarmed; rachis armed like the petiole; cirrus armed with reflexed spines and bearing neat pairs of reflexed acanthophylls; leaflets few to very numerous, 1–4-fold, entire, linear to sigmoid, regularly or irregularly arranged, often fiercely armed with short spines along the margins and the main ribs, midribs prominent adaxially, transverse veinlets conspicuous or inconspicuous. Inflorescences produced simultaneously in the axils of the most distal few frequently reduced leaves, branched to 1 order; peduncle enclosed within the leaf sheath and emerging from its mouth or bursting through the sheath, not adnate to the internode, ± hemispherical in cross-section; prophyll strictly tubular, 2-keeled, enclosed within the leaf sheath; peduncular bracts 1–3; rachis longer than the peduncle; rachis bracts distichous, strictly tubular with a triangular limb, without spines, sparsely indumentose, becoming tattered, each subtending a pendulous or spreading rachilla; rachilla prophyll tubular, 2-keeled, included within the subtending bract, rachilla bracts distichous, tubular with apiculate, triangular limb, striate, sparsely indumentose, the margin sometimes ciliate, each, except sometimes for the basal 1–2, subtending a flower cluster. Flowers very rarely borne in triads, usually in dyads, sometimes solitary towards the tips of the rachillae, the flower cluster bearing a tubular 2-keeled prophyll and 0, 1, or 2, 2-keeled bracteoles (depending on the number of flowers); calyx slightly to strongly stalk-like at the base, often bent at right angles, incompletely divided distally into 3 triangular striate lobes; corolla tubular at the very base, divided above into 3 oblong, narrow, triangular, valvate lobes; stamens 6, borne at the very base of the corolla, filaments distinct, much swollen, angular, scarcely narrowed at the connective, anthers medifixed, oblong, latrorse; gynoecium tricarpellate, triovulate, ovary covered with scales, those at the base of the style minute, spine-like, style elongate, 3-angled, stigma minute, pyramidal, ovules basally attached, anatropous. Pollen ellipsoidal, bi-symmetric; aperture a distal sulcus; ectexine tectate, finely to coarsely perforate, or rugulate-reticulate, aperture margin finer; infratectum columellate; longest axis 37–75 µm [4/5]. Fruit 1-seeded (?always), tipped with the base of the style, the rest of the style usually breaking off early in fruit development, the perianth whorls persistent; epicarp covered in vertical rows of reflexed scales with fringed margins, mesocarp fleshy and sweet at maturity, endocarp not differentiated. Seed attached subbasally at one side, ovoid and laterally flattened, or rounded and deeply scalloped, with a very shallow to very deep lateral pit, seed coat apparently sometimes fleshy, endosperm homogeneous; embryo lateral, opposite the pit. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>Five species confined to humid rain forest of West Africa and the Congo Basin. </p></div>
+<div type="anatomy"><p>Leaf, stem, root (Tomlinson 1961).</p></div>
+<div type="relationships"><p>Laccosperma is strongly supported asmonophyletic (Baker et al. 2000a, 2000c). It is resolved as sisterto Eremospatha with moderate support (Baker et al. 2000a,2000b, Asmussen et al. 2006).</p></div>
+<div type="uses"><p>Stems are used as a source of cane.</p></div>
+<div type="taxonomic accounts"><p>Sunderland (2001, 2007).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Very rarely in Laccosperma, triads of hermaphroditicflowers are present and bract arrangement indicates asympodial nature for the triad and the dyad.</p></div>
+<div type="vernacular"><p>Common names numerous and varied throughout the area of occurrence (Sunderland 2001).</p></div>
+<div type="biology_ecology"><p>Apparently most abundant in rain forest on swampy soils.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

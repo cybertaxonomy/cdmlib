@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis pusilla</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 369 (1995)</citation>
+<type>Madagascar, Antalavia; Dransfield et al.; JD6474</type>
+<type_loc>Holotypus K; isotypus TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This is the smallest species of the "Vonitra" group. It is an attractive palm of the undergrowth in valley bottoms. The stems are almost always unbranched, and often solitary, and densely clothed with very short piassava. It can be distinguished from other species in the group by the short usually unbranched stems, the short piassava, the delicate curving leaflets and the inflorescence that is branched to one order only. Its rather dainty appearance is reflected in the species name. As far as we know, this species is not in cultivation, but it would clearly be an attractive subject for a small garden.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Vonitra (Betsimisaraka).</p></div>
+<div type="diagnosis"><p>D. fibrosae affinis insignis statura pusilla, trunco raro ramificanti, inflorescentia brevi semel ramificanti.  </p></div>
+<div type="description"><p>Solitary or clustered palm. STEM 0.8-2 m, usually unbranched, sometimes dichotomous; bare stem 4-5 cm diam., but usually covered with very thick layer of persistent fibrous leafbases and then c. 12 cm diam.; fibres coarse, short, not pendulous. Trunk with basal surface roots and occasionally with aerial roots at 40-50 cm from ground; bark brown, internodes 3-10 mm long. LEAVES 15-16 in the crown, up to 2 m long, porrect with arching rachis; sheath 22-26 x 6-7.5 cm, with rather dense red or blackish laciniate scales, auricles (up to 5 cm long) and margins disintegrating quickly; petiole 75-100 cm long, c. 1 x 0.6 cm (proximal), x 0.6 x 0.4-0.5 cm (distal), flattened or slightly convex adaxially, convex to keeled abaxially, green to purplish with dense red laciniate scales; rachis 78-94 cm, in mid-leaf 3-4 mm wide, angular, with   scattered scales; leaflets 25-28 on each side of the rachis, stiff, proximally at an angle of 90&#176; with the leaflets on the opposite side of the rachis, more distal in one plane, regular, glossy dark green, proximal ones 19-41 x 0.3-2.5 cm (most proximal ones short and narrow), median 38-51 x 1.8-3.2 (interval 2.5-3 cm), distal 13-31 x 0.8-2.5 cm, the apical pair hardly connate, apices attenuate and bifid, main veins 3, with the midrib prominent adaxially, leaflets glabrous or with a few scattered scales near the base. INFLORESCENCE interfoliar, erect, branching to one order (in Beentje 4651 with the most proximal rachilla bifurcate); peduncle 47-132 cm, proximally 5-6 x 4 mm, distally 3- 5 x 2-4 mm, with dense reddish laciniate scales but soon glabrescent; prophyll 10-34 cm long, 2-keeled, with a few scattered reddish scales, cylindrical, split at apex only, soon disintegrating at the apex; peduncular bract inserted at 7-14 cm from base, 30-48 cm long, pale brown with patches of dense reddish scales, circumscissile but carried up and covering the rachillae until expansion, beaked for 9-10 cm; rachis 7- 15 cm, with 17-22 branches; rachillae green, occasionally with a bulbous base, 12-32 cm long, 2-2.5 mm diam., covered in minute stellate scales; triads spirally arranged, quite close, in pits. STAMINATE FLOWERS globose in bud; sepals 0.6-1 x 1-1.3 mm; petals 1.7-1.8 x 1.2-1.5 mm, ovate, acute; stamens 6, in 2 series, didymous, filaments 0.4-0.8 mm long, anthers 0.4-0.5 x 0.5-0.6 mm, rounded; pistillode 0.2-0.9 x 0.4-1 mm, hexagonal with central trifid apex. PISTILLATE FLOWERS with sepals c. 0.5 mm high, 1 mm wide, petals 1.4 -1.8 x 1.2-1.3 mm; ovary 1-1.4 mm high, 1.1-1.2 mm diam., slightly asymmetrical; staminodes 0.3 mm high. FRUIT purple to black, obovoid, rounded, 13-19 x 9-15 mm; mesocarp 1.2 mm thick, rather fleshy; endocarp fibrous. SEED 15-16 x 9-12 mm, with endosperm ruminations 3-4 mm deep.</p></div>
+<div type="distribution"><p>Masoala Peninsula and Mananara Biosphere Reserve.</p></div>
+<div type="biology_ecology"><p>Littoral forest on deep humus near the beach, riverine in moist forest, or on humus banks in moist forest on steep hillside; 1-220 m.</p></div>
+<div type="conservation"><p>Vulnerable. With a fairly small distribution area and low numbers of individuals per population, this species might move into the Endangered category in the near future, if shifting cultivation continues apace in its native habitat.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Distinct by its small stature, its trunk which rarely branches and its short inflorescence branched to only one order; only very few inflorescences are present at the same time, which is unusual in the Vonitra group.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Antalavia, Feb. 1988 (y.fr.), Dransfield et al. JD6467 (K, TAN); idem, Feb. 1988 (y.fr.), Dransfield et al. JD6474 (K, P, TAN); Ambanizana, Nov. 1992 (bud, fr.), Schatz et al. 3394 (K). Mananara Avaratra: Antanambe, Oct. 1991 (bud), Beentje 4461 (K, MO, P, TAN); idem, Oct. 1991 (fr.), Beentje 4468 (BH, K, TAN); idem, April 1992 (fr.), Beentje et al. 4651 (K, TAN).  1</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

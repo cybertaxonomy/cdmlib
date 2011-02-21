@@ -1,0 +1,32 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus peregrinus</name>
+<author>Furtado</author>
+<citation>Gdns' Bull. Singapore 15 (1956) 66</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Peregrinus - foreign or of the countryside - allusion not understood here</p></div>
+<div type="vernacular"><p>rotan ?</p></div>
+<div type="description"><p>Solitary rattan with stout stem to 20 cm tall without sheaths about 2 cm in diameter, with sheaths to 3.5 cm. Internodes about 6 cm only. Sheaths mid green with broad yellow streaks when fresh, pale brown when dry armed with scattered large pale yellow-green laminate spines with black tips and rough hairy edges; to 2.5 cm long by 8 mm wide at the base; sparse brownish scales on young sheaths. Knee well developed. Ocrea short, blackish. Cut surfaces exuding yellow sap. Flagellum to 3.5 m long. Leaves ecirrate very large, 4-5m long. Petiole 1-1.75 m long armed with pale yellow green spines tipped black. Leaflets numerous, stiff regular, on parts of leaf &#177; opposite 50 cm long by 2-4 cm wide, with main nerves armed with bristles above and below; and along margins near the tip. Inflorescence 3 m long including long flagellum, bearing 2-3 partial inflorescences; bracts armed with scattered pale spines with black tips, tattering in age. Female flowers relatively large, densely arranged 7.5 mm long. Fruit globose or very slightly obovoid, borne on a stalked disc; fruit to 2 cm long by 1.6 cm wide covered in 16 vertical rows of reddish brown scales, shiny, and scarcely grooved, with darker marginal lines. Seed globose, pitted, deeply ruminate. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Kedah, Perak, Kelantan, Selangor, Negri Sembilan: Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>Calmus peregrinus is a rather local rattan of generally northern distribution in Malaya. It has been found on steep hillslopes and ridges in hill Dipterocarp forest, at altitudes up to 600 m. Because of its very large size and ecirrate leaves it could be confused with Calamus ornatus, but can be easily distinguished from the latter by the much narrower leaflets and the bright yellow green colour of the fresh plant. The long inflorescence with its 2-3 partial inflorescences very close to the insertion and the long terminal flagellum is very characteristic.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

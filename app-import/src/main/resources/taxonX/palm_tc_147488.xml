@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Large pinnate-leaved palms of high altitude in inter-Andean valleys in South America; staminate flowers with ca. 15 stamens and fruit with thick irregularly thickened endocarp.</p></div>
+<nomenclature>
+<name>Parajubaea</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 11: 48 (1930).</citation>
+<type>Type; Parajubaea cocoides; Burret.</type>
+</nomenclature>
+<div type="etymology"><p>Para — beside or near, Jubaea — the palm generic name, suggesting similarity to Jubaea.</p></div>
+<div type="description"><p>Large, solitary, unarmed, pleonanthic, monoecious palms. Stem tall, stout or rather slender, grey, obscurely ringed with leaf scars. Leaves pinnate, slightly arching, sometimes twisted, marcescent; sheath not forming a crownshaft, disintegrating into a mass of rather fine to coarse brown fibres; petiole short, adaxially flat, abaxially rounded, glabrous, margins fibrous at least basally; rachis longer than the petiole, tapering, rounded adaxially, grooved laterally, rounded abaxially; leaflets numerous, regularly arranged or in groups of 2–5 in one plane, narrow, elongate, single-fold, pointed distally, tips shortly bifid to oblique, glabrous adaxially, abaxially sparsely scaly and with linear ramenta along the midribs, midrib prominent adaxially, the only large vein, transverse veinlets not evident. Inflorescences interfoliar, erect, becoming pendulous in fruit, branched to 1 or 2 orders; peduncle elongate, dorsiventrally flattened, glabrous; prophyll short, 2-keeled, opening apically, not exserted from the leaf sheath; peduncular bract much longer than the prophyll, narrowly tubular, tapering to a short apical beak, woody, deeply grooved, splitting abaxially and eventually marcescent, glabrous or covered with tomentum; several short, incomplete peduncular bracts present; rachis about as long as or shorter than the peduncle, bearing rather distant, spirally arranged, short, wide, centrally pointed bracts subtending rachillae; rachillae erect and closely appressed to the rachis, rather short, stout, sometimes zigzag, glabrous or with caducous tomentum, in Parajubaea cocoides distally with a few short branches of the 2nd order, rachillae bearing spirally arranged, very short, wide, pointed bracts subtending few triads (2–8) at the base and paired or solitary staminate flowers throughout most of the rachilla length, floral bracteoles short, rounded to pointed. Staminate flowers asymmetrical, ± pointed; sepals 3, distinct, imbricate basally, keeled, acute; petals 3, distinct, much larger than the sepals, angled, valvate; stamens 13–15, filaments erect, awl-shaped, ± inflexed; anthers linear, emarginate apically, sagittate basally, dorsifixed near the middle, introrse; pistillode short, briefly trifid. Pollen ellipsoidal, frequently elongate, usually with either slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, perforate and micro-channelled or perforate-rugulate, aperture margin may be slightly finer; infratectum columellate, longest axis 41–60 µm [2/3]. Pistillate flowers broadly ovoid, larger than the staminate; sepals 3, distinct, imbricate, margins irregular; petals 3, distinct, imbricate with briefly pointed, valvate tips; staminodes united in a shallow cupule, unlobed or with 3 pointed tips; gynoecium broadly ovoid, trilocular, triovulate, glabrous or tomentose, stigma short, rounded, trilobed, ovules laterally attached, form unknown. Fruit oblong-ovoid, beaked, perianth persistent on fresh fruit; epicarp smooth, mesocarp rather thin, fibrous, endocarp thick, very hard, with shining lines internally, externally irregularly sculptured with 3 prominent ridges (P. torallyi and P. sunkha), or surface and thickness irregular, ridges not prominent (P. cocoides), pores 3, basal, sunken. Seeds 1–3, rounded, raphe elongate, lateral, endosperm homogeneous, hollow; embryo subbasal. Germination and eophyll not recorded. Cytology not known.</p></div>
+<div type="distribution"><p>Three species in Ecuador, Bolivia and Colombia.  </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>The monophyly of Parajubaea is untested. The genus is moderately supported as sister to Cocos (Baker et al. in review). </p></div>
+<div type="uses"><p>The mesocarp is fleshy and sweet and is eaten; the seed contains usable oil. These palms should make handsome ornamentals in cold and dry areas.</p></div>
+<div type="taxonomic accounts"><p>Moraes and Henderson (1990) and Moraes (1996b, 2004).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>The combination of the rather congested, closelyadpressed rachillae, staminate flower with 15 stamens and irregularly sculptured endocarp is not found elsewhere.</p></div>
+<div type="vernacular"><p>For common names, see Moraes and Henderson (1990). </p></div>
+<div type="biology_ecology"><p>Parajubaea torallyi is found in humid ravines of spectacular sandstone mountains at high elevations (2400–3400 m), where it does not rain for ten months of the year, and P. cocoides was described from 3000 m in the eastern Andes. Parajubaea sunkha occurs at elevations of 1700–2200 m above sea level in semi-deciduous forest in interandean valleys in Bolivia.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

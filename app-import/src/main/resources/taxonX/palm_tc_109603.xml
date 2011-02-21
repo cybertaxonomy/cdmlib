@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Remarkable pinnate-leaved palms from Amazonia, the stems covered by long fibres or a broad network of fibres, the fruit lens-shaped or egg-like, with basal stigmatic remains.</p></div>
+<nomenclature>
+<name>Leopoldinia</name>
+<author>Mart.</author> 
+<citation>Hist. nat. palm. 2: 58 (1824).</citation>
+<type>Lectotype; Leopoldinia pulchra; Mart.</type>
+</nomenclature>
+<div type="etymology"><p>Named for Maria Leopoldina Josephina Carolina of Habsburg (1797–1826), Archduchess of Austria and Empress of Brazil, whose father sponsored an expedition to Brazil during which Martius collected palms.</p></div>
+<div type="description"><p>Moderate, solitary or clustered, unarmed, pleonanthic, monoecious (Leopoldinia pulchra) rarely dioecious according to Spruce [1871] palms. Stems erect, covered with marcescent leaf sheath fibres, eventually becoming bare, internodes short, at the base of the stem with abundant adventitious roots. Leaves pinnate, marcescent; sheath with a triangular ligule-like projection opposite the petiole, densely tomentose, the whole expanding and drying into an elegant interwoven mesh of broad flattened fibres, the margins remaining entire, or the whole disintegrating into extremely long black fibre bundles (‘piassava’) which hang down and obscure the stem; petiole well developed, adaxially flattened or convex, abaxially rounded or ± angled, bearing abundant, caducous scales; rachis longer than the petiole, adaxially angled, abaxially rounded or flattened, scaly as the petiole; leaflets single-fold, linear, acuminate or minutely bifid, numerous, regularly arranged, somewhat plicate, concolourous or discolourous, adaxially glabrous, abaxially bearing ramenta along the midrib, particularly near the base, transverse veinlets conspicuous. Inflorescences interfoliar, solitary, much shorter than the leaves, branching to 4 orders, the whole densely brown-tomentose, staminate inflorescences alternating with pistillate, or proximal rachillae pistillate and the distal staminate, or each rachilla pistillate at base, staminate at the tip or, rarely, plants apparently dioecious; peduncle elongate, partially obscured by subtending leaf sheaths, narrow-crescentic in cross-section; prophyll borne considerably above the base, tubular, narrowly elliptical in outline, 2-winged, ± membranous, splitting down its entire length early in development, circumscissile near the base, leaving a low membranous collar; peduncular bract 1, like the prophyll, also early caducous; rachis usually much shorter than the peduncle; first-order branches rather slender, each subtended by a very small, low, membranous, triangular bract; second, third, and fourth-order branches slender, tending to be somewhat divaricate or sinuous; rachillae rather slender, very densely tomentose, the flowers partially immersed in tomentum, where pistillate flowers borne on separate rachillae, the rachillae more robust than the staminate, pistillate flowers apparently solitary or in triads, staminate flowers usually paired or solitary. Staminate flowers very small, ± globular, bearing a striate chaffy bracteole; sepals 3, distinct, rounded, imbricate, ± striate; petals 3, distinct, valvate, ± triangular-ovate, marked on adaxial face by impressions of anthers; stamens 6, very small, filaments very short, connate only at the very base, rather broad, ± inflexed at the tip, anthers ± oval in outline, latrorse; pistillode barrel-shaped. Pollen ellipsoidal, slightly asymmetric; aperture a distal sulcus; ectexine tectate, surface very finely granular, finely perforate, or perforate and slightly rugulate, aperture margin similar; infratectum columellate; longest axis 21–26 µm [1/3]. Pistillate flowers larger than the staminate; sepals 3, distinct, imbricate, rounded, ± hooded, the margins ± toothed; petals 3, distinct, valvate; staminodes 6, distinct, very small, short, flat and ± truncate; gynoecium trilocular, triovulate, ± pyramidal, stigmas 3, rather obscure, sessile, ovule form unknown. Fruit dull red at maturity, ovoid, slightly flattened laterally, or strongly lenticular or disciform, 1-seeded, developing from 1 carpel, perianth whorls persisting, stigmatic and sterile carpellary remains basal; epicarp smooth, mesocarp composed of several complex reticulate systems of thick anastomosing fibres, embedded in fleshy parenchyma, the fibres becoming more numerous and closer towards the centre of the fruit, endocarp thin, smooth internally. Seed rounded or lenticular, attached opposite the stigmatic remains, with a vertical hilum running across one of the lateral faces, endosperm homogeneous; embryo subbasal. Germination adjacent-ligular; eophyll bifid, the segments very slender. Cytology not studied.</p></div>
+<div type="distribution"><p>Three species, confined to west Brazil, Amazonian Colombia, and southern Venezuela.  </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961). </p></div>
+<div type="relationships"><p>The monophyly of Leopoldinia has not been tested. For relationships, see Leopoldinieae. </p></div>
+<div type="uses"><p>The stems of L. pulchra are used as fence posts and the fruits of L. major burned to produce a salt substitute. However, the most useful species is undoubtedly L. piassaba; its leaves are used as thatch and the mesocarp crushed with water makes a creamy drink. Commercially, this species is important as a source of piassava, which is used for a variety of purposes from rope making to brooms (Putz 1979). See also Plotkin and Balick (1984) for medicinal uses. </p></div>
+<div type="taxonomic accounts"><p>Henderson (1995); see also Guanchez and Romero (1995). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>This is a remarkable genus in many respects, combining as it does a triovulate ovary with some unusual vegetative features. Most striking is the presence of two quite different leaf sheath types in the same genus; in one, the sheath is composed of a broad network of fibres, whereas in the other, there is conspicuous development of long free black fibres (piassava). The fruit shape is also variable. Kubitski (1991) postulated the dispersal of L. major and L. pulchra by fish, whereas L. piassaba is probably dispersed by terrestrial animals. 
+</p></div>
+<div type="vernacular"><p>Jara palms, piassava palm (Leopoldinia piassaba). </p></div>
+<div type="biology_ecology"><p>All species are recorded from low lying, periodically flooded, tropical rain forest. Spruce (1871) records Leopoldinia pulchra and L. major from the banks of black-water rivers and on stony islands and L. piassaba from low sandy flats.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

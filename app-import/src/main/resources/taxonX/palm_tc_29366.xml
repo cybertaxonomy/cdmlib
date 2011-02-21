@@ -1,0 +1,49 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus axillaris</name>
+<author>Becc.</author>
+<citation>in Hook. f., Fl. Brit. India 6: 456 (1893)</citation>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 135 (1979)</bibref>
+<synonymy>
+<name>Calamus hendersonii</name>
+<author>Furtado</author>
+<bibref>Furtado, Gard. Bull., Singapore 15: 100 (1956)</bibref> 
+</synonymy>
+<synonymy>
+<name>Calamus riparius</name>
+<author>Furtado</author>
+<bibref>Furtado, Gard. Bull., Singapore 15 :103 (1956)</bibref> 
+</synonymy>
+<synonymy>
+<name>Calamus sp aff. C. axillaris</name>
+<author>J.Dransf.</author>
+<bibref>Dransfield, Ratt. Sarawak 191 (1992)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Axillary, perhaps referring to the rather low insertion of the inflorescence</p></div>
+<div type="vernacular"><p>Uwai Taut (Dus.), Wi Gemaing (Dus.,Ib.), Wi Lemaing (Ib.)</p></div>
+<div type="description"><p>Clustering moderate high-climbing rattan to 40 m or more; stem without to 13 mm diam., with sheaths to 25 mm, internodes to 15 cm long at maturity, longer in juvenile stems. Sheaths dull green, armed with scattered green, pale-based black-tipped spines to 25 &#215; 5 mm, with much smaller spines scattered in between; knee conspicuous; ocrea dark brown, tattering, to 6 mm high. Leaf cirrate to 2 m long including the cirrus to 75 cm; petiole either absent or rather short, sparsely armed, channelled on the upper surface; leaflets about 20 on each side of the rachis, subregularly arranged near the base, in pairs distally or in pairs throughout, the longest to c. 45 &#215; 4 cm, sometimes much shorter and broader, very slightly bristly at the tip, concolorous. Male and female inflorescences superficially similar, 80-120 cm long, with about 6 partial inflorescences to 15 cm long; rachillae reflexed, c. 6 cm long. Mature fruit ovoid, c. 11 &#215; 9 mm, shortly beaked, covered in up to 26 rows of dull straw-coloured overlapping scales. seed to 8 &#215; 5 &#215; 4 mm; endosperm homogeneous. seedling leaf unknown. (Fig. 34, Pls. 8B, 9A, 9B, 10B).</p></div>
+<div type="distribution"><p>Only in Belait District where it is a very common and conspicuous rattan in empran (seasonally-flooded alluvial forest) along the Belait River. Elsewhere in Sarawak, West Kalimantan and Peninsular Malaysia.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Although the cane appears to be of good quality it seems only to be used for coarse basketware in Brunei.</p></div>
+<div type="discussion"><p>This species most closely resembles Calamus caesius (not recorded for Brunei) and C. optimus. It is easily distinguished, in Brunei in its habitat, by the moderate size, dense clumping habit, grouped leaflets and concolorous leaflets.</p></div>
+<div type="materials_examined"><p>BEL: Bukit Sawat, Sg.Mau-Sg. Belait confluence, Wong 1620; Labi, Jln.Labi, Wong 519; Sungai Liang, Labi Road, Dransfield J. 6726. Without prov.: BRUN 15141.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

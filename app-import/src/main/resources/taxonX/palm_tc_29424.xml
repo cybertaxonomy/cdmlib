@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus congestiflorus</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 785 (1982)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Crowded flowers</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering rattan with stems climbing to 20 m; stem without sheaths to 6 mm diam., with to 9 mm; internodes to c 11 cm. Leaf sheath green, tinged crimson, with thin brown indumentum and armed with numerous scattered spines to 3 mm. Knee developed but not very conspicuous. Ocrea short, to 4 mm, tattering. Flagellum to 1 m. Leaf ecirrate to 30 cm, with no petiole; leaflets subregular, broad and beautifully bullate when fresh, about 7 on each side of the rachis, the lowermost pair swept back across the stem; terminal leaflet pair joined for up to l/2 their length; mid leaf leaflets the longest, to 12 x 4 cm, inconspicuously 3-nerved; young leaves tinged pink. Inflorescence only female known, not ending in a flagellum, to 60 cm, curved, with 6 partial inflorescences; partial inflorescences shorter than the conspicuous subtending oblong bract, split down one side, and short spiny; rachillae to 40 x 2.5 mm bearing very congested flowers. Fruit (immature) spherical to 6.5 mm diam., with a conspicuous beak to 2x1 mm, and covered in 21 vertical rows of scarcely grooved greenish scales. Seed c 5 mm diam.; endosperm homogeneous. (Fig. 68)</p></div>
+<div type="distribution"><p>With certainty known only from Nabawan; a sterile specimen from Sapa Payau F.R. is probably this species. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>As for C. javensis.</p></div>
+<div type="discussion"><p>C. congestiflorus was collected at the side of a swamp in forest transitional between lowland Dipterocarp forest and kerangas; at Sapa Payau, the sterile specimen was found in a similar habitat. Vegetatively like a neat form of C. javensis with broad bullate leaflets, or a small form of C. amplijugus; yet the congested inflorescence is like neither of these two species.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

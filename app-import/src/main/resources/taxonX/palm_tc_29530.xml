@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus gamblei</name>
+<author>Becc.</author>
+<citation>in Hook. f. Fl. Brit. Ind. 6 : 453. 1893</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11 : 316. 1908 and Appendix PI. 123. 1913.</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A moderately strong climber; stem cluster forming, without sheath bright yellow in colour, 1.5 cm in diameter. Leaves ecirrate; leafsheath with prominent knee and flagellum, light green to yellowish green in colour, densely armed with non-seriate, stiff, bulbous-based spines; leaflets ensiform, alternate, acuminate, to 50 cm long, 2 - 2.5 cm broad at middle, ciliate at apices, bristly on upper and lower nerves; petiole armed with straigth, subulate spines; rachis with conspicuous bulbous based curved spines. Inflorescence flagelliform, 3 m or more long; axial part of inflorescence digitately clawed at intervals; male partial inflorescences to 150 cm long; primary bract armed with 1 cm long straight spines; male rachillae 8 - 10 cm long, attached above the mouth of the respective basal bracts; female partial inflorescences attached high above the mouth of the respective basal bracts; each 25 - 30 cm long; involucrophorum in female rachilla outside its own bract, distinctly pedicelliform; involucre discoid, almost flat; female flowers in 2 series, 5 mm long, each pointed upward. Fruit ovoid, tapering at base, 20 - 25 mm x 18 mm; fruit scales swollen outside, shining, pale yellow, with deep channel at middle, arranged in 21 longitudinal series; endosperm ruminate; embryo basal.</p></div>
+<div type="distribution"><p>INDIA (Tamil Nadu, Kerala, Karnataka). Endemic.</p></div>
+<div type="biology_ecology"><p>In moist forests of the Western Ghats mostly at 600-2000 m. Common in the Nilgiri Hills.</p></div>
+<div type="cultivation"><p>Cultivated in trial plots of the Kerala Forest Research Institute, Peechi, Kerala.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The glossy yellow cane is largely used for making furniture.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Tamil Nadu : Nilgiri, Makurti forest, 5000 ft. June 1884. Gamble 14405 (CAL); Kerala: Kottayam, Old Devicolam, 25.1.1964, Sebastine 18474 (MH); Upper Vegavurrai, 25.4.1966. Shetty 27375 (MH); Trivendrum, Benacord Estate forest, 9.10.1973. Joseph 44647 (MH). Karnataka : Chikmagalur, Kudremukh 1450 m, 25.2.1984. Vajravelu 77850 (MH); Coorg, Pallekunde, 18.2.1980. Vajravelu 77794 (MH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

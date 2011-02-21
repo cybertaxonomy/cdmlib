@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops asteracantha</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 12(1): 227 (1911)</citation>
+<bibref>Dransfield, Ratt. Sarawak 67 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Star spine</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering rattan climbing to 10 m tall; stem without sheaths c. 7 mm diam., with sheaths to 15 mm diam., internodes 6-10 cm long. Sheath dull green, armed with very slender black spines and broad, flatter spines to 12 mm, arranged in whorls or partial whorls, sometimes conspicuously radiating, dull brown indumentum abundant between the spines, spines around the sheath mouth rather large, erect; knee present, armed as the sheath. Leaf cirrate, to 1 m including the petiole to 25 cm and cirrus to 45 cm long; petiole armed laterally with rather regular spines 5-7 mm long; leaflets 10-12 on each side of the rachis, arranged in rather distant pairs, within the pairs the leaflets inserted close together and diverging, the longest to 20 &#215; 1.7 cm, in exposed plants much smaller, lower leaflet surface bearing abundant minute brown scales, transverse veinlets conspicuous. Inflorescences erect or &#177; pendulous, shorter than the leaves, 20-30 cm long, with up to 5 partial inflorescences; peduncle 5-10 cm long; prophyll and primary bracts thin, dull brown, covered in brown indumentum, soon falling; male rachillae not known; female rachillae rather crowded, to 35 mm long, bearing conspicuously stalked flowers. Mature fruit broadly ellipsoid, c. 10 &#215; 7 mm, beaked, covered in 12 vertical rows of pale brown scales with darker margins. Seed ellipsoid, 8 &#215; 5 mm, deeply pitted; endosperm deeply ruminate. Seedling not known. (Fig. 21).</p></div>
+<div type="distribution"><p>In Brunei known only from G. Pagon and Bt. Retak. Elsewhere in Sarawak (G. Mulu) and Kalimantan (type collection). Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>D. asteracantha is a rattan of ridges in lower montane forest at altitudes up to 1,600 m. we have equated the Brunei and Sarawak material with the type collected by Teysmann in W Kalimantan because of the grouped leaflets and whorled spines; however it has to be admitted that the spine arrangement is not quite the same. Unfortunately the type is sterile and there are no recent collections of this taxon from Kalimantan.</p></div>
+<div type="materials_examined"><p>TEM: Johns 6521; Amo, Ashton A 251; Amo, Ashton A 259; Amo, Bt.Pagon, Wong 1762; Amo, Bt.Retak, Wong 449; Amo, Bt.Retak, Wong  791.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

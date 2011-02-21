@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops calicarpa</name>
+<author>Griff.) Mart.</author>
+<citation>in Hist. Nat. Palm 3 (1850) 326</citation>
+<bibref>Beccari in Hook, f., Fl. Br. India 6 (1893) 446</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 12 (1911) 94</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 37</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 61</bibref>
+<bibref>Dransfield in Principles 20 (1976) 29</bibref>
+<synonymy>
+<name>Daemonorops microthamnus</name>
+<author>Becc.</author>
+<bibref>Becc. in Rec. Bot. Surv. Ind. 2 (1902) 221</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops petiolaris</name>
+<author>Mart.</author>
+<bibref>Mart., Hist. Nat. Palm. 3 (1850) 326</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Calos - beautiful, carpos - fruit</p></div>
+<div type="vernacular"><p>lumpit</p></div>
+<div type="description"><p>Clustering thicket-forming + acaulescent hapaxanthic rosette palm. Leaves in the vegetative phase ecirrate, very large, to 4 m long with petiole to about 1.5 - 2 m long. Petiole including lower sheathing area rich dark brown armed with close oblique whorls of short black laminar spines and brown scaly indumentum. Leaflets 80-100 on each side in the mature vegetative phase, closely crowded, regular, the longest near the base to 40 m long by 1.5 cm wide, decreasing in size in upper part of leaf; leaflets bristly on upper side of the two main lateral nerves, and very densely bristly on underside of main nerve. Inflorescences produced &#177; simultaneously, crowded together in the axils of very small reduced cirrate leaves at the stem apex, forming a club like head of inflorescences, the stem then dying. Inflorescences male and female superficially similar the largest to about 25 cm long by 5 cm wide longly beaked with all bracts and flowers enclosed in the outer most bract. All exposed parts of bracts densely covered with very fine pale to dark spines and grey fluff-like indumentum. Flowers of both sexes creamy brown, heavily sickly scented. Mature fruit rounded, tipped by a short beak, to 2 cm in diameter covered in 15-18 vertical rows of rich light brown scales with dark brown margins. Seed mostly rounded, somewhat flattened on two sides, about 12 mm in diameter without the sweet transparent sarcotesta. Endosperm deeply ruminate. Seedling leaf pinnate with numerous fine regular leaflets.</p></div>
+<div type="distribution"><p>Perak, Pahang, Selangor, Negri Sembilan, Malacca, Johore. N. Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The leaves are used for thatch and the leaf rachis cleaned of thorns for some forms of basketry.</p></div>
+<div type="discussion"><p>Daemonorops calicarpa is a very common palm in the southern half of the Peninsula. It is distinguished from the other hapaxanthic Daemonorops species also called "lumpit" by the dark green leaflets and the inflorescence bracts very densely covered with fine spines. It is usually found in lowland Dipterocarp forest in valley bottoms and lower hillslopes; it appears to avoid steep ridgetops</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

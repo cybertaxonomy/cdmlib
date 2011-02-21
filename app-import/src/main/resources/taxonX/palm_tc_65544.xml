@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis utilis</name>
+<author>(Jum.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 363 (1995)</citation>
+<type>Madagascar, no locality mentioned, probably (from Jumelle 1927) Analamazaotra; Perrier; 12005</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Vonitra utilis</name>
+<author>Jum.</author>
+<bibref>Jum., Compt. Rend. Acad. Paris 164: 921 (1917)</bibref>
+<bibref>Jum., Rev. Bot. Appl. 1922: 161 (1922)</bibref>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 5, 1: 16 (1927)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 26 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 131, figs. 35, 36 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This is an upland palm, closely related to D. crinita, but even larger in all its parts, and with inflorescences branched to three rather than two orders. It has been seen near Analamazaotra (in fact there is a much photographed specimen opposite the station hotel at Andasibe; see photo below) and at Ranomafana. Sometimes cited as being critically endangered, this may not be so rare as was originally thought. The Latin name means 'useful', a reference to the piassava produced by the leaves and formerly exported for rope production.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Vonitra or Vonitrandrano (water vonitra).</p></div>
+<div type="description"><p>Robust palm, solitary or more often several in a clump. TRUNK 6-17 m high, branching dichotomously 2-3 times at 9-11 m above the ground, the branches closely parallel, 25-37 cm diam., near crown c. 18 cm diam.; internodes 7-9 cm; bark light brown; wood soft, pinkish-white, moist; crown untidy with pale brown pendulous fibre. LEAVES 13-14 per crown, with the dead leaves marcescent, 4-5 m, erect to porrect, often held on edge; sheath fibrous, c. 80 cm long, brown-grey tomentose, with fibrous wings c. 4.3 cm wide each, with opposite the petiole a light brown fibrous tongue c. 50 cm long; petiole 45-100 cm (to 185 cm in young trees), proximally c. 5 x 2.5 cm, distally 2-4.2 x 1.1-1.5 cm, flat adaxially or slightly convex, convex abaxially, with sharp edges, with scattered scales, glabrescent; rachis 2.8-3.8 m, 1.5-1.9 x 1-1.3 cm in mid-leaf, keeled, straw-brown, with scattered pale or dark red scales; leaflets 65-73 on each side of the rachis, in one plane, regular, bright green, stiff, attenuate, the proximal ones 64-82 x 1.2-2 cm, median 77-92 x 3.1-4.8 cm (interval 4-4.5 cm), distal 18-47 x 1-1.8 cm, ramenta few, redbrown, quite large, abaxial on the midrib, main veins 2 on each side of the midrib and main veins, prominent abaxially, young leaves reddish. INFLORESCENCE interfoliar to infrafoliar, up to 20 per tree (in two crowns) in all stages from closed and erect to   x old fruiting stage (pendent); branching to 3 orders (rarely to 2 orders?); peduncle 125-135 cm, proximally 3.3 x 2.5 cm, distally x 2 cm, green, glabrous, curved; prophyll dark brown, 25-70 cm long, 6.5 x 2.5 cm diam., split at the apex; peduncular bract 154-191 x cm, green turning mid-brown, adaxially redbrown and smooth, densely scaly but soon glabrescent abaxially, glabrous adaxially, beaked for c. 7 cm, abscising and carried upwards by the lengthening inflorescence; rachis c. 62 cm long, somewhat angled, the branches bulbous at their bases; first order branches (number unclear) proximally 1.4-1.5 x 0.5-0.7 cm; rachillae pendulous, coral-pink in bud but turning pale green, 69-91 cm long, 2.5-5 mm diam., glabrous or nearly so; triads distant, spirally arranged, slightly sunken in pits; buds yellowgreen to reddish brown, slightly trigonous. STAMINATE FLOWERS purplish or reddish at anthesis, with sepals 2-2.2 x 3.5-5 mm, unequal, the outermost smallest, fleshy, hooded; petals 2.7-2.8 x mm, fleshy, ovate, acute; stamens 6, biseriate, didymous, theoutermost inserted slightly lower than the inner, filaments 0.8-1 mm, anthers dorsifix, 0.6-0.8 mm; pistillode c. 1.5 x 0.8 mm, bottle-shaped, showing stamen indentations. PISTILLATE FLOWERS with sepals 3- x 3.5-8.5 mm, unequal, hooded, the innermost largest and enveloping the bud for some 270&#176;; petals 3.5-4.5 x 5-7 mm, orbicular, imbricate, unequal, the innermost largest; ovary 3.5-3.8 x 2.5-3 mm, slightly asymmetric with an indistinct trigonous apex; staminodes 0.6- 0.8 mm, flat, tooth-shaped. FRUIT dull green turning purplish brown or black, globose-ellipsoid or obovoid, 17-28 x 14 -20 mm, with persistent petals c. 6 mm long; endocarp fibrous. SEED c. 23 mm x 16 mm, pointed at the base, rounded at the apex, with ruminate endosperm, the ruminations many, slightly irregular, and almost reaching the middle of the seed.</p></div>
+<div type="distribution"><p>E Madagascar.</p></div>
+<div type="biology_ecology"><p>Streamsides in swamp forest or moist forest, gregarious; alt. 950- 1000 m.</p></div>
+<div type="conservation"><p>Vulnerable. Restricted to only a few sites; numbers thought to be low.</p></div>
+<div type="uses"><p>Jumelle (1927a) states that the palmheart is eaten, and that the fruit pulp is sugary and also consumed.</p></div>
+<div type="discussion"><p>This is the most robust member of the "Vonitra" group.</p></div>
+<div type="materials_examined"><p>Moramanga: Analamazaotra (fl.), Perrier 12005 (Holotype P); idem, Feb. 1924 (fl.), Perrier 16067 (P); idem, Oct. 1963 (fl.), Moore 9005 (BH, TAN); idem, March 1991 (ster.), Beentje &amp; Raharilala 4409 (K, TAN); Maromiza, March 1991 (fl., fr.), Beentje &amp; Raharilala 4417 (BH, K, MO, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

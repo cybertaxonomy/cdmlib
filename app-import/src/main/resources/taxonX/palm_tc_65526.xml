@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis sanctaemariae</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 264 (1995)</citation>
+<type>Île Sainte Marie, Forêt d’Ambohidena; Dransfield et al.; JD7526</type>
+<type_loc>Holotypus K; isotypus TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>A handsome palm of the undergrowth of wind-pruned coastal forest on white sand raised-beaches on the Indian Ocean coast of &#206;;le Sainte Marie. It occurs in two forms that grow together, one with a pinnate leaf, the other with an entire leaf. In the field we thought that this species might be a form of D. paludosa with inflorescences branched to one instead two orders, but there are six stamens so the relationships are with D. boiviniana. The species epithet is derived from Sainte-Marie.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>forma inflorescentiae floribus staminatis 6-staminibus D. boivinianae affinis sed foliis epetiolatis, integris-bifidis, vel foliolis approximatis non fasciculatis, rachillis gracilioribus bracteis inconspicuis distincta.</p></div>
+<div type="description"><p>Clustering palm of the forest undergrowth. STEMS to 2.5 m tall, c. 2 cm diam.; internodes c. 3 cm long, basally grey-brown, distally green, with scattered brown scales. LEAVES c. 8 in crown, porrect, forming a "shuttlecock" and tending to trap litter; sheath yellow   green or crimson, 17-20 cm long, 2-3 cm diam., densely covered in evenly spaced red-brown scales, auricles triangular, 0.5-2.5 x 1- 2 cm; petiole absent; blade to 120 cm long, entire, bifid, or with 2 very broad leaflets on one side of the rachis, the apical cleft to 48 cm deep, or irregularly divided into leaflets; costa or rachis 80-88 cm long, 7-9 mm wide at the base, abaxially densely covered with red-brown scales; leaflets very variable in width, to 10 on each side of the rachis, proximal leaflets 35 x 0.5 cm, then leaflets increasing in length and width towards the middle of the leaf, where 44 x 2.3 cm, then decreasing in length to the broad distal pair to 26.5 x 3.5 cm, adaxial surface with very sparse minute brown punctiform scales along major veins, abaxially with abundant brown punctiform scales and bands of looser brown scales. INFLORESCENCE interfoliar, branched to one order; peduncle 41-45 cm long, erect or strongly reflexed, c. 10 mm wide at the base, tapering to 4-6 mm wide distally, thinly covered with red-brown tomentum; prophyll inserted 8.5-10 cm above the base of the peduncle, 18-36 x 1.2-1.3 cm, striate, sparsely covered with red-brown scales; peduncular bract inserted at least 14 cm above the insertion of the prophyll, 25 x 2 cm when split and opened out, scaly as the prophyll; rachis 11-13 cm, 4-6 mm diam. at the base, red-brown tomentose; rachillae 5-6, pendulous, 30-40 cm long, c. 3.5 mm diam. when fresh, shrinking to c. 2 mm diam. in dried specimens, with a basal bare portion 1-6 cm long, surface with scattered short brown hairs; triads c. 2 mm distant, partially sunken in shallow pits, the rachilla bracts inconspicuous, c. 0.5 x 2.5 mm. STAMINATE FLOWER buds bluntly pointed, c. 2.5 x 1.5 mm; sepals rounded, 1.5 x 1.5 mm, irregularly keeled; petals 2.5 x 1.5 mm, triangular; stamens 6, filaments (in bud) 0.7 mm long, anthers 1.5 x 0.5 mm; pistillode conical, trifid, minute. PISTILLATE FLOWER 4 x 2.5 mm; sepals 1.8 x 1.8 mm, broad imbricate; petals triangular 3.5 x 2 mm; staminodes 6, minute; ovary 3 x 2 mm, conical, stigmas eccentric. FRUIT unknown.</p></div>
+<div type="distribution"><p>Known only from &#206;;le Sainte-Marie.</p></div>
+<div type="biology_ecology"><p>White sand forest; 20 m.</p></div>
+<div type="conservation"><p>Critical; known from a single population. The For&#234;t d'Ambohidena is under threat by the development of a new resort hotel.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The form of the inflorescence and stamen number suggest that this species is related to D. boiviniana. It may be distinguished from the latter species by the form of the leaf, which is entire and bifid, or with few irregular approximate leaflets as opposed to numerous fascicled and divergent leaflets, and the rachillae which are more slender and with inconspicuous rachilla bracts. It is similar to D. mangorensis but differs in the very much larger leaf, lacking a petiole and in the much longer rachillae. 
+Maroantsetra: Hiaraka, Oct. 1986 (bud), Dransfield et al. JD6367 (K, TAN) seems a very slender (clustering) plant of this species; the stem is 1 cm thick, the sheath 15 -16 cm long, the petiole is almost absent; the leaflets are regular and slightly smaller than in the above description; the inflorescence is also slender, with a 2 mm thick peduncle; there are four rachillae 21-23 cm long.</p></div>
+<div type="materials_examined"><p>&#206;;le Sainte Marie: Lokintsy, For&#234;t d'Ambohidena, Nov. 1994 (fl.), Dransfield et al. JD7526 (Holotype K; isotype TAN), JD7527 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Slender colonial monoecious palms with pinnate leaves and praemorse leaflets, sometimes acaulescent, sometimes erect, found in Equatorial West African rain forest. Inflorescence is spicate with pits and flowers borne on stalks; fruit has basal stigmatic remains.</p></div>
+<nomenclature>
+<name>Podococcus</name>
+<author>G. Mann and H. Wendl.</author> 
+<citation>Trans. Linn. Soc. London 24: 426 (1864).</citation>
+<type>Type; Podococcus barteri; G. Mann and H. Wendl.</type>
+</nomenclature>
+<div type="etymology"><p>Podos — foot, kokkus — grain, seed or berry, referring to the characteristic stalked fruit.</p></div>
+<div type="description"><p>Small, colonial, unarmed, acaulescent or erect, pleonanthic, monoecious palms. Stem erect, slender, reed-like, or subterranean, covered in reddish-brown fibrous leaf bases, eventually bare and ringed with leaf scars, axillary stolons present basally and extending horizontally and eventually vertically, developing roots, and becoming new shoots; prop roots with pneumatophores developed basally. Leaves few, marcescent, pinnate, the first leaves on new shoots undivided, elliptical, pinnately ribbed, margins toothed, apex very shallowly bifid; sheath tubular, becoming split opposite the petiole, margins fibrous; petiole very slender, narrowly channelled adaxially, rounded abaxially, with dot-like scales and deciduous tomentum; rachis like the petiole but longer, tapering, extending through the terminal, often minutely bifid leaflet; leaflets rhombic, single-fold, basal half of each leaflet wedge-shaped with smooth margins, the upper half triangular, margins doubly toothed, 5 large ribs divergent from the base, midrib not evident, blade glabrous adaxially, densely covered with slender, bulbous-based, tanniniferous hairs abaxially, transverse veinlets not evident. Inflorescences solitary, interfoliar, spicate, erect at first, pendulous in fruit, protandrous; peduncle very slender, with deciduous tomentum; prophyll basal, tubular, 2-keeled, disintegrating into long fibres; peduncular bracts 2–3, inserted at wide intervals above the prophyll, tubular, disintegrating as the prophyll; rachis about as long as or longer than the peduncle, bearing spirally arranged triads of flowers basally, paired or solitary staminate flowers distally, flowers enclosed in pits; rachis bracts subtending the triads evident only as raised, curved lower margins of the pits, densely covered in stellate hairs between and inside the pits; floral bracteoles membranous, irregular, mostly pointed. Staminate flowers ± adaxial to the pistillate; staminate sepals 3, distinct, somewhat keeled dorsally, tips irregular or rounded, imbricate basally; petals 3, valvate, about twice as long as the sepals, at anthesis adnate about 2/3 their length to a solid receptacle, nearly equalling the depth of the pit, distinct lobes exserted, spreading; stamens 6, in 2 whorls, the outer opposite the sepals and shorter than the inner antepetalous whorl, filaments awl-shaped, rather short, incurved distally, anthers short, dorsifixed near the base, latrorse, connective tanniniferous; pistillode short, briefly 3-lobed. Pollen ellipsoidal, with slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, perforate and micro-channelled, or perforate-rugulate, aperture margin slightly finer; infratectum columellate; longest axis 27–32 µm [1/1]. Pistillate flower symmetrical; sepals 3, distinct, irregular, variously notched distally, about half as long as the petals, imbricate; petals connate and adnate basally 1/3 to 1/2 their length to a solid receptacle, nearly equalling the depth of the pit, apices imbricate in bud, spreading at anthesis; staminodes 6 (according to Mann and Wendland 1864), minute; gynoecium ovoid, trilocular, triovulate or 2 locules abortive, style not evident, stigmas 3, short, recurved at anthesis, ovule pendulous. Fruit long, ellipsoidal or with ellipsoidal lobes, often slightly curved, bright orange, 1–3-seeded, stigmatic remains central in 3-seeded fruits, lateral in 1–2-seeded fruits, the base briefly stalked, lobes developing horizontally to the floral axis; epicarp thin, smooth, rather leathery, mesocarp gelatinous with an internal layer of fibres ±adherent to the seed, endocarp crustaceous. Seed ellipsoidal, basally attached, hilum basal, raphe branches anastomosing from the base, endosperm homogeneous; embryo lateral near the middle, (?)± basal relative to the plane of the seed. Germination adjacent-ligular; eophyll rhombic, undivided, minutely bifid, toothed above the middle. Cytology not known.</p></div>
+<div type="distribution"><p>Two species of western Africa from Nigeria to Gabon, ranging from the Niger Delta almost to the Congo River. </p></div>
+<div type="anatomy"><p>Silica bodies of stegmata spherical, central vascular bundles of petiole with two phloem strands (Parthasarathy pers. comm.); root (Seubert 1998a, 1998b); sepals of both staminate and pistillate flowers usually lacking a vascular supply or rarely second sepal in pistillate flower with 1–2 small fibrous bundles; petals with 4–5 parallel bundles in pistillate and about 9 parallel bundles in staminate flowers; stamens each with a single trace; in young gynoecium, carpels connate with a distal septal nectary and the pistillode also apparently secretory; each carpel with 1 dorsal and 2 ventral bundles and a pendulous ovule with two integuments (Uhl unpublished). </p></div>
+<div type="relationships"><p>The monophyly of Podococcus has not been tested. For relationships, see tribe Podococceae. </p></div>
+<div type="uses"><p>Not recorded. </p></div>
+<div type="taxonomic accounts"><p>van Valkenburg et al. (2007). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Podococcus is similar in leaf and gynoecial structure to some members of Iriarteeae but several characters set it apart.</p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="biology_ecology"><p>Found in rain forest at low elevations. The genus apparently never occurs more than 200 km inland. Its distribution conforms roughly to the limits of the Biafran forest and closely related associations, and it is not found in post-cultivation or roadside habitats. The species mostly occur on soils of the feralitic latosol type but are not confined to one soil type (Bullock 1980a). </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

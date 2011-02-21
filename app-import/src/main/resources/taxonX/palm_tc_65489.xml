@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis minuta</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 312 (1995)</citation>
+<type>Madagascar, Sahavary; Dransfield et al.; JD6457</type>
+<type_loc>Holotypus K; isotypi P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>The name of this exquisite little palm, which is resticted in its distribution, indicates its size; it is a tiny solitary palm, one of the smallest on the island.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>D. coriaceaesimilis sed vagina folii pubescenti inflorescentia arcuata non erecta et folio vivendi non coriaceo differt.</p></div>
+<div type="description"><p>Solitary palm, stem 15-50 cm. STEMS to 5 mm diam.; internodes c. 1-2 cm, densely rusty-red hairy; nodal scars 0.2 mm. LEAVES 5-8 in the crown, entire or with several leaflets (fide JD6371, but not apparent from collection); sheath 6-9 cm long, half open, densely red-pubescent, with long-laciniate auricles to 1 cm; petiole 3-18 cm long, 1.5-2 mm diam., densely scaly; lamina entire, 19.5-33 cm long, bright greyish green, midrib 4.5-6 cm, lobes 16-26 x 1.3-2.5 cm, main veins 4-6, with minute reddish scattered scales on major and minor veins, white wax present? or white-punctate, apices narrowly dentate, 2- 4 mm wide. INFLORESCENCE interfoliar, unbranched (a single bifid rachilla present in JD6457), erect to spreading; peduncle 6-19 cm; prophyll 7-15 cm, pale brown, open in the distal 1 cm; peduncular bract inserted at 6-11.5 cm from the base of the peduncle, 3-12 cm long, glabrous or with scattered scales, open for most of its length; non-tubular peduncular bract often present, 1.5-2 mm long; rachilla 4- 12 cm long, 1-2 mm diam., minutely puberulous or glabrous, with distant triads. STAMINATE FLOWERS with sepals 0.7-0.9 x 1-1.9 mm, ciliolate; petals 1.7-2 x 1.1-1.2 mm; stamens 6, uniseriate, filaments 1-1.2 mm, anthers 1.3-1.4 x 0.4 mm, versatile;   pistillode c. 1 x 0.3 mm. PISTILLATE FLOWERS white; sepals 0.6-1.2 x 1-1.5 mm, ciliolate; petals 1.8-2.5 x 1.5-1.8 mm; staminodes 0.3-0.4 mm; gynoecium on a 0.2 mm stalk, 1.7-2.3 x 1.2-2 mm. FRUIT when young 11-12 x 2-3 mm.</p></div>
+<div type="distribution"><p>Masoala and Maroantsetra.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; ridgetops; 200-550 m.</p></div>
+<div type="conservation"><p>Vulnerable. Occurs over a restricted distribution area, without official protection; numbers are thought to be fairly low.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Very similar to D. coriacea but differs in the pubescent leaf sheath, the curved (not erect) inflorescence and the less leathery leaf, at least when fresh.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Hiaraka, Oct. 1986 (bud), Dransfield et al. JD6371 (K, P, TAN); Antalavia, Feb. 1988 (y.fr.), Dransfield et al. JD6483 (K, TAN); Sahavary, Feb. 1988 (fl., y.fr.), Dransfield et al. JD6457 (Holotype K; isotypes P, TAN). No locality, collected before 1867, (fl.), Lyall 323 (K, syntype of N. heterophylla but not conspecific with the lectotype of that species, Baron 486).  Dypsis coriacea. Close-up of infructescence (Dransfield et al. JD6459).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

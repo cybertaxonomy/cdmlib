@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops ingens</name>
+<author>J.Dransf.</author>
+<citation>Bot. J. Linn. Soc. 81: 20 (1980)</citation>
+<bibref>Dransfield, Ratt. Sabah 87 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 88 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Huge</p></div>
+<div type="vernacular"><p>Podowon (Dus.), Wi Baloboh (Ib.)</p></div>
+<div type="description"><p>Massive clustering stemless palm with short decumbent subterranean stems to 15 cm diam. and very crowded nodes. Leaf ecirrate, to 6 m including the sheath and petiole; sheath open throughout its length, to 12 cm wide, tapering into the petiole; petiole together with sheath to 2 m long, armed with whorls of huge, slightly reflexed pale straw-coloured spines to 11 &#215; 1 cm, with few scattered solitary spines, the petiole surface marked with the indentations of the spines in bud, and covered with deciduous pale to cinnamon-brown indumentum; rachis armed as the petiole but spines smaller and sparser; leaflets c. 35 on each side of the rachis, regularly arranged, c. 6 cm distant, the largest to 75 &#215; 4.5 cm, dark green, concolorous, acuminate in a bristly drip-tip and armed with sparse bristles along the margins and along 3 veins on the undersurface, transverse veinlets obscure. Young leaves tinged pink. Inflorescences arching out of the crown on peduncle to 2 m or more long, frequently the inflorescence tips developing into new vegetative shoots and rooting in contact with the ground; primary branches to 12, crowded at the tip of the peduncle, subtended by tattering, brown hairy bracts to 50 cm, secondary and tertiary axes bearing conspicuous tattering bracts; male flowers relatively large, to 7 &#215; 4.5 mm; rachillae of female inflorescence to 8 &#215; 0.5 cm; female flower to 11 &#215; 6 mm, dull dirty-brown except for conspicuous pink stigmas. Mature fruit very large, rather variable in shape, from ovoid to obpyriform, to 45 &#215; 20 mm, tipped with a short beak and covered in 15-16 vertical rows of matt chestnut brown, rarely paler brown, dark margined scales. Seed irregularly grooved and angled; sarcotesta yellowish, sweet; endosperm deeply ruminate. Seedling leaf with 4 spreading leaflets. (Fig. 31, Pls 3, 5A, 6A, 7D).</p></div>
+<div type="distribution"><p>Known from several collections from throughout Brunei. Elsewhere in Sarawak, Sabah and once recorded in Kalimantan. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The leaves may be used as thatch and the fruit eaten.</p></div>
+<div type="discussion"><p>D. ingens is a spectacular species, characteristic of damp slopes near valley bottoms, or along spring lines on slopes up to 800 m altitude. D. ingens could easily be confused with a species ofSalacca; in fact it looks more like a salak than a rattan. However, the inflorescence and floral details show indeed that it is a species of Daemonorops. Furthermore, in Salacca the terminal leaflet pair is always compound and lobed, whereas D. ingens has single-fold terminal leaflets; asam paya or kelubi (Eleiodoxa conferta (Griff.) Burret) also has single-fold terminal leaflets, but its flowers and fruits are held in a huge club-like mass at ground level in the centre of the leaf rosette, the petiole spines are much finer than those of D. ingens and it is only found in peat swamp forest where D. ingens has never been found. D. ruptilis var. acaulescens is a much smaller plant and the fruit is only a fraction of the size of that of D. ingens. In a few of the populations of D. ingens in Brunei, the inflorescences tip over, and when in contact with the ground, root, develop shoots and grow into new plants.</p></div>
+<div type="materials_examined"><p>BEL: Melilas, Batu Patam, Wong 1093; Melilas, Bt.Batu Patam, Dransfield  J. 6612. TEM: Amo, Wong 1893; Amo, Ulu Belalong, Dransfield J. 7403; Amo, Ulu Belalong, Dransfield J. 7406. TUT: Lamunin, Dransfield J. 6891; Lamunin, Ladan Hills F.R., Sands 5706; Lamunin, Ladan Hills F.R., Sands 5707; Rambai, Tasek Merimbun, Bernstein 183. Without prov.: BRUN 15414.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

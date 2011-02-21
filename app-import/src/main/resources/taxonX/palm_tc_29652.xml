@@ -1,0 +1,38 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus leloi</name>
+<author>J.Dransf.</author>
+<citation>Bot. J. Linn. Soc. 81: 11 (1980)</citation>
+<bibref>Dransfield, Ratt. Sabah. 125 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 129 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Named for a Penan field assistant from G Mulu National Park, Sarawak</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary moderate rattan climbing to c. 10 m; stem without sheaths c. 10 mm diam., with sheaths to 17 mm diam., internodes 7-10 cm long. Leaf sheaths usually pale yellowish-green, densely armed with pale green flattened spines of varying length, usually 20-30 mm, rarely 5-80 mm, sometimes undulate, those around the sheath mouth much longer and erect, brown indumentum abundant between the spines; knee present, armed as the sheath; ocrea inconspicuous. Flagellum to 2.25 m, densely armed with black spines. Leaf ecirrate, curved, to 1.2 m long including the petiole 20-45 cm; petiole armed with scattered black-tipped spines; leaflets regular, c. 30 on each side of the rachis, the longest near the base to 35 &#215; 1.7-2.5 cm, decreasing to 10 &#215; 0.5 cm near the tip, armed with scattered black bristles. Inflorescences to 75 cm, zigzag, the bracts heavily armed, usually with a dense cluster of erect spines at the tip; partial inflorescences up to 4, curved, congested, to 10 cm; flowers relatively large, to 7 mm. Mature fruit rounded or oblate, shortly beaked, to 18 mm diam., covered in c. 15 vertical rows of chestnut brown unchannelled scales. Seed oblate, c. 14 &#215; 12; endosperm ruminate. Seedling leaf not known. (Fig. 45).</p></div>
+<div type="distribution"><p>Rare. Elsewhere in Sarawak and Sabah. Endemic to Borneo. Without prov.: BRUN 15406.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>Although nothing is known of its habitat in Brunei, in Sarawak C. leloi has been found on poor soil ridge tops in hill dipterocarp forest at altitudes up to 1000 m. It is closely related to C. conirostris (for differences see the latter).</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Euterpe catinga</name>
+<author>Wallace</author>
+<citation>Palm Trees Amazon: 27 (1853)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Subcanopy to canopy palm.  Stems clustered, to 20 m tall, 10-15 cm in diameter.  Leaves to 3 m long; crownshaft sometimes orange or red; petiole with numerous black adpressed scales; pinnae 40-60 on each side, regularly inserted, narrow, slightly pendulous, the central ones 40-70 cm long.  Inflorescence erect, 30-50 cm long, with up to 100 branches inserted on all sides of the axis, these 3-4 mm in diameter and covered with short, whitish brown hairs.  Fruits black, globose, ca. 1 cm in diameter.  Endosperm homogeneous.  Seedling leaves deeply bifid.</p></div>
+<div type="distribution"><p>Patchily distributed E of the Andes in Venezuala, Colombia, Ecuador, Peru, and Brazil, in white sand areas below 350 m elevation and on the Andean slopes at 1100-1800 m elevation.  In Ecuador it is known only from the mouth of the Pastaza valley near Puyo, in floodplain forest or in pasture.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Two varieties are recognised. The Ecuadorian plants belong to var. roraimae (Dammer) A. J. Hend. &amp; Galeano</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,56 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Loo</mods:namePart>
+<mods:namePart type="given">A.H.B.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele procera</name>
+<author>(Blume) W.J.Baker and Loo</author>
+<citation>Kew Bull. 59: 67 (2004)</citation>
+<synonymy>
+<name>Kentia procera</name>
+<author>Blume</author>
+<bibref>Blume, Bull. Sci. Phys. Nat. Neerl. 1: 65 (1838)</bibref>
+</synonymy>
+<synonymy>
+<name>Gronophyllum procerum</name>
+<author>(Blume) H. E. Moore</author>
+<bibref>(Blume) H. E. Moore, Gentes Herb. 9: 265 (1963)</bibref>
+</synonymy>
+<synonymy>
+<name>Areca procera</name>
+<author>(Blume) Zipp. ex Blume</author>
+<bibref>(Blume) Zipp. ex Blume, Rumphia 2: 95 (1843)</bibref>
+<type>Indonesia, Papua; Zippel; s.n.</type>
+<type_loc>Holotype L</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

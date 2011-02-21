@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pholidostachys synanthera</name>
+<author>(Mart.) H.E.Moore</author>
+<citation>Taxon 18: 231 (1969)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey or subcanopy palm.  Stem solitary, 2-12 m tall, 6-15 cm in diameter, with relatively soft wood, usually covered distally with persistent leaf sheathes.  Leaves 15-25 or rarely more in the crown; petiole to 1.5 m long; blade 100-220 cm long, divided into 8-25 unequal pinnae on each side, the central ones 50-80 cm long and 5-16 cm wide.  Inflorescence branched 1-2 times; peduncle 35-100 cm long, rarely longer, with a thick, velvety, reddish brown indument when young; rachis 2-40 cm long; branches 5-16, the flower bearing part 20-50 cm long and 6-10 mm in diameter, with flower pits in 10-12 longitudinal rows.  Fruits black, elongate, 10-15 mm long and 8-10 mm in diameter.</p></div>
+<div type="distribution"><p>Colombia to Peru, on both sides of the Andes, mostly at elevations between 500 and 1500 m.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Some differences are noted between individuals from the two sides of the Andes.  Western plants are very large, with the stem to 12 m tall and 8-15 cm in diameter, and their inflorescences have a long peduncle, almost no rachis, and simple branches.  Eastern plants are smaller, typically with the stem less than 5 m tall and only 5-8 cm in diameter, and their inflorescences have a shorter peduncle, a 15-40 cm long rachis, and the lower branches usually bifurcate.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

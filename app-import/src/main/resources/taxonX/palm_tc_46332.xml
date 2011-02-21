@@ -1,0 +1,45 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary hermaphroditic fan palms native to Cuba and Central America, closely related to Pritchardia but the petals either open long before anthesis or open and are not shed at anthesis. </p></div>
+<nomenclature>
+<name>Colpothrinax</name>
+<author>Griseb. and H. Wendl.</author> 
+<citation>Bot. Zeit. 37: 148 (1879).</citation>
+<type>Lectotype; Colpothrinax wrightii; Griseb. &amp; H.Wendl. ex Voss</type>
+</nomenclature>
+<div type="etymology"><p>Combines kolpos — swelling, with the palm generic name Thrinax, in reference to the swollen trunk of Colpothrinax wrightii.</p></div>
+<div type="description"><p>Moderate, solitary, unarmed, pleonanthic, hermaphroditic, tree palms. Stem erect, at first covered with persistent fibrous leaf sheaths, later bare, columnar (Colpothrinax cookii) or strongly ventricose (C. wrightii), marked with close leaf scars. Leaves induplicate, shortly costapalmate; sheath disintegrating into a coarse fibrous network or into long fine, pendulous fibres, densely tomentose; petiole long, flattened or slightly channelled adaxially, rounded abaxially, margins acute, densely scaly; adaxial hastula conspicuous, triangular or irregularly lobed, abaxial hastula absent; blade orbicular, irregularly divided sometimes beyond the middle into linear, single-fold segments, these shortly bifid at apex, thick, glabrous and waxy adaxially except along ribs where caducously scaly, abaxially densely covered with minute scales, midribs prominent, transverse veinlets very short, evident abaxially or invisible. Inflorescences solitary, interfoliar, several present at the same time, shorter than the leaves, branched to 4 orders; peduncle long, rounded in cross-section, enclosed in overlapping bracts, densely tomentose; prophyll short, tubular, 2-keeled laterally, splitting apically, densely scaly; peduncular bracts 4–9, tubular, with single keel, splitting apically to give a long triangular limb, densely tomentose; rachis equalling the peduncle, tomentose; rachis bracts like the peduncular, several (4–7); first-order branches with a conspicuous, somewhat inflated, brown-tomentose, 2-keeled prophyll and a similiar empty bract, subsequent bracts, membranous, triangular, very small and inconspicuous; rachillae spreading, densely hairy or glabrous, bearing spirally arranged, minute bracts each subtending a low spur bearing a solitary, sessile flower. Flowers with calyx cup-like, fleshy, not striate, with 3 short points; corolla considerably exceeding the calyx, fleshy, tubular at the base, divided distally into 3, ± elongate, valvate lobes, forming a deciduous cap at anthesis, adaxially grooved or petals slightly shorter than calyx, not enclosing stamens in bud and persistant; stamens 6, filaments basally connate into an epipetalous cup, adnate to and equalling or only slightly exceeding the corolla tube, free filaments broad basally, attenuate above, anthers elongate, dorsifixed near the base, connectives very narrow, light in colour, latrorse; carpels 3, follicular, ovarian parts distinct, the styles elongate, connate, stigma dot-like, ovule basal, erect, anatropous. Pollen ellipsoidal, usually slightly asymmetric; aperture a distal sulcus; ectexine tectate, reticulate, coarsely reticulate, or coarsely foveolate, aperture margin psilate, or scabrate and usually finely perforate; infratectum columellate; longest axis 34–66 µm [2/3]. Fruit globose, usually developing from 1 carpel with apical stigmatic and abortive carpel remains, perianth usually persistent; epicarp thin, smooth, mesocarp fleshy with longitudinal anastomosing fibres adjacent to the crustaceous endocarp. Seed subglobose, free from the endocarp except at the small basal hilum, the raphe as long as the seed, rather broad and ± sculptured, lacking noticeable branches, endosperm homogeneous without intruded seed coat below the raphe; embryo lateral towards the base on the antirapheal side. Germination remote-tubular; eophyll simple. Cytology unknown.</p></div>
+<div type="distribution"><p>Three species, Colpothrinax wrightii endemic to Cuba, C. cookii in Belize, Guatemala and Honduras and C. aphanopetala in Nicaragua, Costa Rica and Panama.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961, Read 1998), roots (Seubert 1997), floral (Morrow 1965). </p></div>
+<div type="relationships"><p>The monophyly of Colpothrinax has not been tested and its phylogenetic placement is unclear. Colpothrinax is resolved as sister to all other Trachycarpeae with low support (Baker et al. in review), sister to a clade of Pritchardia and Copernicia (Uhl et al. 1995), or sister to a clade of Rhapidinae, Acoelorrhaphe, Serenoa and Brahea with low support (Asmussen et al. 2006).</p></div>
+<div type="uses"><p>The trunks of C. wrightii are used for making canoes, its leaves as thatch and the fruit is eaten by pigs. All species would make handsome ornamentals. </p></div>
+<div type="taxonomic accounts"><p>Evans (2001). </p></div>
+<div type="fossil record"><p>See entries for Cryosophila and Brahea. </p></div>
+<div type="discussion"><p>Similar to Pritchardia but differing in petals only rarely shed as a cap (Colpothrinax wrightii) and in a more shallow stamen tube. The inflorescence seems striking in the length and massiveness of the peduncle and rachis, with the branches very small in comparison.</p></div>
+<div type="vernacular"><p>Cuban belly palm, barrel palm (Colpothrinax wrightii).</p></div>
+<div type="biology_ecology"><p>Colpothrinax wrightii occurs mostly in semi-dry savannahs and grasslands on white sand, whereas C. cookii and C. aphanopetala occur in wet premontane and lower montane rain forests up to 1,600 m above sea level.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

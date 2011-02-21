@@ -1,0 +1,59 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A revision of the genus Sclerosperma (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name  type="personal">
+<mods:namePart type="family">van Valkenburg</mods:namePart>
+<mods:namePart type="given">J.L.C.H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Sunderland</mods:namePart>
+<mods:namePart type="given">T.C.H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Couvreur</mods:namePart>
+<mods:namePart type="given">T.L.P.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 63, pp 75-86</mods:publisher>
+<mods:dateIssued>2008</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Sclerosperma walkeri</name>
+<author>A.Chev.</author>
+<citation>Rev. Bot. Appl. Agric. Trop. 11: 237 (1931)</citation>
+<type>Gabon, Ngounié, mission de Sindara, Jan. 1931; Walker; s.n.</type>
+<type_loc>Holotype P!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The species was named after André Raponda-Walker (1871 – 1968), who collected the type specimen.</p></div>
+<div type="vernacular"><p>Manga (Ivili, Gabon Ngounié), Mbègho (Mitsogo, Gabon, Ngounié). Niagangu, Magangu (Congo [Kinshasa], Bas-Congo), Lifete, Mpete (Congo [Kinshasa], Equateur).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Short or acaulescent, palm. Stem if evident, very short, rather stout, closely ringed with leaf scars. Leaves, divided, very large, deeply bifid in juveniles, ascending; sheath to 40 cm, splitting opposite the petiole, margins fibrous; petiole slender, 60 – 100(– 400) cm long, adaxially channelled, abaxially rounded proximally, becoming triangular distally; rachis 150 – 200 cm long, abaxially rounded, adaxially with a prominent ridge, leaflets (20 –)25 – 40, sub-opposite to alternate, folds 37 – 65 × 1.2 – 6 cm, the upper leaflet deeply bifid, broadly rhomboid in outline, base of the upper leaflet asymmetrical, 25 – 33 × 24 – 35 cm, midribs prominent, marginal ribs next largest, blade adaxially dark, abaxially glaucous and with small scales along the veins, folds apically praemorse, margins minutely toothed, transverse veinlets not evident. Inflorescence solitary, interfoliar, concealed among the leaf bases and sometimes partially obscured by accumulated debris; peduncle, to 20 cm long, elliptic in cross-section to 2.5 cm wide, densely tomentose; prophyll to 23 cm long; peduncular bract to 27 cm long, rachis more than 13 cm long, stout. Staminate flowers sepals 3, distinct 6 × 4 mm; petals 3, distinct 11 × 8 mm, obovate; stamens c. 100, filaments very short, ±triangular. Rachis of infructescence 6 – 11 cm long, bearing up to 30 fruits. Fruit globose, 4 – 5 × 3 – 3.5 cm. Seed globose, 2.1 – 2.6 × 2.6 – 2.9 cm.</p></div>
+<div type="distribution"><p>Sclerosperma walkeri is found in the interior of Gabon and along the lower reaches of the Congo River and as such confined within the eastern distribution range of S. mannii.</p></div>
+<div type="biology_ecology"><p>Shrub layer in lowland evergreen rainforest, ranging from swamp forest, periodically flooded forest to lower slopes on terra firme, persisting in secondary growth; 300 – 400 m.</p></div>
+<div type="conservation"><p>On the basis of its restricted range in Central Gabon and the lower reaches of the Congo River, and the pressures of its native habitat, this species can be considered Vulnerable.</p></div>
+<div type="uses"><p>The leaves are widely used for thatch throughout its range, and locally used also for matting and walls. In areas with large populations of lowland gorilla (Gorilla gorilla gorilla), it is rare to find mature infructescences intact because the fruits are consumed by these forest primates.</p></div>
+<div type="discussion"><p>The type specimen in Paris consists of an undeveloped juvenile leaf, a number of immature fruits with decayed kernels, a fruit that has started to germinate, and an infructescence stalk. The fruits differ from those of S. mannii in not being depressed apically, a difference that is mentioned as a diagnostic feature. In S. mannii collections too, however, fruits can be found that are not apically depressed. These germinating S. mannii fruit are reported to have another feature assumed to be diagnostic of S. walkeri: a cavity in the kernel. This should be attributed, however, to the mobilisation of the endosperm for germination. Similar cavities were found in germinating seeds of S. mannii collected by van Valkenburg. The leaf segments being alternate, as opposed to opposite in S. mannii, is equally invalid as a diagnostic feature and was actually contradicted by the illustration accompanying the protologue of S. mannii showing both alternate and opposite leaflets. Notwithstanding that the protologue of S. walkeri does not contain any valid distinguishing characters, the type specimen retains its value because of the infructescence stalk that is present on the type sheet. This infructescence stalk clearly demonstrates the more robust character of both the peduncle and the rachis, which is also found in other specimens of Sclerosperma with divided leaves from the same area and further east; these leaves have significantly more leaf segments than those of true S. mannii. Welldeveloped leaves of S. walkeri have 25 – 40 leaf segments, which are relatively narrow (up to 6 cm wide), whereas in S. mannii, the leaves have usually 8 – 17 leaf segments that are mostly 6 – 9 cm wide. The infructescence of S. walkeri is characterised by a more robust peduncle, its rachis is equally more robust and longer than in S. mannii, and its fruits are of larger dimensions.</p></div>
+<div type="materials_examined"><p>GABON. Ngounié, mission de Sindara, 5 Jan. 1931, A. A. Walker s.n. (P!); Saint Martin, 1938, A. A. Walker s.n. (BM!, BR!); Waka National Park, 15 km on the road Evouta to Egoubi forestry camp, 400 m, 5 April 2004, J. J. Wieringa 5281 (LBV!, WAG!); Waka National Park, 4 July 2005, T. C. H. Sunderland 3031 (LBV,WAG!); Ogooué-Lolo, Chantier CEB, 6 km on road Lelama to Okondja, E of road Okondja-Franceville, 300 m, 2 Nov. 2005, M. S. M. Sosef 2206 A (LBV, WAG!); 300 m, 2 Nov. 2005, M. S. M. Sosef 2206 B (LBV, WAG!). CONGO (KINSHASA). Bas-Congo, no date, J. Gillet s.n. (BR!); Kisantu, 1899, J. Gillet 279 (BR!); Lusanga Sundi, 350 m, 14 Feb. 1940, C. Donis 188 (BR!); Equateur, Djoa, 17 May 1958, C. Evrard 4081 (BR!, K!); Kilemba, 26 May 1913, Broun s.n. (BR!); Orientale, Près rivière Longwele à 1 jour de Yalibwa (env Yangambi), 15 Jan. 1948, J. J. G. Léonard 1614 (BR!).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus hispidulus</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 209 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 332 (1908)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 118 (1992)</bibref>
+<synonymy>
+<name>Calamus sp. aff. C. ciliaris</name>
+<author>Bl.</author>
+<bibref>Dransfield, Ratt. Sabah 170 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 191 (1992)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Covered in very small rigid hairs</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary (?always) slender rattan climbing to 10 m tall; stem without sheaths 7-8 mm diam, with sheaths to 14 mm diam., internodes c. 10 cm long. Sheaths dull green, very densely covered in minute, rigid brown hairs with swollen bases, the hairs eventually deciduous leaving a rough surface, or with slender greenish almost hair-like spinules, a few short triangular spines to 2 mm long sometimes present scattered among the hairs; knee conspicuous; ocrea inconspicuous. Flagellum to 1.25 m. Leaf ecirrate, to 55 cm long including petiole to c. 15 cm, rough near the base; leaflets 15-20 on each side of the rachis, regularly arranged, &#177; linear, the longest to 25 &#215; 2 cm, both surfaces bearing minute spinules or, more rarely, pale green hair-like spinules; transverse veinlets conspicuous. Inflorescence 60-125 cm long, curved, with 3-6 much curved partial inflorescences; male rachillae strongly curved, to 25 mm long, bearing distant large flowers; female rachillae much curved, to 45 mm, bearing distant large conspicuously stalked flowers. Mature fruit ellipsoid, 20 &#215; 8 &#215; 10 mm, covered in yellowish-brown scales. Other details not known. (Fig. 42).</p></div>
+<div type="distribution"><p>Locally common in Brunei, tending to occur in forest on poor soils. Elsewhere in Sarawak. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane appears to be of good quality for binding purposes.</p></div>
+<div type="discussion"><p>C. hispidulus may be distinguished from other related Bornean species such as C. sarawakensis and C. pilosellus by the rough leaf sheaths. Its closest relative is probably C. exilis of Peninsular Malaysia and Sumatra. We have included here a rattan previously identified as Calamus sp. aff. C. ciliaris Bl. (Dransfield 1984, 1992). With more material, it seems to fit within the range of variation of C. hispidulus. So far, this very hairy form has not yet been found in Brunei.</p></div>
+<div type="materials_examined"><p>BEL: Melilas, Bt.Batu Patam, Dransfield J. 6599. TEM: Amo, Wong 1737; Amo, Bt.Belalong, Dransfield J. 7124. TUT: Lamunin, Ladan Hills F.R., Wong 507; Rambai, Bt.Bahak, Coode 7028; Rambai, Bt.Bahak, Coode 7059; Rambai, Tasik Merimbun, Wong 341. Without prov.: BRUN 15744.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

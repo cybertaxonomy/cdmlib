@@ -1,0 +1,56 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Loo</mods:namePart>
+<mods:namePart type="given">A.H.B.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele microspadix</name>
+<author>(Warb. ex K. Schum. &amp; Lauterb.) Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 13: 484 (1937)</citation>
+<type>Papua New Guinea, Hatzfeldhafen; Warburg; s.n.</type>
+<type_loc>Lectotype FI</type_loc>
+<synonymy>
+<name>Kentia microspadix</name>
+<author>Warb. ex K. Schum. &amp; Lauterb.</author>
+<bibref>Warb. ex K. Schum. &amp; Lauterb., Fl. Schutzgeb. Südsee: 206 (1900)</bibref>
+</synonymy>
+<synonymy>
+<name>Adelonenga microspadix</name>
+<author>(Warb. ex K. Schum. &amp; Lauterb.) Becc.</author>
+<bibref>(Warb. ex K. Schum. &amp; Lauterb.) Becc., Bot. Jahrb. Syst. 52: 26 (1914)</bibref>
+</synonymy>
+<synonymy>
+<name>Ptychosperma beccarianum</name>
+<author>Warb. ex K. Schum. &amp; Lauterb.</author>
+<bibref>Warb. ex K. Schum. &amp; Lauterb., Fl. Schutzgeb. Südsee: 208 (1900)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Fragments of both collections cited in the protologue of Hydriastele microspadix (Warb. ex K. Schum. &amp; Lauterb.) Burret, Warburg s.n. from Schumannsfluss, exist in the Florence herbarium. We have chosen the former as lectotype because it is the more complete specimen. The specimen cited in the original literature of the nomen nudum Ptychosperma beccarianum Warb. ex K. Schum. &amp; Lauterb. was also collected by Warburg at Hatzfeldhafen. Fragments of the collection are held in Florence, as is a photograph of the Berlin specimen, which is now destroyed. We concur with Burret (1928) that the specimen is a mixed gathering, containing parts of both Hydriastele microspadix and Rhopaloblaste ceramica (Miq.) Burret.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

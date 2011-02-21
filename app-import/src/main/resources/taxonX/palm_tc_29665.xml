@@ -1,0 +1,48 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus longisetus</name>
+<author>Griff</author> 
+<citation>CalcuttaJ. Nat. Hist. 5: 36 (1844)
+</citation> 
+<type>Cultivated, from Myanmar, Pegu; Griffith; s.n.</type>
+<type_loc>Holotype BR; isotype K numbered s.n. E43</type_loc>
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 134 (1908)</bibref>
+<bibref>Furtado, Gard. Bull. Singapore 15: 140 (1956)</bibref>
+<bibref>Hodel &amp; Vatcharakorn, Palm Thai. 46 in Hodel, Palm. Cycad. Thai. (1998)
+</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 53 (2001).</bibref>
+</nomenclature>
+<div type="distribution"><p>India (Andaman Islands), Myanmar, Thailand (West and Peninsular). Also South-east Thailand (Hodel &amp; Vatcharakorn 1998) and Peninsular Malaysia (Dransfield 1979).</p></div>
+<div type="materials_examined"><p>INDIA (ANDAMANS): South Andaman, Meita Khasi, 22 Dec. 1889, (fr.) Dr King's collector s.n. E39, (K). MYANMAR: Mergui Distr., Tenasserim R., 21 Jan. 1927, (fr.), Parker, R. N. 2453 (K). THAILAND (WEST): Petchburi, Kaengkrachan National Park, 5 Feb. 1994, (pist.), Barfod et al. 45196 (K). (PENINSULAR): Surat Thani Province, Khao Sok, 9 June 1992, (fr.), Bogh, A. 42738 (K). CULTIVATED: from Pegu, 1850, (ster.), Griffith s.n. E43 (K).</p></div>
+<div type="biology_ecology"><p>Unknown.</p></div>
+<div type="discussion"><p>The published photograph of the fruits of Hodel &amp; Vatcharakorn 1804 (presumably in BH) from Prachin Buri, South-east Thailand undoubtedly shows this species. Dransfield (1979) erroneously stated that this species was erect, not climbing.</p></div>
+<div type="vernacular"><p>None recorded.</p></div>
+<div type="uses"><p>None recorded in Indochina. The cane is of good quality and there are trial plantations in Peninsular Thailand (R. Pattanavibool, pers. comm. 1999).</p></div>
+<div type="conservation"><p>Occurs only marginally in Indochina; common and of no conservation concern in the Thai-Malay Peninsula.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

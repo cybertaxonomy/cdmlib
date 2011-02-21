@@ -1,0 +1,50 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Siphokentia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Maturbongs</mods:namePart>
+<mods:namePart type="given">R.A.</mods:namePart>
+<mods:namePart type="family">Wanggai</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Hambali</mods:namePart>
+<mods:namePart type="given">G.G.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 44(4) 175-181</mods:publisher>
+<mods:dateIssued>2000</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele dransfieldii</name>
+<author>(Hambali &amp; al.) W.J.Baker and Loo</author>
+<citation>Kew Bull. 59: 64 (2004)</citation>
+<type>Indonesia, Papua, Biak; Maturbongs; 555</type>
+<type_loc>Holotypus K!; isotypi BO, MAN, L!, BH!</type_loc>
+<synonymy>
+<name>Siphokentia dransfieldii</name>
+<author>Hambali, Maturb., Wanggai and W. J. Baker</author>
+<bibref>Hambali, Maturb., Wanggai and W. J. Baker, Palms 44: 179 (2000)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>Description for the basionym Siphokentia dransfieldii Hambali, Maturbongs, Wanggai &amp; W.J. Bake</p></div>
+<div type="etymology"><p>The species is named for John Dransfield in recognition of his monumental contribution to the taxonomy of palms in Southeast Asia.</p></div>
+<div type="vernacular"><p>Ombrush (Biak language).</p></div>
+<div type="diagnosis"><p>a S. beguinii Burret staminibus pluribus, petalis floris pistillati crassioribus tuberculatis, stigmatibus brevioribus et fructu maiore differt.</p></div>
+<div type="description"><p>Solitary pleonanthic, moderately robust tree palm; stems up to 1,2 m tall, 5-12 cm diam.; internodes 3.0-1 1.5 cm long, nodal scars not always conspicuous. Leaves 6-10 in crown, pinnate, 1.3-3.0 m long (including petiole), neatly abscising; sheaths tubular, 35-80 cm long, covered with thin, finely floccose, dark brown indumentum; crownshaft well defined, up to 1'2O cm long and up to 20 cm diam.; petiole 10-65 cm long and 1.5-3.0 cm diam., channeled adaxially, rounded abaxially, indumentose at junction with sheath, otherwise with copious minute, dark scales; rachis somewhat arching, with adaxial longitudinal ridge, rounded abaxially, indumentose as sheath, indumentum sometimes more dense and coarse than on sheath, sometimes absent with only scattered scales remaining, indumentum possibly lost with age; blade variously divided into 1-19 fold leaflets, typically including 3 pairs of multiple-fold leaflets, interspersed with very few pairs of single-fold leaflets; leaflet with praemorse apical margin, 65-130 cm long, 1.5-30 cm wide, individual folds 1.5-3.5 cm wide, terminal pair of leaflets always multiple-fold (ca. 10-14 folds) forming flabellum with cleft apex; Iamina with numerous minute brown dots on both sides, transverse veinlets inconspicuous, adaxial surface paler when dried, main veins with very few minute hairs adaxially and brown ramenta abaxially. Inflorescence infra'foliar, 37-41, cm long at anthesis, apparently growing to ca. 52 cm long in fruit, protandrous, branching to 1 order; peduncle 2-5 cm long, glabrous; prophyll 43-46 cm long, 5-8 cm wide, borne about half way up the peduncle, tubular, lanceolate, Z-keeled, membranous, glabrous, entirely enclosing the inflorescence, then splitting longitudinally and falling before staminate anthesis; peduncular bracts 1-3, first peduncular bract borne 8-10 mm above the prophyll, similar to the prophyll in shape and size, but lacking keels, remaining peduncular bracts inconspicuous and incomplete; rachis 1-2 cm long; rachis bracts inconspicuous, incompletely sheathing; rachillae 4-LI, 30-36 cm long at anthesis, apparently growing to ca. 49 cm long in fruit, 2.0-3.5 mm wide, borne at a very acute angle to the rachis, apparently rather stiff and straight, or pendulous when heavy with fruit, sometimes sinuous in distal-most portion, bearing triads in opposite and decussate pairs, except in distal-most and proximal-most portion of rachilla where arranged spirally, triads 4-6 mm apart; rachilla bracts very inconspicuous, low, rounded; floral bracteoles low, rounded, similar to rachilla bract. Staminate flowers 9-11 mm long, asymmetrical; sepals 3, greenish white, connate, triangular, 2 mm long; petals 3, white, briefly connate at the base, falcate, acuminate, much exceeding the calyx, 1 petal much larger than the others, 10-11 x 4-5 mm, smaller petals 9-10 x 2-3 mm; stamens 13-16 (very rarely as few as 9); filaments slender, ca. 0.5 mm long, sometimes briefly epipetalous near base of petal; anthers linear, 5-6.5 mm long, ca. 0.6 mm wide, basifixed, dehiscence latrorse, connective prolonged into an acute appendage, ca. 0.5 mm long; pollen unknown; pistillode absent. Pistillate flowers ca. 9 x 5 mm long at anthesis, perianth apparently continuing to grow as fruit develops, flower scar 2.5-4 x,2-3 mm; calyx greenish white, synsepalous, forming cylindrical tube, ca. 3 mm long, ca. 5 mm wide, margin with 3 very short lobes; corolla white ca. 8.5 mm long, ca. 5 mm wide, sympetalous for half its length, with 3 free lobes, the two parts separated by a dark equatorial ridge (visible only in herbarium material); corolla lobes ca. 4 mm long, very thick, valvate, tightly closed during staminate anthesis, adaxial surface thrown into minute folds and tubercles, drytng after pistillate anthesis, becoming hard and brittle, and often caducous; staminodes 3-5(6?), minute, triangular; gynoecium white, 5.5 mm long, 3.5 mm wide, obovoid, uniloculaq uniovulate, locule located near the base of the ovary, ovary wall rather fibrous; stigmas 3, lobes less than 1 mm long, fleshy, slightly recurved, stigmatic surface forming deep, narrow invagination into the ovary wall at the iunction of the 3 lobes. Fruit obovoid, ca. 18 mm long, ca. 12 mm wide, with conspicuous woody discoid depression at apex, ca. 5 mm diam., stigmatic remains persistent in centre of depression, perianth persistent, corolla lobes becoming hardened with age and often caducous; epicarp smooth, thin, ripening through yellow to red when mature, with copious tannin bodies beneath; mesocarp fibrous, ca. 1 mm thick, but much thicker below stigmatic remains; endocarp very thin, adhering closely to seed; seed subglobose, ca. 8 x 7 mm, with small basal depression and shallow longitudinal groove; endosperm deeply ruminate; embryo basal. </p></div>
+<div type="distribution"><p>Papua. Biak Island. Reported from Supiori and Numfoor Islands by Biak islanders.</p></div>
+<div type="biology_ecology"><p>In forest on limestone between sea level and 310 m, often growing in very thin soils and occasionally in cracks in limestone.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Seed as substitute for betel nut, leaves for wrapping meat or sago.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>INDONESIA. Papua.B iak island: Sumberker Protected Forest, Sept. 1998, Maturbongs 551 (K!, MAN, BO, L!, FTG!); Sumberker Protected Forest, Sept. 1998, Maturbongs 553 (K!, MAN, BO, NY!); Sumberker Protected Forest, Sept. 1998, Maturbongs 555 (K!, MAN, BO, L!, BH!); Sumberker Protected Forest, Sept. 1998, Maturbongs 556 (K!, MAN, BO, AAU!); Adibai, eastern Biak, Sept. 1998, Maturbongs 557 (K!, MAN, BO); Sansundi village, North Biak Nature Reserve, Sept. 1998, Maturbongs 561 (K!, MAN, BO, AAU!); Sansundi village, North Biak Nature Reserve, Sept. 1.998, Maturbongs 562 (K!, MAN, BO); Sansundi village, North Biak Nature Reserve, Sept. 1998, Maturbongs 563 (K!, MAN, BO, FTG!); Sansundi village, North Biak Nature Reserve, Sept. 1998, Maturbongs 564 (K!, MAN, BO, NY!); Wari Village, northern Biak; Sept. 1.998, Maturbongs 566 (Kt, MAN, BO, BH!). CULIIVATED. Fairchild Tropical Garden: Plot 132, 91-182A, Oct. 7999, Zona 821 and 823 (FTG!), 826 (FTG!, K!); Conservatory, 92- 331, Oct. 7999, Zona 822 (FTG!, K!). Bogor: Private garden of G.G. Hambali, Hambali s.te. (K!). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

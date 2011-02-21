@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis jumelleana</name>
+<author>Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 246 (1995)</citation>
+<type>Analamazaotra; Perrier; 11988</type>
+<type_loc>Lectotype P</type_loc>
+<synonymy>
+<name>Neophloga lanceolata</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 6 (3): 45 (1929)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 21 (1938)</bibref> 
+<bibref>Jum., Fl. Madagascar 30: 88, fig. 25 (1945)</bibref> 
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>One of the commonest palms of the well-known forest at Analamazaotra, but very rare elsewhere. The name refers to Henri Lucien Jumelle (1866-1935), who collaborated with Perrier de la B&#226;thie on the publication of the palm flora of Madagascar and who described many species.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Clustering palm in tufts of 4-6. STEMS 2-4 m high, 0.5-1.5 cm diam.; internodes 6-13 cm long, near the crown 1-4 cm, green with reddish scales, later turning brown-grey. LEAVES 3-8, spirally inserted, porrect; sheath 8-20 cm long, pale green with scattered scales, closed, sometimes with a black pre-split line edged in 4-5 mm long black fibres, without auricles or (rarely) with triangular auricles to 2.5 mm high; petiole 1.5-15 cm long, 1.5-4 x 2-2.5 mm diam., flat to slightly channelled, with scattered scales; rachis 24-56 cm long, in mid-leaf 2-3 mm wide, with scattered scales; leaflets 10-18 on each side of the rachis, in irregular groups of 2-4 (group interval 2-12 cm) or just irregular, in one plane (not fanned within the groups), folded, the proximal 8-23 x 0.2-0.7 cm, median 14-27 x 0.5-2.2 cm, distal 10-18 x 1.3-2 cm, the distal pair joined for 1-2 cm and with 2-8 mm wide dentate apices, other leaflets acuminate and with 1 main midrib and 2 fainter veins, distal pair with 3 main veins, all leaflets with scattered minute reddish scales on the main and minor veins. INFLORESCENCE interfoliar, pendulous, branched to 1 order; peduncle 22-43 cm long, distally 2-3 mm diam., green with scattered scales but glabrescent; prophyll 14-31 cm long, 5-8 mm wide, borne at 1-13 cm above the base of the peduncle, pale brown with scattered scales, opening at the apex for 1-2.5 cm; peduncular bract inserted at 13-29 cm from the base of the peduncle, 13-14 cm long but rapidly deciduous, seen once and that time opening in the distal 5-6 cm; second peduncular bract seen once, inserted some 6 cm below the apex of the peduncle, c. 3 cm long; rachis absent or up to  6.5 cm long, glabrous, with 2-10 rachillae; rachillae 13-30 cm long, 1-1.5 mm diam., with spaced triads. STAMINATE FLOWERS custard yellow, with sepals 0.7-1 x 0.6-1 mm; receptacle 0.5-0.6 mm high; petals 1.2-1.7 x 0.7-1.3 mm; stamens 6, equal, the filaments 0.3-0.8 mm long, triangular with a 0.3 mm wide base, the anthers 0.4-0.8 x 0.4-0.5 mm, dorsifixed and versatile; pistillode 0.2-0.4 x 0.2-0.3 mm. PISTILLATE FLOWERS with sepals 0.5-1 x 0.6-1.4, unequal with one markedly asymmetrical; petals 1.5-2 x 2-2.2 mm; staminodes 0.2-0.3 mm; gynoecium 1.2-1.5 x 0.8-1.4 mm on a 0.2 mm stalk. FRUIT red, subglobose, 9-12 mm diam., fleshy, with fibrous endocarp with free fibres. SEED 6.5-9 x 6-8 mm, with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Known from Analamazaotra, and from old collections in Zahamena and Anjozorobe.</p></div>
+<div type="biology_ecology"><p>Submontane rain forest on gentle to steep slopes; 800-1300 m.</p></div>
+<div type="conservation"><p>Vulnerable. Only known from a single recent site, which is protected.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>We have found two of the syntypes, Perrier 11988 from Analamazaotra, and Perrier 18043 from the lower Mangoro R. These are not the same taxon. We have chosen Perrier 11988 as the lectotype; the other number is not included in the description (see D. linearis). The protologue has characters drawn from both these sheets. 
+A fairly nondescript species, whose relationships are probably with D. linearis. Humbert &amp; Cours 17908 differs slightly from the other collections in the narrower leaflets which are grouped much more tightly within the groups, but this character is fairly variable within this taxon.  
+Probably the same is: Mananara Avaratra, Andravolasoa, April 1992 (old infl.), Beentje et al. 4640 (K, TAN) from rain forest at 330 m; a solitary palm to 6 m, with 22 leaflets on each side of the rachis, of which the proximal are 6.5-11 cm long, and glabrous or nearly so; the inflorescence rachis is 15 cm long, with 15 rachillae. In other respects it conforms to the above description, and has the look of being the same taxon, but in some ways it is also close to D. corniculata.</p></div>
+<div type="materials_examined"><p>Ambatondrazaka: Zahamena, Andrangovalo Massif, Oct. 1937 (fl.), Humbert &amp; Cours 17908 (P); Ambatoharanana near Antsevabe, March 1951 (old infl.), Cours 4058 (P, TAN). Anjozorobe: N of Anjozorobe, Nov. 1922 (bud), Perrier 14969 (P). Moramanga: Analamazaotra, July 1913 (fl.), Perrier 11988 (P, lectotype); idem, Feb. 1926 (fr.), Perrier 15986 (P); idem, Dec. 1932 (fl.), Leandri 721 (K, P); idem, Nov. 1986 (fl.), Dransfield et al. JD6412 (K, TAN) and (fl.) JD6429 (K, TAN); idem, March 1988 (fl.), Dransfield et al. JD6490 (K, TAN); idem, March 1991 (y.fr.), Beentje &amp; Raharilala 4411 (K, TAN) and (fr.) 4418 (K, TAN); idem, Aug. 1992 (old infl.), Beentje &amp; Beentje 4744 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

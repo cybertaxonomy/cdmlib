@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus hypertrichosus</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11 (Suppl.): 17 (1913).</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Very hairy</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Very slender clustering rattan climbing to 3 m only; stem without sheaths 3 -4 mm diam., with sheaths to 6 mm diam., internodes c. 12 cm long. Sheaths dull greenish-brown, unarmed; knee present, rather small; ocrea short, tubular, &#177; truncate, membranous. Flagellum to 30 cm. Leaf ecirrate to 40 cm; petiole very short or absent; rachis covered in dark brown hairs; leaflets c. 7 on each side of the rachis, rather broad lanceolate with 3 conspicuous veins, the terminal leaflet pair joined for about 21 3 their length, the others &#177; regular, alternate, the mid leaflets c. 14 x 2.5 cm, the basalmost much shorter and swept back across the stem, all leaflet surfaces densely covered by soft pale hairs, the margins appearing ciliate. Other parts not known (Fig. 76).</p></div>
+<div type="distribution"><p>In Sarawak known only from Semengoh. Elsewhere known only from the type, collected last century by Teysmann in Kalimantan. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known. This could be a very desirable ornamental.</p></div>
+<div type="discussion"><p>C. hypertrichosus was collected on a hill slope in lowland mixed dipterocarp forest. It is separated from C. javensis by the abundance of soft pale hairs on all leaflet surfaces.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

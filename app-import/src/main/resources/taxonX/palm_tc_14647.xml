@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A new species of Areca from Peninsular Malaysia and Sumatra</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Chong-Keat</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 36(2) 79-83</mods:publisher>
+<mods:dateIssued>1992</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Areca tunku</name>
+<author>J.Dransf. &amp; C.K.Lim</author>
+<citation>Principes 36: 81 (1992)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>Ad sectionem Arecellam H. A. Wendl. &amp; Drude pertinens, a ceteris speciebus Sumatranis vel Malayanis Arecae petiolo carenti et rachillis crassis purpureis bene distincta; A. jugahpunya J. Dransf. et A. ahmadii J. Dransf. speciebus borneensibus affinis sed a A. jugahpunya inflorescentia rachillis paucioribus minoribus petalis floris masculi non connatis et a A. ahrnadii habitu caulescenti et inflorescentia infrafoliacea pedunculo brevi distincta. </p></div>
+<div type="description"><p>Solitary, unarmed, monoecious palm to 2.5 m tall. Stem often stilt-rooted at the base, dull green when young, becoming pale brown, 2-6 cm diam., internodes 2- 3 cm, nodal scars ca. 0.5 cm wide. Crown composed of ca. 8 leaves, these sometimes tardily abscissing the whole crown tending io trap leaf litter. Crownshaft to 13-25 cm long, 3-7 cm diam., often partially obscured by the marcescent leaf sheaths. Leaf variably dissected leaf sheaths l3- 20 cm long, dull green to brown, often tinged purple, drying pale brown, striate, bearing thin pale brown scalesi petiole absent to very short, not exceeding 5 cm long; rachis to 1 m long, adaxially channelled near the base, abaxially rounded or angled, pale brownish green, sometimes tinged purple; blade irregularly dissected, leaflets adaxially dark shiny green, slightly paler abaxially, usually borne close together, 5-24 on each side of the rachis, varying from narrow to broad, 22-65 x 0.7-10 cm, composedo f l-6 folds,a cuminate and somewhat sigmoid except for the terminal shallowlyJobed pair, main veins bearing minute brown punctiform scales. Inflorescence sometimes burstine throughm arcescenst heathse. rect, 8.5: 22 cm, almost always branching to I order only, very rarely the basalmost branch bearing a branch of the second order, all axes cream-colored, turning yellowish orange, greenish or deep purple; prophyll 8-22 x 2.5-4 cm, ancipitous, ellipticlanceolate, winged throughout, creamy brown to pale green, tinged with carmine purple, becoming striate on drfng, bearing bands of scattered pale brown scales peduncle 20-30 x 7-10 x 5 mm glabrous, bearing an inconspicuous, incomplete, low ridgeJike peduncular bract ca. I mm high, just above the prophyll scar; rachis to 7 cm long; rachillae 6-12, very stiff and stout. borne in two neat rows on either side ofthe rachis, congested at first, later often widely spreading, 5- I 2 x 0.2- 0.4 cm, sometimes slightly curved, bearing flowers only along one side (the distal side); triads borne only at the very base of the rachillae, l-6 per rachilla, rarely absent, distally the rachillae bearing paired or solitary staminatef lowersoth e flowers creamcolored or greenish tinged, often markedly contrasting with the purplish rachillae. Staminate flowers terete, ca. 4-10 x 1.5-2 mm; calyx cup-shaped, sometimes strongly explanate, to 0.75 mm high, three-lobed, the lobes triangular to I x I mm; petals 3, distinct, 4.5-10 x L.5-2.5, abaxially slightly striate; stamens 6, filaments 0.75- 1.5 mm, anthers 2.5-5.5 x I mm, apically and basally sagittate; pollen monosulcate with finely punctate tectate exine; pistillode minute. Pistillate flowers at anthesis cream-colored, borne on enlarged rachillae; buds varying greatly in size depending on stage of development, just before anthesis to 19 x 9 mm; sepals 3, strongly imbricate, irregularly ovate l0 x 9 mm; petals 3, basally strongly imbricate l0 x 9 mm, with triangular valvate tips to 5 x 5 mm; staminodes 3, irregularly dentiform to strap-shaped; ovary ovoid 14 x 4 mm, stigmas3 , strongly adpressedin bud, expanding and becoming reflexed at anthesis, white, fleshy, triangular ca. 5 x 5 mm. Fruit borne on the enlarged, dark brown or blackened rachillae, up to about 12 fruits developing on a single inflorescence; mature fruit 3-4.5 x 1.5-3 cm, dull purplish green to brown, with blackened stigmatic remains borne on a white ringed beak to 12 x 6 mm; epicarp smooth, becoming striate on dryng; mesocarp thin, pale,i nner fiberso f mesocarpb road,b lack, conspicuous, closely adhering to the endocarp; endocarp thin, closely adhering to the seed. Seed to 25 x l5 mm; endosperm deeply ruminate, embryo basal. Seedling leaf bifid.</p></div>
+<div type="distribution"><p>Sumatra (Sumatera Utara) and Peninsular Malaysia.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>In Peninsular Malaysia Areca tunku is a palm of hill dipterocarp forest: in Sumatra it occurs in similar habitats. The North Sumatran population seems to consist of plants at the small end of the range of variation. Within populations in Terengganu, the range of variation is considerable, making suspect any separation of the Sumatran plants on the basis of size alone. The uniseriate staminate florrers suggest that Areca tunku is a member of Wendland and Drude's section Arecella in Furtado's sense (Furtado 1933). The swollen frequently purplish rachillae seem to suggest a relationship with Areca jugahpunya J. Dransf. and A. ahrnadii J. Dransf. (Dransfield 1984), two Bornean species. However, these two species are immediately distinguishable by their acaulescent habit; furthermore A. ahmadii has interfoliar inflorescences with very long peduncles and slender, less strongly beaked fruit, while A. jugahpunya is a much more massive palm, with a short peduncle as in A. tunku, but with much larger inflorescences with many (20) rachillae and large staminate flowers with petals connate for half their length. The peduncle form and colors of the inflorescence make A . tunku especially distinctive and striking. </p></div>
+<div type="materials_examined"><p>PENINSULAR MALAYSIA. Terengganu: Besut, Ulu Sungei Kemia, alt. 530 m. Cockburn FRI B2l2 (KEP); Besut, Ulu Setiu Forest Reserve, alt. 500 m, Dransfeld et al. JD5I78 (holotype K: isotype KEP), alt. 5O m, Dransfield et al. JD5169 (K, KEP); Ulu Nerus Forest Reserve. alt. 200 m. Dransf.eld et al. JD6511 (K, KEP). Johor: Labis Forest Reserve. Wong Khoon Meng FRI 32485 (KEP). Perak: Upper Perak, Belum Forest Reserve. alt. 800 m. Lim Chong-Keat et al. 90/069, 90/524, 90/ 542 (K, KEP). SUMATRA. Sumatera Utara: Langkat, Bohorok, Bukit Lar.'ang. alt. 500 m, Dransfield et al. JD3l44 (BO), JD3l45 (BO), JD3l70 (BO), JD3263 (BO, K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

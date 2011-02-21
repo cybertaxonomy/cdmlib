@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Sabal gretheriae, a New Species of Palm from the Yucatan Peninsula, Mexico</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Quero</mods:namePart>
+<mods:namePart type="given">H.J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 35: 219-224</mods:publisher>
+<mods:dateIssued>1991</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Sabal gretherae</name>
+<author>H.J.Quero</author>
+<citation>Principes 35: 219 (1991)</citation>
+<type>Mexico, Quintana Roo, 4 km S of Chiquila on road to Kantunilkin; Quero; 3592</type>
+<type_loc>Holotypus MEXU; isotypi CICY, NY, UAMIZ, US</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>This species is named in honor of Rosaura Grether of the Department of Botany, Universidad Autonoma Metropolitana-Iztapalapa, who collected palms with the author for many years.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>Palma mediocris usque ad 8 malta, trunco 20-30 cm diametro. Folia magna, lamina ca. 2 m lata, petiolis apice 3-4 cm latis, glabris, hastula longe acuminata, glabra, marginibus incurvatis, 13-22 cm longa, segmentis numerosis, unicostatis, costa media prominente, venis transversalibus conspicuis uterque paginis, segmentis centralibus usque ad 1.30 m longis, 7 cm latis, apice bifurcatis, palman longitudine 1/3 laminae, sinubus filiferis. Inflorescentiae ascendentes, folias non excedentes, 1.80-2.00 m longae, ramosissimae. Flores albi, fragrantes, calyce costato, urceolato vel cupulato, ca. 1.5 mm longo, petalis spathulatis siccatis costatis, 5 mm longis, filamentis ca. 5 mm longis, antheris 1.2-1.5 mm longis, pistillo conico ca. 4 mm longo, apice papilloso. Fructus subglobosi vel pyriformes, nigri, 16-20 mm lati, 16-18 mm alti. Semina subglobosa vel ovata-depressa, base plerunque manifeste apiculata; micropyle supraequatoriali. </p></div>
+<div type="description"><p>Medium-sized palm to ca. 8 m tall; trunk 20-30 cm diam., with persistent petiole bases only near the crown. Leaf large, with blade more than 2 m diam.; petioles 1.201.40 m long, 5-6 cm wide in the middle and 3-4 cm wide at the apex; hastula narrowly triangular to acuminate, 15-22 cm long, glabrous, never lepidote, with incurved to erect margin, never flat; segments 100-120, robust, the middle ones 1.10-1.30 m long, 6-7 cm wide, with a prominent midvein and very conspicuous transverse veinlets on both surfaces, segment apices bifid for 30-40 cm, generally breaking at the apex; palman 40-50 cm long, filiferous at the sinuses at least in the smaller segments, the blade from the larger segments frequently marginally broken above the sinus in a narrow strip 5-11 mm wide. Inflorescence appressed-ascending with 3 orders of branching, not exceeding the leaves, 1.80-2.0 m long, with 2528 primary branches; rachillae 9-11 cm long, 1-1.2 mm diam. in the lowermost primary branches. Flowers white, fragrant, 4-4.5 mm long; calyx urceolate to cupulate, trilobed, 1.5-2 mm long, strongly costate when dry; petals spathulate, narrow ca. 4 mm long, 1.5 mm wide, ascending to spreading at anthesis, strongly costate when dry; filaments ca. 5 mm long, anthers 1.2-1.5 mm long, pistil conical ca. 4 mm long, with papillose apex, ovary 1.2-1.5 mm high. Fruit globular to globular- pyriform, 16-20 mm diam., 16-18 mm high, black at maturity, epicarp smooth, mesocarp fleshy to 4 mm thick. Seed subglobose to irregularly depressed ovoid, not concave, 9.5-12.2 mm diam., 6-9 mm high, frequently strongly apiculate at the base by the funicular remnant, to 2.2 mm high; embryo supraequatorial. </p></div>
+<div type="distribution"><p>The new species is only known to date in the vicinity of Chiquila, Quintana Roo, a small coastal town located in front of Holbox Island at the northeasternmost point of the Yucatan Peninsula. This palm is abundant in this restricted area, growing under disturbed conditions, on sandy-loam plane soils. At the limit of its distribution, it grows in association with Sabal yapa and Acrocomia mexicana Karw. ex Martius. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Sabal gretheriae can be confused in the Yucatan Peninsula with S. mexicana because of the unicostate segments, large fruits and petals costate when dry. However, both species can readily be distinguished because the former has the broadest leaf segments 6-7 cm, appressedascending inflorescences, spathulate petals, and spheroidal depressed not concave seeds, 7-9 mm high with an irregular outline, while S. mexicana has segments 3.2-5.3 cm wide, an arcuate inflorescence, obovate to oblong petals, and obloid concave seeds, 5.7-7.4 mm high. In addition, some anatomical differences exist between them, both in type and distribution of the bundle sheath extensions and the small adaxial vascular bundles; S. mexicana has no extensions of the major vascular bundles and also has 3-7 small vascular bundles between the major ones; S. gretheriae has extensions in the major vascular bundles and 7-9 small vascular bundles. The caryotype of the new species comprises 14 metacentric pairs, 8 of them with satellites and 4 submetacentric pairs, 1 of them with satellites, while S. mexicana has 14 metacentric pairs, 4 of them with satellites and 4 submetacentric pairs (Palomino, personal communication). Furthermore, S. mexicana grows only in the southwestern portion of the Peninsula, in the state of Campeche, and flowering from January to April, while S. gretheriae grows only in the northeast, in the state of Quintana Roo, and flowers from May to August. The new species can be distinguished from the two apparently more related Cuban species by the petals costate when dry. Also, it should be noted that the new species can be distinguished from S. palmetto by the widely spaced nerves and its very prominent transverse veinlets. </p></div>
+<div type="materials_examined"><p>MEXICO: Quintana Roo: 4 km S. of Chiquila on the road to Kantunilkin, Quero 3592 (Holotype MEXU, isotypes CICY, NY, UAMIZ, US); 2 km S of Chiquila on the road to Kantunilkin, Orellana 831; 3 km S of Chiquila on the road to Kantunilkin, Orellana 837; 4 km S of Chiquila on the road to Kantunilkin, Quero 3588; 3.5 km S of Chiquila on the road to Kantunilkin, Quero 3591; 2.5 km S of Chiquila on the road to Kantunilkin, Quero 3596 (all CICY). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

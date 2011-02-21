@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus laevigatus Mart. var. serpentinus J.Dransf.</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 806 (1982)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Growing on serpentine rock</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary or clustering rather slender rattan with stems rarely more than 10 m long; stem without sheaths c 6 mm diam., with sheaths to 13 mm diam.; internodes to 10 cm. Sheaths pale yellowish-green, armed with scattered or laterally grouped short bulbous-based triangular black-tipped spines to 3 mm, each usually with an apical tuft of brown hairs, and pale to dark brown scales between the spines; low collars bearing very short spines between larges spines sometimes also present. Knee rather poorly developed. Ocrea low, hairy. Leaf cirrate to 115 cm including the very short petiole to 3 cm and cirrus to 60 cm; leaflets pale yellowish-green 9-11 on each side grouped in pairs in distal part, &#177; solitary near the base, very narrow, linear, &#177; pendulous, not reflexed across the stem, the longest to 30 x 1 cm; often narrower, with &#177; thickened margins; transverse veinlets conspicuous. Male and female inflorescences dissimilar, the male branched to 3 orders with crowded rachillae to 7 x 1.5 mm; female very lax to 75 cm with 4 partial inflorescences and very distant rachillae to 70 x 2 mm. Mature fruit rounded c 12 mm diam., with short beak and covered in 15 vertical rows of reddish-brown scales. Seed rounded c 10 mm diam., deeply pitted; endosperm slightly ruminate. Seedling leaf unknown. (Fig. 47)</p></div>
+<div type="distribution"><p>Confined to ultrabasic rock in the lowlands.  Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>This variety seems to be one of the consistent elements in the flora of forest on the slopes of ultrabasic hills up to c 500 m altitude. It is abundant on Bukit Silam. The short petiole and absence of reflexed leaflets most easily distinguish it from the type variety, though there are several other distinguishing features.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

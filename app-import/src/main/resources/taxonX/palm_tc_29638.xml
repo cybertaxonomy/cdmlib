@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus laoensis</name>
+<author>T Evans et al.</author> 
+<citation>Kew Bull. 55: 929 (2000)</citation>
+<type>Laos, Vientiane Province; Khamphone; 206</type>
+<type_loc>Holotype K; isotype FRCL</type_loc>
+<bibref>Evans et al., Rattans Lao PDR: 52 (2001)</bibref>
+</nomenclature>
+<div type="distribution"><p>Indochinese endemic. Laos (Central).</p></div>
+<div type="materials_examined"><p>See Evans et al. (2000)</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 200 - 350 m</p></div>
+<div type="discussion"><p></p></div>
+<div type="vernacular"><p>wai leum, wai katok, wai wa, wai keyomee (Lao Loum).</p></div>
+<div type="uses"><p>The cane is suitable for handicrafts but its trade value is not clear. Shoot edible, although some say it is too bitter to eat.</p></div>
+<div type="conservation"><p>Unknown, probably of moderately high concern because it is a relatively scarce species known from only a few localities.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

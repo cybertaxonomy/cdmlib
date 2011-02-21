@@ -1,0 +1,60 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Loo</mods:namePart>
+<mods:namePart type="given">A.H.B.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele wendlandiana</name>
+<author>(F. Muell.) H. Wendl. &amp; Drude</author>
+<citation>Linnaea 39: 209 (1875).</citation>
+<type>Australia, Northern Territory, Liverpool R.; Gulliver; s.n.</type>
+<type_loc>Holotype MEL; isotypes BRI, K</type_loc>
+<synonymy>
+<name>Kentia wendlandiana</name>
+<author>F. Muell.</author>
+<bibref>F. Muell., Fragm. 7: 102 (1870)</bibref>
+</synonymy>
+<synonymy>
+<name>Hydriastele wendlandiana var. microcarpa</name>
+<author>H. Wendl. &amp; Drude</author>
+<bibref>H. Wendl. &amp; Drude, Linnaea 39: 210 (1875).</bibref>
+<type>Australia, Queensland, O’Connell R.; Nernst; s.n.</type>
+<type_loc>Holotype ?MEL</type_loc>
+</synonymy>
+<synonymy>
+<name>Hydriastele douglasiana</name>
+<author>F. M. Bailey</author>
+<bibref>F. M. Bailey, Queensland Agric. J. 1: 232 (1897)</bibref>
+<type>Australia, Queensland, Cape York Peninsula, Somerset, Polo Creek; Jardine; s.n.</type>
+<type_loc>Holotype BRI; isotype ?K</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The type of Hydriastele douglasiana F. M. Bailey was collected for Bailey by Jardine, but the material marked as the type in Brisbane is labelled as F. M. Bailey 18. Further examination of the material in Brisbane is required to confirm that the two alternative citations represent the same collection.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

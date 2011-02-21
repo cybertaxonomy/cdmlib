@@ -1,0 +1,49 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus hypoleucus</name>
+<author>(Kurz) Kurz</author> 
+<citation>Forest Fl. Burma 2: 523 (1877)</citation> 
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 307 (1908)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 50 (2001)</bibref>
+<synonymy>
+<name>Daemonorops hypoleuca</name>
+<author>Kurz</author>
+<bibref>Kurz, J. Asiatic Soc. Bengal, Pt. 2, Nat. Hist. 43: 208 (1874)</bibref>
+<type>Myanmar, Thoungyen; Brandis; s.n.</type>
+<type_loc>Holotype K (labelled as s.n. E66; isotype CAL </type_loc>
+</synonymy>
+</nomenclature>
+<div type="distribution"><p>Laos (Central) and Myanmar.</p></div>
+<div type="materials_examined"><p>MYANMAR: Karen Country and Hills, Thoungye, undated, (pist.), Brandis. s.n. E66 (K). LAOS (CENTRAL): Bolikhamxay Province, Thaphabat Distr., near Ban Hatkhai, 10 April 1998, (ster.), Khamphone KP 138 (FRCL, K), 17 Dec. 1998, (stam.), Khamphone KP 319 (FRCL, K), 17 Dec. 1998, (pist.), Khamphone KP 321 (FRCL, K) and 17 Dec. 1998, (stam.), Khamphone KP 320 (FRCL, K).</p></div>
+<div type="biology_ecology"><p>Scrub and bamboo at 150 m.</p></div>
+<div type="discussion"><p>The Lao material is easily matched with that from Myanmar, although the Lao plants have longer leaves, slightly narrower leaflets with bristly margins and slightly longer inflorescences.</p></div>
+<div type="vernacular"><p>wai deng, wai kamlao (Lao Loum).</p></div>
+<div type="uses"><p>Suitable for handicrafts, but the stem is quite short. Shoot edible but small.</p></div>
+<div type="conservation"><p>Unknown. Further research is required, but no clear threats are known at present.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

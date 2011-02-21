@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops acamptostachys</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 12(1): 209 (1911)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Stiff spikes</p></div>
+<div type="vernacular"><p>widuduk (Ib.)</p></div>
+<div type="description"><p>Solitary, stemless rattan; stem very short, subterranean or erect, without sheaths, c. 20 mm diam., with sheaths to 50 mm diam. or more, internodes very short. Sheath splitting opposite the petiole for much of its length, dull green, armed with neat whorls of large brown flattened spines, 1-3 cm long, brown indumentum abundant between the spines; knee absent. Leaf ecirrate or with a very short cirrus scarcely exceeding 30 cm long, the whole leaf c. 2 m long including the petiole 70 -100 cm long; petiole fiercely armed with large golden-yellow spines to 8 cm long, borne laterally, singly or in groups of 2 or 3; leaflets 15 - 25 on each side of the rachis, regularly arranged, or rarely somewhat irregularly, stiff, rather thick, linear, the longest to c. 40 x 2 cm, the tips somewhat asymmetrical, sparsely armed with short bristles along the main vein on the undersurface; transverse veinlets close, sinuous. Inflorescences usually erect at anthesis, very stiff, up to 1 m long, the male more highly branched than the female; peduncle to 50 cm, unarmed; prophyll dull dirty-brown to 50 x 6 cm, usually much less, rather thick and coriaceous, bearing sparse groups of slender spines along the wings or &#177; unarmed, and bearing abundant pale indumentum; subsequent primary bracts similar to the prophyll but smaller, soon falling or rotting; partial inflorescences 7-8, usually very crowded, especially in the male, erect, stiff; male rachillae dark brown, to 20 (40) x 3 mm, bearing strictly distichous crowded flowers; female rachillae to 40 x 3 mm bearing distichous flower pairs. Mature fruit rounded, c. 15 mm diam., beaked, covered in 16 vertical rows of mid brown scales with darker margins. Seed rounded, c. 10 mm diam.; endosperm ruminate. Seedling not known (Fig. 34).</p></div>
+<div type="distribution"><p>Known from 1st, 3rd and 4th Divisions. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>D. acamptostachys is exclusively found in kerangas and peat swamp forest where it may sometimes be gregarious. The stemless habit, usually ecirrate leaves and the strange erect, stiff dirty-brown inflorescences should distinguish it; it may be confused with D. collarifera but the leaf sheath armature is very different.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

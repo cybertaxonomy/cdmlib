@@ -1,0 +1,49 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The genus Areca (Palmae: Arecoideae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 39, No. 1, pp 1-22</mods:publisher>
+<mods:dateIssued>1984</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Areca subacaulis </name>
+<author>(Becc.) J.Dransf</author>
+<citation>Kew Bull. 29: 20 (1984)</citation>
+<type>Borneo, Sarawak, G. Matang near Kuching; Beccari; P.B. 3647 </type>
+<type_loc>Holotype FI; isotype K</type_loc>
+<synonymy>
+<name>Gigliolia subacaulis</name>
+<author>Becc.</author>
+<bibref>Becc. in Malesia 1: 174 (1877)</bibref>
+</synonymy> 
+<synonymy>
+<name>Pichisermollia subacaulis</name>
+<author>(Becc.) H. Monteiro-Neto</author>
+<bibref>(Becc.) H. Monteiro-Neto in Rodriguesia 41: 198 (1976) and 54: 9 (1980)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>This species is still known only from the area of the Matang hills and Sempadi Forest Reserve in the 1st Division, Sarawak.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

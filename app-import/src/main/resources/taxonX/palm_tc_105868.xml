@@ -1,0 +1,50 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Kentiopsis, a Genus Endemic to New Caledonia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Pintaud</mods:namePart>
+<mods:namePart type="given">J.-C.</mods:namePart>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 42(1) 32-33, 41-53</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Kentiopsis oliviformis</name>
+<author>(Brongn. &amp; Gris) Brongn.</author>
+<citation>Compt. Rend. Hebd. Séances Acad. Sci. 77: 398. 1873</citation>
+<bibref>Beccari, Le Palmae della Nuova Caledonia: 18. 1920</bibref>
+<bibref>Moore &amp; Uhl, Allertonia 3(5):324-325. 1984</bibref>
+<type>; Vieillard; l281</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Kentia oliviformis</name>
+<author>Brongn. &amp; Gris</author>
+<bibref>Brongn. &amp; Gris, Bull. Soc. Bot. France 11: 313. 1864</bibref>
+<bibref>Brongn. &amp; Gris, Ann. Sci. Nat. Bot. V. 2: 16I. 1864 ('oliaveformis)</bibref>
+<bibref>Vieillard, Bull. Soc. Linn. Normandie II. 6:229. 1873</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The epithet means olive-shaped, and refers to the shape of the fruits.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Emergent palm. Trunk to 30 m tall, 25 cm dbh, gray, base thickened. Leaves 8-10, ascending to spreading; sheath to 1.1 m long, initially densely covered with ± concrescent white-translucent appressed trichomes, becoming grayish with age, glabrescent; petiole to 10 cm long; rachis to 3 m long, initially with same indument as sheath; pinnae 40-55 on each side, median ones 8B0-105 X 4-6 cm, basal ones continuing into lorae, all ± drooping, shining dark green adaxially, paler abaxially. Inflorescences erect to ascending, branched to three orders; peduncle 7-10 cm long; prophyll and first peduncular bract 60-70 X 20 cm, with deciduous brown-centered white-floccose scales becoming puncticulate; rachis to 35 cm long, bearing stellate scales; branches ca. 18, bearing same scales; rachillae to 30 cm long, ± glabrescent; bracts subtending branches and rachillae low, rounded, ± ruffled. Flowers in triads nearly to apex of rachillae, bract subtending triad prominent, rounded, liplike; bracteoles surrounding pistillate flowers low, unequal, rounded to pointed, not sepal-like; staminate buds 5.5-6.5 mm high, very asymmetrical, pointed; stamens 34-37, slightly shorter than petals, filaments 2 mm long, straight and not attenuate apically, anthers 2.8-3 mm long, linear, latrorse, emarginate apically, bifid basally, connective elongate, large, black; pistillode nearly as high as stamens, columnar, attenuate to a sometimes briefly trifid apex; pistillate flowers 5.5-7 mm high, staminodes 3, gynoecium 4.8 X 3.5 mm, ± diamond- shaped. Fruits l4-17 x 8-9 mm, red; stigmatic remains apical; mesocarp with flat fibers adherent to endocarp throughout. Seeds ll-13 X 6 mm, ellipsoid. Leaves of juvenile individuals spirally arranged; "saxophone" growth present. </p></div>
+<div type="distribution"><p>Kentiopsis oliviformis is restricted to central New Caledonia at low elevations (10-300 m), from Farino to Col des Roussettes on the west side and from Canala (not recently seen) to Kouaoua on the east side.</p></div>
+<div type="biology_ecology"><p>Ecology. A gregarious species, Kentiopsis oliviformis is an emergent tree in transitional, semi humid Aleurites forest only, where it occurs on schists and basalts often mixed with serpentine colluvium. In valley bottoms in the Tindéa-Boghen area, there are numerous populations, each nearly forming a pure stand of 0.1-1 ha (usually on flat land along a temporary stream)o within which there is no regeneration due to continuous leaf fall from tall (25-30 m), mature trees. Regeneration occurs only on the periphery of each stand where mature trees are more widely spaced. Mature trees become even more widely spaced farther out from the center of each populationt hen disappeara ltogetheor n adjacenth illsides and valley slopes. In the Koh region of Kouaoua under a more humid climate, but also around Farino, K. oliviformise scapes from valley bottoms and is scattered on well-drained hill slopes. Phenology. Anthesis occurs from November through December; fruits mature from February throughM arch. Seeds germinate immediately after dispersion. </p></div>
+<div type="conservation"><p>Kentiopsis oliviformis is endangered (Jaffté et al. in press). All populations are in areas under agricultural pressure; none have normal regeneration. In the Tendéa-Boghen area with several populations exceeding 1000 individuals, regeneration is very low due to cattle grazing; dramatic population reduction is expected here. The government of the South Province of New Caledonia has established an experimental, fenced area near Boghen to exclude cattle from one stand of K. oliviformis. However, these measures need to be greatly expanded to protect these and other populations adequately. Clearing of forests and harvesting trees for the edible cabbage or palm heart have much reduced populations near Kouaoua, La Foa, and Bourail. </p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Kentiopsis oliviformis is distinctive within tne genus by the very asymmetrical staminate flowers, not glossy in bud, the bracteoles not sepal-like and mesocarp fibers adherent to endocarp throughout. Other distinguishing features include the dense white indument on the leaf sheath, petiole, rachis, bracts and peduncle, bright, pale green expanding leaf and erect inflorescencesw ith scarcely divergent rachillae. "Saxophone" type establishment growth is present. Leaves are spirally arranged in young juvenile plants and petioles have prominent dark brown scales becoming marginally more and more white-fimbriate and finally white-floccose with age of the plant. Taxonomic history: A. Brongniart and A. Gris (1864) nameda nd described Kentia olivaeformis from an incomplete collection of Vieillard from Canala lacking leaves and male flowers. Brongniart (1873) transferred the species to Kentiopsis and listed a more complete collection, Balansa 766 near Nera River at Bourail. This population still exists but is much reduced as this area is now converted to agricultural land. Vieillard reported the vernacular name of Kipe for this species in Canala and said it exceeded 30 m tall and outgrew the coconuts from which K. oliviformis differed only by the small red fruits. </p></div>
+<div type="materials_examined"><p>Additional specimens examined NEW CALEDONIA. Boghen Valley, Mecounia, 100 m elev., 2I˚37'S, 165˚39'E ,9 Nov. 1995 (stam. fl.), J-C. Pintaud, S. Blancher, M. Grouzis &amp; f. Jaffré 292 (NOU); id. 7 Mar. 1996 (fr.), J.-C. Pintaud 324 (leg. J.-M. Veillon, S. Blancher &amp; M. Boulet), (BH, BRI, K, NY, P); Houé-Moindou Valley, Tindéa, 150 m elev. 21˚39'S, 165˚43'E, 27 May 1996 (ster.), J.-C. Pintaud, R. Gatefait &amp; N. Natiello 358 (K, NOU, NY); id. 359 (juv.) (P). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

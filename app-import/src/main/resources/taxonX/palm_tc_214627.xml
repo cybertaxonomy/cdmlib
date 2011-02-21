@@ -1,0 +1,76 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Usually moderate solitary or clustered pinnate-leaved tree palms of the Andes and foothills, the stems with stilt roots; leaflets are rhomboid praemorse, and sometimes longitudinally divided to give the whole leaf an ostrich-feather appearance; inflorescences are often multiple at each node, often unisexual, and the fruit has basal stigmatic remains and embryo.</p></div>
+<nomenclature>
+<name>Wettinia</name>
+<author>Poepp. in Endl.</author> 
+<citation>Gen. pl. 243 (1837).</citation>
+<type>Type; Wettinia augusta; Poepp. and Endl.</type>
+<synonymy>
+<name>Catoblastus</name>
+<author>H. Wendl.</author>
+<bibref>H. Wendl., Bonplandia 8: 104, 106 (1860).</bibref>
+<type>Lectotype; Catoblastus praemorsus; (Willd.) H. Wendl.</type>
+</synonymy>
+<synonymy>
+<name>Wettinella</name>
+<author>O.F. Cook and Doyle</author>
+<bibref>O.F. Cook and Doyle, Contrib. U.S. Natl. Herb. 16: 235 (1913).</bibref>
+<type>Type; Wettinella quinaria; O.F. Cook and Doyle</type>
+</synonymy>
+<synonymy>
+<name>Acrostigma</name>
+<author>O.F. Cook and Doyle</author>
+<bibref>O.F. Cook and Doyle, Contrib. U.S. Natl. Herb. 16: 228 (1913).</bibref>
+<type>Type; Acrostigma aequale; O.F. Cook and Doyle</type>
+</synonymy>
+<synonymy>
+<name>Catostigma</name>
+<author>O.F. Cook and Doyle</author>
+<bibref>O.F. Cook and Doyle, Contrib. U.S. Natl. Herb. 16: 230 (1913).</bibref>
+<type>Type; Catostigma radiatum; O.F. Cook and Doyle</type> 
+</synonymy>
+<synonymy>
+<name>Wettiniicarpus</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 10: 937 (1930).</bibref>
+<type>Type; Wettiniicarpus fascicularis; Burret</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Named for Frederick August of the House of Wettin (1750–1827), King of Saxony.</p></div>
+<div type="description"><p>Solitary or clustered, slender, moderate or robust, unarmed, pleonanthic, monoecious tree palms. Stem erect, conspicuously ringed with leaf scars, bearing at the base a cone of stilt roots, covered in small sharp lateral roots. Leaves few in number, spirally arranged or rarely distichous, pinnate, neatly abscising or rarely marcescent; sheaths forming a well-defined crownshaft, covered with a variety of indumentum types; petiole rather short, adaxially channelled or convex, abaxially rounded; rachis adaxially angled, abaxially rounded, bearing hairs of various types; leaflets of two sorts, one undivided, elongate, asymmetrically and narrowly elliptic in outline, the proximal margin entire for ca. 2/3 its length, then praemorsely toothed, the distal margin entire for ca. 1/4 its length, then praemorsely toothed, conspicuously ribbed, the main ribs diverging from the base to the praemorse margin, the other leaflet type similar but with stouter ribs, and split between the ribs to the base into narrow segments displayed in several planes giving the whole leaf a plumose appearance, leaflets densely hairy abaxially, transverse veinlets not evident. Inflorescences unisexual, infrafoliar, 3–8(–15) at a node, maturing centrifugally, the central pistillate or staminate, the lateral staminate, or sometimes the inflorescence single by abortion of accessory buds at the node, either staminate or pistillate, spicate or branched to 1 order; peduncle prominent, shorter than or ± as long as rachis; prophyll short, tubular, 2-keeled, open at the apex; peduncular bracts 4–7, proximal 2 rather short, tubular, rounded, not flattened, open apically, distal bracts much longer, tubular, ± beaked, enclosing the inflorescence, splitting longitudinally, prophyll and all peduncular bracts very coriaceous, variously hairy or bristly, persisting long into fruiting stage; rachis where inflorescence branched, bearing small, collar-like or scarcely evident, spirally arranged bracts, the rachis and branches often coiled in bud; rachillae radiating or pendulous, bearing spirally arranged flowers. Flowers white or cream-coloured at anthesis, densely crowded. Staminate flowers crowded in ebracteolate pairs or solitary, open within the inflorescence bud; sepals 3(–4), briefly connate or distinct, ± narrow-triangular, small; petals much longer than the sepals, 3(–4), narrow triangular, straight or hooked at the apex, briefly valvate at the base; stamens 6–20, filaments short, slender, anthers basifixed, erect, elongate, latrorse; pistillode absent or minute and trifid. Pollen ellipsoidal, ± bi-symmetric; aperture a distal sulcus; ectexine intectate, upper surface of foot layer covered by fine, dense gemmae or clavae, loosely supporting short, wide-spaced, broad-based spines, aperture margin similar; longest axis 43–50 µm [5/21]. Pistillate flowers open in bud asymmetrical due to close packing, usually borne with 2 vestigial staminate flowers; sepals 3(–4), imbricate, or separated, or briefly connate basally, deltoid to elongate triangular; petals 3(–4), similar to but usually longer and broader than the sepals; staminodes 6, minute, tooth-like or absent; gynoecium of 1–3 minutely roughened, hairy or bristly fertile carpels and (0–)2 abortive carpels, with basal or apical, short to elongate, glabrous or hairy style, and 3 elongate, large stigmas, persistent or deciduous in fruit, ovule laterally attached at the base, anatropous. Fruit developing from 1 carpel, rarely from 2, densely crowded or rather loosely arranged, 1-seeded, prismatic, irregular, ellipsoid or globose, stigmatic remains basal; epicarp minutely roughened, softly hairy, or hairy and warty, or prickly with shining straight or twisted spines, mesocarp granular, with a layer of sclereids external to a parenchymatous layer with included tannin cells and elongate fibres, endocarp very thin. Seed ellipsoidal or subglobose, sometimes enclosed in a gelatinous mass when fresh, basally attached with rounded hilum, raphe elongate with reticulate branches, endosperm homogeneous or ruminate; embryo basal. Germination adjacent-ligular; eophyll praemorse, undivided or with a brief apical split. Cytology not studied.</p></div>
+<div type="distribution"><p>Twenty-one species in Panama, Colombia, Peru, west Brazil and Ecuador. Greatest diversity in Colombia, west of the Andes in the Choco refugium, but also found east of the Andes. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961, Roth 1990), root (Seubert 1998a, 1998b), gynoecium (Uhl and Moore 1971), stamen development (see Socratea), seed (Roth 1990, as Catoblastus praemorsus). </p></div>
+<div type="relationships"><p>The monophyly of Wettinia has not beentested. For relationships, see Iriartella.</p></div>
+<div type="uses"><p>Leaves are used forthatching and the trunk split and used for flooring and walling.</p></div>
+<div type="taxonomic accounts"><p>Moore and Dransfield (1978), Moore(1982), Galeano-Garces and Bernal-Gonzales (1983) and Bernal(1995). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>There is striking diversity in fruit form, particularly infruit surface; fruits can be warty, bristly or prickly.</p></div>
+<div type="vernacular"><p>Stilt palms. </p></div>
+<div type="biology_ecology"><p>Confined to ever-wet tropical rain forest at low to medium elevations, often occurring in abundance. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,66 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Characteristic small to moderate pinnate-leaved palms from New Caledonia, displaying substantial variation in habit, leaf and inflorescence form, the prophyll usually incomplete and the fruit with lateral to apical stigmatic remains and ± smooth endocarp.</p></div>
+<nomenclature>
+<name>Basselinia</name>
+ <author>Vieill.</author> 
+<citation>Bull. Soc. Lin. Normandie sere. 2. 6: 230(1873).</citation>
+<type>Lectotype; Basselinia gracilis; (Brongn. &amp; Gris) Vieill.</type>
+<synonymy>
+<name>Microkentia</name>
+<author>H. Wendl. ex Hook.f. in Benth. and Hook.f.</author>
+<bibref>H. Wendl. ex Hook.f. in Benth. and Hook.f., Gen. pl. 3: 895 (1883).</bibref>
+<type>Lectotype; Microkentia gracilis; (Brongn. &amp; Gris) Hook.f. ex Salomon</type>
+</synonymy>
+<synonymy>
+<name>Nephrocarpus</name>
+<author>Dammer</author>
+<bibref>Dammer, Bot. Jahrb. Syst. 39: 21 (1906).</bibref>
+<type>Type; Nephrocarpus schlechteri; Dammer</type> 
+</synonymy>
+<synonymy>
+<name>Alloschmidia</name>
+<author>H.E. Moore</author>
+<bibref>H.E. Moore, Gentes Herbarum 11: 293 (1978).</bibref>
+<type>Type; Alloschmidia glabrata; (Becc.) H.E.Moore</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Honors French fuller and poet Olivier Basselin (ca. 1400–1450).</p></div>
+<div type="description"><p>Small to stout, solitary or clustered, unarmed, pleonanthic, monoecious palms. Stem erect, usually ± prominently ringed, internodes glabrous, scaly, or densely tomentose, sometimes with exposed roots at the base. Leaves pinnate, sometimes irregularly so, or entire and pinnately ribbed, spreading to ascending; sheaths sometimes partly open but forming a prominent crownshaft, variously scaly and tomentose; petiole short to moderate, channelled adaxially, rounded abaxially; rachis angled adaxially, abaxially rounded; leaflets soft or coriaceous when dry, ± regularly arranged, acute, single or several-fold, or the blade undivided except at the apex, bearing small dotted scales over ribs and surface abaxially (scales large and dense in Basselinia vestita), scales usually only on veins adaxially, midrib prominent, abaxially bearing ramenta fixed to one side, lateral and marginal veins prominent or not, transverse veinlets not evident. Inflorescences infrafoliar, branched to 1 or 3 orders; peduncle short or elongate; prophyll incompletely or completely encircling the peduncle, shortly 2-keeled laterally, rather thin, open abaxially; peduncular bract tubular, complete, not or somewhat exserted from the prophyll, ±beaked; rachis longer than the peduncle; rachis and rachillae glabrous to scaly or tomentose; bracts subtending the branches, rachilla, and triads low, rounded to acute, flowers sometimes obscured by hairs; rachillae moderate, stiff, ± spreading, bearing flowers horizontally aligned in triads in the lower 1/2 – 3/4 or more, and paired or solitary staminate flowers distally; bracteoles surrounding the pistillate flower equal or unequal, brown, sepal-like. Staminate buds symmetrical; sepals 3, distinct, imbricate, ±acute to rounded; petals 3, distinct, valvate; stamens 6, filaments connate at the very base, inflexed at the apex in bud, anthers dorsifixed, bifid at the base and apex, latrorse; pistillode nearly as high as or exceeding the stamens in bud, angled-cylindrical, narrowed to slightly expanded at the apex. Pollen ellipsoidal asymmetric, sometimes elongate or lozenge-shaped; aperture a distal sulcus; ectexine tectate, psilate-perforate, perforate and micro-channelled or finely perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 29–48 µm [8/12]. Pistillate flowers smaller than, equaling or larger than the staminate; sepals 3, distinct, imbricate, rounded; petals 3, distinct, imbricate except for the briefly valvate apices; staminodes 3 at one side of the gynoecium, small, tooth-like; gynoecium unilocular, uniovulate, stigmas 3, prominent, recurved, ovule ± pendulous, sometimes briefly arillate, usually hemianatropous. Fruit globose to elongate-ellipsoidal, sometimes bilobed, red or black, with lateral to apical stigmatic remains; epicarp smooth or drying pebbled, mesocarp with a thin layer of small, irregular tannin cells external to a thin layer of short sclereids over abundant ellipsoidal tannin cells and a few flat, thin fibres, endocarp thin, vitreous, fragile, sometimes minutely reticulate, with a rounded to elongate basal operculum. Seed globose, kidney-shaped or ovoid-ellipsoidal, hilum and raphe short to elongate, the raphe branches anastomosing laterally, rarely scarcely anastomosing, endosperm homogeneous; embryo basal or lateral below the middle. Germination adjacent-ligular; eophyll bifid (where known). Cytology not studied.</p></div>
+<div type="distribution"><p>Twelve species, locally or widely distributed in New Caledonia. </p></div>
+<div type="anatomy"><p>Leaf (Uhl and Martens 1980), root (Seubert 1998a, 1998b), and fruit (Essig et al. 1999). </p></div>
+<div type="relationships"><p>Several analyses provide moderate to high support for the monophyly of Basselinia (Asmussen et al. 2006, Norup et al. 2006, Baker et al. in review, in prep.). Intrageneric relationships have been explored by Pintaud 
+(1999b). The wider relationships of the genus within the Basseliniinae are not yet clear. </p></div>
+<div type="uses"><p>All species would make elegant ornamentals but apparently are difficult to grow. </p></div>
+<div type="taxonomic accounts"><p>Moore and Uhl (1984), Hodel and Pintaud (1998), Pintaud and Baker (2008). </p></div>
+<div type="fossil record"><p>Thick-walled monosulcate pollen with a distinctive narrow infratectum, Palmaepollenites kutchensis, from the Middle Eocene of Central Java (Nanggulan Formation) is compared with pollen of Basselinia and Burretiokentia, and with the pollen of coryphoid genus Pritchardia (Harley and Morley 1995). </p></div>
+<div type="discussion"><p>The genus Basselinia is divided into two sections. The extremes are so different in general aspect that they were at one time thought to represent two or even three distinct genera. However, the species differ among themselves less than the complex as a unit does from other genera in the Basseliinae. The two sections of Basselinia are distinct in leaf. </p></div>
+<div type="anatomy"><p>B. deplanchei, B. gracilis, B. pancheri and B. vestita form a very coherent group that share similar epidermal, hypodermal, mesophyll, and guard cell structure, and differ only in the distribution of fibrous strands and minor characteristics of midribs. The six species of section Taloua, except for B. sordida, are strikingly and distinctively fibrous, in contrast to the species of section Basselinia, which all have large amounts of tannin (Uhl and Martens 1980).</p></div>
+<div type="vernacular"><p>Common names not recorded. </p></div>
+<div type="biology_ecology"><p>Ten species of Basselinia are restricted to either serpentine or schistose soils; B. gracilis occurs on both soil types and is the most widely distributed palm in New Caledonia; whereas B. glabrata is restricted to forest on schistose rocks.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

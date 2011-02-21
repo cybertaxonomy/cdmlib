@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Solitary or clustered, small pinnate-leaved palms of the forest undergrowth in the Amazon basin, distinctive in the undivided praemorse rhomboid leaflets, inflorescence branched to one order only and seed with apical embryo.</p></div>
+<nomenclature>
+<name>Iriartella</name>
+<author>H. Wendl.</author> 
+<citation>Bonplandia 8: 103, 106 (1860).</citation>
+<type>Type; Iriartella setigera; (Mart.) H. Wendl.</type>
+<synonymy>
+<name>Cuatrecasea</name>
+<author>Dugand</author>
+<bibref>Dugand, Rev. Acad. Colomb. Ci. Exact. 3(12): 392 (1940).</bibref>
+<type>Type; Cuatrecasea vaupesana; Dugand</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Combines palm generic name Iriartea with the dimitutive suffix -ella: little Iriartea.</p></div>
+<div type="description"><p>Usually clustered, slender, lightly armed, pleonanthic, monoecious palms. Stem erect, conspicuously ringed with leaf scars, stilt roots well developed at the base, internodes densely covered in scales, hairs, and sometimes sharp black bristles, becoming smooth in age. Leaves few, pinnate, neatly abscising; sheaths forming a crownshaft, sparsely to densely armed with solitary or clustered black bristles and abundant scales and hairs, sometimes with a short ligule; petiole well developed, ± rounded in cross-section; armed like the sheath; rachis adaxially angled, abaxially flattened, densely hairy; leaflets regularly arranged, distant, rhombic to trapezoidal, upper margins irregularly lobed and praemorse, distal pair of leaflets truncate, joined along the rachis, ribs numerous, conspicuous abaxially, ± parallel, scaly or rough hairy abaxially, sometimes also adaxially, transverse veinlets not evident. Inflorescences solitary, interfoliar at first, becoming infrafoliar in fruit, branching to 1 order, protandrous; peduncle elongate, flattened, elliptic in cross-section; prophyll inserted near the base, tubular, 2-keeled, membranous, included in the leaf sheath, eventually disintegrating; peduncular bracts 3–5, exceeding the prophyll, similar but not 2-keeled, the proximal included within the leaf sheath, the distal exposed; rachis shorter than the peduncle, bearing minute triangular, incomplete, spirally arranged bracts each subtending a rachilla; rachillae slender, 3 to ca. 30, short to moderately long, bearing spirally arranged, close, slightly sunken triads throughout except at the very tip where bearing paired or solitary staminate flowers, rachilla bracts not evident. Staminate flowers borne in a close pair distal to the pistillate, symmetrical; sepals 3, rounded, keeled, distinct, imbricate or basally connate, both connate and distinct sepals found in different collections of Iriartella setigera; petals 3, distinct, oblong, valvate, about 3 times the length of the sepals; stamens 6, filaments very short, broad, fleshy, anthers oblong, basifixed, latrorse; pistillode absent. Pollen ellipsoidal, bi-symmetric; aperture comprising two parallel distal sulci, narrowly separated by an ectexinous bridge; ectexine, tectate, coarsely perforate, tectum between sulci and aperture margins similar or slightly less perforate; infratectum columellate; longest axis 22–26 µm; post-meiotic tetrads tetrahedral [2/2]. Pistillate flowers smaller than the staminate; sepals 3, distinct, broad, imbricate or basally connate, splitting into 3 in fruit; petals 3, imbricate basally with short triangular, valvate tips; staminodes 6, minute, tooth-like; ovary globular, trilocular, triovulate, tipped with 3 short, recurved stigmas, ovule form unknown. Fruit usually developing from 1 carpel, scarlet, orange, or brownish, ellipsoidal, stigmatic and carpellary remains basal; epicarp smooth, mesocarp slightly fleshy with few longitudinal fibres, endocarp thin. Seed ellipsoidal, attached basally, with loosely branched raphe and tannin network, endosperm homogeneous; embryo apical. Germination adjacent-ligular; eophyll shallowly bifid. Cytology unknown.</p></div>
+<div type="distribution"><p>Two species limited to the Amazonian drainage of Peru, Colombia, Brazil, Venezuela and Guyana </p></div>
+<div type="anatomy"><p>Not studied. </p></div>
+<div type="relationships"><p>The mononophyly of Iriartella has not been tested. The relationships among the genera of Iriarteeae have been investigated in three studies that include all genera (Henderson 1990, Asmussen et al. 2006, Baker et al. in review) to which readers are referred. There is no agreement between the results of these studies. Only one sister relationship, between Iriartella and Wettinia, is supported by bootstrap analysis (Asmussen et al. 2006). New analyses are required to elucidate this group. </p></div>
+<div type="uses"><p>An infusion of leaf bases is used medicinally. Stems are hollowed out and used for the exterior tube of blow guns. </p></div>
+<div type="taxonomic accounts"><p>Henderson (1990). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Similarities to Podococcus are of a superficial nature only. </p></div>
+<div type="vernacular"><p>Palma de cerpatana (Iriartella setigera). </p></div>
+<div type="biology_ecology"><p>Undergrowth palms of lowland tropical rain forests below 1000 m elevation. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

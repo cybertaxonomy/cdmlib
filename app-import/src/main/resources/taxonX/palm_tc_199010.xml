@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary or clustered pinnate-leaved monecious palms from forest undergrowth in Central and northern South America; inflorescence has stiff rachillae bearing flowers in acervuli.</p></div>
+<nomenclature>
+<name>Synechanthus</name>
+<author>H. Wendl.</author> 
+<citation>Bot. Zeit. 16: 145 (1858).</citation>
+<type>Lectotype; Synechanthus fibrosus; (H.Wendl.) H.Wendl.</type>
+<synonymy>
+<name>Reineckia</name>
+<author></author>
+<bibref>H. Karst., Wochenschr. Gärtnerei Pflanzenk. 1: 349 (1858). (‘Reineckia’) (non Reineckea Kunth, 1844) (conserved name). </bibref>
+<type>Type; Reineckia triandra; H.Karst.</type>
+</synonymy>
+<synonymy>
+<name>Rathea</name>
+<author></author>
+<bibref>H. Karst, Wochenschr. Gärtnerei Pflanzenk. 1: 377 (1858).</bibref>
+<type>Type; Rathea fibrosa; (H.Wendl.) H.Karst.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Synechos — continuous, anthos — flower, referring to the linear arrangement of the flowers (acervulus).</p></div>
+<div type="description"><p>Moderate, solitary or clustered, unarmed, pleonanthic, monoecious palms, sometimes flowering when still acaulescent. Stem slender, usually erect, rarely decumbent, smooth, yellowish or glossy deep or dark olive-green, ringed with prominent widely spaced leaf scars. Leaves reduplicately pinnate; sheath elongate on new leaves but soon splitting opposite the petiole and differentiated from it only by a narrow, usually fibrous, dry strip along each margin; petiole circular in cross-section; rachis angled adaxially, rounded abaxially; leaflets broadly reduplicate at insertion, acute to acuminate, slightly to markedly sigmoid or, when broad-based, the apex sickle-shaped, with 1 to several principal nerves, these elevated above, or the blade sometimes undivided except at the bifid apex. Inflorescences interfoliar or becoming infrafoliar, branched to 1 or 2 orders basally, erect at anthesis, curved or pendulous in fruit, solitary; peduncle long; prophyll short, tubular, sheathing, ultimately disintegrating into fibres, open apically; peduncular bracts 4–5, similar to but longer than the prophyll and inserted at increasingly greater distances, the distal-most usually exceeding the peduncle; rachis usually elongate; rachillae slender, nearly equal in length, 4-angled to markedly flattened and ± flexuous, the tips usually slender and almost spine-like. Flowers borne in mostly distichously arranged lines (acervuli) of a proximal pistillate and 5–13 distal, biseriate, staminate flowers, the distal flower of the acervulus opening first and subsequent flower-opening basipetal. Staminate flowers green in bud, golden-yellow at anthesis, depressed-triangular in bud; sepals 3, connate in a low, acutely 3-lobed cupule; petals 3, valvate, very prominently nerved in bud when dry, spreading at anthesis; stamens 6, filaments short, incurved in bud, erect at anthesis, or 3, with long filaments markedly incurved and inflexed at the apex in bud, horizontally exserted at anthesis, anthers basifixed, shallowly bifid at apex and base, latrorse; pistillode small, deltoid-ovoid, apically 3-lobed or absent. Pollen ellipsoidal, slightly asymmetric; aperture a distal sulcus; ectexine tectate, scabrate-perforate, aperture margin similar or very slightly finer; infratectum columellate; longest axis ranging from 25–32 µm; post-meiotic tetrads tetrahedral, rarely tetragonal or rhomboidal [2/2]. Pistillate flowers yellowish at anthesis; sepals 3, connate in a 3-lobed cupule; petals 3, distinct, imbricate, twice as long as the sepals or more; staminodes apparently lacking or 3, minute, or connate in a 6-lobed ring and partially adnate to the petals; gynoecium, ovoid, drying 3-angled, trilocular, triovulate, stigmas 3, short, recurved, ovules laterally attached, campylotropous but laterally elongate. Fruit rather large, round or elongate, yellow, becoming red at maturity, with basal stigmatic remains; epicarp smooth, mesocarp fleshy with few slender, loosely anastomosing, flat fibres against the membranous endocarp. Seed not adherent to endocarp, with inconspicuous basal hilum, raphe branches distinctive, large, ascending adaxially from the base, little anastomosed, curving laterally and descending abaxially; endosperm homogeneous or minutely ruminate marginally to markedly ruminate; embryo lateral above the middle to subapical. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Two species in southern Mexico, Central America, and northwestern South America. </p></div>
+<div type="uses"><p>Widely cultivated as an ornamental. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), distinguished from other palms by guard cells with only one outer cutinised ledge. Root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>Synechanthus is monophyletic with high support (Cuenca and Asmussen-Lange 2007). The sister-group relationships of Synechanthus have not yet been settled and all resolutions are with low support. One study based on plastid DNA places Synechanthus as sister to a clade of Chamaedorea and Gaussia (Asmussen et al. 2006), another study places Synechanthus as sister to Wendlandiella (Baker et al. in review), and a third analysis of the nuclear gene rpb2 alone, places Synechanthus as sister to Gaussia (Thomas et al. 2005). </p></div>
+<div type="taxonomic accounts"><p>Moore (1971) and Henderson and Ferreira (2002). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Leaf form is very variable ranging from undivided to irregularly and regularly pinnate; fruit form may be ellipsoidal or globose in the same population. Seven species were recognised at one time but these taxa are now regarded as variants of the two species listed below. The inflorescence is distinctive because of the long peduncle with erect rachillae near its end. The yellow to bright orange fruits are very attractive. </p></div>
+<div type="vernacular"><p>Bola, palmilla, jelly bean palm. </p></div>
+<div type="biology_ecology"><p>Fairly frequent in wet forests at sea level and low elevations but up to 1200 m in the mountains. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

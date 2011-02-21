@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia vuylstekeana</name>
+<author>H. Wendl.</author>
+<citation>in Andre, Rev. Hort. 55: 329. 1883</citation>
+<synonymy>
+<name>Washingtonia vuylstekeana</name>
+<author>(H. Wendl.) Kuntze</author>
+<bibref>(H. Wendl.) Kuntze, Revis. Gen. PI. 2: 737. 1891.</bibref>
+</synonymy>
+<synonymy>
+<name>Eupritchardia vuylstekeana</name>
+<author>(H. Wendl.) Kuntze</author>
+<bibref>(H. Wendl.) Kuntze, Revis, Gen. Pl. 3(2): 323. 1898.</bibref>
+</synonymy>
+<synonymy>
+<name>Styloma vlIylstekeana</name>
+<author>(H. Wendl.) 0. F. Cook</author>
+<bibref>(H. Wendl.) 0. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Habit unknown; leaf blade glabrous, devoid of lepidia on the abaxial surface; fruits 24 x 20 mm, globose to ellipsoid; seed 14 x 15 mm.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This binomial has a history similar to that of Pritchardia pericularum. It first appeared as a name only (Rev. Hort. 55: 206. 1883) in a discussion of plants that Vuylsteke had exhibited at the Exposition Internationale de la Societe Royale d'Agriculture et de Botanique de Gand in 1883. The binomial may have also appeared in Vuylsteke's nursery catalogs or seed lists of the same era, although a search of the available catalogs failed to reveal the name. The binomial was again listed as a name only (Gard. Chron. 109: 693. 1883) in a discussion of plants that Vuylsteke had presented at the Paris Exhibition in 1883. In that account, an illustration proVided by Vuylsteke of a juvenile plant accompanied the article. early simultaneously, Andre (Rev. Hort. 55: 329. f. 59. 1883), reporting on the 1883 Gand (Ghent) expOSition, proVided a more lengthy account of Pritchardia vuylstekeana in which, quoting directly from a letter or other information that Wendland had written, appeared the name and a description of the fruits, seeds and (very briefly) a leaf from a young plant. Thus, the name and description were formally validated and are attributed to Wendland. Also, the same illustration that appeared in The Gardeners' Chronicle was reproduced in Andre's article. As no type was designated, it is accepted as the holotype. Andre gave additional, general information about the plant, which he had seen at Ghent, and commented on its suitability as a horticultural subject for European stovehouses. He also provided information (probably from Vuylsteke) about the habitat of this species in the Tuamotu Archipelago in French Polynesia. He stated that the seeds were collected from a low, uninhabited island with no prior European contact that, because of rocky cliffs, was nearly inaccessible and so difficult to land upon that many boats had crashed in previous attempts. The seeds retained their viability after a seven-month voyage and germinated. No information was provided about who collected them or when, or the exact location or name of the island. Beccari (1890, 1907) gave a brief description of the fruits, simply repeating the scant information that Andre had proVided. A few years later Beccari (1913), citing material he had examined at Bthat originated from a plant cultivated at Herrenhausen, provided a more detailed description of a leaf, apparently from an adult plant. As was the case with Pritchardia pericularum, there is no way to verify the authenticity of the material at B, although there is a high probability that it was authentic Pritchardia vuylstekeana. Beccari (Beccari &amp; Rock 1921) gave a very brief description of the fruits and seeds, obviously relying again on Wendland's scant original information, and of the leaf blade, which he noted was glabrous and devoid of lepidia on the abaxial surface. Like Pritchardia pericularum, the identity of this poorly known and documented entity remains a mystery. Its origin in the Tuamotu Archipelago is dubious. Nearly all islands in the archipelago are low, coral atolls without rocky cliffs. The one well known raised island with rocky cliffs in the archipelago is Makatea. Although Makatea does have an indigenous Pritchardia, it is P. mitiaroana, which differs in its small fruits 7 mm in diameter, about onethird the size of those of P. vuylstekeana. The report of P. vlIylstekeana on Makatea (Wilder 1934) is an error. Material cultivated as P. vuylstekeana in collections in Hawaii, Tahiti and perhaps elsewhere, is P. pacifica. 5-50 Whatever their final disposition, Pritchardia pericularum and P. vuylstekeana. are probably the same taxon. Their fruit size and abaxial leaf blade surface devoid of lepidia immediately conjure up P. hillebrandii or perhaps P. maideniana. </p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,48 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ravenea louvelii</name>
+<author>Beentje</author>
+<citation>Kew Bull. 49: 664 (1994)</citation>
+<type>Analamazaotra, "Lakamarefo", alt. 800 m; Perrier; 12021</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Louvelia madagascariensis</name>
+<author>Jum. &amp; H. Perrier</author>
+<bibref>Jum. &amp; H. Perrier, Compt. Rend. Acad. Paris 155: 411 (1912)</bibref>
+<bibref>Jum. &amp; H. Perrier, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 58, t. 33 (1913)</bibref>
+<bibref>Becc., Palme del Madagascar 53, fig. 43, tav. 49 (1914)</bibref>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 5 (1): 47 (1927)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 16 (1938)</bibref>
+<bibref>Jum. &amp;    H. Perrier, Fl. Madagascar 30: 165, fig. 46 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This is one of the strangest Ravenea species, with an archaic appearance. The inflorescences are almost hidden among the leaf bases, and are probably beetle-pollinated. The species is named for M. Louvel, head of the Forestry Department at Analamazaotra in the 1920s.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Lakamarefo, Siraboto.</p></div>
+<div type="description"><p>Short stocky palm of the forest undergrowth. TRUNK 1.5-3 m, 15-20 cm diam. without leaf sheaths, c. 50 cm with the sheath bases; distal 1.5 m of trunk with sheath remnants, proximal part only with sheath bases; wood hard; internodes c. 3 cm. LEAVES 9-14 in crown, robust, porrect, stiff, with up to 15 marcescent leaves present; sheath 46-60 x 6.5-8 cm, channelled adaxially, rounded abaxially, swollen at base, with dense soft pale brown tomentum, turning fibrous with age, with long stiff brown mar ginal fibres; petiole 50-130 cm long, proximally 3-5.5 x 2-3.5 cm across, distally 2-3 x 1.2-1.9 cm across, especially abaxially covered in rich brown scales, with very sharp margins, adaxially channelled with the central part flat or with central ridge, abaxially rounded; rachis 2.2-3 m long, in mid-leaf c. 19 x 11 mm across, adaxially keeled with up to 9 mm wide flat keel top and abaxially flat, with sharp upper edges, especially abaxially covered in brown scales, continuing past the distal pair of leaflets for 10-21.5 cm; leaflets in one plane, slightly pendulous in distal part of leaflet, dark green, attenuate, 80-104 on each side of the rachis, the proximal ones 28-42 x 0.3-1 cm, median 47-67 x 1.4-2.6 cm (interval 1.5-2.5 cm), distal 10-40 x 0.4-1.8 cm, with some ramenta near the very base of the leaflet, or in young leaves    with lines of red-brown scales; rachis bracts 4 x 1 mm; pedicels 0.5-2 mm, 2.5-4 mm across; bracteoles 1.5-4 x 1-2 mm, connate with the pedicel for 0.5-1 mm. PISTILLATE FLOWERS slightly musty-scented, cream-coloured; calyx connate for 0.6-1 mm, 2.8-5 mm across, the free lobes 0.8-2 x 2.6-3 mm; petals 6.5-9.5 x 1.7-2.2 mm, fleshy, 1.5 mm thick, connate by 1 mm through the fleshy base of the antesepalous filaments; staminodes 6, 2.8-3.2 x 1.6-1.7 mm; ovary ovoid, 3-3.8 x 3 mm. FRUIT dark purple (protologue says yellowish at maturity), somewhat depressed globose, 13-14 x 15-20 mm (25 mm according to Beccari), 1-2seeded; stigmatic remains subapical or terminal. SEED ovoid, sometimes flat on 1 face, 9-13 x 6-9 mm; seed coat black, 0.2 mm thick. GERMINATION remote, eophyll pinnate.</p></div>
+<div type="distribution"><p>E Madagascar, only known from Andasibe.  Ravenea louvelii, showing litter-trapping habit and persistent leaf bases (Dransfield et al. JD6485).  ;</p></div>
+<div type="biology_ecology"><p>Moist forest, steep slope near crest; 800- 1000 m.</p></div>
+<div type="conservation"><p>Endangered. Only known from a single site, where it grows outside the protected area. Population numbers are low; we have counted fewer than 25 trees with trunks, and rejuvenation seems minimal.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Moramanga: Analamazaotra, Feb. 1912 (stam., fr.), Perrier 12021 (Holotype P); idem, Nov. 1986, (stam.), Dransfield et al. JD6418 (K, P, TAN) and (pist.) Dransfield et al. JD6419 (K, TAN) and (seedling) Dransfield et al. JD6420 (K, TAN); idem, March 1988 (stam.), Dransfield et al. JD6485 (K, TAN) and (pist.) Dransfield et al. JD6486 (K, TAN); idem, Dec. 1991 (fr.), Beentje 4536 (BH, K, MO, P, TAN); idem, Aug. 1992 (ster.), Beentje &amp; Andriampaniry 4745 (K, BH); idem, Dec. 1992 (dead stam.), Beentje &amp; Andriampaniry 4769 (K, TAN).     ;</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

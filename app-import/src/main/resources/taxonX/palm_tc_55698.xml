@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops brachystachys</name>
+<author>Furtado</author>
+<citation>Furtado in Gdns' Bull. Str. Sett. 8 (1935) 344</citation>
+<bibref>Furtado in Gdns' Bull. Singapore 14 (1953) 96</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Brachus - short, stachus - shoot</p></div>
+<div type="vernacular"><p>rotanjernang</p></div>
+<div type="description"><p>Very robust short-stemmed rattan with stem to 1 m tall, &#177; erect. Stem without sheaths to 4 cm in diameter with sheaths to 6 cm in diameter. Internodes to 5 cm only. Sheaths armed with unequal flattened blackish based spines from 0.5 - 7 cm in length and abundant brown indumentum, the spines sometimes arranged in partial whorls. Knee absent, ocrea inconspicuous. Leaf with a very short cirrus, or ecirrate, to 3.5 m long with petiole massive to 1 m long by 1.5 cm wide armed with large spines to 5 cm long and red brown indumentum. Leaflets to about 30 on each side, only slightly irregular in arrangement, the longest to 60 cm long by 6 cm wide with short bristles confined to the upper surface and margins near the tip. Inflorescences male and female superficially similar with peduncle to 40 cm; partial inflorescences 3-5 rather condensed in female, elongate in male. Ripe fruit to about 2.5 cm long by 2 cm wide ovoid or obovoid, covered in 18-20 vertical rows of reddish brown, dragons blood encrusted scales. Seed rounded or angular about 1.5 cm in diameter. Endosperm deeply ruminate. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Kelantan, Kedah, Perak, Selangor. N. Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Useless except as a source of dragon's blood.</p></div>
+<div type="discussion"><p>This is a massive acaulescent species associated with stream-sides in lowland forest. It is rare and not well known; it may be conspecific with D. propinqua (q. v.).</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

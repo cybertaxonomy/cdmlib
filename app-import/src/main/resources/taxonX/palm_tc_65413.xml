@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis boiviniana</name>
+<author>Baill.</author> 
+<citation>Baill., Bull. Soc. Linn. Paris 147: 1164 (1894), pro parte (see Note).</citation>
+<synonymy>
+<name>Chrysalidocarpus oligostachyus</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 38 Beibl. 87: 37 (1906)</bibref> 
+<bibref>Beccari, Palme del Madagascar 45 (1914)</bibref> 
+<bibref>Jumelle, Cat.Pl. Madagascar, Palmae: 10 (1938)</bibref>
+<type>Madagascar, Île Sainte-Marie, Ravine-tsara forest; Boivin; s.n. anno 1850</type>
+<type_loc>Holotype P, pro parte</type_loc>
+</synonymy>
+<synonymy>
+<name>Neophloga oligostachya</name>
+<author>(Becc.) H.Perrier</author>
+<bibref>(Becc.) H.Perrier, Fl Madagascar 30: 81 (1945)</bibref> 
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This is a palm of forest undergrowth in the lowlands of NE Madagascar, particularly around the Bay of Antongil and on &#206;le Sainte-Marie. Based on a mixed gathering made by Boivin last century on &#206;;le Sainte-Marie, there has been a certain amount of confusion over this species. As interpreted here, it is an attractive palm with solitary or clustering erect stems and neat leaves with grouped leaflets and inflorescences branched to one order only. Together with D. sanctaemariae, D. pervillei, D. soanieranae, D. curtisii and D. mangorensis it forms a group of apparently closely related species; it is distinguished by the rather thick rachillae with crowded triads that are partially sunken in pits. We do not know whether D. boiviniana is in cultivation. The name refers to the collector of the type, Louis Hyacinthe Boivin (1808-1852).</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Talanoka, Tsingovatra (Betsimisaraka).</p></div>
+<div type="description"><p>Solitary or clustering palm in tufts of 3-4. STEM(S) 2-8 m tall, 1.5-4.5 cm diam.; internodes 3-7 cm, brown to eau-de-nil, sometimes with woody, chestnut-brown lenticels, with dense red-brown indument when young; surface roots occasionally present. LEAVES 4-8 in the crown, porrect; sheath 21-30 cm long, 2-3 cm diam. or 6.5-7 cm wide when flattened, pale yellow or pale green tinged purple distally, with patches of dense red-brown tomentum, with triangular brown auricles 0.5-2 cm high; petiole 5-24 cm long, 5-8 x 2.5-6 mm diam., flat adaxially, with dense or scattered scales; rachis 29-75 cm long, pale ivory green, in mid-leaf 3-4 mm wide, with dense or scattered brown scales; leaflets 6-15 on each side of the rachis, dark green and stiff, in groups of 2-6, the interval between the groups (3-) 7-20 cm, the interval between leaflets 0.5-0.7 cm, the proximal 27-54 x 1.2-3.5 cm, the median 23-51 x 1.6-5 cm (increasing in size within the groups towards the distal side), the distal 19-44 x 2.1-4 cm, the distal pair joined for 2.5-4.5 cm, with 3-5 main veins and (0.3-1 cm wide) dentate apices, the other leaflets with 1-5 main veins and long-acuminate apices, all leaflets with minute scattered reddish scales on veins and larger scales on the (reflexed) margins. INFLORESCENCE interfoliar, branched to 1 order (2 in Guillaumet 2404), arching with semi-pendulous rachillae; peduncle 33-54 cm long, proximally 7-9 x 2-4 mm diam., distally 6-7 x 3.5-7 mm diam., densely reddish pubescent or puberulous; prophyll  31-49 cm long, 1.3-1.8 cm wide, borne at 4-16 cm above the base of the peduncle, open in the distal 4-8 cm, with scattered scales especially on the margins; peduncular bract deciduous at a very early stage, inserted at 7-31 cm from the base of the peduncle, 27-48 cm long; rachis 12-15 cm long, reddish-puberulous, with 5-8 rachillae; rachillae 25-70 cm long, 2-6 mm diam., densely puberulous, the triads dense to almost continuous, in pits. STAMINATE FLOWERS with sepals 1.5-2.2 x 1.2-1.8 mm, keeled; petals 2.2-2.6 x 1.5-1.8 mm, ovate or elliptic, acute; stamens 6, &#177; equal, filaments 1-1.2 mm long and narrow, anthers 1.6-1.7 x 0.8-0.9, the locules parallel and obtuse; pistillode 1.3 x 0.3-0.4 mm. PISTILLATE FLOWERS (only known in young fruit) with sepals 1.8-2.2 x 1.9-2.1 mm, orbicular, concave, slightly ciliolate, not keeled; petals with only a small gape, 2.5-2.8 x 2.2-2.3 mm; staminodes 5-6, 0.3-0.7 mm, thin. FRUIT c. 10 x 4 mm; endocarp fibrous, the fibres slightly anastomosing. SEED (very young) c. 5.3 x 2.3 mm, with homogeneous endosperm.</p></div>
+<div type="distribution"><p>Mananara, Soanierana-Ivongo and Sainte-Marie; there is also an old collection from the Masoala Peninsula.</p></div>
+<div type="biology_ecology"><p>Open lowland rain forest or white sand forest next to a black water/ peat swamp, slight slope; 5-285 m.</p></div>
+<div type="conservation"><p>Endangered. An estimated fifty individuals in three sites, only one of which is protected, and most of which are under threat.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The application of the name D. boiviniana has caused considerable problems for all who have written about the palms of Madagascar since the time of Baillon. The name was published by Baillon (1894a) for specimens collected by Boivin on &#206;;le Sainte-Marie at Ravin-tsara in 1850. Specimens of two species were mixed together as a single gathering, either in the field, or, more likely, back in the herbarium. At any rate, Baillon describes D. boiviniana as a palm with irregularly arranged linear-lanceolate pinnae and an inflorescence branched to one order with about six rachillae, and with male flowers that contain three stamens. The type in fact consists of two different leaves and two different inflorescences which are, however, similar enough to explain Baillon's mistake. There is an entire inflorescence, branched to one order, with male flowers with six stamens; and there are three partial inflorescences closely resembling the former, but carrying flowers with three stamens, and bases showing that they are actually part of an inflorescence branched to more than one order. The leaves are also different: there are parts of a pinnate leaf with regular leaflets (see Beccari 1912, 1914, plate 17) and a complete pinnate leaf with grouped leaflets (see Beccari 1912, 1914, plate 44).  
+Beccari felt that the latter belonged with the entire inflorescence branched to one order, because the leaf sheath and lower part of the inflorescence fit; he thought that the parts of the regularly pinnate leaf might go with the partial inflorescences, but of course this is more difficult to prove. Beccari retained the name Dypsis boiviniana for the partial inflorescence with 3-staminate flowers, together with the regularly pinnate leaf; for the inflorescence branched to one order with 6-staminate flowers and the grouped leaflet leaf he established the name Chrysalidocarpus oligostachya. However, we believe that Beccari's interpretation of Baillon's name to be incorrect. Lectotypification should be based on the specimen that most nearly matches the protologue. Except for the number of stamens, Baillon's protologue of D. boiviniana describes in perfect detail the leaves and inflorescence of the specimen that Beccari later separated as the type of Chrysalidocarpus oligostachya. We therefore lectotypify D. boiviniana on the inflorescence with few thick rachillae of the first order and leaves with fascicled leaflets, and exclude the inflorescence fragments that represent slender rachillae of the second order that bear a covering of hairs (i.e. the fragments that Beccari interpreted as the type of D. boiviniana). Thus Chrysalidocarpus oligostachya and Neophloga oligostachya become synonyms of Dypsis boiviniana. Dypsis boiviniana in Beccari's interpretation is an altogether different species which we have named D. paludosa (q.v.). Beentje et al. 4638 differs from the other two specimens, that agree perfectly with the type, in the leaflets which are fewer in number, much longer (and the median ones much narrower as well) and in having clustered stems, while the other two collections seemed solitary. Two specimens (Perrier 12051 and 12090) from the Mananara River (both at P) are reminiscent of this species, but the leaflets are regular. The inflorescences are in a very young stage and branch to two orders.</p></div>
+<div type="materials_examined"><p>Antalaha: environs of Antalaha, Sept. 1912 (bud), Perrier 12033 (P). Mananara Avaratra: 10 km W of Antanambe, Oct. 1991 (bud), Beentje 4464 (BH, K, MO, P, TAN); idem, April 1992 (old infl.), Beentje et al. 4622 (BH, K, MO, TAN); idem, Oct. 1994 (bud), Dransfield &amp; Beentje JD7509 (K, TAN); 5 km S of Antanambe, April 1992 (y. fr.), Beentje et al. 4638 (K, MO, P, TAN). Sainte-Marie: Ravine Tsara, 1850 (bud), Boivin s.n. (P, type); Kalalao forest, Nov. 1994 (fl.), Dransfield JD7519 (K, TAN). Soanierana-Ivongo: Soanierana, Feb. 1969 (fr.), Guillaumet 2404 (P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

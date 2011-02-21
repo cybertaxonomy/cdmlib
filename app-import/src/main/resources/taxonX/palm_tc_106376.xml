@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia debilis</name>
+<author>Bl.</author>
+<citation>Rumphia 2 : 169 (1843)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(2): 122 (1918)</bibref>
+<bibref>Dransfield, Kew Bull. 36: 176 (1981)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 22 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Weak</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering slender rattan with stems climbing to 20 m, branching in the canopy. Stem without sheaths to 4 mm diam., with sheaths to 8 mm diam., internodes c. 10 cm long. Sheaths dull green, bearing very few scattered, short triangular spines or unarmed, and with abundant deciduous black scales; ocrea tightly sheathing, to c. 2 cm long, net-like and bearing short spines. Leaf cirrate to c. 60 cm long including the cirrus to c. 35 cm, and short petiole 2-5 cm; leaflets 3-5 on each side of the rachis, with or without short stalks, rather narrow rhomboid, up to c. 15 &#215; 4 cm, the distal margins praemorse, upper surface usually shining green when fresh, lower surface covered with grey indumentum. Inflorescences produced from the topmost 1-3 nodes, small and rather inconspicuous, each with 3-4 slender rachillae to 90 &#215; 4 mm, the rachilla tomentum pale grey brown. Fruit not known. (Fig. 2).</p></div>
+<div type="distribution"><p>A poorly known rattan, questionably recorded from scattered localities throughout Brunei. Elsewhere in Kalimantan, Sarawak and Sumatra.</p></div>
+<div type="biology_ecology"><p>The few records from Brunei have been from mixed dipterocarp forest on gentle slopes and ridges in the lowlands and up to 870 m above sea level.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>K. debilis is poorly known and can only be separated with confidence from slender forms of K. rigida when fertile. However the net-like ocrea seems to be consistently present whereas, in K. rigida it is normally truncate.</p></div>
+<div type="materials_examined"><p>TEM: Amo, Bt.Belalong, Dransfield J. 7142; Amo, Bt.Retak, Wong 830; Amo, Kuala Belalong, Stockdale 23; Amo, Kuala Belalong, Stockdale 35.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,35 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops manii</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Brit. Ind. 6: 463, 1893</citation>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 12:45. 1911, Pl. 2. Part II, 1911</bibref>
+<bibref>Basu, Rattans in India Monogr. Rev.: 42. 1992</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering, medium diameter rattan. Stem 20 m long or more, with sheaths 3 cm in diameter, without sheaths 1.5-2 cm in diameter. Leaves 3 m or more, cirrate; sheath light yellow, armed with spines, spines black, triangular, flat, unequal, 3 cm long, scattered or subseriate; knee prominent; petiole 30 cm long, armed with straight, unequal, black spines at the margins: rachis armed with series of solitary or seriate black Dipped claws; leaflets regular, 30 x 1.5 cm, closely set, veins ciliate from the middle upwards, margin spinulous. Female inflorescence erect, 30 cm long with a rigid unarmed peduncle; all the inner bracts enclosed within the outermost, outer most bract with black spines, inner ones glabrous: partial inflorescence 8-10 cm long, rachilla very rigid with zig-zag sinuous axis. Fruit spherical, 1.5 cm across; scales in 18 vertical rows, brown, channelled in the middle; endosperm ruminate.</p></div>
+<div type="distribution"><p>South Andamans. (Map. 9).</p></div>
+<div type="biology_ecology"><p>Flowering not known. Fruiting April - June.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Leaves are used for thatching.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Wright Myo, South Andamans, 2-4-1992, fr., Vijayakumaran 6632 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

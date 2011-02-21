@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Two new species of rattan (Palmae: Calamoideae) from the forests of West and Central Africa</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Sunderland</mods:namePart>
+<mods:namePart type="given">T.C.H</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 58, No. 4, pp. 987-990</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Eremospatha dransfieldii</name>
+<author>Sunderl.</author>
+<citation>Kew Bull. 58: 988 (2003 publ. 2004)</citation>
+<type>Ghana, Draw River Forest Reserve; Sunderland; 2261 </type>
+<type_loc>holotypus K!; isotypi KUM!, NY!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>This species is named for Dr John Dransfield, the palm specialist of the Royal Botanic Gardens, Kew who was instrumental in initiating the recent taxonomic and ethnobotanical studies of the rattans of Africa.</p></div>
+<div type="diagnosis"><p>E. laurentii De Wild. affinis sed foliolis in utroque latere rachidis usque ad 20 - 40, forma variabilissima obovatis-late ellipticis ad oblanceolatis-rhomboideis, basi obtusatis cuneatis, ad apicem late ad perlate praemorsis (12 - 30 cm longis x 3.5 - 5.5 cm latis) differt.</p></div>
+<div type="description"><p>Clustering robust climbing rattan palm to 40 m long. Stems circular in cross- section, without sheaths, 18 - 24 mm in diameter, with sheaths, 25 - 30 mm; internodes 10 - 16 cm. Leaf sheath lightly striate, indumentum absent, but sheath often profusely covered with orange-brown scale insects; ocrea entire, obliquely truncate, extending for 1 - 2 cm above the leaf junction; knee conspicuous, narrowly linear, 2 - 4 cm long, rather abrupt at base. Leaves sessile, up to 3.5 m long; rachis 1.2 - 1.5 m long, abaxially rounded, adaxially convex to concave, becoming trapezoid then triangular in cross-section distally, armed along the margins with robust, reflexed, bulbous-based, yellow-orange spines, becoming more sparsely armed distally; cirrus 1.2 - 1.5 m long, unarmed; leaflets up to 40 on each side of the rachis, inequidistant, opposite to sub-opposite, highly variable in shape, obovate-elliptic to oblanceolate to rhomboid, obtusely cuneate at base, more or less praemorse at apex, 12 - 30 x 3.5 - 5.5 cm; lowermost leaflets smaller than the rest, linear, strap-like or broadly-lanceolate, armed along the margins with robust bulbous-based yellow to orange spines, laxly swept back across, or tightly clasping stem; acanthophylls 3 - 4 cm long. Flowers and fruits unknown.</p></div>
+<div type="distribution"><p>From Sierra Leone to Ghana in moist evergreen forest.</p></div>
+<div type="biology_ecology"><p>E. dransfieldii is a light-demanding species found particularly along forest margins, in tree-fall gaps and along roadsides. The species is restricted to areas of high rainfall (>2000mm) and is locally abundant where it occurs.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Notwithstanding the long history of botanical fieldwork in the Upper Guinea forests of West Africa and despite their economic importance (Falconer 1994; Oteng-Amoako and Obiri-Darko 2001), the rattan palms of the region were, until recently, particularly under-represented in herbaria. Three species of Eremospatha were previously recorded from the region; E. macrocarpa, E. laurentii and a third taxon, comprising a few incomplete voucher specimens which were frequently assigned to E. hookeri. Due to the significant morphological and ecological differences between this latter taxon and E. hookeri, doubts concerning the identification of "E. hookeri" from Upper Guinea were expressed by Sunderland (2001a). It was suggested that more complete voucher material of this taxon was required to determine its taxonomic position; these have recently been collected providing the morphological evidence that this species is indeed a distinct taxon.</p></div>
+<div type="materials_examined"><p>SIERRA LEONE: Lake Soufon, st. 14 Feb. 1966, Gledhill 309 (K!, GC!); Mofani, st. 12Jan. 1892, Scott-Elliot 4442 (K!); Kambui Hills (07°05'N:11°20'W), st. 4 Nov. 1952 Small 832 (K!). GHANA: Draw River Forest Reserve (05?12'N:02?20'W) 
+2 NEW RATTAN SPP. FROM W and CENTRAL AFRICA 989 st. 10 Nov. 2001, Balinga 71 (K!, SCA! KUM!); Subiri F.R. (05°17'N:01°43'W) st. 2 Jan. 1975, Hall and Abbiw 45124, (GC!); Ankasa River F.R. (05°15'N:02°36'W) st. 3 March 1971, Moore and Enti 9888 (GC!); Draw River Forest Reserve, (05'12'N:02?20'W), st. 26 May 1999, Sunderland 2261 (K!; KUM!); Bobiri F.R.(06°38'N:01°17'W), juvenile, 20 Dec. 1957 Tomlinson s.n. (K!).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

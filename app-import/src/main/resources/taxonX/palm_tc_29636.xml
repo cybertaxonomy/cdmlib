@@ -1,0 +1,37 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus lambirensis</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 45: 89 (1990)</citation>
+<bibref>Dransfield, Ratt. Sarawak 123 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>From Bt Lambir, Sarawak, the type locality</p></div>
+<div type="vernacular"><p>Uwai Pagau (Dus., Br.)</p></div>
+<div type="description"><p>Slender clustering rattan climbing to 3 m; stem without sheaths 4-5 mm diam., with sheaths 8-10 mm diam., internodes c. 8-12 cm long. Sheaths dull dark green, drying brown, armed with scattered and partially whorled short triangular spines to 4 mm interspersed with very fine close, minutely spiny ridges encircling the sheath, grey indumentum abundant between the ridges; knee present but rather poorly developed; ocrea short, tattering, minutely ridged. Flagellum to 1 m or more. Leaf ecirrate, to c. 75 cm including the petiole to 13 cm; petiole armed with scattered reflexed and horizontal spines and a few ridges near the base; leaflets 9-13 on each side of the rachis, rather distant but &#177; regularly arranged, the longest to c. 25 &#215; 1.5 cm, the shortest at the leaf tip c. 14 &#215; 1.2 cm, rather narrow, gradually narrowed to a long slender tip, minutely bristly on the lower surface. Inflorescences flagellate, to c. 2 m, with about 3 very distant partial inflorescences; prophyll very tightly sheathing, elongate, armed with short prickles and ridges; partial inflorescences to c. 30 cm long, very lax and slender, bearing distant rachillae, the male to c. 3 cm, the female to c. 5 cm, each with distant large flowers borne on large flower cushions. Mature fruit &#177; top-shaped, c. 7 mm diam., conspicuously beaked, and covered in c. 15 vertical rows of chestnut brown scales. Seed c. 5 mm diam., rounded; endosperm homogeneous. Seedling leaf bifid. (Fig. 65).</p></div>
+<div type="distribution"><p>Known from Andulau and Bukit Biang and from the Lambir Hills National Park in Sarawak. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>C. lambirensis grows on podsolized ridge tops in the lowlands and uplands. The ridges on the leaf sheaths suggest affinity withC. muricatus and C. zonatus.</p></div>
+<div type="materials_examined"><p>BEL: Sungai Liang, Andulau F.R, Wong 30; Sungei Liang, Andulau F.R., Dransfield J. 7236. TEM: Bangar, Bt.Biang, Ashton A 90.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

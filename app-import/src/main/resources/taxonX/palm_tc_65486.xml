@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis marojejyi</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 234 (1995)</citation>
+<type>Madagascar, Marojejy, NW of Mandena; Dransfield et al.; JD6755</type>
+<type_loc>Holotypus K; isotypus TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This a most distinctive squat robust palm of the undergrowth, abundant on the broad ridges in submontane forest on Marojejy. It has a short stem and leaves that do not fall off neatly, the crown tending to trap litter. In this respect it resembles D. perrieri but the leaves, while being about the same size, have grouped leaflets, and the inflorescence is quite different, being much more diffusely branched. Roots from neighbouring trees tend to grow into the litter that accumulates in the crown, and as the palm grows, these zigzag tree roots continue to grow from sheath to sheath, eventually being exposed. Ferns are also abundant in the crown of this palm. It somewhat resembles D. coursii but has a much more robust stem, with much larger leaves and longer, narrower leaflets. The species name is derived from the type locality, Marojejy. As far as we know, this species is not in cultivation.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Menamosona beratyraty (Betsimisaraka).</p></div>
+<div type="diagnosis"><p>Palma solitaria detritifera foliis marcescentibus caule breve lato, foliolis longis aggregatis inflorescentia in 3 ordines ramificanti, endospermio ruminato distincta.  </p></div>
+<div type="description"><p>Squat solitary palm. TRUNK 3-6 m tall, 20-30 cm diam., near the crown c. 20 cm diam.; stilt roots present near the base (always?); internodes c. 2 cm. LEAVES 18-20 in the crown, the upper part of the trunk with marcescent leaves and sheath remnants, litter accumulating; sheath 20 cm long, open, not forming a crownshaft, with dense rusty-brown pubescence, c. 40 cm wide; petiole 0-10 cm, densely reddish-pubescent, 3-3.5 x 2 cm diam.; rachis 3-4 m long, in mid-leaf 1.1-2.3 cm wide, reddish-tomentose; leaflets c. 60 on each side of the rachis, in groups of 3-6 and fanned within the groups, stiff, the group interval 4-9 cm, bright to dark green, the proximal 29-41 x 0.3-0.4 cm, median 45-70 x 2.5-5 cm (interval 0.5-2 cm), distal 15-35 x 0.7-2.7 cm, the apical pair joined for up to 3 cm and multi-fold (always?), main veins 3-5, with ramenta on the main veins, and with reddish scattered scales on the minor veins, apices unequally acute, the distal ones praemorse, young leaf liver-coloured. INFLORESCENCE    bud, cylindrical and fat (0.6 mm diam.), anthers 1.8-2 x 0.8-1 mm, versatile; pistillode c. 1.3 x 0.6-0.9 mm. PISTILLATE FLOWERS with sepals 1.3-2.5 x 1.7-3.5 mm; petals 2.7-4.6 x 2.5-5 mm; staminodes six, 0.2-0.6 mm; gynoecium (in bud) c. 2.5 x 0.8 mm. FRUIT pale yellow-green, ellipsoid to slightly obovoid, 22-25 x 14-18 mm, the apex rounded, pustulate; endocarp with densely anastomosing fibres. SEED slightly obovoid, 18-20 x 13-16 mm, with pointed base and rounded apex; endosperm ruminate, the intrusions dense, 2-5 mm deep.</p></div>
+<div type="distribution"><p>Only known from the Marojejy massif.</p></div>
+<div type="biology_ecology"><p>Submontane rain forest; 700-1100 m. May be locally abundant.</p></div>
+<div type="conservation"><p>Vulnerable. Distribution restricted to a single, albeit protected, area.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>At first we thought this litter-accumulating palm belonged in a group with the other litter-collectors, such as D. perrieri. But the structure of the inflorescence indicates it is closer to taxa such as D. madagascariensis, D. coursii and D. rivularis.</p></div>
+<div type="materials_examined"><p>Andapa: Marojejy W, Ambatoharanana valley to upper Antsahaberoka R, Nov./Dec. 1959 (y.fr.), Humbert &amp; Saboureau 31702 (K, P); Marojejy E, NW of Mandena, Feb. 1989 (fr.), Miller &amp; Lowry 4185 (K, MO); idem, N of Mandena, Oct. 1988 (bud), Miller 3509 (K, MO, P); idem, Nov. 1989 (fl., y.fr.), Dransfield et al. JD6755 (Holotype K; isotype TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

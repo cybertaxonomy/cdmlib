@@ -1,0 +1,55 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Dwarf dioecious fan palm of the Mediterranean region, with stems covered with leaf bases; leaves generally rather stiff; inflorescence with a single large bract. Fruit reddish brown smelling of vomit.</p></div>
+<nomenclature>
+<name>Chamaerops</name>
+<author>L.</author> 
+<citation>Sp. pl. 1187 (1753).</citation>
+<type>Type; Chamaerops humilis; L.</type>
+<synonymy>
+<name>Chamaeriphe</name>
+<author>Steck</author>
+<bibref>Steck, Sagu 20 (1757)</bibref>
+</synonymy>
+<synonymy>
+<name>Chamaeriphes</name>
+<author>Ponted. ex Gaertn.</author>
+<bibref>Ponted. ex Gaertn., Fruct. sem. pl. l: 25 (1788).</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Chamai — low, rhops — a bush, referring to the dwarf habit.</p></div>
+<div type="description"><p>Dwarf, rarely moderate, clustering, acaulescent or shrubby, armed, pleonanthic, polygamous or dioecious palm. Stem ± erect, clothed with very close, persistent petiole bases and fibrous sheaths, eventually becoming ± bare. Leaves induplicate, palmate, marcescent; sheath disintegrating into a mass of fine fibres; petiole elongate, slender, adaxially flattened or slightly rounded, abaxially rounded or angled, densely covered with caducous white tomentum, armed along the margins with robust, bulbous-based spines pointing toward the leaf tip; adaxial hastula well developed, ± acute, abaxial hastula poorly developed; blade divided to 2/3 – 3/4 the radius into single-fold segments, the segments further divided to ca. 1/2 – 2/3 along the abaxial folds, folds longitudinally striate, tips ± rounded or pointed, abaxially sparsely to densely covered with caducous tomentum, midribs prominent abaxially, transverse veinlets obscure. Inflorescences solitary, interfoliar, very short, branching to 2 orders, staminate, pistillate, and hermaphroditic inflorescences similar; peduncle very short, oval in cross-section; prophyll conspicuous, tubular, somewhat inflated, laterally 2-keeled, splitting apically into 2 triangular lobes, covered with dense tomentum especially along keels; peduncular bracts absent; rachis short, but longer than the peduncle; rachis bracts inconspicuous, the proximal enclosed within the prophyll; first-order branches bearing minute slender bracts; rachillae short, very crowded, glabrous. Flowers solitary, spirally arranged, borne on short tubercles subtended by minute bracts; abnormalities in all floral parts frequent; sepals 3, triangular, low, glabrous, united at the base; petals 3, similar in staminate, pistillate, and hermaphroditic flowers, imbricate, distally triangular, united at the very base; stamens 6, united by their broad triangular filaments to form a conspicuous staminal ring folded in young stages, much expanded at anthesis, anthers yellow, oblong, medifixed, latrorse; staminodes similar to stamens but less-well-developed filaments and empty anthers; carpels 3, distinct, follicular, glabrous, with conspicuous recurved apical stigmas, ovule hemianatropous, attached basally; pistillodes 1–3 minute carpels, or absent. Pollen ellipsoidal, bi-symmetric or slightly asymmetric, or infrequently, oblate triangular; aperture comprising 2 parallel distal sulci, narrowly separated by an ectexinous bridge, less frequently a trichotomosulcus; ectexine tectate densely perforate or finely and densely reticulate, outer aperture margins similar, tectum between sulci sometimes similar or psilate-perforate; infratectum columellate; longest axis 27–31 µm; post-meiotic tetrads tetrahedral [1/1]. Fruit developing from 1–3 carpels, product of each carpel globose to oblong, ellipsoidal, rich brown, pale-dotted, stigmatic remains apical; epicarp smooth, mesocarp thin, ± fleshy, rich in butyric acid, endocarp scarcely developed. Seed globose to ellipsoidal, basally attached; endosperm ruminate, also with a conspicuous lateral intrusion of seed coat; embryo lateral. Germination remote-tubular; eophyll entire, narrow, plicate. Cytology: 2n = 36, or 36 ±1, or 36 ±2.</p></div>
+<div type="distribution"><p>One species, Chamaerops humilis, native to coastal areas of the western Mediterranean, both in Europe and North Africa, becoming rarer eastwards to Malta.</p></div>
+<div type="anatomy"><p>Stem (Schweingruber 1990), leaf (Tomlinson 1961), roots (Seubert 1997), floral (Morrow 1965). </p></div>
+<div type="relationships"><p>Chamaerops is resolved as sister to the rest of the Rhapidinae with low or moderate support (Asmussen and Chase 2001, Asmussen et al. 2006, Baker et al. in review). </p></div>
+<div type="uses"><p>Fibre has been used for cordage and woven articles. Forms with abnormal leaves have been selected in cultivation; one such in the garden of R.O. Douglas, California, bears leaves with the blade divided between as well as along the folds.</p></div>
+<div type="taxonomic accounts"><p>Beccari (1931). </p></div>
+<div type="fossil record"><p>Cuticle from the brown coals of Niederlausitz, Upper Tertiary of Germany, is attributed to Chamaerops (Litke 1966). From the Miocene of Poland (Gliwice, Upper Silesia), Szafer (1961) compares a large fragment of a palmate leaf, including details of stomata in the epidermis, and also a somewhat damaged seed, with Chamaerops aff. humilis. After studying the morphology and anatomy of fossil palm leaf remnants from Miocene of Moldavia, Stephyrtza (1972) considered that the fossil material represented C. humilis L. var. fossilis Kolak. Biondi and Filigheddu (1990) describe the results of anatomical studies on a silicified palm fossil from the Lower Miocene of Sardinia, Palmoxylon homeochamaerops. The fossil material comprises part of a stem and surrounding roots, which the authors consider closely related to C. humilis L. Pleistocene leaf subfossils of Chamaerops strongly attached to a short trunk (Lacroix 1896) were discovered in ancient volcanic ash deposits on the island of Phira (Santorini). </p></div>
+<div type="discussion"><p>The pollination of this familiar palm has only recently been elucidated (Anstett 1998). Anstett and her co-workers demonstrated that derelomid weevils are responsible for transfer of pollen between the staminate and pistillate plants. They are attracted by floral-type odours produced by the leaves subtending the inflorescences rather than by the flowers themselves (see Chapter 8). Floral abnormalities are of frequent occurrence; for example, the following variation may be found within the same inflorescence: petals 2 instead of 3; stamens fewer than 6, and both fertile and infertile anthers within a single flower; carpels 3, 2, or 1 fertile, with or without fertile stamens, and pistillodes present or absent.</p></div>
+<div type="vernacular"><p>European fan palm, windmill palm. </p></div>
+<div type="biology_ecology"><p>Widely cultivated and very variable, particularly in leaf form and fruit shape. It is found on sandy or rocky ground, usually near the sea but up to 600 m altitude or more on coastal hills, usually acaulescent in the wild, but in the absence of burning, producing a well-developed trunk as in cultivated specimens.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

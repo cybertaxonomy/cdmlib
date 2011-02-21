@@ -1,0 +1,41 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus burkillianus</name>
+<author>Becc. ex Ridley</author>
+<citation>in Fl. Malay. Penin. 5 (1925) 56</citation>
+<bibref>Furtado in Gdns. Bull. Str. Sett. 8 (1935) 245</bibref>
+<bibref>Furtado, Gard. Bull. Singapore 75 (1956) 247</bibref>
+<synonymy>
+<name>Calamus chibehensis</name>
+<author>Furtado</author>
+<bibref>Furtado, Gdns. Bull. Singapore-75 (1956) 244</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>I.H. Burkill 1870 - 1965 - sometime Director, Botanic Gardens, Singapore</p></div>
+<div type="vernacular"><p>rotan kerailaut</p></div>
+<div type="description"><p>Clustering moderate sized rattan forming dense thickets. Stems climbing to 20 m, without sheaths 1.5.cm in diameter; with sheaths to 3.5 cm. Internodes to about 20 cm long. Sheaths dull green, armed with scattered triangular spines to 1.2 cm long by 4 mm wide, green tipped black with yellowish bases, the spines sometimes grouped in 2's to 3's into horizontal groups; pale brown indumentum abundant between spines. Knee conspicuous. Ocrea moderately conspicuous, to 5 mm high densely hispid. Leaf moderately robust, ecirrate to 1.5 m long with up to 40 leaflets on each side of the rachis. Petiole well-developed, to about 40 cm, armed with scattered short triangular spines. Leaflets regularly arranged decreasing in size towards the tip arcuate as is the rachis the longest about 35 cm long by 2 cm wide rather abruptedfy decreasing to 10 cm by 1.5 cm near the leaf tip drying pale green, armed with brown bristles to 5 mm long on 1.3 main veins above and sometimes on main vein beneath, and on the margins at the leaflet tip; rachis covered with pale brown indumentum when young; apical leaflet pair joined slightly. Flagellum to 4 m long. Inflorescences male and female superficially similar, to about 4 m long bearing 7 or more distant partial inflorescences, each bearing regularly arranged reflexed rachillae in two ranks; male rachillae bearing tight groups of male flowers; inflorescence bracts moderately armed with short yellowish, black tipped reflexed thorns. Mature fruit ellipsoid somewhat pointed at both ends, 10-12 mm long by 5-6 mm in diameter covered in 15-16 vertical rows of pale green or whitish scales with dark margins; sarcostesta green, extremely bitter. Seed oblong to pointed at both ends, very shallowly pitted, endosperm homogeneous. Seedling leaf with 4 very fine small divaricate leaflets.</p></div>
+<div type="distribution"><p>Trengganu, Pahang, Jonore. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Apparently a good cane but too rare to be significant.</p></div>
+<div type="discussion"><p>Calamus burkillianus is a rare maritime rattan known from Trengganu (near Paka, and onPulau Kupas), Pahang (Pulau Tioman and Pulau Cibeh) and from Johore (G. Arong FR). Near Paka and in G. Arong FR it is found on sand bars just behind the beach, where small freshwater streams flow into the sea. In this rather precise habitat it forms dense tall thickets.
+
+ I have found that the characters used to distinguish C. burkillianus and C. chibehensis may be found on the same specimen and so am unable to retain these two as distinct. C. burkillianus may be distinguished by its habitat, pale grey green sheaths with sparse indumentum, the arcuate leaves with rather distant long arcuate leaflets, and the small ellipsoidal fruit.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

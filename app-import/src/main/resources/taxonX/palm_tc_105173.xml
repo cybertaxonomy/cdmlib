@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Clustering palm with short erect stems that frequently branch dichotomously, native to southeastern South Africa, staminate flowers with 7–16 stamens.</p></div>
+<nomenclature>
+<name>Jubaeopsis</name>
+<author>Becc.</author> 
+<citation>Webbia 4: 171 (1913).</citation> 
+<type>Type; Jubaeopsis caffra; Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Derived from the palm generic name Jubaea and -opsis — similar to, in reference to the similarities in floral and fruit structure.</p></div>
+<div type="description"><p>Moderate, clustered, unarmed, pleonanthic, monoecious palm. Stems erect, branching at the base and also aerially by forking, bearing leaf sheath remains distally, eventually becoming bare, marked with close leaf scars. Leaves pinnate, arranged in 5 vertical rows, marcescent or neatly abscising; sheaths tubular, soon disintegrating into an interwoven mass of fibres; apparent petiole short to elongate, adaxially channelled, abaxially rounded, glabrous, the margins bearing the remains of leaf sheath fibres, or becoming smooth; rachis ± straight or curved, adaxially channelled near the base, angled distally, abaxially rounded or flattened; leaflets numerous, single-fold, close, regularly arranged, except at the very tip, stiff, held in one plane, linear, the tips mostly asymmetrically 2-lobed, except at the leaf tip where acute or sometimes hooked, thinly glaucous, adaxial surface bearing scattered, minute, dot-like scales, abaxially with scattered dot-like scales, and a few large brown ramenta along the main vein, transverse veinlets conspicuous, sinuous. Inflorescences solitary, interfoliar, branching to 1 order, shorter than the leaves, protandrous; peduncle elongate, round in cross-section; prophyll short, tubular, 2-keeled, enclosed within the leaf sheaths, splitting apically; peduncular bract inserted near the prophyll, tubular and entirely enclosing the inflorescence until shortly before anthesis, later splitting longitudinally along the abaxial face and expanding, becoming cowl-like, woody, smooth, abaxially somewhat striate but not grooved, apically with a short, laterally flattened beak; rachis usually shorter than the peduncle, bearing numerous, spirally arranged, rather distant, spreading rachillae, each subtended by a low triangular bract; rachillae elongate, swollen at the very base and with a short or long basal bare portion, above which bearing few to numerous spirally arranged triads, Distribution of Jubaeopsis distally bearing paired or solitary staminate flowers; rachilla bracts and floral bracteoles small, inconspicuous. Staminate flowers rather large, perforate and micro-channelled, or perforate-rugulate, aperture margin asymmetrical, sessile; sepals 3, distinct, unequal, imbricate, ± triangular, similar; infratectum columellate; longest axis 63–81 µm [1/1]. Pistillate keeled; petals 3, distinct, very unequal, much larger than the sepals, flowers ovoid, only slightly larger than the staminate; sepals 3, distinct, boat-shaped with triangular tips, valvate; stamens (7–)8–16, filaments broad, rounded, with pointed tips, imbricate, somewhat irregularly slender, fleshy, ± cylindrical, apically inflexed, anthers linear, basally keeled; petals 3, distinct, ± twice as long as the sepals, broad, rounded, sagittate, dorsifixed, introrse; pistillode small, irregularly trifid. Pollen imbricate except at the short valvate triangular tips; staminodal ring ellipsoidal, frequently elongate, usually with either slight or obvious collar-like, very briefly toothed or consisting of several irregular tooth-asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, like lobes; gynoecium ± ovoid, trilocular, triovulate, stigmas 3, very short, ± triangular, ovules hemianatropous, laterally attached. Fruit 1-seeded, brown at maturity, globose with a short apical beak, stigmatic remains apical; epicarp smooth, mesocarp thin, fibrous, only slightly fleshy, easily separated from the endocarp at maturity, endocarp thick, bony, with 3 vertical grooves, the pores lateral just below the equator. Seed basally attached, somewhat irregular in shape, endosperm homogeneous with a large central cavity; embryo lateral, next to one of the endocarp pores. Germination remote tubular; eophyll entire, lanceolate. Cytology: 2n = 160–200.</p></div>
+<div type="distribution"><p>One species confined to the coastal reaches of two rivers in South Africa. </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b). See Robertson (1976a) for anatomy and development of fruit and seed. </p></div>
+<div type="relationships"><p>Jubaeopsis is sister to all other members of the Attaleinae except Beccariophoenix (Asmussen et al. 2006, Baker et al. in review). </p></div>
+<div type="uses"><p>The endosperm may be eaten. Because of its rarity, Jubaeopsis caffra is sought after as a collector’s item. </p></div>
+<div type="taxonomic accounts"><p>For a discussion of morphology seeRobertson (1976b). See also Beccari (1913a) and Glassman(1987).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Jubaeopsis is the only member of Attaleinae in Africa,remarkable for its dichotomous stems and high chromosomenumber.</p></div>
+<div type="vernacular"><p>Pondoland palm. </p></div>
+<div type="biology_ecology"><p>Jubaeopsis caffra grows gregariously on the steep north, rocky banks of the rivers, near sea-level. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,61 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis nossibensis</name>
+<author>(Becc.) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 358 (1995)</citation>
+<type>Madagascar, Nosy Be, Lokobe, March 1851; Boivin; s.n.</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Chrysalidocarpus nossibensis</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 38 Beibl.  87: 34 (1906)</bibref>
+<bibref>Becc., Palme del Madagascar 41, t. 40 (1914)</bibref>
+<bibref>Jum., Cat. Pl.Madagascar, Palmae: 10 (1938)</bibref>
+</synonymy>
+<synonymy>
+<name>Vonitra nossibensis</name>
+<author>(Becc.) Perrier</author>
+<bibref>(Becc.) Perrier, Fl Madagascar 30: 130 (1945)</bibref>
+ </synonymy>
+<synonymy>
+<name>Vonitra loucoubensis</name>
+<author>Jum.</author>
+<bibref>Jum., Rev Bot Appl 1922: 161 (1922)</bibref>
+<bibref>Jum., Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 5, 1: 15 (1927)</bibref>
+<bibref>Jum., Cat Pl Madagascar, Palmae: 26 (1938)</bibref>
+<locality></locality>
+<type>Madagascar, Nosy Be, Lokobe; Perrier; 12028</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This clearly belongs to the 'Vonitra' group, though it sometimes lacks the distinctive piassava (leaf sheath fibre) on the trunk. The inflorescence has the bulbous bases to the first order branches that are so distinctive for this group, but there are only one or two inflorescences per tree, and the trunk does not branch, which is unlike several other species of this group. The name refers to the island of Nosy Be.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>None recorded.</p></div>
+<div type="description"><p>Solitary palm. TRUNK 5-10 m, not branching, 7-15 cm diam., bare and then grey and conspicuously ringed, or with sheath remnants, with (over distal 2 m of trunk) or without a disintegrated fibrous mass; base of trunk with aerial roots; internodes c. 7 cm.; base of crown bulbous, 8 cm diam.; wood hard. LEAVES c. 18 in the crown, porrect to arching and held on edge in distal half of the leaf, with the leaflets in one plane; sheath 28-50 cm, 6-9 cm wide, more distally with a central woody part of 3-4 cm wide with two fibrous "wings" of c. 4.5 cm wide, with short fine brown tomentum with fibrous tattered margins, and opposite the petiole with a long brown tongue, 100-120 x 5-5.5 cm; petiole 39-40 cm long, proximally 1.5-2.7 x 1.5-2 cm, distally 1.7-2.1 x 1-1.2 cm, convex or channelled with rather sharp margins and a thin grey to red-brown tomentum; rachis c. 2.8 m, in mid-leaf 0.8-1.5 cm wide and keeled, with red-brown to grey tomentum but glabrescent; leaflets 62-64 on each side of the rachis, regular, mid-green, glabrous, the proximal 62-86 x 1.1-2.4 cm, median 52-78 x 3.3-5 cm (interval 3-4 cm), distal 16-44 x 0.9-3.5 cm, apices attenuate, main veins 5-7, distinct, midrib prominent adaxially, ramenta few, spaced, rather small, on the abaxial midrib of median leaflets. INFLORESCENCE erect, only a single stage present at one time, branched to 2 orders, 106-150 cm, with spreading or semi-pendulous rachillae; peduncle 75-84 cm long, proximally 4.2-6 x 2.4-3 cm, distally 2.5-2.7 x 1.6-2 cm, green with short reddish tomentum; prophyll 45-64 x 6.5-8 x 2-3 cm, borne at c. 6 cm above the base of the peduncle, 2winged, split abaxially; peduncular bract inserted at 15-20 cm, abscising and carried upwards by the lengthening bud, 102-106 x 9.5-18 cm, beaked and closed for 5.5-9 cm, glabrous and pale red-brown abaxially, yel-low-brown adaxially; incomplete peduncular bracts 3-6 x 36 mm; rachis 31-37 cm, proximally 3.5-5 x 2.5-3 cm diam., with 13-17 branched and 13-16 unbranched first order branches, these puberulous, with bulbous bases and proximally 1.5-2 x 0.4-1 cm; rachillae 25-56 cm, 3-5 mm diam., angular in bud and slightly zigzag, proximally with dense stellate scales, more distal with fewer scales, pitted; rachilla bracts c. 2 mm. STAMINATE FLOWERS slightly trigonous; sepals unequal, 3-4 x 4-7 mm, the innermost the largest, fleshy, keeled, hooded, broadly ovate, rounded, with a minute fringe of tiny hairs; petals purplish white, 4.4-4.5 x 5 mm, fleshy, ovate, slightly acute, inserted on the edge of a fleshy receptacle c. 3 mm high and 4 mm diam.; stamens 6, slightly bi-seriate with the antepetalous stamens inserted slightly higher and the anthers shorter; filaments 2.5-3  mm, connate in a basal ring around the pistillode, anthers dorsifixed, the locules parallel, 2.8-3.2 x 1.8-2 mm; pistillode 1.7-1.8 x 1.7 mm, trigonous. PISTILLATE FLOWERS trigonous at base, distinctly asymmetrical, 6 mm high in bud; sepals 4.5-6 x 6-7 mm, unequal, fleshy, keeled, hooded, fringed, imbricate, the innermost largest; petals purplish white, 7-8.3 x 7 mm, broadly ovate, acute, hooded; gynoecium 6- 8 x 4.5-6.5 mm, asymmetrical, the distal part partly split in 3, stigmas short, pyramidal; staminodes 6, 0.4-0.7 mm, flat. FRUIT not seen in mature state, young fruit 11 x 13 mm, asymmetric. EOPHYLL bifid; seedling with 2 scale leaves.</p></div>
+<div type="distribution"><p>NW Madagascar, only known from Lokobe forest.</p></div>
+<div type="biology_ecology"><p>Moist forest; steep mid slope; alt. 100-185 m.</p></div>
+<div type="conservation"><p>Critical. Only known from a single forest, in which several palm species, including this one, are felled for planks. Total numbers seen were less than twenty-five.</p></div>
+<div type="uses"><p>Wood used in construction.</p></div>
+<div type="discussion"><p>HB believes he has seen two trees of this species on the Antsahampano peninsula on the mainland near Nosy Komba, but as he was on public transport at the time was unable to make sure. This would not change the conservation status, as the vegetation of this peninsula is also under threat.  The type of V. nossibensis consists of an inflorescence and a very young leaf. We have omitted the measurements of the leaf from the above description.
+NOTE: this name is predated by  Chrysalidocarpus lucubensis Becc from 1906, which is a synonym of C madagascariensis Becc</p></div>
+<div type="materials_examined"><p>Nosy Be: Lokobe, March 1851 (fl.), Boivin s.n. (P, type of <name>Chrysalidocarpus nossibensis</name>); idem, anno 1913 (fl.), Perrier 12028 (P, type of V. loucoubensis); Lokobe forest near Ampasindava, July 1992 (ster.), Beentje &amp; Andriampaniry 4695 (K, TAN); idem, July 1992 (fl.), Beentje &amp; Andriampaniry 4698 (K); near Pointe Lokobe, Feb. 1992 (fl.), Birkinshaw 124 (K); idem, June 1992 (fl., y.fr., seedling), Beentje &amp; Birkinshaw 4704 (BH, K, MO, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

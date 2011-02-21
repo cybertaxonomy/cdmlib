@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis ceracea</name>
+<author>(Jum.) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 151 (1995)</citation>
+<type>Madagascar, Betampona near Ambodiriana; Perrier; 17474</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Neodypsis ceraceus</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 5, 1 (1): 18 (1933)</bibref>
+<bibref>Jumelle, Cat. Pl. Madagascar, Palmae: 17 (1938)</bibref>
+<bibref>Jumelle &amp; H. Perrier Fl. Madagascar 30: 144 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This species has not been collected for almost fifty years, and the material is rather poor. This is another mystery, resembling D. bejofo and D. canaliculata.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Lafaza (Betsimisaraka).</p></div>
+<div type="description"><p>Solitary palm. TRUNK 8-15 m high, cylindrical, 8-15 cm diam. LEAVES: sheath medium brown with a dense layer of wax, the young sheath bright pink, without ligules or auricles, distally with medium-sized laciniate scales; petiole c. 35 cm long, waxy, with scattered scales; rachis in mid-leaf 1.4-1.8 cm wide, keeled, with scattered scales, slightly waxy; leaflets in groups of 4-6, the group interval > 6 cm, the leaflet interval 0.5-1 cm, "hanging towards the middle" (Perrier); proximal 82-86 x 2.5-3.2 cm, median 55-92 x 2.3-2.9 cm, distal 13-39 x 0.3-2 cm, adaxially dark green, abaxially glaucous, with sparse large ramenta (6-10 mm long) on the proximal midrib, with minute reddish scales scattered over the minor veins, main vein 1, with slightly thickened margins, apex unequally attenuate. INFLORESCENCE interfoliar, branched to 3 orders (or more); prophyll coriaceous; peduncular bract coriaceous, deciduous, with a rather long beak; first order branch seen with secondary rachis of 6-20 cm, proximally 1-3 x 0.5-1.3 cm, glabrous, with 7-12 second order branches; rachis bracts up to 12 mm long; rachillae 16-30 cm long, 3-4.5 mm diam., with distant triads in shallow pits; rachilla bracts proud, rounded to acute. STAMINATE FLOWERS not seen. PISTILLATE FLOWERS not seen at anthesis; in the fruit the sepals are 3.7-4.1 x 3.9-4.7 mm (the outermost largest), obtuse, with membranous margins; petals 5-6 x 3.9-4.7 mm, the innermost largest; staminodes 0.5-1.1 mm, thin and flat. FRUIT ellipsoid, 16-20 x 8.5-12.5 mm, rounded at base and apex, with sub-basal stigmatic remains (with a ridge to the stalk); endocarp fibrous, with slightly anasto-mosing fibres. SEED ellipsoid, 12-13 x 5-6 mm, pointed at the base, rounded at the apex, attached to the spot corresponding to the stigmatic remnant on the outside; endosperm deeply ruminate, the ruminations reaching the middle.</p></div>
+<div type="distribution"><p>Only known from the Marojejy area and Betampona.</p></div>
+<div type="biology_ecology"><p>Moist lowland forest; 450 m (fide Cours).</p></div>
+<div type="conservation"><p>?Extinct; not seen since 1949.</p></div>
+<div type="uses"><p>Leaves used in thatching.</p></div>
+<div type="discussion"><p>The following data from the protologue do not appear on the type label: found at 100 m altitude. This species resembles both D. bejofo and D. canaliculata but is distinct in the smaller and thinner trunk, the more branched inflorescence and the much smaller fruit.</p></div>
+<div type="materials_examined"><p>Andapa: Mt Mainampango, Amtalavanio, Jan. 1949 (fr.), Cours 3234 (K, P, TAN). Toamasina: Betampona, Dec. 1925 (fr.), Perrier 17474 (P, type).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,57 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Bactris maraja</name>
+<author>Mart.</author>
+<citation>Hist. Nat. Palm. 2: 93 (1826)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stems clustered, to 5 m tall and 3 cm in diameter.  Spines on the leaf sheath and axis pale yellow to whitish grey, broad, and flat.  Leaf blade 0.5-1.5 m long; pinnae 5-25 on each side, sigmoid, inserted in groups and spreading in different planes, the middle ones 15-50 cm long and 4.5-9 cm wide.  Inflorescence 15-30 cm long; branches ca. 10, to 10 cm long, 2-3 mm in diameter.  Female flowers scattered along the branches.  Fruit black, flattened at top, rostrate, smooth or rough, 1-2 cm in diameter; fruiting perianth with a 3 lobed calyx ca. half as long as the deeply 3-lobed, usually minutely bristly corolla; staminodial ring absent.</p></div>
+<div type="distribution"><p>Widespread from Central America to Bolivia, on both sides of the Andes.
+Distribution in Ecuador. In Ecuador it is fairly common E of the Andes, usually on terra firme, and in the NW, where it occurs in periodically flooded land dominated by Euterpe oleracea.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>A polymorphic species divided into four varieties (Henderson, 2000).Notes for Ecuador. The Ecuadorian plants belong to var. maraja.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

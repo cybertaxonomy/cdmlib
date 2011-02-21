@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis faneva</name>
+<author>Beentje</author>
+<citation>Palms of Madagascar: 257 (1995)</citation>
+<type>Antalavia; Dransfield et al.; JD6465</type>
+<type_loc>Holotypus K; isotypi P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>A fairly rare species from lowland rain forest, but highly distinctive. The name faneva (flag in Malagasy) refers to the leaves, which are remarkable for the large terminal flabellum.</p></div>
+<div type="etymology"><p></p></div>
+<div type="diagnosis"><p>D. boivinianae affinis sed inflorescentia in plures ordines ramificanti rachillis brevibus D. procerae et D. paludosae superficialiter similis sed staminibus 6 non 3 differt.</p></div>
+<div type="vernacular"><p>Tsinkiara mavinty (Betsimisaraka).</p></div>
+<div type="description"><p>Clustering palm in tufts of 3-12 stems. STEMS 3-6 m, 3-5 cm diam.; somewhat stilt-rooted at base; internodes 3-10 cm, brown; wood soft; crownshaft moderately well-developed, with occasionally a yellowish stripe below the rachis. LEAVES 8-9 in the crown (sometimes with up to 4 marcescent leaves present), spirally inserted, porrect and arching; sheath pale creamy yellow or green, spotted with red, 24-30 cm long, with scattered brown scales (distally rather dense), with auricles to 3.2 cm high; petiole absent or up to 10 cm long, with scattered scales, channelled adaxially, 9-10 x 5-6 mm diam.; rachis 79-94 cm long, in mid-leaf 5-6 mm wide, with scattered scales; leaflets 8-21 on each side of the rachis, regular, stiff, straight, in one plane, somewhat arcuate, 1-4 folds wide, proximal 25-63 x 0.1-3.6 cm, median 62-72 x 1.7-11 cm (interval 6-7.5 cm), distal 42-55 x 7-10 cm, main veins 1-4, apices long-attenuate, main veins with ramenta, minor veins with scattered scales, distal pair joined for 11-17 cm, with 8 main veins, apices dentate over a width of 2-2.2 cm. INFLORESCENCE interfoliar, branched to 2 orders, spreading, c. 50 x 50 cm; peduncle 28-64 cm, distally 1.2-1.7 x 0.5-1 cm diam., rusty-pubescent; prophyll 29-54 cm long, borne at 13-17 cm above the base of the peduncle, 2.2-2.5 cm wide, with scattered scales, opening for the distal 4-6 cm; peduncular bract inserted at 21-30 cm from the base of the peduncle, 12-30 cm long, split over its distal 10-14 cm; rachis 14-19 cm, with 4-6 branching and 7-16 unbranched first order branches (the proximal with an axis of 9 cm, with 5 rachillae), all axes hairy; rachillae 10-28 cm long, with scattered scales, with distant triads. STAMINATE FLOWERS orange in bud; sepals 1.3-1.8 x 1.2-1.5 mm, the middle one sometimes very asymmetrical; petals 1.9-2.8 x 1.5-2.1 mm; stamens 6, didymous, 1- or biseriate (offset to 0.4 mm), filaments 0.8-1 mm, fat and ellipsoid, anthers 0.6-0.7 x 0.7-0.9 mm; pistillode c. 1 x 1.2 mm, pyramidal. PISTILLATE FLOWERS unknown. FRUIT unknown.</p></div>
+<div type="distribution"><p>Maroantsetra, Mananara and near Fenoarivo.</p></div>
+<div type="biology_ecology"><p>Littoral forest or moist lowland rain forest, on steep or level slope; 1-300 m.</p></div>
+<div type="conservation"><p>Endangered. The lowland rain forest in this area is not well protected, and numbers are low; we have seen less than fifty individuals.</p></div>
+<div type="uses"><p>None recorded.</p></div>
+<div type="discussion"><p>Distinct from the very similar D. mangorensis in the more-branched inflorescence with shorter rachillae, and from the similar D. procera and D. paludosa in the six (not three) stamens.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Antalavia, Feb. 1988 (fl.), Dransfield et al. JD6465 (Holotype K; isotypes P, TAN). Mananara Avaratra: Antanambe, Oct. 1991 (dead infl.), Beentje 4454 (BH, K, MO, P, TAN); idem, April 1992 (old infl.), Beentje et al. 4618 (K, TAN). Fenoarivo Atn.: Tampolo-Fenoarivo, Feb. 1970 (bud), Guillaumet 2531 (K, P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

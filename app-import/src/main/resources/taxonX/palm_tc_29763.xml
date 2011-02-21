@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus nicobaricus</name>
+<author>Becc.</author>
+<citation>in Hook. f,. Fl. Brit. Ind. 6: 446. 1862</citation>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11: 249, Pl. 84, 1908</bibref>
+<bibref>Basu, Rattans in India Monogr. Rev.: 79.1992</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Dahya.</p></div>
+<div type="description"><p>Clustering, small diameter rattan. Stem yellowish green, with sheaths 7-14 mm in diameter. Sheath obliquely truncate at mouth, scurfy outside, armed with numerous spines, spines, 1-2.5 cm long, dimorphic, flattened spines intermingled with broad-based deflexed spines: flagellum filiform; knee conspicuous; ocrea very short, truncate, smooth outside: leaflets equidistant, linear, subulately acuminate, with conspicuous upper midnerve, bristly on both sides, lateral nerves smooth, middle leaflets 18-25 cm long, 10 - 12 mm broad at middle. Fertile parts unknown.</p></div>
+<div type="distribution"><p>Great Nicobar Islands ( Endemic).</p></div>
+<div type="biology_ecology"><p>Not known.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This cane species was described by Beccari based on E.H. Man's collections from Great Nicobar Island. Man's specimens were without fertile parts. According to Man, this cane was locally known as Dahya and used In trading with Singapore. No old or recent collection was availablejor study. This cane could not be collected In the recent survey.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

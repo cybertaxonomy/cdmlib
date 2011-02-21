@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Plectocomia himalayana</name>
+<author>Griff.</author>
+<citation>Calc. Journ. Nat. Hist. 5 : 100: 1845</citation>
+<bibref>Beccari in Hook. f. Fl. Brit. Ind. 6 : 478. 1893</bibref>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 12(2): 36. 1918</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Tehri Bet, Runul Bet, Rano Bet.</p></div>
+<div type="description"><p>A high climbing rattan; stem clustering, with leafsheath 2-4 cm in diameter. Leaves cirrate about 2.5 m long; leafsheath semi-woody, covered outside with spirally disposed 1.5-2 cm long needle-like brown spines; petiole absent in adult leaves; rachis 3 cm broad, armed below with single row of digitate claws; leaflets alternate to irregularly disposed on rachis, 5-nerved, 30 - 40 cm long, 2-3 cm broad at middle. Inflorescence with 1 m - 1.5m long pendulous primary flower branches; primary bracts tubular, obliquely truncate with triangular appendage on one side, tomentose at base; flower branches 60-80 cm long, slender, sinuous, covered with alternate, triangular-ablong, acute to acuminate, 4-5 cm long, 5 cm broad bracts; bracteoles in male rachilla subulate; male flowers sessile, trigonous, 7-8mm long; petals much longer than calyx, lanceolate, acuminate; stamens with subulate filaments; anthers broadly linear, 4 mm long; pistillode with 3 rudimentary papillae. Female flowers about 9 in number in each bract, biseriate; each 8 - 9 mm long; calyx shortly cupular, with 3 long, acuminate teeth; corolla with 3 concave acuminate petals; ovary globose with non-laciniate scales; stigma sessile, trigonous. Fruit 1.5 cm in diameter, not wooly outside; fruit scales numerous arranged in longitudinal series with pappilose margins and obtuse tips; seed orbicular, depressed, 1 cm in diameter.</p></div>
+<div type="distribution"><p>INDIA (Sikkim, West Bengal, Arunachal Pradesh). Endemic.</p></div>
+<div type="biology_ecology"><p>A dominant rattan species in the middle and upper hill forests (1500 - 2500 m altitude) of eastern Himalaya.</p></div>
+<div type="cultivation"><p>Not cultivated.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Canes are soft and therefore unsuitable for furniture making; used by the hill people for tying fences and for making tea baskets for plucked tea-leaves.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>East Himal. Herb. Griffith 6425 (CAL Ace. no. 494961) &amp; K. type.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

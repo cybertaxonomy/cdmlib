@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis sahanofensis</name>
+<author>(Jum. &amp; H. Perrier) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 289 (1995)</citation>
+<type>Madagascar, upper Sahanofo R basin, between Ambohimanga Atsimo and Ambositra; Perrier; 12060</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Chrysalidocarpus sahanofensis</name>
+<author>Jum.</author>
+<bibref>(Jum. &amp; H. Perrier) Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 2, 10 (3): 6 (1922)</bibref>
+<bibref>Jum., Ann. Inst. Bot.- G&#233;ol. Colon. Marseille s&#233;r. 6, 3: 9 (1929)</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 11 (1938)</bibref>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 110 (1945)</bibref>
+</synonymy>
+<synonymy>
+<name>Neophloga sahanofensis</name>
+<author>Jum. &amp; H. Perrier</author>
+<bibref>Jum. &amp; H.Perrier, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 32, t. 15-16 (1913)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>This was one of our mysteries, only known from the type (collected in 1911) with very fragmentary material and no description to speak of. Then, just before taking this book to press, we visited Mt Vatovavy, some 70 miles/100 kilometers from the type locality, and we collected a medium-sized palm which turned out to match the type material beautifully. This kind of discovery gives a real thrill!</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Clustering palm in groups of c. 12. STEMS 5-6 m long, 3 (-8, fide Perrier) cm diam.; internodes 12-13 cm long. LEAVES with sheath 20-31 cm long, with sloping shoulders, adaxially dark red-brown, abaxially pale green to mid-brown with some wax and orangebrown caducous scattered scales; petiole 17-18 cm long, proximally c. 1.5 x 0.5 cm, distally c. 1.1 x 0.5 cm, densely scaly on both surfaces, convex on both surfaces with sharp margins; rachis c.1 m long, in mid-leaf 0.5-0.7 cm wide, abaxially with scattered scales, adaxially with a few scales, slightly keeled; leaflets 23-24 on each side of the rachis, grouped to irregular and slightly fanned within the groups, in mid-leaf in groups of 3-5, the groups at intervals of 3-13 cm, the leaflets within the groups at intervals of 0.2-2.5 cm, proximal 26-33 x 0.6-1.4 cm, median 29- 38 x 1.7-3 cm, distal 13-23 x 0.5-1.5 cm, glabrous or nearly so, main vein 1, apices attenuate. INFLORESCENCE interfoliar, branched to 2 orders; peduncle c. 43 cm, proximally 1.7 x 0.4 cm, distally 1.3 x 0.9 cm, densely reddish-scaly; prophyll 29-44 cm long, borne at 9-25 cm above the base of the peduncle, glabrous or nearly so; peduncular bract inserted at 20-33 cm from the base of the peduncle, c. 34 cm long, deciduous; non-tubular peduncular bract inserted at c. 27 cm from the base of the peduncle, 5 mm  long; rachis c. 27 cm, puberulous, with c. 5 branched, and 11-16 unbranched first order branches, the proximal of these with a secondary rachis of up to 5 cm long and 7 x 2.5 mm diam. at base, with up to 3 rachillae; rachillae 19-33 cm long, 1-3.5 mm diam., puberulous, with very distant triads in pits with proud acute rachilla bracts. STAMINATE FLOWERS only seen in young bud: sepals to 1.5 x 1.3 mm, keeled and slightly hooded; petals still smaller than the sepals at this stage; stamens still less than 0.3 mm, but clearly 6, anthers probably versatile. PISTILLATE FLOWERS with sepals 2.6-3.2 x 2.5-3 mm; petals connate for 0.6-0.8 mm, free for 5.1-5.7 x 3-3.5 mm; staminodes 6, 0.8-1.2 mm long; ovary 5-5.3 x 2-2.2 mm. FRUIT not seen.</p></div>
+<div type="distribution"><p>E Madagascar; only known from the type and one recent collection.</p></div>
+<div type="biology_ecology"><p>Rain forest; 315-1400 m.</p></div>
+<div type="conservation"><p>Endangered. The forest on Vatovavy is not protected, except by local fady (taboos), and population numbers were low. If forest clearance in the area continues, the status will become Critical within a few years.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The type at P consists of three sheets. Two sheets of Perrier 12049, Neophloga littoralis, (sheath and middle part of rachis) were originally excluded by us as not belonging to that taxon. In fact the two pieces not only match those of the type of D. sahanofensis, but fit parts of the rachis on the type sheet! There is no doubt that they are the same number; the sheath is figured in Jumelle &amp; Perrier (1913).</p></div>
+<div type="materials_examined"><p>Ambositra: upper Sahanofo basin between Ambohimanga du Sud and Ambositra, Nov. 1911 (fl.), Perrier 12060 (P; type). Mananjary: Vatovavy, Nov. 1994 (bud), Beentje &amp; Dransfield 4835 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

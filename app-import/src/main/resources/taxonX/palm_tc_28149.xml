@@ -1,0 +1,142 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Re-evaluation of the Genus Butia With a Description of a New Species</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Glassman</mods:namePart>
+<mods:namePart type="given">S.F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 23: 65-79</mods:publisher>
+<mods:dateIssued>1979</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Butia capitata</name>
+<author>(Mart.) Becc.</author>
+<citation>Agric. Colon. 10: 504 (1916)</citation>
+<type>Brazil, Minas Gerais, campis; Martius; s.n.</type>
+<type_loc>Lectotype M</type_loc>
+<synonymy>
+<name>Cocos capitata</name>
+<author>Mart.</author>
+<bibref>Mart., Hist. Nat. Palm. 2: 114 (1826)</bibref>
+</synonymy>
+<synonymy>
+<name>Syagrus capitata</name>
+<author>(Mart.) Glassman</author>
+<bibref>(Mart.) Glassman, Fieldiana, Bot. 32: 143 (1970)</bibref>
+</synonymy>
+<synonymy>
+<name>Cocos elegantissima</name>
+<author>Chabaud</author>
+<bibref>Chabaud, Rev. Hort. 78: 144 (1906)</bibref>
+<type>Cult. in garden of C. Lemarchand a l'Artaude, near Toulon, France; Chabaud; s.n.</type>
+<type_loc>Lectotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. elegantissima</name>
+<author>(Chabaud) Becc.</author>
+<bibref>(Chabaud) Becc., Agric. Colon. 10: 517 (1916)</bibref>
+</synonymy>
+<synonymy>
+<name>Cocos erythrospatha</name>
+<author>Chabaud</author>
+<bibref>Chabaud, Rev. Hort. 78: 144 (1906)</bibref>
+<type>Cult. on property of C. Lemarchand a l'Artaude, common in Pradet, near Toulon; Chabaud; s.n.</type>
+<type_loc>Lectotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. erythrospatha</name>
+<author>(Chabaud) Becc.</author>
+<bibref>(Chabaud) Becc., Agric. Colon. 10: 515 (1916)</bibref>
+</synonymy>
+<synonymy>
+<name>Cocos lilaceiflora</name>
+<author>Chabaud</author>
+<bibref>Chabaud, Rev. Hort. 78: 144 (1906)</bibref>
+<type>Cult. in public garden, Toulon; Chabaud; s.n.</type>
+<type_loc>Lectotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. lilaceiflora</name>
+<author>(Chabaud) Becc.</author>
+<bibref>(Chabaud) Becc., Agric. Colon. 10: 518 (1916)</bibref>
+</synonymy>
+<synonymy>
+<name>Cocos nehrlingiana</name>
+<author>Abbott ex Nehrl.</author>
+<bibref>Abbott ex Nehrl., Amer. Eagle, 17 Feb.: (1927)</bibref>
+<type>Cult. on residence of Mr. Henry Nehrling, Gotha, Florida; Bailey; 13122</type>
+<type_loc>Lectotype BH</type_loc>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. nehrlingiana</name>
+<author>(Abbott ex Nehrl.) L.H.Bailey</author>
+<bibref>(Abbott ex Nehrl.) L.H.Bailey, Gentes Herb. 4: 33 (1936)</bibref>
+</synonymy>
+<synonymy>
+<name>Cocos odorata</name>
+<author>Barb.Rodr.</author>
+<bibref>Barb.Rodr., Pl. Jard. Rio de Janeiro 1: 11 (1891)</bibref>
+<type>Lectotype: Brazil, in campis ad Rio Grande do Sul, cult. in Jard. Bot. Rio de Janeiro no. 64 (Barb. Rodr. 1891, t. 4A). (Cf. Glassman 1972a, p. 92.)</type>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. odorata</name>
+<author>(Barb.Rodr.) Becc.</author>
+<bibref>(Barb.Rodr.) Becc., Agric. Colon. 10: 513 (1916)</bibref>
+</synonymy>
+<synonymy>
+<name>Cocos pulposa</name>
+<author>Barb.Rodr.</author>
+<bibref>Barb.Rodr., Pl. Jard. Rio de Janeiro 1: 14 (1891)</bibref>
+<type>Lectotype: Brazil, Rio Grande do Sul, in campis ab S. Sepe, Jaguarao et Ca~apava and cult. in Jard. Bot. Rio de Jan. no. 454 (Barb. Rodr. 1903, t. 68C). (Cf. Glassman 1972a, p. 93.)</type>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. pulposa</name>
+<author>(Barb.Rodr.) Becc.</author>
+<bibref>(Barb.Rodr.) Becc., Agric. Colon. 19: 516 (1916)</bibref>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. strictior</name>
+<author>L.H.Bailey</author>
+<bibref>L.H.Bailey, Gentes Herb. 4: 32 (1936)</bibref>
+<type>Cult. at home of Mrs. Danforth, Pasadena, Calif.; Bailey; 389</type>
+<type_loc>Holotype BH</type_loc>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. subglobosa</name>
+<author>ecc.</author>
+<bibref>Becc., Agric. Colon. 10: 513 (1916)</bibref>
+<type>Type: No locality or specimens listed. Based on a tree confused with Cocos coronata by Chabaud (1905, 1906).</type>
+</synonymy>
+<synonymy>
+<name>Butia capitata var. virescens</name>
+<author>Becc.</author>
+<bibref>Becc., Agric. Colon. 10: 519 (1916)</bibref>
+<type>Type: Cult. in School of Pomology and Horticulture, Cascine de Firenze (no specimens cited).</type>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Cabeçudo, guariroba do campo.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Trees 3-5 m tall, 40-50 cm in diam.; complete sheathing leaf base not seen, petiole 70-88 cm long; 4-7 cm wide at base, margins mostly armed with fairly short teeth on upper portion, coarsely spiny on lower part and adjacent sheathing base, spines 8-11 cm long; rachis of leaf 150-183 cm long; pinnae 63-80 on each side, regularly arranged, middle ones 60-75 cm long, 1.5-2.5 cm, with oblique, asymmetrical tips; expanded part of spathe 80-100 cm long, 7.0-8.5 cm wide, smooth or striate, more or less glaucous, becoming eglaucous with age; bran~hed part of spadix 85-94 cm long, rachIllae 50-60, 62-69 cm long; pistil. late flowers rounded or ovoid, 4-8 mm long, 4-6 mm in diam.; lower staminate flowers 7-10 mm long, those above 4-7 mm long; mature fruit orange, with soft mesocarp when ripe, ovoid, 1.8-2.6 cm long, 1.5-2.2 cm in diam., with short beak, persistent perianth 0.4-0.6 cm high, locules 1-3, seed ovoid or triangu. lar, 1.8-2.4 cm long, 1.0-1.4, cm in diam. </p></div>
+<div type="distribution"><p>Brazil, in the states of Minas Gerais, Paraná, Santa Catarina, and Rio Grando de Sul, in woodlands and campos; and Uruguay, in the department of Rocha in woodlands. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>BRAZIL. MINAS GERAIS: campis, Martius s.n. (M, lectotype-two spadix parts); Minas Gerais, Martius s.n. (M, leaf and spathe parts); PARANA: Tamandare, in campo, G. Jonson 985a (F, G, K, NY, S); SANTA CATARINA: Sombrio, in campo, P. R. Reitz 2965 (G); RIO GRANDE DO SUL: Glaziou 8047 (C, K); Glaziou 9334 (FI). URUGUAY. ROCHA: Castillos, Herter 346B (F, G, GH). CULTIVATED. ARGENTINA: Tucuman, Venturi 5594 (US). URUGUAY: Montevideo, Herter 346a (F, G, GH, LE, NY, S) . BRAZIL: Rio de Janeiro, Glaziou 9334 (C, LE), 16481 (C, G, K, LE), 20535 (C, K), Dahlgren &amp; Millar s.n. (F-611648). UNITED STATES: Fairchild Tropical Garden, Coral Gables, Florida, Glassman 8766 (CHI); Gotha, Florida, Nehrling's place, Bailey 13122 (BR, lectotype of Butia nehrlingiana); Pasadena, California, Mrs. Danforth's home, Bailey 389 (BH, holotype of Butia capitata var. strictior). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

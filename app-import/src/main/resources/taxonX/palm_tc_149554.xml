@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Striking solitary palm of Pacific islands with a ± undivided strongly discolorous leaf and corky-warted fruit.</p></div>
+<nomenclature>
+<name>Pelagodoxa</name>
+<author>Becc. in Bois</author> 
+<citation>Rev. Hort. series 2. 15: 302 (1917).</citation>
+<type>Type; Pelagodoxa henryana; Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Pelagos — the sea, doxa — glory, perhaps in reference to the remote oceanic island habitat.</p></div>
+<div type="description"><p>Moderate, solitary, unarmed, pleonanthic, monoecious palm. Stem erect, bare, ringed with close leaf scars. Leaves pinnately ribbed, undivided except for the bifid apex, but often split by wind; leaf sheaths soon splitting opposite the petiole, not forming a crownshaft, densely tomentose, with an irregular ligule at the mouth, disintegrating into fine only partially enclosing the inflorescence in bud, splitting abaxially near the tip, beaked, strongly 2-keeled, coriaceous to sub-woody, densely tomentose, tending to disintegrate into fibres; peduncular bract longer than the prophyll, inserted just above the prophyll, tubular, beaked, enclosing the inflorescence in bud, densely tomentose; subsequent bracts rather small, incomplete, broad, triangular; rachis only slightly longer than the peduncle; all inflorescence axes tomentose; rachillae stiff, relatively thick, gradually tapering to a pointed tip, bearing spirally arranged, shallow pits, the rachilla bracts forming low triangular lips to the pits, pits in the proximal ca. 1/4–1/3 of rachillae containing triads, distally containing paired or solitary staminate flowers, the rachilla bracts at the tips of the rachillae more prominent than at the base; floral bracteoles low, rounded, inconspicuous, included within the pits. Staminate flowers small, ± globular, ± symmetrical, only partially exserted from the pit; sepals 3, distinct, imbricate, strongly keeled, rather chaffy; petals 3, about twice as long as the sepals, united proximally and adnate to the receptacle forming a stalk-like base, distally ± triangular-ovate, striate, valvate; stamens 6, the filaments united basally to the pistillode forming a solid column above the insertion of the free portion of petals, free filaments fleshy, triangular, gradually tapering to the connective, anthers short, medifixed, basally sagittate, latrorse, the connective prolonged in a brief point; pistillode pyramidal. Pollen ellipsoidal slightly asymmetric; aperture a distal sulcus; ectexine tectate, perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 22–27 µm [1/1]. Pistillate flowers globose, at anthesis larger than the staminate, tending to crack open the floral pits; sepals 3, distinct, broad, rounded, imbricate; petals 3, distinct, broadly imbricate except for brief, triangular valvate tips, very briefly joined basally to form a short broad stalk with the receptacle; staminodes 3–6, triangular, flattened, very small; gynoecium ± trilocular, uniovulate or rarely a second ovule present, rounded, stigmas 3, short, reflexed, ovule laterally attached, campylotropous. Fruit large, spherical, perianth whorls persistent, stigmatic remains basal, the fruit surface cracked into low, pyramidal, corky warts; epicarp obsolescent at maturity, mesocarp massively corky with abundant radiating fibres, endocarp thin, woody. Seed basally attached with rounded hilum, endosperm homogeneous with a large central hollow; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>One species, apparently confined to the Marquesas Islands.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961); floral (Stauffer et al. 2004), and fruit (Essig et al. 1999, Chapin et al. 2001). </p></div>
+<div type="relationships"><p>The sister-group relationship between Pelagodoxa and Sommieria is strongly supported in many analyses (Lewis and Doyle 2002, Asmussen et al. 2006, Loo et al. 2006, Norup et al. 2006, Baker et al. in review, in prep.). </p></div>
+<div type="uses"><p>The young endosperm is said to be eaten; the palm is cultivated and much sought-after as an ornamental. </p></div>
+<div type="taxonomic accounts"><p>See Martelli (1932) and Dowe and Chapin 2006. </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>This is an extraordinary genus with an unusual distribution. The huge bifid leaf, the connate petals in the staminate flower, stamens adnate to the pistillode and the corky-warted fruit represent an unusual combination of characters. Pelagodoxa mesocarpa, based on a single fruit, is probably conspecific with P. henryana. In cultivation, however, there appear to be two forms, one with a much larger fruit than the other. The larger-fruited form appears to be that known in the Marquesas. In recent years, individuals of Pelagodoxa have been discovered in the Solomon Islands and Vanuatu, but always associated with villages. Whether it is truly native in the Marquesas may also be debatable.</p></div>
+<div type="vernacular"><p>Enu, vahani. </p></div>
+<div type="biology_ecology"><p>Occurs as a few individuals in dense rain forest in a humid valley at about 135 m above sea level. In cultivation, there are two strikingly different sizes of fruit. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

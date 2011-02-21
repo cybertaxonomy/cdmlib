@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The genus Areca (Palmae: Arecoideae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 39, No. 1, pp 1-22</mods:publisher>
+<mods:dateIssued>1984</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Areca ahmadii</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 39: 4 (1984)</citation>
+<type>Borneo, Sarawak, 1st Division, Semongoh Forest Reserve; Lai Shak Teck; S 38946</type>
+<type_loc>holotypus K; isotypi BH, BO, KEP, L, SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Ahmad bin Drahman, the supervisor of the Biological Centre at Semon-goh, was the discoverer of this palm and is commemorated in the specific epithet.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>ad sectionem Arecellam pertinens, haec species mirabilis habitu acaulescenti, inflorescentia interfoliari, pedunculo longissimo distinctissima; superficialiter A. subacauli (Becc.) J. Dransf. et A. brachypodae J. Dransf. sectionis Microarecae similis sed folio pinnato et floribus staminatis uniseriatis distinguibilis.</p></div>
+<div type="description"><p>Acaulescent, solitary, undergrowth palmlet; stem very short, subterranean or somewhat decumbent c. 8 x 2.5 cm, bearing very close leaf scars and short stilt roots c. 3 mm diam. Leaf sheaths c. 13 cm long, c. 7 cm in basal circum- ference, apparently tardily abscising, scarcely forming a crownshaft, splitting along ? the entire length opposite the petiole, tinged dull purplish brown, longitudinally striate, and bearing scattered brown scales; ligule present but soon disintegrating. Leaf excluding sheath to c. 1 m, often less, with petiole c. 42 x 0.5 cm; leaflets narrow to broad-lanceolate, in the holotype 6 on each side of the rachis, fewer in some plants noted in the field, (1-) 2-4-ribbed, acuminate except for the apical 5-6-ribbed pair with short apical lobing; basal and mid leaf leaflets to 45 x 1.5 cm, apical pair to 30 x 6 cm, some- what sigmoid, the apical lobing to 5 mm deep; lamina glabrous, adaxial surface rich dark green, shining when fresh, abaxial surface paler. Inflores- cence interfoliar; prophyll to 35 x 1.3 cm, flattened, tinged purplish, bearing scattered brown scales; peduncle becoming arcuate, c. 200 x 2 mm, oval in cross section, somewhat increasing in width with age to 3 mm, purplish with scattered brown scales; rachillae 5-8, purplish, crowded at the end of the peduncle, at staminate anthesis c. 60 x 1 mm, increasing as fruit develops to c. 110 x 2.5 mm. Flowers borne in triads only at the very base of the rachilla, usually no more than 1 triad per rachilla, sometimes no triad present, distally the flattened rachillae bearing a single row of pairs or solitary staminate flowers. Staminate flower sessile, greenish in bud, narrow-clavate, to 4 x 1 mm; calyx 1.5 mm, tubular at the base, tipped with 3 triangular lobes, the central line of each lobe somewhat thickened; petals 3, striate, free almost to the base, 3.5 x 1 mm; stamens 6, with anthers to 2 mm, filaments to 1 mm; pistillode absent; pollen white. Pistillate flower in bud 7 x 3-5 mm; sepals 3, imbricate, cucullate, to 7 x 3 mm; petals 3, imbricate to 6 X 2 mm; staminodes absent; ovary strongly trigonous to 4.5 x 1.5 mm. Mature fruit purplish black, fusiform, 4.3 x 1.4 cm, tipped with conspicuous trifid stig- matic remains; mesocarp thin, fleshy; endocarp thin, fibrous. Seed basally attached, narrow obclavate, 22 X 7 mm; endosperm deeply ruminate; embryo basal.</p></div>
+<div type="distribution"><p>Borneo, Sarawak, 1st Division, known only from the type population.</p></div>
+<div type="biology_ecology"><p>In lowland Dipterocarp Forest on gentle slopes by sluggish stream at about 20 m altitude. In April 1981 I counted about 30 plants of this curious palm. Were it not in flower, it would perhaps be passed over as a seedling of a species of Pinanga. </p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The interfoliar inflorescence with long peduncle is superficially very like that of A. brachypoda (see below) and A. subacaulis but the uniseriate staminate flowers indicate this species belongs to section Arecella rather than to section Microareca to which A. brachypoda and A. subacaulis belong. It is unlike any other species in the section because of the inflorescence position, but in details of flowers and fruit it conforms to the pattern common in the section.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+		<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Masoala madagascariensis</name>
+<author>Jum.</author>
+<citation>Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 5, 1 (1): 8 (1933)</citation>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 16 (1938)</bibref>
+<bibref>Jum. &amp; H.Perrier, Fl. Madagascar 30: 52, fig. 14 (1945)</bibref>
+<type>Madagascar, Masoala Peninsula, Marambo, Oct. 1912; Perrier; 11938</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p>Until 1986, M. madagascariensis was known only from very incomplete material preserved in the Paris Herbarium, material that gave little indication of its appearance and relationships. In Genera Palmarum, Masoala was included within the Arecoid palms in an uncertain position, but as the book went to press, new material was collected. We have now seen this remarkable palm in several localities, from the Marojejy Massif southwards to the Bay of Antongil. M. mada gascariensis is a squat but rather massive litter-trapping palm of the most humid forest.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kase, Hovotralanana, Mandanozezika (Betsimisaraka).</p></div>
+<div type="description"><p>Solitary palm. TRUNK 3.5-10 m, 30-35 cm diam. when covered in sheath remnants, 14-20 cm diam. for clean trunk; internodes 2-5 cm, pale brown; nodal scars faint; wood hard. LEAVES 20-31 per crown, porrect to spreading, held in shuttlecock mode, stiff, 3-4 m long, tending to be held on edge, marcescent, litter-accumulating at base, with aerial roots penetrating the litter; sheath 45-50 cm long,   open, rather undulate, bright green, glabrous or with scattered brown indument, with large lateral auricles to 2 m long (JD6738) running into the reins or scarcely auricled (JD6770), long-attenuate into glabrous green apparent petiole, to 80 cm long or absent, proximally 25 cm wide, distally 5.5 x 2.5 cm diam., flat or slightly convex adaxially, with somewhat embedded scattered scales; rachis c. 3.9 m long, in mid-leaf c. 1.4 x 2.2 cm diam., keeled, abaxially with scattered small red glands/scales; leaflets mostly regular, plane, stiff, &#177; porrect, 55-70 on each side of the rachis, bright green, the most proximal pendulous and in groups of 4, proximal 71-117 x 1-4.5 cm, median 65-88 x 2.7-5.6 cm (interval 3-6 cm), distal 28-66 x 2.2-2.8 cm, main veins 4 rather faint, next to a clear midrib, abaxially on the midrib with a few large (6-12 mm long) red-brown laciniate ramenta, and on the minor veins with scattered small red glands, apices attenuate and slightly bifid, the distal pair joined for 3-5 cm and with acute to dentate apices less than 1 cm wide. INFLORESCENCE inter-foliar, arching and then erect, 0.7-1.3 m long, branching to 2 orders at base, with arching rachillae; multiple inflorescence primordia once observed (JD6738); peduncle 50-120 cm long, 2.5-8 x 1.3-4 cm diam., densely red-pubescent; prophyll 50-98 x 9-16 cm, borne at 8-10 cm above the base of the peduncle, bright pale green, tomentose when young, with scattered brown scales when older; peduncular bract 80-104 cm long, c. 8 cm wide, apparently circumscissile, not or hardly beaked, with few scattered scales; non-tubular peduncular bracts at regular intervals, spirally inserted, the proximal 17-22 x 6.5-8 cm, the 4 to 5 subsequent ones 0.5-7 x 3-7 cm and varying from narrowly triangular to a small ridge; rachis c. 90 cm long with 15-35 first order branches, these proximally 1.2-3 x 0.6-1.4 cm, with up to 7 second order branches; rachillae (9-) 20-43 cm long, 9-12 mm diam. when fresh, as little as 6 mm diam. when dried, glabrous or nearly so, with triads in pits, the young flowers green. STAMINATE FLOWERS with the sepals 2.8-3.8 x 2-3.3 mm, keeled, acute; petals in bud 2.8-5 x 2.6-3.8 mm, fleshy; stamens slightly biseriate (offset 0.3 mm) with the antesepalous filaments flatter and to 0.8 mm wide, and the antesepalous ones triangular in cross-section (to 1.2 mm wide), filaments 1-2 mm long (connate at the base for up to 0.5 mm), anthers 2.3-3.5 x 1-1.2 mm, dorsifixed, with parallel locules, latrorse; pistillode cylindrical, 2.3-3.5 x 0.4-1.2 mm. PISTILLATE FLOWERS with the sepals 5-6.5 x 4.5-7 mm; petals 6-8.5 x 7-9.5 mm; staminodes minute, 6 (no sign of ring), 0.3 mm high and flat; pistil at anthesis 11-18 x 6-10.5 mm, the trifid apex 2-3.5 mm high. FRUIT green when young, when mature yellowish brown, subglobose with pronounced terminal stigmatic boss, 24-25 x 18-19 mm; mesocarp fleshy, 1.5-2 mm thick; endocarp; fibrous, thick, adherent to the seed, forming a hard layer around it, with parallel, free fibers reaching to the apex of the style boss. SEED depressed globose, 10-11 x 12-15 mm with homogeneous endosperm and basal embryo.</p></div>
+<div type="distribution"><p>Marojejy, Masoala and Mananara.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; dry hillside to swampy valley bottom, occasionally on ultramafic soils; 200-420 m.</p></div>
+<div type="conservation"><p>Vulnerable. The species is only known from three recent sites, and numbers in all sites were low.</p></div>
+<div type="uses"><p>Used for thatch; palm-heart edible.</p></div>
+<div type="discussion"><p>In the type there are rachillae which are proximally almost exclusively pistillate (a few triads intermixed), and distally exclusively staminate; other rachillae in the type are exclusively staminate from the very base. In JD6738 there are sometimes 2-3 inflorescence buds in a leaf axil, but only one seems to develop. We are uncertain about the protogyny or protandry of this species. Beentje 4472 has pistillate buds slightly larger than the staminate buds in the same triad, JD6390 with staminate buds of the same size as Beentje 4472 but almost non-existent pistillate buds; triads have been compared at the same distance above the base of the rachilla.</p></div>
+<div type="materials_examined"><p>Andapa: Bangouabe R. headwaters, Nov. 1989 (fl., y.fr.), Dransfield et al. JD6770 (K, P, TAN). Antalaha: Marambo, Oct. 1912 (fl.), Perrier 11938 (P, type). Maroantsetra: Antalavia, Oct. 1986 (bud), Dransfield et al. JD6390 (K, P, TAN); idem, Nov. 1989 (bud), Dransfield et al. JD6738 (K, P, TAN) and JD6740 (K, P, TAN). Mananara Avaratra: Antanambe, Oct. 1991(fl.), Beentje &amp; Andriampaniry 4472 (BH, K, MO, P, TAN); idem, April 1992 (fr.), Beentje et al. 4632 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

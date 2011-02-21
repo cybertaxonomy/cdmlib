@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia kaalae</name>
+<author>Rock</author>
+<citation>Mem. Bernice P. Bishop Mus. 8: 46. 1921</citation>
+<type>Makaleha Valley, Waianae Mountains, Oahu, Hawaii; Rock; 17250</type>
+<type_loc>Holotype BISH!; isotypes FI, GH</type_loc>
+<synonymy>
+<name>Pritchardia kaalae var. minima</name>
+<author>Cauffi</author>
+<bibref>Cauffi, Occas. Pap. Bernice P. Bishop Mus. 9(S): 13. 1930.</bibref>
+<type>Makua-Makaha Ridge, Waianae Mountains, Oahu, Hawaii; Landgraf; 25</type>
+<type_loc>Holotype BISH!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petioie with only a few fibers; ieaf blade slightiy undulate, divided 1/3-1/2, abaxial surface incompieteiy covered with scattered lepidia, segment tips stiff to drooping; inflorescences composed of 1-3 panicles, equaling to exceeding leaf blades in flower, exceeding leaf blades in fruit, panicles branched to 2 orders, rachiIlae glabrous; fruits 25 x 25 mm, globose. </p></div>
+<div type="distribution"><p>Moist forest in valleys or on exposed ridges in the northern and northwestern Waianae Mountains, Oahu, 450--980 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Among the Hawaiian species, Pritchardia kaalae is distinctive in its leaf blades incompletely covered abaxially with lepidia and inflorescences equaling or exceeding the leaf blades in flower and exceeding them in fruit. The other Hawaiian species with exceedingly long inflorescences, P. hardy; and some forms of P. martii, differ in their leaf blades compietely covered abaxiaily with lepidia. Pritchardia thurstonii, a South Pacific species, has leaf blades incompletely covered abaxially with lepidia and inflorescences exceeding the leaf blades; however, it differs in its flat leaf blades only shallowly divided and with stiff segment tips, lepidia conspicuously arranged in parallel lines, and smaller fruits. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Oahu: Rock s. n. (BISH); Waianae Mts., Makaleha Valley, Bishop 1211 (HAW), Rock 17250 (BISH); MakuaKeaau forest Reserve, Wood 300 (PTBG); Puu Kaiena, Wood 1566 (PT BG); Makua-Makaha Ridge (Ohikilolo), Bishop 1200 (HAW); Landgraf 25 (BISH). CULT. U.S.A. Hawaii. Oahu: Waimea Valley Audubon Center, 90s264, Zona 1008 (HAW). Kauai: Nationai Tropical Botanical Garden, NTBG 950531.001, Chapin 16 (PTBG); Pacheco 1 (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

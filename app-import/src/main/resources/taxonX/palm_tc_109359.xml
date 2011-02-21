@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Spectacular pinnate-leaved canopy palm from northeastern Madagascar, distinctive in the staminate flower with many stamens and the large corky-warted fruit, the endocarp with a basal button, the seed shallowly ruminate with apical embryo.</p></div>
+<nomenclature>
+<name>Lemurophoenix</name>
+<author>J. Dransf.</author> 
+<citation>Kew Bull. 46: 61 (1991).</citation>
+<type>Type; Lemurophoenix halleuxii; J. Dransf.</type>
+</nomenclature>
+<div type="etymology"><p>Lemur — lemur, phoenix — general name for a palm, in reference to its Malagasy vernacular name, hovitra varimena, the red lemur palm.</p></div>
+<div type="description"><p>Massive solitary unarmed monoecious pleonanthic tree palm. Trunk bare, ringed with leaf scars. Leaf reduplicately pinnate; sheath tubular, forming a prominent crownshaft, bearing wax and scales; petiole rather short, channelled adaxially, rounded or ridged abaxially, densely covered with caducous chocolate-brown scales; rachis adaxially somewhat channelled near the base, ridged distally, abaxially rounded or flattened, scaly as the petiole; leaflets regularly arranged, numerous, linear-lanceolate, long acuminate except near the tip where bifid; adaxial leaflet surface glabrous, abaxial bearing a few large dark brown ramenta near the base on the main vein and more numerous small ramenta on secondary veins, pale brown peltate scales abundant on all veins; transverse veinlets not visible. Inflorescence infrafoliar, branched to 3 orders, the whole inflorescence exposed long before anthesis, protandrous; peduncle moderate in length; prophyll splitting along one side; peduncular bract longer than the prophyll; first-order branches widely spreading, the basal few branched to the third order, the distal-most branched to the second order or unbranched; rachillae numerous, elongate, pendulous or spreading, somewhat swollen, with flowers partially embedded in shallow pits; rachilla bracts rather obscure, forming the lower lip to the pits; floral bracteoles minute, included in the pits. Flowers borne in triads of a central pistillate and two lateral staminate for about two-thirds the rachilla length, and in pairs of staminate flowers in the distal third. Staminate flower in bud ± bullet-shaped; sepals 3, ± distinct, minutely connate at the base, imbricate, strongly keeled and gibbous; petals 3, ± distinct in bud, valvate, boat-shaped, adaxially grooved, glabrous, later the floral receptacle greatly enlarging carrying the petal bases above the calyx, the petals becoming reflexed by a swollen pulvinus at the petal bases; stamens 52–59, borne on the dome-shaped receptacle, filaments terete, straight or contorted in bud, rarely filaments partially connate, anthers frequently rather irregular in outline due to close-packing in the bud, basally sagittate, medifixed, latrorse; pistillode columnar, hidden among the filament bases. Pollen ellipsoidal, slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, or perforate and micro-channelled and rugulate, aperture margin slightly finer; infratectum columellate; longest axis ranging from 52–60 µm [1/1]. Pistillate flower known only in immature bud; sepals 3, distinct, imbricate, unequal, rounded; petals 3, distinct, basally strongly imbricate, with triangular valvate tips; staminodes 10–12, minute, tooth-like or strap-shaped, distributed evenly around the gynoecium; gynoecium pseudomonomerous, ovoid, stigmas apical, as yet scarcely developed, ovule heminanatropous, basally attached. Fruit large, usually borne in abundance, globose, the epicarp cracked polygonally into low corky warts, stigmatic remains basal; mesocarp rather spongy, easily separable from the endocarp; endocarp spherical, with a basal heart-shaped pale brown button; endosperm very shallowly and sparsely ruminate; embryo apical. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>A single species known from two localities in north-eastern Madagascar, </p></div>
+<div type="anatomy"><p>Not studied. </p></div>
+<div type="relationships"><p>For relationships, see Dypsis. Note that the phylogeny with the greatest sampling of Dypsis species places Lemurophoenix as sister to the rest of the Dypsidinae (Baker et al. in prep.). </p></div>
+<div type="uses"><p></p></div>
+<div type="taxonomic accounts"><p>Dransfield (1991b) and Dransfield andBeentje (1995b).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>A spectacular large palm distinctive in its corky-wartedfruit and multistaminate staminate flowers.</p></div>
+<div type="vernacular"><p>Hovitra vari mena.</p></div>
+<div type="biology_ecology"><p>Occurring on hill slopes in humid rain forest at elevations of 250–450 m above sea level. Seeds exported by seed merchants in the late 1990s suggest that there may be a second species with a smaller fruit lacking corky warts. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A dwarf Livistona (Palmae) from Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 31, No. 4, pp. 759-762</mods:publisher>
+<mods:dateIssued>1977</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Livistona exigua</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 31: 760 (1977)</citation>
+<type>Borneo (Brunei); Ashton; BRUN 5513</type>
+<type_loc>Holotypus K; isotypi BH, BO, L, SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>a ceteris speciebus Livistonae ampli- tudine minima, caule usque 1.3 m alto, 2.-5 cm diametro, folio minimo 50 cm diametro, in foliola latitudinis variabilis irregulariter diviso, inflorescentia erecta rigida minuta 30-40 cm alta, rachillis paucissimis trichomatibus inflatis dense tectis, floribus minutis circiter I mm diametro, sepalis extra trichomatibus inflatis dense tectis, fructu parvo 9 mm diametro, differt.</p></div>
+<div type="description"><p>Small forest undergrowth palm. Stem ? solitary or ? clustered (no details known) to 1.3 m tall by circa 2.5 cm in diameter. Leaves apparently about Io in the crown; leaf sheath dull dark brown, extending 12.5 cm next to the petiole and to 30 cm opposite the petiole where it forms a papyraceous tongue, shiny within, tattering to form a close network of fibres enclosing the base of the leaves and inflorescences; petiole to 60 cm long by 6 mm wide below, tapering to 3 mm near the lamina insertion, spiny along the margins in the lower third, with spines blackish-brown, c. 4 mm long and 5 mm distant, reflexed and with slightly swollen bases, the petiole surface with scattered caducous pseudoparenchymatous peltate scales ab- and adaxially; lamina with a spread of circa 50 cm, the adaxial hastula conspicuous to 5 mm wide and 2-3 mm high, unarmed, of variable dissection (3 individuals examined) with 20-30 adaxial ribs split into 10-13 apparently moderately stiff leaflets of varying width ranging from compound leaflets with 2-6 folds to single fold leaflets (e.g. one leaf with one outer compound leaflet 5 folds wide followed by 3 single fold leaflets, followed by one compound leaflet 3 folds wide followed by one single fold leaflet followed by central compound leaflet 5 folds wide), the primary divisions of the lamina to within 2-3 cm of the hastula, the single folds 1-1.5 cm wide in mid-lamina and tapering to very fine tips split into two teeth by a split c. 1.5 cm deep, the ad- and abaxial ribs with scattered dark brown caducous pseudoparenchymatous scales, transverse veins prominent, the abaxial surface of the lamina with scattered scales, adaxial surface with very few. Inflorescence between the leaves, variable in size, possibly elongating with age, 30-40 cm in all, with peduncle 20-25 cm below the first partial inflorescence, the first partial inflorescence diverging just above the leaf sheath; bracts 4, the first 2-keeled and empty, bilobed at the top, to 18 cm long, dark brown with pale brown scurfy indumentum along the keels, minutely longitudinally striate, subsequent bracts similar and each subtending a partial inflorescence; partial inflorescences with branches up to the second order, the whole partial inflorescence to 7 cm long, usually less; axis and rachillae densely covered with inflated indumentum and papillae, appearing very rough under magnification; rachillae 6-10 in each partial inflorescence, to 6 cm long, apparently stiff, digitate, densely covered in flower groups, each subtended by a fimbriate bract c. 0.2 mm high; flowers usually paired, one of the pair older than the other, each subtended by a minute fimbriate bracteole, scarcely distinguishable amongst the inflated indumentum, the flower pair (in dry material) somewhat sunk within the rachilla. Flowers hermaphrodite, minute, c. I mm in diameter at anthesis. Sepals 3, joined for about half their length to form a short tube c. 0.3 mm high with lobes c. 0.2 mm high, rounded, fimbriate, densely covered with inflated indumentum without. Petals 3, glabrous, broadly triangular, c. 0-4 mm high, joined for about 1/4 of their length to form a very short basal ring. Stamens 6, minutely epipetalous, glabrous, to c. 2 mm high, joined by their swollen filament bases; anthers minute; pollen yellowish. Gynoecium of 3 closely adpressed free carpels joined apically to form a style c. 0.2 mm long, glabrous. Fruit (apparently almost mature) globose, c. 9 mm in diameter with remains of calyx, corolla and androecium basally and marked with a line running from apex to base; epicarp smooth; mesocarp c. 1.5 mm thick with numerous tannin cells; endocarp c. 0.3 mm thick. Seed (not quite mature) covered by thin brown integument with convoluted mass (postament) penetrating at the chalazal end.</p></div>
+<div type="distribution"><p>Known only from a single collection from Borneo (Brunei).</p></div>
+<div type="biology_ecology"><p>Dr. P. S. Ashton (pers. comm.) recalls that the area where the palm grew is on shallow podsolic sands in forest ecotonal between mixed Dipterocarp and Heath forest on Miocene and Pliocene sandstones belonging to the Belait formation.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This palm would probably make an extremely attractive subject for cultivation and it is to be hoped that it can be recollected.</p></div>
+<div type="materials_examined"><p>BORNEO. Brunei, Belait District, Ulu Ingei, yellow sandy soil, low hill circa 6o m altitude, Aug. 1959, Ashton BRUN 5513 (K, holotype; BH, BO, L, SAR, isotypes).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

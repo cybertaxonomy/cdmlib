@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Plectocomia bractealis</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 12(2): 1918</citation>
+<bibref>Madulid in Kalikasan 10: 19</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Vegetative parts unknown. Bracts on flower branches of female inflorescence 7-7.5 x 3 cm, thickly covered with indumentum. Female flowers 5 in number in each bract, pedicel late, bracteolate; bracteoles 5-15 mm long, acuminate, tomentose outside; calyx deeply divided into 3 elongate, triangular, acuminate, 10-13 mm long sepals; each striated and puberulous outside; petals 3, broad-based, lanceolate, acuminate, 1.5 -1.8 cm long; ovary coarsely woolly outside; wools arise from the laciniate points of scales; style short, conical, trigonous with subulate stigmas not longer than sepals; staminodes with narrowly sagittate sterile anthers.</p></div>
+<div type="distribution"><p>INDIA (Upper Assam). Endemic.</p></div>
+<div type="biology_ecology"><p>Unknown.</p></div>
+<div type="cultivation"><p>Not cultivated at present.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Unknown</p></div>
+<div type="discussion"><p>According to Beccari (1918), type specimens were collected from a plant cultivated in the then East India Company's botanic Garden, in Calcutta (now Indian Botanic Garden, Howrah). This species is no longer in the Garden.</p></div>
+<div type="materials_examined"><p>Upper Assam Holotype! Masters s.n. (CAL Ace. no. 495006).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus hookerianus</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 1:226 and Appendix PI. 70. 1913.</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A thicket forming slender climber, stem clustering, with leafsheath to 3 cm in diameter exposed part of the stem to 2 cm in diameter. Leaves ecirrate 1.5 - 2 m or more long; leafsheath with flagellum and conspicuous knee, armed with scattered long and short broad-based spines intermingled with brownish toinentum; leaflets linear; lower leaflets sub-opposite; middle leaflets opposite and upper leaflets alternate; longest leaflets to 80 cm long, 2 cm broad at middle, conspicuously 3-nerved; midnerve bristly on lower side; rachis armed with 1 - 1.5 cm long broad-based straight spines. Male inflorescence flagelliform; partial inflorescences once or twice branched; each attached above the mouth of the respective primary bracts; axial part of inflorescence armed with paired or 3-nate reflexed claws; secondary bracts tubular, smooth on outer surface, obliquely truncate with lip-like projection on one side; rachillae alternate, arching, 9 mm to 5 cm long, attached at or slightly below the mouth of the respective cup-like basal bracts; in proximal rachillae male flowers are borne on glomerules, in the distal rachillae flowers are distichous. Female inflorescence with alternate simply branched partial inflorescences; partial inflorescence upto 1 m long, attached high above the mouth of the respective primary basal bracts; rachillae alternate, drooping, to 25 cm long, attached on cushion at the mouth of the respective cup-like basal bracts. Fruits globose, sub-globose, conical at upper part, 9-10mm x 5mm with a distinct base; fruit scales yellowish brown, in 18 longitudinal series, with chestnut brown anterior part, not channelled at middle, erosely toothed at margins; seed subglobose; endosperm homogeneous.</p></div>
+<div type="distribution"><p>INDIA (Tamil Nadu, Kerala). Endemic.</p></div>
+<div type="biology_ecology"><p>Grows in the moist hill forests of Western Ghats of Kanyakumari and Tirunelveli Districts of Tamil Nadu and Trivendrum, Thenmala, Ranni, Kottayam, Munnar, Malayattur, Trichur, Nemara and Nilambar forests of Kerala.</p></div>
+<div type="cultivation"><p>Seedlings have been raised in the nursery of the Indian Botanic Garden, Howrah, and experimental plots of Kerala Forest Research Institute, Peechi, Kerala.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Unknown.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Tamil Nadu : Tirunelveli Dist. Courtellum Hill, Firefall forest, 17th April 1984, Vejravelu 80515 (CAL &amp; MADRAS) ; Kerala : Feb. 1885, Wight s.n. (CAL).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

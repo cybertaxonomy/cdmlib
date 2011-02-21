@@ -1,0 +1,60 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Genus Synechanthus</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Moore</mods:namePart>
+<mods:namePart type="given">H.E.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 15: 10-19</mods:publisher>
+<mods:dateIssued>1971</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Synechanthus fibrosus</name>
+<author>(H.Wendl.) H.Wendl.</author>
+<citation>Bot. Zeitung (Berlin) 16: 145 (1858)</citation>
+<synonymy>
+<name>Chamaedorea fibrosa</name>
+<author>H.Wendl.</author>
+<bibref>H.Wendl., Index Palm.: 57 (1854)</bibref>
+<type>Cultivated Hort. Herrenhausen (destroyed). Photos Field Museum negs. 20759, 20759a;;</type>
+<type_loc>Type BH, F</type_loc>
+</synonymy>
+<synonymy>
+<name>Rathea fibrosa</name>
+<author>(H.Wendl.) H.Karst.</author>
+<bibref>(H.Wendl.) H.Karst., Wochenschr. Gärtnerei Pflanzenk. 1: 377 (1858)</bibref>
+</synonymy>
+<synonymy>
+<name>Synechanthus mexicanus</name>
+<author>L.H.Bailey ex H.E.Moore</author>
+<bibref>L.H.Bailey ex H.E.Moore, Gentes Herb. 8: 199 (1949)</bibref>
+<type>; E. Hernq-ndez X. &amp; A. J. Sharp; X-1287</type>
+<type_loc>Type BH</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems solitary, slender, smooth, green, prominently ringed, rarely as much as a 5-6 m. high, 2-3 em. in diam., usually much lower and often commencing to flower before an emergent stem develops or the stem sometimes decumbent. Leaves few, glossy deep-green; sheath and petiole together to 1.1 m. long or more, the sheath tubular and the petiole short on new leaves (fide O. F. Cook) but the sheath soon splitting opposite the petiole, functioning as and differentiated from the petiole only by the deeply channelled upper surface and a narrow, usually fibrous strip along the margin; petiole convex below, concave above; rachis convex below, angled above, ca. 7.4-12.5 dni.long; pinnae 10-23 on each side of the rachis, rarely regularly arranged but usually in 2 or more separated groups of 2-4 or more, basal pinnae 13-31 em. long, 0.3-2.2 cm. wide, median pinnae 29-50 em. long, 2.5-4.4 cm. wide, apical pinnae 19-30 em. long, 4.2-8 em. wide and with 3-7 principal elevated nerves, all pinnae slightly to markedly sigmoid, acute to acuminate, all but the several-nerved apical ones with 1 midnerve and 2 lateral nerves prominent and elevated on the upper surface, dull yellow.brown on the lower surface. Inflorescence to ca. 1 m. long; peduncle to 7.2 dm. long; rachis to 22 cm. long; branches and/or rachillae to 30 em. long, subtended by a low, often acute bract, with a pulvinus much thickened and calloused in fruit between branch or rachilla and axis, lower branches divided into several (to 6) rachillae, all rachillae very slender, ca. 1 mm. in diam., mi• nutely scaberulous. Acervuli of a pistillate and usually 59 staminate flowers; staminate flowers ca. 0.6-0.8 mm. high in bud, lobes of the calyx acute, about half as high as the petals, petals very prominently nerved when dry, at anthesis horizontally spreading and slightly recurved at the margins, formi.ng a triangle basally about the apex of the pistillode, stamens 6, filaments short, incurved in bud but not inflexed at the apex, erect, about as long as the anthers and the petals at anthesis, pistill, ode shorter than the stamens, deltoidovoid, conic and shallowly 3-lobed apically; pistillate flowers ca. 1 mm. high, lobes of the calyx about half as high as the petals or somewhat more, petals strongly nerved when dry, staminodes lacking, pistil as high as the petals, stigmas recurved. Fruit globose to ellipsoid, very fleshy and slippery when bruised, changing from yellowish-green to yellow orange and finally scarlet, 14-21 mm. long, 10-14 mm. in diam. when dry (obovoid and ca. 1.5 em. long, 1.0 em. in diam. when fresh fide Steyermark) ; seed ellipsoid to globose, 12-14 mm. long, 7-12 mm. in diam.; endosperm nearly homogeneous or minutely ruminate marginally.</p></div>
+<div type="distribution"><p>Wet forests of the Atlantic slope from near sea-level to ca. 1200 m. alt., southern Mexico to Costa Rica.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Synechanthus fibrosus was originally described in 1854 as a species of Chamaedorea from plants cultivated at the Royal Gardens in Herrenhausen, Hannover, Germany. The native country was noted as eastern Guatemala and the collector was apparently von Warscewicz, Garteninspektor at Krakow, Poland, who visited Central America in 1847. Wendland later removed the species' from Chamaedorea and erected a distinct genus for it and S. Warscewiczianus only months before two other generic names-Reineckea and Rathear--were proposed independently. The species appears to have been grown in a number of European gardens and a specimen sent to Kew by Wendland was figured in Curtis's Botanical Magazine 107: pl. 6572,1881. More recently, S. fibrosus has been grown in the Western Hemisphere in the Bahama Islands, Florida, and perhaps elsewhere. Foliage of S. fibrosus is variable. The pinnae, except for the apical pair, are always slender with one principal nerve and most often are borne in groups of two or more in varying patterns, although they are rarely regularly arranged along the rachis. The fruit and seed also appear to vary in size and shape-the subglobose fruit and seed of acaulescent plants from Mexico at one time seemed sufficiently distinctive to call for description of a new species, but similar fruits are now known from plants of British Honduras which otherwise are good S. fibrosus and a similar pattern of variation occurs in S. Warscewiczianus. There has been some question about the presence or absence of staminodes in the pistillate flowers of S. fibrosus. Karsten noted six staminodes in his material at Berlin while Wendland found none or only three very minute staminodes in his material (Wochenschrift fur Giirtnerei und pflanzenkunde 2: 15, 1859). I have not been able to discern staminodes clearly in the dried material at my disposal; certainly, if present, they are not prominent as they are in S. Warscewiczianus. An apparently constant feature of this species is the solitary stem. Nowhere has there been any indication that stems cluster as in S. Warscewiczianus, though plants have been said to be "gregarious." My own field notes clearly indicate solitary stems only for plants in Guatemala and Costa Rica, and Hooker described the plant at Kew as single-stemmed. Syneckanthus fibrosus has been less frequently collected than S. Warscewiczianus and certainly appears to be rare in Cost Rica where the ranges of the two species overlap. </p></div>
+<div type="materials_examined"><p>MEXICO. EDO. OAXACA: from Finca "La Gloria" (on rio Negro watershed) back over the sierra to rio Grande (n. Niltepec), 3 April 1946, E. Hernandez Xolocotzi &amp; A. ]. Sharp X-1287 (BH, holotype of S. mexicanus). BRITISH HONDURAS. Roaring Creek-Stann Creek Rd., 15 mi. S. of Sibun River bridge (30 mi. S. of Roaring Creek), 1957, J. E. Smith 5 (BH) ; TOLEDO DISTR.: Esperanza Trail, 1500 ft. alt., May 1960, J. Turner 64 (BH). GUATEMALA. DEPT. ALTA VERAPAZ: near the Finca Sepacuite, Mar. 15,1902, Cook &amp; Griggs 11 (US); Mar. 21, 1902, Cook &amp; Griggs 88 (US) ; road between Panzos and Sepacuite, Apr. 17, 1904, Cook &amp; Doyle 38 (US); Sepacuite, May 6,1904, Cook &amp; Doyle 129 (US); mountain forest above Trece Aguas, 2700 ft. alt., April. 29, 1914, Cook &amp; Doyle 2 (US); dense wet limestone forest near Chirriacte on the Peten highway, alt. ca. 900 m., Apr. 9, 1941, P. C. Standley 91641 (F); DEPT. IZABAL: wooded rocky slopes between Piciu and road to Senahi, about 20 miles from Puerto Barrios on road to Guatemala, alt. 100 m., 8 Nov. 1959, H. E. Moore &amp; M. Cetto 8218 (BH); between Virginia and Lago Isabal, Montana de Mico, 50-500 m. alt., Apr. 5, 1940, J. A. Steyermark 38834 (F); Cerro San Gil, along rio Frio, 50-75 m. alt., Dec. 19, 1941, J. A. Steyermark 41599 (F, US). HONDURAS. YORO: rain forest, Sierra de Sulaco, 4100 ft. alt., July 1937, C. &amp; W. von Hagen 1025 (F). COSTA RICA. PROVo CARTAGO: forets de Tuis, 650 m. alt., A. Tonduz 11373 (US); PROVo LIMON: wooded slopes about 5 km. beyond Central of Hacienda Moravia, 1000-1200 m. alt., 13 Apr. 1953, H. E. Moore 6696 (BB). CULTIVATED. The Retreat, Nassau, New Providence, Bahama Islands (probably from British Honduras), 16 Feb. 1952, H. E. Moore 6046 (BH); Fairchild Tropical Garden, Coral Gables, Florida, as FG 58-159 in plot 119A, 30 Apr. 1965, R. W. Read 1421 (BB, voucher for chromosome count), as FG 58-159A from seed collected by MacDougal west of Isthmus of Tehuantepec, Mexico, 18 Apr. 1966, H. E. Moore 9369 (BH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

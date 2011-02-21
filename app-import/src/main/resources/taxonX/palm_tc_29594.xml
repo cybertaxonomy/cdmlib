@@ -1,0 +1,37 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus insignis Griff  var. longispinosus J.Dransf.</name>
+<author>J.Dransf.</author>
+<citation>Malay. Forester 41 (1978) 342</citation>
+<synonymy>
+<name>? = Calamus insignis sensu Furtado</name>
+<author>Furtado</author>
+<bibref>Furtado in Gdns. Bull. Singapore 15 (1956) 189)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Almost always solitary high climbing slender to moderate rattan. Stems without sheaths to 1 cm in diameter, with sheaths to 2 cm in diameter with internodes to 18 cm or more. All parts dry pale. Sheaths dull to bright green densely armed with green horizontal to slightly reflexed black-tipped spines to 2.5 cm long and scattered brown scales. Knee prominent. Ocrea inconspicuous. Flagellum to 2 m. Leaf ecirrate to 2 m long either with no petiole or with petiole to 15 cm long; petiole and rachis rather densely armed with stocky pale yellowish green black tipped reflexed spines to 4 mm long. Leaflets to 9 on each side of the rachis the terminal pair usually joined along half their length; leaflets broad, cucullate, very stiff and leathery in texture, bright green, with very prominent pale transverse veins 7-2 mm apart, the longest leaflets to 25 cm long by 7.5 cm wide, the leaflet margins rather conspicuously thickened. Inflorescences male and female superficially similar, to 2 m long with up to 8 partial inflorescences to 35 cm long, with rachillae reflexed, the female to 10 cm long, the male to 2 cm. Mature fruit oblong to 12 mm long by 7 mm wide, conspicuously tipped with a cylindrical beak to 3 mm long, covered in 22 vertical rows of pale yellowish-straw-coloured scales. Seed slightly pitted. Seedling leaf broad, bifid, shiny green with very conspicuous lateral veins.</p></div>
+<div type="distribution"><p>Kedah, Perak, Pahang, Selangor, Trengganu, Negri Sembilan. N. Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Excellent small diameter cane entering the market as "rotan batu". Extensively used by "Orang Asli" as binding material and for fine basket ware.</p></div>
+<div type="discussion"><p>This species seems to be confined to very steep hillslopes and ridgetops at altitude of 100 -1000m.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

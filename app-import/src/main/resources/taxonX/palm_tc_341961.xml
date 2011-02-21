@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+		<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis humbertii</name>
+<author></author>
+<citation></citation>
+<type>Madagascar, Manantantely forest; Humbert; 5817</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Palm 2-3 m, very slender. LEAVES 4 or more in the crown; sheath c. 6.6 cm, with oblique opening, with minute auricles to 2 mm high,red-brown, with scattered scales; petiole 5-6 cm long, c. 2 mm diam., with scattered scales; rachis 17-18 cm long, c. 2 mm diam., with scattered scales; leaflets 2-5 on each side of the rachis, in 2 sub-opposite groups distant for 2.8-5 cm, proximal 8-9 x 0.7-1 cm, median 10-13 x 0.9-1.2 cm, the top pair forming a flabellum 12.5-14 x 9 cm, connate for 4.5-5.5 cm, the lobes 8-9 x 2.5-2.6 cm, proximal leaflets with 1 main vein, acuminate, distal leaflets with 6 main veins, the apices truncate and dentate, also the distal outer margins dentate, all leaflets glabrous or with a few scattered scales proximally. INFLORESCENCE c. 34 cm, branched to 2 orders; peduncle c. 19 cm long, distally 1.5-2 mm diam., with scattered scales; prophyll 13-16 x cm, with scattered scales, open for the distal 5 cm or near the apex only; peduncular bract deciduous, inserted at 9 cm from the base of the peduncle; rachis c. 10 cm, with scattered scales, with c. 2 branched and 10 unbranched first order branches, the proximal with 2 rachillae each; rachillae 5.5-8 cm long, 1 mm diam., minutely puberulous but glabrescent, with distant superficial triads. STAMINATE FLOWERS with sepals 0.5-0.6 x 0.7-1 mm; petals 1.8-2.1 x 1.2-1.3 mm, striate; stamens 6, slightly biseriate (offset 0.25 mm), filaments 1- mm long, the base slightly triangular, the distal part thin, anthers 1-1.3 x 0.4-0.5 mm, dorsifixed, versatile, the locules parallel and acute; pistillode 0.8-0.9 x 0.3-0.4 mm. PISTILLATE FLOWERS unknown. FRUIT unknown.</p></div>
+<div type="distribution"><p>SE Madagascar.</p></div>
+<div type="biology_ecology"><p>Forest; 60-300 m.</p></div>
+<div type="conservation"><p>Unknown. Not seen for over sixty years.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Very close to D. commersoniana and possibly not distinct.</p></div>
+<div type="materials_examined"><p>Tolanaro: Manantantely forest, Sept. 1928 (fl.), Humbert 5817 (Holotype P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

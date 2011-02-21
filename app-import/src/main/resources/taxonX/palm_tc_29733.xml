@@ -1,0 +1,32 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus moorhousei</name>
+<author>Furtado</author>
+<citation>Gdns' Bull. Singapore 75 (1956) 207.</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>S.W. Moorhouse - forest officer in Negri Sembilan</p></div>
+<div type="vernacular"><p>rotan ?</p></div>
+<div type="description"><p>Moderate ? clustered rattan; stem without sheaths to 5 mm in diameter, with sheaths to 1.1 cm; internodes to 20 cm long. Sheaths dull brownish green armed with scattered short erect spines to 3 mm long. Ocrea short, inconspicuous. Knee well developed flagellum present (length unknown). Leaf ? ecirrate to at least 1 m long, with petiole to 25 cm long very sparsely armed with short lateral spines. Leaflets at least 8 or each side of the rachis borne in opposite pairs, to 30 cm distant; largest leaflet to 30 cm long by 3.5 cm wide, gradually tapering at each end; armed with short bristles along margins and on upper surface of main vein near the tip. Only female inflorescence known, and this incomplete. Partial inflorescence to 50 cm long bearing 7 distant rachillae to 7 cm long on each side of the axis. Fruit unknown.</p></div>
+<div type="distribution"><p>Negri Sembilan: Kuala Pilah, known only from the type. (Moorhouse in 1905).</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Unknown.</p></div>
+<div type="discussion"><p>This species was confused by Ridley with C. caesius but the specimen bears flagellate leaf sheaths and so cannot be this last species. C. moorhousei has been searched for recently in the Kuala Pilah area but with no success. In doing so another new species of Calamus related to C. insignis (C. senalingensis) somewhat similar to C. moorhousei in appearance was found.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

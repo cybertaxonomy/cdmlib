@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus ridleyanus</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. Ind. 11 (1902) 205</citation>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 11 (1908) 378, and Appendix (1913) 77</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 54</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 253</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>H.N. Ridley - the most famous of Malayan Botanists</p></div>
+<div type="vernacular"><p>rotan kerai</p></div>
+<div type="description"><p>Clustering high climbing moderate rattan with stems reaching 30 m tall. Stem without sheaths about 1 cm in diameter, with sheaths to 2.5 cm; internodes to about 20 cm long. Sheaths dull green, rather densely armed with slightly upward pointing hairy margined pale based brown spines of various lengths, the longest to about 2.2 cm long by 5 mm wide, with only slightly swollen bases, and sparse dirty brown indumentum. Ocrea brown, tattering. Knee prominent. Flagellum to 2 m long. Leaf subcirrate to about 1.3 m with petiole to 10 cm, armed with conspicuous black lateral spines to 4 mm. Leaflets regular, about 40 on each side the longest to about 40 cm long by 2.5 cm wide, bristly along mid-vein below, no bristles on upper surface; leaflets decreasing to minute vestiges to 1 cm long at the subcirrate leaf tip. Inflorescences to about 2 m long with 3 partial inflorescences, the female much more robust than the male with all bracts except those of the rachillae, armed with small thorns; partial inflorescences to 40 cm long; female rachillae about 8 cm long distinctly recurved. Ripe fruit unknown; immature very conspicuously beaked, covered in 28 vertical rows of dull brown scales. Seedling leaf unknown.</p></div>
+<div type="distribution"><p>Trengganu, Johore, Singapore. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known but probably used mixed with Calamus densiflorus as "rotan kerai".</p></div>
+<div type="discussion"><p>This is a little known rattan, likely to be more widespread than is at present known. It has been collected in lowland and hill forest on gentle to steep slopes. For differences between this species and Calamus densiflorus see under the latter.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

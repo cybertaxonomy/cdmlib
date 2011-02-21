@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis eriostachys</name>
+<author>J.Dransf.</author>
+<citation>Palms of Madagascar: 291 (1995)</citation>
+<type>Madagascar, Mananjary, Vatovavy; Dransfield et al.; JD7513</type>
+<type_loc>Holotypus K; isotypi MO, P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This handsome little palm, distinctive in its entire-bifid leaf and silky hairy inflorescence, is known only from low crown forest near the summit of the isolated peak of Mount Vatovavy, southwest of Mananjary. The forest on Vatovavy is home for several curious palms, such as Dypsis basilonga, D. trapezoidea and D. angusta. The lower parts of the hill have been largely cleared for shifting cultivation and parts of  the exposed northeastern face have at some time been partially destroyed by fire. Nevertheless much of the summit area is covered with fine forest that receives some degree of protection under local beliefs or fady. The species name is Greek for woolly spikes, referring to the hairy inflorescences.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>habitu, statura, folio bifido et inflorescentia lanuginosa D. lanuginosae superficialiter similis, sed pagina inferiore folii ramentis elongatis, rachillis c. 30 (vice c. 100) pilis inflorescentiis longioribus, non crispatis, floribus staminatis staminibus 6 differt.  </p></div>
+<div type="description"><p>Slender solitary undergrowth palm to 1.5 m tall. STEM 9 mm diam., internodes 13-17 mm long, dark green with pale brown lines, with scattered dark brown caducous scales. LEAVES 10 in crown; sheath 8 x 1.7 cm, distally very densely covered with thick red brown tomentum and scales; auricles ill defined; petiole 1-3 cm, 3 mm wide, densely grey or brown hairy; rachis 23-25 cm; blade entire bifid 32-37 cm long, gradually widening from the base to widest at the tip where 11-13 cm, the two lobes with a broad sinus, and shallowly to deeply lobed apically, adaxially shining, with very inconspicuous punctiform scales, abaxially with minute brown punctiform scales and scattered elongate brown ramenta along a few veins, emerging leaf tinged reddish. INFLORESCENCE erect or spreading, becoming pendulous in fruit, branching to 2 orders; peduncle 25-28 cm long, c. 4 mm wide at the base tapering to 3 mm diam. distally, densely covered with long silky silvery hairs with brown bases; prophyll c. 14 x 0.7 cm, with scattered long silky silvery hairs with dark bases; peduncular bract exceeding the prophyll by 8-16 cm; rachis 16-24 cm, very densely silky hairy; rachillae c. 30, c. 3- 5.5 cm long, c. 1.5 mm diam., densely covered in pale brown and silvery silky hairs, triads c. 3 mm apart, rachilla bracts rounded, c. 0.5 mm high, laciniate, edged with hairs. STAMINATE FLOWER buds pyramidal, 1.6 x 1.1 mm; sepals rounded, 1.0 x 0.8 mm, margins somewhat erose; petals triangular, 1.3 x 0.8 mm, striate; stamens 6, biseriate, antesepalous with filaments to 0.2 x 0.2 mm, antepetalous with filaments 0.4 x 0.2 mm, anthers elliptic in outline, 0.4 x 0.3 mm; pistillode conical, 0.4 mm high. Immature PISTILLATE FLOWER rounded, c. 0.8 mm diam. Submature FRUIT fusiform, 16 x 6 mm. SEED fusiform, 1.2 x 4.5 mm; endosperm homogeneous; embryo basal.</p></div>
+<div type="distribution"><p>Only known from Vatovavy.</p></div>
+<div type="biology_ecology"><p>Gentle slope in low canopy forest near summit of hill; 450 m.</p></div>
+<div type="conservation"><p>Endangered. Single site status; forest only protected by local custom.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Initially we identified this palm as Dypsis lanuginosa, previously known only from a single specimen. On closer examination, however, the newly collected material proved to have six stamens rather than three, and other features such as the long silky more or less straight, rather than twisted, hairs, fewer rachillae, with more distant triads, and the presence of elongate ramenta on the undersurface of the leaf, added evidence that the present species was undescribed.</p></div>
+<div type="materials_examined"><p>Mananjary: Vatovavy, Nov. 1994 (fl., fr.), Dransfield et al. JD7513 (Holotype K; isotypes MO, P, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

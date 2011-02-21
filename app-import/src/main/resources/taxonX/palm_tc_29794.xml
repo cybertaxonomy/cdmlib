@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The Rattans of Brunei Darussalam</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus oxleyanus T. &amp; B. ex Miq. var. oxleyanus</name>
+<author>T. &amp; B. ex Miq.</author>
+<citation>De Palm. Arch. Ind. Obs. Nov. 17 (1868)</citation>
+<bibref>Teysmann &amp; Binnendijk, Cat. Pl. Hort. Bogor 75 (1866)(name only)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 450 (1908) and Suppl.: 112 (1913)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 148 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 109 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 111 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Thomas Oxley, physician in the employ of the East India Company in Penang and Singapore</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary (very rarely clustering) rattan climbing to 10 m; stem without sheaths to 15 mm diam., with sheaths to 30 mm diam., internodes 15 cm long. Sheaths bright green, rather densely armed with black, yellow-based flattened spines to 50 &#215; 7 mm, upward-pointing, horizontal or reflexed; knee poorly developed, usually obscured by spines; ocrea tattering, inconspicuous. Leaf cirrate, arching, to 2 m or more including the petiole to 30 cm and cirrus to 60 cm; petiole armed with long black, yellowish-based spines; leaflets to c. 50 on each side of the rachis, arranged in groups of 2-5 (rarely more), arcuate, dark shiny green except at the base where pale yellowish, 20-30 &#215; 2-3 cm, &#177; unarmed. Inflorescences strongly curved, to 1.2 m, with c. 7 partial inflorescences, the longest to 40 cm; male rachillae to 3 cm; female rachillae to 4 cm bearing rather distant flowers. Ripe fruit rounded, c. 12 mm diam., with conspicuous beak to 1.5 mm, and covered in 12-13 vertical rows of yellowish scales with brown margins. Seed hemispherical, c. 9 mm diam., with superficial pitting; endosperm very sparsely and shallowly ruminate. Seedling leaf not known. (Fig. 38).</p></div>
+<div type="distribution"><p>Restricted to kerangas forest on ridges in Ulu Ingei at about 190-200 m above sea level. Elsewhere in Sabah, Sarawak, Peninsular Malaysia and Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Of limited use because of the short stem length.</p></div>
+<div type="discussion"><p>It is remarkable that this familiar Peninsular Malaysian rattan should be so rare in Borneo. Bornean populations differ from those in Peninsular Malaysia and Sumatra in having relatively broader and shorter leaflets; otherwise there is very little difference.</p></div>
+<div type="materials_examined"><p>BEL: Melilas, Bt.Batu Patam, Dransfield J. 6561; Melilas, Bt.Batu Patam, Dransfield J. 6563.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

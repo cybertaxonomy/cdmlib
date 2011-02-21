@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary dioecious fan palm of rain forests in northeastern Madagascar, distinctive in the rounded fruit with externally winged and crested endocarp, internally smooth, which splits in two valves on germination, and with ruminate endosperm.</p></div>
+<nomenclature>
+<name>Satranala</name>
+<author>J. Dransf. and Beentje</author> 
+<citation>Kew Bull. 50 (1): 87 (1995).</citation>
+<type>Type; Satranala decussilvae; Beentje and J. Dransf.</type>
+</nomenclature>
+<div type="etymology"><p>Based on the Malagasy vernacular name satranala — forest fan palm.</p></div>
+<div type="description"><p>Robust solitary pleonanthic tree palm. Stem erect, irregularly ringed with leaf scars, somewhat swollen at the base, sometimes with aerial roots above the base of the trunk. Leaves induplicately costapalmate, neatly abscising under their own weight in mature individuals; sheath lacking auricles, with a conspicuous triangular cleft below the petiole, abaxially with scattered scales; petiole adaxially channelled near the base, distally ± flattened, abaxially rounded, the margins sharp, bearing minute irregular teeth distally, surfaces covered in patchy hairs, scales and white wax; adaxial hastula present, abaxial hastula absent; blade divided to ca. 1/4 to 1/3 its radius along adaxial folds into induplicate segments, further divided by short splits along abaxial folds, interfold filaments caducous, lamina covered with thin white wax, transverse veinlets conspicuous, close, somewhat sinuous; lamina anatomy dorsiventral. Staminate inflorescence interfoliar, solitary, shorter than the leaves, branching to 2 orders; peduncle ± rounded in transverse section; prophyll short, 2-keeled, included in the subtending leaf-sheath; peduncular bracts several; rachis longer than the peduncle; rachis bracts decreasing in size distally, tubular, rather loosely sheathing, with a broad, split, triangular limb, sometimes strongly keeled, densely covered in rusty tomentum; first-order branches crescent-shaped in cross-section, longer than the subtending bract, not bearing a prophyll, branching at the tip to produce a group of 3–9 radiating, catkin-like rachillae, rarely at the inflorescence tip the group reduced to a single branch; rachillae slightly sinuous, bearing a tight spiral of rounded, densely hairy, striate bracts, connate laterally and partially adnate to the axis to produce pits, densely filled with hairs. Staminate flowers unknown. Pollen (found remaining among inflorescence bracts) ellipsoidal, ± bi-symmetric; aperture a distal sulcus; ectexine tectate, coarsely perforate-rugulate, aperture margin slightly finer; infratectum columellate; longest axis 43–50 µm [1/1]. Pistillate inflorescence similar to the staminate but with fewer rachillae in groups of not more than 3. Pistillate flowers unknown. Fruit developing from a single carpel, globose, stigmatic remains basal; epicarp smooth, mesocarp fleshy and fibrous, endocarp hard, woody, externally with broad anastomosing flanges, one principal flange forming a crest along the vertical axis of the endocarp, the crest splitting during germination, allowing the cotyledonary stalk to emerge, the endocarp then splitting into two, internally the endocarp smooth, lacking a basal intrusion and lacking a germination pore opposite the embryo. Seed globose, basally attached; endosperm ruminate, deeply and irregularly penetrated by integumental tissue, solid, embryo apical. Germination remote-tubular, eophyll palmate with 2–3 segments. Cytology not studied.</p></div>
+<div type="distribution"><p>Eastern Madagascar in the Masoala Peninsula and the Mananara Avaratra Biosphere Reserve.</p></div>
+<div type="anatomy"><p>Leaf lamina dorsiventral (Rudall, pers. comm.). </p></div>
+<div type="relationships"><p>There is moderate to high support for a sister relationship between Satranala and Bismarckia (Bayton 2005, Asmussen et al. 2006). </p></div>
+<div type="uses"><p>Used for thatch and the apex sometimes eaten; since its discovery,the palm has entered horticultural trade.</p></div>
+<div type="taxonomic accounts"><p>Dransfield and Beentje (1995a, 1995b).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>As the seed germinates, the cotyledonary stalk pushesits way out of the endocarp, which gapes slightly along themajor crest, the endocarp thus appearing somewhat like awalnut with two valves; no other palm known to usgerminates in this way. </p></div>
+<div type="vernacular"><p>Satranabe (Betsimisaraka). </p></div>
+<div type="biology_ecology"><p>Growing in wet forest on shallow soils overlying ultramafic rock or quartzite, in steep-sided valleys rich in pandans and palms, at 250–300 m above sea level. All populations are small (Ravololonanahary 1999). </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

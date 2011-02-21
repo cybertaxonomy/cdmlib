@@ -1,0 +1,48 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis pembana</name>
+<author>(Moore) Beentje &amp; J.Dransf.</author>
+<citation>Palms of Madagascar: 218 (1995)</citation>
+<type>Tanzania, Pemba, Ngezi forest; Williams; H 177/56-7</type>
+<type_loc>Holotype BH; isotype EA, K</type_loc>
+<synonymy>
+<name>Chrysalidocarpus pembanus</name>
+<author>Moore</author>
+<bibref>Moore, Principes 6: 109 (1962)</bibref>
+<bibref>Dransfield, Fl. Trop. E. Africa: Palmae: 46 (1986)</bibref>
+</synonymy>
+<synonymy>
+<name>Chrysalidocarpus sp.</name>
+<bibref>Williams, UOPZ: 190 (1949)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A curious 'outlier' of the genus, only known from Pemba Island, just off the African mainland, from which it takes its name. Pemba has several more links with Madagascar: there is the fruit bat Pter opus voeltzkowi, with the other members of its genus in Madagascar, the Comoro Islands and through to southeast Asia and the Pacific; and the Aroid Typhonodorum lindleyanum occurs in Pemba, Zanzibar/Unguja and Madagascar.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Mpapindi, less often Mpopo wa mwitu (Swahili).</p></div>
+<div type="description"><p>Clustering palm. STEMS 4-12 m high, 6-15 cm diam.; internodes to 24 cm long, pale brown to green, strongly ringed with leafscars. LEAVES c. 10 in the crown, arching, arranged in &#177; 3 ranks; sheath 50-60 cm long, waxy green, sparsely tomentose when young; rachis to m long, in mid-leaf to 1.5 cm wide; leaflets 40-50 on each side of the rachis, regular, arching, the leaflets on opposite sides of the rachis at an angle of c. 90&#176; with each other, dark green adaxially, abaxially waxy, the proximal 70-76 x 1.3-2.8 cm, median 46-74 x 3-3.9 cm (interval 4-5 cm), distal 14-45 x 1.4-2.4 cm, main vein 1, with 2 marginal veins, midrib prominent adaxially, apices acuminate or attenuate, abaxially with a dense cover of minute waxy scales, with small shining brown scales on all the veins, with one or a few irregularly spaced large bifid ramenta with brown centres and laciniate margins on the midrib. INFLORESCENCE interfoliar, branched to 3-4 orders with spreading branches, lengthening in fruit by some 40%; peduncle c. 60 cm long, stout, &#177; flattened, densely reddish tomen-tose, distally curving through 90&#176;; prophyll > 30 cm, c. 5 cm wide, glabrous, dull waxy; peduncular bract 30-55 cm long, splitting over its length, rustypubescent or glabrous and waxy, beaked for 2-3 cm, deciduous; first order branches slightly reddish-pubescent but glabrescent, with up to 15 second order branches; rachillae glabrous, 11-19 cm long, 1-2 mm diam.; triads distant; rachilla bract 0.5-0.7 mm, obtuse to acute. STAMINATE FLOWERS only known from buds, with sepals 1.3-1.6 x 1.4-1.8 mm, concave, proximally gibbous, keeled, ciliolate; petals 2.3- x 1.5-1.8 mm; stamens 6, slightly biseriate, offset 0.2 mm, the filaments 1.4-1.5 mm and thin-cylindrical, the anthers 1.3-1.5 x 0.4-0.7 mm; pistillode columnar, 1.8-2.8 x 0.6 mm. PISTILLATE FLOWERS unknown at anthesis, the petals in fruit 2-2.6 mm long. FRUIT dark red, oblong-ovoid, 12-15 x 5-7 mm; endocarp fibrous, the fibres anastomosing. SEED 10.5-11 x 5-5.5 mm; endosperm homogeneous.</p></div>
+<div type="distribution"><p>Tanzania: Pemba.</p></div>
+<div type="biology_ecology"><p>Moist lowland forest, littoral forest; alt. 1-50 m.</p></div>
+<div type="conservation"><p>Vulnerable. Numbers are estimated at 3000, but these are all within a single forest.</p></div>
+<div type="uses"><p>HB has seen trunks of this species used to construct a football-goal near Ngezi forest; no other uses known.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Pemba: Ngezi Forest, July 1901 (ster.), Lyne 100 (K); idem, Feb. 1929 (y.fr.), Greenway 1488 (K); idem, anno 1956 (fr.), Williams 177/56-7 (type, EA, K)</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

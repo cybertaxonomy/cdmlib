@@ -1,0 +1,71 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of the Genus Nenga</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 27: 55-70</mods:publisher>
+<mods:dateIssued>1983</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Nenga banaensis</name>
+<author>(Magalon) Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 13: 347 (1936)</citation>
+<type>Indo-China, Tourane, Mt. Bana; Magalon; s.n.</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Pinanga banaensis</name>
+<author>Magalon</author>
+<bibref>Magalon, Contrib. Etude. Palm. Indochine. Franc. 149 (1930)</bibref>
+<bibref>Magalon, Feddes Repert 28: 112 (1930)</bibref>
+</synonymy>
+<synonymy>
+<name>Areca banaensis</name>
+<author>(Magalon) Burret</author>
+<bibref>(Magalon) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 198 (1936)</bibref>
+</synonymy>
+<synonymy>
+<name>Nenga nannospadix </name>
+<author>(Burret) Burret</author>
+<bibref>(Burret) Burret, Notizbl. Bot. Gart. Mus. Berlin-Dahlem 13: 347 (1936)</bibref>
+</synonymy>
+<synonymy>
+<name>Pinanga nannospadix</name>
+<author>Burret</author>
+<bibref>Burret, Feddes Repert. 32: 116 (1933)</bibref>
+<type>IndoChina, Annam, Mt. Bani; J. &amp; M. S. Clemens; 4398</type>
+<type_loc>Isotype K</type_loc>
+</synonymy>
+<synonymy>
+<name>Areca microspadix .</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Mus. Berlin-Dahlem 13: 198 (1936)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Cay cau rung.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Solitary, slender palm, with stem to ca. 3 m long, 3.5 cm diam. Crownshaft elongate, cylindrical, slightly robust. Leaves spreading in crown; leaf sheath ca. 15- 20 X 3-4 cm, green; petiole ca. 20-30 X 1 cm. Leaflets often drying dark greyishgreen to greenish-brown; basal leaflets narrow, 1-2 costate, ca. 23-37 X (0.6) 1.0-2 (2.3) cm, long-acuminate; middle leaflets 2-3 costate, ca. 30-40 X 2.5-5 cm, long-acuminate; terminal leaflet pair 2-6 costate, ca. 21-35 X 1.7-5.5 cm, acuminate or slightly toothed at apex. Inflorescence infrafoliar, pendulous; prophyll ensiform or lanceolate, ca. lOX 3.5-4.0 cm, caducous; peduncle short, ca. 1.0-1.5 X 8 mm, flattened, glabrous; peduncular bract triangular or ovate, to ca. 6 mm long, membranous; rachillae 46, ca. 5-20 cm long, to 5 mm thick, glabrous, each subtended by a triangular, membranous bract to 2 X 4 mm. Staminate flower triangular, asymmetric; sepals equal or subequal, subulate, dorsally carinate, ca. 4-7 mm long; petals broadly elliptic, obtuse at tip, equal to sepals; filament short, ca. 0.5-1.0 mm long, anthers erect to ca. 1.5 mm long, slightly cordatesagittate at base; pistillode indistinct. Pistillate flower globose to subglobose, slightly shorter than the staminate flower; sepals ca. 3-5 X 3-4 mm, petals as the sepals, sometimes smaller; ovary subglobose, ca. 1.5 X 1 mm; stigma obscurely 3-lobed; staminodes indistinct. Infructescence pendulous, the branches often with rather short dead tips. Immature fruit oblongellipsoid, ca. lOX 5-6 mm, tipped with a prominent 3-lobed stigma; endocarp apparently smooth. Seed not known. </p></div>
+<div type="distribution"><p>Indo-China.</p></div>
+<div type="biology_ecology"><p>In humid forest on granitic soil. Endemic.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is still incompletely known; mature fruits and seeds have never been collected. The specimens representing this species in the herbarium contain only juvenile fruits. The species referred to as N. nannospadix (first described in Pinanga) for the short inflorescence (only 4.5 cm long) fits quite well within the range of variation of N. banaensis. The isotype of N. nannospadix (]. &amp; M. S. Clemens 4398) at Kew has a rachilla reaching approximately 13 cm long, very much longer than as originally described by Burret (1933). Inflorescence length in this species is variable. The holotype of N. banaensis (Magalon s.n.), for example, also has two inflorescences with rachillae reaching only 6-7 cm long. The holotype of N. banaensis was not seen by Burret as he had indicated (Burret 1936a, 1936b). The type specimens of both N. banaensis and N. nannospadix, moreover, were collected from about the same area near Tourane on granitic soil. There is so much overlap in variation between the two taxa that I have no doubt that they are conspecific. </p></div>
+<div type="materials_examined"><p>INDO-CHINA: Tourane: Mt. Bana, fl. and fr., Magalon s.n. (Holotype P); Mt. Bani, fl. and fr., J. &amp; M. S. Clemens 4398 (Type of N. nannospadix (Burret) Burret; Isotype K); Locality unknown: fl., Polaine 7246 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

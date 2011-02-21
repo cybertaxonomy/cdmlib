@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis curtisii</name>
+<author>Baker</author>
+<citation>J. Linn. Soc. 22: 526 (1887)</citation>
+<type>Madagascar; Curtis; 116</type>
+<type_loc>Holotype K</type_loc>
+<synonymy>
+<name>Neophloga curtisii</name>
+<author>(Baker) Becc.</author>
+<bibref>(Baker) Becc., Bot J Beibl 87: 30 (1906)</bibref>
+<bibref>Beccari, Palme del Madagascar 36, fig 28, pl 35 (1914)</bibref>
+<bibref>Jumelle, Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 4, 6 (3): 30 (1929)</bibref>
+<bibref>Jumelle, Cat Pl Madagascar, Palmae: 20 (1938)</bibref>
+<bibref>Jumelle &amp; H Perrier, Fl Madagascar 30: 70, fig 18 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>Only represented by two ancient collections, this remains one of the lesser known palms of the island. The name refers to the collector of the type, Charles Curtis (1852-1928), who collected in Madagascar in 1881.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>STEM with internodes 3-3.5 cm long distally, 8-9 mm across, glabrous. LEAVES: sheath 12-13 cm long, with rounded shoulders and laciniate margins, with red-brown scattered scales; petiole 40-10 cm long, 2-4 mm diam., with scattered reddish scales; rachis 34-39 cm, in mid-leaf 2-3 mm diam., densely to sparsely dark reddish scaly; leaflets 9 -12 on each side of the rachis, in groups of 2-3, the group interval 4.5-6.5 cm, sigmoid, narrowly ovate, folded or rarely slightly connate (for up to 1 cm) with the rachis, the proximal 8-18 x 0.3-2.3 cm, median leaflets 9-20 x 1.2-4 cm (interval 1-2 cm), distal 9-13 x 2-4.6 cm, the distal pair joined for 1-5 cm, dentate on the outer bend for 0.5-1.5 cm with quite long teeth, other leaflets with the apices longacuminate, with 1-6 main veins, dark green adaxially with some red (almost spiny) scales on midrib, pale green abaxially with sinuous transverse veinlets and glabrous or with a few reddish scales on the midrib and the margins, but only rarely on the main veins. INFLORESCENCE interfoliar, unbranched or bifurcate; peduncle 22-34 cm, 1.5-3 x 1-2 mm diam., densely to sparsely scaly; prophyll 16-35 cm long, 0.5 cm wide, borne at 5-11 cm above the base of the peduncle, pale brown with few scales, opening near the apex for 1-2 cm; peduncular bract inserted at 14 -19 cm from the base of the peduncle, 12-15 cm long, opening near the apex for c. 2 cm but not at the beak which is up to 3 mm long, with scattered scales; rachilla 16-23 cm long, or (in Perrier 12039) with 2 rachillae c. 12.5 cm long (broken?), c. 2 mm diam., densely scaly with dark red to almost black small scales, with c. 147 distant triads in slight pits. STAMINATE FLOWERS in bud ovoid; sepals concave, keeled, slightly gibbous at base, only slightly ciliolate; receptacle c. 0.6 mm high; petals 2.2-2.3 x 1.4-1.5 mm, concave, ovate, slightly acute, striate; stamens 6, equal, filaments connate for 0.2 mm, 1.2 mm long, linear, anthers dorsifixed, versatile, 1.3- 1.5 x 0.4 mm, linear, slightly apiculate, the locules parallel; pistillode 1.2 mm long, c. 0.3 mm diam. PISTILLATE FLOWERS ovoid-conical, slightly acute; sepals 0.6-1.3 x 1.2-2 mm, orbicular, hardly ciliolate, not really keeled; petals imbricate proximally, valvate distally, 1.8 -2.9 x 1.4-2 mm, concave, ovate, obtuse, striate; staminodes 0.3-0.4 mm; ovary somewhat trigonous, 2.2-2.3 x 0.7-0.8 mm. FRUIT unknown.</p></div>
+<div type="distribution"><p>Unfortunately, we are not sure where Curtis collected, and his number 117 (the only other specimen we have seen made by this collector) is an unidentifiable palm leaf, also without locality.  Jumelle &amp; Perrier, in the Flore de Madagascar, state Imerina (= northern central Madagascar) for the type - which they also call Curtis s.n.</p></div>
+<div type="biology_ecology"><p>Montane forest; 1500-1800 m.</p></div>
+<div type="conservation"><p>Uncertain; Tsaratanana has not been visited by botanists in the recent past.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Close to D. pervillei, and possibly not distinct.</p></div>
+<div type="materials_examined"><p>? Bealanana: Tsaratanana, Oct. 1912 (fl.), Perrier 12039 (P); idem, Dec. 1912 (y.fr.), Perrier 12043 (P). Madagascar, Sept. 1881 (fl.), Curtis 116 (Holotype K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

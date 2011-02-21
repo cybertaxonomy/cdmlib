@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops collarifera</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 227 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 183 (1911)</bibref>
+<bibref>Dransfield, Kew Bull. 45: 75 (1990)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 63 (1992)</bibref>
+<synonymy>
+<name>Daemonorops acanthobola</name>
+<author>Becc.</author>
+<bibref>Becc., Rec. Bot. Surv. India 2: 228 (1902)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 192 (1911)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Bearing collars</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary or clustering rattan climbing to 7 m, rarely more, sometimes flowering when still &#177; stemless; stems without sheaths to c. 15 mm diam., with sheaths to c. 35 mm diam., internodes  short, rarely more than 12 cm long. Sheaths bright green, armed with yellowish and blackish reflexed and upward-pointing spines arranged in partial or complete whorls, at least 1 whorl of spines being borne on a conspicuous pale green collar, pale brown indumentum abundant between and on the spines, spines around the sheath mouth &#177; erect, to 6 cm long, pale yellowish-green; knee absent or very poorly developed. Leaf to c. 2.5 m long including the petiole to c. 40 cm and cirrus to 1 m; cirrus sometimes very short or absent; leaflets c. 30 on each side of the rachis, subregular (rarely) or arranged in groups of up to 7, the longest to 40 &#215; 2 cm. Inflorescences shorter than the leaves, up to c. 75 cm long; peduncle up to c. 20 cm long, usually unarmed; prophyll and primary bracts up to c. 25 cm long, dull brown, thin, bearing pale indumentum, tattering and soon falling, the prophyll usually bearing a few spine groups, otherwise the bracts usually unarmed; subsequent bracts not conspicuous; male rachillae rather short, to 2 cm long, bearing strictly distichous crowded flowers to 4 &#215; 1 mm; female rachillae up to c. 9 cm long, bearing distichous but rather distant flower pairs, the female c. 5 &#215; 2 mm. Mature fruit rounded, c. 20 mm diam., beaked, covered in 15-17 vertical rows of pale brown, sometimes dark-edged scales. Seed rounded, c. 15 mm diam.; endosperm ruminate. Seedling leaf not known. (Fig. 18).</p></div>
+<div type="distribution"><p>Widespread and common throughout Brunei. Also in Sarawak. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>D. collarifera grows in a wide range of habitats from kerangas to mixed dipterocarp forest at altitudes up to c. 800 m above sea level. For differences between it and D. atra see the latter. D. collarifera is very closely related to D. geniculata from Peninsular Malaysia.</p></div>
+<div type="materials_examined"><p>BEL: Andulau F.R., Ashton S 21574; Sungai Liang, Andulau F.R, Jacobs 5658; Sungai Liang, Andulau F.R, Wong 550.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

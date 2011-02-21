@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops longispatha</name>
+<author>Becc.</author>
+<citation>Rec.Bot. Surv. India 2: 230 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 206 (1911)</bibref>
+<bibref>Dransfield, Ratt. Sabah 85 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 85 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Long bracts</p></div>
+<div type="vernacular"><p>Wi Belubu (Br.,Dus.)</p></div>
+<div type="description"><p>Robust clustering, thicket-forming rattan with stems climbing to about 5 m only; stem without sheaths to 25 mm diam., with sheaths to 50 mm, internodes to 25 cm long, frequently less. Sheath bright yellowish-green, on young parts densely covered with red-brown indumentum and long yellowish spines, varying in length up to 7 cm, the spines tending to point in different directions, spines around the sheath mouth particularly large, erect, to 16 cm; knee absent; ocrea to 5 mm, irregularly tattering. Leaf large, cirrate, to 3 m including petiole to 50 cm and cirrus to 60 cm; petiole yellowish brown, covered in deciduous reddish-brown scales and armed with lateral rows of long yellowish spines to 4 cm, and densely armed with scattered short erect spines on the upper surface, the lower surface very sparsely armed; leaflets c. 35 on each side of the rachis, regularly arranged, though rather distant, shiny green, the longest to 45 &#215; 3 cm, &#177; unarmed except for marginal bristles, transverse veinlets conspicuous, and undersurface dotted with minute brown scales. Inflorescence to 50 cm, the male with crowded rachillae, the female with rather lax, &#177; divaricating branches, up to 9 partial inflorescences in both sexes; primary bracts thin, coriaceous, sparsely spiny, soon falling; secondary and tertiary rachilla bracts conspicuous, irregularly tattering; male rachilla to 8 cm with crowded, strictly distichous flowers; female rachilla to 12 cm with conspicuous overlapping bracts and less crowded distichous flowers. Mature fruit relatively small, rounded or ovoid, to 13 &#215; 11 mm, shortly beaked, covered in 15 vertical rows of rich brown shiny scales. Seed to 10 &#215; 10 &#215; 6 mm, deeply pitted and ruminate. Seedling leaf not known. (Fig. 28, Pl. 6B).</p></div>
+<div type="distribution"><p>Widespread in coastal areas. Elsewhere in coastal areas of Sabah and Sarawak, not yet recorded for Kalimantan. Endemic to Borneo.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Produces a large cane of medium quality, but the cane is rarely of any length.</p></div>
+<div type="discussion"><p>D. longispatha seems to be strictly a maritime species, growing on poor coastal soils such as on sand banks behind beaches where the water table is high, at the margins of coastal peat swamp forest and in some facies of mangrove. D. longispatha is very distinctive in its coloration, lack of knee, thicket-forming habit and bracteate inflorescence.</p></div>
+<div type="materials_examined"><p>TUT: Telisai, Wong 148. Without prov.: BRUN 15305.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

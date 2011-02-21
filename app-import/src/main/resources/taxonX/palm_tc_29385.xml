@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus blumei</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 209 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 340 (1908)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 192 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 134 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 149 (1992)</bibref>
+<synonymy>
+<name>Calamus penibukanensis</name><author>Furtado</author><bibref>Furtado, Gard. Bull. Singapore 15: 79 (1956)</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus slootenii</name><author>Furtado</author><bibref>Furtado, Gard. Bull. Singapore 15: 79 (1956)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>C. L. Blume, the early Dutch botanist</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering moderate rattan climbing to 20 m; stem without sheaths 8-12 mm diam., with sheaths to 20 mm diam., internodes to 25 cm. Sheaths dull green but densely covered in greyish-yellow scales, drying grey, and scurfy caducous chocolate-coloured scales, and sparsely armed with short &#177; upward pointing spines to 3 mm, frequently borne on bulbous swellings; knee conspicuous; ocrea to 2 cm, dark brown. Flagellum to 1.5 m. Leaf ecirrate, to 60 cm long including the petiole to 15 cm; leaflets to 6 on each side of the rachis, broad diamond-shaped, with short stalks and bristly wavy margins, to 20 &#215; 7.5 cm, with 5-7 main nerves. Inflorescences to 1.25 m with 3-4 partial inflorescences to 35 cm; male rachillae c. 1.5 cm long, female to 13 cm. Mature fruit rounded to obovoid or ellipsoid, to 22 &#215; 17 cm, covered in 18-20 vertical rows of yellowish to brownish scales. Seed to 13 &#215; 10 mm; endosperm deeply ruminate. Seedling leaf with 2 diamond-shaped leaflets. (Fig. 55).</p></div>
+<div type="distribution"><p>Scattered throughout Brunei but nowhere very abundant. Elsewhere throughout Borneo, Sumatra, Peninsular Malaysia and S Thailand.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>A good quality cane.</p></div>
+<div type="discussion"><p>C. blumei is very easily identified with its diamond-shaped leaflets and ecirrate leaf; it is often confused with some species of Korthalsia andCeratolobus but there is no justification for this mistake - leaflets are diamond-shaped but they are not praemorse (with jagged edges) as in the last two genera. Furthermore the presence of a flagellum will immediately indicate a species of Calamus. C. blumei occurs in a variety of forest types from sea level up to about 800 m elevation. It is shy to flower.</p></div>
+<div type="materials_examined"><p>BEL: Bukit Sawat, Jln.Labi, Wong 542; Sungei Liang, Andulau F.R., Dransfield J. 7253. TEM: Amo, Bt.Belalong, Dransfield J. 7131; Amo, Sg.Temburong Machang, Wong 1987.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

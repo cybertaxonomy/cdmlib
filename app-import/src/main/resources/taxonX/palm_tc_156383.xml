@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga capitata var. divaricata</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 34: 777 (1980)</citation>
+<type>Borneo, Sarawak; Dransfield; JD 5361</type>
+<type_loc>Holotypus K; isotypus SAR</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>a varietate typica foliolis valde divaricatis, iis paris apicalis manifeste oppositis, secus margines interiores non connatis differt.</p></div>
+<div type="description"><p>Clustering montane monoecious unarmed pinnate palm with stems rarely exceeding 2 m long. Stem to 2.5 cm diam. with internodes to 10 cm long, the stem surface densely covered with dark red-brown to blackish scales. Crownshaft only slightly swollen, to 70 cm long, 2.5 cm wide near the base. Leaf sheaths dull greenish-brown, densely covered with dark red-brown to blackish scales. Leaves about 6-8 in crown, to 1 m long in well-grown mature individuals, shorter in exposed individuals, occasionally up to 2 m long in rosette stages of juvenile; petiole to 40 x 0.5 cm, densely covered with silvery and dull reddish-brown scales; leaflets 7-12 on each side of the rachis, rather irregularly arranged and reflexed in the proximal part of the leaf, regular and opposite and divaricate in the distal part, with 1-2 folds; proximal leaflets longer than distal, 25-30 x 0.7-2 cm, the distal leaflets occasionally much smaller, the leaflets frequently constricted at the insertion on the rachis; bifid scales sometimes present on the main veins, on abaxial surface; abaxial surface of lamina also densely covered with minute scales and papillae. Inflorescence erect or pendulous, with spreading branches; peduncle to 2 cm long, 5 mm wide near the base; rachillae to 8 in number, 7.5 x 0.3 cm, somewhat flattened, glabrous, bearing distichously arranged flower groups up to 5 mm distant. Staminate flowers not known. Post anthesis pistillate flower with 3 imbricate, shortly apiculate, minutely ciliate, rounded sepals to 2 mm long; corolla with 3 petals similar to the sepals; ovary to 2 mm, oblong, tipped with an irregular, convoluted stigma. Rachillae turning reddish at fruit maturity. Mature fruit purplish-black, to 12 x 7 mm, tipped with the eroded stigmatic remains, with very thin pericarp with a poorly developed fibrous layer. Seed to 10 x 5 mm. Endosperm deeply ruminate. Embryo sub-basal.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>4th Division, Kelabit Highlands, summit of Apo Duat, mossy forest, 1600 m Paul Chai S 35494 (BH, K, SAR). G. Mulu National Park, upper montane forest on summit ridge, 1700 m, Dransfield JD 5361, (holotype K; isotype SAR). BRUNEI. G. Pagon Priok, 1600 m, Ashton A 281 (K); A 257 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

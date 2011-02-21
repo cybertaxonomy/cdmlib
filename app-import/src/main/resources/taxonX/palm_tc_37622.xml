@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Chamaedorea pinnatifrons</name>
+<author>(Jacq.) Oerst.</author>
+<citation>Vidensk. Meddel. Naturhist. Foren. Kj�benhavn 1858: 14 (1859)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stem solitary, to 4 m tall and 2.5 cm in diameter, green.  Leaf sheath closed for at least 4/5 of its length; blade pinnately divided or rarely entire, 25-75 cm long and 15-30 cm wide; pinnae 7-15 on each side, usually conspicuously sigmoid.  Inflorescences infrafoliar, one per node, to 80 cm long, once branched; male inflorescences with 3-25 pendulous branches; female inflorescences with 2-15, horizontal to erect branches, orange in fruit.  Male flowers with petals united at apex.  Fruits black, ca. 9 x 11 mm.</p></div>
+<div type="distribution"><p>Colombia and Venezuela to Bolivia and Brazil, at up to 2400 m elevation.  In Ecuador it is common in the E lowlands and on the E and W Andean slopes, in primary as well as in secondary forest, often on steep slopes.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The species is variable, especially in leaf size, number and size of pinnae, and size and ramification of the inflorescence.  It is defined by having male flowers with petals fused at their apex, but variation in vegetative characters within the species is not fully understood.  Simple-leaved forms are sometimes found occurring together with the common, pinnate-leaved form, e.g., around Plan de Milagro in the Morona-Santiago province.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

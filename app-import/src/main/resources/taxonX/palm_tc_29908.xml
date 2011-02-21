@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus scabridulus</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. Ind. 2 (1902) 203</citation>
+<bibref>Beccari in Ann. Roy. Bot. Card. Calcutta 11 (1908) 171 and Supplement (1913)</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 58</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 234</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Scabridulus - a little scabrid, a little roughened</p></div>
+<div type="vernacular"><p>rotan kerai</p></div>
+<div type="description"><p>Clustering rattan climbing to 20 m tall. Stem without sheaths to 1.2 cm in diameter, with sheaths to 3 cms, with internodes to 15 cm. Sheaths pale green armed with rather uniform &#177; horizontal triangular green spines to 1.2 cm long and 5 mm wide, scattered dark indumentum and slight rough horizontal ridges between the spines. Knee conspicuous, armed with rough ridges. Ocrea inconspicuous. Flagellum to 2 m long. Leaf ecirrate, to about 1 m long, with petiole to 12 cm; leaflets to about 15 on each side of the rachis, rather distant, and broad, the longest to 40 cm long by 3 cm wide, armed with short bristles on 3 nerves above, &#177; unarmed below, the terminal 2 leaflets joined shortly. Inflorescences male and female superficially similar, to about 3 m long with about 8 partial inflorescences to 60 cm long each. Male rachillae about 12 mm long; female to 3 cm long; all bracts in inflorescences densely covered with minute prickles. Ripe fruit unknown. Seedling leaf bifid.</p></div>
+<div type="distribution"><p>Rare: only known from Selangor, Trengganu and Johore in Malaya; elsewhere in Billiton.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Cane of moderate to good quality, collected as "rotan kerai''.</p></div>
+<div type="discussion"><p>Calamus scabridulus is a rare rattan confined to peat swamp forest where it is associated with Korthalsia flagellaris. It has been found only a few times and ripe fruit has still not been collected. It is easily distinguished by the possession of rough ridges between the spines, the distant leaflets and the scabrid inflorescence bracts.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

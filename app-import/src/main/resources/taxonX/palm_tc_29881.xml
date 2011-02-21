@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus rheedei</name>
+<author>Griff.</author>
+<citation>Calc. Journ. Nat. Hist. 5 : 1845</citation>
+<bibref>Beccari in Hook. f. Fl. Brit. Ind. 6 : 452. 1893</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11 : 313. 1908 and Appendix PI. 226. 1913</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A slender climber; stem cluster-forming, with leaf sheath 11-13 mm in diameter. Leaves ecirrate, to 80 cm long; leafsheath with inconspicuous knee, armed with 1 - 1.5 cm long, straight spines and small spicules; ocrea with upwardly projecting brown bristles; petiole about 7 cm long, slender, armed a little above the base with small scattered spines; leaflets in groups of four, each pointing to different angles, with long vacant space in between the groups, narrowly lanceolate, 1 -nerved, to 13 cm long, 1.5 - 2 cm broad at middle. Male inflorescence flagelliform, 1 m or more long, with 4 - 6 paniculately branched partial inflorescences; each arising from the base of the laminar part of the respective bracts; peduncular part of partial inflorescence completely enclosed within the tubular part of the bracts; rachillae to 2 cm long, with 8-10 male flowers in each rachilla. Female inflorescence leaf-opposite, elongate in its axial part, with 5 - 8 cm long partial inflorescences attached above the mouth of the respective bracts; rachillae with basal callus, 3 - 5 cm long. Fruit ovoid, stalked, shortly beaked, 1.3 cm in diameter; fruit scales flattened, with brown outer margins. Seed not examined.</p></div>
+<div type="distribution"><p>NDIA (Kerala, Kamataka). Endemic.</p></div>
+<div type="biology_ecology"><p>Infrequent in the moist forests of Western Ghats.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>It is reported that powdered dried seeds have a healing effect against ulcers.</p></div>
+<div type="discussion"><p>This species is described on the basis of Van Rheede's plate 65 and text published in the volume 12, page 121 of Hortus Indicus Malaharicus. A solitary indeterminate specimen mounted on three sheets and preserved in the Madras Herbarium perfectly matched with Van Rheede's plate and description</p></div>
+<div type="materials_examined"><p>Kamataka : Coorg, 1825, Forest Officer s.n. (MH Ace. no. 52725).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

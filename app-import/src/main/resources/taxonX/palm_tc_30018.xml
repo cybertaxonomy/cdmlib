@@ -1,0 +1,62 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A revision of the Calamus aruensis (Arecaceae) complex in New Guinea and the Pacific</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Bayton</mods:namePart>
+<mods:namePart type="given">R.P</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Maturbongs</mods:namePart>
+<mods:namePart type="given">R.A</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin 58: 351-370</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus vitiensis </name>
+<author>Warb. ex Becc</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11: 350 (1908)</citation>
+<type>Fiji, Taveuni; Weber; 111</type>
+<type_loc>Holotype B†; isotype FI!</type_loc>
+<synonymy>
+<name>Calamus stipitatus </name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Mus. Berlin-Dahlem 15: 814 (1943)</bibref>
+<type>Solomon Islands, San Cristobal, Kira Kira; Brass; 2719</type>
+<type_loc>Holotype B†; isotypes BM!, BO!, BRI!</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus vanuatuensis </name>
+<author>Dowe</author>
+<bibref>Dowe, Principes 37: 206 (1993)</bibref>
+<type>Vanuatu, Erromango, Nouankao River; Chew Wee-Lek RSNH; 118</type>
+<type_loc>Holotype PVV; isotype K!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>FIJI: Ngganuya (Taveuni) NEW GUINEA: Wusiu (Manus). SOLOMON ISLANDS: Kalitao, Kalitau (Kwara�ae). VANUATU: Gawolo (Vanua Lava)</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Slender to robust, solitary rattan climbing to 15 m. Stem with sheaths 10 – 50 mm diam., without sheaths 7 – 22 mm diam.; internodes 12.5 – 33 cm. Leaf cirrate, to c. 3 m long including cirrus and petiole (where present); sheath dark green, with caducous indumentum of brown to light grey, fibrous scales, spines absent to numerous, 1 – 40 × 0.3 – 2.5 mm, yellow-green to brown, planar, triangular, longer spines flexible, spine bases sometimes slightly swollen adaxially, spines usually of rather uniform size, sometimes of various sizes, spine surface with indumentum as on sheath, usually solitary or occasionally also with very few partial whorls of up to 6, spine impressions on sheath sometimes conspicuous, sheath mouth unarmed or lightly armed; knee 17 – 60 mm long, 10 – 28 mm wide, unarmed or lightly armed with short spines, colour and indumentum as on sheath; ocrea 2 – 4.5 mm, forming a low, woody, brown, unarmed or lightly armed, persistent collar, base of ocrea extending along petiole to an acute angle; flagellum absent; petiole 0 – 45 mm, 7 – 19 mm wide and 4.5 – 9 mm thick at base, channelled or flat adaxially, rounded abaxially, indumentum as on sheath, unarmed or with few to many short triangular spines; rachis 1.2 – 2 m, unarmed or with spines and indumentum as petiole near base, with grapnel spines on abaxial surface of distal portion of rachis; leaflets 10 – 22 each side of rachis, often drying dark green, arranged regularly or in widely spaced pairs, the leaflets in each pair sometimes divergent, broadly lanceolate, cucullate, longest leaflets near middle of leaf, 18 – 43 × 3.5 – 7 cm, apical leaflets 7 – 23.5 × 0.9 – 1.5 cm, distal leaflets widely spaced, basal leaflets small, leaflet surfaces unarmed or with very few bristles 0.8 – 2.2 mm on adaxial surface of mid-rib and other major veins, leaflet margins unarmed or with very few bristles 0.2 – 5 mm, most numerous near apex, with indumentum as on sheath sometimes scattered throughout adaxial surface of leaflet, transverse veinlets inconspicuous; cirrus 0.6 – 2 m, cirrus grapnel spines arranged regularly. Staminate inflorescence limited material seen, similar to pistillate inflorescence, but branched to 3 orders, bracts on primary and secondary branches funnel-shaped. Staminate flowers not seen. Pistillate inflorescence, up to c. 2 m long including 26 – 33 cm peduncle and sterile tip to c. 50 cm, branched to 2 orders; prophyll 14 – 31 × 1 – 1.2 cm, strictly tubular, with 2 keels, prophyll mouth entire, with acute, triangular limb to one side, sometimes subtending primary branch, indumentum as on sheath, unarmed or lightly armed with short spines; peduncular bracts absent or rarely 1, rachis bracts and peduncular bract (if present) 5.7 – 25 × 0.3 – 1.5 cm, similar to prophyll, unarmed to lightly armed as prophyll; primary branches 6 – 12, to 28 cm long, 8 – 28 cm apart, straight to recurving, with up to 40 rachillae, bracts on primary branch funnel-shaped; rachillae 0.9 – 9.5 × 0.1 – 0.2 cm, sublinear to arcuate; rachilla bracts 1 – 2 × 1.5 – 2 mm, distichous to subdistichous, often rather widely spaced; flower clusters sometimes distinctly stalked, stalk 0.8 – 1.5 mm long, proximal floral bracteole 1 – 1.2 × 1.3 – 1.5 mm, distal floral bracteole 1.2 – 1.5 × 1.2 – 1.5 mm, glabrous, scar from sterile staminate flower c. 0.2 mm diam. Pistillate flowers 2.5 – 3.5 × 1.7 – 2 mm at anthesis; calyx 1.7 – 2 mm diam., tubular in basal 1.7 – 2.2 mm, with 3 lobes to 0.4 – 0.8 × 0.7 – 1 mm, glabrous; corolla 2 – 2.7 × 1.5 – 1.7 mm, tubular in basal 1.1 – 1.8 mm, with 3 lobes 0.5 – 0.9 × 0.7 – 1.2 mm, glabrous; staminodes 6, c. 0.6 – 0.8 mm long, staminodal ring c. 0.8 – 1 mm high; ovary c. 1 – 1.5 × 1 – 1.4 mm, globose, style c. 0.5 – 0.8 mm long, stigmas 0.7 – 0.8 mm long. Sterile staminate flowers not seen. Fruit globose, 10 – 11 × 8.5 – 9.5 mm including beak 1 – 1.5 mm, with 18 – 19 longitudinal rows of white, shallowly channelled scales with entire, but uneven margins, margins of scale apex sometimes brown. Seed (sarcotesta removed) 6.8 – 8 × 6.5 – 7 × 5.2 – 6.5 mm, globose, with a deep, narrow pit on one side, the surface covered with numerous shallow pits and irregular channels; endosperm homogeneous; embryo basal.</p></div>
+<div type="distribution"><p>Known from scattered records in Papua New Guinea (Manus, Morobe, Madang, Southern Highlands), Australia (Queensland, as far south as Dunk Island), the Solomon Islands, Vanuatu and Fiji; the most easterly occurring species in the genus Calamus</p></div>
+<div type="biology_ecology"><p>Various types of primary and secondary forest vegetations, 60 - 750 m.</p></div>
+<div type="conservation"><p>Least concern.</p></div>
+<div type="uses"><p>General cordage, cane for tying houses, for making swings for children, sap from cut stem used for curing eye ailments.</p></div>
+<div type="discussion"><p>A relatively broad concept of C. vitiensis has been employed here as a pragmatic solution to an intractable taxonomic problem. Highly variable and widely distributed, Calamus vitiensis can be recognised by its simple triangular spines, which are usually of rather uniform size and are only slightly swollen at the base, and by the regular arrangement of cirrus grapnel spines. In addition, the sheath spines in most forms are largely solitary whereas the sheath spines of other members of the C. aruensis complex are usually at least partly organised into partial whorls with solitary spines interspersed among the whorls. Rarely, partial whorls of up to six spines may be observed intermixed with solitary spines (see Fig 18 in Dowe 1989), but it is possible that this feature is accentuated in juvenile sheaths. Calamus aruensis bears sheath spines of rather uniform size and, in less heavily armed forms, whorled sheath spines may not be present, but it is immediately distinguished from C. vitiensis by its cirrus with irregularly arranged grapnel spines. Unarmed forms occur in both C. vitiensis and C. aruensis, but again the cirrus morphology can be used to distinguish them. In New Guinea, Calamus vitiensis may also be confused with C. pachypus, but it lacks the conspicuously swollen spine bases that are so characteristic of C. pachypus (Fig. 1D), as well as sheath spines consistently organised into whorls.
+Regional entities can be recognised within the variation of C. vitiensis. In New Guinea, all forms appear to have leaflets grouped in divaricate pairs and sheaths, when armed, with rather short spines. Even more uniform is the Australian form with similar leaf morphology to the New Guinea form, but with larger and more numerous sheath spines. In the west Pacific, from the Solomon Islands to Vanuatu and Fiji, the species bears regularly arranged leaflets and some specimens display conspicuous brown indumentum on the leaf sheath. A narrower species concept might be advocated by some, but the characters distinguishing these regional forms are so limited and unreliable that formal taxonomic recognition cannot yet be justified. Further study, especially in the west Pacific, is required to clarify further the taxonomy of this species.
+The holotype of C. vitiensis was destroyed in Berlin and the isotype at Florence consists only of a single pistillate rachilla and a fragment of a fruit. However, we are able to use the name with confidence because of the detailed protologue, which includes a photograph of the holotype, and because no other rattan species is known from Fiji, the country of origin of the type. No appreciable differences can be discerned between C. vitiensis and the type of C. vanuatuensis, despite assertions to the contrary in the protologue of the latter. Similarly, C. stipitatus fits well within the range of variation accepted for C. vitiensis here. The distinctive stipitate pistillate flower clusters that are present on the type of C. stipitatus are formed by elongation of the axis of the terminal sterile staminate flower, which is otherwise usually condensed, and adnation of the floral bracteole to that axis. This feature is also found in some other specimens of Calamus vitiensis.
+</p></div>
+<div type="materials_examined"><p>AUSTRALIA. Queensland: Cook, escarpment of the great dividing range, 18.2 km NE of Heathlands Ranger Base, Heathlands D and O reserve, Shelburne Bay, Oct. 1993, Fell &amp; Stanton 3764 (BRI!); Cook, Cape York Peninsula, Capsize Creek crossing on road running S from Iron Range Airfield, c 37 km S from Lockhart River settlement, Sept. 1977, Wrigley 436 (BRI!); Dunk Island, Dec. 1957, Fielding QFD 58/62 (BRI!); Etty Bay, near Innisfail, July 1969, Moriarty &amp; Tomlinson s.n. (K!); Mt Milman, western fall, 7.1 km NW of Cooktown, Hopevale Aboriginal reserve, Cooktown, Nov. 1993, Fell &amp; Stanton 3867 (BRI!); West Claudie River between Portland Roads &amp; Iron Range, Oct. 1968, Webb &amp; Tracey 8486A (BRI!). FIJI. Taveuni: Likuvausomo, Ura Estate on road to Vuna, April 1964, Moore et al. 9357 (K!); slopes of Mt Manuka, E of Wairiki, Aug. 1953, Smith 8132 (K!); Oct. 1881, Weber 111 (B†, FI!, type),. Viti Levu: Tailevu, along road to Nasau, March 2002, Tuiwawa 2K 1461 (K!, SUVA); Rewa, Tamauna, Princess Road, April 2002, Watling 2K 1480 (K!, SUVA). PAPUA NEW GUINEA. Manus Province: Manus Island, Lessau village, 1 km SE of Lessau on the west coast., Nov. 1975, Sands et al. 2744 (K!, L, LAE!); Manus Island, 1990, Patma 4 (AAU!, K!, MAN!, NY!), Patma 8 (AAU!, K!, MAN!, NY!). Madang Province: Baitabag Village, conservation area near to Christensen Research Institute, Jan. 1996, Baker &amp; Utteridge 568 (K!); South Ambenob, Ohu, Jan. 1996, Baker &amp; Utteridge 574 (K!); Usino subdistrict, foothills of Bismarck Mts, near Wau Village, March 1972, Essig LAE 55190 (CANB!, LAE, L). Morobe Province: Lae-Mumeng road, Jan. 1996, Baker et al. 596 (K!); locality unknown, 1989, Taurereko 205 (AAU!, BO!, K!, MAN!, NY!), Taurereko 207 (AAU!, K!, MAN!, NY!). Southern Highlands Province: Mount Bosavi, Near Bona Village, Feb. 1996, Baker et al. 625 (K!, LAE!). SOLOMON ISLANDS. Guadalcanal: Honiara, SW of town inland from Rove, Dec. 1963, Whitmore BSIP 793 (K!). San Cristoval: Kira Kira, Aug. 1932, Brass 2719 (A, B†, BM!, BO!, BRI!). VANUATU. Éfaté: Loukpat area, above Tagabe, July 1971, Green RSNH 1076 (K!). Erromango: Nouankao River and vicinity, Aug. 1971, Chew Wee-Lek RSNH 118 (K!, PVV). Vanua Lava: Sola, Wheatley 436 (K!).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

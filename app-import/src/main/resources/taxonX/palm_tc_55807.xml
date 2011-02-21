@@ -1,0 +1,48 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops periacantha</name>
+<author>Miq.</author>
+<citation>Prodr. Fl. Sum. 256, 592 (1861)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1) 197 (1911)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 117 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 80 (1984)</bibref>
+<bibref>Dransfield, Kew Bull. 45: 76 (1990)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 81 (1992)</bibref>
+<synonymy>
+<name>Daemonorops dissitophylla</name>
+<author>Becc.</author>
+<bibref>Becc., Nelle Foreste di Borneo 608 (1902)</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops florida</name>
+<author>Becc.</author>
+<bibref>Becc., Ann. Roy. Bot. Gard. Calcutta 12(1): 230 (1911)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Spines all round</p></div>
+<div type="vernacular"><p>Uwai Lambat (Br.,Dus.), Wi Empunok (Ib.)</p></div>
+<div type="description"><p>Robust clustering rattan with stems climbing to 10 m tall, rarely more, sometimes very short-stemmed; stem without sheaths 15-30 mm, with sheaths 30-80 mm diam., internodes to 35 cm long, very rarely much shorter in short-stemmed forms. Sheath bright green, but very densely covered with bright yellow brown, black-tipped spines of varying length, the longest to 6 cm, pointing in several directions, and dense brown indumentum, spines around the sheath mouth upward pointing, to 8 cm long; knee usually prominent (absent in short-stemmed forms), armed as the sheath but spines reflexed. Leaflets to 45 on each side of the rachis, irregularly arranged in rather distant groups of 2-7, the longest leaflets to c. 40 &#215; 3 cm, bristly near the tip. Inflorescences to 1 m, including the peduncle to 50 cm, each bearing up to 10 partial inflorescences, each subtended by a leathery, bristly, brown hairy bract, falling at anthesis, the bracts to 30 &#215; 4 cm; rachillae conspicuously brown tomentose. Mature fruit rounded or very slightly obpyriform, to 22 mm diam., covered in 15 vertical rows of pale straw-coloured to pale brown pink-tinged scales. Seed rounded to 15 mm diam.; endosperm deeply ruminate. Seedling leaf not known. (Fig. 27).</p></div>
+<div type="distribution"><p>Widespread throughout Brunei. Elsewhere throughout Borneo, also in Sumatra and Johor.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Produces a coarse cane.</p></div>
+<div type="discussion"><p>D. periacantha is found in lowland and hill dipterocarp forest up to c. 800 m above sea level, preferring the rather better soil types such as alluvial flats and valley sides rather than ridges. The abundant yellowish spines, generally robust habit and the grouped leaflets make this an easily recognised species.</p></div>
+<div type="materials_examined"><p>BEL: Labi, Sg. Rampayoh, Coode 7280; Melilas, Sg.Ingei, Wong 609; Sungai Liang, Andulau F.R, Wong 321. TEM: Amo, Belalong, Stockdale 3; Amo, Belalong, Stockdale 5; Amo, Belalong, Stockdale 7; Amo, K.Belalong, Wong 224; Amo, Kuala Belalong, Stockdale 2.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

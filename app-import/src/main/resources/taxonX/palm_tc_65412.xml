@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis betamponensis</name>
+<author>(Jum.) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 295 (1995)</citation>
+<type>Madagascar, Betampona near Ambodiriana; Perrier; 17469</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Neophloga betamponensis</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 6 (3): 33 (1929)</bibref>
+<bibref>Jumelle &amp; H. Perrier Fl. Madagascar 30: 76 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A small palm with entire leaves, much-branched inflorescences, and didymous stamens; distinct, and presumably extinct as well. The species name is derived from the type locality.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="description"><p>Small palm to 1 m. LEAVES entire, with the sheath c. 11 cm long,  6.5 mm diam., with sparse reddish scales and c. 2 mm high auricles; petiole c. 6 cm long, 2.5-3 mm diam., with reddish scales; lamina 49- 52 cm long, midrib 21.5 cm, lobes 30 x 5.7 cm, main veins c. 7, with lines and bands of reddish scales, apices 0.8-1.8 cm wide, longdentate. INFLORESCENCE c. 63 cm, branched to 1 (2) order(s); peduncle c. 41 cm long, c. 2 mm diam., glabrous; prophyll c. 30 cm long, 1 cm wide, borne at 10.5 cm above the base of the peduncle, with scattered pale brown scales; peduncular bract inserted at c. 30 cm from the base of the peduncle, c. 12 cm long; rachis c. 16 cm long, with sparse long (1-2 mm) red curly hairs, especially in the axils of rachillae, with 1 branched and 22 unbranched first order branches, the branched one with 3 rachillae; rachillae reflexed, 3-5.2 cm, c. 1 mm diam., glabrous, with quite dense triads. STAMINATE FLOWERS with sepals imbricate, 0.6-0.8 x 0.8-1.1 mm; petals 0.8-0.9 mm high; stamens 6, biseriate, didymous, the filaments 0.2-0.25 mm long and connate at their bases, anthers 0.2-0.35 mm long and wide, in the type often with 4 fertile, 1 sterile and 1 missing or vestigial stamen; pistillode c. 0.2 mm high. PISTILLATE FLOWERS only known from very young buds, with sepals imbricate, the petals still enclosed within. FRUIT unknown.</p></div>
+<div type="distribution"><p>Only known from a single collection from Betampona.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; c. 100 m (according to Jumelle &amp; Perrier (1945); the type specimen gives no altitude).</p></div>
+<div type="conservation"><p>Presumed extinct: not seen for seventy years. Betampona has been visited by several palm collectors, including HB, in recent years.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>The didymous stamens are very rare in entireleaved Dypsis species, and only D. catatiana, D. fanjana and D. singularis are similar in this respect.</p></div>
+<div type="materials_examined"><p>Toamasina: Betampona, Dec. 1925 (bud), Perrier 17469 (Holotype P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus usitatus</name>
+<author>Blanco</author>
+<citation>Fl. Filipinas 265 (1837)</citation>
+<bibref>Merrill, Sp. Blancoanae 85 (1918)</bibref>
+<bibref>Dransfield in Kew Bull. 36: 794 (1982).</bibref>
+<synonymy>
+<name>Calamus blancoi</name>
+<author>Kunth</author>
+<bibref>Kunth., Enum. 3: 595 (1841)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11: 216 (1908)</bibref> 
+</synonymy>
+<synonymy>
+<name>Calamus mollis</name>
+<author>auct. non Blanco Naves</author>
+<bibref>auct. non Blanco Naves, in Blanco, Fl. Filipinas, ed. 3: t. 99 (1877 - 83)</bibref>
+<bibref>Beccari in Ann. Ro} Card. Calcutta 11: 212 (1908)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Ordinary, usual</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender to moderate clustering, thicket-forming rattan with stems to rarely more. Stem without sheaths to 5-10 mm, with sheaths 10-23 mm; intei to 15 cm; sheaths bright green, very sparsely to densely armed with scattered golden brown to 45 mm, and caducous pale grey indumentum; sometimes main body of she unarmed, but even when so, spines present around leaf sheath mouth; spines aroui sheath mouth &#177; erect, much larger than the rest, borne close together in a neat row, the Ic to 12 cm. Knee conspicuous. Ocrea to 5 mm, very densely armed with minute spiculez m or spines to 3 mm. Flagellum to 1.5 m. Leaf ecirrate to 90 cm, frequently less, including petiole to 20 cm; petiole armed with few horizontal golden brown spines; leaflets c 30 on each side of the rachis, close, regular, (in Sabah; most Philippine populations have grouped leaflets), the largest to 30 x 1.4 cm armed with black bristles along margins, 3 main veins on upper surface, and midrib beneath. Male and female inflorescences superficially similar, to 2 m?with 5 or more partial inflorescences; bracts on main axis close tubular, variously armed with golden brown spines but always with apical tufts of erect slender spines to 20 mm; partial inflorescences to 40 cm, with curving axes and curved rachillae; male rachilla to 40 x 2 mm; female rachilla to 50 x 3 mm. Mature fruit ovoid, c 8 x 6 mm, with a short beak to 1 mm, and covered in 18 vertical rows of straw-coloured scales. Seed c 6 x 4 mm. Endosperm apparently homogeneous. Seedling leaf unknown. (Fig. 83)</p></div>
+<div type="distribution"><p>In Sabah known from a few collections from Lahad Datu, Semporna, and Tawau Districts, apparently always coastal. Elsewhere widespread in the Philippines.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Tying purposes, baskets, fish traps; apparently fairly durable.</p></div>
+<div type="discussion"><p>Calamus usitatus is astonishingly variable; however, the large erect spines around the leaf sheath mouth, the dense spiny ocrea, the stiff leaflets, and the bunches of spines around the mouths of the flagellum and inflorescence bracts are all diagnostic. This species has had a most confusing nomenclatural history.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

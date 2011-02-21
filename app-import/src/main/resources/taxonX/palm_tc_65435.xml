@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis dransfieldii</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 355 (1995)</citation>
+<type>Madagascar, Antalavia; Dransfield et al.; JD6735</type>
+<type_loc>Holotypus K; isotypi P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>This species is distinctive in its rather open clustering habit, fibrous leaf sheaths that do not form a well defined crownshaft (but lacking pendulous piassava) and the surprisingly long peduncle that projects beyond the leaves. Such inflorescences are reminiscent of those of the group of Dypsis species and Neodypsis, was one of the first pieces of evidence we discovered for the general blurring of generic boundaries within Dypsidinae, which has lead to the recognition of the single large genus Dypsis. Curious rather than beautiful, this palm is a distinctive feature of coastal white sand forests along the western side of the Masoala Peninsula and has been found nowhere else.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>None recorded.</p></div>
+<div type="diagnosis"><p>a D. nossibense foliorum foliolorumque numero, pedunculi longitudine differt.</p></div>
+<div type="description"><p>Clustering palm in clumps of 3-5, basally with short stilt roots. Mature STEMS unbranched, 6-8 m tall, 7-8 cm diam.; wood very hard; internodes c. 10 cm (2 cm near the crown); bark dull reddish brown, distally with red-brown tomentum, ringed with that were formerly included in Vonitra. In fact D dransfieldii, as an intermediate between Vonitra   close leaf scars. LEAVES 6-12 per crown, porrect, marcescent; sheaths with thick reddish brown tomentum, 36-48 cm, proximally c. 16 cm wide when flattened, deeply channelled, distally 0.5-1.8 x 0.6-1.2 cm, with pale brown fibrous tattering, margins 2.5-3 cm wide, red-brown tomentose; on the opposite side from the petiole with a long, mid-brown, 12-16 cm fibrous tongue; petiole absent, but pseudopetiole appearing after disintegration of sheath material, 15-30 cm, channelled, straw-brown with scattered minute scales; rachis 1.3-1.7 m, puberulous or with flaking grey-brown tomentum, in mid-leaf 0.7-1.2 x 0.5-0.7 cm and keeled; leaflets 33-34 on each side of the rachis, regular, slightly sigmoid, proximal leaflets 28-57 x 0.4-1.8 cm, median 52-62 x 1.9-3.2 cm (leaflet interval 4-5 cm), distal 15-39 x 0.5-2.9 cm, with bifid apices, main veins 3-5, midrib prominent adaxially, apices attenuate, glabrous. Sucker shoots with bifid leaves; young leaves tinged pink. INFLORESCENCE interfoliar, branched to two orders, erect, 2-2.6 m, projecting beyond the leaves, dull reddish brown; peduncle 141-200 cm, round in cross-section, proximally 1.2-2 x 0.5-1.5 cm, green overlaid with red-brown tomentum, glabrescent, distally 0.7-1.8 x 0.5-0.8 cm, pinkish; prophyll 72-91 cm long, borne at 7-16 cm above the base of the peduncle, cylindrical, split only near the apex, with flaking redbrown tomentum; peduncular bract pale cream, inserted at 30-44 cm above the base of the peduncle, 124-126 cm long, with scattered scales, beaked for c. 8.5 cm, abscising and carried upwards by the lengthening inflorescence; non-tubular peduncular bracts inserted at c. 89 cm (1.5-6.5 x 0.7-1.6 cm), 102 cm (1 cm); rachis 30-45 cm, angular in parts, with c. 15 branched and 14 unbranched first order branches, these flattened, swollen and 6 x 2-3 mm at base; rachillae 18-32 cm, slightly flattened, somewhat pitted, 1.2-2 mm diam. at anthesis, 2.5-3 mm diam. in fruit, covered with dense simple scales; flowers cream-coloured. STAMINATE FLOWERS with sepals 0.8-1.4 x 1.4-2.2 mm, unequal, keeled, hooded; petals 2.4-2.5 x 1.6-1.8 mm, ovate, acute; stamens 6, in 1 series (only on large magnification a slight distinction in 2 series apparent), the filaments 0.5-0.8 mm, anthers 1.6-1.8 x 0.4-0.6 mm, dorsifixed, the locules parallel; pistillode 0.8-1 mm high, c. 0.4 mm diam. PISTILLATE FLOWERS only known in bud stage, with sepals c. 1.5 x 1.8 mm, petals c. 1.3 x 1.2 mm, gynoecium c. 1 x 0.7 mm. FRUIT ovoid, 15-20 x 12-14 mm, with persistant sepals 2-3 mm and persistant petals 3.5-6 x 5 mm, fruit verrucose when mature. SEED c. 13 x 9 mm; endocarp with loose fibrous strands 10-22 mm long, the basal ones longest; endosperm ruminate for 2- mm. EOPHYLL bifid, with scaly petiole; scale leaves 2 (respectively 2 and 5-7 cm long).</p></div>
+<div type="distribution"><p>NE Madagascar: Masoala Peninsula.</p></div>
+<div type="biology_ecology"><p>Littoral forest, on steep or level slope; 2-20 m.</p></div>
+<div type="conservation"><p>Endangered. Single site status, in a fragile habitat.</p></div>
+<div type="uses"><p>None recorded.</p></div>
+<div type="discussion"><p>This species differs from D. nossibensis in the number of leaves, the number of leaflets, and the size of the peduncle.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Antalavia, Feb. 1988 (fr.), Dransfield et al. JD6468 (K, P, TAN); idem, Feb. 1988 (fr.), Dransfield et al. JD6469 (K, TAN); idem, Nov. 1989 (fl.), Dransfield et al. JD6735 (K holotype; isotypes P, TAN); idem, Nov. 1989 (seedling), Dransfield et al. JD6736 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

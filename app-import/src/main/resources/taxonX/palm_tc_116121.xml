@@ -1,0 +1,59 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Graceful undergrowth palms from eastern Brazil with distinctive slender discolorous leaflets and fruit in which the pericarp splits longitudinally when ripe, exposing the endocarp.</p></div>
+<nomenclature>
+<name>Lytocaryum</name>
+<author>Toledo</author>
+<citation>Arq. Bot. Estado São Paulo ser. 2. 2(1):6 (1944).</citation>
+<type>Type; Lytocaryum hoehnei; (Burret) Toledo</type>
+<synonymy>
+<name>Glaziova</name>
+<author></author>
+<bibref>Mart. ex Drude, in Mart., Fl. bras. 3(2): 295 (1881) (non Bureau 1868).</bibref>
+<type>Lectotype; Glaziova martiana; Glaz. ex Drude</type>
+</synonymy>
+<synonymy>
+<name>Microcoelum</name>
+<author></author>
+<bibref>Burret and Potztal, Willdenowia 1: 387 (1956).</bibref>
+<type>Lectotype; Microcoelum martianum; (Glaz. ex Drude) Burret &amp; Potztal</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Lyton — loosened, caryon — nut, referring to the way that the fruit coat splits away from the endocarp at maturity.</p></div>
+<div type="description"><p>Slender, solitary, unarmed, pleonanthic, monoecious palms. Stem erect, short, rarely exceeding 3 m, at first obscured by leaf sheath remains, later bare, closely ringed with leaf scars. Leaves pinnate, marcescent, graceful; leaf sheaths densely light or dark brown-hairy, with a triangular ligule-like projection opposite the petiole, later disintegrating into a fibrous network and splitting; petiole very short to elongate, adaxially flat to rounded, abaxially rounded or angled, fibrous along the margins, also with scattered thin indumentum and some coarse dark hairs; rachis neatly curved, usually bearing conspicuous, dark, coarse hairs adaxially; leaflets single-fold, numerous, slender, often extremely so, linear, close and regularly arranged, the tips asymmetrical, soft in texture, the adaxial surface dark green, abaxial surface covered with grey or pale brownish indumentum, with few to numerous ramenta along the midrib, transverse veinlets obscure. Inflorescences solitary, interfoliar, branching to 1 order, protandrous; peduncle short to elongate, elliptic in cross-section, sparsely to densely tomentose; prophyll tubular, flattened, 2-keeled, usually mostly concealed by the leaf sheaths, opening distally, becoming fibrous in age, light or dark brown tomentose; peduncular bract elongate, inserted just above and much longer than the prophyll, coriaceous to ± woody, entirely enclosing the inflorescence until shortly before anthesis, splitting longitudinally along the abaxial face and expanding, adaxial surface glabrous, smooth or tomentose, ± grooved, abaxial surface deeply grooved, densely light or dark brown-tomentose; rachis usually shorter than the peduncle, sparsely to densely tomentose like the peduncle, bearing numerous, spirally arranged rachillae, each subtended by a minute triangular bract; rachillae eventually widely spreading, slender, sparsely tomentose, somewhat zigzag, with a short to long basal bare portion, above which bearing few triads proximally and paired or solitary staminate flowers distally, the distal-most rachillae shorter and sometimes entirely staminate; rachilla bracts and floral bracteoles inconspicuous. Staminate flowers small, ± symmetrical, sessile or borne on brief, slender pedicels; calyx with or without a solid, short to long stalk-like base, and 3, membranous, keeled, narrow triangular, acute lobes; petals 3, distinct, valvate, ovate-triangular, acute, thinly coriaceous with scattered, caducous, dot-like scales; stamens 6, filaments slender or basally thickened, very briefly epipetalous, elongate, ± inflexed, anthers slender, ± oblong, basally sagittate, apically sometimes pointed, medifixed, versatile, latrorse; pistillode conspicuous, about 1/2 the height of the filaments, trifid or minute. Pollen ellipsoidal, frequently elongate, usually with either slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely or coarsely perforate, perforate and micro-channelled, or perforate-rugulate, aperture margin may be slightly finer; infratectum columellate; longest axis 34–54 µm [2/2]. Pistillate flower larger than the staminate, ± pyramidal; sepals 3, distinct, triangular, broadly imbricate, coriaceous, keeled, the tips ± hooded or not; petals ± equalling the sepals, 3, distinct, broadly imbricate at the base, abruptly narrowed at ± the midpoint to broad or narrow, tapering, valvate tips; staminodal ring thinly fleshy, irregularly 6-toothed or truncate; gynoecium ± pyramidal, trilocular, triovulate, brown-hairy, with a very short to long style and 3 stigmas appressed in bud, ovules laterally attached to the central axis, form unknown. Fruit globose to ovoid, 1-seeded, tinged pink or reddish, with a short beak and apical stigmatic remains; epicarp ± smooth, mesocarp thin, ± fibrous, it and the epicarp dehiscing along 3 vertical sutures to expose the endocarp, endocarp thin, rather fragile, marked with 3 vertical lines externally, internally with 3 shining broad bands, endocarp pores lateral near the base. Seed laterally attached with broad lateral hilum, endosperm homogeneous (Lytocaryum weddellianum) or deeply ruminate (L. hoehnei), with or without a central hollow; embryo basal opposite an endocarp pore. Germination adjacent-ligular; eophyll pinnate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Two closely related species restricted to south-east Brazil. </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b). </p></div>
+<div type="relationships"><p>The monophyly of Lytocaryum has not been tested. The genus is resolved as sister to Syagrus romanzoffiana with high support (Gunn 2004); however, there is low support for an alternative placement as sister to Attalea (Baker et al. in review). </p></div>
+<div type="uses"><p>Lytocaryum weddellianum is an important pot palm, sold in large quantities in Europe. </p></div>
+<div type="taxonomic accounts"><p>See Glassman (1987). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>The only difference between Microcoelum and Lytocaryum is the nature of the endosperm; otherwise the two taxa are very similar. Thus, Microcoelum is placed in synonymy. Lytocaryum, in the present sense, has a combination of characters unusual in the subtribe Butiinae. Lytocaryum is separated from Syagrus by its distinctive leaves with abundant rachis tomentum, its strongly versatile anthers, fruit with epicarp and mesocarp dehiscing by vertical sutures; and its thin rather fragile endocarp. 
+</p></div>
+<div type="vernacular"><p>Common names not recorded. </p></div>
+<div type="biology_ecology"><p>Found in shady forest at altitudes of 800–1800 m. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

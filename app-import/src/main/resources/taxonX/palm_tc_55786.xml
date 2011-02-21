@@ -1,0 +1,36 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops microstachys</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 225 (1902)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 135 (1911)</bibref>
+<bibref>Dransfield, Ratt. Sabah 65 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 57 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="el"><p>Small spike</p></div>
+<div type="vernacular"><p>Wi Duduk (Ib.)</p></div>
+<div type="description"><p>Clustering &#177; stemless rattan with a decumbent or short erect stem not exceeding 1 m tall; stem without sheaths c. 20 mm diam., with sheaths to 50 mm diam., frequently less, internodes short, c. 2 cm long. Sheaths dull green with abundant mid to dark brown indumentum and armed with upward-pointing or horizontal spines from 3-30 mm long, those at the base of the petiole generally upward-pointing and much longer; knee absent. Leaf ecirrate to 2 m long, rarely more, usually much less; petiole to 35 cm, armed with abundant long horizontal spines, scattered or in whorls, to 3 cm; leaflets to 35 on each side of the rachis, regularly arranged, the longest to 27 &#215; 2.5 cm, usually less. Inflorescences usually borne on a slender peduncle arching out of the crown, to 20 cm long; partial inflorescences usually &#177; congested into a head at the end of the peduncle; female rachillae rusty tomentose, to 4 cm, male similar, to c. 2 cm. Mature fruit globose or top-shaped, to 10 &#215; 8 mm and covered in 15-16 vertical rows of green turning straw-coloured or brown scales. Seed globose, c. 7 mm diam.; endosperm deeply ruminate. Seedling leaf not known. (Fig. 16).</p></div>
+<div type="distribution"><p>Found scattered throughout Brunei. Elsewhere throughout Borneo. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>D. microstachys is often found on unusual soil types, such as poor ridge top soils and forest marginal to kerangas. There is a great range in size, and within individuals, inflorescences may vary in size according to age. The &amp;ldquo;stemless&amp;rdquo; habit, lack of knee and the arching inflorescence with rusty-brown rachillae and green young fruit should help in its identification.</p></div>
+<div type="materials_examined"><p>BEL: Labi, Bt.Teraja, Sands 5457; Labi, Bt.Teraja, Simpson 2127; Sungai Liang, Andulau F.R, Ashton S 21572. TEM: Amo, Bt.Belalong, Wong 1390; Amo, K.Belalong, Dransfield J. 6670; Amo, K. Belalong, Stockdale 53; Stockdale 62; Stockdale 63; Amo, Ulu Belalong, Dransfield J. 7380. TUT: Ulu Tutong, Bukit Bahak, Kirkup 468.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

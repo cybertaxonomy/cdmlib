@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Aiphanes verrucosa</name>
+<author>Borchs. &amp; Balslev</author>
+<citation>Nordic J. Bot. 9: 389 (1989 publ. 1990)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stems clustered, to 5 m tall, 4-5 cm in diameter.  Leaves distichous.  Leaf blade 100-130 cm long; pinnae 50-70 on each side, narrow, lanceolate, inserted in groups and pointing in all directions, the central ones 35-40 cm long and 1.5-2.5 cm wide, only slightly jagged at apex.  Inflorescence 80-120 cm long; branches 50-70, spreading, with a short, thick proximal part, and a slender distal part.  Flowers creamish yellow.  Female flowers 1 cm long or more.  Fruits 2-2.5 cm in diameter, greenish white, with brown warty spots.</p></div>
+<div type="distribution"><p>Endemic to the Andes of SE Ecuador.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>Endangered (Borchsenius &amp; Skov 1999). Criteria B1</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>In Colombia, this species is replaced by the closely related A. lindeniana (H. Wendl.) H. Wendl., which differs in its smaller female flowers, and red, smooth fruit.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

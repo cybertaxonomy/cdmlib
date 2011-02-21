@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis aquatilis</name>
+<author>Beentje</author>
+<citation>in J. Dransfield &amp; H. Beentje, Palms of Madagascar: 372 (1995)</citation>	
+<type>Madagascar, Tolanaro: Manantenina; Guillaumet; 4003a</type>
+<type_loc>Holotype P</type_loc>
+</nomenclature>
+<div type="introduction"><p>Insufficiently known species. This species is known from a single incomplete specimen. The collector described it as growing beside a river and in the water. The inflorescence seems to have a long peduncle and is somewhat reminiscent of those of members of the "Vonitra" group. We are tempted to suggest that this is a stemless rheophyte and those with a mind to try to refind it should perhaps look for a palm with a habit reminiscent of Chamaedorea cataractarum.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>Palma acaulescens verosimiliter rheophytica D. fibrosae affinis folio pinnata pinnis squamas dispersas ramentas ferentibus inflorescentia pedunculo longo terete in 2 ordines ramificanti distincta.</p></div>  
+<div type="description"><p>Trunk very short, if not non-existant (Guillaumet). LEAVES: sheath unknown; petiole part on type 25 cm long, proximally 2 cm diam., deeply channelled, rapidly tapering to the distal diam. 0.8 cm and slightly channelled; rachis c. 8 mm diam. in upper/mid-leaf; leaflets regular, close, the median 21-23.5 x 1.2-1.3 cm, the distal 10-18 x 0.4-1.1 cm, main vein 1, apices unequally acute, indument: adaxial midrib as well as margins with small dark ramenta, abaxial minor veins with dense but scattered minute scales. INFLORESCENCE branched to 2 orders; peduncle at least 21.5 cm and probably considerably longer, 5 x 3 mm diam., glabrous; bracts at least 3 major ones, opening near the apex only, the most distal tubu lar bract 5.5 cm long; non-tubular peduncular bract c. 1 cm long; rachis (one seen) 27.5 cm long, with 12 branches, the proximal 4 or 5 bifurcate; rachis bracts proximally c. 5 mm long; rachillae 17-24 cm long, 1.5 mm diam., glabrous, with spaced triads. STAMINATE FLOWERS with sepals 1.5-1.8 x 1-2 mm; petals 1.8-2.4 x 1.6-1.7 mm, acute to obtuse; stamens 6, didymous, uniseriate, the filaments 1-1.4 x 0.5-0.6 mm, flat and slightly triangular, anthers 0.4-0.5 mm high, 0.7-0.8 mm wide, dorsifixed; pistillode 1.7-2 x 0.8 mm. PISTILLATE FLOWERS unknown. FRUIT unknown.</p></div>
+<div type="distribution"><p>Manantenina.</p></div>
+<div type="biology_ecology"><p>"Riverside and in the water" (Guillaumet).</p></div>
+<div type="conservation"><p>Uncertain. Probably Endan gered, since it seems to be restricted to a single area.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Distinct from all other species in the "Vonitra" group by the leaves with scattered scales and much ramenta, as well as by their small size.</p></div>
+<div type="materials_examined"><p>Tolanaro: Manantenina, Dec. 1971 (fl.), Guillaumet 4003a (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

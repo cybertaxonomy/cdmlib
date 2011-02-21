@@ -1,0 +1,35 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Basu</mods:namePart>
+<mods:namePart type="given">S.K.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus helferianus</name>
+<author>Kurz</author>
+<citation>Journ. Asiat. Soc. Bengal 43 : 1874</citation>
+<bibref>Beccari in Hook.f. Fl. Brit. Ind. 6:446. 1892</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 247. 1908, and Appendix PI. 83. 1913.</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Possibly a slender climber; leaves ecirrate; rachis acutely bifaced on upper side, aculeate below; leaflets in alternate groups of 2 - 5 leaflets on each side of the rachis, linear-lanceolate, 20 - 30 cm long, 13-15 mm broad at middle, tapering, attenuate at apices, 5-nerved; midnerve bristly above, smooth below. Male and female inflorescences slender; primary bracts tubular, very closely sheathing; rachillae non-drooping; male flowers oblong, 4 mm long, 1-2 mm apart; female flowers conical, 4 mm long, borne on distinct basal cushion; calyx urceolate; fruit unknown.</p></div>
+<div type="distribution"><p>NDIA (Andaman Island), BURMA.</p></div>
+<div type="biology_ecology"><p>Its habitat in Andaman Island is unknown.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Note: According to Beccari (1908), this species occurs in Andaman Islands, but except for the specimens studied by Beccari and one old specimen collected by Heifer with the locality mentioned as Andamans preserved in CAL, no other specimens were available for study.</p></div>
+<div type="materials_examined"><p>Andamans : Heifer 6395 in 2 sheets (CAL Ace. nos. 493759, 493760).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

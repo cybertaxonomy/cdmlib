@@ -1,0 +1,32 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia lanceolata</name>
+<author>J.Dransf.</author>
+<citation>Malay. Forester 41 (1978) 325</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Lanceolate - referring to the leaflets</p></div>
+<div type="vernacular"><p>rotan dahan</p></div>
+<div type="description"><p>Clustering high climbing rattan branching in the canopy. Stem without sheaths about 1.5 cm in diameter, with to about 1.8 cm. Internodes about 12 cm, longer in juvenile stems. Sheaths pale grey green when fresh, drying dull pale brown, inerm except for two vertical rows of short triangular spines to 3 mm long in a position lateral to the leaf insertion; pale grey indumentum thinly present on leaf sheath; caducous black scales abundant on young sheaths; ocrea short, tightly sheathing to 2 cm high, truncate, with margins thinly coriaceous, dark brown, somewhat tattered. Whole leaf including cirrus about 1 m in length; cirrus about 45 cm; petiole not exceeding 1.5 cm in mature climbing stems, about 5 mm wide; rachis with recurved black, pale bulbous-based hooks on the lower surface, these intergrading with clustered grapnel hooks on the cirrus. Leaflets up to 13 on each of the rachis, narrowly lanceolate, the first 3 very crowded at the base of the rachis, more distant above, the longest, 30 cm long by 2 cm wide, the fourth from the base; leaflet surface dark green above somewhat paler below, drying dull green brown above, and very slightly paler below; margins inerm; praemorse margins to 5 cm long only. Uppermost leaves subtending inflorencences with leaflets much shorter. Inflorescences produced from top 3 nodes, to 60 cm long with up to 6 partial inflorescences each bearing about 6 pendulous slender rachillae to 13 cm long by 0.4 cm wide, with mid-brown bracts and hairs. Flowers and fruit unknown.</p></div>
+<div type="distribution"><p>Perak: endemic.</p></div>
+<div type="biology_ecology"><p>This species is known from two collections from Kledang Saiong near Ipoh and one from G. Bintang Hijau Forest Reserve, Ulu Selama, growing, in both localities, in hill Dipterocarp forest.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>K. lanceolata is close to K. rigida but may be distinguished by the narrow lanceolate leaflets, the leaflets being much more reminiscent of those of K. scortechinii and K. echinometra these last two, however, have greatly swollen ocreas.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis furcata</name>
+<author>J.Dransf.</author>
+<citation>Palms of Madagascar: 393 (1995)</citation>
+<type>Madagascar, East Coast, Mangoro; Perrier; 18051</type>
+<type_loc>Holotypus P</type_loc>
+</nomenclature>
+<div type="introduction"><p>There is only one herbarium specimen of this slender palmlet. In spite of that, the form of leaf appears to be so distinctive and unusual that there should be no difficulty in identifying it, should it be refound. This must have been a very beautiful palm. The species name refers to the deeply forked leaf.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Inter species floribus staminatis triandris staminibus antepetalis, staminodiis antesepalis alternantibus, foliis valde furcatis, inflorescentia 2ramosa distincta.
+</p></div>
+<div type="description"><p>Clustering slender forest undergrowth palm to 1-2 m tall. STEM 7 mm diam., internodes 13-16 mm long, bearing scattered dark brown scales. LEAVES probably c. 5 in crown, entire deeply bifid, to 35 cm long; sheaths 6-8.5 cm, c. 1.2 cm diam., striate, rather densely covered with red-brown scales and branched trichomes, auricles triangular, 7 x 6 mm; petiole 7-13 cm long, c. 3.5 mm wide at the base, with abundant caducous dark brown scales; costa 2 cm only; blade deeply bifid, the two lobes 27-35 x 2-3 cm, tapering to the narrow tips, apical margin shallowly and irregularly lobed, adaxial surface with sparse scattered brown punctiform scales, abaxial surface with abundant brown punctiform scales and bands of elongate pale trichomes with brown bases. INFLORESCENCE interfoliar at first, later infrafoliar, branched to 2 orders; peduncle 23-30 cm, c. 3 mm wide at the base; prophyll inserted c. 4-5.5 mm above base, 17-21 x 0.8 cm, membranous, sparsely scaly; peduncular bract similar to prophyll, exceeding it by 5-7 cm; rachis when fully expanded 16-26 cm, densely covered in redbrown branched trichomes; most (not just basalmost) first order    branches branched to a further order; rachillae c. 70, 1.5-3 cm long, c. 0.8 mm diam., with scattered red-brown branched trichomes, triads c. 0.8-1 mm apart, rachilla bracts 0.25 x 0.5 mm, rounded, with entire margins. STAMINATE FLOWERS bud 0.6 mm diam.; sepals 0.4 x 0.4 mm, margins erose; petals 0.5 x 0.4 mm, triangular, striate; stamens 3, antepetalous, alternating with 3 minute antesepalous staminodes; pistillode minute. Persistent striate petals at base of very immature fruit to 1 x 1.1 mm. Other parts unknown.</p></div>
+<div type="distribution"><p>Central East Coast of Madagascar.</p></div>
+<div type="biology_ecology"><p>Rain forest at low elevation.</p></div>
+<div type="conservation"><p>Presumed extinct. Not collected since the type collection was made more than sixty-five years ago.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Known from a single collection, this is nevertheless a very distinctive species, with deeply divided leaf blades and densely hairy inflorescences with numerous rachillae.</p></div>
+<div type="materials_examined"><p>Mahanoro: Lower Mangoro, forest remnants, Oct. 1927 (fl.), Perrier 18051 (Holotype P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

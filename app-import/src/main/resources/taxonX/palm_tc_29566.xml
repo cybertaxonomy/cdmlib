@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sabah. Sabah Forest Records 13.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1984</mods:dateIssued>
+<mods:publisher>Sabah Forest Department</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus hepburnii</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 795 (1982)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>A.J. Hepburn - Chief Research Officer at Sepilok, 1979 - 1981</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering rattan climbing to 20 m; stem without sheaths to 8 mm, with to 17 mm diam.; internodes 10 - 13 cm. Leaf sheaths dark green, covered in caducous scaly indumentum and armed with scattered large triangular spines to 10 x 10 m with black hairy margins and hollowed-out bases, interspersed with much smaller spines. Knee conspicuous. Ocrea membranous, inconspicuous to c 1 mm. Vestigial flagellum present to 20 cm armed with horizontal triangular spines. Leaf cirrate to 2.2 m, including petiole to 20 cm and cirrus to c 1 m; cirrus armed with scattered rather than grouped spines; leaflets linear to c 32 on each side of the rachis arranged in 4 - 6 rather distant groups, but regularly arranged within the groups, to 32 x 1.3 cm, somewhat plicate, very sparsely armed on the upper surface with 2 - 4 rows of scattered bristles, densely and conspicuously armed with short brown bristles all over the under-surface. Male inflorescence only known, to c 65 cm, curved; bracts on the axis dark brown, spiny and splitting longitudinally producing an untidy mass of strips; first order branches to 25 cm; 2nd order branches to 7 cm, strongly reflexed rachillae to 13 x 2 mm bearing close distichous flower pits. Other parts unknown. (Fig. 55)</p></div>
+<div type="distribution"><p>Known only from two collections, one from the slopes of Bt. Masasau, near Pamol, and the other in Sapa Payau F.R. on the main road between Sandakan and Telupid. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>C. hepburml although incompletely known, is easily identified by the presence of a vestigial flagellum and a cirrus with scattered rather than grouped spines, together with the linear leaflets densely bristly on the undersurface. It is to be hoped that more material will be collected. This rather elegant rattan was found in lowland Dipterocarp forest at the foot of an ultrabasic hill at Bt. Masasau, and in lowland Dipterocarp forest on poor soils at the edge of an old river terrace at Sapa Payau.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

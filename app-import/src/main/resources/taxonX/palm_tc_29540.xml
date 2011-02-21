@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus godefroyi</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 267 (1908) and (Suppl.): 40 (1913)</citation>
+<type>Cambodia, Siem Reap; Godefroy-Leboeuf; 685</type>
+<type_loc>Holotype K; isotype P</type_loc>
+<bibref>Gagnep. &amp; Conrard in Gagnep. (ed.), Fl. Indo-Chine 6: 1035 (1937)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 29 (2001)</bibref>
+</nomenclature>
+<div type="distribution"><p>Indochinese endemic, Thailand (North-east), Laos (Central) and Cambodia.</p></div>
+<div type="materials_examined"><p>THAILAND (NORTH-EAST): Nong Khai ('Nong Kay'), Mekong, undated, (pist.), Thorel s.n. E139 (P). LAos (CENTRAL): Vientiane Municipality, Pak Ngum Distr., Ban Maknao, 21 March 2000, (stam.), Khamphone 449 (FRCL, K) and (pist.), Khamphone 450 (FRCL, K). CAMBO()IA: banks of Tonle Sap, Siem Reap (P sheets erroneously labelled 'Siam'), Great Lake, 19 July 1879, (pist.), Godefroy-Leboeuf 685 (K, P); locality unknown, undated, (pist.), Unknown s.n. E140 (P).</p></div>
+<div type="biology_ecology"><p>Marshy, forested areas below 200 m.</p></div>
+<div type="discussion"><p>This species seems likely to be synonymous with C. rotang L., but the newly collected Lao material did not reach K in time for this to be confirmed by detailed direct comparisons. Most previously published locality records are inaccurate and so, since Magalon's (1930) report from Cochinchina appears to be unsupported by specimens (it may simply be a repeat of Beccari's [1908, 1913] error) there remains no evidence that the species occurs in Vietnam. A reported specimen from Siam (Gagnepain &amp; Conrard 1937) is apparently in error (see above). The specimen from Phnom Penh cited by Gagnepain &amp; Conrard (1937) could not be located; it may be Unknown s.n. E140. The one Lao record is from a marshy valley on the Mekong floodplain. This area is used for dry season rice but floods too deeply to be used in the rainy season, at which time the paddies are rapidly re-occupied by sedges. Much of the marsh was probably once wooded but only scattered trees now remain, as well as degraded forest and bamboo scrub on the surrounding higher ground. Calamus godefroyi was reportedly once very abundant at the site, the local name of which translates as 'rattan lake', but it is now reduced to scattered clumps along banks and ditches in the marsh, with more plants in the surrounding scrub. In 2000 seedlings were common but few adult plants were found. One local man was so concerned by this decline that he has transplanted several clumps to his small-holding; these are thriving and were the source of the recently collected material.</p></div>
+<div type="vernacular"><p>wai nong (Lao Loum).</p></div>
+<div type="uses"><p>Stem used for handicrafts, shoot edible.</p></div>
+<div type="conservation"><p>Unknown, but locally poor (see above) because the species occupies a habitat especially vulnerable to clearance. Similar habitats are widespread in the Mekong plain and it is likely that C. godefroyi will be found at other sites, but as agriculture intensifies many of those in Laos may be under threat. Likely to be secure if strong populations occur around the Great Lake in Cambodia; otherwise of moderate concern.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

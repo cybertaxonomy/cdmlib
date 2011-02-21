@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis tokoravina</name>
+<author>Beentje</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 169 (1995)</citation>
+<type>Madagascar, Antalavia; Dransfield et al.; JD6739</type>
+<type_loc>Holotypus K; isotypi P, TAN</type_loc>
+</nomenclature>
+<div type="introduction"><p>An immense and very beautiful palm of primary forest. We have not seen the flowers, but the tree is so distinctive, especially with its enormous leaf sheaths which are open and swollen, that it deserves to be named.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Tokoravina (Betsimisaraka; toko means group, ravina leaf).</p></div>
+<div type="diagnosis"><p>Palma ingens inter species maximas foliolis aggregatis vagina folii reclusa tumida geniculata rachillis longis gracilibus endospermio homogeneo distinctissima.</p></div>
+<div type="description"><p>Solitary palm. TRUNK c. 20 m, c. 60 cm diam. at the base, 45-50 cm diam. at breast height, 30 cm diam. near the crown; internodes c. 1.2 cm, dull reddish brown, vertically fissured. LEAVES 10-14 in the crown, subtristichous, arcuate; sheath scarcely forming crownshaft, 0.7-1 m long, very swollen, almost kneed, open for much of its length, greyish brown, bright red-brown within, with lateral auricles; petiole 6-34 cm long, c. 6 x 8 cm diam., deeply grooved; rachis grey-brown; rachis c. 2.7 m long, in mid-leaf c. 5 cm wide and 4 cm deep, keeled; leaflets 80-110 on each side of the rachis, stiff, held irregularly in groups of 3-8 in different planes, curled,grey-waxy beneath, interval between the groups 4-5 cm, between the leaflets within the groups 1-2 cm, the proximal c. 115 x 1.3-2.6 cm, median 100-128 x 3.3-4 cm, distal 25-37 x 1-2.3 cm, main vein 1, with thickened leaf margins, with tufts of ramenta and scattered scales on the minor veins, distal pair joined for c. 2 cm, dentate. INFLORESCENCE interfoliar, branched to 3 orders, huge, c. 3 m, with rather spreading rachillae; peduncle c. 2 m long, c. 8 cm wide near the base; peduncular bract c. 1 m long, curved, reddish brown tomentose; first order branches with an axis of up to 42 cm, proximally 15 x 9 mm diam., with up to 12 rachillae; rachillae numerous, very slender (c. 2.5 mm diam.), ?glabrous, with shallow pits. STAMINATE FLOWERS unknown. PISTILLATE FLOWERS unknown. FRUIT obovoid, with pointed base, 15-20 x 11-13 mm; endocarp fibrous. SEED not seen entire, but with homogeneous endosperm. EOPHYLL entire, bifid.</p></div>
+<div type="distribution"><p>Maroantsetra and Mananara.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest; edge of swamp in val-ley bottom and ridge tops; c. 420 m.</p></div>
+<div type="conservation"><p>Endangered. Only known from two populations, with few (&#60; 20) individual trees known; the population at Antanambe is in an area under agricultural pressure.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>Though this species slightly resembles giants such as D. bejofo and D. pilulifera, the open leaf sheaths make it immediately recognizable. The open sheath and large size are reminiscent of D. prestoniana, but that taxon has a more slender trunk.</p></div>
+<div type="materials_examined"><p>Maroantsetra: Antalavia, Nov. 1989 (dead infl.), Dransfield et al. JD6739 (K, P, TAN, type). Mananara Avaratra: Antanambe, Oct. 1994 (fr.), Dransfield &amp; Beentje 7507 (K, TAN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The genus Heterospathe (Palmae: Arecoideae) in the Philippines</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 45, No. 2, pp. 219-234</mods:publisher>
+<mods:dateIssued>1990</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Heterospathe trispatha</name>
+<author>Fernando</author>
+<citation>Kew Bull. 45: 231 (1990)</citation>
+<type>Luzon, Aurora Prov., Baler, Dikaluyangan; Fernando; 481</type>
+<type_loc>Holotypus LBC; isotypi BH, K</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>inflorescentia infrafoliari prophyllo et duobus bracteis peduncularibus praedita distinctissima. Typus: Luzon, Aurora Prov., Baler, Dikaluyangan, Fernando 481 (holotypus LBC; isotypi BH, K).</p></div>
+<div type="description"><p>Solitary, slender, undergrowth palm to 3 m tall. Stem c. 5 cm diam.; internodes to 2 cm long. Leaves pinnate, to 8 in crown, arching; young leaves reddish-brown; leaf including petiole to 1.5 m long; leaf sheaths not forming a well-defined crownshaft, each to 40 cm long, drying striate, the edges fibrous and marcescent; petiole c. 35-46 x 0.8 cm, flattened adaxially, the edges sharply angled, convex abaxially and minutely puncticulate, mid-rachis triangular, bifacial adaxially, flattened abaxially and minutely puncticulate. Leaflets to 26 on each side of the rachis, unicostate, regularly arranged, spaced 3-4 cm apart, linear-elliptic, long acuminate to sigmoid or falcate near apex, midrib and secondary nerves prominently elevated, ramenta prominent along midrib on undersurface, the leaflets drying brittle; basal leaflets c. 31 x 2 cm; middle leaflets c. 35 x 3 cm; apical leaflets c. 20 x 0.7 cm. Inflorescence infrafoliar, arching, to 45 cm long, branching to 2 orders; peduncle c. 17 x 2 x 0.9 cm, covered with dense, dark brownish tomentose scales, the surface drying striate; prophyll woody, c. 24 x 6 cm, lance-shaped, 2- keeled laterally, and splitting apically, the surface scaly, persistent; peduncular bracts 2, the first borne c. 2-3 cm above the prophyll, c. 33-40 x 3.5 cm, similar to the prophyll, second peduncular bract borne 4-5 cm above the first, c. 33-36 x 3 cm, protruding through first peduncular bract or enclosed within it; first order branches to 9, up to 4 basal first order branches further branching, each c. 30 x 0.4 cm, with 2-6 rachillae, distal branches as rachillae, arranged spirally along axis; rachilla terete, c. 22-30 x 0.2-0.3 cm, covered with caducous, tomentose scales, drying striate; triads borne spirally along rachilla and subtended by low, lip-like bracts. Staminate flower oblong, 4 x 3 mm; sepals 3, broadly imbrictate, much shorter than the petals, c. 2 x 1.75 mm, one often larger than the other two, sparsely ciliolate along the margin; petals 3, valvate, striate when dry, acute at tip, 4 x 2.5 mm; stamens 6; anthers dorsifixed, 2.5 mm long, filaments white, 2 mm long; pistillode conical, 2.5 x 1 mm, briefly trifid at apex. Pistillate flower ovoid-obtuse in bud, shorter than the staminate flower, c. 3 x 2.5 mm; sepals 3, broadly imbricate, rounded, 2 x 2 mm; petals 3, imbricate at base with acute valvate tips, 2.5 x 2 mm; pistil ovoid, 2 x 1.3 mm, briefly trifid at apex; staminodes minute, tooth-like, borne at base of pistil. Infructescence with arching rachillae. Fruits spirally arranged in 3-4 lax series, bright green, ripening yellow then red, broadly ovoid, c. 1.2 x 0.8 cm, stigmatic residue obliquely apical, epicarp drying granulose with sclerosomes. Seed oblong-ovoid, c. 6.5 x 6 mm, rounded on both ends, hilum prominent; endosperm deeply ruminate.</p></div>
+<div type="distribution">Luzon (Aurora Prov.)<p></p></div>
+<div type="biology_ecology">In lowland dipterocarp forest; c. 50 m. Endemic. <p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Within Heterospathe, this species is most unusual. For one, as the epithet suggests, the inflorescence bears three bracts-a prophyll and two peduncular bracts-rather than a prophyll and a single peduncular bract which is typical in the genus. Secondly, the inflorescences are infrafoliar (as in H. scitula) not only at anthesis but even while still completely enclosed in the bracts. However, despite the unusual features, details of the leaflet, flower, fruit, and seed indicate affinity with Heterospathe. H. trispatha may, thus, be considered as an aberrant member of the genus.</p></div>
+<div type="materials_examined"><p>LUZON. Aurora Prov., Casiguran, Dilasag, Fernando 763 (LBC), Baler, Dikaluyangan, Fernando 481 (holotype LBC; isotypes BH, K) and 566 (BH, K, LBC).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

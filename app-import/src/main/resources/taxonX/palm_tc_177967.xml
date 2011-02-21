@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis laosensis</name>
+<author>Becc.</author>
+<citation>Webbia 3: 225. 1910</citation>
+<bibref>Becc., Bull. Mus. Hist. Nat. Paris, 17(3): 157. 1911</bibref>
+<bibref>Becc., Ann. Bot. Gard., Calcutta 13: 248. 1931</bibref>
+<bibref>Gagnep., in Lecomte, Fl. Gén. Indo-Chine, 6(8): 997. 1937</bibref>
+<bibref>Gagnep., in Humbert, Not. Syst., 6(3): 160. 1937</bibref>
+<type>Laos, Saraburi; Dr Thorell; 3154</type>
+<type_loc>Lectotype P; isolectotype FI</type_loc>
+<synonymy>
+<name>Rhapis macrantha</name>
+<author>Gagnep.</author>
+<bibref>Gagnep., in Humbert, Not. Syst. 6(3): 160. 1937</bibref>
+<bibref>Gagnep., in Lecomte Fl. Gén. Indo-Chine 6(8): 995. 1937</bibref>
+<type>North Annam, Vinh; Chevalier; 32535</type>
+<type_loc>Type P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems to 3 m tall, with sheaths, 11–30 mm diam., without sheaths 5–11 mm. Leaf sheath with outer and inner fibers close, fine, producing a squared mesh, ligule sometimes remaining intact at maturity; petiole to 2.5(4.5) mm wide, with a few brown papillae along the margin at the base and apex; blade with V-shaped or semi-circular to lunulate outline, with a conspicuous palman, segments 3–9(12), folds 15–27, to 340 mm long, sides curved, apices distinctly cucculate, oblique, with irregular dentate secondary splitting, primary splits to within 10–87 mm of the blade base, margins scabrid, thick texture, adaxial surface glossier than abaxial and slightly darker, transverse veinlets conspicuous. Inflorescence, the male and female similar in general appearance, branching to 2 orders; prophyll, large boat-shaped, usually completely overlapping the first rachis bract, thick and woody in texture, pale brown, tomentose, rachis bracts 1(–2), first bract, reddish brown, large, boat-shaped, thick in texture, either keeled or with up to 3 distinct ribs, inner surface shiny, outer surface tomentose, not sheathing the rachis, a second incomplete rachis bract present in some specimens, similar to the first bract but thinner in texture; rachis overall length to 90(140) mm, to 5 mm diam., rachillae short 15–45 mm, covered with minute rusty brown papillae. Flowers, male more densely packed on the rachillae than female, similar in size. Male flowers, obtriangular to 3.5 × 2.6 mm; calyx to 1.3 mm, lobes to 0.8 mm with regular margin; corolla, narrowing towards the base, lacking a receptacular-stalk; filaments, shorter row to 1.8 mm, longer to 2 mm, narrow, to 0.2–3.5 mm diam.; pistillode minute. Female flowers, globose to 3.4 × 2.8 mm; calyx to 1.2 mm, lobes to 0.5 mm; corolla with a receptacular-stalk to 1.8 mm; staminodes present. Fruit with three carpels developing, borne on a short receptacularstalk to 0.5 mm. Mature fruit not seen. Hermaphrodite inflorescence with male and hermaphrodite flowers to 4.2 × 2.5 mm; calyx to 1.5 mm; corolla with a receptacular-stalk to 1.4 mm; hermaphrodite flower carpels to 1.2 mm.</p></div>
+<div type="distribution"><p>Laos; Vietnam.</p></div>
+<div type="biology_ecology"><p>Habitat. Alluvial river levée, sandstone soil 200 to 530 m, evergreen and degraded semi-evergreen forest.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The large thick overlapping prophyll and first rachis bract, shiny adaxial leaf surface which usually has a pinkish tinge when dried and distinctly cucculate leaf segment tips are characteristic of this species. One inflorescence seen was hermaphrodite with larger male and hermaphrodite flowers to 4.2 × 2.5 mm. Specimen labels give the flower colour as greenish cream (female) and bright yellow (male). Photographs of the male inflorescence of TDE 34 show greenish creamy yellow flowers. Beccari (1931) illustrated the specimen Dr Thorell 3154 (P), so this specimen was chosen as the lectotype. </p></div>
+<div type="materials_examined"><p>Representative specimens. LAOS: Saraburi, Thorell 3154 male, female and possible hermaphrodite or well developed staminodes (P, FI); La-Khon, Mekong valley, Dr Thorell, s.n. 1866–1868 (P, FI) Xieng khouang, Spire 568 (P); Borikhana, Wieng Chan, A.F.G. Kerr 20762 male (P, K); Savannaket, Poilane 12005 (P), Nakai, Evans TDE 34 male and hermaphrodite, 35 female, Khamkheut, Evans TDE 38, Pakkading Evans TDE 61 male (K). VIETNAM: North Annam, Vinh, Chevalier 32535, (P). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

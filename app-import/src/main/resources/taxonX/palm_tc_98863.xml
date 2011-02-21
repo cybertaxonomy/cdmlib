@@ -1,0 +1,51 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The genus Heterospathe (Palmae: Arecoideae) in the Philippines</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 45, No. 2, pp. 219-234</mods:publisher>
+<mods:dateIssued>1990</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Heterospathe intermedia</name>
+<author>(Becc.) Fernando</author>
+<citation>Kew Bull. 45: 220 (1990)</citation>
+<type>Lectotype: Mindanao, Agusan Prov., Cabadbaran, Mt Urdaneta; Elmer; 13663</type>
+<type_loc>Lectotype FI; isolectotypes BM, K</type_loc>
+<synonymy>
+<name>Rhopaloblaste intermedia</name>
+<author>(Becc.) Becc. ex Martelli</author>
+<bibref>(Becc.) Becc. ex Martelli in Atti. Soc. Tosc, Sci. Nat. Res. Pisa Mem. 44: 137 (1934)</bibref>
+<bibref>Becc., Nuov. Gior. Bot. Ital. (n.s.) 42: 81 (1935)</bibref>
+<bibref>Becc., Salvosa, Lexicon Philipp. Trees 122 (1963)</bibref>
+</synonymy>
+<synonymy>
+<name>Heterospathe sp.</name>
+<author>Moore</author>
+<bibref>Moore in Principes 14: 92 (1970)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>As with Ptychoraphis microcarpa, Moore (1970) referred P. intermedia to Heterospathe but also did not formally transfer the epithet. H. intermedia is readily recognizable by its tall habit, the glossy, yellowish-green petiole and rachis, the glaucescent leaf sheaths, and the long (to 50 cm) and rather thick(to 5 mm) rachillae. This species is confined to the eastern portion of the Philippine archipelago and reaches Luzon only up to the southern tip of the Bicol Peninsula following a distribution pattern similar to that of Areca caliso Becc. and Calamus aidae Fernando.</p></div>
+<div type="materials_examined"><p>LUZON. Sorsogon Prov., Irosin, Mt Bulusan, Elmer 14937 (BM, FI, K)., Madulid et. al. 5188 (PNH), Bulusan Lake, Fernando 541 (K, LBC), Pancho 2502 (CAHP) and 2487 (CAHP); SAMAR: Catubig River, Edaño PNH 24753 (K); BILIRAN: Naval, Mt Sayao, Fernando 673 (BH, K, LBC), locality not known, McGregor B.S. 18907 (FI); LEYTE: Mt Abucayan, Edaño B.S. 41694 (K), Ormoc, Mt Janagdan, Edaño 2353 (PNH), Baybay, Mt Pangasugan, Fernando 651 (K, LBC); MINDANAO: Agusan Prov., Cabadbaran, Mt Urdaneta, Elmer 13663 (lectotype of Ptychoraphis intermedia Becc., FI; isolectotypes BM, K), Surigao Prov., Mt Kabatuan, Mendoza and Convocar 426 (PNH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

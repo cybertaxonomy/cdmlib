@@ -1,0 +1,57 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Bactris setulosa</name>
+<author>H.Karst.</author>
+<citation>Linnaea 28: 408 (1857)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stems clustered, 5-10 m tall and 10-15 cm in diameter, densely armed with black spines.  Leaves 1.5-3 m long; pinnae 30-70 on each side, inserted in groups and spreading in different planes, the central ones 60-100 cm long and 5-9 cm wide, usually with a dense cover of short bristles.  Inflorescence 30-60 cm long; branches 30-60, to 30 cm long.  Female flowers scattered along the branches.  Fruit red, more or less globose, 15-20 mm in diameter; fruiting perianth with a very small calyx and a much longer, cupular corolla; staminodial ring absent.</p></div>
+<div type="distribution"><p>The Andean region of Venezuela, Colombia and Ecuador, as well as Surinam and Trinidad.
+Distribution in Ecuador. In W Ecuador the species is common in tropical moist forest and premontane wet forest up to 1000 m altitude (rarely to 1700 m), in E Ecuador it occurs in premontane wet forest at 1300-1700 m elevation, the highest altitude recorded for any Bactris species.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Plants from the two sides of the Andes have been thought to represent separate species with different ecological preference, but the only morphological difference noted is that plants from the E slopes have more or less glabrous inflorescence branches, whereas plants from the W slopes have the whole inflorescence more or less brown tomentose.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

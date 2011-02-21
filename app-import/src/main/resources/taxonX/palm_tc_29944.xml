@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus solitarius</name>
+<author>T. Evans et al.</author> 
+<citation>Kew Bull. 55: 932 (2000)</citation>
+<type>Laos, Bolikhamxay Province; Oulathong; 240</type>
+<type_loc>Holotype K; isotype FRCL</type_loc>
+<bibref>Evans et al., Rattans Lao PDR: 40 (2001)</bibref>
+</nomenclature>
+<div type="distribution"><p>Indochinese endemic. Thailand (North-east) and Laos (Central).</p></div>
+<div type="materials_examined"><p>See Evans et al. (2000), plus LAOS (CENTRAI,): Vientiane Province, Hin Heup Distr., 0.5 km W of Khon Phouk village, along Huay Saen stream, off Nam Lik R., 22 Aug. 1999, (stam.), Maxwell,J. F 99 - 151 (CMU, DONG).</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 200 - 600 m in Laos and at 200 m in Thailand.</p></div>
+<div type="discussion"><p>In life typical C. solitarius is easily identified by its high climbing, solitary habit and enormously long inflorescences and partial inflorescences. We could detect no differences from C. tetradactylus in rachilla or fruit structure, which suggests to us that these two species are very closely related. The identification of herbarium material presents some difficulties because habit is rarely recorded and plants of C. solitarius flowering for the first time (e.g. Khamphone 312) may produce rather depauperate inflorescences similar in dimensions to those of C. tetradactylus. This is best overcome by taking careful notes when collecting. The usually unbristled leaf margins of C. solitarius are a useful identification clue but not a diagnostic field character because occasional bristles are present in the available material and this feature is notably variable in other species in the region (for example, marginal bristles are absent from C. tetradactylus in central Laos). As discussed under C. dioicus, the inflorescence part of Poilane 5042 may well come from C. solitarius. Accepting this would represent such a major range extension that we prefer to await unambiguous material.</p></div>
+<div type="vernacular"><p>wai thork, wai yong, wai hakyong, wai savang, wai noi (Laos), wai thork (Thailand).</p></div>
+<div type="uses"><p>The cane is of high quality and is widely traded. Shoot edible but small.</p></div>
+<div type="conservation"><p>Of high conservation concern. It is currently known from a limited range, within which it is the preferred small-diameter cane for harvesting. Regeneration is likely to be poor since the plant is single-stemmed. Although still abundant in some areas, declines are apparent and over-harvesting is a strong possibility.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

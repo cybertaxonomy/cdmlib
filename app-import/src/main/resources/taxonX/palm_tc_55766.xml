@@ -1,0 +1,64 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Daemonorops longipes</name>
+<author>(Griff.) Mart.</author>
+<citation>Hist. Nat. Palm. 3 (ed.2): 205 (1845)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 202 (1911)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 117 (1979)</bibref>
+<bibref>Dransfield, Kew Bull. 36: 809 (1982)</bibref>
+<bibref>Dransfield, Ratt. Sabah 77 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 77 (1992)</bibref>
+<synonymy>
+<name>Calamus longipes</name>
+<author>Griff.</author>
+<bibref>Griff., Calcutta J. Nat. Hist. 5: 68 (1844)</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops virescens</name>
+<author>Becc.</author>
+<bibref>Becc. in Perkins, Frag. Fl. Philipp. 47 (1904)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(1): 201 (1911)</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops sabensis</name>
+<author>Becc.</author>
+<bibref>Becc. ex Gibbs, J. Linn. Soc. Bot. 42: 169 (1914)</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops calothyrsa</name>
+<author>Furtado</author>
+<bibref>Furtado, Gard. Bull. Str. Settlements 8: 345 (1935)</bibref>
+</synonymy>
+<synonymy>
+<name>Daemonorops longipedunculata</name>
+<author>Furtado</author>
+<bibref>Furtado, Gard. Bull. Str. Settlements 8: 353 (1935)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Long foot</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering rattan with short to long, moderate to robust stems, sometimes forming low thickets, rather rarely high-climbing, very variable in all its parts; stems without sheaths to 30 mm diam., with sheaths to 50 mm diam., internodes usually short, c. 5 cm long, rarely up to 12 cm. Sheath bright green, armed with large brownish-black, flattened, reflexed spines arranged in horizontal to slightly oblique groups, those around the sheath mouth sometimes crowded and erect, usually c. 4 cm long, more rarely up to 8 cm, occasionally with black spicules between the spines, and usually with dense brown indumentum; knee absent; ocrea short, rather densely covered with black spicules. Leaf sometimes &#177; ecirrate, usually with a short cirrus, occasionally very robust to 4.5 m including the petiole to 50 cm and cirrus to 1.25 m, but usually much less, c. 2 m long; leaflets 30-60 on each side of the rachis, usually irregularly arranged, rarely subregular, frequently aggregated in neat groups of up to 5, rarely divergent within the groups, the longest to 50 &#215; 3 cm, usually bristly along the margins and along the mid vein on lower surface. Inflorescences borne on laterally flattened peduncle, the female tending to continue to elongate after fertilisation, the peduncle to 1 m, usually less, unarmed, or armed with few lateral spines; bracts very narrow, papery, unarmed, quickly falling; male flowers close, strictly distichous, female flowers more distant. Fruit usually ovoid, more rarely &#177; oblong or spherical, to 25 &#215; 8 mm, usually less, covered in 15 vertical rows of straw-coloured or dull brown scales. Seed to 16 &#215; 10 mm, oblong; endosperm deeply ruminate. Seedling leaf with 4 leaflets held in a fan. (Fig. 26, Pl. 7C).</p></div>
+<div type="distribution"><p>Very widespread throughout Brunei. Elsewhere throughout Borneo, Sumatra and the southern part of Peninsular Malaysia; also in Palawan.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>This is a very confusing rattan; it is very variable and is found in a wide variety of habitats from sea level up to c. 1,600 m (in Sabah). Part of the variation may perhaps be correlated with the wide ecological range; the very robust montane forms from Sabah were in fact described by Furtado as two separate species but they fit into the variation of D. longipes. Some of the variation, however, is difficult to link with habitat differences. This rattan is also one of the most frequently collected species, and it is the wide range of material which has forced us to recognise a single variable taxon.</p></div>
+<div type="materials_examined"><p>BEL: Labi, Dransfield J. 6549; Melilas, Bt.Batu Patam, Dransfield J. 6581; Melilas, Bt.Batu Patam, Dransfield J. 6582. TEM: Amo, Stockdale 21; Amo, Stockdale 42; Amo, Stockdale 44; Amo, Batu Apoi Forest Reserve, Poulsen 42; Amo, Bukit Belalong, Stockdale 57; Amo, Bukit Belalong, Stockdale 59; Amo, K.Belalong, Dransfield J. 6713; Amo, K. Belalong, Stockdale 16; Stockdale 61; Amo, Kerangan Maritim, BRUN 15279. TUT: Lamunin, Kpg.Lamunin, Wong 62; Rambai, Bt.Bahak, Coode 7073. Without prov.: BRUN 15400; BRUN 15415.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,42 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Monograph of Phoenix L. (Palmae: Coryphoideae)</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Barrow</mods:namePart>
+<mods:namePart type="given">S.C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1998</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 53, No. 3 (1998), pp. 513-575</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Phoenix caespitosa</name>
+<author>Chiov.</author>
+<citation>Fl. Somala 1: 317 (1929)</citation>
+<bibref>Thulin, Fl. Somalia 4: 272 (1995)</bibref>
+<type>Somalia, 'Scorasar' valley, 1 July 1924 (pist.); Puccioni &amp; Stefanini; 672 (738)</type>
+<type_loc>Lectotype FT!</type_loc>
+<synonymy>
+<name>Phoenix arabica</name>
+<author>Burret</author>
+<bibref>Burret, Bot. Jahrb. Syst. 73 (2): 189 - 190 (1943)</bibref>
+<type>Yemen, Wadi Madfar, Hadjeila, 700 m alt., Feb. 1889; Schweinfurth; 993</type>
+<type_loc>Type ?B</type_loc>
+</synonymy>
+</nomenclature>
+<div type="description"><p>Stemless palm, clustering to form extensive thickets. Leaves to 3 m long; acanthophylls ± regularly arranged in one plane of orientation, to c. 13 on each side of rachis, to 8 cm long; leaflets ? irregularly arranged in one to two planes of orientation, often fascicled proximally, c. 20 - 50 on each side of rachis, 15 - 50 x 0.8 - 1.5 cm, narrowing to a sharp point, stiff, glaucous; lamina concolorous, drying pale green. Staminate inflorescences erect; prophyll coriaceous, splitting twice between margins, to c. 40 x 3- 4 cm; peduncle to c. 50 x 1.2 cm; rachillae c. 60 in number, to 15 cm long. Staminate flowers with calyx cupule 2 mm high; petals 4 - 6 x 3 mm, with rounded apices. Pistillate inflorescences erect; prophyll not seen; peduncle to c. 40 cm long; rachillae c. 15 in number, occasionally branched to one order, to 24 cm long. Pistillate flowers with calyx cupule 2 - 3 mm high; petals 3 - 4 x 4 mm. Fruit sphaeroid-ovoid, 10 - 16 x 8 - 12 mm, ripening deep orange to purplish-brown, with fleshy, sweet, edible mesocarp. Seed ovoid, 12 x 8 x 8 mm; embryo lateral opposite raphe; endosperm homogeneous. </p></div>
+<div type="distribution"><p>Phoenix caespitosa was described from Somalia (Chiovenda 1929) where it is found in the Sanaag, Nugaal and Bari regions of the north. Moore (1971b) noted a caespitose Phoenix taxon, growing with Livistona carinensis (Chiov.) J. Dransf. &amp; N. W. Uhl, near Bankouale in Djibouti, which he attributed to R caespitosa. This report is not substantiated with a voucher specimen. Across the Gulf in the Arabian peninsula, Collenette (1985) recorded the species fairly widespread in the Asir and southern Hijaz of Saudi Arabia. The synonymous taxon, P. arabica Burret, was recorded from the Yemeni Arab Republic (Burret 1943). </p></div>
+<div type="materials_examined"><p>SOMALIA. Migiurtini coast, between 'Ereri Jelleho' and 'Martisor Dinsai', 31 May 1924 (ster.), Puccioni &amp; Stefanini 659 (FT!); Hamur to Gombeia, 26 June 1924, Puccioni &amp; Stefanini 926 (stam.), 927 (pist.) (FT!); Iskushuban, c. 10˚16'N, 50˚14'E, c. 280 m alt., 7 July 1980 (pist.), Gillett 23055 (K!); Halin Tug, 26 Oct. 1944 (pist.), Glover &amp; Gilliland 236 (K!); 31 km N of Carin, c. 17 km S of Bosaso, 8Jan. 1973 (stam.), Bally &amp; Melville 15690 (K!); between Bosaso and Karin, 11˚05'N, 49˚10'E, 100 - 300 m alt., 12Jan. 1995 (ster.), Thulin et al. 9016 (K!, UPS). </p></div>
+<div type="biology_ecology"><p>In dry wadis, semi-desert bushland and rocky crevices and ravines up to 900 m in Somalia (Thulin 1995), up to 1950 m in Saudi Arabia (Collenette 1985). The species is often found in extensive thickets. </p></div>
+<div type="vernacular"><p>SOMALIA. Balmo, mayro/mairu (plant), awang (fruit) (Somali), [Abdi Shire (pers. comm.)]. YEMEN. Schottob (Hadjeih), Schegja (Ussil), [Burret (1943)]. </p></div>
+<div type="uses"><p>The fruits of P. caespitosa have a sweet and moist mesocarp layer, making them much sought after by animals including humans in Somalia (Abdi Shire, pers. comm.).</p></div>
+<div type="discussion"><p>Phoenix caespitosa is a dwarf palm described by Chiovenda (1929) from Somalia, and later recorded from Saudi Arabia and Yemeni Arab Republic. Of the many names published for Phoenix palms in Africa most refer to the polymorphic species P. reclinata. However, I consider P. caespitosa to be a distinct species. Staminate flower petals of P. caespitosa are rounded apically, as against the acute to acuminate petal apices of staminate flowers of P. reclinata.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

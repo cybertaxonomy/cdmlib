@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Acaulescent or erect palms of forest undergrowth in West Malesia, Thailand and Vietnam, almost always with crownshafts, with entire or lobed leaflet tips and a single large bract in the inflorescence, the pistillate flowers borne in the basal part of the rachilla and with lateral hilum on the seed.</p></div>
+<nomenclature>
+<name>Nenga</name>
+<author>H. Wendl. and Drude</author> 
+<citation>Linnaea 39: 182 (1875).</citation>
+<type>Type; Pinanga nenga; (Blume ex Mart.) Blume</type>
+</nomenclature>
+<div type="etymology"><p>Based on a Javanese vernacular name, nenge.</p></div>
+<div type="description"><p>Moderate, solitary or clustered, acaulescent or erect, unarmed, pleonanthic, monoecious palms. Stem slender, short, rarely exceeding 5 m in height with short or elongate internodes and conspicuous leaf scars, stilt roots frequent. Leaves pinnate; sheaths usually forming a well-defined crownshaft with leaves neatly abscising, or leaves marcescent and crownshaft poorly developed (Nenga gajah); petiole usually well developed, flattened or grooved adaxially, rounded or angled abaxially; leaflets with 1–several folds, linear to sigmoid, acute or acuminate, the terminal pair obscurely lobed, lobes corresponding to the folds, the adaxial ribs often bearing ramenta on the under surface, transverse veinlets obscure. Inflorescence infrafoliar or interfoliar (N. gajah), erect or pendulous, branching to 1 order, rarely to 2 orders or unbranched, protandrous; peduncle short in species with infrafoliar inflorescences, long where inflorescences interfoliar (N. gajah); prophyll thin, membranous, enclosing the inflorescence in bud, splitting and falling at anthesis or thick, almost woody, persistent, eventually rotting; peduncular bracts incomplete, small, triangular; rachillae bearing spirally arranged minute bracts subtending triads proximally, solitary or paired staminate flowers distally, or triads confined to central rachilla and lateral rachillae with staminate flowers only, flowers not or only slightly sunken in the rachillae; floral bracteoles minute. Staminate flowers fleshy, sessile; sepals 3, connate at the very base, shorter than, almost as long as, or far exceeding the corolla; corolla with slightly stalk-like base or not, with 3 long, valvate lobes; stamens 6, borne at the base of the corolla lobes, filaments short, anthers oblong to linear, latrorse; pistillode absent. Pollen grains ellipsoidal to spheroidal, bi-symmetric; aperture a distal sulcus, short or same length as long axis; ectexine semi-tectate, coarsely reticulate, muri of reticulum may be spinulose, aperture margin similar; infratectum columellate; longest axis ranging from 37–72 µm [4/5]. Pistillate flowers sessile, globular; sepals 3, distinct, imbricate; petals 3, distinct, imbricate; staminodes absent or minute; gynoecium globose or columnar, uniloculate, uniovulate, style lacking, stigmas 3, massive, fleshy, divergent, ovule laterally attached, form unknown. Fruiting rachillae usually not differing greatly in colour from flowering ones. Fruit ovoid to obpyriform, dull to brightly coloured, stigmatic remains apical; epicarp smooth, dull or shiny, mesocarp thin, fleshy, sweet, endocarp composed of longitudinal fibres adhering to the seed, becoming free at both ends (N. pumila) or at one end only, the fibres enclosing a solid parenchymatous mass of varying size distal to the seed. Seed with longitudinal hilum and raphe branches anastomosing, endosperm deeply ruminate; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>Five species ranging from Vietnam and Burma to Sumatra, the Malay Peninsula, Borneo and Java.  </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b) and fruit (Essig and Young 1979). </p></div>
+<div type="relationships"><p>Nenga is a strongly supported monophyletic genus (Loo et al. 2006). For relationships, see Areca. </p></div>
+<div type="uses"><p>Stems are sometimes used split, as laths. </p></div>
+<div type="taxonomic accounts"><p>Fernando (1983). </p></div>
+<div type="fossil record"><p>Monosulcate pollen with a rather loose, widely meshed reticulum characteristic of Nenga occurs in Borneo from the Lower Miocene upwards, according to Muller (1964, 1972, 1979); unfortunately, Muller did not publish illustrations of the fossil pollen so it is difficult to comment. </p></div>
+<div type="discussion"><p>Nenga gajah is an extraordinary, aberrant species that nevertheless belongs in the genus; most of its peculiarities seem to be related to the interfoliar position of the inflorescence, which in turn is related to the short internodes and marcescent leaves. Such an anomalous habit is also found in a few species of Areca and Pinanga. </p></div>
+<div type="vernacular"><p>Pinang palms. </p></div>
+<div type="biology_ecology"><p>All species are confined to primary tropical rain forest and are found from sea level to altitudes of about 1400 m. Nenga pumila var. pachystachya sometimes occurs in peat swamp forest.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

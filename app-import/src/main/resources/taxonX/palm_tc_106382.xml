@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia furtadoana</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 36: 185 (1981), Ratt. Sabah 28 (1984)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>C.X. Furtado, important palm botanist at Singapore Botanic Gardens, active 1930-1960</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender, clustering, high-climbing rattan, branching in the canopy, to 20 m or more. Stem without sheaths 5-8 mm diam., with sheaths 8-10 mm diam., internodes 8-15 cm. Sheaths mid to pale green, armed with scattered triangular black spines 1-4 mm and caducous dark scales. Ocrea inflated, 3-7 &#215; 1.2-1.5 cm, armed with sparse triangular black spines to 4 mm; ants usually abundant. Leaf to 105 cm including cirrus to 60 cm and petiole to 7 cm; leaflets 4-6 on each side of the rachis, generally rather narrow rhomboid, to 20 &#215; 7 cm, borne on short stalks to 3 mm, upper leaflet surface bright green, whitish indumentum beneath; transverse veinlets close, fine, conspicuous. Inflorescences usually only 2 produced, each usually with 4 or fewer rachillae; rachillae robust, 14-17 &#215; 1.5-2 cm, not tomentose in appearance, the rachilla bracts conspicuous. Fruit ovoid, to 20 &#215; 12 mm, covered in 21-22 vertical rows of reddish brown scales. Seed to 12 &#215; 9 mm; endosperm deeply ruminate. Seedling leaf bifid. (Fig. 8).</p></div>
+<div type="distribution"><p>A local rattan found scattered in Brunei at altitudes up to 550 m above sea level. Elsewhere widespread throughout the northern part of Borneo.</p></div>
+<div type="biology_ecology"><p>K. furtadoana occurs sporadically in lowland forest.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not specifically recorded but it has a durable slender cane.</p></div>
+<div type="discussion"><p>It is distinctive when fertile, but is much more difficult to determine when sterile. For differences between this species and closely related K. rostrata, see under the latter.</p></div>
+<div type="materials_examined"><p>TEM: Johns 7282; Amo, Stockdale 68; Amo, Wong 1326; Batu Apoi, Selapon, Dransfield J. 7477. TUT: Lamunin, Ladan Hills F.R., Dransfield J. 6875.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

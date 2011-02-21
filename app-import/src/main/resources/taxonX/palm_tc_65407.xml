@@ -1,0 +1,72 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis baronii</name>
+<author>(Becc.) Beentje &amp; J. Dransf.</author>
+<citation>Palms of Madagascar: 198 (1995)</citation>
+<type>Central Madagascar; Baron; 3270</type>
+<type_loc>Lectotype K; isotype P</type_loc>
+<synonymy>
+<name>Chrysalidocarpus baronii</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 38 Beibl. 287: 33 (1906)</bibref>
+<bibref>Beccari, Palme del Madagascar 39, fig. 30, t. 37 (1914)</bibref>
+<bibref>Jumelle, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 2, 10 (3): 11 (1922)</bibref>
+</synonymy>
+<synonymy>
+<name>Neodypsis baronii</name>
+<author>(Becc.) Jum.</author> 
+<bibref>(Becc.) Jum., Compt. Rend. Acad. Paris 179: 249 (1924)</bibref>
+<bibref>Jumelle, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 4, 2 (2): 23, fig. 1 (1924)</bibref>
+<bibref>Jumelle, Cat. Pl. Madagascar, Palmae: 16 (1938)</bibref>
+<bibref>Jumelle &amp; H. Perrier, Fl. Madagascar 30: 146, fig. 40 (1945)</bibref>
+</synonymy>
+<synonymy>
+<name>Chrysalidocarpus propinquus</name>
+<author>Jum.</author>
+<bibref>Jum., Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 2, 10 (3): 19 (1922)</bibref>
+<bibref>Jumelle, Cat. Pl. Madagascar, Palmae: 11 (1938)</bibref>
+<type>Madagascar, Analamazaotra; Perrier; 12018</type>
+</synonymy>
+<synonymy>
+<name>Neodypsis compacta</name>
+<author>Jum.</author>
+<bibref>Jum., Ann Inst Bot-G&#233;ol Colon Marseille s&#233;r 5, 1 (1): 13 (1933)</bibref>
+<bibref>Jumelle, Cat Pl Madagascar, Palmae: 17 (1938)</bibref>
+<bibref>Jumelle &amp; H Perrier, Fl Madagascar 30: 154, fig 43 (1945)</bibref>
+<type>Madagascar, Mt d'Ambre; Perrier; 18870</type>
+<type_loc>Holotype P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>A common species of the rain forest of the eastern escarpments. It closely resembles D. lutescens, but that is strictly a littoral species, confined to a narrow strip of vegetation close to the sea; and D. onilahensis, from drier localities on the Western side of the island. D. baronii is a graceful palm, and is often seen in the gardens of central Madagascar, particularly in Antananarivo. This is such a fine ornamental that it should be much more widely grown outside Madagascar than it is at present, particularly in view of its occurrence in upland areas. The species was named after the Reverend Richard Baron (1847-1907) who collected the type and many other plants in 1880-1897.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Farihazo (Imerina, "sugarcane tree"); Tongalo (Betsimisaraka).</p></div>
+<div type="description"><p>Clustering palm in clumps of 3-5, rarely appearing solitary. STEM S 2-8 m high, rarely with a single branching point, 2.5-12 [-22] cm diam., near the crown 2.5-5.5 cm diam.; internodes 4-35 cm, near the crown as short as 1.3 cm, grey, grey-green or blackish; nodal scars c. 0.5 cm, faint, white; wood hard, with a dense layer of hard red fibres just underneath the bark; crownshaft to 10 cm diam., pale green to pale yellow, waxy, the unexposed sheaths peach-coloured; occasionally with the remnants of sheaths remaining on the distal part of the trunk, but usually the leaves abscising neatly. LEAVES 4-8 in the crown, spiral or tristichous, arching, the young leaves sometimes held on edge in their distal half; sheath 28-60 cm long, pale green to pale yellow, waxy, the unexposed sheaths peach-coloured, only distally densely scaly, with auricles to 2 cm high; petiole 0-37 (-53) cm long, proximally 1-2.3 x 1.2-2.5 cm, distally 0.8-1.3 x 0.8-1 cm diam., with dense but flaking red to dark scales, therefore appearing crimson when young, later with scattered scales, slightly channelled; rachis 0.5-1.2 m long, abaxially densely scaly but glabrescent, in mid-leaf 0.8-1.6 cm wide and keeled; leaflets 35-60 on each side of the rachis, regular, in one plane, dark green, stiff with the distal part pendulous, the proximal 19- 100 x 0.3-1.1 cm, median 25-49 [-77] x 0.9-2.7 cm, distal 7-36 x 0.3-1.8 cm, sometimes glabrous but more often with quite a few ramenta (2-5 mm long) proximally, on the minor veins often with scattered reddish bumps, these being the remnants of the quite dense bases of stellate-laciniate reddish scales on the minor veins in young leaves, main vein 1, plus rather thickened margins, apices bifid, unequally attenuate. INFLORESCENCE interfoliar or infrafoliar, branched to 2 orders, arching; peduncle 24-62 cm long, proximally 0.8-2.2 x 0.5-0.8 cm, distally 1.8-3.5 x 0.9-2 cm diam., glabrous, proximally red, distally green; prophyll 25-73 x 2.2-4 [-5.5] cm, borne at 2.5-22 (-45) cm above the base of the  peduncle, erect, often hooded, dark crimson to pale brown, distally with scattered scales; peduncular bract inserted at 22-54 from the base of the peduncle, deciduous, 20-44 (-65) cm long, erect and hooded, deep crimson or brown, carried upwards by the lengthening inflorescence; non-tubular peduncular bracts usually 2, 1-6 (-17.5) x 0.6-1.4 cm; rachis 13-33 cm long, glabrous, with 5-21 branched and 7-10 unbranched first order branches, the proximal with a secondary rachis of up to 4.5 [-11.5] cm long and 4-13 x 2-6 mm diam. and with 4-9 [-15] rachillae, rachis bracts 4-20 mm long; rachillae 3-24) cm long, [1.5-] 2.5-4.5 mm diam., glabrous, pinkish to pale green, with distant or dense slightly sunken triads; rachilla bracts 1-1.5 mm, acute. STAMINATE FLOWERS faintly scented; sepals cream with brown tips and 1.9-3 x 2-3.1 mm; petals proximally white, distally red, connate for 0.5-1.8 mm, free parts 2.5-4 x [1.8-] 2.5-3.5 mm, often with swellings proximally on each side of the filament insertion; stamens 6, biseriate (offset 0.2-0.4 mm), filaments white, (0.8 in bud -) 2.4-4.5 mm long, 0.4-1.3 mm wide with the antepetalous ones flatter than the cylindrical antesepalous ones, anthers 1.1-2 x 0.5-1.4 mm; pistillode 1.4-3.3 x 0.6-1.5 mm. PISTILLATE FLOWERS with sepals 2.2-2.8 x [1.7-2.4] 2.5-3 mm, slightly apiculate; petals 2.8-3.5 x [2.3-2.6] 2.8-4.2 mm; staminodes 6, 0.4-1 mm; ovary 2.8-3.3 x 2.8 mm. FRUIT yellow, ellipsoid or subglobose, 10-20 x 8-16 mm; endocarp fibrous. SEED ellipsoid or slightly obovoid, 9.5-12 x 7.5-11 mm, pointed at the base, rounded at the apex, with a sub-basal depression, the outside slightly grooved; endosperm ruminate, the intrusions corresponding to the grooves, 1-1.5 [-3] mm deep and medium dense.</p></div>
+<div type="distribution"><p>North, Central and E Madagascar.</p></div>
+<div type="biology_ecology"><p>Moist montane forests, bamboo-dominated forests; usually on steep mid-slopes, less often on ridge crests; survives in half-shade or full sun; 850-1470 m.</p></div>
+<div type="conservation"><p>Not threatened. The species occurs over a large area.</p></div>
+<div type="uses"><p>Excellent palm-heart; fruit edible and sweet. Very elegant palm, cultivated in Antananarivo and on the plateau as an ornamental.</p></div>
+<div type="discussion"><p>Chrysalidocarpus propinquus is said by Jumelle to be a form on denuded rocks with a short petiole and short, narrow leaflets, a very short peduncle and the thicker trunk is the only real character. With a bit more we would have kept them apart, but they look so similar that N. compactus has to be included in synonymy; the extremes for N. compactus are indicated by [square brackets] in the description.  
+HB found many small red ants in a ripe infrutescence (Beentje &amp; Raharilala 4412). In Mantady and at Maromiza HB has seen two stems which had a single branch at c. 1 m above the base.  This species is extraordinarily close to D. onilahensis, and only differs in the habitat and the ruminate endosperm; the ruminations in D. baronii are difficult to see at times, being very small, and D. baronii has been found in sites which are really in D. onilahensis territory, such as the forest of Ambohitsaratelo. In the absence of fruit, several collections could not be identified as belonging to one or the other [Miandrivazo: NW of Ambohitsaratelo-Bebao, July 1974 (fl), Morat 4590 (P, TAN); idem, Nov. 1986 (fl., y.fr.), Dransfield et al. JD6447 (K, P, TAN)] but since Dorr et al. 3532 from the same locality has ruminate endosperm, they are more likely D. baronii.</p></div>
+<div type="materials_examined"><p>Antsiranana: Mt d'Ambre, Nov. 1932 (fl., fr.), Perrier 18870 (P, type of N. compactus); idem, June 1970 (fl.), Bosser 20367; idem, near the summit, Oct. 1991 (fr.), Malcomber et al. 976; idem, Bianamalo, June 1989 (ster.), B. Du Puy et al. MB 217 (K) &amp; (fl.) MB 222 (K). Andapa: Mt Ambodilaitra, March 1949 (y.fr.), Humbert 23287 (K, P;differs in longer rachillae than rest, 19-24 cm); Ambatosoratra, Jan. 1949 (y.fr.), Cours 3342 (P); Marojejy E, N of Mandena, Nov. 1989 (bud), Dransfield et al. JD6769 (K, TAN). Ambatondrazaka: Manaka Est, Jan. 1959 (dead infl), Rakotovao RN 11019 (K, P); idem, April 1961 (fr.), Rakotovao RN 11859 (K); Ambatoharanana near Antsevabe, March 1951 (fr.), Cours 4061 (K, P, TAN). Manjakandriana: Angavokely, Oct. ?1924 (fl.), Perrier 15883 (P); Mandraka, Feb. 1985 (y.fr.) Barnett et al. 455 (K, MO, P); idem, Feb. 1985 (fr.) Dorr et al. 3729 (K, MO). Moramanga: Andasibe, Nov. 1986 (bud), Dransfield et al. JD6426 (K, P, TAN); idem, Dec. 1991 (fl), Beentje &amp; Andriampaniry 4534 (BH, K, MO, P, TAN); idem, Dec. 1991 (fl., y.fr.) Beentje &amp; Andriampaniry 4544 (BH, K, MO, P, TAN); Mantady, Dec. 1992 (fl.), Beentje &amp; Andriampaniry 4771 (K, TAN); Maromi(ha)za, Feb. 1926 (fr.), Perrier 15990 (P); idem, March 1991 (fr.), Beentje &amp; Raharilala 4412 (BH,   K, MO, P, TAN), 4414 (K, TAN); Lakato Road, Nov. 1972 (fl.), Guillaumet 4030 (P, TAN); Rahobevava, March 1951 (fr.), Cours 4297 (K, P, TAN). Miandrivazo: NW of Ambohitsaratelo-Bebao, Jan. 1985 (fr.), Dorr et al. 3532 (K, MO, P). Fianarantsoa: Vohiparara, July 1992 (dead infl.), Beentje &amp; Andriampaniry 4716 (BH, K, MO, P, TAN).
+Without precise locality: Central Madagascar, (bud), Baron 3270 (K, type of N. baronii), (bud) 4509 (K, P), (bud) 6068 (K, syntype); anno 1847-1852 (leaf only), Boivin s.n. (P); without any data, Perrier 12082 (P). 
+Cultivated: Analamazaotra (fr.), Perrier 15989 (P); Antananarivo, Antanimena, 1924 (fr.), Perrier 16061 (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

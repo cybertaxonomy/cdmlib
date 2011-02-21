@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans of the Western Ghats. A Taxonomic Manual.</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+			<mods:dateIssued>1992</mods:dateIssued>
+			<mods:publisher>Kerala Forest Research Institute</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus karnatakensis</name>
+<author>Renuka &amp; Lakshmana</author>
+<citation>RIC Bull. 9:10. 1990</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Clustering, high climbing canes. Stems 8 to 20 m or more long, with sheaths to 3 cm in diameter, without sheaths to 1.5 cm. Sheath when mature yellow, lower part greenish brown or greenish yellow, young sheaths with brown tomentum, densely armed with spines, spines stout, ca 2.5 cm long,sometimes forming half spiral, mouth of the sheath provided with longer spines to 4 cm; knee prominent, wrinkled; ocrea to 6 cm long, with small spines. Leaf ecirrate, to 1.5 m long; petiole to 30 cm long, rachis to 1 cm wide; leaflets ca 50 x 2.5 cm, regular, 3-veined, veins and margins spinulose, terminal pair united basally. Inflorescence long, flagellate; partial inflorescences many; primary and secondary sheaths tightly sheathing at first, later split open, sometimes becoming laminar; basal part of secondary sheath narrow, upper part funnel-shaped, spinulose; rachillae to 15 cm long; involucrophorum sessile, arising from inside the sheath, involucre sessile, cup-shaped, shallow. Fruit ca 8 mm long, globose, scales in 19 rows, yellow with chestnut brown border, light violet when ripe. Endosperm not ruminate, seedling leaf fan-shaped.</p></div>
+<div type="distribution"><p>Evergreen forests between 530-1200 m above. Kargal range, Agumbe state forests, Thalakaveri. (Fig. 4).</p></div>
+<div type="biology_ecology"><p>Flowering December-January. Fruiting April-May.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>A good medium diameter cane, used in the furniture industry.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Kargal range 13.5.88, fl., fr, Renuka 4068, 4069 (KFRI); Agumbe, 16.5.88, fr, Renuka 4076 (KFRI); 18.3.89, fl., Renuka 4094, 4095 (KFRI); Thalakaveri, 15.3.89. fr, Renuka 4088 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

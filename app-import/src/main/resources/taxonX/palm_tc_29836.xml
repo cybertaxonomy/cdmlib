@@ -1,0 +1,71 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus platyacanthoides</name>
+<author>Merr</author> 
+<citation>Lingnan Sci. J. 13: 54 (1934)</citation>. 
+<type>Vietnam, Tonkin; Balansa; 4360</type>
+<type_loc>Holotype B presumed destroyed; lectotype P; isotype K</type_loc>
+<synonymy>
+<name>Calamus platyacanthus</name>
+<author>Warb. ex Becc.</author>
+<bibref>Warb. ex Becc. non Mart., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 442 (1908)</bibref>
+<bibref>Gagnep. &amp; Conrard in Gagnep. (ed.), Fl. Indo-Chine 6: 1037 (1937)</bibref>
+<bibref>S. J. Pei &amp; S. Y Chen, Fl. Reip. Pop. Sinicae 13(1): 106 (1991)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 64 (2001)</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus latifolius</name>
+<author>auct. non. Roxb., C. F. Wei</author>
+<bibref>auct. non. Roxb., C. F. Wei, Guihaia 6: 36 (1986)</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus platyacanthus var. mediostachys</name>
+<author>S. J. Pei &amp; S. Y Chen</author>
+<bibref>S. J. Pei &amp; S. Y Chen, Acta Phytotax. Sin. 27 (2): 143 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y Chen, Fl. Reip. Pop. Sinicae 13 (1): 107 (1991)</bibref>
+<type>China, Yunnan, Mengla; Yang, Z. H.; 12476</type>
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus giganteus var. robustus</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 143 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y Chen, Fl. Reip. Pop. Sinicae 13 (1): 96 (1991)</bibref>
+<type>China, Yunnan, Mengla; Yang, Z. H.; 12406</type>
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+</nomenclature>
+<div type="distribution"><p>China (South Yunnan), Laos (probably North and Central) and Vietnam (Tonkin). Probably also South-east China (Merrill 1934).</p></div>
+<div type="materials_examined"><p>CHINA (SOUTH YUNNAN): Mengla, Yaoqu, undated, (fr.), Yang, Z. H. 12476 (HITBC) and undated, (fr.), Yang, Z. H. 12406 (HITBC); Mengla, Sangyong, undated, (stam.), Chen, S. Y 35 (KUN). LAOS (NORTH): [Huaphanh Province, Viengthong Distr., Ban Sakok (Phou Loeuy Protected Area), 21 June 1999, (fr.), Banxa BX 1 (FRCL, K)]. (CENTRAI,): [Bolikhamxay Province, Khamkheut Distr., Ban Phonkheo (map name Ban Phongnot), San Kang Houay Dan Yon, 13 March 1999, (ster.), Khamphone KP 387 (FRCL, K)]. VIETNAM (TONKIN): Mount Bavi, Nov. 1887, (fr.), Balansa 4360 (K, P).</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 500-700 m (Vietnam) and probably 750 - 900 m (Laos).</p></div>
+<div type="discussion"><p>Merrill (1934) established a new name for the invalid Calamus platyacanthus Warb. ex. Becc. from Indochina, but this was overlooked by some subsequent authors (e.g. Pei et al. 1991, Evans et al. 2001b). The identity of the additional Hainan and Guangxi material cited by Merrill (1934) could not be checked during this study, but seems likely to extend the range of the species beyond Indochina. Pei et al. (1991) cite C. platyacanthoides as a junior synonym of C. simplicifolius C. F. Wei from Hainan but if these two were synonymous then C. platyacanthoides would be the senior name. However, elements of the description of C. simplicifolius (e.g. the fruits 25 x 20 mm, the leaflets varying between grouped and regularly spaced) suggest a closer similarity with the C. nambariensis/ C. inermis/ C. khasianus species group and we suggest that further study is needed. C. platyacanthus (=platyacanthoides) var. mediostachys was diagnosed on the basis of its distinctive male inflorescences but we regard this diagnosis as insufficient since so little male material is known of the typical form, and since the differences noted are so small in comparison to the known variability in this character within this section of the genus. Calamus giganteus var. robustus was established by the authors to accommodate a single specimen of a plant neither had seen in life (Chen Sanyang, pers. comm. 1999). Its very robust sheath and rachis must have inspired the comparison with C. giganteus (now a synonym of C. manan Miq.), but this is misleading. The fruit structure and arrangement of sheath spines indicate that this cannot be C. manan, whereas the fruits, leaves and sheath all match a very robust individual of C. platyacanthoides. Specimen Unknown 12001 was listed by Wei (1986) as C. latifolius and by Pei et al. (1989) as C. palustris var. cochinchinensis. However, it differs from these taxa in its fruiting perianth, remaining partly tubular, and its fruits with clearly channelled scales bearing only very faint dark marginal lines. The sheath spines are also much more typical of C. platyacanthoides. Material from Laos lacks mature fruit but has been provisionally matched on the basis of size, grouped leaflets, fruiting perianth details and the striking armature of the leaf sheaths: no other species is thought to have numerous 5- 9 cm long, laminar, strongly deflexed spines on the sheath with few or no smaller spines among them. Further collections are needed to improve our understanding of this important economic species. Vu Van Dung &amp; Le Huy Guang (1996) suggest that it is one of the commonest species in northern Vietnam, with a much wider altitudinal range than given here, but cite no voucher specimens to confirm their identification.</p></div>
+<div type="vernacular"><p>Probably wai namleuang, wai leuang (Lao Loum).</p></div>
+<div type="uses"><p>Apparently the cane is of high quality and widely traded. The shoot is edible. There are reportedly plantations for cane production in Vietnam (Vu Van Dung &amp; Le Huy Guang 1996).</p></div>
+<div type="conservation"><p>Unknown. Listed as Threatened - Vulnerable in Vietnam (Phan Thuc Vat 1996).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

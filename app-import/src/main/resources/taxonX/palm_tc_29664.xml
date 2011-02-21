@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Calamus longipinna (Arecaceae: Calamoideae) and its relatives in New Guinea</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bull. 57: 853-866</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus longipinna</name>
+<author>Lauterb. &amp; K.Schum</author>
+<citation>Fl. Schutzgeb. Südsee 203 (1900)</citation>
+<type>Papua New Guinea, Madang, Gogol River; Lauterbach; 866</type>
+<type_loc>Holotype Bt; isotypes L!, WRSL</type_loc>
+<synonymy>
+<name>Calamus ralumensis</name>
+<author>Warb. ex K.Schum nom. nud.</author>
+<bibref>Warb. ex K.Schum,  Notizbl. Bot. Gart. Berlin-Dahlem 2: 98 (1898)</bibref>
+<bibref>Schumman, Fl. Schutzgeb. Südsee 202 (1900)</bibref>
+<bibref>Schumman, Ann. Roy. Bot. Gard. Calcutta 11: 257 (1908)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kanda (generic Papua New Guinea pidgin word for rattan), Kikis (Kaigorin), Mazzas (dialect from vicinity of Markham River bridge near Lae), Muli (Bembi), Sating (Rawa), Sep (Jal), Seribi (Bo Village, Namatanai), Sirei (Madang), Sos (Usino)</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p>North-east, north central and south-west New Guinea, the Bismarck Archipelago and the Solomon Islands. While no records exist for the islands to the east of Guadalcanal up to and including Bougainville, it is likely that the species occurs there</p></div>
+<div type="biology_ecology"><p>Primary and secondary lowland forest, sometimes in very degraded vegetation, often on alluvium near rivers or on swampy ground, but also occurring in hill forest, from sea level to 800 m</p></div>
+<div type="conservation"><p>Not threatened. Calamus longipinna is widespread and is often found growing vigorously in highly disturbed vegetation</p></div>
+<div type="uses"><p>General use as cordage</p></div>
+<div type="discussion"><p>Calamus longipinna is one of the best-known rattans in New Guinea, principally because it is common in heavily collected parts of Papua New Guinea (Madang and Morobe Provinces) and it is therefore well represented in herbaria. It is also widely known in cultivation in botanical gardens throughout the world, probably as a result of a distribution of seed from Lae in the 1960s by John Womersley. It bears a distinctive papery ocrea which is usually unarmed, though heavily armed forms are known. The ocrea possesses a congenital longitudinal split on the side opposite the insertion of the petiole, a feature also shared by C. wanggaii. Although the ocrea is often quite robust, additional longitudinal splits tend to develop with age, which may result in the structure tattering and falling altogether. However, the ocrea rarely separates into fibres as it does in C. vestitus and C. reticulatus. It is most easily confused with C. vestitus, but is readily distinguished from that species by its ocrea characteristics and the narrow, triangular leaf sheath spines which are quite distinct from those of C. vestitus (described below). The vast majority of specimens display regularly-arranged leaflets, although in two specimens from the Bismarck Archipelago, Zieck NGF 36215 and Lauterbach 242, subregular and grouped leaflet arrangements are evident. In all other features, however, these specimens match C. longipinna.
+ Calamus longipinna is known largely from areas to the north of the main highland ranges in eastern New Guinea and in neighbouring islands as far east as Guadalcanal in the Solomon Islands (Map 1). Only three specimens from western New Guinea are known, all of which are disjunct from other known populations. Two records from the Jayapura area (Rappard BW 3322 and Sijde BW 5527) fit quite well within the concept of C. longipinna employed here, but deviate in possessing grouped leaflets and an ocrea in which the congenital split is either lacking or is incomplete. The third record from the Timika area (Baker et al. 848) lies to the south of the highlands near the western end of the south coast of New Guinea some 300 miles apart from the Jayapura collections. Again, this specimen is readily identified as C. longipinna, but it does possess certain unusual characters such as a particularly tough ocrea which disintegrates to fibres at its margins, very abundant indumentum on the sheath and rather elongate rachilla bracts. Until evidence is found to the contrary, these specimens cannot be regarded as anything other than distinctive regional forms of C. longipinna.
+ Beccari (1908) placed C. longipinna in synonymy under C. ralumensis, but this decision cannot be upheld here as the latter is a nomen nudum. It first appeared in Schumann�s Die Flora von Neu-Pommern (1898) as a name by Warburg in manuscript and is listed without description or citation of specimens. It was listed again in 1900 in Die Flora der Deutschen Schutzgebiete in der S�dsee by Schumann and Lauterbach, again without description although several specimens were cited. The protologue of C. longipinna immediately follows in the same volume, complete with Latin description and specimen citation. Having seen some of the specimens listed under C. ralumensis in this volume, we are confident that the nomen nudum is correctly linked to the accepted name C. longipinna</p></div>
+<div type="materials_examined"><p>INDONESIA, Papua. Mimika Regency: Timika, km 23 between Timika and port, Feb. 1998, Baker et al. 848 (BH!, BO!, K!, L!, MAN!). Jayapura Regency: Between Barowai and Genjem, Oct. 1956, Rappard BW 3322 (L!); Lake Sentani, Aug. 1957, Sijde BW 5527 (L!). PAPUA NEW GUINEA. Central Province: Kairuku, Aropokina, Jan. 1972, Zieck NGF 36321 (BRI,
+L!, LAE!). East New Britain Province: Cape Gazelle, Ralum, Lauterbach 242 (L!, WRSL!). Madang Province: trans-Gogol, logging road to Tadup, Jan. 1996, Baker &amp; Utteridge 580 (K!, CRI); mouth of Ramu River, near Bosmun 2, Jan. 1996, Baker &amp; Utteridge 585 (K!, CRI); Usino, Amiaba River, Jan. 1970, Foreman et al. NGF 45992 (BH, L!, LAE!);c. 5 km south-east of
+Faita along Ramu River, July 1955, Hoogland 5043 (BM!, CANB!, L!, LAE); Gogol River, Nov. 1890, Lauterbach 866 (L!, WRSL!), Lauterbach 905 (WRSL!); Rempi, north of Alexishafen, Nov. 1968, Zieck NGF 36182 (CANB!, K!, L!, LAE); Jacob, south of Madang, Nov. 1968, Zieck NGF 36183 (LAE!); mouth of Gogol River, Sept. 1970, Zieck NGF 36243 (BRI, CANB!, K!, L!, LAE); Karkar Island, Mom, Sept. 1970, Zieck NGF 36249 (BH, K!, L!, LAE). Manus Province: locality unknown, 1989, Anon. SK 1 (AAU, K!, MAN, NY); locality unknown, 1990, Patma s.n. (K!). Morobe Province: road to Oomsis, first river crossing after junction with Lae-Bulolo road; Jan. 1996, Baker et al. 593 (K!); Lae-Mumeng Road, Jan. 1996, Baker et al. 594 (K!); Bulolo, Jan. 1964, Finlayson NGF 17442 (LAE!); Bulolo, lower Taun Creek, Oct. 1962, Havel &amp; Kairo NGF 15440 (L!, LAE); Wampit, 35 miles from Lae, March 1964, Moore &amp; Womersley 9266 (BH, K!, L!, LAE); Bulolo-Watut divide, March 1964, Moore &amp; Womersley 9283 (BH, K!, LAE!); Bulolo plantation, March 1989, Poudyal &amp; Niangu 56 (K!); Nasuapam, 31 km from Lae towards Nadzab, May 1989, Poudyal &amp; Niangu 65 (K!); Mumeng, Bangulum, Streimann NGF 24420 (LAE!); Morobe,
+locality unknown, 1989, Taurereko 202 (K!, MAN, NY), Taurereko 203 (AAU, K!, MAN, NY), Taurereko 211 (AAU, K!, MAN, NY), Taurereko 212 (K!, MAN); Markham Valley, 1957, Womersley NGF 9081 (LAE!); near Lae, Lake Wannum, Oct. 1961, Womersley NGF 14034 (BRI, K!, LAE!); Markham Valley, near Erap River, June 1953, Womersley &amp; Hoogland 5151 (BRI, BM!, CANB!, K!, L!, LAE); Bulolo, 1 mile north-west of forestry school, June 1969, Zieck NGF 36219A (L!, LAE!), Zieck NGF 36219B (LAE!), Zieck NGF 36219C (L!, LAE!); Markham River bank, east of bridge, Dec. 1972, Zieck NGF 36523 (BH, L!, LAE!). New Ireland Province: Namatanai, Balai, May 1969, Zieck NGF 36215 (BH, K!, L!). Oro Province: Kokoda Valley, Jan. 1973, Zieck NGF 36543 (BH, CANB, K!, L, LAE). West New Britain: Cape Hoskins, Dec. 1962, Dissing 2626 (LAE!). SOLOMON ISLANDS. North-west Guadalcanal, 3 miles inland, Umasami River, July 1965, Whitmore RSS 6082 (BSIP, K!, L!); North-east Guadalcanal, near Nalimbu River, Jan. 1964, Whitmore BSIP 796 (BSIP, K!); West Florida, Sole River, March 1970, Whitmore et al. BSIP 18107 (BSIP, K!)</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

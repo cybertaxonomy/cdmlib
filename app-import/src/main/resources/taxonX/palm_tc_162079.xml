@@ -1,0 +1,40 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pogonotium ursinum</name>
+<author>(Becc.) J.Dransf.</author>
+<citation>Kew Bull. 34: 763 (1980)</citation>
+<synonymy>
+<name>Daemonorops ursina</name>
+<author>Becc.</author>
+<bibref>Becc. Rec. Bot. Surv. India 2: 22 (1902)</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12:96 (1911)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 90 (1979)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Bear-like, probably referring to the abundance of hair-like spines</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Solitary, short-stemmed, erect rattan, rarely taller than 4 m; stem without sheaths to 10 mm diam., with sheaths to 20 mm diarn,, internodes 5-10 cm. Sheaths densely covered in fine long black spines to 3 cni, sometimes with straw-coloured tips, mostly in horizontal groups with joined bases, some spines much smaller, bristle-like, and abundant pale brown hairs, the sheaths ending in 2 long, slender, tapering, erect ear-like processes (auricles), one on each side of the petiole, to 35 long, 1 cm wide at the base (usually less), &#177; convex, armed with scattered and grouped spines, the inner surface unarmed. Leaf to 1.2 m, ecirrate; petiole to c. 30 cm, c. 0.5 cm wide at the base, armed with pale reflexed grapnel spines and scattered black spicules and abundant indumentum, later becoming minutely roughened; rachis neatly curved, armed as the petiole; leaflets up to c. 100 on each side of the rachis, very regularly and closely arranged, c. 15 x 0,6 cm, limp, soft, each with a bunch of fine bristles at the base on the undersurface, and abundant soft bristles on both surfaces, the margins with long bristles interlocking with those of the next leaflet; young leaves tinged pink. Inflorescences small and inconspicuous, borne on the leaf sheaths, held erect between the auricles of the subtending leaf, rarely more than 16 cm long, closely adpressed to the sheaths; peduncle very short or absent, the entire inflorescence enclosed within the unarmed or bristly prophyll, splitting along its length to expose the flowers, other bracts very small. Mature fruit &#177; barrel-shaped, c. 17 x 14 mm, beaked, covered in 16-17 vertical rows of dull red-brown, thin, scarcely channelled scales. Seed 8x6x4 mm; sarcotesta sweet and juicy. Seedling leaf pinnate with c. 6 hairy leaflets on each side (Fig. 96).</p></div>
+<div type="distribution"><p>A rare palm restricted to the 1st and 2nd Divisions; elsewhere known from one collection from Pahang in Peninsular Malaysia.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>P. ursinum seems to be a speciality of submontane ridgetops. It has been collected on G Matang, G Buri and G Gaharu. This is a beautiful rattan with its numerous, fine, soft, bristly leaflets.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Dypsis remotiflora</name>
+<author>J.Dransf.</author>
+<citation>in J.Dransfield &amp; H.Beentje, Palms of Madagascar: 331 (1995)</citation>
+<type>Madagascar, East Coast, Ambadikala; Vigreux; 15417</type>
+<type_loc>Holotypus P</type_loc>
+</nomenclature>
+<div type="introduction"><p>Known only from a single collection, this small undergrowth palm has the general appearance of</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="diagnosis"><p>Inter species floribus staminatis triandris staminibus antesepalis pistillodio carenti, rachillis gracillimis floribus paucis remotis distinctissima. </p></div>
+<div type="description"><p>Solitary (?) or clustered (?) palm. STEM to 1 m tall, at least 1 cm diam. (as suggested by diameter of leaf sheaths). Leaf sheaths of unknown length, c. 1 cm diam., striate, bearing abundant dark brown laciniate scales. LEAF to 40 cm long, including petiole c. 9 mm long, c. 4 mm wide, broadly triangular in cross section, bearing scattered dark brown scales; rachis 22-29 cm; leaflets 3-4 on each side of the rachis, subopposite or almost alternate (basal leaflets only); basal pair 5-7 x 0.3-0.7 cm, mid-leaf pair to 23 x 5.5 cm, apical pair widely divergent, to 13 x 4.5 cm, somewhat sigmoid; both lamina surfaces with very sparse, minute, brown, punctiform scales. INFLORESCENCE only partially represented in type, branching to 4 orders; prophyll, peduncular bract and peduncle not represented; rachis at least 35 cm long, somewhat sinuous, it and all branches glabrescent; rachillae very numerous, very slender, sinuous, 1.5-4 cm long, c. 0.2 mm diam., each bearing about 3-4 triads only, c. 7 mm distant; rachilla bracts triangular, c. 0.5 mm long. STAMINATE FLOWER c. 1.0 x 0.8 mm; sepals &#177; rounded, imbricate, slightly keeled, 0.5 x 0.6 mm; petals &#177; elliptic in outline, valvate, 1.0 x 0.7 mm; stamens 3, antesepalous, filaments very short, c. 0.2 x 0.1 mm, connective broad abaxially, anthers 0.3 x 0.1 mm, &#177; didymous; staminodes absent; pistillode absent. PISTILLATE FLOWER slightly smaller than the staminate; sepals imbricate, c. 0.5-0.6 mm; petals basally imbricate, distally val-vate, c. 0.7 x 0.4 mm; staminodes 3, minute, dentiform; ovary c. 0.7 x 0.4 mm, ellipsoid, stigma terminal, slightly curved. Mature FRUIT ellipsoid, 9.5 x 4 mm. SEED ellipsoid, 6 x 3.5 mm; endosperm homogeneous, embryo lateral.</p></div>
+<div type="distribution"><p>East Coast.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest.</p></div>
+<div type="conservation"><p>Presumed extinct; not seen for forty years, and the type locality is now devoid of forest.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="discussion"><p>This species is remarkable for its extremely slender rachillae with few remote triads of flowers. It is known only from the type. There are two entries for Ambadikala in the US Army Gazetteer for Madagascar, one at 23&#176;19&#225; S 47&#176;24&#225; E, the other at 18&#176; 15&#225; S 48&#176; 56&#225; E., of which only the former is recorded on the 1: 500,000 Series maps of Madagascar. This lies in the vicinity of Farafangana.</p></div>
+<div type="materials_examined"><p>Farafangana: Ambadikala, Sept. 1954, (fl., fr.) Vigreux 15417 (Holotype P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The genus Heterospathe (Palmae: Arecoideae) in the Philippines</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 45, No. 2, pp. 219-234</mods:publisher>
+<mods:dateIssued>1990</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Heterospathe dransfieldii</name>
+<author>Fernando</author>
+<citation>Kew Bull. 45: 223 (1990)</citation>
+<type>Palawan, Puerto Princesa, Mt Beaufort and Thumb Peak; Dransfield; 6189</type>
+<type_loc>Holotypus K; isotypi BH, PNH</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>H. philippinensi et H. scitulae affinis sed inflorescentiae pedunculo gracillimo (c. 3 mm) longioreque et vaginis foliorum petiolisque persistentibus differt.</p></div>
+<div type="description"><p>Clustering, slender, undergrowth palm to c. 1.5 m tall. Stem c. 1 m long or often less, 1.5 cm diam.; internodes 1-1 -5 cm long. Leaves pinnate, to 7 in crown, arching; leaf including petiole and sheath to 1 m long; leaf sheaths not forming a well-defined crownshaft, each to 12 cm long, drying strongly folded, the edges fibrous and marcescent; petiole slender, c. 28-40 x 0.5 cm, flattened or shallowly channelled adaxially, convex abaxially and covered with sparse brown lacerate-peltate scales, the edges sharply angled; sheaths and petioles persistent on the stem; mid-rachis triangular, flattened to convex abaxially, scaly as the petiole. Leaflets to 20 on each side of the rachis, unicostate, regularly arranged, spaced 3-5 cm apart, linear-lanceolate or long-acuminate with prominently elevated midrib and secondary nerves, the margins slighty thickened; ramenta prominent along midrib on undersurface; basal leaflets c. 25 x 0.4 cm; middle leaflets c. 29 x 1 cm; apical leaflets c. 10 x 3 cm, occasionally to 2-costate. Inflorescence interfoliar, usually arching, to 80 cm long, branching to 1 order only; peduncle c. 63 x 0.3 x 0.1 cm, very slender and flattened, reddish-tinged, covered with peltate-lacerate scales, the surface drying striate; prophyll c. 20 x 0.9 cm, flattened, 2-keeled, splitting apically, the surface lepidote-puncticulate; peduncular bract attached near tip or above three-quarters of peduncle length from base, to 14.5 x 0.5 cm, tubular, splitting abaxially, sparsely covered with scales; rachillae 3-10, each c. 10.5 x 0.1 cm, terete, lepidote-tomentose, especially when newly emerged; triads borne spirally along rachilla and subtended by low, lip-like bracts. Staminate flower oblong, c. 3 x 1.5 mm; sepals 3, broadly imbricate, much shorter than the petals, 1 x 1.5 mm, ciliolate along the margins; petals 3, valvate, unequal, prominently striate when dry, acute at tips, 2.5 x 1 mm; stamens 6, anthers dorsifixed, 1 mm long, filaments 1 mm long; pistillode conical, 2 x 0.5 mm. Pistillate flower rounded in bud, shorter than the staminate flower, c. 1.5 x 2 mm; sepals 3, imbricate, c. 1.3 x 1 mm; petals 3, as the sepals, drying striate; pistil conical, 1 x 0.5 mm; staminodes minute, tooth-like, borne at base of pistil. Infructescence with arching rachillae. Fruit (juvenile) ovoid- ellipsoid, c. 7 x 3 mm, stigmatic residue obliquely apical, epicarp drying granulose with sclerosomes. Seed not known.</p></div>
+<div type="distribution"><p>Palawan; in exposed montane forest on steep ridges; c. 850 m. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This beautiful new species is named for the collector of the type specimen, Dr John Dransfield, leading palm systematist and my friend and mentor. H. dransfieldii is, thus far, the only known member of Heterospathe in Palawan, the westernmost limit of the genus. By virtue of the small size and clustering habit, it is most similar to H. philippinensis and H. scitula but is distinguished by the longer (to 63 cm) and more slender (to 3 mm) peduncle of the inflorescence and by the persistent leaf sheaths and petioles.</p></div>
+<div type="materials_examined"><p>PALAWAN. Puerto Princesa, Mt Beaufort and Thumb Peak, Dransfield 6189 (holotype K; isotypes BH, PNH), SMHI 270 (K, PNH), and 664 (K, PNH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

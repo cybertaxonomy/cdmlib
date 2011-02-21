@@ -1,0 +1,83 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus nambariensis</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 433 (1908)</citation>
+<bibref>Evans et al., Rattans Lao PDR: 62 (2001)</bibref>
+<type>India, Assam; Mann, G.; s.n.</type> 
+<type_loc>Holotype FI-B; isotype K where labelled s.n. E129</type_loc>
+<synonymy>
+<name>Calamus nambariensis var. yingjiangensis</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 140 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, Fl. Reip. Pop. Sinicae 13 (1): 99 (1991)</bibref>
+<type>China, Yunnan; Tao, G. D.; 17907</type> 
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus nambariensis var. alpinus</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 141 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen Fl. Reip. Pop. Sinicae 13 (1): 100 (1991)</bibref>
+<type>China, Yunnan; Pei, S. J.; 14287</type> 
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus nambariensis var. xishuangbannaensis</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27(2): 141 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, Fl. Reip. Pop. Sinicae 13(1): 100 (1991)</bibref>
+<type>China, Yunnan; Chen, S. Y &amp; Han, H.; 14324</type> 
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus nambariensis var. menglongensis</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 141 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, Fl. Reip. Pop. Sinicae 13 (1): 100 (1991)</bibref>
+<type>China, Yunnan; Tao, G. D.; 19991</type> 
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+<synonymy>
+<name>Calamus nambariensis var. furfuraceus</name>
+<author>S. J. Pei &amp; S. Y. Chen</author>
+<bibref>S. J. Pei &amp; S. Y. Chen, Acta Phytotax. Sin. 27 (2): 142 (1989)</bibref>
+<bibref>S. J. Pei &amp; S. Y. Chen, Fl. Reip. Pop. Sinicae 13 (1): 100 (1991)</bibref>
+<type>China, Yunnan; Tao, G. D.; 17906 </type> 
+<type_loc>Holotype HITBC</type_loc>
+</synonymy>
+</nomenclature>
+<div type="distribution"><p>India (North-east), China (North-west and South Yunnan and, probably, South-east China) and probably also Thailand (North) and Laos (North and Central).</p></div>
+<div type="materials_examined"><p>INDIA (NORTH-EAST): Assam, Oct. 1900, (stam. &amp; fr.), Mann, G. s.n. E129 (K, FI-B). CHINA (NORTH-WEST YUNNAN): Yingjiang County, Tongbiguan Distr., 16 Dec. 1978, (stam. and fr.), Tao, G. D. 17907 (HITBC). (SOUTH YUNNAN): Mengla, Nagongshan, undated, (fr.), Pei, S. J. 14287 (KUN, HITBC); Jinghong, Menglong, undated, (fr.), Chen, S. Y &amp; Han, H. 14324 (HITBC) and undated, (fr.), Tao, G. D. 19991 (HITBC). (SOUTH-EAST): [Hainan, Five Finger Mountain, 15 Dec. 1921, (fr.), McClure, E. 21573 (BM)]. THAILAND (NORTH): [Doi Chiang Dao, 5June 1921, (pist.), Kerr, A. 5613 (K, BK)]. LAOS (NORTH) [Huaphanh Province, Viengthong Distr., Ban Sakok, Phou Loeuy Noy, 21 June 1999, (fr.), Oulathong OL 232 (FRCL, K)]. (CENTRAL): [Bolikhamxay Province, Khamkheut Distr., Ban Phonkheo (map name Ban Phongnot), Phou Hin Khouang San, 14 March 1999, (pist.), Evans, T TDE 44 (FRCL, K)].</p></div>
+<div type="biology_ecology"><p>In evergreen forest in China at 1600 m. Probably at 1400 - 1800 m in Laos.</p></div>
+<div type="discussion"><p>There is a complex group of cirrate Calamus taxa in the mountainous area from Sikkim through to Hainan. They all share the characteristics of a fruiting perianth remaining partly tubular and large fruit (at least 24 mm x 20 mm) with channelled scales. This group includes C. inermis T. Anderson, C. khasianus Becc., C. nambariensis Becc., C. polydesmus Becc., C. doriaei Becc. and C. obovoideus S. J. Pei &amp; S. Y. Chen. The last three appear to have been collected only once each, and even the one moderately well-known species, C. nambariensis, has probably been collected fewer than 20 times. This latter species is moderately widespread at high-altitudes in northern Indochina. Calamus obovoideus is known only from its Indochinese type locality. Calamus khasianus has been reported from North Thailand (Hodel &amp; Vatcharakorn (1998), based on Hodel, D. R. &amp; Vatcharakorn, P 1792 in BH) but we have seen this specimen and consider that it cannot be identified at present. Lao and Thai material lacks mature fruit, so cannot be identified with complete certainty. The group requires critical revision, a task which will require fresh collecting in North Laos, Myanmar and north-eastern India. A major difficulty is that three of the key diagnostic characters (leaflet arrangement, inflorescence size and sheath armature) are now known to vary greatly within individuals. This variation is usually poorly represented on herbarium sheets. For example, the authors examined a large mature individual of C. nambariensis (sensu Pei et al. 1989) at Menglong in Yunnan and found that on basal leaves the leaflets were strongly grouped and divaricate but on leaves 5 - 15 m up the stem they became markedly less divaricate whilst on some of the uppermost leaves leaflets were entirely regularly arranged. Individuals seen in Laos showed leaflets ranging from strongly grouped and divaricate (on some leaves) to grouped at the base and more or less regular towards the tip (on others). This is significant because grouped vs regular leaflet arrangement was the sole feature used by Beccari to diagnose C. nambariensis from C. inermis. Furthermore, our observations in the closely related C. wailong and C. palustris var. cochinchinensis show that the length, erectness and 'diffuseness' of the inflorescences can also vary remarkably (see under C. wailong for further details). In all of the cirrate Calamus species from Laos the degree of spininess also varies from sheath to sheath, armed and unarmed knees (for example) often being found on the same plant. Beccari (1908) stressed the fact that C. inermis, C. nambariensis and C. khasianus may well be conspecific, in which case the name C. inermis would have priority. The observations above strongly support this idea. However, we prefer to maintain current usage at present because 1) C. inermis is such a poorly known taxon, 2) C. nambariensis is a well established name for this taxon in the region and 3) a name change now would perhaps soon be superseded by other changes when a fuller revision took place. This stability will ease the exchange of information between rattan planters in the region.</p></div>
+<div type="vernacular"><p>Probably wai nwn, wai niuw, wai nokkhor, wai namleuang (Lao Loum), kateng blor (Hmong).</p></div>
+<div type="uses"><p>The cane is of high quality and this is a preferred species in trade in South Yunnan.</p></div>
+<div type="conservation"><p>Unknown, probably of little concern since it occupies such a wide range, although Renuka (1999) noted considerable recent declines in North-east India.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

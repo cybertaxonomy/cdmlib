@@ -1,0 +1,33 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus basui</name>
+<author>Renuka and Vijayakumaran</author>
+<citation>Rheedea 4:120. 1994</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Safed beth</p></div>
+<div type="description"><p>Clustering, medium diameter rattan. Stem 20 m long, with sheaths 3 cm in diameter, without sheaths 1.5 cm. Leaf 1 m long with vestigial cirrus: sheath dark green, flagellate, spiny, spines to 1 cm long, interspersed with smaller ones: knee prominent; ocrea slightly developed, petiole absent; rachis triangular towards the distal end, spiny towards the base, spines straight, recurved on the adaxial side, leaflets regular, ca. 56 x 4 cm, apical leaflet ca. 19.5 x 2.2 cm, linear lanceolate, tip, margins and midrib ciliate. Inflorescence long flagellate; primary sheaths tightly sheathing, armed with downwardly directed spines to 0.5 cm long; partial inflorescence 27 cm long; secondary sheaths 2 cm long, funnel shaped; rachillae upto 5 cm long, decreasing in length distally; involucre cup-shaped. Fruit ovoid, ca. 1.5 x 1 cm; scales in 15 vertical rows, brown with a dark brown border, deeply channelled in the middle; endosperm ruminate.</p></div>
+<div type="distribution"><p>Common in the evergreen forests of Little Andamans (Map. 6).</p></div>
+<div type="biology_ecology"><p>Flowering not known. Fruiting April - May.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Extensively used in furniture industry.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>4th Km Little Andaman, 13.4.1992, fr., Vijayakumaran 6634 (KFRI).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
