@@ -133,7 +133,7 @@
       <mapping class="eu.etaxonomy.cdm.model.media.MovieFile"/>
       <mapping class="eu.etaxonomy.cdm.model.media.ReferencedMedia"/>
       <mapping class="eu.etaxonomy.cdm.model.media.Rights"/>
-      <mapping class="eu.etaxonomy.cdm.model.media.RightsTerm"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.RightsType"/>
       <!-- Molecular Package -->
       <mapping class="eu.etaxonomy.cdm.model.molecular.DnaSample"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.GenBankAccession"/>
