@@ -47,9 +47,9 @@
     <!-- deprecated -->
     <!--
     <dependency>
-    <groupId>org.devlib.schmidt</groupId>
-    <artifactId>imageinfo</artifactId>
-    <version>1.7</version>
+	    <groupId>org.devlib.schmidt</groupId>
+	    <artifactId>imageinfo</artifactId>
+	    <version>1.7</version>
     </dependency>
     -->
     
