@@ -907,7 +907,7 @@
 			<dependency>
 				<groupId>wsdl4j</groupId>
 				<artifactId>wsdl4j</artifactId>
-				<version>1.6.1</version>
+				<version>1.6.2</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.dozer</groupId>
@@ -928,7 +928,7 @@
 			<dependency>
 				<groupId>jaxen</groupId>
 				<artifactId>jaxen</artifactId>
-				<version>1.1</version>
+				<version>1.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jdom</groupId>
@@ -943,7 +943,7 @@
 			<dependency>
 				<groupId>xpp3</groupId>
 				<artifactId>xpp3</artifactId>
-				<version>1.1.3.3</version>
+				<version>1.1.4c</version>
 			</dependency>
 			<dependency>
 				<groupId>stax</groupId>
