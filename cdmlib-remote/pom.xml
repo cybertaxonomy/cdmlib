@@ -44,19 +44,13 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
-			<artifactId>cdmlib-persistence</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.etaxonomy</groupId>
-			<artifactId>cdmlib-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.etaxonomy</groupId>
-			<artifactId>cdmlib-services</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.etaxonomy</groupId>
 			<artifactId>cdmlib-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<!-- for some reason removing version number leads to failing compile, try again -->
+			<version>1.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
