@@ -87,7 +87,7 @@
         <class>eu.etaxonomy.cdm.model.media.MovieFile</class>
         <class>eu.etaxonomy.cdm.model.media.ReferencedMedia</class>
         <class>eu.etaxonomy.cdm.model.media.Rights</class>
-        <class>eu.etaxonomy.cdm.model.media.RightsTerm</class>
+        <class>eu.etaxonomy.cdm.model.media.RightsType</class>
       <!-- Molecular Package -->
         <class>eu.etaxonomy.cdm.model.molecular.DnaSample</class>
         <class>eu.etaxonomy.cdm.model.molecular.GenBankAccession</class>
