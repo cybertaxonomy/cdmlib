@@ -25,8 +25,6 @@ import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * @author a.mueller
