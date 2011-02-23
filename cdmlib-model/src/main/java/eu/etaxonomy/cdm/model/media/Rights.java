@@ -63,7 +63,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private RightsTerm type;
+	private RightsType type;
 	
 	// owner etc as defined by the rightstype
 	@XmlElement(name = "Agent")
@@ -105,11 +105,11 @@ public class Rights extends LanguageStringBase implements Cloneable{
 		super(text, language);
 	}
 
-	public RightsTerm getType(){
+	public RightsType getType(){
 		return this.type;
 	}
 	
-	public void setType(RightsTerm type){
+	public void setType(RightsType type){
 		this.type = type;
 	}
 
