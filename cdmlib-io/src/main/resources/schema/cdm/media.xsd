@@ -76,7 +76,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="RightsTerm">
+  <xs:complexType name="RightsType">
     <xs:complexContent>
       <xs:extension base="common:DefinedTermBase">
         <xs:sequence/>
