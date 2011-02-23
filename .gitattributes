@@ -812,7 +812,7 @@ cdmlib-model/src/main/resources/terms/PreservationMethod.csv -text
 cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
 cdmlib-model/src/main/resources/terms/ReferenceSystem.csv -text
-cdmlib-model/src/main/resources/terms/RightsTerm.csv -text
+cdmlib-model/src/main/resources/terms/RightsType.csv -text
 cdmlib-model/src/main/resources/terms/Scope.csv -text
 cdmlib-model/src/main/resources/terms/Sex.csv -text
 cdmlib-model/src/main/resources/terms/SpecimenTypeDesignationStatus.csv -text
