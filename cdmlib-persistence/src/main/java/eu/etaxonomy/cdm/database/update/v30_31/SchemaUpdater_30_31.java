@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MapTableCreator;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
@@ -42,7 +43,7 @@ public class SchemaUpdater_30_31 extends SchemaUpdaterBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_30_31.class);
 	private static final String startSchemaVersion = "3.0.0.0.201011090000";
-	private static final String endSchemaVersion = "3.0.0.1.201101050000";
+	private static final String endSchemaVersion = "3.0.0.1.201103010000";
 	
 // ********************** FACTORY METHOD *******************************************
 	
@@ -79,6 +80,12 @@ public class SchemaUpdater_30_31 extends SchemaUpdaterBase {
 		//drop unique index for StateData_DefinedTermBase.modifier_id
 		//this was part of schema version 2.5 but an updater was never written
 		step = UniqueIndexDropper.NewInstance("StatisticalMeasurementValue_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//update RightsTerm to RightsType
+		String updateSql = "UPDATE DefinedTermBase SET DTYPE = 'RightsType' WHERE DTYPE = 'RightsTerm'";
+		stepName = "Update RightsTerm -> RightsType";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateSql);
 		stepList.add(step);
 		
 		return stepList;
