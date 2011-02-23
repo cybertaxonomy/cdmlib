@@ -218,8 +218,10 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		String inverseLabel = csvLine.get(5).trim();
 		String inverseLabelAbbrev = null;
 		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
-		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(7)));
-		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(8)));
+		String symmetric = csvLine.get(7);
+		String transitive = csvLine.get(8);
+		newInstance.setSymmetric(Boolean.parseBoolean(symmetric));
+		newInstance.setTransitive(Boolean.parseBoolean(transitive));
 		return newInstance;
 	}
 	
