@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	  <!-- 
+	    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	  -->
+  	<parent>
 		<artifactId>cdmlib-parent</artifactId>
 		<groupId>eu.etaxonomy</groupId>
 		<version>3.1</version>
@@ -54,12 +58,10 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -68,9 +70,9 @@
 			<version>0.8.6</version>
 		</dependency>
 		<dependency>
-			<groupId>jdom</groupId>
+			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 		</dependency>
 	</dependencies>
 </project>
