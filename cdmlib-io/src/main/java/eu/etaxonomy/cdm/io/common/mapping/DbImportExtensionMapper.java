@@ -15,14 +15,13 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -114,7 +113,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			}else{
 				ignore = true;
 			}
-		} catch (MethodNotSupportedException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			//do nothing  - checkDbColumnExists is not possible
 		}
 	}

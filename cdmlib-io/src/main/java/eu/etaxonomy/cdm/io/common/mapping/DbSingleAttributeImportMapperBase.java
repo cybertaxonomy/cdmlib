@@ -15,10 +15,9 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -295,7 +294,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return importMapperHelper.getTableName();
 	}
 	
-	protected boolean checkDbColumnExists() throws MethodNotSupportedException{
+	protected boolean checkDbColumnExists() throws DatabaseTypeNotSupportedException{
 //		//TODO remove cast
 //		Source source = (Source)getState().getConfig().getSource();
 //		String tableName = getTableName();

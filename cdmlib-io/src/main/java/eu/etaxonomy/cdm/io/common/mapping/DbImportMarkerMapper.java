@@ -14,12 +14,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -112,7 +111,7 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 			}else{
 				ignore = true;
 			}
-		} catch (MethodNotSupportedException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			//do nothing  - checkDbColumnExists is not possible
 		}
 	}
