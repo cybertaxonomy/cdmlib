@@ -429,11 +429,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	/**
-	 * Returns the image gallery for a taxon. If there are multiple taxon descriptions
-	 * marked as image galleries an arbitrary one is chosen.
-	 * If no image gallery exists, a new one is created if <code>createNewIfNotExists</code>
+	 * Returns the taxon description for a taxon. If there are multiple taxon descriptions
+	 * an arbitrary one is chosen.
+	 * If no taxon description exists, a new one is created if <code>createNewIfNotExists</code>
 	 * is <code>true</code>.
 	 * @param createNewIfNotExists
+	 * @param isImageGallery if true only taxon description being image galleries are considered.
+	 * If false only taxon description being no image galleries are considered.
 	 * @return
 	 */
 	public TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
