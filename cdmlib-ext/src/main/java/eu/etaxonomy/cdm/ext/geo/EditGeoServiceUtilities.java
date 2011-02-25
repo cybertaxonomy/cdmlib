@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Transient;
 
@@ -28,12 +29,14 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
@@ -101,7 +104,6 @@ public class EditGeoServiceUtilities {
 		String areaTitle = "";
 		String adLayerSeparator = ":";
 		String styleInAreaDataSeparator = "|";
-		//double borderWidth = 0.1;
 		double borderWidth = 0.1;
 		
 		
@@ -142,10 +144,7 @@ public class EditGeoServiceUtilities {
 			//group by layers and styles
 			NamedArea area = distribution.getArea();
 			if (area != null){
-				NamedAreaLevel level = area.getLevel();
-				String geoLayerString = getGeoServiceLayer(level);
-				//Set<Distribution> layerDistributionSet;
-				//int index = layerStrings.indexOf(geoLayerString);
+				String geoLayerString = getGeoServiceLayer(area);
 				Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
 				if (styleMap == null){
 					styleMap = new HashMap<Integer, Set<Distribution>>();
@@ -156,7 +155,7 @@ public class EditGeoServiceUtilities {
 		}
 		
 		//layer
-		if (backLayer == null || "".equals(layer.trim())){
+		if (StringUtils.isBlank(backLayer)){
 			backLayer = "earth"; 
 		}
 		layer = "l="+backLayer;
@@ -222,8 +221,6 @@ public class EditGeoServiceUtilities {
 		Map<String, String> resultMap = new HashMap<String, String>();
 		
 		for (String layerString : layerMap.keySet()){
-			//Set<Distribution> layerDistributions = layerData.get(layerIndex);
-			//int distributionListIndex = 1;
 			areaData += (isFirstLayer? "" : "||") + layerString + adLayerSeparator;
 			Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
 			boolean isFirstStyle = true;
@@ -243,7 +240,6 @@ public class EditGeoServiceUtilities {
 			if(separateLevels){
 				//result per level
 				result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, areaTitle, bbox, ms});
-				//result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, bbox, ms});
 				resultMap.put(layerString, result);
 			}
 		}
@@ -252,7 +248,6 @@ public class EditGeoServiceUtilities {
 		
 		//result
 		result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, areaTitle, bbox, ms});
-		//result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, ms});
 		if (logger.isDebugEnabled()){logger.debug("getEditGeoServiceUrlParameterString end");}
 		
 		return result;
@@ -331,6 +326,7 @@ public class EditGeoServiceUtilities {
 	}
 	
 	
+
 	private static String getAreaAbbrev(Distribution distribution){
 		NamedArea area = distribution.getArea();
 		Representation representation = area.getRepresentation(Language.DEFAULT());
@@ -338,41 +334,37 @@ public class EditGeoServiceUtilities {
 		if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())){
 			areaAbbrev = areaAbbrev.replace("-", "");
 		}
-		return areaAbbrev;
+		return CdmUtils.Nz(areaAbbrev, "-");
 	}
 	
+
+	//Preliminary as long as user defined areas are not fully implemented  
+	public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
 	
-	/**
-	 * transform an integer (style counter) into a valid character representing a style.
-	 * 0-25 => a-z<br>
-	 * 26-51 => A-Z<br>
-	 * i not in {0,...,51} is undefined
-	 * @param i
-	 * @return
-	 */
-	private static char getStyleAbbrev(int i){
-		i++;
-		int ascii = 96 + i;
-		if (i >26){
-			ascii = 64 + i;
+	private static String getGeoServiceLayer(NamedArea area){
+		TermVocabulary<NamedArea> voc = area.getVocabulary();
+		//TDWG areas
+		if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
+			NamedAreaLevel level = area.getLevel();
+			if (level != null) {
+				//TODO integrate into CDM 
+				if (level.equals(NamedAreaLevel.TDWG_LEVEL1())) {
+					return "tdwg1";
+				} else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())) {
+					return "tdwg2";
+				}else if (level.equals(NamedAreaLevel.TDWG_LEVEL3())) {
+					return "tdwg3";
+				}else if (level.equals(NamedAreaLevel.TDWG_LEVEL4())) {
+					return "tdwg4";
+				}
+			}
+			//unrecognized tdwg area
+			return "unknown";
+		
 		}
-		return (char)ascii;
-	}
-	
-	private static String getGeoServiceLayer(NamedAreaLevel level){
-		if (level != null) {
-			//TODO integrate into CDM 
-			if (level.equals(NamedAreaLevel.TDWG_LEVEL1())) {
-				return "tdwg1";
-			} else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())) {
-				return "tdwg2";
-			}
-			if (level.equals(NamedAreaLevel.TDWG_LEVEL3())) {
-				return "tdwg3";
-			}
-			if (level.equals(NamedAreaLevel.TDWG_LEVEL4())) {
-				return "tdwg4";
-			}
+		//hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
+		if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
+			return "cyprusdivs:bdcode";
 		}
 		return "unknown";
 	}
@@ -393,16 +385,6 @@ public class EditGeoServiceUtilities {
 		distributionSet.add(distribution);
 	}
 	
-
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 	/**
 	 * @param fieldObservationPoints
 	 * @param derivedUnitPoints
@@ -492,5 +474,23 @@ public class EditGeoServiceUtilities {
 			int index = styleAndData.size() + 1;
 			styleAndData.put(index + ":" +style, index + ":" +data.toString());
 		}
+	}
+	
+	
+	/**
+	 * transform an integer (style counter) into a valid character representing a style.
+	 * 0-25 => a-z<br>
+	 * 26-51 => A-Z<br>
+	 * i not in {0,...,51} is undefined
+	 * @param i
+	 * @return
+	 */
+	private static char getStyleAbbrev(int i){
+		i++;
+		int ascii = 96 + i;
+		if (i >26){
+			ascii = 64 + i;
+		}
+		return (char)ascii;
 	}
 }
