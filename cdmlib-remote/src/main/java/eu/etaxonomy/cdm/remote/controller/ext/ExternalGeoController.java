@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
-import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
@@ -164,7 +163,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 		// get the descriptions for the taxon
 		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
-TaxonBase tb = service.load(uuid);
+		TaxonBase tb = service.load(uuid);
 		
 		List<OrderHint> orderHints = new ArrayList<OrderHint>();
 		orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
