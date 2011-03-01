@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -221,7 +222,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
-					voc = getVocabulary(uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null);
+					boolean isOrdered = true;
+					voc = getVocabulary(uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null, null, isOrdered);
 				}
 				voc.addTerm(namedArea);
 				namedArea.setType(areaType);
@@ -332,10 +334,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 * 
 	 */
-	protected TermVocabulary getVocabulary(UUID uuid, String text, String label, String abbrev) {
+	protected TermVocabulary getVocabulary(UUID uuid, String text, String label, String abbrev, String termSourceUri, boolean isOrdered) {
 		TermVocabulary voc = getVocabularyService().find(uuid);
 		if (voc == null){
-			voc = TermVocabulary.NewInstance(text, label, abbrev, null);
+			if (isOrdered){
+				voc = OrderedTermVocabulary.NewInstance(text, label, abbrev, termSourceUri);
+			}else{
+				voc = TermVocabulary.NewInstance(text, label, abbrev, termSourceUri);
+			}
 			voc.setUuid(uuid);
 			getVocabularyService().save(voc);
 		}
