@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 import eu.etaxonomy.cdm.remote.controller.ClassificationController;
@@ -86,12 +87,16 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 	@Autowired
 	private FeatureNodeController featureNodeController;
 
+	private IProgressMonitor monitor;
+
 	/**
 	 * 
 	 * @param applicationController
+	 * @param monitor 
 	 */
-	protected LocalXMLEntityFactory(CdmApplicationController applicationController){
+	protected LocalXMLEntityFactory(CdmApplicationController applicationController, IProgressMonitor monitor){
 		this.applicationController = applicationController;
+		this.monitor = monitor;
 		this.xmlView = new JsonView();
 		xmlView.setType(Type.XML);
 		initControllers();
@@ -156,6 +161,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 				resultObject = taxonNodeListController.getChildNodes(uuid, null);
 			}
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		
@@ -174,6 +180,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = taxonNodeController.doGet(taxonNodeUuid, null, null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		Element result = render(resultObject); 
@@ -205,6 +212,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = featureNodeController.doGet(uuid, null, null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		Element result = render(resultObject); 
@@ -222,6 +230,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = featureNodeController.getCdmBaseProperty(uuid, "feature", null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		Element result = render(resultObject); 
@@ -241,6 +250,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = featureTreeController.doGet(uuid, null, null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		Element result = render(resultObject);
@@ -260,6 +270,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = taxonNodeController.getCdmBaseProperty(uuid, "taxon", null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		
@@ -280,6 +291,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = HibernateProxyHelper.deproxy(taxonPortalController.doGet(uuid, null, null));
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		
@@ -300,6 +312,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = taxonPortalController.doGetSynonymy(uuid, null, null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		
@@ -333,6 +346,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = nameController.getCdmBaseProperty(uuid, "typeDesignations", null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		Element result = render(resultObject); 
@@ -352,6 +366,7 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 		try {
 			resultObject = taxonPortalController.doGetDescriptions(uuid, null, null);
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
 		}
 		
@@ -380,8 +395,10 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 			document = builder.build(tmpFile); 
 			
 		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			throw new RuntimeException(e);
 		} catch (Exception e) {
+			monitor.warning(e.getLocalizedMessage(), e);
 			throw new RuntimeException(e);
 		}finally{
 			if(tmpFile != null)
