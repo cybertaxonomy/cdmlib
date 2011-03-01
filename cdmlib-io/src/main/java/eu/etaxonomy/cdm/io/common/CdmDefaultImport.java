@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
