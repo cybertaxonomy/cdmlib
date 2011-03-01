@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -77,8 +78,13 @@ public class TaxonTest extends EntityTestBase {
 		// taxonomic children
 		child1 = Taxon.NewInstance(name2,sec);
 		child2 = Taxon.NewInstance(name3,sec);
-		rootT.addTaxonomicChild(child1, sec, "p.998");
-		rootT.addTaxonomicChild(child2, sec, "p.987");
+		
+		Classification newTree = Classification.NewInstance("testTree");
+		newTree.addParentChild(rootT, child1, sec, "p.998");
+		newTree.addParentChild(rootT, child2, sec, "p.987");
+		
+		//rootT.addTaxonomicChild(child1, sec, "p.998");
+		//rootT.addTaxonomicChild(child2, sec, "p.987");
 		// synonymy
 		syn1=Synonym.NewInstance(name1,sec);
 		syn2=Synonym.NewInstance(name2,sec);
@@ -98,6 +104,7 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testAddTaxonomicChild() {
+		
 		rootT.addTaxonomicChild(freeT, null, null);
 		Assert.assertEquals(Integer.valueOf(3), Integer.valueOf(rootT.getTaxonomicChildren().size()));
 	}
@@ -504,6 +511,14 @@ public class TaxonTest extends EntityTestBase {
 	@Test
 	public void testGetHeterotypicSynonymyGroups() {
 		logger.warn("Not yet implemented");
+	}
+	
+	@Test
+	public void testClone(){
+		Taxon clone = (Taxon)child2.clone();
+		assertNotNull(clone);
+		assertEquals(0,clone.getTaxonNodes().size());
+		assertSame(clone.getName(), child2.getName());
 	}
 
 }

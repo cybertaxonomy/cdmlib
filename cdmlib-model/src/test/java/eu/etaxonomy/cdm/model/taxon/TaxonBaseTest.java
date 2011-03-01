@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -137,6 +138,25 @@ public class TaxonBaseTest extends EntityTestBase {
 		freeT.setSec(sec);
 		assertNotNull(freeT.getSec());
 		assertSame(freeT.getSec(), sec);
+	}
+	
+	@Test
+	
+	public final void testClone(){
+		
+		BotanicalName test = BotanicalName.NewInstance(Rank.SPECIES());
+		String genus = "test";
+		String infraGenericEpithet = "test";
+		test.setGenusOrUninomial(genus);
+		test.setInfraGenericEpithet(infraGenericEpithet);
+		Reference secRef = ReferenceFactory.newArticle();
+		secRef.setTitle("Test ...");
+		freeT.setSec(secRef);
+		freeT.setName(test);
+		Taxon clone = (Taxon)freeT.clone();
+		assertNull(clone.getSec());
+		assertSame(freeT.getName(), clone.getName());
+		
 	}
 
 }
