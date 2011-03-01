@@ -33,8 +33,10 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -71,7 +73,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @Audited
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
-public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> {
+public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {
 	private static final long serialVersionUID = -3589185949928938529L;
 	private static final Logger logger = Logger.getLogger(TaxonBase.class);
 	
@@ -275,6 +277,31 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 */
 	public void setUseNameCache(boolean useNameCache) {
 		this.useNameCache = useNameCache;
+	}
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> taxon. This is a shortcut that enables to create
+	 * a new instance with empty taxon name and sec reference.
+	 *  
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		TaxonBase result;
+		try {
+			result = (TaxonBase)super.clone();
+			result.setSec(null);
+			
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
 	}
 
 }

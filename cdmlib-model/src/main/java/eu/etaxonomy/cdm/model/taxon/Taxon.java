@@ -48,8 +48,11 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
@@ -81,7 +84,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 @Configurable
-public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements IRelated<RelationshipBase>{
+public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements IRelated<RelationshipBase>, Cloneable{
 	private static final long serialVersionUID = -584946869762749006L;
 	private static final Logger logger = Logger.getLogger(Taxon.class);
 
@@ -1590,5 +1593,64 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 			result.setImageGallery(true);
 		}
 		return result;
+	}
+	//*********************** CLONE ********************************************************/
+	
+	
+	/** 
+	 * Clones <i>this</i> taxon. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> taxon by
+	 * modifying only some of the attributes.<BR><BR>
+	 * The TaxonNodes are not cloned, the list is empty.<BR>
+	 * (CAUTION: this behaviour needs to be discussed and may change in future).<BR><BR>
+	 * The taxon relationships and synonym relationships are cloned <BR>
+	 * 
+	 * @see eu.etaxonomy.cdm.model.taxon.TaxonBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		Taxon result;
+		result = (Taxon)super.clone();
+		
+		result.setRelationsFromThisTaxon(new HashSet<TaxonRelationship>());
+		try{
+		for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
+			TaxonRelationship newRelationship = (TaxonRelationship)fromRelationship.clone();
+			newRelationship.setRelatedFrom(result);
+			result.relationsFromThisTaxon.add(newRelationship);
+		}
+		
+		result.setRelationsToThisTaxon(new HashSet<TaxonRelationship>());
+		for (TaxonRelationship toRelationship : this.getRelationsToThisTaxon()){
+			TaxonRelationship newRelationship = (TaxonRelationship)toRelationship.clone();
+			newRelationship.setRelatedTo(result);
+			result.relationsToThisTaxon.add(newRelationship);
+		}
+		
+		
+		result.synonymRelations = new HashSet<SynonymRelationship>();
+		for (SynonymRelationship synRelationship : this.getSynonymRelations()){
+			SynonymRelationship newRelationship = (SynonymRelationship)synRelationship.clone();
+			newRelationship.setRelatedTo(result);
+			result.synonymRelations.add(newRelationship);
+		}
+		
+		
+		result.taxonNodes = new HashSet<TaxonNode>();
+		
+		/*for (TaxonNode taxonNode : this.getTaxonNodes()){
+			TaxonNode newTaxonNode = (TaxonNode)taxonNode.clone();
+			newTaxonNode.setTaxon(result);
+			result.addTaxonNode(newTaxonNode);
+		}*/
+		
+		return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
