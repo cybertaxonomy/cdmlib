@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.Modifier;
+import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.Sex;
@@ -24,7 +25,6 @@ import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -48,7 +48,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author n.hoffmann
  * @created 03.06.2009
  * @version 1.0
+ * 
+ * @deprecated
+ * A static list of vocabularies is not the right way to do this.
+ * We will use a service method that will return vocabularies by term type (once that is implemented)
  */
+@Deprecated 
 public enum VocabularyEnum {
 
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
