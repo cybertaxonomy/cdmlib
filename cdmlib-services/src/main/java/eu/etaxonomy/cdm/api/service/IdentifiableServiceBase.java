@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -205,8 +206,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}
-		 
+		if (monitor == null){
+			monitor = DefaultProgressMonitor.NewInstance();
+		}
+		
 		int count = dao.count(clazz);
+		monitor.beginTask("update titles", count);
+		int worked = 0;
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it
 			ArrayList<OrderHint> orderHints = new ArrayList<OrderHint>();
@@ -236,8 +242,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				}
 			}
 			saveOrUpdate(entitiesToUpdate);
-			
+			monitor.worked(worked++);
+			if (monitor.isCanceled()){
+				monitor.done();
+				return;
+			}
 		}
+		monitor.done();
 	}
 	
 	
