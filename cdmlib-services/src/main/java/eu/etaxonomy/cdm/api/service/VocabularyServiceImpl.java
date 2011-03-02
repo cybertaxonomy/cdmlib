@@ -20,12 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -36,14 +38,18 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		this.dao = dao;
 	}
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache() {
-		Class<TermVocabulary> clazz = TermVocabulary.class;
-		super.updateTitleCache(clazz, null, null);
+	public void updateTitleCache(Class<? extends TermVocabulary> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TermVocabulary> cacheStrategy, IProgressMonitor monitor) {
+		if (clazz == null){
+			clazz = TermVocabulary.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+
 	
 	public TermVocabulary<DefinedTermBase> getVocabulary(VocabularyEnum vocabularyType){
 		return dao.findByUuid(vocabularyType.getUuid());
@@ -76,5 +82,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 			
 		return new DefaultPagerImpl<DefinedTermBase>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+
 
 }

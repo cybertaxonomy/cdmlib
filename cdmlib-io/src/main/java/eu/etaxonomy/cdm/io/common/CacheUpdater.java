@@ -85,45 +85,45 @@ private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> claz
 		try {
 			//TermBase
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
-				getTermService().updateTitleCache((Class) clazz);
+				getTermService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (FeatureTree.class.isAssignableFrom(clazz)){
-				getFeatureTreeService().updateTitleCache((Class) clazz);
+				getFeatureTreeService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
-				getVocabularyService().updateTitleCache((Class) clazz);
+				getVocabularyService().updateTitleCache((Class) clazz, null, null, null);
 			} 
 			//DescriptionBase
 			else if (DescriptionBase.class.isAssignableFrom(clazz)){
-				getDescriptionService().updateTitleCache((Class) clazz);
+				getDescriptionService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//Media
 			else if (Media.class.isAssignableFrom(clazz)){
-				getMediaService().updateTitleCache((Class) clazz);
+				getMediaService().updateTitleCache((Class) clazz, null, null, null);
 			}//TaxonBase
 			else if (TaxonBase.class.isAssignableFrom(clazz)){
-				getTaxonService().updateTitleCache((Class) clazz);
+				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//IdentifiableMediaEntity
 			else if (AgentBase.class.isAssignableFrom(clazz)){
-				getAgentService().updateTitleCache((Class) clazz);
+				getAgentService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (Collection.class.isAssignableFrom(clazz)){
-				getCollectionService().updateTitleCache((Class) clazz);
+				getCollectionService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (Reference.class.isAssignableFrom(clazz)){
-				getReferenceService().updateTitleCache((Class) clazz);
+				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
-				getReferenceService().updateTitleCache((Class) clazz);
+				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//Sequence
 			else if (Sequence.class.isAssignableFrom(clazz)){
 				//TODO misuse TaxonServic for sequence update, use sequence service when it exists
-				getTaxonService().updateTitleCache((Class) clazz);
+				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//TaxonNameBase
 			else if (TaxonNameBase.class.isAssignableFrom(clazz)){
-				getNameService().updateTitleCache((Class) clazz);
+				getNameService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//TaxonNameBase
 			else if (Classification.class.isAssignableFrom(clazz)){
-				getClassificationService().updateTitleCache((Class) clazz);
+				getClassificationService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//unknown class
 			else {

@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
@@ -117,14 +119,19 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		logger.debug("Load DescriptionService Bean");
 	}
 	
+	
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache() {
-		Class<DescriptionBase> clazz = DescriptionBase.class;
-		super.updateTitleCache(clazz, null, null);
+	public void updateTitleCache(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
+		if (clazz == null){
+			clazz = DescriptionBase.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+
 	
 	public TermVocabulary<Feature> getDefaultFeatureVocabulary(){
 		String uuidFeature = "b187d555-f06f-4d65-9e53-da7c93f8eaa8";

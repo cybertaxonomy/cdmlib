@@ -50,7 +50,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertEquals("There should be 5 TaxonNames in the data set", 5, nameService.count(TaxonNameBase.class));
 		Class clazz = TaxonNameBase.class;
 		int stepSize = 2;
-		nameService.updateTitleCache(clazz, stepSize, null);
+		nameService.updateTitleCache(clazz, stepSize, null, null);
 
 //		TaxonNameBase name = nameService.find(UUID.fromString("5d74500b-9fd5-4d18-b9cd-cc1c8a372fec"));
 //		System.out.println(name.getRank().getLabel());

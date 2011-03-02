@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -190,15 +191,17 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	@Transactional(readOnly = false)
-	public void updateTitleCache(Class<? extends T> clazz) {
-		IIdentifiableEntityCacheStrategy<T> cacheStrategy = null;
-		updateTitleCache(clazz, UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE, cacheStrategy);
-	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 */
+	@Override
+	public void updateTitleCache() {
+		updateTitleCache(null, null, null, null);
+	}
 	
 	@Transactional(readOnly = false)  //TODO check transactional behaviour, e.g. what happens with the session if count is very large 
-	public void updateTitleCache(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy) {
+	protected void updateTitleCacheImpl(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}

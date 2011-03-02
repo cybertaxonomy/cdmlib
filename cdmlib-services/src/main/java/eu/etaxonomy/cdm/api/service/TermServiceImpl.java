@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -44,6 +45,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -179,15 +181,17 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return languageStringBaseDao.save(languageData);
 	}
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache() {
+	public void updateTitleCache(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
 		//TODO shouldnt this be TermBase instead of DefinedTermBase
-		Class<DefinedTermBase> clazz = DefinedTermBase.class;
-		super.updateTitleCache(clazz, null, null);
-	}	
-	
-	
+		if (clazz == null){
+			clazz = DefinedTermBase.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+	}
+
 }
