@@ -57,7 +57,7 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	
 	private static final String UUID = "{uuid}";
 	
-	private static final String CLASSIFICATIONS = "classifications";
+	private static final String CLASSIFICATIONS = "classification";
 	private static final String CLASSIFICATION_CHILD_NODES = "classification/" + UUID + "/childNodes/";
 	private static final String TAXONNODE_CHILD_NODES = "taxonNode/" + UUID + "/childNodes/";
 	private static final String TAXONNODE =  "taxonNode/" + UUID;
