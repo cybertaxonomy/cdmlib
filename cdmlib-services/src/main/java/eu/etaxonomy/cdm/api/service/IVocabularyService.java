@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -19,7 +20,8 @@ import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IVocabularyService extends IIdentifiableEntityService<TermVocabulary> {
-    public TermVocabulary getVocabulary(VocabularyEnum vocabularyType);
+    
+	public TermVocabulary getVocabulary(VocabularyEnum vocabularyType);
 	
     /**
      * Returns term vocabularies that contain terms of a certain class e.g. Feature, Modifier, State.
