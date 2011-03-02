@@ -419,6 +419,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assertEquals(numberOfTaxa, 3);
 		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 12);
+		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "Aasfwerfwf fffe", null, MatchMode.BEGINNING, null);
+		assertEquals(numberOfTaxa, 0);
 //	FIXME implement test for search in specific classification 		
 //		Reference reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
 //		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, null, null);

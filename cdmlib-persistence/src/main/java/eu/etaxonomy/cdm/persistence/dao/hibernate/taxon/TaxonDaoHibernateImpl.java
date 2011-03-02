@@ -352,7 +352,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		String selectWhat;
 		if (doForEditor){
 			selectWhat = "t.uuid, t.titleCache ";
-		}else selectWhat = (doCount ? "count(t)": "t");
+		}else {
+			selectWhat = (doCount ? "count(t)": "t");
+		}
 		
 		String hql = "";
 		Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
@@ -865,9 +867,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query query = prepareTaxaByName(clazz, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount);
 		if (query != null) {
 			return (Long)query.uniqueResult();
+		}else{
+			return 0;
 		}
-		return 0;
-		
 	}
 
 	/**
