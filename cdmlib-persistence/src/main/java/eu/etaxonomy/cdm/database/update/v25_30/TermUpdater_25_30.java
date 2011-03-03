@@ -82,8 +82,8 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 		
 		//undefined languages vocabulary
 		UUID uuidUndefLanguagesVoc = UUID.fromString("7fd1e6d0-2e76-4dfa-bad9-2673dd042c28");
-		description = "Undefinded Language";
-		label = "Undefinded Language";
+		description = "Undefined Language";
+		label = "Undefined Language";
 		abbrev = "undef. lang.";
 		boolean isOrdered = false;
 		Class termClass = Language.class;
