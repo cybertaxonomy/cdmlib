@@ -345,12 +345,26 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				matchMode, namedAreas, doCount, true);
 	}
 	
+	/**
+	 * @param clazz
+	 * @param searchField
+	 * @param queryString
+	 * @param classification
+	 * @param matchMode
+	 * @param namedAreas
+	 * @param doCount
+	 * @param doNotReturnFullEntities
+	 *            if set true the seach method will not return synonym and taxon
+	 *            entities but an array containing the uuid, titleCache, and the
+	 *            DTYPE in lowercase letters.
+	 * @return
+	 */
 	private Query prepareQuery(Class<? extends TaxonBase> clazz, String searchField, String queryString, Classification classification,
-			MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doForEditor){
+			MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doNotReturnFullEntities){
 		
 		String hqlQueryString = matchMode.queryStringFrom(queryString);
 		String selectWhat;
-		if (doForEditor){
+		if (doNotReturnFullEntities){
 			selectWhat = "t.uuid, t.titleCache ";
 		}else {
 			selectWhat = (doCount ? "count(t)": "t");
@@ -464,11 +478,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 			}
 			
-		
 		}
-		
-		
-		
 		
 		Query subTaxon = null;
 		Query subSynonym = null;
@@ -531,16 +541,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
 		} else {
+			
 			if(synonyms.size()>0 && taxa.size()>0){
-				if (doCount){
-					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
-				}else{
+				if (doNotReturnFullEntities &&  !doCount ){
+					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
 					hql = "select " + selectWhat + ", case when t.id in (:taxa) then 'taxon' else 'synonym' end" + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+				}else{
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
 				}
 			}else if (synonyms.size()>0 ){
-				hql = "select " + selectWhat + ", 'synonym' from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
+				if (doNotReturnFullEntities &&  !doCount ){
+					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+					hql = "select " + selectWhat + ", 'synonym' from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
+				} else {
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";		
+				}
 			} else if (taxa.size()>0 ){
-				hql = "select " + selectWhat + ", 'taxon' from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+				if (doNotReturnFullEntities &&  !doCount ){
+					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+					hql = "select " + selectWhat + ", 'taxon' from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+				} else {
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+				}
 			} else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
@@ -548,14 +570,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		if (hql == "") return null;
 		if(!doCount){
-			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
 			hql += " order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
-			
-    
 		}
 	
 		Query query = getSession().createQuery(hql);
-		
 				
 		if(clazz.equals(Taxon.class) && taxa.size()>0){
 			//find taxa
