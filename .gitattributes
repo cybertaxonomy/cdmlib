@@ -539,6 +539,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CategoricalData.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionElementBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptiveSystemRole.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Feature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureNode.java -text
