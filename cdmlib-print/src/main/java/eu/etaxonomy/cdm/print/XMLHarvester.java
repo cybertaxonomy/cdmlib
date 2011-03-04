@@ -48,8 +48,8 @@ public class XMLHarvester {
 	 */
 	public XMLHarvester(PublishConfigurator configurator){
 		this.configurator = configurator;
-		this.factory = configurator.getFactory();
 		this.progressMonitor = configurator.getProgressMonitor();
+		this.factory = configurator.getFactory();
 		
 		Element featureTreeElement = factory.getFeatureTree(configurator.getFeatureTreeUuid());
 		createSimplifiedFeatureTree(featureTreeElement);

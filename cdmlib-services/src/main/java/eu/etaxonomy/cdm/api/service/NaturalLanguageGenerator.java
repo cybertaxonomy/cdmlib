@@ -146,8 +146,6 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		for(INaturalLanguageTextDataProcessor processor : applicableElementProcessors){
 			processor.process(textData, previousTextData);
 		}
-		// HUUUUUU!!! FIXME remove hack
-		deltaTextDataProcessor.process(textData, previousTextData);
 	}
 
 

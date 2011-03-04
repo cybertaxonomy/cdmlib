@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "TaxonNode")
 @Entity
 @Audited
-public class TaxonNode extends AnnotatableEntity implements ITreeNode{
+public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable{
 	private static final long serialVersionUID = -4743289894926587693L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNode.class);
@@ -496,5 +496,27 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	@Transient
 	public boolean hasChildNodes(){
 		return childNodes.size() > 0;
+	}
+	
+//*********************** CLONE ********************************************************/
+	/** 
+	 * Clones <i>this</i> taxon node. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> taxon node by
+	 * modifying only some of the attributes.<BR><BR>
+	 * The child nodes are not copied.<BR>
+	 * The taxon and parent are the same as for the original taxon node. <BR>
+	 *  
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		TaxonNode result;
+		
+		result = (TaxonNode)super.clone();
+		result.childNodes = new HashSet<TaxonNode>();
+		result.countChildren = 0;
+		
+		return result;
 	}
 }

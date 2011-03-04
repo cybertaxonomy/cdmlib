@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -33,7 +34,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 /**
@@ -327,15 +328,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	@Transactional(readOnly = false)
-	public void updateTitleCache() {
-		Class<TaxonBase> clazz = TaxonBase.class;
-		super.updateTitleCache(clazz, null, null);
+	public void updateTitleCache(Class<? extends TaxonBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonBase> cacheStrategy, IProgressMonitor monitor) {
+		if (clazz == null){
+			clazz = TaxonBase.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
-	
+
 	@Autowired
 	protected void setDao(ITaxonDao dao) {
 		this.dao = dao;
@@ -486,7 +488,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			//propertyPath = configurator.getSynonymPropertyPath();
 		}
 		
-		result = dao.getTaxaByNameForEditor(clazz, configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getTaxonPropertyPath());
+		
+		result = dao.getTaxaByNameForEditor(clazz, configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 		return result;
 	}
 	/* (non-Javadoc)

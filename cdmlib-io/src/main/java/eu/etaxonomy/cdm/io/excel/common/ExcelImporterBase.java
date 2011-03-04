@@ -76,9 +76,9 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     		//first pass
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			success = analyzeRecord(record, state);
+    			success &= analyzeRecord(record, state);
     			try {
-					success = firstPass(state);
+					success &= firstPass(state);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -86,8 +86,8 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     		//second pass
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			success = analyzeRecord(record, state);
-    			success = secondPass(state);
+    			success &= analyzeRecord(record, state);
+    			success &= secondPass(state);
         	}
     		
     		commitTransaction(txStatus);

@@ -23,6 +23,7 @@ import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.NullProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
@@ -280,7 +281,7 @@ public class PublishConfigurator implements Serializable{
 	 * @return an {@link IXMLEntityFactory}
 	 */
 	public IXMLEntityFactory getFactory(){
-		return isRemote() ? new RemoteXMLEntityFactory(getWebserviceUrl()) : new LocalXMLEntityFactory(getApplicationController());
+		return isRemote() ? new RemoteXMLEntityFactory(getWebserviceUrl(), getProgressMonitor()) : new LocalXMLEntityFactory(getApplicationController(), getProgressMonitor());
 	}
 	
 	/**
@@ -370,7 +371,7 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	public IProgressMonitor getProgressMonitor() {
-		return progressMonitor;
+		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 	}
 
 

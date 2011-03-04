@@ -25,7 +25,8 @@ import eu.etaxonomy.cdm.common.XmlHelpTest;
 		}
 	)
 public class CdmTestSuite {
-	static Logger logger = Logger.getLogger(CdmTestSuite.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmTestSuite.class);
 
 	// the class remains completely empty, 
 	// being used only as a holder for the above annotations

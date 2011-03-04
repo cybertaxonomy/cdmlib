@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -47,6 +49,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.babadshanjan
@@ -76,14 +79,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		logger.debug("Load OccurrenceService Bean");
 	}
 	
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache() {
-		Class<SpecimenOrObservationBase> clazz = SpecimenOrObservationBase.class;
-		super.updateTitleCache(clazz, null, null);
+	public void updateTitleCache(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
+		if (clazz == null){
+			clazz = SpecimenOrObservationBase.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+
 
 	/**
 	 * FIXME Candidate for harmonization

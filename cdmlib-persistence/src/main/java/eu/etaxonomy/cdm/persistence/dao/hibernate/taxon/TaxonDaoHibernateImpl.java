@@ -267,8 +267,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
 	 */
 	//new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
+	@SuppressWarnings("unchecked")
 	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
-			MatchMode matchMode, Set<NamedArea> namedAreas, List<String> propertyPaths) {
+			MatchMode matchMode, Set<NamedArea> namedAreas) {
 		long zstVorher;
 		long zstNachher;
 				
@@ -283,7 +284,20 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Object[] result;
 			for(int i = 0; i<results.size();i++){
 				result = results.get(i);
-				resultObjects.add( new UuidAndTitleCache((UUID) result[0], (String)result[1]));
+				
+				//unterscheiden von taxa und synonymen
+				if (clazz.equals(Taxon.class)){
+						resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1]));
+				}else if (clazz.equals(Synonym.class)){
+					resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1]));
+				} else{
+					if (result[2].equals("synonym")) {
+						resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1]));
+					}
+					else {
+						resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1]));
+					}
+				}
 			}
 			
 			return resultObjects;
@@ -331,14 +345,30 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				matchMode, namedAreas, doCount, true);
 	}
 	
+	/**
+	 * @param clazz
+	 * @param searchField
+	 * @param queryString
+	 * @param classification
+	 * @param matchMode
+	 * @param namedAreas
+	 * @param doCount
+	 * @param doNotReturnFullEntities
+	 *            if set true the seach method will not return synonym and taxon
+	 *            entities but an array containing the uuid, titleCache, and the
+	 *            DTYPE in lowercase letters.
+	 * @return
+	 */
 	private Query prepareQuery(Class<? extends TaxonBase> clazz, String searchField, String queryString, Classification classification,
-			MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doForEditor){
+			MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doNotReturnFullEntities){
 		
 		String hqlQueryString = matchMode.queryStringFrom(queryString);
 		String selectWhat;
-		if (doForEditor){
-			selectWhat = "t.uuid, t.titleCache";
-		}else selectWhat = (doCount ? "count(t)": "t");
+		if (doNotReturnFullEntities){
+			selectWhat = "t.uuid, t.titleCache ";
+		}else {
+			selectWhat = (doCount ? "count(t)": "t");
+		}
 		
 		String hql = "";
 		Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
@@ -448,11 +478,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 			}
 			
-		
 		}
-		
-		
-		
 		
 		Query subTaxon = null;
 		Query subSynonym = null;
@@ -515,12 +541,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
 		} else {
+			
 			if(synonyms.size()>0 && taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+				if (doNotReturnFullEntities &&  !doCount ){
+					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+					hql = "select " + selectWhat + ", case when t.id in (:taxa) then 'taxon' else 'synonym' end" + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+				}else{
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+				}
 			}else if (synonyms.size()>0 ){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
+				if (doNotReturnFullEntities &&  !doCount ){
+					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+					hql = "select " + selectWhat + ", 'synonym' from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";	
+				} else {
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";		
+				}
 			} else if (taxa.size()>0 ){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+				if (doNotReturnFullEntities &&  !doCount ){
+					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+					hql = "select " + selectWhat + ", 'taxon' from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+				} else {
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
+				}
 			} else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
@@ -528,14 +570,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		if (hql == "") return null;
 		if(!doCount){
-			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
 			hql += " order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
-			
-    
 		}
 	
 		Query query = getSession().createQuery(hql);
-		
 				
 		if(clazz.equals(Taxon.class) && taxa.size()>0){
 			//find taxa
@@ -847,9 +885,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query query = prepareTaxaByName(clazz, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount);
 		if (query != null) {
 			return (Long)query.uniqueResult();
+		}else{
+			return 0;
 		}
-		return 0;
-		
 	}
 
 	/**

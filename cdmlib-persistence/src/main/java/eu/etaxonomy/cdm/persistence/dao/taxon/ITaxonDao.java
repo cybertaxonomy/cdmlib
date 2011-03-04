@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
@@ -436,7 +437,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
 	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
-			MatchMode matchMode, Set<NamedArea> namedAreas, List<String> propertyPaths);
+			MatchMode matchMode, Set<NamedArea> namedAreas);
 
 	
 }

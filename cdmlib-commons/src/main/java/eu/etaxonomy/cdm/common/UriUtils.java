@@ -14,9 +14,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +32,10 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.EnglishReasonPhraseCatalog;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 
@@ -154,10 +157,106 @@ public class UriUtils {
 		if(qparams == null){
 			qparams = new ArrayList<NameValuePair>(0);
 		}
-
+		String query = null;
+		if(! qparams.isEmpty()){
+			query = URLEncodedUtils.format(qparams, "UTF-8");
+		}
+		
 		URI uri = URIUtils.createURI(baseUrl.getProtocol(),
-				baseUrl.getHost(), baseUrl.getPort(), path, URLEncodedUtils.format(qparams, "UTF-8"), fragment);
+				baseUrl.getHost(), baseUrl.getPort(), path, query, fragment);
 
 		return uri;
 	}
+	
+	/**
+	 * Tests internet connectivity by testing HEAD request for 4 known URL's.<BR>
+	 * If non of them is available <code>false</code> is returned. Otherwise true.<BR> 
+	 * @param firstUriToTest if not <code>null</code> this URI is tested before testing the standard URLs.
+	 * @return true if internetconnectivity is given.
+	 */
+	public static boolean isInternetAvailable(URI firstUriToTest){
+		boolean result = false;
+		if (firstUriToTest != null && isServiceAvailable(firstUriToTest)){
+			return true;
+		}
+		
+		URI uri = URI.create("http://www.cnn.com/");
+		if (isServiceAvailable(uri)){
+			return true;
+		}
+		uri = URI.create("http://www.bahn.de/");
+		if (isServiceAvailable(uri)){
+			return true;
+		}
+		uri = URI.create("http://www.google.com/");
+		if (isServiceAvailable(uri)){
+			return true;
+		}
+		uri = URI.create("http://www.facebook.com/");
+		if (isServiceAvailable(uri)){
+			return true;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Performs HEAD request for the given URI.<BR>
+	 * If any exception occurs <code>false</code> is returned. Otherwise true. <BR>
+	 * @param serviceUri the URI to test.
+	 * @return true if service is available.
+	 */
+	public static boolean isServiceAvailable(URI serviceUri){
+		boolean result = false;
+		
+        //Http 
+		HttpClient  client = new DefaultHttpClient();
+		HttpUriRequest request = new HttpHead(serviceUri);
+		 
+		try {
+			// Execute the request
+			HttpResponse response = client.execute(request);
+			// Examine the response status
+			if (logger.isDebugEnabled()){
+				logger.debug(response.getStatusLine());
+			}
+			 result = true;
+			 
+		} catch (UnknownHostException e1) {
+			logger.warn("Unknwon Host: " +e1.getMessage());
+		} catch (ClientProtocolException e2) {
+			logger.warn("ClientProtocolException: " + e2.getMessage());
+		} catch (IOException e3) {
+			logger.warn("IOException: " + e3.getMessage());
+		}
+	     
+	     // When HttpClient instance is no longer needed, 
+	     // shut down the connection manager to ensure
+	     // immediate deallocation of all system resources
+		//needed ?
+//	     client.getConnectionManager().shutdown();   
+
+		return result;
+	}
+	
+	/**
+	 * Tests reachability of a root server by trying to resolve a host name.
+	 * @param hostNameToResolve the host name to resolve. If <code>null</code> 
+	 * a default host name is tested.
+	 * @return
+	 */
+	public static boolean isRootServerAvailable(String hostNameToResolve){
+		try {
+			if (hostNameToResolve == null){
+				hostNameToResolve = "cnn.com";
+			}
+		    InetAddress inetHost = InetAddress.getByName(hostNameToResolve);
+		    System.out.println("The hosts IP address is: " + inetHost.getHostAddress());
+			return true;
+		 } catch(UnknownHostException ex) {
+		     System.out.println("Unrecognized host");
+		     return false;
+		 }
+	}
+	
 }

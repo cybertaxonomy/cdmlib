@@ -10,9 +10,11 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -65,6 +67,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 
 public class WorkingSet extends AnnotatableEntity {
 	private static final long serialVersionUID = 3256448866757415686L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WorkingSet.class);
 	
 	@XmlElementWrapper(name = "Representations")
@@ -79,6 +82,8 @@ public class WorkingSet extends AnnotatableEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private FeatureTree descriptiveSystem;
+	
+//	private Map<DescriptiveSystemRole, FeatureTree> descripteSystems = new HashMap<DescriptiveSystemRole, FeatureTree>(); 
 	
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")

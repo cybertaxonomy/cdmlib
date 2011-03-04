@@ -30,6 +30,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 
@@ -46,6 +47,8 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 			.getLogger(RemoteXMLEntityFactory.class);
 	
 	private URL serviceUrl;
+
+	private IProgressMonitor monitor;
 	
 	private static final List<NameValuePair> UNLIMITED_RESULTS = Arrays.asList(new NameValuePair[]{
 			new BasicNameValuePair("start", "0"),
@@ -54,7 +57,7 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	
 	private static final String UUID = "{uuid}";
 	
-	private static final String CLASSIFICATIONS = "classifications";
+	private static final String CLASSIFICATIONS = "classification";
 	private static final String CLASSIFICATION_CHILD_NODES = "classification/" + UUID + "/childNodes/";
 	private static final String TAXONNODE_CHILD_NODES = "taxonNode/" + UUID + "/childNodes/";
 	private static final String TAXONNODE =  "taxonNode/" + UUID;
@@ -80,9 +83,11 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 	 * CDM Community Stores access point.
 	 * 
 	 * Typically, there is no need to instantiate this class. 
+	 * @param monitor 
 	 */
-	protected RemoteXMLEntityFactory(URL webserviceUrl){
+	protected RemoteXMLEntityFactory(URL webserviceUrl, IProgressMonitor monitor){
 		this.serviceUrl = webserviceUrl;
+		this.monitor = monitor;
 	}
 	
 	/*
@@ -263,14 +268,18 @@ public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
 				
 				return document.getRootElement();
 			}else{
+				monitor.warning(UriUtils.getStatus(response));
 				logger.error(UriUtils.getStatus(response));
 			}
 			
 		} catch (IOException e) {
+			monitor.warning("No content for request: " + restRequest, e);
 			logger.error("No content for request: " + restRequest);
 		} catch (JDOMException e) {
+			monitor.warning("Error building the document.", e);
 			logger.error("Error building the document.", e);
 		} catch (URISyntaxException e) {
+			monitor.warning("Error building URI", e);
 			logger.error("Error building URI", e);
 		}
 		

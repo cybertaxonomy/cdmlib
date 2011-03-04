@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
 
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -19,6 +21,8 @@ import org.apache.log4j.Logger;
  * @created Aug 14, 2009
  * @version 1.0
  */
+
+
 public class UuidAndTitleCache<T extends ICdmBase> {
 	private static final Logger logger = Logger
 			.getLogger(UuidAndTitleCache.class);
@@ -29,6 +33,7 @@ public class UuidAndTitleCache<T extends ICdmBase> {
 	
 	public UuidAndTitleCache(Class<T> type, UUID uuid, String titleCache) {
 		this(uuid, titleCache);
+		this.type = type;
 	}
 	
 	/**

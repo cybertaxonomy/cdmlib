@@ -16,8 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,14 +35,20 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 		this.dao = dao;
 	}
 
+
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache() {
-		Class<Collection> clazz = Collection.class;
-		super.updateTitleCache(clazz, null, null);
+	public void updateTitleCache(Class<? extends Collection> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Collection> cacheStrategy, IProgressMonitor monitor) {
+		if (clazz == null){
+			clazz = Collection.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+ 
+
 	
 	public List<Collection> searchByCode(String code) {
 		return this.dao.getCollectionByCode(code);

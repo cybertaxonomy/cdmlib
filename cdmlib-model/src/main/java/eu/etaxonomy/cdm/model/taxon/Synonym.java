@@ -297,4 +297,25 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 			rel.setType(relType);
 		}
 	}
+//*********************** CLONE ********************************************************/
+	
+	@Override
+	public Object clone() {
+		Synonym result;
+		result = (Synonym)super.clone();
+		
+		result.setSynonymRelations(new HashSet<SynonymRelationship>());
+		try{
+			for (SynonymRelationship synRelationship : this.getSynonymRelations()){
+				SynonymRelationship newRelationship = (SynonymRelationship)synRelationship.clone();
+				newRelationship.setRelatedFrom(result);
+				result.synonymRelations.add(newRelationship);
+			}
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

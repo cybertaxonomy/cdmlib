@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -28,10 +29,12 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
@@ -49,14 +52,18 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		this.polytomousKeyNodeDao = polytomousKeyNodeDao;
 	}
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache() {
-		Class<PolytomousKey> clazz = PolytomousKey.class;
-		super.updateTitleCache(clazz, null, null);
+	public void updateTitleCache(Class<? extends PolytomousKey> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<PolytomousKey> cacheStrategy, IProgressMonitor monitor) {
+		if (clazz == null){
+			clazz = PolytomousKey.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IPolytomousKeyService#getPolytomousKeyNodesAll()

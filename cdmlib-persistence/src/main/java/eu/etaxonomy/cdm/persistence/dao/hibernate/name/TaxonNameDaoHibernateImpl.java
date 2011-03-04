@@ -30,6 +30,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -643,6 +644,12 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		} else if (results.size() == 0) {
 			logger.warn("No results for UUID: " + uuid);
 		}
+		return null;
+	}
+	public UuidAndTitleCache<TaxonNameBase> findByNameForEditor(String searchString,
+			MatchMode matchMode){
+		
+		
 		return null;
 	}
 

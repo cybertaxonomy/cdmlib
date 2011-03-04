@@ -14,6 +14,7 @@ package eu.etaxonomy.cdm.common;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.http.HttpException;
@@ -92,10 +93,21 @@ public class MediaMetaDataTest {
 			//URL imageUrl = new URL("file://" + new File("").getAbsolutePath()+ "/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
 			URL imageUrl = new URL("http://wp5.e-taxonomy.eu/media/palmae/photos/palm_tc_100447_6.jpg");
 			MetaDataFactory metaFactory = MetaDataFactory.getInstance();
-			ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(CdmUtils.string2Uri(imageUrl.toString()), MimeType.JPEG, 30000);
-			//imageMetaData.readImageMetaData(imageUrl);
+			ImageMetaData imageMetaData;
 			
-			Assert.assertNotNull(imageMetaData);
+			try {
+				imageMetaData = (ImageMetaData) metaFactory.readMediaData(CdmUtils.string2Uri(imageUrl.toString()), MimeType.JPEG, 30000);
+				//imageMetaData.readImageMetaData(imageUrl);
+				
+				Assert.assertNotNull(imageMetaData);
+			} catch (Exception e) {
+				if (UriUtils.isInternetAvailable(URI.create(imageUrl.toString()))){
+					Assert.fail("Exception when reading media meta data though internet is available");
+				}else{
+					logger.warn("Internet not available. Can't test reading image meta data");
+				}
+			}
+
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

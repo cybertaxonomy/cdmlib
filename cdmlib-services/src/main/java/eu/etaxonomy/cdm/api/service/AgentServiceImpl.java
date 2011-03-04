@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -29,7 +30,9 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 
@@ -53,13 +56,16 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return dao.getInstitutionByCode(code);
 	}
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache() {
-		Class<AgentBase> clazz = AgentBase.class;
-		super.updateTitleCache(clazz, null, null);
+	public void updateTitleCache(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
+		if (clazz == null){
+			clazz = AgentBase.class;
+		}
+		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Autowired

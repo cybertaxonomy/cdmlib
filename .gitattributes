@@ -29,6 +29,7 @@ cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/MediaMetaDataTest.java -text
+cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UriUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UuidGenerator.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
@@ -60,8 +61,8 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlResponseSchema
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/OpenUrlReference.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
-cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/geo/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
@@ -538,6 +539,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CategoricalData.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionElementBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptiveSystemRole.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Feature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureNode.java -text
@@ -1319,7 +1321,6 @@ cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApp
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.out.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text

@@ -48,6 +48,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public class TdwgArea extends NamedArea {
 	private static final long serialVersionUID = 4662215686356109015L;
 	private static final Logger logger = Logger.getLogger(TdwgArea.class);
+	
+	public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
 
 	
 	private static Map<String, UUID> abbrevMap = null;

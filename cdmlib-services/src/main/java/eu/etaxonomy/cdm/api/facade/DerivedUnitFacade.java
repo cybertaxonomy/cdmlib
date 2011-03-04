@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 14.05.2010
  */
 public class DerivedUnitFacade {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacade.class);
 	
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";

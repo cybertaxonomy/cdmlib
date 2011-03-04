@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlType(name = "RelationshipBase")
 @XmlRootElement(name = "RelationshipBase")
 @MappedSuperclass
-public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
+public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase implements Cloneable {
 	private static final long serialVersionUID = -5030154633820061997L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelationshipBase.class);
