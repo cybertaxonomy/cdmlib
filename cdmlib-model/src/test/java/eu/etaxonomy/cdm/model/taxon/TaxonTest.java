@@ -79,12 +79,12 @@ public class TaxonTest extends EntityTestBase {
 		child1 = Taxon.NewInstance(name2,sec);
 		child2 = Taxon.NewInstance(name3,sec);
 		
-		Classification newTree = Classification.NewInstance("testTree");
-		newTree.addParentChild(rootT, child1, sec, "p.998");
-		newTree.addParentChild(rootT, child2, sec, "p.987");
+//		Classification newTree = Classification.NewInstance("testTree");
+//		newTree.addParentChild(rootT, child1, sec, "p.998");
+//		newTree.addParentChild(rootT, child2, sec, "p.987");
 		
-		//rootT.addTaxonomicChild(child1, sec, "p.998");
-		//rootT.addTaxonomicChild(child2, sec, "p.987");
+		rootT.addTaxonomicChild(child1, sec, "p.998");
+		rootT.addTaxonomicChild(child2, sec, "p.987");
 		// synonymy
 		syn1=Synonym.NewInstance(name1,sec);
 		syn2=Synonym.NewInstance(name2,sec);
