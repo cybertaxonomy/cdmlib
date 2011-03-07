@@ -140,7 +140,9 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 			
 			
 		} catch (SQLException e) {
-			throw new RuntimeException("Unable to connect or to retrieve version info from data source " + dataSource.toString() , e);
+			RuntimeException re =   new RuntimeException("Unable to connect or to retrieve version info from data source " + dataSource.toString() , e);
+			addErrorMessageToServletContextAttributes(re.getMessage());
+			throw re;
 			
 		}
 		return dataSource; 
