@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 
 @Controller
-@RequestMapping(value = {"/feature", "/feature/{uuid}"}) //FIXME refactor type mappings
-public class FeatureListController extends BaseController<DescriptionBase, IDescriptionService>
+@RequestMapping(value = {"/feature"}) //FIXME refactor type mappings
+public class FeatureListController extends BaseListController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
 	private ITermService termService;
@@ -52,26 +52,4 @@ public class FeatureListController extends BaseController<DescriptionBase, IDesc
 		this.service = service;
 	}
 	
-	@RequestMapping()
-	@Deprecated
-	public DescriptionBase doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		return null;
-	}
-	
-	
-	/**
-	 * TODO write controller method documentation
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public List<Feature> doGetFeatures(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		List<Feature> obj = (List)termService.list(Feature.class,null,null,null,FEATURE_INIT_STRATEGY);
-		return obj;
-	}
-
 }
