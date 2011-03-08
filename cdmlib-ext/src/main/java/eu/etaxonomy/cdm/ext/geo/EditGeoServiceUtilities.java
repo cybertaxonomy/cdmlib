@@ -55,8 +55,13 @@ public class EditGeoServiceUtilities {
 	private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
 	
 	private static HashMap<Class<? extends SpecimenOrObservationBase>, Color> defaultSpecimenOrObservationTypeColors;
+	private static HashMap<PresenceAbsenceTermBase<?>, Color> defaultPresenceAbsenceTermBaseColors;
 
-	private static final String MS_SEPARATOR = ",";
+	private static final String SUBENTRY_DELIMITER = ",";
+	private static final String ENTRY_DELIMITER = ";";
+	static final String ID_FROM_VALUES_SEPARATOR = ":";
+	static final String VALUE_LIST_ENTRY_SEPARATOR = "|";
+	static final String VALUE_SUPER_LIST_ENTRY_SEPARATOR = "||";
 	
 	static {
 		defaultSpecimenOrObservationTypeColors = new HashMap<Class<? extends SpecimenOrObservationBase>, Color>();
@@ -65,27 +70,48 @@ public class EditGeoServiceUtilities {
 		defaultSpecimenOrObservationTypeColors.put(LivingBeing.class, Color.GREEN);
 		defaultSpecimenOrObservationTypeColors.put(Observation.class, Color.ORANGE);
 		defaultSpecimenOrObservationTypeColors.put(Specimen.class, Color.GRAY);
-		
 	}
-
 	
-//	@Transient
-//	public static String getOccurrenceServiceRequestParameterString()
-//			
+	static {
+		defaultPresenceAbsenceTermBaseColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.PRESENT(), Color.decode("0x4daf4a"));
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.NATIVE(), Color.decode("0x4daf4a"));
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
+		defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));	
+	}
+	
+
 
 	//preliminary implementation for TDWG areas
 	/**
-	 * Returns the parameter String for the EDIT geo webservice to create a dsitribution map.
-	 * @param distributions A set of distributions that should be shown on the map
-	 * @param presenceAbsenceTermColors A map that defines the colors of PresenceAbsenceTerms. 
-	 * The PresenceAbsenceTerms are defined by their uuid. If a PresenceAbsenceTerm is not included in
-	 * this map, it's default color is taken instead. If the map == null all terms are colored by their default color. 
-	 * @param width The maps width
-	 * @param height The maps height
-	 * @param bbox The maps bounding box (e.g. "-180,-90,180,90" for the whole world)
-	 * @param layer The layer that is responsible for background borders and colors. Use the name for the layer.
-	 * If null 'earth' is taken as default. 
-	 * @return the parameter string or an empty string if the <code>distributions</code> set was null or empty.
+	 * Returns the parameter String for the EDIT geo webservice to create a
+	 * dsitribution map.
+	 * 
+	 * @param distributions
+	 *            A set of distributions that should be shown on the map
+	 * @param presenceAbsenceTermColors
+	 *            A map that defines the colors of PresenceAbsenceTerms. The
+	 *            PresenceAbsenceTerms are defined by their uuid. If a
+	 *            PresenceAbsenceTerm is not included in this map, it's default
+	 *            color is taken instead. If the map == null all terms are
+	 *            colored by their default color.
+	 * @param width
+	 *            The maps width
+	 * @param height
+	 *            The maps height
+	 * @param bbox
+	 *            The maps bounding box (e.g. "-180,-90,180,90" for the whole
+	 *            world)
+	 * @param layer
+	 *            The layer that is responsible for background borders and
+	 *            colors. Use the name for the layer. If null 'earth' is taken
+	 *            as default.
+	 * @return the parameter string or an empty string if the
+	 *         <code>distributions</code> set was null or empty.
 	 */
 	@Transient
 	public static String getDistributionServiceRequestParameterString(
@@ -97,39 +123,131 @@ public class EditGeoServiceUtilities {
 			String backLayer,
 			List<Language> languages){
 		
-		String result = "";
-		String layer = ""; 
-		String areaData = "";
-		String areaStyle = "";
-		String areaTitle = "";
-		String adLayerSeparator = ":";
-		String styleInAreaDataSeparator = "|";
-		double borderWidth = 0.1;
+
+		/**
+		 * generateMultipleAreaDataParameters switches between the two possible styles:
+		 * 1. ad=layername1:area-data||layername2:area-data
+		 * 2. ad=layername1:area-data&ad=layername2:area-data
+		 */
+		boolean generateMultipleAreaDataParameters = false;
+
+		List<String>  perLayerAreaData = new ArrayList<String>();
+		List<String> areaStyles = new ArrayList<String>();
+		List<String> legendLabels = new ArrayList<String>();
+
+		
+		String borderWidth = "0.1";
+		String borderColorRgb = "";
+		String borderDashingPattern = "";
 		
 		
 		if(distributions == null || distributions.size() == 0){
 			return "";
 		}
-		if (presenceAbsenceTermColors == null) {
-			//presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
-			presenceAbsenceTermColors = makeDefaultColorMap();
-		}
-
-		//List<String> layerStrings = new ArrayList<String>(); 
 		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>(); 
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
+		groupStylesAndLayers(distributions, layerMap, statusList);
+				
+		presenceAbsenceTermColors = mergeMaps(defaultPresenceAbsenceTermBaseColors, presenceAbsenceTermColors);
+
+		Map<String, String> parameters = new HashMap<String, String>();
 		
-		//bbox, width, hight
-		if (bbox == null){
-			// FIXME uncommented this as it can not be desirable to have default values in this method
-			// we need a parameterString that consists of essential parameters only 
-			// defaults should be implemented in the geoservice itself.
-			//bbox ="bbox=-180,-90,180,90";  //earth is default
-		}else{
-			bbox = "bbox=" + bbox;
+		//bbox
+		if (bbox != null){
+			parameters.put("bbox", bbox);
 		}
-		String ms = mapSizeParameter(width, height);
+		// map size
+		String ms = compileMapSizeParameterValue(width, height);
+		if(ms != null){
+			parameters.put("ms", ms);
+		}
+		//layer
+		if (StringUtils.isBlank(backLayer)){
+			backLayer = "earth"; 
+		}
+		parameters.put("l", backLayer);
 		
+		//style
+		int i = 0;
+		for (PresenceAbsenceTermBase<?> status: statusList){
+			
+			char styleId = getStyleAbbrev(i);
+			
+			//getting the area title
+			if (languages == null){
+				languages = new ArrayList<Language>();
+			}
+			if (languages.size() == 0){
+				languages.add(Language.DEFAULT());
+			}
+			Representation representation = status.getPreferredRepresentation(languages);
+			String statusLabel = representation.getLabel();
+			//statusLabel.replace('introduced: ', '');
+			statusLabel = statusLabel.replace("introduced: ", "introduced, ");
+			statusLabel = statusLabel.replace("native: ", "native,  ");
+			
+			//getting the area color
+			Color statusColor = presenceAbsenceTermColors.get(status);
+			String fillColorRgb;
+			if (statusColor != null){
+				fillColorRgb = Integer.toHexString(statusColor.getRGB()).substring(2);
+			}else{
+				if(status != null){
+					fillColorRgb = status.getDefaultColor(); //TODO
+				} else {
+					fillColorRgb = defaultStatus.getDefaultColor();
+				}
+			}
+			String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');			
+
+			areaStyles.add(styleId + ID_FROM_VALUES_SEPARATOR + styleValues);
+			legendLabels.add(styleId + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
+			i++;			
+		}
+		
+		if(areaStyles.size() > 0){
+			parameters.put("as", StringUtils.join(areaStyles.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+		}
+		if(legendLabels.size() > 0){
+			parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+		}
+		
+		// area data
+		List<String> stylesPerLayer;
+		List<String> areasPerStyle;
+		for (String layerString : layerMap.keySet()){
+			// each layer
+			stylesPerLayer = new ArrayList<String>();
+			Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
+			for (int style: styleMap.keySet()){
+				// stylesPerLayer
+				char styleChar = getStyleAbbrev(style);
+				Set<Distribution> distributionSet = styleMap.get(style);
+				areasPerStyle = new ArrayList<String>();
+				for (Distribution distribution: distributionSet){
+					// areasPerStyle
+					areasPerStyle.add(getAreaAbbrev(distribution));
+				}
+				stylesPerLayer.add(styleChar + ID_FROM_VALUES_SEPARATOR + StringUtils.join(areasPerStyle.iterator(), SUBENTRY_DELIMITER));
+			}
+			perLayerAreaData.add(encode(layerString) + ID_FROM_VALUES_SEPARATOR + StringUtils.join(stylesPerLayer.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+		}
+		
+		if(generateMultipleAreaDataParameters){
+			// not generically possible since parameters can not contain duplicate keys with value "ad"
+		} else {
+			parameters.put("ad", StringUtils.join(perLayerAreaData.iterator(), VALUE_SUPER_LIST_ENTRY_SEPARATOR));
+		}
+
+		String queryString = makeQueryString(parameters);
+		logger.debug("getDistributionServiceRequestParameterString(): " + queryString);
+		
+		return queryString;
+	}
+
+	private static void groupStylesAndLayers(Set<Distribution> distributions,
+			Map<String, Map<Integer, Set<Distribution>>> layerMap,
+			List<PresenceAbsenceTermBase<?>> statusList) {
 		//iterate through distributions and group styles and layers
 		//and collect necessary information
 		for (Distribution distribution:distributions){
@@ -144,116 +262,20 @@ public class EditGeoServiceUtilities {
 			//group by layers and styles
 			NamedArea area = distribution.getArea();
 			if (area != null){
-				String geoLayerString = getGeoServiceLayer(area);
-				Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
-				if (styleMap == null){
-					styleMap = new HashMap<Integer, Set<Distribution>>();
-					layerMap.put(geoLayerString, styleMap);
-				}
-				addDistributionToMap(distribution, styleMap, statusList);
-			}
-		}
-		
-		//layer
-		if (StringUtils.isBlank(backLayer)){
-			backLayer = "earth"; 
-		}
-		layer = "l="+backLayer;
-//		for (String layerString : layerMap.keySet()){
-//			layer += "," + layerString;
-//		}
-		//layer = "l=" + layer.substring(1); //remove first |
-		
-		
-		//style
-		areaStyle = "";
-		int i = 0;
-		for (PresenceAbsenceTermBase<?> status: statusList){
-			
-			char style = getStyleAbbrev(i);
-			
-			//getting the area title
-			if (languages == null){
-				languages = new ArrayList<Language>();
-			}
-			if (languages.size() == 0){
-				languages.add(Language.DEFAULT());
-			}
-			Representation representation = status.getPreferredRepresentation(languages);
-			String statusLabel = representation.getLabel();
-			//statusLabel.replace('introduced: ', '');
-			statusLabel = statusLabel.replace("introduced: ", "introduced, ");
-			statusLabel = statusLabel.replace("native: ", "native,  ");
-			areaTitle += "|" + style + ":" + statusLabel;
-			
-			//getting the area color
-			Color statusColor = presenceAbsenceTermColors.get(status);
-			String rgb;
-			if (statusColor != null){
-				rgb = Integer.toHexString(statusColor.getRGB()).substring(2);
-			}else{
-				if(status != null){
-					rgb = status.getDefaultColor(); //TODO
-				} else {
-					rgb = defaultStatus.getDefaultColor();
+				String geoLayerString = getWMSLayerName(area);
+				if(geoLayerString != null){
+					Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
+					if (styleMap == null){
+						styleMap = new HashMap<Integer, Set<Distribution>>();
+						layerMap.put(geoLayerString, styleMap);
+					}
+					addDistributionToMap(distribution, styleMap, statusList);
 				}
 			}
-			areaStyle += "|" + style + ":" + rgb;
-
-			if (borderWidth >0){
-				areaStyle += ",," + borderWidth;
-			}
-
-			i++;			
 		}
-		
-		if(areaStyle.length() > 0){
-			areaStyle = "as=" + areaStyle.substring(1); //remove first |
-		}
-		if(areaTitle.length() > 0){
-			areaTitle = "title=" + encode(areaTitle.substring(1)); //remove first |
-		}
-		
-		boolean separateLevels = false; //FIXME as parameter
-		//areaData
-		areaData = "";
-		boolean isFirstLayer = true;
-		Map<String, String> resultMap = new HashMap<String, String>();
-		
-		for (String layerString : layerMap.keySet()){
-			areaData += (isFirstLayer? "" : "||") + layerString + adLayerSeparator;
-			Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
-			boolean isFirstStyle = true;
-			for (int style: styleMap.keySet()){
-				char styleChar = getStyleAbbrev(style);
-				areaData += (isFirstStyle? "" : styleInAreaDataSeparator) + styleChar + ":";
-				Set<Distribution> distributionSet = styleMap.get(style);
-				boolean isFirstDistribution = true;
-				for (Distribution distribution: distributionSet){
-					String areaAbbrev = getAreaAbbrev(distribution);
-					areaData += (isFirstDistribution ? "" : ",") + areaAbbrev;
-					isFirstDistribution = false;
-				}
-				isFirstStyle = false;
-			}
-			isFirstLayer = separateLevels;
-			if(separateLevels){
-				//result per level
-				result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, areaTitle, bbox, ms});
-				resultMap.put(layerString, result);
-			}
-		}
-		
-		areaData = "ad=" + areaData.substring(0); //remove first |
-		
-		//result
-		result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, areaTitle, bbox, ms});
-		if (logger.isDebugEnabled()){logger.debug("getEditGeoServiceUrlParameterString end");}
-		
-		return result;
 	}
 
-	private static String mapSizeParameter(int width, int height) {
+	private static String compileMapSizeParameterValue(int width, int height) {
 
 		String widthStr = "";
 		String heightStr = "";
@@ -262,10 +284,10 @@ public class EditGeoServiceUtilities {
 			widthStr = "" + width;
 		}
 		if (height > 0) {
-			heightStr = MS_SEPARATOR + height;
+			heightStr = SUBENTRY_DELIMITER + height;
 		}
-		String ms = "ms=" + widthStr + heightStr;
-		if (ms.equals("ms=")) {
+		String ms = widthStr + heightStr;
+		if(ms.length() == 0){
 			ms = null;
 		}
 		return ms;
@@ -299,7 +321,7 @@ public class EditGeoServiceUtilities {
 			if(queryString.length() > 0){
 				queryString.append('&');
 			}
-			if(key.equals("od") || key.equals("os")){
+			if(key.equals("od") || key.equals("os") || key.equals("ms") || key.equals("ad") || key.equals("as") || key.equals("title") || key.equals("bbox")){
 				queryString.append(key).append('=').append(parameters.get(key));				
 			} else {
 				queryString.append(key).append('=').append(encode(parameters.get(key)));
@@ -308,25 +330,6 @@ public class EditGeoServiceUtilities {
 		return queryString.toString();
 	}
 	
-	private static Map<PresenceAbsenceTermBase<?>,Color> makeDefaultColorMap(){
-		Map<PresenceAbsenceTermBase<?>,Color> result = new HashMap<PresenceAbsenceTermBase<?>, Color>();
-		try {
-			result.put(PresenceTerm.PRESENT(), Color.decode("0x4daf4a"));
-			result.put(PresenceTerm.NATIVE(), Color.decode("0x4daf4a"));
-			result.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
-			result.put(PresenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
-			result.put(PresenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
-			result.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
-			result.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
-			result.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));
-		} catch (NumberFormatException nfe) {
-			logger.error(nfe);
-		}
-		return result;
-	}
-	
-	
-
 	private static String getAreaAbbrev(Distribution distribution){
 		NamedArea area = distribution.getArea();
 		Representation representation = area.getRepresentation(Language.DEFAULT());
@@ -341,7 +344,7 @@ public class EditGeoServiceUtilities {
 	//Preliminary as long as user defined areas are not fully implemented  
 	public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
 	
-	private static String getGeoServiceLayer(NamedArea area){
+	private static String getWMSLayerName(NamedArea area){
 		TermVocabulary<NamedArea> voc = area.getVocabulary();
 		//TDWG areas
 		if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
@@ -359,14 +362,14 @@ public class EditGeoServiceUtilities {
 				}
 			}
 			//unrecognized tdwg area
-			return "unknown";
+			return null;
 		
 		}
 		//hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
 		if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
 			return "cyprusdivs:bdcode";
 		}
-		return "unknown";
+		return null;
 	}
 	
 	
@@ -421,7 +424,7 @@ public class EditGeoServiceUtilities {
 				parameters.put("bbox", bbox);
 			}
 			if(width != null || height != null){
-				parameters.put("ms", mapSizeParameter(width, height));
+				parameters.put("ms", compileMapSizeParameterValue(width, height));
 			}
 			
 			Map<String, String> styleAndData = new HashMap<String, String>();

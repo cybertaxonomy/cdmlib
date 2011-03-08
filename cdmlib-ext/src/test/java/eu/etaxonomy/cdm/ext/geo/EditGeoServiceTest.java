@@ -107,8 +107,8 @@ public class EditGeoServiceTest  {
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		System.out.println(result);
-		assertTrue(result.startsWith("l="));
-		assertTrue(result.endsWith("&ms=600,300"));
+		assertTrue(result.matches(".*l=earth.*"));
+		assertTrue(result.matches(".*ms=600,300.*"));
 		assertTrue(result.matches(".*ad=tdwg[1-4].*"));
 		assertTrue(result.matches(".*tdwg2:[a-d]:14[\\|&].*") );
 		assertTrue(result.matches(".*[a-d]:FRA,BGM[\\|&].*") || result.matches(".*[a-d]:BGM,FRA[\\|&].*") );
@@ -144,9 +144,9 @@ public class EditGeoServiceTest  {
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		System.out.println(result);
-		assertTrue(result.startsWith("l="));
-		assertTrue(result.endsWith("&ms=600,300"));
-		assertTrue(result.matches(".*ad=cyprusdivs:bdcode:.*"));
+		assertTrue(result.matches(".*l=earth.*"));
+		assertTrue(result.matches(".*ms=600,300.*"));
+		assertTrue(result.matches(".*ad=cyprusdivs%3Abdcode:.*"));
 		assertTrue(result.matches(".*[a-d]:5,4[\\|&].*") || result.matches(".*[a-d]:4,5[\\|&].*") );
 		assertTrue(result.matches(".*[a-d]:1,6[\\|&].*") || result.matches(".*[a-d]:6,1[\\|&].*") );
 		assertTrue(result.matches(".*[a-d]:2[\\|&].*") );
