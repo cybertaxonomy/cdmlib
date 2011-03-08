@@ -601,7 +601,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *         using the following initialization strategy:
 	 *         {@link #TYPEDESIGNATION_INIT_STRATEGY}
 	 * @throws IOException
-	 * @Deprecated use &#x002F;name&#x002F;{uuid}&#x002F;typeDesignations & &#x002F;derivedunitfacade&#x002F;{uuid} instead
+	 * @Deprecated use &#x002F;name&#x002F;{uuid}&#x002F;typeDesignations & &#x002F;derivedunitfacade&#x002F;{uuid} instead 
+	 * also see http://dev.e-taxonomy.eu/trac/ticket/2280
 	 */
 	@Deprecated
 	@RequestMapping(
