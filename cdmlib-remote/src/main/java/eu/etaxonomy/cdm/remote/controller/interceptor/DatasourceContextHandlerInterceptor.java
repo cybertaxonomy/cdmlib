@@ -23,7 +23,12 @@ import eu.etaxonomy.cdm.database.NamedContextHolder;
 
 /**
  * @author a.kohlbecker
- *
+ * @deprecated<b>NOTICE:</b> 
+ * <em>This class is related to the switchable database infrastructure which allows to serve 
+ * multiple databases with only a single instance of the cdm-remote-webapp. 
+ * This concept however is deprecated due to several problems of which the most severe is the term loading issue.
+ * This class should however not deleted since we once might wish to switch back to this concept when we are 
+ * able to deal with the implicated issues.</em>
  */
 @Deprecated
 public class DatasourceContextHandlerInterceptor extends HandlerInterceptorAdapter {
