@@ -13,6 +13,14 @@ package eu.etaxonomy.cdm.ext.geo;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,7 +38,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.mchange.util.AssertException;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.StreamUtils;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -51,6 +65,9 @@ public class EditGeoServiceTest  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 
+	private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.br.fgov.be/edit_wp5/v1/areas.php";
+	private static URI editMapServiceUri;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -72,6 +89,7 @@ public class EditGeoServiceTest  {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STING);
 	}
 
 	/**
@@ -83,7 +101,7 @@ public class EditGeoServiceTest  {
 	
 //******************************************** TESTS**************
 	@Test
-	public void testGetWebServiceUrlTdwg() {
+	public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
 		//String webServiceUrl = "http://www.test.de/webservice";
 		Set<Distribution> distributions = new HashSet<Distribution>();
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("SPA"), PresenceTerm.PRESENT()));
@@ -117,10 +135,13 @@ public class EditGeoServiceTest  {
 		assertTrue(result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*") );
 		//assertTrue(result.matches("0000ff"));
 		//TODO continue
+		
+		// request map image from webservice
+		subTestWithEditMapService(result);
 	}
 	
 	@Test
-	public void testGetWebServiceUrlCyprus() {
+	public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException, URISyntaxException {
 		makeCyprusAreas();
 		Set<Distribution> distributions = new HashSet<Distribution>();
 		distributions.add(Distribution.NewInstance(divisions.get("1"), PresenceTerm.PRESENT()));
@@ -151,6 +172,29 @@ public class EditGeoServiceTest  {
 		assertTrue(result.matches(".*[a-d]:1,6[\\|&].*") || result.matches(".*[a-d]:6,1[\\|&].*") );
 		assertTrue(result.matches(".*[a-d]:2[\\|&].*") );
 		assertTrue(result.matches(".*[a-d]:3[\\|&].*") );
+		
+		// request map image from webservice
+		subTestWithEditMapService(result);
+	}
+
+	private void subTestWithEditMapService(String result)
+			throws MalformedURLException, IOException {
+		if(UriUtils.isServiceAvailable(editMapServiceUri)){
+			URL requestUrl = new URL(editMapServiceUri.toString() + "?img=false&" + result); 
+			HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
+			connection.connect();
+			assertTrue(connection.getResponseCode() == 200);
+			InputStream contentStream = connection.getInputStream();
+			String content = StreamUtils.readToString(contentStream); 
+			System.out.println(content);
+			assertTrue(content.startsWith("[{"));
+			assertTrue(content.endsWith("}]"));
+			assertTrue(content.matches(".*\"bbox\":.*"));
+			assertTrue(content.matches(".*\"legend\":.*"));
+			assertTrue(content.matches(".*\"layers\":.*"));
+			assertTrue(content.matches(".*\"sld\":.*"));
+			assertTrue(content.matches(".*\"geoserver\":.*"));
+		}
 	}
 	
 	public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
