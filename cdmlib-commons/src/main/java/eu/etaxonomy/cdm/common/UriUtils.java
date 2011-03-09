@@ -129,9 +129,11 @@ public class UriUtils {
 		HttpGet  method = new HttpGet(uri);
 	    
         // configure the connection
-        for(String key : requestHeaders.keySet()){
-        	method.addHeader(key, requestHeaders.get(key));        	
-        }
+        if(requestHeaders != null){
+	       	for(String key : requestHeaders.keySet()){
+	        	method.addHeader(key, requestHeaders.get(key));        	
+	        }
+		}
         
 		//TODO  method.setFollowRedirects(followRedirects);
 

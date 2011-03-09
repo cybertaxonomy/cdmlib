@@ -66,5 +66,17 @@ public class StreamUtils {
 		logger.debug(replacedContent);
 		return replacedStream;
 	}
+	
+	public static String readToString(InputStream stream) throws IOException {
+		InputStreamReader reader = new InputStreamReader(stream);
+		StringBuilder strBuilder = new StringBuilder();
+		
+		char[] cbuf = new char[1024];
+		int charsRead = -1;
+		while ((charsRead = reader.read(cbuf)) > -1){
+			strBuilder.append(cbuf, 0, charsRead);
+		}
+		return strBuilder.toString();
+	}
 
 }
