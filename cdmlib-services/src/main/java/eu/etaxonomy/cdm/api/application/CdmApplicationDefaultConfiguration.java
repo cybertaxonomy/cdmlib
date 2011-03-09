@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
@@ -104,6 +105,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ProviderManager authenticationManager;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private IGroupService groupService;
 	@Autowired
 	private ICollectionService collectionService;
 	@Autowired
@@ -230,6 +233,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	public IUserService getUserService() {
 		return this.userService;
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
@@ -314,5 +319,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Override
 	public IWorkingSetService getWorkingSetService() {
 		return workingSetService;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getGroupService()
+	 */
+	@Override
+	public IGroupService getGroupService() {
+		return groupService;
 	}
 }

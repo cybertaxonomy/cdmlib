@@ -44,6 +44,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 
+/**
+ * Note: All group related functionality has been refactored into a GroupService. The will be removed in a future version.
+ */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
@@ -212,6 +215,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void addGroupAuthority(String groupName, GrantedAuthority authority) {
 		Assert.hasText(groupName);
@@ -223,6 +227,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void addUserToGroup(String username, String groupName) {
 		Assert.hasText(username);
@@ -237,6 +242,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}		
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void createGroup(String groupName, List<GrantedAuthority> authorities) {
 		Assert.hasText(groupName);
@@ -252,6 +258,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		groupDao.save(group);
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void deleteGroup(String groupName) {
 		Assert.hasText(groupName);
@@ -260,10 +267,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		groupDao.delete(group);
 	}
 
+	@Deprecated // use GroupService instead
 	public List<String> findAllGroups() {
 		return groupDao.listNames(null,null);
 	}
 
+	@Deprecated // use GroupService instead
 	public List<GrantedAuthority> findGroupAuthorities(String groupName) {
 		Assert.hasText(groupName);
 		Group group = groupDao.findGroupByName(groupName);
@@ -271,6 +280,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
 	}
 
+	@Deprecated // use GroupService instead
 	public List<String> findUsersInGroup(String groupName) {
 		Assert.hasText(groupName);
 		Group group = groupDao.findGroupByName(groupName);
@@ -280,6 +290,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return users;
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void removeGroupAuthority(String groupName,	GrantedAuthority authority) {
 		Assert.hasText(groupName);
@@ -292,6 +303,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void removeUserFromGroup(String username, String groupName) {
 		Assert.hasText(username);
