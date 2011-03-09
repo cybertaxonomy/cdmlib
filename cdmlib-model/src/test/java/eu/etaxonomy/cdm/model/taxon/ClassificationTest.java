@@ -60,11 +60,14 @@ public class ClassificationTest {
 	private static TaxonNode taxonNode3;
 	private static Taxon taxon1;
 	private static Taxon taxon2;
+	private static Taxon taxon3;
 	private static TaxonNameBase<?,?> taxonName1;
 	private static TaxonNameBase<?,?> taxonName2;
+	private static TaxonNameBase<?,?> taxonName3;
 	private static Reference ref1;
 	private static Reference ref2;
-	private ReferenceFactory refFactory;
+	private static Reference ref3;
+	//private ReferenceFactory refFactory;
 	
 	
 	
@@ -88,14 +91,17 @@ public class ClassificationTest {
 	@Before
 	public void setUp() throws Exception {
 		treeName1 = "Greuther, 1993";
-		refFactory = ReferenceFactory.newInstance();
+		//refFactory = ReferenceFactory.newInstance();
 		classification1 = Classification.NewInstance(treeName1);
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
-		taxonName1 = ZoologicalName.NewInstance(Rank.SPECIES());
-		ref1 = refFactory.newJournal();
-		ref2 = refFactory.newJournal();
+		taxonName2 = ZoologicalName.NewInstance(Rank.SPECIES());
+		taxonName3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		ref1 = ReferenceFactory.newJournal();
+		ref2 = ReferenceFactory.newJournal();
+		ref3 = ReferenceFactory.newJournal();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
 		taxon2 = Taxon.NewInstance(taxonName2, ref2);
+		taxon3 = Taxon.NewInstance(taxonName3, ref3);
 		
 		//taxonNode1 = new TaxonNode(taxon1, taxonomicView1);
 	}
@@ -333,7 +339,7 @@ public class ClassificationTest {
 			BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
 			name.setTitleCache("A dummy name", true);
 			result.add(name);
-			Reference ref = refFactory.newBook();
+			Reference ref = ReferenceFactory.newBook();
 			ref.setTitleCache("A dummy book", true);
 			result.add(ref);
 			
@@ -386,6 +392,17 @@ public class ClassificationTest {
 				handleClass(allCdmClasses, superClass);
 			}
 		}
+	}
+	@Test
+	public void testCloneClassification(){
+		
+		taxonNode1 = classification1.addChildTaxon(taxon1, null, null, null);
+		taxonNode2 = taxonNode1.addChildTaxon(taxon2, null, null, null);
+		taxonNode2.addChildTaxon(taxon3, null, null, null);
+		Classification clone = (Classification)classification1.clone();
+		assertEquals(classification1.getAllNodes().size(), clone.getAllNodes().size());
+		
+		
 	}
 
 }

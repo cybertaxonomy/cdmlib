@@ -373,6 +373,24 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
 	}
 	
 	/**
+	 * Returns a set containing a clone of this node and of all nodes that are descendants of this node
+	 * 
+	 * @return 
+	 */
+	protected TaxonNode cloneDescendants(){
+		
+		TaxonNode clone = (TaxonNode)this.clone();
+		TaxonNode childClone;
+				
+		for(TaxonNode childNode : getChildNodes()){
+			childClone = (TaxonNode) childNode.clone();
+			clone.addChildNode(childClone, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
+			childClone.cloneDescendants();
+		}		
+		return clone;
+	}
+	
+	/**
 	 * Returns a 
 	 * 
 	 * @return
@@ -510,13 +528,18 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Object clone()  {
 		TaxonNode result;
-		
+		try{
 		result = (TaxonNode)super.clone();
 		result.childNodes = new HashSet<TaxonNode>();
 		result.countChildren = 0;
 		
 		return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

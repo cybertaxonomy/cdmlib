@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
-public class Classification extends IdentifiableEntity implements IReferencedEntity, ITreeNode{
+public class Classification extends IdentifiableEntity implements IReferencedEntity, ITreeNode, Cloneable{
 	private static final long serialVersionUID = -753804821474209635L;
 	private static final Logger logger = Logger.getLogger(Classification.class);
 	
@@ -439,5 +439,42 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 	 */
 	public boolean hasChildNodes() {
 		return getChildNodes().size() > 0;
+	}
+	
+	//*********************** CLONE ********************************************************/
+	/** 
+	 * Clones <i>this</i> classification. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> classification by
+	 * modifying only some of the attributes.<BR><BR>
+	 
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		Classification result;
+		try{
+			result = (Classification)super.clone();
+			Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
+			Set<TaxonNode> childNodes = new HashSet<TaxonNode>();
+			TaxonNode rootNodeClone;
+			for (TaxonNode rootNode : this.rootNodes ){
+				rootNodeClone = rootNode.cloneDescendants();
+				rootNodeClone.setClassification(result);
+				result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
+				
+			}
+			
+			return result;
+		
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		
+		
 	}
 }
