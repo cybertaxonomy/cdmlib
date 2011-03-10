@@ -21,7 +21,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  * @param <T>
  */
-public interface IService<T extends CdmBase>{
+public interface IService<T extends ICdmBase>{
 
 	// FIXME what does this method do?
 	public void clear();

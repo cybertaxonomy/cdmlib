@@ -43,19 +43,19 @@ public class UserServiceImplTest extends CdmIntegrationTest {
 	@Before
 	public void setUp() {
 		expectedRoles = new HashSet<GrantedAuthority>();
-		GrantedAuthorityImpl publish = new GrantedAuthorityImpl();
+		GrantedAuthorityImpl publish = GrantedAuthorityImpl.NewInstance();
 		publish.setAuthority("Publish");
 		publish.setUuid(UUID.fromString("441a3c40-0c84-11de-8c30-0800200c9a66"));
 		publish.setCreated(new DateTime(2009,2,3,17,52,26,0));
-		GrantedAuthorityImpl edit = new GrantedAuthorityImpl();
+		GrantedAuthorityImpl edit = GrantedAuthorityImpl.NewInstance();
 		edit.setAuthority("Edit");
 		edit.setUuid(UUID.fromString("14788361-1a7e-4eed-b22f-fd90a0b424ac"));
 		edit.setCreated(new DateTime(2009,2,3,17,52,26,0));
-		GrantedAuthorityImpl annotate = new GrantedAuthorityImpl();
+		GrantedAuthorityImpl annotate = GrantedAuthorityImpl.NewInstance();
 		annotate.setAuthority("Annotate");
 		annotate.setUuid(UUID.fromString("fa56073c-0ffd-4384-b459-b2f07e35b689"));
 		annotate.setCreated(new DateTime(2009,2,3,17,52,26,0));
-		GrantedAuthorityImpl checkAnnotation = new GrantedAuthorityImpl();
+		GrantedAuthorityImpl checkAnnotation = GrantedAuthorityImpl.NewInstance();
 		checkAnnotation.setAuthority("CheckAnnotation");
 		checkAnnotation.setUuid(UUID.fromString("e5354c0e-657b-4b4d-bb2f-791612199711"));
 		checkAnnotation.setCreated(new DateTime(2009,2,3,17,52,26,0));

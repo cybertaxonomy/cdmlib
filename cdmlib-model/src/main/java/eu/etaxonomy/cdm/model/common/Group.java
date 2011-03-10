@@ -62,8 +62,30 @@ public class Group extends CdmBase {
 	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
 	protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	
+	protected Group(){
+		super();
+	}
+	
+	public static Group NewInstance(){
+		return new Group();
+	}
+	
+	public static Group NewInstance(String name){
+		Group group = Group.NewInstance();
+		group.setName(name);
+		return group;
+	}
+	
 	public Set<GrantedAuthority> getGrantedAuthorities() {
 		return grantedAuthorities;
+	}
+	
+	public boolean addGrantedAuthority(GrantedAuthority grantedAuthority){
+		return grantedAuthorities.add(grantedAuthority);
+	}
+	
+	public boolean removeGrantedAuthority(GrantedAuthority grantedAuthority){
+		return grantedAuthorities.remove(grantedAuthority);
 	}
 	
 	public void setName(String name) {

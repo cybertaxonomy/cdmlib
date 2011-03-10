@@ -842,6 +842,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmMetaDataTest.java -t
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefinedTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/ExtensionTypeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/GrantedAuthorityImplTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/GroupTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/IdentifiableEntityTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/LanguageTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/MarkerTest.java -text

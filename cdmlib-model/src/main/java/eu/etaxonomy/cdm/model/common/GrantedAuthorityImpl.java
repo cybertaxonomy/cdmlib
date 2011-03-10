@@ -32,6 +32,14 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 	@NaturalId
 	private String authority;
 
+	protected GrantedAuthorityImpl(){
+		super();
+	}
+	
+	public static GrantedAuthorityImpl NewInstance(){
+		return new GrantedAuthorityImpl();
+	}
+	
 	public String getAuthority() {
 		return authority;
 	}

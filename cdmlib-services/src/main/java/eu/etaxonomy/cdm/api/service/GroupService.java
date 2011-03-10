@@ -66,8 +66,7 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 		Assert.hasText(groupName);
 		Assert.notNull(authorities);
 		
-		Group group = new Group();
-		group.setName(groupName);
+		Group group = Group.NewInstance(groupName);
 		
 		for(GrantedAuthority authority : authorities) {
 			group.getGrantedAuthorities().add(authority);
