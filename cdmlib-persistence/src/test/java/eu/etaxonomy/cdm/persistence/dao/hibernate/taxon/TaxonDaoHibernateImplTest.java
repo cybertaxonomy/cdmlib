@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
@@ -249,6 +250,42 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assertNotNull("getTaxaByName should return a List", results);
 		assertEquals("Results list should contain one entity",1,results.size());
 	}	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}.
+	 */
+	@Test
+	@DataSet
+	public void testGetTaxaByNameForEditor() {
+		Reference sec = referenceDao.findById(1);
+		assert sec != null : "sec must exist";
+
+		List<UuidAndTitleCache<TaxonBase>> results = taxonDao.getTaxaByNameForEditor(TaxonBase.class, "Mand*", null, MatchMode.BEGINNING, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		//assertFalse("The list should not be empty", results.isEmpty());
+		assertTrue(results.size() == 5);
+		
+
+		results = taxonDao.getTaxaByNameForEditor(TaxonBase.class,"A*",null, MatchMode.BEGINNING, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue(results.size() == 12);
+			
+
+		results = taxonDao.getTaxaByNameForEditor(Taxon.class,"A", null,MatchMode.BEGINNING, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue(results.size() == 9);
+		assertEquals(results.get(0).getType(), Taxon.class);
+		
+		results = taxonDao.getTaxaByNameForEditor(Synonym.class,"A", null,MatchMode.BEGINNING, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue(results.size() == 3);
+		assertEquals(results.get(0).getType(), Synonym.class);
+		
+		results = taxonDao.getTaxaByNameForEditor(TaxonBase.class,"Aus", null,MatchMode.EXACT,  null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertEquals("Results list should contain one entity",1,results.size());
+	}	
+	
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
