@@ -384,8 +384,13 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
 				
 		for(TaxonNode childNode : getChildNodes()){
 			childClone = (TaxonNode) childNode.clone();
+			for (TaxonNode childChild:childNode.getChildNodes()){
+				childClone.addChildNode(childChild.cloneDescendants(), childChild.getReference(), childChild.getMicroReference(), childChild.getSynonymToBeUsed());
+			}
 			clone.addChildNode(childClone, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
-			childClone.cloneDescendants();
+			
+			
+			//childClone.addChildNode(childNode.cloneDescendants());
 		}		
 		return clone;
 	}

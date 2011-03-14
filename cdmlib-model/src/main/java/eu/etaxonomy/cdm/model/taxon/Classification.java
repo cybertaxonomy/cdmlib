@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -455,10 +456,15 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 		Classification result;
 		try{
 			result = (Classification)super.clone();
+			result.rootNodes = new HashSet<TaxonNode>();
 			Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
-			Set<TaxonNode> childNodes = new HashSet<TaxonNode>();
 			TaxonNode rootNodeClone;
-			for (TaxonNode rootNode : this.rootNodes ){
+			rootNodes = this.rootNodes;
+			TaxonNode rootNode;
+			Iterator<TaxonNode> iterator = rootNodes.iterator();
+			
+			while (iterator.hasNext()){
+				rootNode = iterator.next();
 				rootNodeClone = rootNode.cloneDescendants();
 				rootNodeClone.setClassification(result);
 				result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
