@@ -530,13 +530,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		if(clazz.equals(Taxon.class)){
 			if  (taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
+				if (doNotReturnFullEntities){
+					hql = "select " + selectWhat + ", 'taxon' from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
+				}else{
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
+				}
 			}else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
 		} else if(clazz.equals(Synonym.class) ){
 			if (synonyms.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";		
+				if (doNotReturnFullEntities){
+					hql = "select " + selectWhat + ", 'synonym' from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";
+				}else{
+					hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";		
+				}
 			}else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
