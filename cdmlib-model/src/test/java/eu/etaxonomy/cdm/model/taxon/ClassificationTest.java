@@ -58,12 +58,18 @@ public class ClassificationTest {
 	private static TaxonNode taxonNode1;
 	private static TaxonNode taxonNode2;
 	private static TaxonNode taxonNode3;
+	private static TaxonNode taxonNode12;
+	private static TaxonNode taxonNode121;
 	private static Taxon taxon1;
 	private static Taxon taxon2;
 	private static Taxon taxon3;
+	private static Taxon taxon12;
+	private static Taxon taxon121;
 	private static TaxonNameBase<?,?> taxonName1;
 	private static TaxonNameBase<?,?> taxonName2;
 	private static TaxonNameBase<?,?> taxonName3;
+	private static TaxonNameBase<?,?> taxonName12;
+	private static TaxonNameBase<?,?> taxonName121;
 	private static Reference ref1;
 	private static Reference ref2;
 	private static Reference ref3;
@@ -93,15 +99,19 @@ public class ClassificationTest {
 		treeName1 = "Greuther, 1993";
 		//refFactory = ReferenceFactory.newInstance();
 		classification1 = Classification.NewInstance(treeName1);
-		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
-		taxonName2 = ZoologicalName.NewInstance(Rank.SPECIES());
-		taxonName3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		taxonName12 = BotanicalName.NewInstance(Rank.SPECIES());
+		taxonName121 = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		taxonName1 = BotanicalName.NewInstance(Rank.GENUS());
+		taxonName2 = ZoologicalName.NewInstance(Rank.GENUS());
+		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
 		ref1 = ReferenceFactory.newJournal();
 		ref2 = ReferenceFactory.newJournal();
 		ref3 = ReferenceFactory.newJournal();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
 		taxon2 = Taxon.NewInstance(taxonName2, ref2);
 		taxon3 = Taxon.NewInstance(taxonName3, ref3);
+		taxon12 = Taxon.NewInstance(taxonName12, ref3);
+		taxon121 = Taxon.NewInstance(taxonName121, ref3);
 		
 		//taxonNode1 = new TaxonNode(taxon1, taxonomicView1);
 	}
@@ -397,10 +407,20 @@ public class ClassificationTest {
 	public void testCloneClassification(){
 		
 		taxonNode1 = classification1.addChildTaxon(taxon1, null, null, null);
-		taxonNode2 = taxonNode1.addChildTaxon(taxon2, null, null, null);
+		taxonName1.setTitleCache("name1");
+		taxonName12.setTitleCache("name12");
+		taxonName121.setTitleCache("name121");
+		taxonName2.setTitleCache("name2");
+		taxonName3.setTitleCache("name3");
+		
+		taxonNode12 = taxonNode1.addChildTaxon(taxon12, null, null, null);
+		taxonNode121 = taxonNode12.addChildTaxon(taxon121, null, null, null);
+		taxonNode2 = classification1.addChildTaxon(taxon2, null, null, null);
 		taxonNode2.addChildTaxon(taxon3, null, null, null);
 		Classification clone = (Classification)classification1.clone();
 		assertEquals(classification1.getAllNodes().size(), clone.getAllNodes().size());
+		TaxonNode cloneNode = clone.getNode(taxon1);
+		assertNotSame(cloneNode, taxonNode1);
 		
 		
 	}
