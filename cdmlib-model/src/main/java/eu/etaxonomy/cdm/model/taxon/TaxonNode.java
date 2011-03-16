@@ -537,6 +537,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
 		TaxonNode result;
 		try{
 		result = (TaxonNode)super.clone();
+		result.getTaxon().addTaxonNode(result);
 		result.childNodes = new HashSet<TaxonNode>();
 		result.countChildren = 0;
 		
