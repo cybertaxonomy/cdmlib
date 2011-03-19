@@ -458,8 +458,8 @@ public class DerivedUnitFacade {
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private TextData inititializeTextDataWithSupportTest(Feature feature, SpecimenOrObservationBase specimen, boolean createIfNotExists, 
-				boolean isImageGallery) throws DerivedUnitFacadeNotSupportedException {
+	private TextData inititializeTextDataWithSupportTest(Feature feature, SpecimenOrObservationBase specimen, 
+			boolean createIfNotExists, boolean isImageGallery) throws DerivedUnitFacadeNotSupportedException {
 		if (feature == null ){
 			return null;
 		}
@@ -474,6 +474,7 @@ public class DerivedUnitFacade {
 		}else{
 			descriptions = specimen.getSpecimenDescriptions(false);
 		}
+		//no description exists yet for this specimen
 		if (descriptions.size() == 0){
 			if (createIfNotExists){
 				SpecimenDescription newSpecimenDescription = SpecimenDescription.NewInstance(specimen);
@@ -484,22 +485,27 @@ public class DerivedUnitFacade {
 				return null;
 			}
 		}
+		//description already exists
 		Set<DescriptionElementBase> existingTextData = new HashSet<DescriptionElementBase>();
 		for (SpecimenDescription description : descriptions){
+			//collect all existing text data
 			for (DescriptionElementBase element: description.getElements()){
 				if (element.isInstanceOf(TextData.class) && ( feature.equals(element.getFeature() )|| isImageGallery ) ){
 					existingTextData.add(element);
 				}
 			}
 		}
+		//use existing text data if exactly one exists
 		if (existingTextData.size() > 1){
 			throw new DerivedUnitFacadeNotSupportedException("Specimen facade does not support more than one description text data of type " + feature.getLabel());
 			
 		}else if (existingTextData.size() == 1){
 			return CdmBase.deproxy(existingTextData.iterator().next(), TextData.class);
 		}else{
-			SpecimenDescription description = descriptions.iterator().next();
-			description.addElement(textData);
+			if (createIfNotExists){
+				SpecimenDescription description = descriptions.iterator().next();
+				description.addElement(textData);
+			}
 			return textData;
 		}
 	}
