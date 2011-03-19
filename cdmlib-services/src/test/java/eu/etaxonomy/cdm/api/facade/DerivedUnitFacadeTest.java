@@ -373,6 +373,22 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	}
 	
 	@Test
+	public void testInititializeTextDataWithSupportTest(){
+		//TODO
+		Specimen specimen = Specimen.NewInstance();
+		DerivedUnitFacade specimenFacade;
+		try {
+			specimenFacade = DerivedUnitFacade.NewInstance(specimen);
+			specimenFacade.setEcology("Ecology");
+			String plantDescription = specimenFacade.getPlantDescription();
+			Assert.assertNull("No plantDescription should exist yet and no NPE should be thrown until now", plantDescription);
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			Assert.fail("An error should not occur in NewInstance()");
+		}
+	}
+	
+	
+	@Test
 	public void testGetSetCountry(){
 		logger.warn("Not yet implemented");
 	}
