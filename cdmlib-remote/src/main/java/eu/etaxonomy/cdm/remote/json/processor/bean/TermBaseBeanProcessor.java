@@ -84,10 +84,10 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 		if(Hibernate.isInitialized(term.getRepresentations())){
 			representation = term.getPreferredRepresentation(languages);
 			if(representation != null){
-				if(representation.getText() != null && representation.getText().length() != 0){
-					json.element("representation_L10n", representation.getText());
-				} else if (representation.getLabel() != null && representation.getLabel().length() !=0) {
+				if(representation.getLabel() != null && representation.getLabel().length() != 0){
 					json.element("representation_L10n", representation.getLabel());
+				} else if (representation.getText() != null && representation.getText().length() !=0) {
+					json.element("representation_L10n", representation.getText());
 				} 
 
 				json.element("representation_L10n_abbreviated", representation.getAbbreviatedLabel());
