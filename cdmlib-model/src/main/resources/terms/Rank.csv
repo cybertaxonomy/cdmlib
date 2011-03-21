@@ -1,8 +1,8 @@
 "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b",,"Rank","Rank"
 "ac470211-1586-4b24-95ca-1038050b618d",,"Empire","Empire",
 "ffca6ec8-8b88-417b-a6a0-f7c992aac19b",,"Domain","Domain",
-"64223610-7625-4cfd-83ad-b797bf7f0edd",,"Super Kingdom",
-"fbe7109d-66b3-498c-a697-c6c49c686162",,"Kingdom","Super Kingdom","reg."
+"64223610-7625-4cfd-83ad-b797bf7f0edd",,"Super Kingdom","Super Kingdom"
+"fbe7109d-66b3-498c-a697-c6c49c686162",,"Kingdom","Kingdom","reg."
 "a71bd9d8-f3ab-4083-afb5-d89315d71655",,"Subkingdom","Subkingdom","subreg."
 "1e37930c-86cf-44f6-90fd-7822928df260",,"Infrakingdom","Infrakingdom",
 "0d0cecb1-e254-4607-b210-6801e7ecbb04",,"Superphylum","Superphylum",
@@ -21,8 +21,8 @@
 "b0785a65-c1c1-4eb4-88c7-dbd3df5aaad1",,"Order","Order","ordo",
 "768ad378-fa85-42ab-b668-763225832f57",,"Suborder","Suborder","subor.",
 "84099182-a6f5-47d7-8586-33c9e9955a10",,"Infraorder","Infraorder",
-"691d371e-10d7-43f0-93db-3d7fa1a62c54",,"Section (Zoology)","Section zool.","sect."
-"0ed32d28-adc4-4303-a9ca-68e2acd67e33",,"Subsection (Zoology)","Subsection zool.","subsect."
+"691d371e-10d7-43f0-93db-3d7fa1a62c54",,"Section zool.","Section (Zoology)","sect."
+"0ed32d28-adc4-4303-a9ca-68e2acd67e33",,"Subsection zool.","Subsection (Zoology)","subsect."
 "2cfa510a-dcea-4a03-b66a-b1528f9b0796",,"Superfamily","Superfamily",
 "af5f2481-3192-403f-ae65-7c957a0f02b6",,"Family","Family","fam."
 "862526ee-7592-4760-a23a-4ff3641541c5",,"Subfamily","Subfamily","subfam."
@@ -31,12 +31,12 @@
 "4aa6890b-0363-4899-8d7c-ee0cb78e6166",,"Tribe","Tribe","trib."
 "ae41ecc5-5165-4126-9d24-79939ae5d822",,"Subtribe","Subtribe","subtrib."
 "1ec02e8f-f2b7-4c65-af9f-b436b34c79a3",,"Infratribe","Infratribe",
-"1fdc0b93-c354-441a-8406-091e0303ff5c",,"'Unranked' Suprageneric Rank: The suprageneric name on purpose has no rank","Suprageneric Taxon",
+"1fdc0b93-c354-441a-8406-091e0303ff5c",,"Suprageneric Taxon","'Unranked' Suprageneric Rank: The suprageneric name on purpose has no rank",
 "1b11c34c-48a8-4efa-98d5-84f7f66ef43a",,"Genus","Genus","gen.",
 "78786e16-2a70-48af-a608-494023b91904",,"Subgenus","Subgenus","subg.",
 "a9972969-82cd-4d54-b693-a096422f13fa",,"Infragenus","Infragenus",
-"3edff68f-8527-49b5-bf91-7e4398bb975c",,"Section (Botany)","Section bot.","sect."
-"d20f5b61-d463-4448-8f8a-c1ff1f262f59",,"Subsection (Botany)","Subsection bot.","subsect."
+"3edff68f-8527-49b5-bf91-7e4398bb975c",,"Section bot.","Section (Botany)","sect."
+"d20f5b61-d463-4448-8f8a-c1ff1f262f59",,"Subsection bot.","Subsection (Botany)","subsect."
 "d7381ecf-48f8-429b-9c54-f461656978cd",,"Series","Series","ser.",
 "80c9a263-f4db-4a13-b6c2-b7fec1aa1200",,"Subseries","Subseries","subser.",
 "41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9",,"Unranked (infrageneric)","'Unranked' Infrageneric Rank: The infrageneric name on purpose has no rank","[infragen.]"
