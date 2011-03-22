@@ -81,7 +81,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
 	
-	protected static Map<UUID, NamedArea> termMap = null;		
+	private static Map<UUID, NamedArea> termMap = null;		
 
 //************************* FACTORY METHODS ****************************************/
 	
