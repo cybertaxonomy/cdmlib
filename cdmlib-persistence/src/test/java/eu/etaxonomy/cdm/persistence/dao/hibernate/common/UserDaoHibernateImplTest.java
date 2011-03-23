@@ -52,6 +52,12 @@ public class UserDaoHibernateImplTest extends CdmIntegrationTest {
 		
 		assertNotNull("A list should be returned", list);
 		assertEquals("3 users should be returned", 3, list.size());
+
+		pageSize = 2;
+		list = userDao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		assertNotNull("A list should be returned", list);
+		assertEquals("2 users should be returned", 2, list.size());
+
 		
 	}
 
