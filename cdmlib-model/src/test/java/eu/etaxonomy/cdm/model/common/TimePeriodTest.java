@@ -33,10 +33,10 @@ import org.junit.Test;
 public class TimePeriodTest {
 	private static final Logger logger = Logger.getLogger(TimePeriodTest.class);
 	
-	TimePeriod onlyStartYear;
-	TimePeriod onlyEndYear;
-	TimePeriod startAndEndYear;
-	TimePeriod noStartAndEndYear;
+	private TimePeriod onlyStartYear;
+	private TimePeriod onlyEndYear;
+	private TimePeriod startAndEndYear;
+	private TimePeriod noStartAndEndYear;
 	
 	
 	/**
@@ -179,33 +179,48 @@ public class TimePeriodTest {
 		Assert.assertNotNull("Time period must be created",tp);
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void testSetStart(){
 		Partial startDate = new Partial().with(DateTimeFieldType.year(), 2010)
 				.with(DateTimeFieldType.monthOfYear(), 12)
 				.with(DateTimeFieldType.dayOfMonth(), 16);
+		Partial newStartDate = new Partial().with(DateTimeFieldType.year(), 1984)
+			.with(DateTimeFieldType.monthOfYear(), 12)
+			.with(DateTimeFieldType.dayOfMonth(), 14);
+
 		TimePeriod tp = TimePeriod.NewInstance(startDate);
-		
 		String startString = tp.toString();
-		
-		Partial partial = new Partial().with(DateTimeFieldType.year(), 1984)
-				.with(DateTimeFieldType.monthOfYear(), 12)
-				.with(DateTimeFieldType.dayOfMonth(), 14);
-		
-		tp.setStart(partial);
+		assertNull("Freetext should be not set", tp.getFreeText());
+		tp.setStart(newStartDate);
 		String changedString = tp.toString();
-		
 		Assert.assertTrue("Setting the partial should change the string representation of the TimePeriod", !startString.equals(changedString));
 		
 		//
-		tp = TimePeriod.parseString("15.12.1730");
-		
+		tp = TimePeriod.parseString("1752");
+		assertNull("Freetext should be not set", tp.getFreeText());
 		startString = tp.toString();
-		tp.setStart(partial);
+		tp.setStart(newStartDate);
 		changedString = tp.toString();
-				
 		Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod	", !startString.equals(changedString));
+
+		//
+		tp = TimePeriod.parseString("any strange date");
+		assertNotNull("Freetext should be set", tp.getFreeText());
+		startString = tp.toString();
+		tp.setStart(newStartDate);
+		changedString = tp.toString();
+		Assert.assertEquals("Setting a partial for a time period having the freetext set should not change the string representation of the TimePeriod	", startString, changedString);
+
+		
+		//
+//		tp = TimePeriod.parseString("15.12.1730"); //TODO currently not parsed
+//		
+//		startString = tp.toString();
+//		tp.setStart(newStartDate);
+//		changedString = tp.toString();
+//				
+//		Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod	", !startString.equals(changedString));
 	}
 	
 	/**

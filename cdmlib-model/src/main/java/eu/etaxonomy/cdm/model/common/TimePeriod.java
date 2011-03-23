@@ -266,6 +266,11 @@ public class TimePeriod implements Cloneable, Serializable {
 	}
 	
 	/**
+	 * For time periods that need to store more information than the one
+	 * that can be stored in <code>start</code> and <code>end</code>.
+	 * If free text is not <code>null</null> {@link #toString()} will always
+	 * return the free text value.
+	 * <BR>Use {@link #toString()} for public use.
 	 * @return the freeText
 	 */
 	protected String getFreeText() {
@@ -274,6 +279,7 @@ public class TimePeriod implements Cloneable, Serializable {
 
 
 	/**
+	 * Use {@link #parseSingleDate(String)} for public use.
 	 * @param freeText the freeText to set
 	 */
 	protected void setFreeText(String freeText) {
@@ -454,15 +460,18 @@ public class TimePeriod implements Cloneable, Serializable {
 		}
 		periodString = periodString.trim();
 		
-		result.setFreeText(periodString);
+		result.setFreeText(null);
 		
 		//case "1806"[1807];
 		if (uncorrectYearPatter.matcher(periodString).matches()){
+			result.setFreeText(periodString);
 			String realYear = periodString.split("\\[")[1];
 			realYear = realYear.replace("]", "");
 			result.setStartYear(Integer.valueOf(realYear));
+			result.setFreeText(periodString);
 		//case fl. 1806 or c. 1806 or fl. 1806?
 		}else if(prefixedYearPattern.matcher(periodString).matches()){
+			result.setFreeText(periodString);
 			Matcher yearMatcher = firstYearPattern.matcher(periodString);
 			yearMatcher.find();
 			String startYear = yearMatcher.group();
@@ -498,9 +507,11 @@ public class TimePeriod implements Cloneable, Serializable {
 					result.setEnd(dtEnd);
 				} catch (IllegalArgumentException e) {
 					//logger.warn(e.getMessage());
-					//use freetext instead
+					result.setFreeText(periodString);
 				}
 			}
+		}else{
+			result.setFreeText(periodString);
 		}
 		return result;
 	}
@@ -574,6 +585,12 @@ public class TimePeriod implements Cloneable, Serializable {
 	
 //**************************** to String ****************************************	
 	
+	/** 
+	 * Returns the {@link #getFreeText()} value if free text is not <code>null</code>.
+	 * Otherwise the concatenation of <code>start</code> and <code>end</code> is returned. 
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString(){
 		String result = null;
 		DateTimeFormatter formatter = new TimePeriodPartialFormatter();
