@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.NonUniqueResultException;
+import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -43,6 +44,8 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * Note: All group related functionality has been refactored into a GroupService. The will be removed in a future version.
@@ -353,4 +356,16 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	public UUID saveGroup(Group group) {
 		return groupDao.save(group);
 	}
+	
+	@Transactional(readOnly = true)
+	public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 Integer numberOfResults = dao.countByUsername(queryString, matchmode, criteria);
+			
+		 List<User> results = new ArrayList<User>();
+		 if(numberOfResults > 0) { 
+				results = dao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
+		 }
+		 return results;
+	}
+	
 } 

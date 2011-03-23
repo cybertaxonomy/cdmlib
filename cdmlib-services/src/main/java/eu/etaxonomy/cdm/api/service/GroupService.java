@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author n.hoffmann
@@ -191,6 +194,17 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 	@Autowired
 	public void setUserDao(IUserDao userDao){
 		this.userDao = userDao;
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Group> listByName(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 Integer numberOfResults = dao.countByName(queryString, matchmode, criteria);
+			
+		 List<Group> results = new ArrayList<Group>();
+		 if(numberOfResults > 0) { 
+				results = dao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
+		 }
+		 return results;
 	}
 	
 }
