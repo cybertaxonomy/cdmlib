@@ -19,39 +19,41 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
-public class UserDaoHibernateImplTest extends CdmIntegrationTest {
+public class GroupDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@SpringBeanByType
-	IUserDao userDao;
+	IGroupDao groupDao;
 	
 	@Test
-	public void testFindUserByUsername() {
-		User user = userDao.findUserByUsername("test");
+	public void testFindGroupByUsername() {
+		Group group = groupDao.findGroupByName("Admins");
 		
-		assertNotNull("findUserByUsername should return a user", user);
-		assertEquals("the user should have had their authorities loaded",2,user.getAuthorities().size());
+		assertNotNull("findGroupByName should return a group", group);
+//		assertEquals("the user should have had their authorities loaded",2,group.getAuthorities().size());
 	}
 	
 	@Test
-	public void findByUsername(){
-		String queryString = "test";
+	public void findByName(){
+		String queryString = "Admins";
 		MatchMode matchmode = MatchMode.ANYWHERE;
 		List<Criterion> criteria = null;
 		Integer pageSize = null;
 		Integer pageNumber = null;
 		List<OrderHint> orderHints = null;
 		List<String> propertyPaths = null;
-		List<User> list = userDao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		List<Group> list = groupDao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		
 		assertNotNull("A list should be returned", list);
-		assertEquals("3 users should be returned", 3, list.size());
+		assertEquals("2 groups should be returned", 2, list.size());
 		
 	}
 
