@@ -30,6 +30,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * 
 	 * @param uuid
 	 */
+	@Deprecated // use findByUuid() instead; will be removed in the next version
 	public TaxonNode getTaxonNodeByUuid(UUID uuid);
 	
 	/**
