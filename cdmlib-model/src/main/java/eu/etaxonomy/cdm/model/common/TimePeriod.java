@@ -273,7 +273,7 @@ public class TimePeriod implements Cloneable, Serializable {
 	 * <BR>Use {@link #toString()} for public use.
 	 * @return the freeText
 	 */
-	protected String getFreeText() {
+	public String getFreeText() {
 		return freeText;
 	}
 
@@ -282,7 +282,7 @@ public class TimePeriod implements Cloneable, Serializable {
 	 * Use {@link #parseSingleDate(String)} for public use.
 	 * @param freeText the freeText to set
 	 */
-	protected void setFreeText(String freeText) {
+	public void setFreeText(String freeText) {
 		this.freeText = freeText;
 	}
 
