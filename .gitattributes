@@ -1381,6 +1381,10 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NameListControlle
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NamePortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/OccurrenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/OccurrenceListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyNodeController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyNodeListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
@@ -1490,6 +1494,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/Abstract
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractCdmBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/DerivedUnitFacadeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/HibernateProxyBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/KeyStatementBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/MediaBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/NameRelationshipBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/PointBeanProcessor.java -text

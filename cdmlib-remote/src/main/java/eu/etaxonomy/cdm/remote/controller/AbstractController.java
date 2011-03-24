@@ -31,6 +31,11 @@ public abstract class AbstractController {
 	
 	protected List<String> initializationStrategy = DEFAULT_INIT_STRATEGY;
 	
+	/**
+	 * Set the default initialization strategy for this controller.
+	 * 
+	 * @param initializationStrategy 
+	 */
 	public void setInitializationStrategy(List<String> initializationStrategy) {
 		this.initializationStrategy = initializationStrategy;
 	}
