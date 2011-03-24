@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
@@ -31,12 +31,13 @@ import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class VersionableDaoBase<T extends VersionableEntity> extends CdmEntityDaoBase<T> implements IVersionableDao<T> {
-	
-	private static Log log = LogFactory.getLog(VersionableDaoBase.class);
-	
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(VersionableDaoBase.class);
+		
 	protected AuditReader getAuditReader() {
 		return AuditReaderFactory.get(getSession());
 	}
@@ -76,6 +77,12 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		}
 	}
 	
+    @Override
+	protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+    	return super.findByParam(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    }
+    
 	@Override
 	public T load(UUID uuid) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -367,6 +374,12 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
         	defaultBeanInitializer.initialize(record.getAuditableObject(), propertyPaths);
         }
 		return records;
+	}
+	
+	@Override
+	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+    	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+    	return super.countByParam(clazz, param, queryString, matchmode, criterion);
 	}
 	
 	@Override

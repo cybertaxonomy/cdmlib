@@ -30,18 +30,17 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.type.Type;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.core.Authentication;
@@ -57,6 +56,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Repository
 public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
 	private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
-
+	
 	protected int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
 	protected Class<T> type;
 	
@@ -336,6 +336,47 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		List<T> results = query.list();
 		return results;			
 	}
+	
+    protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    	Criteria criteria = null;
+
+    	if(clazz == null) {
+    		criteria = getSession().createCriteria(type);
+    	} else {
+    		criteria = getSession().createCriteria(clazz);
+    	}
+
+    	if (queryString != null) {
+    		if(matchmode == null) {
+    			criteria.add(Restrictions.ilike(param, queryString));
+    		} else if(matchmode == MatchMode.BEGINNING) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
+    		} else if(matchmode == MatchMode.END) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
+    		} else if(matchmode == MatchMode.EXACT) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
+    		} else {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
+    		}
+    	}
+    	
+    	addCriteria(criteria, criterion);
+
+    	if(pageSize != null) {
+    		criteria.setMaxResults(pageSize);
+    		if(pageNumber != null) {
+    			criteria.setFirstResult(pageNumber * pageSize);
+    		} else {
+    			criteria.setFirstResult(0);
+    		}
+    	}
+
+    	addOrder(criteria, orderHints);
+
+    	List<T> result = (List<T>)criteria.list();
+    	defaultBeanInitializer.initializeAll(result, propertyPaths);
+    	return result;
+    }
 	
 	public T load(UUID uuid) {
 		T bean = findByUuid(uuid);
@@ -629,6 +670,39 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			criteria.add(Example.create(example));
 		}
 	}
+	
+	
+	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+    	Criteria criteria = null;
+
+    	if(clazz == null) {
+    		criteria = getSession().createCriteria(type);
+    	} else {
+    		criteria = getSession().createCriteria(clazz);
+    	}
+
+    	if (queryString != null) {
+    		if(matchmode == null) {
+    			criteria.add(Restrictions.ilike(param, queryString));
+    		} else if(matchmode == MatchMode.BEGINNING) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
+    		} else if(matchmode == MatchMode.END) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
+    		} else if(matchmode == MatchMode.EXACT) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
+    		} else {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
+    		}
+    	}
+    	
+    	addCriteria(criteria, criterion);
+    	
+    	criteria.setProjection(Projections.rowCount());    	
+
+    	List<T> result = criteria.list();
+    	return (Integer)criteria.uniqueResult();
+	}
+
 	
 	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		Criteria criteria = getSession().createCriteria(example.getClass());

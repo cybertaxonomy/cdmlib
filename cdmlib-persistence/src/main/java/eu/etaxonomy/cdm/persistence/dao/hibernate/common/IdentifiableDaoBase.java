@@ -98,48 +98,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		return findByParam(clazz, "title", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 	
-    protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-    	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	Criteria criteria = null;
-
-    	if(clazz == null) {
-    		criteria = getSession().createCriteria(type);
-    	} else {
-    		criteria = getSession().createCriteria(clazz);
-    	}
-
-    	if (queryString != null) {
-    		if(matchmode == null) {
-    			criteria.add(Restrictions.ilike(param, queryString));
-    		} else if(matchmode == MatchMode.BEGINNING) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
-    		} else if(matchmode == MatchMode.END) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
-    		} else if(matchmode == MatchMode.EXACT) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
-    		} else {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
-    		}
-    	}
-    	
-    	addCriteria(criteria, criterion);
-
-    	if(pageSize != null) {
-    		criteria.setMaxResults(pageSize);
-    		if(pageNumber != null) {
-    			criteria.setFirstResult(pageNumber * pageSize);
-    		} else {
-    			criteria.setFirstResult(0);
-    		}
-    	}
-
-    	addOrder(criteria, orderHints);
-
-    	List<T> result = (List<T>)criteria.list();
-    	defaultBeanInitializer.initializeAll(result, propertyPaths);
-    	return result;
-    }
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, boolean, int, int, java.util.List)
 	 */
@@ -285,38 +243,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 	
 	public int countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
 		return countByParam(clazz, "title",queryString,matchmode,criterion);
-	}
-	
-	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
-    	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	Criteria criteria = null;
-
-    	if(clazz == null) {
-    		criteria = getSession().createCriteria(type);
-    	} else {
-    		criteria = getSession().createCriteria(clazz);
-    	}
-
-    	if (queryString != null) {
-    		if(matchmode == null) {
-    			criteria.add(Restrictions.ilike(param, queryString));
-    		} else if(matchmode == MatchMode.BEGINNING) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
-    		} else if(matchmode == MatchMode.END) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
-    		} else if(matchmode == MatchMode.EXACT) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
-    		} else {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
-    		}
-    	}
-    	
-    	addCriteria(criteria, criterion);
-    	
-    	criteria.setProjection(Projections.rowCount());    	
-
-    	List<T> result = criteria.list();
-    	return (Integer)criteria.uniqueResult();
 	}
 
 	public int count(Class<? extends T> clazz, String queryString) {
