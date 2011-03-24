@@ -14,6 +14,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * A read-only interface to allow querying across all IIdentificationKey instances, regardless of type
@@ -43,4 +44,37 @@ public interface IIdentificationKeyDao {
 	 * @return
 	 */
 	public int count();
+	
+	/**
+	 * Finds IdentificationKeys which cover the Taxon given as parameter
+	 * 
+	 * @param taxon
+	 *            The Taxon to search IdentificationKeys for
+	 * @param type
+	 *            may restrict the type to a specific implementation of
+	 *            IIdentificationKey
+	 * @param pageSize
+	 *            The maximum number of objects returned (can be null for all
+	 *            matching objects)
+	 * @param pageNumber
+	 *            The offset (in pageSize chunks) from the start of the result
+	 *            set (0 - based, can be null, equivalent of starting at the
+	 *            beginning of the recordset)
+	 * @param propertyPaths
+	 *            properties to be initialized
+	 * @return a List of IdentificationKeys
+	 */
+	public <T extends IIdentificationKey> List<T> findByTaxonomicScope(
+			TaxonBase taxon, Class<T> type, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths);
+
+	/**
+	 * Counts IdentificationKeys which cover the Taxon given as parameter
+	 * 
+	 * @param taxon The Taxon to search IdentificationKeys for
+	 * @param type may restrict the type to a specific implementation of
+	 *            IIdentificationKey
+	 * @return 
+	 */
+	public <T extends IIdentificationKey> Long countByTaxonomicScope(TaxonBase taxon, Class<T> type);
 } 

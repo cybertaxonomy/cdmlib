@@ -10,10 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,34 +19,17 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
-import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<PolytomousKey, IPolytomousKeyDao> implements IPolytomousKeyService {
 
-	IPolytomousKeyNodeDao polytomousKeyNodeDao;
-	
 	@Autowired
 	protected void setDao(IPolytomousKeyDao dao) {
 		this.dao = dao;
-	}
-	
-	@Autowired
-	protected void setPolytomousKeyNodeDao(IPolytomousKeyNodeDao polytomousKeyNodeDao) {
-		this.polytomousKeyNodeDao = polytomousKeyNodeDao;
 	}
 
 
@@ -63,28 +43,7 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IPolytomousKeyService#getPolytomousKeyNodesAll()
-	 */
-	public List<PolytomousKeyNode> getPolytomousKeyNodesAll() {
-		return polytomousKeyNodeDao.list();
-	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IPolytomousKeyService#savePolytomousKeyNodesAll(java.util.Collection)
-	 */
-	public Map<UUID, PolytomousKeyNode> savePolytomousKeyNodesAll(Collection<PolytomousKeyNode> polytomousKeyNodeCollection) {
-		return polytomousKeyNodeDao.saveAll(polytomousKeyNodeCollection);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IPolytomousKeyService#saveOrUpdatePolytomousKeyNodesAll(java.util.Collection)
-	 */
-	public Map<UUID, PolytomousKeyNode> saveOrUpdatePolytomousKeyNodesAll(Collection<PolytomousKeyNode> polytomousKeyNodeCollection) {
-		return polytomousKeyNodeDao.saveOrUpdateAll(polytomousKeyNodeCollection);
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#loadWithNodes(java.util.UUID, java.util.List, java.util.List)

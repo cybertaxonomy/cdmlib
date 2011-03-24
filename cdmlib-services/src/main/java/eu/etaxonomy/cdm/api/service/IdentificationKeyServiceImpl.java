@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 
 @Service
@@ -33,6 +35,19 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
 			results = dao.list(pageSize, start, propertyPaths);
 		}
 		return new DefaultPagerImpl<IIdentificationKey>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	
+	public <T extends IIdentificationKey> Pager<T> findKeysConvering(TaxonBase taxon,
+			Class<T> type, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths) {
+		
+		Integer numberOfResults = dao.countByTaxonomicScope(taxon, type).intValue();
+		List<T> results = new ArrayList<T>();
+		if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
+			results = dao.findByTaxonomicScope(taxon, type, pageSize, pageNumber, propertyPaths);
+		}
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 }

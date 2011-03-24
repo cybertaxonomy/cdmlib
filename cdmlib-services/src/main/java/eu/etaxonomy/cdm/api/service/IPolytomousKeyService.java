@@ -9,17 +9,12 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
-import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 public interface IPolytomousKeyService extends IIdentifiableEntityService<PolytomousKey> {
-	
-	public List<PolytomousKeyNode> getPolytomousKeyNodesAll();
 	
 	/**
 	 * Loads a polytomous key including all of its nodes (all the way down to the tips of the tree). 
@@ -31,9 +26,5 @@ public interface IPolytomousKeyService extends IIdentifiableEntityService<Polyto
 	 * 
 	 */
 	public PolytomousKey loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
-
-	public Map<UUID, PolytomousKeyNode> savePolytomousKeyNodesAll(Collection<PolytomousKeyNode> polytomousKeyNodeCollection);
-	
-	public Map<UUID, PolytomousKeyNode> saveOrUpdatePolytomousKeyNodesAll(Collection<PolytomousKeyNode> polytomousKeyNodeCollection);
 	
 }
