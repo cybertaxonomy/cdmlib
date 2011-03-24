@@ -28,10 +28,6 @@
 
 	<!-- TODO move to io -->
 	<context:component-scan base-package="eu/etaxonomy/cdm/io">
-		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.pesi.*" />
-		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.faunaEuropaea.*" />
-		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.erms.*" />
-		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.eflora.*" />
 		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />
 	</context:component-scan>
 
