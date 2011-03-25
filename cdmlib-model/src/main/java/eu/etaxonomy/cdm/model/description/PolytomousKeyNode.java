@@ -53,6 +53,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * <code>PolytomousKeyNode</code> can have multiple kinds of edges:
  * <p>
  * <h4>Edges</h4>
+ * In very rare cases a polytomous key node can have same time an edge to a taxon and other edges to futher child nodes. 
+ * In this case the determination process may be terminated at this taxon or can proceed if a more accurate determination
+ * is wanted. 
  * <li>{@link #getChildren() children}:<br>
  * One or multiple subordinate <code>PolytomousKeyNodes</code>. The source node
  * poses a {@link #getQuestion question}, to which the children are providing
@@ -64,8 +67,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * The <code>feature</code> property will most likely be used if the key has
  * been generated automatically. Hand written keys will have a
  * <code>question</code>. An existing question should always be given
- * <b>priority</b> over the <code>feature</code>. <b>Special case:</b> <i>Child
- * nodes with empty statements but taxa as leaf</i> are to treaded as if all
+ * <b>priority</b> over the <code>feature</code>.
+ * <p>
+ * <b>Special case:</b>
+ * <i>Child nodes with empty statements but taxa as leaf</i> are to treaded as if all
  * those taxa where direct children of the source node. That is the nodes in
  * with empty statements are not to be shown, they are only a structural element
  * to connect multiple taxa to a single node, which is otherwise not possible.</li>
@@ -81,9 +86,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * of this {@link Taxon}.</li>
  * 
  * <h4>Notes</h4>
+ * <p>
  * A polytomous key node can be referenced from multiple other nodes. Therefore
  * a node does not have a single parent. Nevertheless it always belongs to a
  * main key though it may be referenced also by other key nodes.
+ * 
  * 
  * @author a.mueller
  * @created 13-Oct-2010
@@ -186,7 +193,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private Integer nodeNumber = 0;
     
     
-	//a modifying text may be a text like "an unusual form of", commenting the taxa
 	//TODO should be available for each taxon/result
 	@XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -537,8 +543,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 //**************** modifying text ***************************************
 	
 	/** 
-	 * Returns the {@link MultilanguageText} used to qualify the validity
-	 * of the edge in the key's decision graph leading to <i>this</i> node.
+	 * Returns the {@link MultilanguageText} like "an unusual form of", commenting the determined taxon. 
+	 * That is a modifyingText may by used to comment or to constraint the decision step represented by the edge leading to <i>this</i> node
+	 * <p>
 	 * All {@link LanguageString language strings}
 	 * contained in the multilanguage texts should all have the same meaning.<BR>
 	 */
