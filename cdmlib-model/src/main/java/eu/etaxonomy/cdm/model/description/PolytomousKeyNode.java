@@ -42,17 +42,50 @@ import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
- * The class represents a node within a {@link PolytomousKey polytomous key} structure.
- * A polytomous key node can be referenced from multiple other nodes. Therefore a node does
- * not have a single parent. Nevertheless it always belongs to a main key though it may be
- * referenced also by other key nodes.
+ * The class represents a node within a {@link PolytomousKey polytomous key}
+ * structure. The structure such key is a directed acyclic graph where as
+ * instances of <code>PolytomousKeyNode</code>, {@Taxon Taxa}, or even
+ * of other {@link PolytomousKey PolytomousKeys} are forming the nodes. A
+ * <code>PolytomousKeyNode</code> can have multiple kinds of edges:
+ * <p>
+ * <h4>Edges</h4>
+ * <li>{@link #getChildren() children}:<br>
+ * One or multiple subordinate <code>PolytomousKeyNodes</code>. The source node
+ * poses a {@link #getQuestion question}, to which the children are providing
+ * predefined answers by their {@link #getStatement() statement}. It is also
+ * possible that the children's {@link #getStatement() statements} are
+ * formulated in a way which makes an explicit question at the source node
+ * obsolete. In this case the question may be empty. There is furthermore the
+ * {@link #getFeature() feature} property which also plays the role as question.
+ * The <code>feature</code> property will most likely be used if the key has
+ * been generated automatically. Hand written keys will have a
+ * <code>question</code>. An existing question should always be given
+ * <b>priority</b> over the <code>feature</code>. <b>Special case:</b> <i>Child
+ * nodes with empty statements but taxa as leaf</i> are to treaded as if all
+ * those taxa where direct children of the source node. That is the nodes in
+ * with empty statements are not to be shown, they are only a structural element
+ * to connect multiple taxa to a single node, which is otherwise not possible.</li>
+ * <li>{@link #getOtherNode() otherNode}: <br>
+ * Without this kind of edge which points to other nodes in the same graph edge
+ * the key would be a perfect tree structure.</li>
+ * <li>{@link #getSubkey() subkey}:<br>
+ * Connects two key with each other. The path in the decision graph spans over
+ * multiple keys.</li>
+ * <li>{@link #getTaxon() taxon}:<br>
+ * The taxa are the final leaf nodes of the decision graph, the decision process
+ * ends and the respective object has been determined as being a representative
+ * of this {@link Taxon}.</li>
  * 
- * @author  a.mueller
+ * <h4>Notes</h4>
+ * A polytomous key node can be referenced from multiple other nodes. Therefore
+ * a node does not have a single parent. Nevertheless it always belongs to a
+ * main key though it may be referenced also by other key nodes.
+ * 
+ * @author a.mueller
  * @created 13-Oct-2010
  * 
  */
@@ -504,15 +537,10 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 //**************** modifying text ***************************************
 	
 	/** 
-	 * Returns the {@link MultilanguageText multilanguage text} used to qualify the validity
-	 * of <i>this</i> description element.  The different {@link LanguageString language strings}
-	 * contained in the multilanguage text should all have the same meaning.<BR>
-	 * A multilanguage text does not belong to a controlled {@link TermVocabulary term vocabulary}
-	 * as a {@link Modifier modifier} does.
-	 * <P>
-	 * NOTE: the actual content of <i>this</i> description element is NOT
-	 * stored in the modifying text. This is only metainformation
-	 * (like "Some experts express doubt about this assertion").
+	 * Returns the {@link MultilanguageText} used to qualify the validity
+	 * of the edge in the key's decision graph leading to <i>this</i> node.
+	 * All {@link LanguageString language strings}
+	 * contained in the multilanguage texts should all have the same meaning.<BR>
 	 */
 	public Map<Language,LanguageString> getModifyingText(){
 		return this.modifyingText;
@@ -521,9 +549,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 
 	/**
-	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the {@link MultilanguageText multilanguage text} used to qualify the validity
-	 * of <i>this</i> description element.
+	 * See {@link  #getModifyingText}
 	 * 
 	 * @param description	the language string describing the validity
 	 * 						in a particular language
@@ -537,9 +563,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 	
 	/**
-	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the {@link MultilanguageText multilanguage text} used to qualify the validity
-	 * of <i>this</i> description element.
+	 * See {@link  #getModifyingText}
 	 * 
 	 * @param description	the language string describing the validity
 	 * 						in a particular language
@@ -551,9 +575,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 	
 	/**
-	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
-	 * used to qualify the validity of <i>this</i> description element.
+	 * See {@link  #getModifyingText}
 	 * 
 	 * @param text		the string describing the validity
 	 * 					in a particular language
@@ -568,9 +590,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 	
 	/**
-	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
-	 * used to qualify the validity of <i>this</i> description element.
+	 * See {@link  #getModifyingText}
 	 * 
 	 * @param text		the string describing the validity
 	 * 					in a particular language
@@ -582,9 +602,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
 	}
 	/** 
-	 * Removes from the {@link MultilanguageText multilanguage text} used to qualify the validity
-	 * of <i>this</i> description element the one {@link LanguageString language string}
-	 * with the given {@link Language language}.
+	 * See {@link  #getModifyingText}
 	 *
 	 * @param  language	the language in which the language string to be removed
 	 * 					has been formulated
