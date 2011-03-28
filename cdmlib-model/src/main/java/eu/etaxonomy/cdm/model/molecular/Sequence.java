@@ -259,4 +259,44 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 	public Reference getCitation(){
 		return publishedIn;
 	}
+	
+	//*********************** CLONE ********************************************************/
+	/** 
+	 * Clones <i>this</i> sequence. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> sequence by
+	 * modifying only some of the attributes.<BR><BR>
+	 * 
+	 *  
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone()  {
+		try{
+		Sequence result = (Sequence)super.clone();
+		
+		result.citations = new HashSet<Reference>();
+		for (Reference ref: this.citations){
+			result.citations.add((Reference) ref.clone());
+		
+		}
+		
+		result.genBankAccession = new HashSet<GenBankAccession>();
+		for (GenBankAccession genBankAcc: this.genBankAccession){
+			result.genBankAccession.add((GenBankAccession)genBankAcc.clone());
+		}
+		
+		result.chromatograms = new HashSet<Media>();
+		
+		for (Media chromatogram: this.chromatograms){
+			result.chromatograms.add((Media)chromatogram.clone());
+		}
+		
+		return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
