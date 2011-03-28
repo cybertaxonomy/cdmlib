@@ -185,6 +185,19 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 	
+		 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.OriginalSourceBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		DescriptionElementSource result = (DescriptionElementSource)super.clone();
+		
+		//no changes to: sourcedObj
+		return result;
+	}
+
 	
 	
 }

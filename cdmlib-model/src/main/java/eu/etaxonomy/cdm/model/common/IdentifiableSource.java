@@ -118,6 +118,18 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		result.setSourcedObj(sourcedObj);
 		return result;
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.OriginalSourceBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		IdentifiableSource result = (IdentifiableSource)super.clone();
+		
+		//no changes to: sourcedObj
+		return result;
+	}
 
 	
 }

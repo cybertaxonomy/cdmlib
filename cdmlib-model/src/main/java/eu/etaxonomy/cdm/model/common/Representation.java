@@ -131,4 +131,28 @@ public class Representation extends LanguageStringBase {
 //			return getLabel()+"("+ getLanguage().getLabel()+")";
 //		}
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> Representation. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> Representation by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.LanguageStringBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try{
+			Representation result = (Representation) super.clone();
+			//no changes to abbreviatedLabel and label
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 }

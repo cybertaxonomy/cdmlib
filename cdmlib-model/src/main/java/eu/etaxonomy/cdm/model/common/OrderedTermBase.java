@@ -193,4 +193,20 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 			}
 		}
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> OrderedTermBase. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> OrderedTermBase.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		OrderedTermBase result = (OrderedTermBase) super.clone();
+		//no changes to orderIndex
+		return result;
+	}
 }

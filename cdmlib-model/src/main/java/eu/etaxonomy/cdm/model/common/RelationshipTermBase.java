@@ -237,5 +237,19 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		line[8] = String.valueOf(term.isTransitive());
 		writer.writeNext(line);
 	}
+	//*********************************** CLONE *********************************************************/
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		IdentifiableSource result = (IdentifiableSource)super.clone();
+		
+		//no changes to: sourcedObj
+		return result;
+	}
+
 	
 }

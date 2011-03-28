@@ -327,4 +327,41 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	protected void setVocabulary(TermVocabulary<T> newVocabulary) {
 		this.vocabulary = newVocabulary;		
 	}	
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> DefinedTermBase. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> defined term base by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		DefinedTermBase result;
+		try {
+			result = (DefinedTermBase) super.clone();
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		result.generalizationOf = new HashSet<DefinedTermBase>();
+		for (DefinedTermBase generalizationOf : this.generalizationOf){
+			result.generalizationOf.add((DefinedTermBase) generalizationOf.clone());
+		}
+		
+		result.includes = new HashSet<DefinedTermBase>();
+		
+		for (DefinedTermBase include: this.includes){
+			result.includes.add((DefinedTermBase) include.clone());
+		}
+		
+		
+		return result;
+		
+	}
 }
