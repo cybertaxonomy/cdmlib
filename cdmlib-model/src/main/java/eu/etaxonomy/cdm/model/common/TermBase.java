@@ -229,5 +229,31 @@ public abstract class TermBase extends IdentifiableEntity {
 			return super.toString()+" "+this.getUuid();
 		}
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> TermBase. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> TermBase by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone()throws CloneNotSupportedException {
+		
+		TermBase result = (TermBase) super.clone();
+		
+		result.representations = new HashSet<Representation>();
+		for (Representation rep : this.representations){
+			result.representations.add((Representation)rep.clone());
+		}
+		
+		
+		
+		return result;
+		
+	}
 
 }

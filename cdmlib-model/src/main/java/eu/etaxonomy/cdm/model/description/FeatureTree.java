@@ -212,22 +212,26 @@ public class FeatureTree extends TermBase implements Cloneable{
 	 * the new FeatureTree 
 	 * 
 	 * 
-	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	
 	public Object clone() {
 		FeatureTree result;
-		
-		result = (FeatureTree)super.clone();
+		try {
+			result = (FeatureTree)super.clone();
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 		FeatureNode rootClone = (FeatureNode)this.getRoot().cloneDescendants();
 		result.root = rootClone;
 				
 		return result;
 		
 	}
-	
 	
 	
 }

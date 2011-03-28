@@ -176,5 +176,30 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		//this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );
 		return this;
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> TermVocabulary. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> TermVocabulary.
+	 * The terms of the original vocabulary are cloned
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		TermVocabulary result;
+		try {
+			result = (TermVocabulary) super.clone();
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		result.terms = new HashSet<T>();
+		
+		return result;
+	}
     
 }
