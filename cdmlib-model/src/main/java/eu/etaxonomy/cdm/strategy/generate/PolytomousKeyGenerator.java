@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
  * @author m.venin
  *
  */
-public class IdentificationKeyGenerator {
+public class PolytomousKeyGenerator {
 
 	static int level=-1; // global variable needed by the printTree function in order to store the level which is being printed
 	private PolytomousKey polytomousKey; // the Identification Key
