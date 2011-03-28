@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.generate.IdentificationKeyGenerator;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 
 /**
  * @author m.venin
@@ -64,7 +64,7 @@ public class IdentificationKeyGeneratorTest {
 	private Set<TaxonDescription> taxa;
 	private List<Feature> features;
 	
-	private IdentificationKeyGenerator generator;
+	private PolytomousKeyGenerator generator;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -419,7 +419,7 @@ public class IdentificationKeyGeneratorTest {
 
 	@Test
 	public void testInvoke() {
-		generator = new IdentificationKeyGenerator();
+		generator = new PolytomousKeyGenerator();
 		generator.setFeatures(features);
 		generator.setTaxa(taxa);
 		assertNotNull("Key should exist.",generator.invoke());
