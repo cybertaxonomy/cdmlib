@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.FeatureTree")
 @Audited
-public class FeatureTree extends TermBase {
+public class FeatureTree extends TermBase implements Cloneable{
 	private static final long serialVersionUID = -6713834139003172735L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureTree.class);
@@ -201,5 +201,33 @@ public class FeatureTree extends TermBase {
 		
 		return root.getDistinctFeaturesRecursive(features);
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> FeatureTree. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> FeatureTree by
+	 * modifying only some of the attributes.
+	 * FeatureNodes always belong only to one tree, so all FeatureNodes are cloned to build 
+	 * the new FeatureTree 
+	 * 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	
+	public Object clone() {
+		FeatureTree result;
+		
+		result = (FeatureTree)super.clone();
+		FeatureNode rootClone = (FeatureNode)this.getRoot().cloneDescendants();
+		result.root = rootClone;
+				
+		return result;
+		
+	}
+	
+	
 	
 }

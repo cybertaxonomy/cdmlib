@@ -40,6 +40,7 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * The class for tree nodes within a {@link FeatureTree feature tree} structure.
@@ -70,7 +71,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "FeatureNode")
 @Entity
 @Audited
-public class FeatureNode extends VersionableEntity {
+public class FeatureNode extends VersionableEntity implements Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 	
     //This is the main key a node belongs to. Although other keys may also reference
@@ -531,6 +532,50 @@ public class FeatureNode extends VersionableEntity {
 		}
 		
 		return features;
+	}
+	
+	public FeatureNode cloneDescendants(){
+		FeatureNode clone = (FeatureNode)this.clone();
+		FeatureNode childClone;
+				
+		for(FeatureNode childNode : this.getChildren()){
+			childClone = (FeatureNode) childNode.clone();
+			for (FeatureNode childChild:childNode.getChildren()){
+				childClone.addChild(childChild.cloneDescendants());
+			}
+			clone.addChild(childClone);
+						
+		}		
+		return clone;
+	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> FeatureNode. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> FeatureNode by
+	 * modifying only some of the attributes.
+	 * The parent, the feature and the featureTree are the are the same as for the original feature node
+	 * the children are removed
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		FeatureNode result;
+		try {
+			result = (FeatureNode)super.clone();
+			result.children = new ArrayList<FeatureNode>();
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		
 	}
 
 	
