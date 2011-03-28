@@ -12,7 +12,10 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public interface IPolytomousKeyService extends IIdentifiableEntityService<PolytomousKey> {
 	
@@ -26,5 +29,8 @@ public interface IPolytomousKeyService extends IIdentifiableEntityService<Polyto
 	 * 
 	 */
 	public PolytomousKey loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
+	
+	public Pager<PolytomousKey> findByTaxonomicScope(TaxonBase taxon, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths);
 	
 }

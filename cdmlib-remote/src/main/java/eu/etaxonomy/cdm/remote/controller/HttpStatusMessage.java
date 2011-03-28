@@ -56,6 +56,11 @@ public class HttpStatusMessage {
 		return statusCode;
 	}
 
+	public HttpStatusMessage setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
+		return this;
+	}
+
 	public String getMessage() {
 		return message;
 	}

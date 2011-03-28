@@ -11,9 +11,15 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.io.IOException;
+import static java.net.HttpURLConnection.*;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.protocol.HTTP;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,17 +65,40 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 	 *            Further restricts the type of entities to be returned. 
 	 *            If null the base type <code>&lt;T&gt;</code> is being used. - <i>optional parameter</i>
 	 * @return
+	 * @throws IOException 
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "pageNumber")
 	public Pager<T> doPage(
-			@RequestParam(value = "pageNumber", required = true) Integer pageNumber,
+			@RequestParam(value = "pageNumber") Integer pageNumber,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
-			@RequestParam(value = "class", required = false) Class<T> type) {
+			@RequestParam(value = "class", required = false) Class<T> type,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException
+			{
 		
-		if(pageNumber == null){ pageNumber = DEFAULT_PAGE_NUMBER;}
-		if(pageSize == null){ pageSize = DEFAULT_PAGESIZE;}
+		normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
 		
 		return service.page(type, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
+	}
+	
+	/**
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param response
+	 * @throws IOException
+	 */
+	public static void normalizeAndValidatePagerParameters(Integer pageNumber, Integer pageSize, HttpServletResponse response) throws IOException{
+		
+		if(pageNumber == null){ 
+			pageNumber = DEFAULT_PAGE_NUMBER;
+			if(pageSize == null){ pageSize = DEFAULT_PAGESIZE;}
+		}
+		if(pageNumber < 0){
+			HttpStatusMessage.fromString("The query parameter 'pageNumber' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
+		}
+		if(pageSize < 0){
+			HttpStatusMessage.fromString("The query parameter 'pageSize' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
+		}
 	}
 	
 	/**
@@ -77,10 +106,11 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 	 * the nameless methods {@link #doPage(Integer, Integer, Class)} and {@link #doList(Integer, Integer, Class)}
 	 * are ambigous.
 	 * @return
+	 * @throws IOException 
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public Pager<T> doPage(){
-		return doPage(null, null, null);
+	public Pager<T> doPage(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		return doPage(null, null, null, request, response);
 	}
 	
 	/**

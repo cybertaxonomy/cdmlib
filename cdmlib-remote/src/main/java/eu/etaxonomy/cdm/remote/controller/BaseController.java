@@ -134,7 +134,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		if(objectFromProperty != null){
 
 			if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
-				// Map types cannot be returend as list or in a pager!
+				// Map types cannot be returned as list or in a pager!
 				
 				Collection c = (Collection)objectFromProperty;
 				if(start != null){
@@ -144,6 +144,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 					modelAndView.addObject(sub_c);
 					
 				} else {
+					//FIXME use real paging mechanism of according service class instead of subCollection()
+					//FIXME use BaseListController.normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
 					pageSize = (pageSize == null ? DEFAULT_PAGE_SIZE : pageSize);
 					pageNumber = (pageNumber == null ? 0 : pageNumber);
 					start = pageNumber * pageSize;

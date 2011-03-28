@@ -18,18 +18,38 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<PolytomousKey, IPolytomousKeyDao> implements IPolytomousKeyService {
 
+	private IIdentificationKeyDao identificationKeyDao;
+	private ITaxonDao taxonDao;
+
+
 	@Autowired
 	protected void setDao(IPolytomousKeyDao dao) {
 		this.dao = dao;
+	}
+	
+	@Autowired
+	protected void setDao(IIdentificationKeyDao identificationKeyDao) {
+		this.identificationKeyDao = identificationKeyDao;
+	}
+	
+	@Autowired
+	protected void setDao(ITaxonDao taxonDao) {
+		this.taxonDao = taxonDao;
 	}
 
 
@@ -78,6 +98,25 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	@Override
 	public PolytomousKey load(UUID uuid, List<String> propertyPaths) {
 		return super.load(uuid, propertyPaths);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IPolytomousKeyService#findByTaxonomicScope(eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
+	@Override
+	public Pager<PolytomousKey> findByTaxonomicScope(
+			TaxonBase taxon, Integer pageSize,
+			Integer pageNumber, List<String> propertyPaths) {
+		
+		List<PolytomousKey> list = new ArrayList<PolytomousKey>();
+		taxon = taxonDao.findById(taxon.getId());
+		Integer numberOfResults = identificationKeyDao.countByTaxonomicScope(taxon, PolytomousKey.class).intValue();
+		if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
+			list = identificationKeyDao.findByTaxonomicScope(taxon, PolytomousKey.class, pageSize, pageNumber, propertyPaths);
+		}
+		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults, pageSize, list);
+		return pager;
 	}
 	
 }

@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.http.HttpRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -319,7 +320,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *            restrict the search to a set of geographic {@link NamedArea}s.
 	 *            The parameter currently takes a list of TDWG area labels.
 	 *            - <i>optional parameter</i>
-	 * @param page
+	 * @param pageNumber
 	 *            the number of the page to be returned, the first page has the
 	 *            pageNumber = 1 - <i>optional parameter</i>
 	 * @param pageSize
@@ -343,30 +344,23 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			@RequestParam(value = "query", required = false) String query,
 			@RequestParam(value = "tree", required = false) UUID treeUuid,
 			@RequestParam(value = "area", required = false) Set<NamedArea> areas,
-			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
 			@RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
 			@RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
 			@RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
-			@RequestParam(value = "matchMode", required = false) MatchMode matchMode
+			@RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+			HttpServletRequest request, 
+			HttpServletResponse response
 			)
 			 throws IOException {
 		
-		logger.info("doFind( " +
-			"query=\"" + ObjectUtils.toString(query) + "\", treeUuid=" + ObjectUtils.toString(treeUuid) + 
-			", area=" + ObjectUtils.toString(areas) +
-			", pageSize=" + ObjectUtils.toString(pageSize) +  ", page=" + ObjectUtils.toString(page) + 
-			", doTaxa=" + ObjectUtils.toString(doTaxa) + ", doSynonyms=" + ObjectUtils.toString(doSynonyms) 
-			+", doTaxaByCommonNames=" + ObjectUtils.toString(doTaxaByCommonNames) +")" );
+		logger.info("doFind : " + request.getRequestURI() + request.getQueryString() );
 		
-		if(page == null){ page = BaseListController.DEFAULT_PAGE_NUMBER;}
-		if(pageSize == null){ pageSize = BaseListController.DEFAULT_PAGESIZE;}
-		if(pageSize == -1){ 
-			pageSize = null;
-		}
+		BaseListController.normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
 			
 		ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
-		config.setPageNumber(page);
+		config.setPageNumber(pageNumber);
 		config.setPageSize(pageSize);
 		config.setSearchString(query);
 		config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );

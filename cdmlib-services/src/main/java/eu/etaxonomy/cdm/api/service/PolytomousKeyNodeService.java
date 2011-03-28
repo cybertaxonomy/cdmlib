@@ -9,6 +9,12 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 
@@ -17,12 +23,12 @@ import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
  * @date 24.03.2011
  *
  */
+@Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 public class PolytomousKeyNodeService  extends VersionableServiceBase<PolytomousKeyNode, IPolytomousKeyNodeDao> implements IPolytomousKeyNodeService {
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-	 */
-	@Override
+
+	@Autowired
 	protected void setDao(IPolytomousKeyNodeDao dao) {
 		this.dao = dao;
 	}
