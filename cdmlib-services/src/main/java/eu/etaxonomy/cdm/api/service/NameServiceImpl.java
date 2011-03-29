@@ -59,6 +59,8 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.TaggedText;
+import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
@@ -372,6 +374,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 				nvn.setFullTitleCache(null, false);
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#getTaggedName(eu.etaxonomy.cdm.model.name.TaxonNameBase)
+	 */
+	@Override
+	public List<TaggedText> getTaggedName(UUID uuid) {
+		TaxonNameBase taxonNameBase = dao.load(uuid);
+		return TaggedTextGenerator.getTaggedName(taxonNameBase);
 	}
 	
 	

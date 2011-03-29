@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
+import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 /**
  * TODO write controller documentation
@@ -54,6 +56,8 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	
 	@Autowired
 	private IOccurrenceService occurrenceService;
+	@Autowired
+	private INameService nameService;
 	
 	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
 			"taxonNodes"
@@ -64,11 +68,8 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 		setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
+
 	@Autowired
-	@Override
 	public void setService(ITaxonService service) {
 		this.service = service;
 	}
@@ -144,6 +145,20 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 			return null;
 		}
 		
+		return mv;
+	}
+	
+	@RequestMapping(value = "taggedName", method = RequestMethod.GET)
+	public ModelAndView doGetTaggedName(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException {
+		logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+		
+		ModelAndView mv = new ModelAndView();
+		
+		TaxonBase tb = service.load(uuid, Arrays.asList(new String[] {"name"}));
+		mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
 		return mv;
 	}
 		

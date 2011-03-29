@@ -24,12 +24,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 /**
  * TODO write controller documentation
@@ -96,8 +99,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 		return p.getRecords();
 		
 	}
-	
-	//TODO obsolete method?
+
 	@RequestMapping(
 			value = {"nameCache"},
 			method = RequestMethod.GET)
@@ -112,6 +114,18 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 		result.add(nameCacheString);
 		return result;
 		
+	}
+	
+	@RequestMapping(value = "taggedName", method = RequestMethod.GET)
+	public ModelAndView doGetTaggedName(
+			@PathVariable("uuid") UUID uuid,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException {
+		logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject(service.getTaggedName(uuid));
+		return mv;
 	}
 	
 }

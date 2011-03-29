@@ -40,6 +40,8 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.TaggedText;
+import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
@@ -333,4 +335,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
      * @return a homotypical group
      */
     public HomotypicalGroup findHomotypicalGroup(UUID uuid);
+    
+    public List<TaggedText> getTaggedName(UUID uuid);
 }
