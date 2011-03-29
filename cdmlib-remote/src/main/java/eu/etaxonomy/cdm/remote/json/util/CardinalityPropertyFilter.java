@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.remote.json.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Set;
 
 import net.sf.json.util.PropertyFilter;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -43,16 +45,28 @@ public class CardinalityPropertyFilter implements PropertyFilter {
 		this.includeToManyRelations = includeToManyRelations;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.json.util.PropertyFilter#apply(java.lang.Object, java.lang.String, java.lang.Object)
+	 */
 	public boolean apply(Object source, String name, Object value) {
+		Class<?> valueType;
+		
 		if(value == null){
-			return false;
+			valueType = org.springframework.beans.BeanUtils.findPropertyType(name, new Class[] {source.getClass()});
+			if(valueType == null){
+				// something went wrong, so better include the property 
+				return false;				
+			}
+		} else {
+			valueType = value.getClass();
 		}
-		if(CdmBase.class.isAssignableFrom(value.getClass())){
+		
+		if(CdmBase.class.isAssignableFrom(valueType)){
         	if(!includeToOneRelations 
         			&& !exceptions.contains(source.getClass().getSimpleName() + "." + name)){
         		return true;
         	}
-        } else if(Collection.class.isAssignableFrom(value.getClass()) || Map.class.isAssignableFrom(value.getClass())){
+        } else if(Collection.class.isAssignableFrom(valueType) || Map.class.isAssignableFrom(valueType)){
         	if(!includeToManyRelations 
         			&& !exceptions.contains(source.getClass().getSimpleName() + "." + name) 
         			&& CdmBase.class.isAssignableFrom(source.getClass())){
