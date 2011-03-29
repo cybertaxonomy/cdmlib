@@ -16,7 +16,8 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.remote.dto.TaggedText;
+import eu.etaxonomy.cdm.strategy.TaggedText;
+import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 /**
  * @author a.kohlbecker
@@ -36,7 +37,7 @@ public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 		JSONObject json = new JSONObject();
 		json.element("class", "TaxonNodeDao");
 		json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
-		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(node.getTaxon().getName());
+		List<TaggedText> taggedTitle = TaggedTextGenerator.getTaggedName(node.getTaxon().getName());
 		json.element("taggedTitle", taggedTitle, jsonConfig);
 		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
 		//Sec can be null (web services can return null for sec)

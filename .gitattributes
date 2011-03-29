@@ -706,6 +706,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/InheritableThread
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/ThreadLocalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TagEnum.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TaggedText.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TaggedTextGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/INomenclaturalAuthorCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/InstitutionDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/PersonDefaultCacheStrategy.java -text
@@ -1406,8 +1409,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/AbstractOa
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/ReferenceOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/TaxonOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/util/CdmAntPathMatcher.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TagEnum.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaggedText.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/DozerBeanMapperFactoryBean.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/DateTimeConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/DefaultRelatedPageConverter.java -text
