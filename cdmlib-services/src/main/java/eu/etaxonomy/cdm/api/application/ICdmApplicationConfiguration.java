@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -187,4 +188,10 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public IPolytomousKeyService getPolytomousKeyService();
+	
+	/**
+	 * @return
+	 */
+	public IPolytomousKeyNodeService getPolytomousKeyNodeService();
+	
 }

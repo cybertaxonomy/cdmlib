@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -401,6 +402,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
 	public final IPolytomousKeyService getPolytomousKeyService(){
 		return configuration.getPolytomousKeyService();
+	}
+
+	public final IPolytomousKeyNodeService getPolytomousKeyNodeService(){
+		return configuration.getPolytomousKeyNodeService();
 	}
 	
 	public final IService<CdmBase> getMainService(){
