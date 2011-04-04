@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
@@ -306,7 +307,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			
 			if(CdmBase.class.isAssignableFrom(returnType) 
 					|| Collection.class.isAssignableFrom(returnType) 
-					|| Map.class.isAssignableFrom(returnType)){
+					|| Map.class.isAssignableFrom(returnType)
+					|| INomenclaturalReference.class.isAssignableFrom(returnType)){
 				
 				result = method.invoke(instance, (Object[])null);
 				
