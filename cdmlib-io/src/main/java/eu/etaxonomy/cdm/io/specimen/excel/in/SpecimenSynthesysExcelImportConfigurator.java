@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 29.10.2008
  * @version 1.0
  */
-public class SpecimenSynthesysExcelImportConfigurator extends ImportConfiguratorBase<SpecimenExcelImportState, URI> implements IImportConfigurator {
+public class SpecimenSynthesysExcelImportConfigurator extends ImportConfiguratorBase<SpecimenSynthesysExcelImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SpecimenSynthesysExcelImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
@@ -66,8 +66,8 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public SpecimenExcelImportState getNewState() {
-		return new SpecimenExcelImportState(this);
+	public SpecimenSynthesysExcelImportState getNewState() {
+		return new SpecimenSynthesysExcelImportState(this);
 	}
 
 

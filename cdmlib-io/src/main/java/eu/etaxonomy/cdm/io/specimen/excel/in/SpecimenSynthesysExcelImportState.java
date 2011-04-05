@@ -20,11 +20,11 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class SpecimenExcelImportState extends ImportStateBase<SpecimenSynthesysExcelImportConfigurator, CdmImportBase>{
+public class SpecimenSynthesysExcelImportState extends ImportStateBase<SpecimenSynthesysExcelImportConfigurator, CdmImportBase>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenExcelImportState.class);
+	private static final Logger logger = Logger.getLogger(SpecimenSynthesysExcelImportState.class);
 
-	public SpecimenExcelImportState(SpecimenSynthesysExcelImportConfigurator config) {
+	public SpecimenSynthesysExcelImportState(SpecimenSynthesysExcelImportConfigurator config) {
 		super(config);
 	}
 	

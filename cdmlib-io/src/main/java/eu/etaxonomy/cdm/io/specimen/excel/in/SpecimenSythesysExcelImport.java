@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSynthesysExcelImportConfigurator, SpecimenExcelImportState>  implements ICdmIO<SpecimenExcelImportState> {
+public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSynthesysExcelImportConfigurator, SpecimenSynthesysExcelImportState>  implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
 	private static final Logger logger = Logger.getLogger(SpecimenSythesysExcelImport.class);
 
@@ -491,7 +491,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
 	@Override
-	protected boolean isIgnore(SpecimenExcelImportState state) {
+	protected boolean isIgnore(SpecimenSynthesysExcelImportState state) {
 		return false;
 	}
 
@@ -500,7 +500,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	 * @see eu.etaxonomy.cdm.io.specimen.SpecimenIoBase#doInvoke(eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportState)
 	 */
 	@Override
-	protected boolean doInvoke(SpecimenExcelImportState state) {
+	protected boolean doInvoke(SpecimenSynthesysExcelImportState state) {
 		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
 		SpecimenSythesysExcelImport test = new SpecimenSythesysExcelImport();
 		URI source = state.getConfig().getSource();
@@ -531,7 +531,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
 	@Override
-	protected boolean doCheck(SpecimenExcelImportState state) {
+	protected boolean doCheck(SpecimenSynthesysExcelImportState state) {
 		logger.warn("Validation not yet implemented for " + this.getClass().getSimpleName());
 		return true;
 	}
