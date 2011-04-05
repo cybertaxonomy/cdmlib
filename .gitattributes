@@ -306,9 +306,9 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206DataHolde
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206Import.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportState.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenExcelImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenExcelImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenExcelImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenSynthesysExcelImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenSythesysExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text

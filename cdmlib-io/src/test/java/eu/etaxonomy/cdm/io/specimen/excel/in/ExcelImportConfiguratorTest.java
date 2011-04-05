@@ -55,7 +55,7 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		try {
-			configurator = SpecimenExcelImportConfigurator.NewInstance(url.toURI(), null);
+			configurator = SpecimenSynthesysExcelImportConfigurator.NewInstance(url.toURI(), null);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();

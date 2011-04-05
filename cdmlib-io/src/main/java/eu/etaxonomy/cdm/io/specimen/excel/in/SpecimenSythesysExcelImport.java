@@ -56,9 +56,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImportConfigurator, SpecimenExcelImportState>  implements ICdmIO<SpecimenExcelImportState> {
+public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSynthesysExcelImportConfigurator, SpecimenExcelImportState>  implements ICdmIO<SpecimenExcelImportState> {
 
-	private static final Logger logger = Logger.getLogger(SpecimenExcelImport.class);
+	private static final Logger logger = Logger.getLogger(SpecimenSythesysExcelImport.class);
 
 	protected String fullScientificNameString;
 	protected String nomenclatureCode;
@@ -85,7 +85,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 	protected HSSFWorkbook hssfworkbook = null;
 
 
-	public SpecimenExcelImport() {
+	public SpecimenSythesysExcelImport() {
 		super();
 	}
 
@@ -154,7 +154,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 
 	}
 
-	private Institution getInstitution(String institutionCode, SpecimenExcelImportConfigurator config){
+	private Institution getInstitution(String institutionCode, SpecimenSynthesysExcelImportConfigurator config){
 		Institution institution;
 		List<Institution> institutions;
 		try{
@@ -182,7 +182,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 	 * @param app
 	 * @return the Collection (existing or new)
 	 */
-	private Collection getCollection(String collectionCode, Institution institution, SpecimenExcelImportConfigurator config){
+	private Collection getCollection(String collectionCode, Institution institution, SpecimenSynthesysExcelImportConfigurator config){
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
 		try{
@@ -224,7 +224,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void setTaxonNameBase(SpecimenExcelImportConfigurator config, DerivedUnitBase derivedThing, Reference sec){
+	private void setTaxonNameBase(SpecimenSynthesysExcelImportConfigurator config, DerivedUnitBase derivedThing, Reference sec){
 		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -333,7 +333,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 	/*
 	 * Store the unit with its Gathering informations in the CDM
 	 */
-	public boolean start(SpecimenExcelImportConfigurator config){
+	public boolean start(SpecimenSynthesysExcelImportConfigurator config){
 		boolean result = true;
 		TransactionStatus tx = null;
 
@@ -502,7 +502,7 @@ public class SpecimenExcelImport  extends SpecimenImportBase<SpecimenExcelImport
 	@Override
 	protected boolean doInvoke(SpecimenExcelImportState state) {
 		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
-		SpecimenExcelImport test = new SpecimenExcelImport();
+		SpecimenSythesysExcelImport test = new SpecimenSythesysExcelImport();
 		URI source = state.getConfig().getSource();
 		ArrayList<HashMap<String,String>> unitsList = null;
 		try{

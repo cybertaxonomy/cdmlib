@@ -26,8 +26,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 29.10.2008
  * @version 1.0
  */
-public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<SpecimenExcelImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(SpecimenExcelImportConfigurator.class);
+public class SpecimenSynthesysExcelImportConfigurator extends ImportConfiguratorBase<SpecimenExcelImportState, URI> implements IImportConfigurator {
+	private static final Logger logger = Logger.getLogger(SpecimenSynthesysExcelImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = false;
@@ -41,12 +41,12 @@ public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<Spec
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-			SpecimenExcelImport.class,
+			SpecimenSythesysExcelImport.class,
 		};
 	};
 	
-	public static SpecimenExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
-		return new SpecimenExcelImportConfigurator(uri, destination);
+	public static SpecimenSynthesysExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+		return new SpecimenSynthesysExcelImportConfigurator(uri, destination);
 	}
 	
 	
@@ -55,7 +55,7 @@ public class SpecimenExcelImportConfigurator extends ImportConfiguratorBase<Spec
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private SpecimenExcelImportConfigurator(URI uri, ICdmDataSource destination) {
+	private SpecimenSynthesysExcelImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(uri);
 		setDestination(destination);
