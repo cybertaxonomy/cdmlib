@@ -29,7 +29,7 @@
              <value>Media.representations</value>
              <value>MediaRepresentation.parts</value>
              
-             <!-- CardinalityPropertyFilter should allow defining acceptions for abstract super classes : -->
+             <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
              <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> --> 
              
              <value>TextData.feature</value>
@@ -40,6 +40,7 @@
              <value>QuantitativeData.feature</value>
              <value>TaxonInteraction.feature</value>
              <value>TextData.feature</value>
+             <value>IdentifiableSource.citation</value>
          </set>
        </property>
      </bean>

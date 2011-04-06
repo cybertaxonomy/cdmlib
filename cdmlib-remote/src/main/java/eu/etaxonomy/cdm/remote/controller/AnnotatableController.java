@@ -34,23 +34,26 @@ import eu.etaxonomy.cdm.model.common.Annotation;
  *
  * @param <T>
  * @param <DAO>
+ * 
+ * @deprecated annotations are made available through the BaseController
  */
+@Deprecated
 public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE extends IAnnotatableService<T>> extends BaseController<T,SERVICE> {
 	
 	protected static final List<String> ANNOTATION_INIT_STRATEGY = Arrays.asList(new String []{
 			"$"
 	});
 
-	@RequestMapping(value = "annotation", method = RequestMethod.GET)
-	public Pager<Annotation> getAnnotations(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		logger.info("getAnnotations() - " + request.getServletPath());
-		T annotatableEntity = service.find(uuid);
-		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
-		return annotations;
-	}
+//	@RequestMapping(value = "annotations", method = RequestMethod.GET)
+//	public Pager<Annotation> getAnnotations(
+//			@PathVariable("uuid") UUID uuid,
+//			HttpServletRequest request,
+//			HttpServletResponse response) throws IOException {
+//		logger.info("getAnnotations() - " + request.getServletPath());
+//		T annotatableEntity = service.find(uuid);
+//		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
+//		return annotations;
+//	}
 
 
 }
