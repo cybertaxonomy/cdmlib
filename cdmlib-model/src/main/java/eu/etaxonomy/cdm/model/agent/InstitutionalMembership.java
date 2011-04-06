@@ -205,4 +205,26 @@ public class InstitutionalMembership extends VersionableEntity {
 	public void setRole(String role){
 		this.role = role;
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> InstitutionalMembership. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> InstitutionalMembership.
+	 *  
+	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try{
+			InstitutionalMembership result = (InstitutionalMembership) super.clone();
+			//no changes to department, institute, period, person, role
+			return result;
+		}catch (CloneNotSupportedException e){
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

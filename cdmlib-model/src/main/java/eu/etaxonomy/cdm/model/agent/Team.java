@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.agent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -35,6 +36,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -296,6 +298,35 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void setProtectedNomenclaturalTitleCache(
 			boolean protectedNomenclaturalTitleCache) {
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
+	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> Team. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> Team.
+	 * The corresponding person is cloned. 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try{
+			Team result = (Team)super.clone();
+			result.teamMembers = new ArrayList<Person>();
+			for (Person teamMember: this.teamMembers){
+				result.addTeamMember(teamMember);
+			}
+			//no changes to protectedNomenclaturalTitleCache
+			return result;
+		} catch (CloneNotSupportedException e){
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
 	}
 	
 	

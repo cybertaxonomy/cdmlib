@@ -196,4 +196,26 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	public void setName(String name){
 		this.name = name;
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> Institution. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> Institution.
+	 *  
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try{
+			Institution result = (Institution) super.clone();
+			//no changes to code, isPartOf, name, types
+			return result;
+		}catch (CloneNotSupportedException e){
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

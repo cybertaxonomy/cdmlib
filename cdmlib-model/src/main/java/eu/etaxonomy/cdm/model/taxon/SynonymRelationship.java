@@ -254,4 +254,30 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	public void setType(SynonymRelationshipType type) {
 		this.type = type;
 	}
+	
+	//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> SynonymRelationship. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> SynonymRelationship by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		SynonymRelationship result;
+		
+		try{
+			result = (SynonymRelationship) super.clone();
+			//no changes to relatedFrom, relatedTo, type, partial, proParte
+			
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

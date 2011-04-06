@@ -192,12 +192,16 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		TermVocabulary result;
 		try {
 			result = (TermVocabulary) super.clone();
+			
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
 			e.printStackTrace();
 			return null;
 		}
 		result.terms = new HashSet<T>();
+		for (T term: this.terms){
+			result.addTerm((T)term.clone());
+		}
 		
 		return result;
 	}

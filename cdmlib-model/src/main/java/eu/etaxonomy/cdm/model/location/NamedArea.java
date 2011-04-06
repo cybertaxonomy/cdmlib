@@ -502,4 +502,26 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		}
 		return title.toString();
 	}
+	
+	//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> NamedArea. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> NamedArea by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.OrderedTermBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		NamedArea result;
+		
+			result = (NamedArea)super.clone();
+			//no changes to level, pointApproximation, shape, type, validPeriod and waterbodiesOrCountries
+			return result;
+		
+	}
+		
+	
 }

@@ -36,6 +36,7 @@ import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -332,5 +333,29 @@ public class Person extends TeamOrPersonBase<Person>{
 //		} 
 //        return title;
 //	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> Person. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> Person.
+	 *  
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try{
+			Person result = (Person)super.clone();
+			//no changes to firstname, lastname, lifespan, prefix, suffix
+			return result;
+		} catch (CloneNotSupportedException e){
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
 
 }

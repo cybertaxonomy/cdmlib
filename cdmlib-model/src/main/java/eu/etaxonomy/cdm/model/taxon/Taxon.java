@@ -1611,7 +1611,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		result = (Taxon)super.clone();
 		
 		result.setRelationsFromThisTaxon(new HashSet<TaxonRelationship>());
-		try{
+		
 		for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
 			TaxonRelationship newRelationship = (TaxonRelationship)fromRelationship.clone();
 			newRelationship.setRelatedFrom(result);
@@ -1643,10 +1643,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		}*/
 		
 		return result;
-		}catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
-		}
+		
 	}
 }

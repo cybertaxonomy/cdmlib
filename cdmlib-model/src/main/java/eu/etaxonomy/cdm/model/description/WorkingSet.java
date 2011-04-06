@@ -10,10 +10,13 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,6 +43,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Representation;
 
 /**
@@ -267,6 +271,42 @@ public class WorkingSet extends AnnotatableEntity {
 			description.removeWorkingSet(this);
 		}
 		return result;
+	}
+	
+	//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> WorkingSet. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> WorkingSet by
+	 * modifying only some of the attributes.
+	 * The descriptions and the descriptive system are the same, the representations 
+	 * are cloned.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		WorkingSet result;
+		try {
+			result = (WorkingSet)super.clone();
+			result.descriptions = new HashSet<DescriptionBase>();
+			
+			for (DescriptionBase desc: this.descriptions){
+				result.addDescription(desc);
+			}
+			
+			result.representations = new HashSet<Representation>();
+			for (Representation rep : this.representations){
+				result.addRepresentation((Representation)rep.clone());
+			}
+			
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

@@ -305,4 +305,56 @@ public class MediaKey extends Media implements IIdentificationKey{
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
 	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> MediaKey. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> MediaKey by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.media.Media#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		MediaKey result;
+		
+		try{
+			result = (MediaKey)super.clone();
+			
+			result.coveredTaxa = new HashSet<Taxon>();
+			for (Taxon taxon: this.coveredTaxa){
+				result.addCoveredTaxon(taxon);
+			}
+			
+			result.geographicalScope = new HashSet<NamedArea>();
+			for (NamedArea area: this.geographicalScope){
+				result.addGeographicalScope(area);
+			}
+			
+			result.keyRepresentations = new HashSet<Representation>();
+			for (Representation rep: this.keyRepresentations) {
+				result.addKeyRepresentation(rep);
+			}
+			
+			result.scopeRestrictions = new HashSet<Scope>();
+			for (Scope scope: this.scopeRestrictions){
+				result.addScopeRestriction(scope);
+			}
+			
+			result.taxonomicScope = new HashSet<Taxon>();
+			for (Taxon taxon: this.taxonomicScope){
+				result.addTaxonomicScope(taxon);
+			}
+			
+			return result;
+			
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
 }

@@ -245,9 +245,14 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	 */
 	@Override
 	public Object clone() {
-		IdentifiableSource result = (IdentifiableSource)super.clone();
+		RelationshipTermBase result = (RelationshipTermBase)super.clone();
 		
-		//no changes to: sourcedObj
+		result.inverseRepresentations = new HashSet<Representation>();
+		for (Representation rep: this.inverseRepresentations){
+			result.addInverseRepresentation((Representation)rep.clone());
+		}
+		
+		//no changes to: symmetric, transitiv
 		return result;
 	}
 

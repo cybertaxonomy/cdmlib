@@ -255,4 +255,29 @@ public class User extends CdmBase implements UserDetails {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> User. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> User.
+	 * The corresponding person is cloned. 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.CdmBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try{
+			User result = (User)super.clone();
+			result.setPerson((Person)this.person.clone());
+			return result;
+		} catch (CloneNotSupportedException e){
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
 }

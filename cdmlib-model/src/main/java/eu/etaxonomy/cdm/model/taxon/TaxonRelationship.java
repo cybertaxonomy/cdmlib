@@ -27,6 +27,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
@@ -193,5 +194,31 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 
 	public void setType(TaxonRelationshipType type) {
 		this.type = type;
+	}
+	
+	//*********************************** CLONE *****************************************/
+
+	/** 
+	 * Clones <i>this</i> TaxonRelationship. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> TaxonRelationship by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		TaxonRelationship result;
+		
+		try{
+			result = (TaxonRelationship) super.clone();
+			//no changes to relatedFrom, relatedTo, type
+			
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

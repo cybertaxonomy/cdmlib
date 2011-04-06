@@ -350,5 +350,29 @@ public class Contact implements Serializable {
 		getFaxNumbers().remove(faxNumber);
 	}
 
+//*********************** CLONE ********************************************************/
 	
+	/** 
+	 * Clones <i>this</i> Contact. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> Contact.
+	 *  
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try{
+			Contact result = (Contact) super.clone();
+			result.addresses = new HashSet<Address>();
+			for (Address adr : this.addresses){
+				result.addAddress((Address)adr.clone());
+			}
+			//no changes to emailAdresses, faxNumbers, phoneNumbers, urls
+			return result;
+		}catch (CloneNotSupportedException e){
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

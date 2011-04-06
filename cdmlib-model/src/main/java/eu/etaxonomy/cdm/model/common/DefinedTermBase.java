@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -359,6 +360,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		for (DefinedTermBase include: this.includes){
 			result.includes.add((DefinedTermBase) include.clone());
 		}
+		
+		result.media = new HashSet<Media>();
+		
+		for (Media media: this.media){
+			result.addMedia(media);
+		}
+		
+		
 		
 		
 		return result;

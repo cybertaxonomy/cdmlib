@@ -256,4 +256,43 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	public void removeScopeRestriction(Scope scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> MultiAccessKey. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> MultiAccessKey by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		MultiAccessKey result;
+		
+			result = (MultiAccessKey)super.clone();
+			
+			result.coveredTaxa = new HashSet<Taxon>();
+			for (Taxon taxon: this.coveredTaxa){
+				result.addCoveredTaxon(taxon);
+			}
+			
+			result.geographicalScope = new HashSet<NamedArea>();
+			for (NamedArea area: this.geographicalScope){
+				result.addGeographicalScope(area);
+			}
+			
+			result.scopeRestrictions = new HashSet<Scope>();
+			for (Scope scope: this.scopeRestrictions){
+				result.addScopeRestriction(scope);
+			}
+			
+			result.taxonomicScope = new HashSet<Taxon>();
+			for (Taxon taxon: this.taxonomicScope){
+				result.addTaxonomicScope(taxon);
+			}
+			return result;
+		
+	}
 }

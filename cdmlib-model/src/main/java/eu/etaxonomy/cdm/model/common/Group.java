@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -42,6 +43,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
 	private static final long serialVersionUID = 7216686200093054648L;
+	private static final Logger logger = Logger.getLogger(Group.class);
 	
 	@XmlElement(name = "Name")
 	@NaturalId
@@ -113,4 +115,41 @@ public class Group extends CdmBase {
 			return false;
 		}
 	}
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> Group. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> group by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		Group result;
+		try{
+			result = (Group)super.clone();
+			result.grantedAuthorities = new HashSet<GrantedAuthority>();
+			for (GrantedAuthority grantedauthority: this.grantedAuthorities){
+				result.addGrantedAuthority(grantedauthority);
+			}
+			
+			result.members = new HashSet<User>();
+			for (User member: this.members){
+				result.addMember(member);
+			}
+			
+			//no changes to name
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+			
+		}
+		
+		
+	}
+	
 }

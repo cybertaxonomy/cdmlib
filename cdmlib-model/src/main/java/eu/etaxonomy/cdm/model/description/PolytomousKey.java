@@ -40,6 +40,7 @@ import org.hibernate.tool.hbm2x.StringUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -424,5 +425,55 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 //	public List<PolytomousKeyNode> getChildren() {
 //		return getRoot().getChildren();
 //	}
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> PolytomousKey. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> PolytomousKey by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		PolytomousKey result;
+		
+		try{
+			result = (PolytomousKey)super.clone();
+			
+			result.coveredTaxa = new HashSet<Taxon>();
+			for (Taxon taxon: this.coveredTaxa){
+				result.addCoveredTaxon(taxon);
+			}
+			
+			result.geographicalScope = new HashSet<NamedArea>();
+			for (NamedArea area: this.geographicalScope){
+				result.addGeographicalScope(area);
+			}
+			
+			result.root = (PolytomousKeyNode)this.root.clone();
+			
+			result.scopeRestrictions = new HashSet<Scope>();
+			for (Scope scope: this.scopeRestrictions){
+				result.addScopeRestriction(scope);
+			}
+			
+			result.taxonomicScope = new HashSet<Taxon>();
+			for (Taxon taxon: this.taxonomicScope){
+				result.addTaxonomicScope(taxon);
+			}
+			
+			return result;
+			
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
 
 }

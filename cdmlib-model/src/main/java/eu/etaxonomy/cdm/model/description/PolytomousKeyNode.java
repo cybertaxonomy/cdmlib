@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -691,5 +692,41 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 
 	
+	//*********************** CLONE ********************************************************/
+		
+		/** 
+		 * Clones <i>this</i> PolytomousKeyNode. This is a shortcut that enables to create
+		 * a new instance that differs only slightly from <i>this</i> PolytomousKeyNode by
+		 * modifying only some of the attributes.
+		 * The parent, the feature and the key are the are the same as for the original feature node
+		 * the children are removed.
+		 * 
+		 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
+		 * @see java.lang.Object#clone()
+		 */
+		@Override
+		public Object clone() {
+			PolytomousKeyNode result;
+			try {
+				result = (PolytomousKeyNode)super.clone();
+				result.children = new ArrayList<PolytomousKeyNode>();
+				
+				result.modifyingText = new HashMap<Language, LanguageString>();
+				for (Entry<Language, LanguageString> entry: this.modifyingText.entrySet()){
+					result.putModifyingText(entry.getValue());
+				}
+				
+				
+				return result;
+			}catch (CloneNotSupportedException e) {
+				logger.warn("Object does not implement cloneable");
+				e.printStackTrace();
+				return null;
+			}
+		}
+			
+			
+			
+		
 
 }

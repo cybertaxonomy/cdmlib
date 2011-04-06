@@ -16,8 +16,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
+
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GrantedAuthority", propOrder = {
@@ -27,7 +30,8 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 	private static final long serialVersionUID = 2651969425860655040L;
-
+	private static final Logger logger = Logger.getLogger(GrantedAuthority.class);
+	
 	@XmlElement(name = "Authority")
 	@NaturalId
 	private String authority;
@@ -53,5 +57,31 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 			return this.authority.compareTo(((GrantedAuthority)o).getAuthority());
 		}
     	return 0;
+	}
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> Granted Authority. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> Granted Authority
+	 * by modifying only some of the attributes.<BR>
+	 * 
+	 * 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.CdmBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		GrantedAuthority result;
+		try{
+			result = (GrantedAuthority) super.clone();
+			//no changes to authority
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

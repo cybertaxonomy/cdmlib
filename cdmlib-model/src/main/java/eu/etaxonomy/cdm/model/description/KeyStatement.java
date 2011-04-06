@@ -4,8 +4,10 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +25,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -255,6 +258,37 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	public int countLanguages(){
 		return label.size();
 	}
-
+	
+//*********************** CLONE ********************************************************/
+	
+	/** 
+	 * Clones <i>this</i> KeyStatement. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> KeyStatement by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.common.VersionableEntitity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		KeyStatement result;
+		try {
+			result = (KeyStatement) super.clone();
+			
+			result.label = new HashMap<Language, LanguageString>();
+			
+			
+			for (Entry<Language,LanguageString> entry: this.label.entrySet()){
+				
+				result.label.put(entry.getKey(), entry.getValue());
+			}
+			
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }
