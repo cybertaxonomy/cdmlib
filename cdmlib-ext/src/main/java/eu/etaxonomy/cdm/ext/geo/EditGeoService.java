@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -51,13 +52,18 @@ public class EditGeoService implements IEditGeoService{
 	@Autowired
 	private IDescriptionDao dao;
 	
-	@Autowired
 	private IDefinedTermDao termDao;
-	
+		
+	@Autowired
+	public void setTermDao(IDefinedTermDao termDao) {
+		this.termDao = termDao;
+		EditGeoServiceUtilities.setTermDao(termDao);
+	}
+
 	@Autowired
 	private IOccurrenceDao occurrenceDao;
-	
 
+	
 	private Set<Feature> getDistributionFeatures() {
 		Set<Feature> distributionFeature = new HashSet<Feature>();
 		Feature feature = (Feature) termDao.findByUuid(Feature.DISTRIBUTION().getUuid());
