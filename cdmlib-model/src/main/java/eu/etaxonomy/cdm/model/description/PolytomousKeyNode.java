@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * <b>priority</b> over the <code>feature</code>.
  * <p>
  * <b>Special case:</b>
- * <i>Child nodes with empty statements but taxa as leaf</i> are to treaded as if all
+ * <i>Child nodes with empty statements but taxa as leaf</i> are to treated as if all
  * those taxa where direct children of the source node. That is the nodes in
  * with empty statements are not to be shown, they are only a structural element
  * to connect multiple taxa to a single node, which is otherwise not possible.</li>
