@@ -95,7 +95,19 @@ public class EditGeoServiceUtilities {
 			defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
 			defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));	
 			
-			//special colors for flora of cyprus
+			/*
+			 * and now something very hacky ...
+			 * ONLY-A-TEST is set by the Test class EditGeoServiceTest
+			 * 
+			 * TODO remove according line from
+			 * EditGeoServiceTest.setUp() when the hardcoded colors for flora of
+			 * cyprus ar no further needed !!
+			 */
+			String onlyTest = System.getProperty("ONLY-A-TEST"); // 
+			if(onlyTest.equals("TRUE")){
+				return defaultPresenceAbsenceTermBaseColors;
+			}
+			//special colors for flora of cyprus !!! see HACK above !!!
 			UUID indigenousUuid = UUID.fromString("b325859b-504b-45e0-9ef0-d5c1602fcc0f");
 			UUID indigenousQUuid = UUID.fromString("17bc601f-53eb-4997-a4bc-c03ce5bfd1d3");
 			

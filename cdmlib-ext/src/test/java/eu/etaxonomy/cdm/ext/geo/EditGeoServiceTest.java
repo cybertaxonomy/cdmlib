@@ -37,9 +37,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.spring.annotation.SpringApplicationContext;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.mchange.util.AssertException;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -55,18 +59,24 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 /**
  * @author a.mueller
  * @created 08.10.2008
  * @version 1.0
  */
-public class EditGeoServiceTest  {
+public class EditGeoServiceTest extends CdmUnitTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 
 	private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.br.fgov.be/edit_wp5/v1/areas.php";
 	private static URI editMapServiceUri;
+	
+	//@SpringBeanByType
+	private IDefinedTermDao termDao;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -89,6 +99,8 @@ public class EditGeoServiceTest  {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		EditGeoServiceUtilities.setTermDao(termDao);
+		System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
 		editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STING);
 	}
 
