@@ -69,6 +69,10 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#loadWithNodes(java.util.UUID, java.util.List, java.util.List)
 	 */
 	public PolytomousKey loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
+		
+		if(nodePaths == null){
+			nodePaths = new ArrayList<String>();
+		}
 		nodePaths.add("children");
 		
 		List<String> rootPaths = new ArrayList<String>();
