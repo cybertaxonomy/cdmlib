@@ -21,8 +21,7 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 
 /**
  * @author a.mueller
@@ -70,20 +69,24 @@ public class TermUpdater_312_313 extends TermUpdaterBase implements ITermUpdater
 		UUID uuidLang;
 		String stepName;
 
-		// sex.hermaphrodite
-//		UUID uuidTerm = UUID.fromString("0deddc65-2505-4c77-91a7-17d0de24afcc");
-//		description = "hermaphrodite";
-//		label = "hermaphrodite";
-//		abbrev = "h";
-//		dtype = Sex.class.getSimpleName();
-//		isOrdered = true;
-//		uuidVocabulary = UUID.fromString("9718b7dd-8bc0-4cad-be57-3c54d4d432fe");
-//		uuidAfterTerm = UUID.fromString("b4cfe0cb-b35c-4f97-9b6b-2b3c096ea2c0");
-//		uuidLang = Language.uuidEnglish;
-//		stepName = "Add 'hermaphrodite' to sex";
-//		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+		// reported in error
+		UUID uuidTerm = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
+		description = "reported in error";
+		label = "reported in error";
+		abbrev = "f";
+		dtype = AbsenceTerm.class.getSimpleName();
+		isOrdered = true;
+		uuidVocabulary = UUID.fromString("5cd438c8-a8a1-4958-842e-169e83e2ceee");
+		uuidAfterTerm = UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'reported in error' to absence terms";
+		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
 
-	
+		String updateQuery = "UPDATE DefinedTermBase SET defaultColor = 'cccccc' WHERE uuid = '38604788-cf05-4607-b155-86db456f7680'";
+		stepName = "Add 'colour schema' to reported in error";
+		SimpleSchemaUpdaterStep colourUpdater = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+		list.add(colourUpdater);
+		
 		return list;
 	}
 	
