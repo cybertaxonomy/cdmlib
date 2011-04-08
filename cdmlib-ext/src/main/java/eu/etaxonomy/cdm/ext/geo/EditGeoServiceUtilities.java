@@ -125,6 +125,8 @@ public class EditGeoServiceUtilities {
 			UUID questionablelUuid = UUID.fromString("4b48f675-a6cf-49f3-a5ba-77e2c2979eb3");
 			UUID questionableQUuid = UUID.fromString("914e7393-1314-4632-bc45-5eff3dc1e424");
 			
+			UUID reportedInErrorUuid = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
+			
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(indigenousUuid), Color.decode("0x339966"));
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(indigenousQUuid), Color.decode("0x339966"));
 			
@@ -141,6 +143,9 @@ public class EditGeoServiceUtilities {
 			
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(questionablelUuid), Color.decode("0x00ccff"));
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(questionableQUuid), Color.decode("0x00ccff"));
+			
+			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(reportedInErrorUuid), Color.decode("0xcccccc"));
+			
 		}
 		return defaultPresenceAbsenceTermBaseColors;
 	}
