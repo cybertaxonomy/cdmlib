@@ -32,13 +32,24 @@ public class ExcelUtils {
 	
     /** Reads all rows of an Excel worksheet */
     public static ArrayList<HashMap<String, String>> parseXLS(URI uri) throws FileNotFoundException {
+    	return parseXLS(uri, null);
+    }
+
+    
+	/** Reads all rows of an Excel worksheet */
+    public static ArrayList<HashMap<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
     	
     	ArrayList<HashMap<String, String>> recordList = new ArrayList<HashMap<String, String>>();
 
     	try {
     		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(uri));
     		HSSFWorkbook wb = new HSSFWorkbook(fs);
-    		HSSFSheet sheet = wb.getSheetAt(0);
+    		HSSFSheet sheet;
+    		if (worksheetName == null){
+    			sheet = wb.getSheetAt(0);	
+    		}else{
+    			sheet = wb.getSheet(worksheetName);
+    		}
     		HSSFRow row;
     		HSSFCell cell;
 
