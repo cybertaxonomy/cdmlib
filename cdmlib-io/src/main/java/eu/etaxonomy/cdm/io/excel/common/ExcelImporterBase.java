@@ -59,6 +59,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		}
 		// read and save all rows of the excel worksheet
 		URI source = state.getConfig().getSource();
+		String sheetName = getWorksheetName();
 		try {
 			recordList = ExcelUtils.parseXLS(source);
 		} catch (FileNotFoundException e) {
@@ -104,6 +105,14 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		}
     	
     	return success;
+	}
+
+	/**
+	 * To define a worksheetname override this method. Otherwise the first worksheet is taken.
+	 * @return worksheet name. <code>null</null> if not worksheet is defined.
+	 */
+	protected String getWorksheetName() {
+		return null;
 	}
 
 	@Override
