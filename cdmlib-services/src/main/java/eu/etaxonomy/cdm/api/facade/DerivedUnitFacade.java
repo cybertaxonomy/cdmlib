@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -109,6 +110,27 @@ public class DerivedUnitFacade {
 			}else{
 				throw new IllegalStateException("Unknown derived unit type " +  this.getRepresentation());
 			}
+		}
+		
+		public static DerivedUnitType valueOf2(String type){
+			if (type == null){
+				return null;
+			}
+			type = type.replace(" ", "").toLowerCase();
+			if (type.equals("specimen")){
+				return Specimen;
+			}else if (type.equals("livingbeing")){
+				return LivingBeing;
+			}else if (type.equals("observation")){
+				return Observation;
+			}else if (type.equals("fossil")){
+				return Fossil;
+			}else if (type.equals("unknown")){
+				return DerivedUnitType.DerivedUnit;
+			}else if (type.equals("derivedunit")){
+				return DerivedUnitType.DerivedUnit;
+			}
+			return null;
 		}
 		
 	}
