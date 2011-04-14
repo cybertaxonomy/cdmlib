@@ -3,12 +3,15 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.WorkingSet;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
+
 
 public interface IWorkingSetService extends IAnnotatableService<WorkingSet> {
 	/**
@@ -24,4 +27,8 @@ public interface IWorkingSetService extends IAnnotatableService<WorkingSet> {
 	 */
 	public Map<DescriptionBase, Set<DescriptionElementBase>> getDescriptionElements(WorkingSet workingSet, Set<Feature> features, Integer pageSize,	Integer pageNumber,	List<String> propertyPaths);
 
+	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+	
+	
 }
