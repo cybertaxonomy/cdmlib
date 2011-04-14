@@ -101,6 +101,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PolytomousKeyNode", propOrder = {
 		"key",
+		"parent",
 		"children",
 		"sortIndex",
 		"nodeNumber",
@@ -116,7 +117,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PolytomousKeyNode.class);
     
     //This is the main key a node belongs to. Although other keys may also reference
@@ -127,6 +127,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     @ManyToOne(fetch = FetchType.LAZY)
 	private PolytomousKey key;
     
+	
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
 //    @OrderColumn("sortIndex")  //JPA 2.0 same as @IndexColumn
@@ -139,12 +140,20 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     // reading works, but writing doesn't
     //
     @IndexColumn(name="sortIndex", base = 0)
-    @JoinColumn(name="parent_id")
     @OrderBy("sortIndex")
-	@OneToMany(fetch = FetchType.LAZY /*, mappedBy="parent"*/)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private List<PolytomousKeyNode> children = new ArrayList<PolytomousKeyNode>();
 
+    
+    @XmlElement(name = "Parent")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=PolytomousKeyNode.class)
+    @JoinColumn(name="parent_id" /*, insertable=false, updatable=false, nullable=false*/)
+    private PolytomousKeyNode parent;
+    
     //see comment on children @IndexColumn
     private Integer sortIndex;
  
@@ -283,8 +292,23 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private void setNodeNumber(Integer nodeNumber) {
 		this.nodeNumber = nodeNumber;
 	}
+	
+	/**
+	 * Returns the parent node of <code>this</code> child.
+	 * @return
+	 */
+	public PolytomousKeyNode getParent() {
+		return parent;
+	}
 
 
+	/**
+	 * For bidirectional use only !
+	 * @param parent
+	 */
+	protected void setParent(PolytomousKeyNode parent) {
+		this.parent = parent;
+	}
 	
 	/** 
 	 * Returns the (ordered) list of feature nodes which are children nodes of
@@ -335,8 +359,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 		child.sortIndex = index;
 		updateNodeNumber();
-		
+		child.setParent(this);
 	}
+	
 	private void updateNodeNumber() {
 		int nodeNumber = 0;
 		PolytomousKeyNode root = getKey().getRoot();
@@ -724,6 +749,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 				return null;
 			}
 		}
+
 			
 			
 			
