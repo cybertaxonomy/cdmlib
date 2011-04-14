@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -212,6 +211,42 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	public Float getTypicalLowerBoundary(){
 		return getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
 	}
+	
+	/** 
+	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
+	 * with the corresponding {@link StatisticalMeasure statistical measure}
+	 * "average" and belonging to <i>this</i> quantitative data.
+	 * Returns <code>null</code> if no such statistical measurement value instance exists. 
+	 */
+	@Transient
+	public Float getAverage(){
+		return getSpecificStatisticalValue(StatisticalMeasure.AVERAGE());
+	}
+
+	/** 
+	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
+	 * with the corresponding {@link StatisticalMeasure statistical measure}
+	 * "standard deviation" and belonging to <i>this</i> quantitative data.
+	 * Returns <code>null</code> if no such statistical measurement value instance exists. 
+	 */
+	@Transient
+	public Float getStandardDeviation(){
+		return getSpecificStatisticalValue(StatisticalMeasure.STANDARD_DEVIATION());
+	}
+
+	/** 
+	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
+	 * with the corresponding {@link StatisticalMeasure statistical measure}
+	 * "sample size" and belonging to <i>this</i> quantitative data.
+	 * Returns <code>null</code> if no such statistical measurement value instance exists. 
+	 */
+	@Transient
+	public Float getSampleSize(){
+		return getSpecificStatisticalValue(StatisticalMeasure.SAMPLE_SIZE());
+	}
+	
+	
+	
 
 	/** 
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
