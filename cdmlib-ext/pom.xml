@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <!-- 
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
    -->
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>3.0.3</version>
 	<relativePath>pom.xml</relativePath>
 	</parent>
 
@@ -16,9 +15,9 @@
   <name>CDM External</name>
   <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-extern/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-extern</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-extern</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-extern</url>
   </scm>
 
   <dependencies>

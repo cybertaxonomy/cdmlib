@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <!-- 
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 		http://maven.apache.org/maven-v4_0_0.xsd"
@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-		<version>3.0.3-SNAPSHOT</version>
+		<version>3.0.3</version>
 		<relativePath>pom.xml</relativePath>
 	</parent>
 	
@@ -27,13 +27,13 @@
   <packaging>jar</packaging>
   <scm>
 		<connection>
-			scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+			scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-remote
 		</connection>
 		<developerConnection>
-			scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+			scm:svn:https://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-remote
 		</developerConnection>
 		<url>
-			http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
+			http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-remote
 		</url>
   </scm>
 

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>3.0.3-SNAPSHOT</version>
+	<version>3.0.3</version>
 	<name>CDM Library</name>
 	<description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -25,9 +25,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
-		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/</developerConnection>
-		<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
+		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT</connection>
+		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT</developerConnection>
+		<url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/3.0.3-SNAPSHOT</url>
 	</scm>
 	<mailingLists>
 		<mailingList>
@@ -81,7 +81,7 @@
 				<role>Architect</role>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -98,7 +98,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -115,7 +115,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -132,7 +132,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -151,7 +151,7 @@
 				<role>Java Developer</role>
 				<role>Release Manager</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -168,7 +168,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 	</developers>
 	<!--contributors>
@@ -385,16 +385,16 @@
 					<postProcess>
 						<copy todir="target/site/reference">
 							<fileset dir="target/docbkx">
-								<include name="**/*.html"/>
-								<include name="**/*.pdf"/>
+								<include name="**/*.html" />
+								<include name="**/*.pdf" />
 							</fileset>
 						</copy>
 						<copy todir="target/site/reference/html">
 							<fileset dir="src/docbkx">
-								<include name="**/*.css"/>
-								<include name="**/*.png"/>
-								<include name="**/*.gif"/>
-								<include name="**/*.jpg"/>
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
 							</fileset>
 						</copy>
 					</postProcess>
@@ -407,7 +407,7 @@
 				<configuration>
 					<fromDir>${project.build.directory}/docbkx/</fromDir>
 					<includes>**/*</includes>
-					<excludes/>
+					<excludes />
 					<url>scpexe://160.45.63.151</url>
 					<serverId>wp5.e-taxonomy.eu</serverId>
 					<toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>

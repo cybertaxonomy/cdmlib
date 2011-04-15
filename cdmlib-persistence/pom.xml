@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-		<version>3.0.3-SNAPSHOT</version>
+		<version>3.0.3</version>
 		<relativePath>pom.xml</relativePath>
 	</parent>
 	
@@ -14,9 +12,9 @@
   <name>CDM Persistence</name>
   <description>EDIT CDM library persistence layer. Mainly DAOs</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-persistence/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-persistence</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-persistence</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/3.0.3-SNAPSHOT/cdmlib-persistence</url>
   </scm>
   <build>
     <plugins>
@@ -56,22 +54,17 @@
         <configuration>
           <tasks>
             <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.EnversHibernateToolTask">
-              <classpath refid="maven.plugin.classpath"/>
+              <classpath refid="maven.plugin.classpath" />
             </taskdef>
-            <mkdir dir="target/generated-sources/hibernate3"/>
+            <mkdir dir="target/generated-sources/hibernate3" />
             <hibernatetool destdir=".">  
               <classpath>
-                <path refid="maven.plugin.classpath"/>
-                <path refid="maven.compile.classpath"/>
-                <path refid="maven.test.classpath"/>
+                <path refid="maven.plugin.classpath" />
+                <path refid="maven.compile.classpath" />
+                <path refid="maven.test.classpath" />
               </classpath>
-              <jpaconfiguration persistenceunit="cdm"/> 
-              <hbm2ddl drop="false" 
-                       create="true"  
-                       export="false"  
-                       outputfilename="target/generated-sources/hibernate3/001_cdm.ddl"  
-                       delimiter=";"  
-                       format="true"/>  
+              <jpaconfiguration persistenceunit="cdm" /> 
+              <hbm2ddl drop="false" create="true" export="false" outputfilename="target/generated-sources/hibernate3/001_cdm.ddl" delimiter=";" format="true" />  
               </hibernatetool>
           </tasks>
         </configuration>
