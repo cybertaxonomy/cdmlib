@@ -27,7 +27,7 @@
 	<scm>
 		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
 		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/</developerConnection>
-		<url>http://dev.e-taxonomy.eu/websvn/listing.php?repname=CDM+Library</url>
+		<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
 	</scm>
 	<mailingLists>
 		<mailingList>
