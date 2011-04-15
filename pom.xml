@@ -377,7 +377,7 @@
 					<entities>
 						<entity>
 							<name>version</name>
-							<value>${pom.version}</value>
+							<value>${project.version}</value>
 						</entity>
 					</entities>
 					<!--We want the final documentation and the required resources to end up in 
@@ -410,7 +410,7 @@
 					<excludes/>
 					<url>scpexe://160.45.63.151</url>
 					<serverId>wp5.e-taxonomy.eu</serverId>
-					<toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${pom.version}</toDir>
+					<toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>
 				</configuration>
 				<executions>
 					<execution>
@@ -429,6 +429,7 @@
         <configuration>
           <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
           <autoVersionSubmodules>true</autoVersionSubmodules>
+          <preparationGoals>clean install</preparationGoals> 
           <tag>cdmlib/${project.version}</tag>
         </configuration>
       </plugin>
