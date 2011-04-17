@@ -598,22 +598,27 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			Taxon taxon, Set<Feature> features,
 			Class<T> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
-		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 			
 		String queryString = "select de" +
 			" from TaxonDescription as td" +
 			" left join td.descriptionElements as de" +
-			" where td.taxon = :taxon";
+			" where td.taxon = :taxon ";
 		
 		if(type != null){
 			queryString += " and de.class = :type"; 
 		}
-		
+		if (features != null && features.size() > 0){
+			queryString += " and de.feature in (:features) "; 
+		}
+//		System.out.println(queryString);
 		Query query = getSession().createQuery(queryString);
 		
 		query.setParameter("taxon", taxon);
 		if(type != null){
 			query.setParameter("type", type.getSimpleName());
+		}
+		if(features != null && features.size() > 0){
+			query.setParameterList("features", features) ;
 		}
 		
 	    if(pageSize != null) {
@@ -623,9 +628,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	        }
 	    }
 		    
-	    List<DescriptionElementBase> results = (List<DescriptionElementBase>) query.list();
+	    List<T> results = (List<T>) query.list();
 	    defaultBeanInitializer.initializeAll(results, propertyPaths);
 	
-    	return (List<T>) results; 
+    	return results; 
 	}
 }
