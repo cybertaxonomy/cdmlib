@@ -37,8 +37,7 @@ public class WorkingSetService extends
 
 	@Override
 	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(
-			Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role, Integer pageSize,
-			Integer pageNumber, List<String> propertyPaths) {
-		return dao.getTaxonFeatureDescriptionElementMap(clazz, workingSetUuid, role, pageSize, pageNumber, propertyPaths);
+			Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role) {
+		return dao.getTaxonFeatureDescriptionElementMap(clazz, workingSetUuid, role);
 	}
 }

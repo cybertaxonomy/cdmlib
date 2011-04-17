@@ -1,7 +1,5 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
-import java.awt.datatransfer.StringSelection;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,11 +9,9 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -26,7 +22,6 @@ import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.WorkingSet;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 
@@ -67,9 +62,8 @@ public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWo
 		return result;
 	}
 
-//	@Override
-	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		//TODO
+	@Override
+	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role) {
 		checkNotInPriorView("WorkingSetDao.getTaxonFeatureDescriptionElementMap(WorkingSet workingSet, Set<Feature> features, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths)");
 		Map<UuidAndTitleCache, Map<UUID, Set<T>>> result = new HashMap<UuidAndTitleCache, Map<UUID, Set<T>>>();
 		try {
@@ -116,17 +110,16 @@ public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWo
 					+ " and feature.id in (:features)  "
 				+ " order by taxon.uuid asc, feature.uuid asc"
 				;
-//			System.out.println(strQuery);
 			Query query = getSession().createQuery(strQuery);
 					
-			
-
 			query.setParameter("workingSetUuid", workingSetUuid);
 			query.setParameter("clazz", clazz.getSimpleName());
 			query.setParameterList("features", features);
-			
+
+			//NOTE: Paging does not work with fetch
+
+			// fill result
 			List<Object[]> list = query.list();
-			logger.warn("Retrieved data for " + clazz == null? "Structured Data":clazz.getSimpleName());
 			for (Object[] listEntry : list){
 				UUID taxonUuid = (UUID)listEntry[0];
 				String titleCache = (String)listEntry[1];
@@ -148,7 +141,6 @@ public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWo
 				featureSet.add(data);
 				
 			}
-			logger.warn("Filled resultset");
 			
 //			defaultBeanInitializer.initialize(
 					
