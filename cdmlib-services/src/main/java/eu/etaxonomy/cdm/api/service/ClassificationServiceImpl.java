@@ -210,13 +210,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 	}	
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#getClassificationByUuid(java.util.UUID)
-	 */
-	public Classification getClassificationByUuid(UUID uuid){
-		return dao.findByUuid(uuid);
-	}
-	
-	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IClassificationService#removeTaxonNode(eu.etaxonomy.cdm.model.taxon.Classification)
 	 */
 	public UUID removeTaxonNode(TaxonNode taxonNode) {
