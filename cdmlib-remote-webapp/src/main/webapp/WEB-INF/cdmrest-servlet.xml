@@ -33,19 +33,55 @@
 		</property>
 	</bean>
 
-    <!-- 
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="order" value="0" />
 		<property name="mappings">
+    <!-- 
 			<props>
 				<prop key="/index.do">urlFilenameViewController
 				</prop>
 				<prop key="/">welcomeFileViewController
 				</prop>
 			</props>
+	 -->
+	 
+	 	<!-- Needed for spring remoting with the http invoker -->
+	 	<!-- The configuration of the services is imported from httpinvokerServices.xml -->
+			<props>
+				<prop key="/agent.service">httpAgentService</prop>
+				<prop key="/annotation.service">httpAnnotationService</prop>
+				<prop key="/auditevent.service">httpAuditEventService</prop>
+				<prop key="/classification.service">httpClassificationService</prop>
+				<prop key="/collection.service">httpCollectionService</prop>
+				<prop key="/common.service">httpCommonService</prop>
+				<prop key="/database.service">httpDatabaseService</prop>
+				<prop key="/description.service">httpDescriptionService</prop>
+				<prop key="/featurenode.service">httpFeatureNodeService</prop>
+				<prop key="/featuretree.service">httpFeatureTreeService</prop>
+				<prop key="/group.service">httpGroupService</prop>
+				<prop key="/identificationkey.service">httpIdentificationKeyService</prop>
+				<prop key="/location.service">httpLocationService</prop>
+				<prop key="/marker.service">httpMarkerService</prop>
+				<prop key="/media.service">httpMediaService</prop>
+				<prop key="/name.service">httpNameService</prop>
+				<prop key="/occurrence.service">httpOccurrenceService</prop>
+				<prop key="/polytomouskeynode.service">httpPolytomousKeyNodeService</prop>
+				<prop key="/polytomouskey.service">httpPolytomousKeyService</prop>
+				<prop key="/reference.service">httpReferenceService</prop>
+				<prop key="/service.service">httpServiceService</prop>
+				<prop key="/taxonnode.service">httpTaxonNodeService</prop>
+				<prop key="/taxon.service">httpTaxonService</prop>
+				<prop key="/term.service">httpTermService</prop>
+				<prop key="/user.service">httpUserService</prop>
+				<prop key="/vocabulary.service">httpVocabularyService</prop>
+				<prop key="/workingset.service">httpWorkingService</prop>
+				
+				<!-- only for simple tests -->
+				<prop key="/demo.service">httpDemoService</prop>
+				<prop key="/list.service">httpListService</prop>
+			</props>
 		</property>
 	</bean>
-	 -->
     
 	<!-- 
 	======= HandlerAdapters =======
@@ -60,6 +96,9 @@
 	<!-- needed when using SimpleUrlHandlerMapping 	-->
 	<bean
 		class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+		
+	<!-- needed for HTTPInvoker  -->	
+	<bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter" />
     
     
 	<!-- 
@@ -170,6 +209,11 @@
 	-->
 	<bean id="exceptionResolver" class="eu.etaxonomy.cdm.remote.exception.CdmExceptionResolver">
 	</bean>
+	
+	<!-- 
+	======= Remoting =======
+	-->
+	<import resource="classpath:/eu/etaxonomy/cdm/httpinvokerServices.xml"/>
 
 	<!--  
     ======= Security ======= 
