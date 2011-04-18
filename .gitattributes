@@ -1715,6 +1715,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPag
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabelPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/config.properties -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
