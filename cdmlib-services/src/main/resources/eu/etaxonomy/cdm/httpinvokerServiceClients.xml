@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+	
+   <bean id="agentservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/agent.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IAgentService</value>
+		</property>
+	</bean>
+
+   <bean id="annotationservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/annotation.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IAnnotationService</value>
+		</property>
+	</bean>
+
+   <bean id="auditeventservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/auditevent.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IAuditEventService</value>
+		</property>
+	</bean>
+
+   <bean id="classificationservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/classification.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IClassificationService</value>
+		</property>
+	</bean>
+	
+   <bean id="collectionservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/collection.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ICollectionService</value>
+		</property>
+	</bean>
+
+   <bean id="commonservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/common.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ICommonService</value>
+		</property>
+	</bean>
+
+   <bean id="databaseservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/database.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IDatabaseService</value>
+		</property>
+	</bean>
+
+   <bean id="descriptionservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/description.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IDescriptionService</value>
+		</property>
+	</bean>
+
+   <bean id="featurenodeservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/featurenode.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IFeatureNodeService</value>
+		</property>
+	</bean>
+
+   <bean id="featuretreeservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/featuretree.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IFeatureTreeService</value>
+		</property>
+	</bean>
+
+   <bean id="groupservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/group.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IGroupService</value>
+		</property>
+	</bean>
+
+   <bean id="identificationkeyservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/identificationkey.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IIdentificationKeyService</value>
+		</property>
+	</bean>
+
+   <bean id="locationservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/location.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ILocationService</value>
+		</property>
+	</bean>
+
+   <bean id="markerservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/marker.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IMarkerService</value>
+		</property>
+	</bean>
+
+   <bean id="mediaservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/media.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IMediaService</value>
+		</property>
+	</bean>
+
+   <bean id="nameservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/name.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.INameService</value>
+		</property>
+	</bean>
+
+   <bean id="occurrenceservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/occurrence.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IOccurrenceService</value>
+		</property>
+	</bean>
+
+   <bean id="polytomouskeynodeservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/polytomouskeynode.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService</value>
+		</property>
+	</bean>
+
+   <bean id="polytomouskeyservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/polytomouskey.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IPolytomousKeyService</value>
+		</property>
+	</bean>
+
+   <bean id="referenceservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/reference.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
+		</property>
+	</bean>
+
+   <bean id="serviceservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/service.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IService</value>
+		</property>
+	</bean>
+
+   <bean id="taxonnodeservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/taxonnode.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ITaxonNodeService</value>
+		</property>
+	</bean>
+
+   <bean id="taxonservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/taxon.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ITaxonService</value>
+		</property>
+	</bean>
+
+   <bean id="termservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/term.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ITermService</value>
+		</property>
+	</bean>
+
+   <bean id="userservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/user.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IUserService</value>
+		</property>
+	</bean>
+
+   <bean id="vocabularyservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/vocabulary.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IVocabularyService</value>
+		</property>
+	</bean>
+
+   <bean id="workingsetservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/workingset.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IWorkingSetService</value>
+		</property>
+	</bean>
+
+	<!-- only for simple tests -->
+
+	<bean id="demoservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/demo.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.remoting.httpinvoker.DemoService</value>
+		</property>
+	</bean>
+
+	<bean id="listservice"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/list.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.remoting.httpinvoker.ListService</value>
+		</property>
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="config.properties" />
+	</bean>
+
+</beans>

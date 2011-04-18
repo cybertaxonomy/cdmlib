@@ -1718,6 +1718,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicate
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/config.properties -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpinvokerServiceClients.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/validation-mapping-1.0.xsd -text
