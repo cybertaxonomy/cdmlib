@@ -1330,6 +1330,12 @@ cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/input.xml -text
 cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/single_input.xml -text
 cdmlib-remote-webapp/LICENSE.TXT -text
 cdmlib-remote-webapp/README.TXT -text
+cdmlib-remote-webapp/demo/eu/etaxonomy/cdm/remoting/httpinvoker/DemoService.java -text
+cdmlib-remote-webapp/demo/eu/etaxonomy/cdm/remoting/httpinvoker/DemoServiceImpl.java -text
+cdmlib-remote-webapp/demo/eu/etaxonomy/cdm/remoting/httpinvoker/Dto.java -text
+cdmlib-remote-webapp/demo/eu/etaxonomy/cdm/remoting/httpinvoker/DtoList.java -text
+cdmlib-remote-webapp/demo/eu/etaxonomy/cdm/remoting/httpinvoker/ListService.java -text
+cdmlib-remote-webapp/demo/eu/etaxonomy/cdm/remoting/httpinvoker/ListServiceImpl.java -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text
