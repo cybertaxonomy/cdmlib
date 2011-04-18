@@ -245,9 +245,6 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		return getSpecificStatisticalValue(StatisticalMeasure.SAMPLE_SIZE());
 	}
 	
-	
-	
-
 	/** 
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
 	 * with the corresponding {@link StatisticalMeasure statistical measure}
@@ -273,6 +270,134 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 				result = value.getValue();
 				break;
 			}
+		}
+		return result;
+	}
+
+	
+	/**
+	 * Sets the statistical value for the minimum.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	@Transient
+	public StatisticalMeasurementValue setMinimum(Float value, Set<Modifier> modifiers){
+		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.MIN());
+	}
+
+	
+	/**
+	 * Sets the statistical value for the maximum.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	@Transient
+	public StatisticalMeasurementValue setMaximum(Float value, Set<Modifier> modifiers){
+		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.MAX());
+	}
+	
+	
+	/**
+	 * Sets the statistical value for the average.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	@Transient
+	public StatisticalMeasurementValue setAverage(Float value, Set<Modifier> modifiers){
+		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.AVERAGE());
+	}
+
+	
+	/**
+	 * Sets the statistical value for the standard deviation.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	@Transient
+	public StatisticalMeasurementValue setStandardDeviation(Float value, Set<Modifier> modifiers){
+		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.STANDARD_DEVIATION());
+	}
+
+	/**
+	 * Sets the statistical value for the sample size.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	@Transient
+	public StatisticalMeasurementValue setSampleSize(Float value, Set<Modifier> modifiers){
+		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.SAMPLE_SIZE());
+	}
+
+	
+	/**
+	 * Sets the statistical value for the typical lower boundary.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	@Transient
+	public StatisticalMeasurementValue setTypicalLowerBoundary(Float value, Set<Modifier> modifiers){
+		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
+	}
+
+	
+	/**
+	 * Sets the statistical value for the typical upper boundary.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	@Transient
+	public StatisticalMeasurementValue setTypicalUpperBoundary(Float value, Set<Modifier> modifiers){
+		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
+	}
+	
+	/**
+	 * Sets the statistical value of type <code>type</code>.
+	 * If such value exists the old value is replaced by the new value. 
+	 * The new value is returned.
+	 * @param type
+	 * @param value
+	 * @return the newValue
+	 */
+	public StatisticalMeasurementValue setSpecificStatisticalValue(Float value, Set<Modifier> modifiers, StatisticalMeasure type){
+		StatisticalMeasurementValue result = null;
+		if (value != null){
+			StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance();
+			newValue.setValue(value);
+			if (modifiers != null){
+				newValue.getModifiers().addAll(modifiers);
+			}
+			result = newValue;
+		}
+		for (StatisticalMeasurementValue existingValue : statisticalValues){
+			if (type.equals(existingValue.getType())){
+				result = existingValue;
+				statisticalValues.remove(existingValue);
+				break;
+			}
+		}
+		if (result != null){
+			statisticalValues.add(result);
 		}
 		return result;
 	}
