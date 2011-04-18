@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator.DO_REFERENCES;
  * @created 09.12.2008
  * @version 1.0
  */
-public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase implements IExportConfigurator {
+public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase  {
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PilotOutputExportConfigurator.class);
