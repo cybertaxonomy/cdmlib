@@ -387,6 +387,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 			if (modifiers != null){
 				newValue.getModifiers().addAll(modifiers);
 			}
+			newValue.setType(type);
 			result = newValue;
 		}
 		for (StatisticalMeasurementValue existingValue : statisticalValues){
