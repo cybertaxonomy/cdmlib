@@ -253,6 +253,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/UndefinedTransformerM
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExporter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text

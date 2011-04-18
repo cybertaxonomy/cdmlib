@@ -196,7 +196,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		Classification tree = (Classification)state.getRelatedObject(TAXONOMIC_TREE_NAMESPACE, treeKey);
 		if (tree == null){
 			IClassificationService service = state.getCurrentIO().getClassificationService();
-			tree = service.getClassificationByUuid(treeUuid);
+			tree = service.find(treeUuid);
 			if (tree == null){
 				String treeName = state.getConfig().getClassificationName();
 				tree = Classification.NewInstance(treeName);

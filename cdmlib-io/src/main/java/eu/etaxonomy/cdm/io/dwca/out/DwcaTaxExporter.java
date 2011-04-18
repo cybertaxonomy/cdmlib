@@ -13,9 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -25,33 +23,21 @@ import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
-import eu.etaxonomy.cdm.io.sdd.out.SDDDocumentBuilder;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
- * @author h.fradin (from a.babadshanjan)
- * @created 10.12.2008
- * @versoin 1.0
+ * @author a.mueller
+ * @created 18.04.2011
  */
-@Component("sddCdmExporter")
+@Component("dwcaTaxExporter")
 public class DwcaTaxExporter extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState> {
-// public class JaxbExport extends CdmIoBase implements ICdmIoExport {
-// TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
-
 	private static final Logger logger = Logger.getLogger(DwcaTaxExporter.class);
-	private SDDDocumentBuilder sddDocumentBuilder = null;
 
-	private String ioName = null;
-
-	
 	/**
 	 * 
 	 */
@@ -70,27 +56,77 @@ public class DwcaTaxExporter extends CdmExportBase<DwcaTaxExportConfigurator, Dw
 	 */
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
-//		protected boolean doInvoke(IExportConfigurator config,
-//		Map<String, MapWrapper<? extends CdmBase>> stores) {
-	
 		DwcaTaxExportConfigurator sddExpConfig = state.getConfig();
-		
 		String dbname = sddExpConfig.getSource() != null ? sddExpConfig.getSource().getName() : "unknown";
     	String fileName = sddExpConfig.getDestinationNameString();
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		logger.debug("DbSchemaValidation = " + sddExpConfig.getDbSchemaValidation());
 
 		TransactionStatus txStatus = startTransaction(true);
-		SDDDataSet dataSet = new SDDDataSet();
-		List<Taxon> taxa = null;
-		List<DefinedTermBase> terms = null;
 
+		DwcaTaxRecord record = new DwcaTaxRecord();
+		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+		for (TaxonNode node : allNodes){
+			Taxon taxon = node.getTaxon();
+			NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			Taxon parent = node.getParent().getTaxon();
+			TaxonNameBase<?, ?> basionym = name.getBasionym();
+			
+			//ids als UUIDs?
+			record.setScientificNameId(name.getId());
+			record.setAcceptedNameUsageId(taxon.getId());
+			record.setParentNameUsageId(parent.getId());
+			// ??? - is not a name usage (concept)
+//			record.setOriginalNameUsageId(basionym.getId());
+			record.setNameAccordingToId(taxon.getSec().getId());
+			record.setNamePublishedInId(name.getNomenclaturalReference().getId());
+			record.setTaxonConceptId(taxon.getId());
+			
+			record.setScientificName(name.getTitleCache());
+			// ???
+			record.setAcceptedNameUsage(taxon.getTitleCache());
+			record.setParentNameUsage(parent.getTitleCache());
+			// ??? is not a nameUsage (concept)
+			record.setOriginalNameUsage(basionym.getTitleCache());
+			record.setNameAccordingTo(taxon.getSec().getTitleCache());
+			record.setNamePublishedIn(name.getNomenclaturalReference().getTitleCache());
+			
+			//???
+			record.setHigherClassification(null);
+			//... higher ranks
+			
+			//epethita
+			
+			
+			record.setTaxonRank(name.getRank());
+			record.setVerbatimTaxonRank(name.getRank().getTitleCache());
+			record.setScientificNameAuthorship(name.getAuthorshipCache());
+			
+			// ???
+			record.setVernacularName(null);
+			
+			record.setNomenclaturalCode(name.getNomenclaturalCode());
+			// ???
+			record.setTaxonomicStatus("Synonym");
+			handleNomStatus(record, taxon, name);
+			// ???
+			record.setTaxonRemarks(null);
+			// ??? which date is needed here (taxon, name, sec, ... ?)
+			record.setModified(taxon.getUpdated());
+			// ???
+			record.setLanguage(null);
+			
+			//....
+			
+		}
+		
+		
 		// get data from DB
 
 		try {
 			logger.info("Retrieving data from DB");
 
-			retrieveData(sddExpConfig, dataSet);
+//			retrieveData(sddExpConfig, dataSet);
 
 		} catch (Exception e) {
 			logger.error("Error retrieving data");
@@ -100,16 +136,14 @@ public class DwcaTaxExporter extends CdmExportBase<DwcaTaxExportConfigurator, Dw
 		logger.info("All data retrieved");
 
 		try {
-			sddDocumentBuilder = new SDDDocumentBuilder();
+//			sddDocumentBuilder = new SDDDocumentBuilder();
 			File f = new File(fileName);
 			// File f = new File(fileName);
 			FileOutputStream fos = new FileOutputStream(f);
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-			sddDocumentBuilder.marshal(dataSet, f);
-
-			// TODO: Split into one file per data set member to see whether performance improves?
-
-			logger.info("XML file written");
+			
+			
+			logger.info("File written");
 			logger.info("Filename is: " + fileName);
 
 		} catch (Exception e) {
@@ -120,6 +154,26 @@ public class DwcaTaxExporter extends CdmExportBase<DwcaTaxExportConfigurator, Dw
 		
 		return true;
 
+	}
+
+	/**
+	 * @param record
+	 * @param taxon
+	 * @param name
+	 */
+	private void handleNomStatus(DwcaTaxRecord record, Taxon taxon,
+			NonViralName<?> name) {
+		int nStatus = name.getStatus().size();
+		if (nStatus > 0){
+			if (name.getStatus().size()> 1){
+				String warning = "There is more than 1 nomenclatural status ( " + name.getStatus().size()+ "): " + taxon.getTitleCache();
+				logger.warn(warning);
+			}
+			NomenclaturalStatusType status = name.getStatus().iterator().next().getType();
+			record.setNomenclaturalStatus(status);
+		}else{
+			record.setNomenclaturalStatus(null);
+		}
 	}
 
 
