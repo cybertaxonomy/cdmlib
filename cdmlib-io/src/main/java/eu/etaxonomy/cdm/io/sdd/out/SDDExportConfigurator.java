@@ -15,16 +15,14 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
  * @created 09.12.2008
  * @version 1.0
  */
-public class SDDExportConfigurator extends XmlExportConfiguratorBase implements IExportConfigurator {
+public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportState> {
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SDDExportConfigurator.class);
@@ -246,7 +244,7 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase implements 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public ExportStateBase getNewState() {
+	public SDDExportState getNewState() {
 		return new SDDExportState(this);
 	}
 	

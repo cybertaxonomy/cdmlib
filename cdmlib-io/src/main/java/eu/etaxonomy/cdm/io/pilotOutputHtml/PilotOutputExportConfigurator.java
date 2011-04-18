@@ -14,17 +14,14 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.ExportStateBase;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator.DO_REFERENCES;
 
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
  * @created 09.12.2008
  * @version 1.0
  */
-public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase  {
+public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<PilotOutputExportState> {
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PilotOutputExportConfigurator.class);
@@ -195,7 +192,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase  {
 		ioClassList = new Class[] {
 				PilotOutputDescriptionExporter.class,
 		};
-	};
+	}
 
 
 	
@@ -244,7 +241,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase  {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public ExportStateBase getNewState() {
+	public PilotOutputExportState getNewState() {
 		return new PilotOutputExportState(this);
 	}
 	
