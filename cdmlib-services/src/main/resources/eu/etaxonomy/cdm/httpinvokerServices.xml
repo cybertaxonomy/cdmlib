@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+
+	<!-- 
+		The beans for the implementation classes are declared with the @Service annotation.
+		See ClassificationServiceImpl for an example.
+	-->
+
+	<bean id="httpAgentService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="agentServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IAgentService</value>
+		</property>
+	</bean>
+
+	<bean id="httpAnnotationService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="annotationService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IAnnotationService</value>
+		</property>
+	</bean>
+
+	<bean id="httpAuditEventService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="auditEventService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IAuditEventService</value>
+		</property>
+	</bean>
+
+	<bean id="httpClassificationService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="classificationServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IClassificationService</value>
+		</property>
+	</bean>
+
+	<bean id="httpCollectionService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="collectionServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ICollectionService</value>
+		</property>
+	</bean>
+
+	<bean id="httpCommonService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="commonServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ICommonService</value>
+		</property>
+	</bean>
+
+	<bean id="httpDatabaseService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="databaseServiceHibernateImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IDatabaseService</value>
+		</property>
+	</bean>
+
+	<bean id="httpDescriptionService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="descriptionServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IDescriptionService</value>
+		</property>
+	</bean>
+
+	<bean id="httpFeatureNodeService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="featureNodeServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IFeatureNodeService</value>
+		</property>
+	</bean>
+
+	<bean id="httpFeatureTreeService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="featureTreeServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IFeatureTreeService</value>
+		</property>
+	</bean>
+
+	<bean id="httpGroupService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="groupService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IGroupService</value>
+		</property>
+	</bean>
+
+	<bean id="httpIdentificationKeyService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="identificationKeyServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IIdentificationKeyService</value>
+		</property>
+	</bean>
+
+	<bean id="httpLocationService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="locationServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ILocationService</value>
+		</property>
+	</bean>
+
+	<bean id="httpMarkerService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="markerServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IMarkerService</value>
+		</property>
+	</bean>
+
+	<bean id="httpMediaService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="mediaServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IMediaService</value>
+		</property>
+	</bean>
+
+	<bean id="httpNameService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="nameServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.INameService</value>
+		</property>
+	</bean>
+
+	<bean id="httpOccurrenceService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="occurrenceServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IOccurrenceService</value>
+		</property>
+	</bean>
+
+	<bean id="httpPolytomousKeyNodeService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="polytomousKeyNodeService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService</value>
+		</property>
+	</bean>
+
+	<bean id="httpPolytomousKeyService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="polytomousKeyServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IPolytomousKeyService</value>
+		</property>
+	</bean>
+
+	<bean id="httpReferenceService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="referenceServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
+		</property>
+	</bean>
+
+	<bean id="httpServiceService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="serviceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IService</value>
+		</property>
+	</bean>
+
+	<bean id="httpTaxonNodeService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="taxonNodeServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ITaxonNodeService</value>
+		</property>
+	</bean>
+
+	<bean id="httpTaxonService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="taxonServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ITaxonService</value>
+		</property>
+	</bean>
+
+	<bean id="httpTermService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="termServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ITermService</value>
+		</property>
+	</bean>
+
+	<bean id="httpUserService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="userService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IUserService</value>
+		</property>
+	</bean>
+
+	<bean id="httpVocabularyService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="vocabularyServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IVocabularyService</value>
+		</property>
+	</bean>
+
+	<bean id="httpWorkingService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="workingSetService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IWorkingSetService</value>
+		</property>
+	</bean>
+
+	<!-- only for simple tests -->
+
+	<bean id="httpDemoService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="demoService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.remoting.httpinvoker.DemoService</value>
+		</property>
+	</bean>
+
+	<bean id="demoService" class="eu.etaxonomy.cdm.remoting.httpinvoker.DemoServiceImpl">
+	</bean>
+
+	<bean id="httpListService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="listService" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.remoting.httpinvoker.ListService</value>
+		</property>
+	</bean>
+
+	<bean id="listService" class="eu.etaxonomy.cdm.remoting.httpinvoker.ListServiceImpl">
+	</bean>
+
+</beans>
