@@ -1720,6 +1720,7 @@ cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xm
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpinvokerServiceClients.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpinvokerServices.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/remotingApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/validation-mapping-1.0.xsd -text
