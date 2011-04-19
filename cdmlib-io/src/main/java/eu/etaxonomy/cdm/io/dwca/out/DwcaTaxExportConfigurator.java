@@ -25,7 +25,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportConfigurator.class);
 
-	private int maxRows = 0;
+//	private int maxRows = 0;
 
 //	private boolean doAgentData = true;
 //	private boolean doLanguageData = true;
@@ -45,8 +45,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	
 	
-	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
-		return new DwcaTaxExportConfigurator(source, destinationFolder + File.separator + url);
+	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, String destinationFolder) {
+		return new DwcaTaxExportConfigurator(source, destinationFolder);
 	}
 
 	

@@ -10,11 +10,15 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -26,6 +30,7 @@ import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -56,100 +61,119 @@ public class DwcaTaxExporter extends CdmExportBase<DwcaTaxExportConfigurator, Dw
 	 */
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
-		DwcaTaxExportConfigurator sddExpConfig = state.getConfig();
-		String dbname = sddExpConfig.getSource() != null ? sddExpConfig.getSource().getName() : "unknown";
-    	String fileName = sddExpConfig.getDestinationNameString();
+		DwcaTaxExportConfigurator config = state.getConfig();
+		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
+    	String fileName = config.getDestinationNameString();
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
-		logger.debug("DbSchemaValidation = " + sddExpConfig.getDbSchemaValidation());
-
 		TransactionStatus txStatus = startTransaction(true);
 
-		DwcaTaxRecord record = new DwcaTaxRecord();
-		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
-		for (TaxonNode node : allNodes){
-			Taxon taxon = node.getTaxon();
-			NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-			Taxon parent = node.getParent().getTaxon();
-			TaxonNameBase<?, ?> basionym = name.getBasionym();
-			
-			//ids als UUIDs?
-			record.setScientificNameId(name.getId());
-			record.setAcceptedNameUsageId(taxon.getId());
-			record.setParentNameUsageId(parent.getId());
-			// ??? - is not a name usage (concept)
-//			record.setOriginalNameUsageId(basionym.getId());
-			record.setNameAccordingToId(taxon.getSec().getId());
-			record.setNamePublishedInId(name.getNomenclaturalReference().getId());
-			record.setTaxonConceptId(taxon.getId());
-			
-			record.setScientificName(name.getTitleCache());
-			// ???
-			record.setAcceptedNameUsage(taxon.getTitleCache());
-			record.setParentNameUsage(parent.getTitleCache());
-			// ??? is not a nameUsage (concept)
-			record.setOriginalNameUsage(basionym.getTitleCache());
-			record.setNameAccordingTo(taxon.getSec().getTitleCache());
-			record.setNamePublishedIn(name.getNomenclaturalReference().getTitleCache());
-			
-			//???
-			record.setHigherClassification(null);
-			//... higher ranks
-			
-			//epethita
-			
-			
-			record.setTaxonRank(name.getRank());
-			record.setVerbatimTaxonRank(name.getRank().getTitleCache());
-			record.setScientificNameAuthorship(name.getAuthorshipCache());
-			
-			// ???
-			record.setVernacularName(null);
-			
-			record.setNomenclaturalCode(name.getNomenclaturalCode());
-			// ???
-			record.setTaxonomicStatus("Synonym");
-			handleNomStatus(record, taxon, name);
-			// ???
-			record.setTaxonRemarks(null);
-			// ??? which date is needed here (taxon, name, sec, ... ?)
-			record.setModified(taxon.getUpdated());
-			// ???
-			record.setLanguage(null);
-			
-			//....
-			
-		}
-		
-		
-		// get data from DB
-
 		try {
-			logger.info("Retrieving data from DB");
-
-//			retrieveData(sddExpConfig, dataSet);
-
-		} catch (Exception e) {
-			logger.error("Error retrieving data");
-			e.printStackTrace();
-		}
-
-		logger.info("All data retrieved");
-
-		try {
-//			sddDocumentBuilder = new SDDDocumentBuilder();
+			
 			File f = new File(fileName);
-			// File f = new File(fileName);
+			if (!f.exists()){
+				f.createNewFile();
+			}
 			FileOutputStream fos = new FileOutputStream(f);
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-			
-			
-			logger.info("File written");
-			logger.info("Filename is: " + fileName);
 
-		} catch (Exception e) {
-			logger.error("Marshalling error");
+			
+			
+			DwcaTaxRecord record = new DwcaTaxRecord();
+			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+			for (TaxonNode node : allNodes){
+				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+				Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
+				TaxonNameBase<?, ?> basionym = name.getBasionym();
+				
+				//ids als UUIDs?
+				record.setScientificNameId(name.getId());
+				record.setAcceptedNameUsageId(taxon.getId());
+				record.setParentNameUsageId(parent == null ? null : parent.getId());
+				// ??? - is not a name usage (concept)
+//			record.setOriginalNameUsageId(basionym.getId());
+				record.setNameAccordingToId(taxon.getSec().getId());
+				record.setNamePublishedInId(name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getId());
+				record.setTaxonConceptId(taxon.getId());
+				
+				record.setScientificName(name.getTitleCache());
+				// ???
+				record.setAcceptedNameUsage(taxon.getTitleCache());
+				record.setParentNameUsage(parent == null ? null : parent.getTitleCache());
+				// ??? is not a nameUsage (concept)
+				record.setOriginalNameUsage(basionym == null ? null : basionym.getTitleCache());
+				record.setNameAccordingTo(taxon.getSec().getTitleCache());
+				record.setNamePublishedIn(name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getTitleCache());
+				
+				//???
+				record.setHigherClassification(null);
+				//... higher ranks
+				
+				//epethita
+				Rank rank = name.getRank();
+				String firstEpi = name.getGenusOrUninomial();
+				if (!StringUtils.isBlank(firstEpi)){
+					if (rank != null){
+						if (rank.equals(Rank.GENUS())){
+							record.setGenus(firstEpi);	
+						}else if (rank.equals(Rank.KINGDOM())){
+							record.setKingdom(firstEpi);	
+						}else if (rank.equals(Rank.PHYLUM())){
+							record.setPhylum(firstEpi);	
+						}else if (rank.equals(Rank.CLASS())){
+							record.setClazz(firstEpi);	
+						}else if (rank.equals(Rank.ORDER())){
+							record.setOrder(firstEpi);	
+						}else if (rank.equals(Rank.FAMILY())){
+							record.setFamily(firstEpi);	
+						}else{
+							// !!!
+							String message = "Rank not covered. Set uninomial as genus instead: " + rank.getLabel();
+							logger.warn(message);
+							record.setGenus(firstEpi);	
+						} 
+						
+					}
+				}
+				//TODO other subgneric ranks ??
+				record.setSubgenus(name.getInfraGenericEpithet());
+				record.setSpecificEpithet(name.getSpecificEpithet());
+				record.setInfraspecificEpithet(name.getInfraSpecificEpithet());
+				
+				record.setTaxonRank(name.getRank());
+				record.setVerbatimTaxonRank(name.getRank().getTitleCache());
+				record.setScientificNameAuthorship(name.getAuthorshipCache());
+				
+				// ???
+				record.setVernacularName(null);
+				
+				record.setNomenclaturalCode(name.getNomenclaturalCode());
+				// ???
+				record.setTaxonomicStatus("Synonym");
+				handleNomStatus(record, taxon, name);
+				// ???
+				record.setTaxonRemarks(null);
+				// ??? which date is needed here (taxon, name, sec, ... ?)
+				record.setModified(taxon.getUpdated());
+				// ???
+				record.setLanguage(null);
+				
+				//....
+				record.write(writer);
+				writer.flush();
+				
+			}
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} 
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+
 		commitTransaction(txStatus);
 		
 		return true;

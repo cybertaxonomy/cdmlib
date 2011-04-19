@@ -9,14 +9,15 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.PrintWriter;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 
@@ -26,81 +27,223 @@ import eu.etaxonomy.cdm.model.name.Rank;
  *
  */
 public class DwcaTaxRecord {
+	private static final String FIELD_ENCLOSER = "\"";
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxRecord.class);
 
-	int scientificNameId;
-	int acceptedNameUsageId;
-	int parentNameUsageId;
-	int originalNameUsageId;
-	int nameAccordingToId;
-	int namePublishedInId;
-	int taxonConceptId;
-	String scientificName;
-	String acceptedNameUsage;
-	String parentNameUsage;
-	String originalNameUsage;
-	String nameAccordingTo;
-	String namePublishedIn;
-	String higherClassification;
-	Rank taxonRank;
-	String verbatimTaxonRank;
-	String scientificNameAuthorship;
-	String vernacularName;
-	NomenclaturalCode nomenclaturalCode;
-	String taxonomicStatus;
-	NomenclaturalStatusType nomenclaturalStatus;
-	String taxonRemarks;
-	DateTime modified;
-	Language language;
-	Rights rights;
-	String rightsHolder;
-	String accessRights;
-	String bibliographicCitation;
-	String informationWithheld;
-	int datasetId;
-	String datasetName;
-	String source;
+	final boolean IS_FIRST = false;
+	final boolean IS_NOT_FIRST = true;
+	
+	private String SEP = ",";
+	
+	private Integer scientificNameId;
+	private Integer acceptedNameUsageId;
+	private Integer parentNameUsageId;
+	private Integer originalNameUsageId;
+	private Integer nameAccordingToId;
+	private Integer namePublishedInId;
+	private Integer taxonConceptId;
+	private String scientificName;
+	private String acceptedNameUsage;
+	private String parentNameUsage;
+	private String originalNameUsage;
+	private String nameAccordingTo;
+	private String namePublishedIn;
+	private String higherClassification;
+	
+	
+	private String kingdom;
+	private String phylum;
+	private String clazz;
+	private String order;
+	private String family;
+	private String genus;
+	private String subgenus;
+	private String specificEpithet;
+	private String infraspecificEpithet;
+	
+
+
+	private Rank taxonRank;
+	private String verbatimTaxonRank;
+	private String scientificNameAuthorship;
+	private String vernacularName;
+	private NomenclaturalCode nomenclaturalCode;
+	private String taxonomicStatus;
+	private NomenclaturalStatusType nomenclaturalStatus;
+	private String taxonRemarks;
+	private DateTime modified;
+	private Language language;
+	private Rights rights;
+	private String rightsHolder;
+	private String accessRights;
+	private String bibliographicCitation;
+	private String informationWithheld;
+	private Integer datasetId;
+	private String datasetName;
+	private String source;
+	
+	
+	public void write(PrintWriter writer) {
+		print(scientificNameId, writer, IS_FIRST);
+		print(acceptedNameUsageId, writer, IS_NOT_FIRST);
+		print(parentNameUsageId, writer, IS_NOT_FIRST);
+		print(originalNameUsageId, writer, IS_NOT_FIRST);
+		print(nameAccordingToId, writer, IS_NOT_FIRST);
+		print(namePublishedInId, writer, IS_NOT_FIRST);
+		print(taxonConceptId, writer, IS_NOT_FIRST);
+		print(scientificName, writer, IS_NOT_FIRST);
+		print(acceptedNameUsage, writer, IS_NOT_FIRST);
+		print(parentNameUsage, writer, IS_NOT_FIRST);
+		print(originalNameUsage, writer, IS_NOT_FIRST);
+		print(nameAccordingTo, writer, IS_NOT_FIRST);
+		print(namePublishedIn, writer, IS_NOT_FIRST);
+		print(higherClassification, writer, IS_NOT_FIRST);
+		
+		
+		print(kingdom, writer, IS_NOT_FIRST);
+		print(phylum, writer, IS_NOT_FIRST);
+		print(clazz, writer, IS_NOT_FIRST);
+		print(order, writer, IS_NOT_FIRST);
+		print(family, writer, IS_NOT_FIRST);
+		print(genus, writer, IS_NOT_FIRST);
+		print(subgenus, writer, IS_NOT_FIRST);
+		print(specificEpithet, writer, IS_NOT_FIRST);
+		print(infraspecificEpithet, writer, IS_NOT_FIRST);
+
+		
+		
+		
+		print(getRank(taxonRank), writer, IS_NOT_FIRST);
+		print(verbatimTaxonRank, writer, IS_NOT_FIRST);
+		print(scientificNameAuthorship, writer, IS_NOT_FIRST);
+		print(vernacularName, writer, IS_NOT_FIRST);
+		print(getNomCode(nomenclaturalCode), writer, IS_NOT_FIRST);
+		print(taxonomicStatus, writer, IS_NOT_FIRST);
+		print(getNomStatus(nomenclaturalStatus), writer, IS_NOT_FIRST);
+		print(taxonRemarks, writer, IS_NOT_FIRST);
+		print(getDate(modified), writer, IS_NOT_FIRST);
+		print(getLanguage(language), writer, IS_NOT_FIRST);
+		print(getRights(rights), writer, IS_NOT_FIRST);
+		print(rightsHolder, writer, IS_NOT_FIRST);
+		print(accessRights, writer, IS_NOT_FIRST);
+		print(bibliographicCitation, writer, IS_NOT_FIRST);
+		print(informationWithheld, writer, IS_NOT_FIRST);
+		print(datasetId, writer, IS_NOT_FIRST);
+		print(datasetName, writer, IS_NOT_FIRST);
+		print(source, writer, IS_NOT_FIRST);
+		writer.println();
+	}
+
+
+	private void print(Integer intValue, PrintWriter writer, boolean addSeparator) {
+		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator);
+	}
+	private void print(String value, PrintWriter writer, boolean addSeparator) {
+		String strToPrint = addSeparator ? SEP : "";
+		if (StringUtils.isNotBlank(value)){
+			strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
+		}
+		writer.print(strToPrint);
+	}
+	
+	private String getRights(Rights rights) {
+		if (rights == null){
+			return "";
+		}else{
+			//TODO
+			return rights.getAbbreviatedText();
+		}
+	}
+
+	private String getLanguage(Language language) {
+		if (language == null){
+			return "";
+		}else{
+			//TODO
+			return language.getIso639_2();
+		}
+	}
+
+	private String getDate(DateTime date) {
+		if (date == null){
+			return "";
+		}else{
+			//TODO
+			return date.toString();
+		}
+	}
+
+	private String getNomStatus(NomenclaturalStatusType nomStatus) {
+		if (nomStatus == null){
+			return "";
+		}else{
+			//TODO
+			return nomStatus.getLabel();
+		}
+	}
+
+	private String getNomCode(NomenclaturalCode nomCode) {
+		if (nomCode == null){
+			return "";
+		}else{
+			//TODO
+			return nomCode.getTitleCache();
+		}
+	}
+
+	private String getRank(Rank rank) {
+		if (rank == null){
+			return "";
+		}else{
+			//TODO
+			return rank.getTitleCache();
+		}
+	}
+
+
+
 	public int getScientificNameId() {
 		return scientificNameId;
 	}
-	public void setScientificNameId(int scientificNameId) {
+	public void setScientificNameId(Integer scientificNameId) {
 		this.scientificNameId = scientificNameId;
 	}
 	public int getAcceptedNameUsageId() {
 		return acceptedNameUsageId;
 	}
-	public void setAcceptedNameUsageId(int acceptedNameUsageId) {
+	public void setAcceptedNameUsageId(Integer acceptedNameUsageId) {
 		this.acceptedNameUsageId = acceptedNameUsageId;
 	}
 	public int getParentNameUsageId() {
 		return parentNameUsageId;
 	}
-	public void setParentNameUsageId(int parentNameUsageId) {
+	public void setParentNameUsageId(Integer parentNameUsageId) {
 		this.parentNameUsageId = parentNameUsageId;
 	}
 	public int getOriginalNameUsageId() {
 		return originalNameUsageId;
 	}
-	public void setOriginalNameUsageId(int originalNameUsageId) {
+	public void setOriginalNameUsageId(Integer originalNameUsageId) {
 		this.originalNameUsageId = originalNameUsageId;
 	}
 	public int getNameAccordingToId() {
 		return nameAccordingToId;
 	}
-	public void setNameAccordingToId(int nameAccordingToId) {
+	public void setNameAccordingToId(Integer nameAccordingToId) {
 		this.nameAccordingToId = nameAccordingToId;
 	}
 	public int getNamePublishedInId() {
 		return namePublishedInId;
 	}
-	public void setNamePublishedInId(int namePublishedInId) {
+	public void setNamePublishedInId(Integer namePublishedInId) {
 		this.namePublishedInId = namePublishedInId;
 	}
 	public int getTaxonConceptId() {
 		return taxonConceptId;
 	}
-	public void setTaxonConceptId(int taxonConceptId) {
+	public void setTaxonConceptId(Integer taxonConceptId) {
 		this.taxonConceptId = taxonConceptId;
 	}
 	public String getScientificName() {
@@ -238,7 +381,7 @@ public class DwcaTaxRecord {
 	public int getDatasetId() {
 		return datasetId;
 	}
-	public void setDatasetId(int datasetId) {
+	public void setDatasetId(Integer datasetId) {
 		this.datasetId = datasetId;
 	}
 	public String getDatasetName() {
@@ -253,6 +396,78 @@ public class DwcaTaxRecord {
 	public void setSource(String source) {
 		this.source = source;
 	}
+
 	
+	public String getKingdom() {
+		return kingdom;
+	}
+
+	public void setKingdom(String kingdom) {
+		this.kingdom = kingdom;
+	}
+
+	public String getPhylum() {
+		return phylum;
+	}
+
+	public void setPhylum(String phylum) {
+		this.phylum = phylum;
+	}
+
+	public String getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(String clazz) {
+		this.clazz = clazz;
+	}
+
+	public String getOrder() {
+		return order;
+	}
+
+	public void setOrder(String order) {
+		this.order = order;
+	}
+
+	public String getFamily() {
+		return family;
+	}
+
+	public void setFamily(String family) {
+		this.family = family;
+	}
+
+	public String getGenus() {
+		return genus;
+	}
+
+	public void setGenus(String genus) {
+		this.genus = genus;
+	}
+
+	public String getSubgenus() {
+		return subgenus;
+	}
+
+	public void setSubgenus(String subgenus) {
+		this.subgenus = subgenus;
+	}
+
+	public String getSpecificEpithet() {
+		return specificEpithet;
+	}
+
+	public void setSpecificEpithet(String specificEpithet) {
+		this.specificEpithet = specificEpithet;
+	}
+
+	public String getInfraspecificEpithet() {
+		return infraspecificEpithet;
+	}
+	
+	public void setInfraspecificEpithet(String infraspecificEpithet) {
+		this.infraspecificEpithet = infraspecificEpithet;
+	}
 	
 }
