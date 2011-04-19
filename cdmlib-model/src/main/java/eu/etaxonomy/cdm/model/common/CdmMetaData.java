@@ -48,7 +48,7 @@ public class CdmMetaData extends CdmBase{
 	 * The last number represents the date of change.
 	 */
 //	private static final String dbSchemaVersion = "3.0.0.1.201101050000";
-	private static final String dbSchemaVersion = "3.0.0.0.201011090000";	
+	private static final String dbSchemaVersion = "3.0.1.0.201104190000";	
 
 	/**
 	 * @return a list of default metadata objects 
@@ -79,7 +79,7 @@ public class CdmMetaData extends CdmBase{
 	 * 
 	 * The last number represents the date of change.
 	 */
-	private static final String termsVersion = "3.0.1.2.201102090000";
+	private static final String termsVersion = "3.0.1.3.201103210000";
 	
 	
 	public enum MetaDataPropertyName{
