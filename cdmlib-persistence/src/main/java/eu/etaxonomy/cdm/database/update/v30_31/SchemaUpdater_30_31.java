@@ -15,26 +15,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.database.update.ColumnAdder;
-import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
-import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.MapTableCreator;
-import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.TableDroper;
-import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
-import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
 import eu.etaxonomy.cdm.database.update.v25_30.SchemaUpdater_25_30;
 
 
 /**
  * @author a.mueller
  * @created Nov 08, 2010
- * @version 1.0
  */
 public class SchemaUpdater_30_31 extends SchemaUpdaterBase {
 
