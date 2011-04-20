@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,14 +31,16 @@ import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
@@ -55,8 +59,12 @@ public abstract class TermBase extends IdentifiableEntity {
 	private static final Logger logger = Logger.getLogger(TermBase.class);
 	
 	@XmlElement(name = "URI")
-	@Field(index=Index.UN_TOKENIZED)
-	private String uri;
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
+	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
+	@Type(type="uriUserType")
+	private URI uri;
 	
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
@@ -153,11 +161,11 @@ public abstract class TermBase extends IdentifiableEntity {
 		return repr;
 	}
 
-	public String getUri() {
+	public URI getUri() {
 		return this.uri;
 	}
 
-	public void setUri(String uri) {
+	public void setUri(URI uri) {
 		this.uri = uri;
 	}
 

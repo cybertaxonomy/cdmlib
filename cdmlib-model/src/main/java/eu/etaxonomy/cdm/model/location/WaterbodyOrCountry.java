@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -642,7 +643,7 @@ public class WaterbodyOrCountry extends NamedArea {
 			Language lang= Language.DEFAULT();
 			WaterbodyOrCountry newInstance = WaterbodyOrCountry.class.newInstance();
 			newInstance.setUuid(UUID.fromString(csvLine.get(0)));
-			newInstance.setUri(csvLine.get(1));
+			newInstance.setUri(URI.create(csvLine.get(1)));
 			String label = csvLine.get(3).trim();
 			String text = csvLine.get(3).trim();
 			String abbreviatedLabel = csvLine.get(2);
@@ -673,7 +674,7 @@ public class WaterbodyOrCountry extends NamedArea {
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];
 		line[0] = getUuid().toString();
-		line[1] = getUri();
+		line[1] = getUri().toString();
 		line[2] = getLabel(Language.CSV_LANGUAGE());
 		line[3] = getDescription();
 		line[4] = this.getIso3166_A2().toString();

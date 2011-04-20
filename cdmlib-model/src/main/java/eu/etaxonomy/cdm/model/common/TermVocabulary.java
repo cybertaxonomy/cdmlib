@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -172,7 +173,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	
 	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
-		this.setUri(csvLine.get(1));
+		this.setUri(URI.create(csvLine.get(1)));
 		//this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );
 		return this;
 	}

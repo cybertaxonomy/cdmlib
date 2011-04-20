@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -187,7 +188,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 	protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang) {
 			newInstance.setUuid(UUID.fromString(csvLine.get(0)));
-			newInstance.setUri(csvLine.get(1));
+			newInstance.setUri( URI.create(csvLine.get(1)));
 			String label = csvLine.get(2).trim();
 			String text = csvLine.get(3);
 			String abbreviatedLabel = csvLine.get(4);
@@ -201,7 +202,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	public void writeCsvLine(CSVWriter writer, T term) {
 		String [] line = new String[4];
 		line[0] = term.getUuid().toString();
-		line[1] = term.getUri();
+		line[1] = term.getUri().toString();
 		line[2] = term.getLabel();
 		line[3] = term.getDescription();
 		writer.writeNext(line);
