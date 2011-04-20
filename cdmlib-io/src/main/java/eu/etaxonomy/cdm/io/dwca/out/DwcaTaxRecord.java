@@ -119,7 +119,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(getNomStatus(nomenclaturalStatus), writer, IS_NOT_FIRST);
 		print(taxonRemarks, writer, IS_NOT_FIRST);
 		print(getDate(modified), writer, IS_NOT_FIRST);
-		print(getLanguage(language), writer, IS_NOT_FIRST);
+		print(language, writer, IS_NOT_FIRST);
 		print(rights, writer, IS_NOT_FIRST);
 		print(rightsHolder, writer, IS_NOT_FIRST);
 		print(accessRights, writer, IS_NOT_FIRST);

@@ -57,9 +57,9 @@ public class DwcaImageRecord extends DwcaRecordBase{
 		print(coordinates, writer, IS_NOT_FIRST);
 		print(license, writer, IS_NOT_FIRST);
 		print(getDate(created), writer, IS_NOT_FIRST);
-		print(getAgent(creator), writer, IS_NOT_FIRST);
-		print(getAgent(contributor), writer, IS_NOT_FIRST);
-		print(getAgent(publisher), writer, IS_NOT_FIRST);
+		print(creator, writer, IS_NOT_FIRST);
+		print(contributor, writer, IS_NOT_FIRST);
+		print(publisher, writer, IS_NOT_FIRST);
 		print(audience, writer, IS_NOT_FIRST);
 
 		writer.println();

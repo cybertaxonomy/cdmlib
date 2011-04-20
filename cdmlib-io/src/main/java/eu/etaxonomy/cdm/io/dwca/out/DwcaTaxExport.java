@@ -93,6 +93,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 				TaxonNameBase<?, ?> basionym = name.getBasionym();
 				
 				handleTaxonBase(record, taxon, name, taxon, parent, basionym, null);
+				record.write(writer);
 				
 				node.getClassification().getName();
 				//synonyms
@@ -101,7 +102,6 @@ public class DwcaTaxExport extends DwcaExportBase {
 				//misapplied names
 				handleMisapplication(taxon, writer);
 				
-				record.write(writer);
 				writer.flush();
 				
 			}

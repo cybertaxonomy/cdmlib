@@ -83,7 +83,6 @@ public class DwcaImageExport extends DwcaExportBase {
 			
 			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 			for (TaxonNode node : allNodes){
-				DwcaImageRecord record = new DwcaImageRecord();
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
 				for (DescriptionBase description : descriptions){
@@ -93,7 +92,9 @@ public class DwcaImageExport extends DwcaExportBase {
 							for (Media media: el.getMedia()){
 								for (MediaRepresentation repr : media.getRepresentations()){
 									for (MediaRepresentationPart part : repr.getParts()){
+										DwcaImageRecord record = new DwcaImageRecord();
 										handleMedia(record, media, repr, part, taxon);
+										record.write(writer);
 									}
 								}
 							}
@@ -101,7 +102,6 @@ public class DwcaImageExport extends DwcaExportBase {
 					}
 				}
 				
-				record.write(writer);
 				writer.flush();
 				
 			}

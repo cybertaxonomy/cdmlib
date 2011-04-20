@@ -20,8 +20,10 @@ import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
@@ -30,6 +32,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
  * @author a.mueller
@@ -37,7 +40,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
  *
  */
 public abstract class DwcaRecordBase {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaRecordBase.class);
 
 	protected static final CharSequence COLLECTION_SEPARATOR = null;
@@ -49,11 +51,21 @@ public abstract class DwcaRecordBase {
 	
 	protected String SEP = ",";
 	
-	
-	
 	public abstract void write(PrintWriter writer);
 	
+	
+	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator) {
+		print(agent == null ? null : getAgent(agent), writer, addSeparator);
+	}
 
+	
+	protected void print(Language language, PrintWriter writer, boolean addSeparator) {
+		print(language == null ? null : getLanguage(language), writer, addSeparator);
+	}
+
+	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator) {
+		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator);
+	}
 	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator) {
 		String rightsString = getRights(rights);
 		print(rightsString, writer, addSeparator);
@@ -180,6 +192,16 @@ public abstract class DwcaRecordBase {
 			return agent.getTitleCache();
 		}
 	}
+	
+
+	protected String getFeature(Feature feature) {
+		if (feature == null){
+			return "";
+		}else{
+			//TODO
+			return feature.getTitleCache();
+		}
+	}
 
 	
 	protected String getTimePeriod(TimePeriod period) {
@@ -217,6 +239,16 @@ public abstract class DwcaRecordBase {
 				result = CdmUtils.concat(COLLECTION_SEPARATOR, result, right.getAbbreviatedText());
 			}
 			return result;
+		}
+	}
+	
+
+	protected String getDesignationType(TypeDesignationStatusBase status) {
+		if (status == null){
+			return "";
+		}else{
+			//TODO
+			return status.getLabel();
 		}
 	}
 }

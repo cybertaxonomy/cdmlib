@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,17 +25,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -42,13 +38,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created 18.04.2011
  */
 @Component
-public class DwcaVernacularExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
+public class DwcaDescriptionExport extends DwcaExportBase {
+	private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
 
 	/**
 	 * Constructor
 	 */
-	public DwcaVernacularExport() {
+	public DwcaDescriptionExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}
@@ -71,7 +67,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 		try {
 			
-			final String coreTaxFileName = "vernacular.txt";
+			final String coreTaxFileName = "distribution.txt";
 			fileName = fileName + File.separatorChar + coreTaxFileName;
 			File f = new File(fileName);
 			if (!f.exists()){
@@ -81,27 +77,21 @@ public class DwcaVernacularExport extends DwcaExportBase {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
 
 			
-			
 			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
-				for (DescriptionBase description : descriptions){
-					for (Object o : description.getElements()){
-						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
-						if (el.isInstanceOf(CommonTaxonName.class)){
-							DwcaVernacularRecord record = new DwcaVernacularRecord();
-							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
-							handleCommonTaxonName(record, commonTaxonName, taxon);
+				Set<TaxonDescription> descriptions = taxon.getDescriptions();
+				for (TaxonDescription description : descriptions){
+					for (DescriptionElementBase el : description.getElements()){
+						if (el.isInstanceOf(TextData.class)){
+							DwcaDescriptionRecord record = new DwcaDescriptionRecord();
+							TextData textData = CdmBase.deproxy(el,TextData.class);
+							handleDescription(record, textData, taxon);
 							record.write(writer);
-						}else if (el.getFeature().equals(Feature.COMMON_NAME())){
-							//TODO
-							String message = "Vernacular name export for TextData not yet implemented";
-							logger.warn(message);
 						}
 					}
 				}
-
+				
 				writer.flush();
 				
 			}
@@ -121,18 +111,36 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 
 
-	private void handleCommonTaxonName(DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon) {
+	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon) {
 		record.setCoreid(taxon.getId());
-		record.setVernacularName(commonTaxonName.getName());
-		//TODO mulitple sources 
-		record.setSource(null);
-		record.setLanguage(commonTaxonName.getLanguage());
-		// does not exist in CDM
-		record.setTemporal(null);
+		Language.DEFAULT();
+		//TODO make this part of the Configuration
 		
-		handleArea(record, commonTaxonName.getArea());
+		
+		//TODO question: multiple entries for each language??
+		List<Language> preferredLanguages = new ArrayList<Language>();
+		preferredLanguages.add(Language.DEFAULT());
+		LanguageString languageText = textData.getPreferredLanguageString(preferredLanguages);
+		
+		
+		record.setDescription(languageText.getText());
+		record.setType(textData.getFeature());
+		//FIXME multiple sources
+		record.setSource(null);
+		record.setLanguage(languageText.getLanguage());
+		
+		//TODO missing , relationship to credits?
+		record.setCreator(null);
+		//TODO missing, relationship to credits?
+		record.setContributor(null);
+		//TODO missing
+		record.setAudience(null);
+		record.setLicense(textData.getInDescription().getRights());
+		//TODO missing
+		record.setRightsHolder(null);
+		
 	}
-
+	
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;

@@ -27,21 +27,10 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 //	private int maxRows = 0;
 
-//	private boolean doAgentData = true;
-//	private boolean doLanguageData = true;
-//	private boolean doFeatureData = true;
-//	private boolean doDescriptions = true;
-//	private boolean doMedia = true;
-//	private boolean doReferencedEntities = true;
-//	private boolean doSynonyms = true;
-//	private boolean doTerms = true;
-//	private boolean doTermVocabularies = true;
-//	private boolean doHomotypicalGroups = true;
-//	private boolean doOccurrence = true;
-//	private boolean doAuthors = true;
-//	private boolean doTaxonNames = true;
-//	private boolean doTaxa = true;
-//	private boolean doRelTaxa = true;
+	private boolean doReferences = false;
+	private boolean doVernacularNames = true;
+	private boolean doDistributions = true;
+	private boolean doImages = true;
 
 	
 	
@@ -49,8 +38,11 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		return new DwcaTaxExportConfigurator(source, destinationFolder);
 	}
 
+
 	
-//	@SuppressWarnings("unchecked")
+
+	
+	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				DwcaTaxExport.class,
@@ -110,6 +102,23 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public DwcaTaxExportState getNewState() {
 		return new DwcaTaxExportState(this);
 	}
+
+
+
+
+
+	public boolean isDoReferences() {
+		return doReferences;
+	}
+
+
+
+
+
+	public void setDoReferences(boolean doReferences) {
+		this.doReferences = doReferences;
+	}
+
 	
 		
 }

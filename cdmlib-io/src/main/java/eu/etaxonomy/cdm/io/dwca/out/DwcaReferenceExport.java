@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -28,6 +29,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -78,24 +81,19 @@ public class DwcaReferenceExport extends DwcaExportBase {
 			
 			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 			for (TaxonNode node : allNodes){
+				//sec
 				DwcaReferenceRecord record = new DwcaReferenceRecord();
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
-				for (DescriptionBase description : descriptions){
-					for (Object o : description.getElements()){
-						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
-						if (el.isInstanceOf(Distribution.class)){
-							Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-							handleDistribution(record, distribution, taxon);
-						}else if (el.getFeature().equals(Feature.COMMON_NAME())){
-							//TODO
-							String message = "Distribution export for TextData not yet implemented";
-							logger.warn(message);
-						}
-					}
-				}
-				
+				Reference sec = taxon.getSec();
+				handleReference(record, sec, taxon);
 				record.write(writer);
+				
+				//nomRef
+				record = new DwcaReferenceRecord();
+				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
+				handleReference(record, (Reference)nomRef, taxon);
+				record.write(writer);
+				
 				writer.flush();
 				
 			}
@@ -115,27 +113,33 @@ public class DwcaReferenceExport extends DwcaExportBase {
 
 
 
-	private void handleDistribution(DwcaReferenceRecord record, Distribution distribution, Taxon taxon) {
-//		record.setCoreid(taxon.getId());
-//		handleArea(record, distribution.getArea());
-//		//TODO missing
-//		record.setLifeStage(null);
-//		record.setOccurrenceStatus(distribution.getStatus());
-//		//TODO missing
-//		record.setThreadStatus(null);
-//		//TODO missing
-//		record.setEstablishmentMeans(null);
-//		//TODO missing
-//		record.setAppendixCITES(null);
-//		//TODO missing
-//		record.setEventDate(null);
-//		//TODO missing
-//		record.setSeasonalDate(null);
-//		//FIXME
-//		record.setSource(null);
-//		//FIXME
-//		record.setOccurrenceRemarks(null);
+	private void handleReference(DwcaReferenceRecord record, Reference reference, Taxon taxon) {
+		record.setCoreid(taxon.getId());
 		
+		record.setISBN_ISSN(StringUtils.isNotBlank(reference.getIsbn())? reference.getIsbn(): reference.getIssn());
+		record.setUri(reference.getUri());
+		//TODO implementation, DOI is extension type
+		record.setDoi(null);
+		record.setLsid(reference.getLsid());
+		//TODO microreference
+		record.setBibliographicCitation(reference.getTitleCache());
+		record.setTitle(reference.getTitle());
+		record.setCreator(reference.getAuthorTeam().getTitleCache());
+		record.setDate(reference.getDatePublished());
+		record.setSource(reference.getInReference().getTitleCache());
+		
+		//FIXME abstracts, remarks, notes
+		record.setDescription(reference.getReferenceAbstract());
+		//FIXME
+		record.setSubject(null);
+		
+		//TODO missing, why ISO639-1 better 639-3
+		record.setLanguage(null);
+		record.setRights(reference.getRights());
+		//TODO
+		record.setTaxonRemarks(null);
+		//TODO
+		record.setType(null);
 	}
 	
 	@Override
@@ -148,7 +152,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return false;
+		return !state.getConfig().isDoReferences();
 	}
 	
 }

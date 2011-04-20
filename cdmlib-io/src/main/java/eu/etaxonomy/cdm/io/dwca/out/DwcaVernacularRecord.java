@@ -44,7 +44,7 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 		print(coreid, writer, IS_FIRST);
 		print(vernacularName, writer, IS_NOT_FIRST);
 		print(source, writer, IS_NOT_FIRST);
-		print(getLanguage(language), writer, IS_NOT_FIRST);
+		print(language, writer, IS_NOT_FIRST);
 		print(temporal, writer, IS_NOT_FIRST);
 		print(locationId, writer, IS_NOT_FIRST);
 		print(locality, writer, IS_NOT_FIRST);
