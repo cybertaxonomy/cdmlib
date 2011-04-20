@@ -67,7 +67,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 
 		try {
 			
-			final String coreTaxFileName = "distribution.txt";
+			final String coreTaxFileName = "description.txt";
 			fileName = fileName + File.separatorChar + coreTaxFileName;
 			File f = new File(fileName);
 			if (!f.exists()){
