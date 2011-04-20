@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
  * @author a.mueller
- * @date 18.04.2011
+ * @date 20.04.2011
  *
  */
 public class DwcaTypesRecord extends DwcaRecordBase {

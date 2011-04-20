@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.description.Stage;
 
 /**
  * @author a.mueller
- * @date 18.04.2011
+ * @date 20.04.2011
  *
  */
 public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaRecord{

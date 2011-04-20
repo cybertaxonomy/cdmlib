@@ -16,6 +16,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
+/**
+ * @author a.mueller
+ * @date 18.04.2011
+ *
+ */
 public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaExportBase.class);

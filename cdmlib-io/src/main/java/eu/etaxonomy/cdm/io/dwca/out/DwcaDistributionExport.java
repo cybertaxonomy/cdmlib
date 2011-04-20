@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * @created 18.04.2011
+ * @created 20.04.2011
  */
 @Component
 public class DwcaDistributionExport extends DwcaExportBase {
