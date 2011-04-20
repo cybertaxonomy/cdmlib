@@ -114,6 +114,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 					handleTypeName(writer, synonym, nvn);
 				}
 				
+				//FIXME
+				//Determinations
+				
 				
 				writer.flush();
 				
@@ -162,7 +165,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		record.setCoreid(taxonBase.getId());
 		record.setBibliographicCitation(facade.getTitleCache());
 		record.setTypeStatus(status);
-		record.setTypeDesignatedBy(designation == null? null: designation.getCitation().getTitleCache());
+		record.setTypeDesignatedBy( (designation == null || designation.getCitation()==null)? null: designation.getCitation().getTitleCache());
 		
 		TaxonNameBase scientificName = getScientificName(facade);
 		if (scientificName != null){
@@ -171,7 +174,6 @@ public class DwcaTypesExport extends DwcaExportBase {
 		}
 		
 		record.setOccurrenceId(facade.innerDerivedUnit().getUuid().toString());
-		
 		Collection collection = facade.getCollection();
 		if (collection != null){
 			record.setCollectionCode(collection.getCode());
