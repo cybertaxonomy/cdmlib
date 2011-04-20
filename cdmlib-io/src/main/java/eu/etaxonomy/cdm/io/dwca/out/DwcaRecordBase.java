@@ -14,10 +14,16 @@ import java.io.PrintWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.Partial;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -57,6 +63,9 @@ public abstract class DwcaRecordBase {
 		}
 		writer.print(strToPrint);
 	}
+	
+
+
 	
 	protected String getRights(Rights rights) {
 		if (rights == null){
@@ -127,6 +136,34 @@ public abstract class DwcaRecordBase {
 		}else{
 			//TODO
 			return stage.getTitleCache();
+		}
+	}
+
+	protected String getOccurrenceStatus(PresenceAbsenceTermBase status) {
+		if (status == null){
+			return "";
+		}else{
+			//TODO
+			return status.getTitleCache();
+		}
+	}
+	
+	protected String getTimePeriod(TimePeriod period) {
+		if (period == null){
+			return "";
+		}else{
+			//TODO
+			return period.toString();
+		}
+	}
+	
+	protected String getTimePeriodPart(TimePeriod period, boolean useEnd) {
+		Partial date = useEnd? period.getEnd(): period.getStart();
+		if (date == null){
+			return "";
+		}else{
+			//TODO
+			return date.toString();
 		}
 	}
 	

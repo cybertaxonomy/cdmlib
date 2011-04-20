@@ -24,17 +24,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -42,13 +36,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created 18.04.2011
  */
 @Component
-public class DwcaVernacularExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
+public class DwcaDistributionExport extends DwcaExportBase {
+	private static final Logger logger = Logger.getLogger(DwcaDistributionExport.class);
 
 	/**
 	 * Constructor
 	 */
-	public DwcaVernacularExport() {
+	public DwcaDistributionExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}
@@ -84,18 +78,18 @@ public class DwcaVernacularExport extends DwcaExportBase {
 			
 			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 			for (TaxonNode node : allNodes){
-				DwcaVernacularRecord record = new DwcaVernacularRecord();
+				DwcaDistributionRecord record = new DwcaDistributionRecord();
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
 				for (DescriptionBase description : descriptions){
 					for (Object o : description.getElements()){
 						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
-						if (el.isInstanceOf(CommonTaxonName.class)){
-							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
-							handleCommonTaxonName(record, commonTaxonName, taxon);
+						if (el.isInstanceOf(Distribution.class)){
+							Distribution distribution = CdmBase.deproxy(el, Distribution.class);
+							handleDistribution(record, distribution, taxon);
 						}else if (el.getFeature().equals(Feature.COMMON_NAME())){
 							//TODO
-							String message = "Vernacular name export for TextData not yet implemented";
+							String message = "Distribution export for TextData not yet implemented";
 							logger.warn(message);
 						}
 					}
@@ -121,18 +115,29 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 
 
-	private void handleCommonTaxonName(DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon) {
+	private void handleDistribution(DwcaDistributionRecord record, Distribution distribution, Taxon taxon) {
 		record.setCoreid(taxon.getId());
-		record.setVernacularName(commonTaxonName.getName());
-		//TODO mulitple sources 
+		handleArea(record, distribution.getArea());
+		//TODO missing
+		record.setLifeStage(null);
+		record.setOccurrenceStatus(distribution.getStatus());
+		//TODO missing
+		record.setThreadStatus(null);
+		//TODO missing
+		record.setEstablishmentMeans(null);
+		//TODO missing
+		record.setAppendixCITES(null);
+		//TODO missing
+		record.setEventDate(null);
+		//TODO missing
+		record.setSeasonalDate(null);
+		//FIXME
 		record.setSource(null);
-		record.setLanguage(commonTaxonName.getLanguage());
-		// does not exist in CDM
-		record.setTemporal(null);
+		//FIXME
+		record.setOccurrenceRemarks(null);
 		
-		handleArea(record, commonTaxonName.getArea());
 	}
-
+	
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;

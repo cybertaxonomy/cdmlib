@@ -24,8 +24,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.common.CdmExportBase;
-import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -47,7 +45,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @created 18.04.2011
  */
 @Component
-public class DwcaTaxExport extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState> {
+public class DwcaTaxExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaTaxExport.class);
 
 	/**

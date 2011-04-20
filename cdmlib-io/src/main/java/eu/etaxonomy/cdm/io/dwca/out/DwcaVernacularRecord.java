@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.description.Stage;
  * @date 18.04.2011
  *
  */
-public class DwcaVernacularRecord extends DwcaRecordBase{
+public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRecord{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaVernacularRecord.class);
 	private Integer coreid;
