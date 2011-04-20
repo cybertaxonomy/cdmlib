@@ -9,9 +9,12 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.net.URI;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,11 +26,16 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -54,7 +62,12 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	
 	//external location of copyright text
 	@XmlElement(name = "URI")
-	private String uri;
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
+	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
+	@Type(type="uriUserType")
+	private URI uri;
 	
 	@XmlElement(name = "AbbreviatedText")
 	private String abbreviatedText;
@@ -113,11 +126,11 @@ public class Rights extends LanguageStringBase implements Cloneable{
 		this.type = type;
 	}
 
-	public String getUri(){
+	public URI getUri(){
 		return this.uri;
 	}
 	
-	public void setUri(String uri){
+	public void setUri(URI uri){
 		this.uri = uri;
 	}
 	
