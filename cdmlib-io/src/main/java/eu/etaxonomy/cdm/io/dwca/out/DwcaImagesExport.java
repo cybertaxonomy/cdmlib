@@ -24,10 +24,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -36,13 +41,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created 18.04.2011
  */
 @Component
-public class DwcaDistributionExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaDistributionExport.class);
+public class DwcaImagesExport extends DwcaExportBase {
+	private static final Logger logger = Logger.getLogger(DwcaImagesExport.class);
 
 	/**
 	 * Constructor
 	 */
-	public DwcaDistributionExport() {
+	public DwcaImagesExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}
@@ -65,7 +70,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
 
 		try {
 			
-			final String coreTaxFileName = "distribution.txt";
+			final String coreTaxFileName = "images.txt";
 			fileName = fileName + File.separatorChar + coreTaxFileName;
 			File f = new File(fileName);
 			if (!f.exists()){
@@ -78,19 +83,20 @@ public class DwcaDistributionExport extends DwcaExportBase {
 			
 			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 			for (TaxonNode node : allNodes){
-				DwcaDistributionRecord record = new DwcaDistributionRecord();
+				DwcaImagesRecord record = new DwcaImagesRecord();
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
 				for (DescriptionBase description : descriptions){
 					for (Object o : description.getElements()){
 						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
-						if (el.isInstanceOf(Distribution.class)){
-							Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-							handleDistribution(record, distribution, taxon);
-						}else if (el.getFeature().equals(Feature.COMMON_NAME())){
-							//TODO
-							String message = "Distribution export for TextData not yet implemented";
-							logger.warn(message);
+						if (el.getMedia().size() > 0){
+							for (Media media: el.getMedia()){
+								for (MediaRepresentation repr : media.getRepresentations()){
+									for (MediaRepresentationPart part : repr.getParts()){
+										handleMedia(record, media, repr, part, taxon);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -115,27 +121,27 @@ public class DwcaDistributionExport extends DwcaExportBase {
 
 
 
-	private void handleDistribution(DwcaDistributionRecord record, Distribution distribution, Taxon taxon) {
+	private void handleMedia(DwcaImagesRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
 		record.setCoreid(taxon.getId());
-		handleArea(record, distribution.getArea());
+		record.setIdentifier(part.getUri());
+		record.setTitle(media.getTitleCache());
+		//TODO description if default language description is not available
+		record.setDescription(media.getDescription(Language.DEFAULT()).getText());
 		//TODO missing
-		record.setLifeStage(null);
-		record.setOccurrenceStatus(distribution.getStatus());
+		record.setSpatial(null);
 		//TODO missing
-		record.setThreadStatus(null);
+		record.setCoordinates(null);
+		record.setFormat(repr.getMimeType());
+		//FIXME missing ??
+		record.setLicense(media.getRights());
+		record.setCreated(media.getMediaCreated());
+		record.setCreator(media.getArtist());
 		//TODO missing
-		record.setEstablishmentMeans(null);
+		record.setContributor(null);
 		//TODO missing
-		record.setAppendixCITES(null);
+		record.setPublisher(null);
 		//TODO missing
-		record.setEventDate(null);
-		//TODO missing
-		record.setSeasonalDate(null);
-		//FIXME
-		record.setSource(null);
-		//FIXME
-		record.setOccurrenceRemarks(null);
-		
+		record.setAudience(null);
 	}
 	
 	@Override

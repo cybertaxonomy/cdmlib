@@ -207,7 +207,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		record.setVerbatimTaxonRank(name.getRank().getTitleCache());
 		record.setScientificNameAuthorship(name.getAuthorshipCache());
 		
-		// ???
+		// ??? - use for TextData names?
 		record.setVernacularName(null);
 		
 		record.setNomenclaturalCode(name.getNomenclaturalCode());
@@ -220,6 +220,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 		record.setModified(taxonBase.getUpdated());
 		// ???
 		record.setLanguage(null);
+		
+		record.setRights(taxonBase.getRights());
 		
 		//....
 		

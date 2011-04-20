@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -68,7 +69,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private String taxonRemarks;
 	private DateTime modified;
 	private Language language;
-	private Rights rights;
+	private Set<Rights> rights;
 	private String rightsHolder;
 	private String accessRights;
 	private String bibliographicCitation;
@@ -119,7 +120,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(taxonRemarks, writer, IS_NOT_FIRST);
 		print(getDate(modified), writer, IS_NOT_FIRST);
 		print(getLanguage(language), writer, IS_NOT_FIRST);
-		print(getRights(rights), writer, IS_NOT_FIRST);
+		print(rights, writer, IS_NOT_FIRST);
 		print(rightsHolder, writer, IS_NOT_FIRST);
 		print(accessRights, writer, IS_NOT_FIRST);
 		print(bibliographicCitation, writer, IS_NOT_FIRST);
@@ -284,10 +285,10 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
-	public Rights getRights() {
+	public Set<Rights> getRights() {
 		return rights;
 	}
-	public void setRights(Rights rights) {
+	public void setRights(Set<Rights> rights) {
 		this.rights = rights;
 	}
 	public String getRightsHolder() {

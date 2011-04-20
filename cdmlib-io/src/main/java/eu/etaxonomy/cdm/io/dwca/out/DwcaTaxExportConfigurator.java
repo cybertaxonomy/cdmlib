@@ -55,7 +55,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		ioClassList = new Class[] {
 				DwcaTaxExport.class,
 				DwcaVernacularExport.class,
-				DwcaDistributionExport.class
+				DwcaDistributionExport.class,
+				DwcaImagesExport.class
 		};
 	};
 

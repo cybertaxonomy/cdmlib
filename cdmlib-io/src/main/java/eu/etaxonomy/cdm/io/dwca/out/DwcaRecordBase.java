@@ -10,20 +10,22 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.net.URI;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -38,6 +40,8 @@ public abstract class DwcaRecordBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaRecordBase.class);
 
+	protected static final CharSequence COLLECTION_SEPARATOR = null;
+
 	protected static String FIELD_ENCLOSER = "\"";
 
 	final protected boolean IS_FIRST = false;
@@ -50,6 +54,26 @@ public abstract class DwcaRecordBase {
 	public abstract void write(PrintWriter writer);
 	
 
+	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator) {
+		String rightsString = getRights(rights);
+		print(rightsString, writer, addSeparator);
+	}
+	protected void print(URI uri, PrintWriter writer, boolean addSeparator) {
+		print(uri == null ? null : String.valueOf(uri), writer, addSeparator);
+	}
+	
+	protected void print(Point point, PrintWriter writer, boolean addSeparator) {
+		if (point == null){
+			String toPrint = null;
+			print(toPrint, writer, addSeparator);
+			print(toPrint, writer, addSeparator);
+		}else{
+			String latitude = point.getLatitude().toString();
+			String longitude = point.getLongitude().toString();
+			print(latitude, writer, addSeparator);
+			print(longitude, writer, addSeparator);
+		}
+	}
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator) {
 		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator);
 	}
@@ -148,6 +172,16 @@ public abstract class DwcaRecordBase {
 		}
 	}
 	
+	protected String getAgent(AgentBase agent) {
+		if (agent == null){
+			return "";
+		}else{
+			//TODO
+			return agent.getTitleCache();
+		}
+	}
+
+	
 	protected String getTimePeriod(TimePeriod period) {
 		if (period == null){
 			return "";
@@ -158,13 +192,31 @@ public abstract class DwcaRecordBase {
 	}
 	
 	protected String getTimePeriodPart(TimePeriod period, boolean useEnd) {
-		Partial date = useEnd? period.getEnd(): period.getStart();
-		if (date == null){
+		if (period == null){
 			return "";
 		}else{
-			//TODO
-			return date.toString();
+			Partial date = useEnd? period.getEnd(): period.getStart();
+			if (date == null){
+				return "";
+			}else{
+				//TODO
+				return date.toString();
+			}
 		}
 	}
-	
+
+	private String getRights(Set<Rights> rights) {
+		if (rights == null || rights.isEmpty()){
+			return null;
+		}else{
+			String result = null;
+			for (Rights right: rights){
+				//TODO usi uri if available ??
+				String message = "Rights not yet fully implemented";
+				logger.warn(message);
+				result = CdmUtils.concat(COLLECTION_SEPARATOR, result, right.getAbbreviatedText());
+			}
+			return result;
+		}
+	}
 }
