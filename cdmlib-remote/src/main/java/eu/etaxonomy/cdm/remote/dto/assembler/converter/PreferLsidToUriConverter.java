@@ -22,7 +22,11 @@ public class PreferLsidToUriConverter implements CustomConverter {
 		if (destination == null) {
 			if(source != null) {
 				try {
-					return new URI((String)source);
+					if (source instanceof URI){
+						return source;
+					}else{
+						return new URI((String)source);
+					}
 				} catch (URISyntaxException e) {
 					throw new MappingException("Converter TestCustomConverter used incorrectly. Arguments passed in were:"
 							+ destination + " and " + source);
