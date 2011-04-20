@@ -25,9 +25,9 @@ import eu.etaxonomy.cdm.model.media.Rights;
  * @date 20.04.2011
  *
  */
-public class DwcaImagesRecord extends DwcaRecordBase{
+public class DwcaImageRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaImagesRecord.class);
+	private static final Logger logger = Logger.getLogger(DwcaImageRecord.class);
 	private Integer coreid;
 	private URI identifier;
 	private String title;

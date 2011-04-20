@@ -41,13 +41,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created 18.04.2011
  */
 @Component
-public class DwcaImagesExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaImagesExport.class);
+public class DwcaImageExport extends DwcaExportBase {
+	private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
 
 	/**
 	 * Constructor
 	 */
-	public DwcaImagesExport() {
+	public DwcaImageExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}
@@ -83,7 +83,7 @@ public class DwcaImagesExport extends DwcaExportBase {
 			
 			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 			for (TaxonNode node : allNodes){
-				DwcaImagesRecord record = new DwcaImagesRecord();
+				DwcaImageRecord record = new DwcaImageRecord();
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
 				for (DescriptionBase description : descriptions){
@@ -121,7 +121,7 @@ public class DwcaImagesExport extends DwcaExportBase {
 
 
 
-	private void handleMedia(DwcaImagesRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
+	private void handleMedia(DwcaImageRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
 		record.setCoreid(taxon.getId());
 		record.setIdentifier(part.getUri());
 		record.setTitle(media.getTitleCache());

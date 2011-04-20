@@ -56,7 +56,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 				DwcaTaxExport.class,
 				DwcaVernacularExport.class,
 				DwcaDistributionExport.class,
-				DwcaImagesExport.class
+				DwcaImageExport.class
 		};
 	};
 
