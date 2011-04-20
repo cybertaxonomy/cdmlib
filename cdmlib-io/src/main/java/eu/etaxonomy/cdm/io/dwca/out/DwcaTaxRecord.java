@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
@@ -26,17 +25,11 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @date 18.04.2011
  *
  */
-public class DwcaTaxRecord {
-	private static final String FIELD_ENCLOSER = "\"";
-
+public class DwcaTaxRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxRecord.class);
 
-	final boolean IS_FIRST = false;
-	final boolean IS_NOT_FIRST = true;
-	
-	private String SEP = ",";
-	
+	private Integer id;
 	private Integer scientificNameId;
 	private Integer acceptedNameUsageId;
 	private Integer parentNameUsageId;
@@ -86,7 +79,8 @@ public class DwcaTaxRecord {
 	
 	
 	public void write(PrintWriter writer) {
-		print(scientificNameId, writer, IS_FIRST);
+		print(id, writer, IS_FIRST);
+		print(scientificNameId, writer, IS_NOT_FIRST);
 		print(acceptedNameUsageId, writer, IS_NOT_FIRST);
 		print(parentNameUsageId, writer, IS_NOT_FIRST);
 		print(originalNameUsageId, writer, IS_NOT_FIRST);
@@ -137,72 +131,14 @@ public class DwcaTaxRecord {
 	}
 
 
-	private void print(Integer intValue, PrintWriter writer, boolean addSeparator) {
-		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator);
-	}
-	private void print(String value, PrintWriter writer, boolean addSeparator) {
-		String strToPrint = addSeparator ? SEP : "";
-		if (StringUtils.isNotBlank(value)){
-			strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
-		}
-		writer.print(strToPrint);
-	}
-	
-	private String getRights(Rights rights) {
-		if (rights == null){
-			return "";
-		}else{
-			//TODO
-			return rights.getAbbreviatedText();
-		}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	private String getLanguage(Language language) {
-		if (language == null){
-			return "";
-		}else{
-			//TODO
-			return language.getIso639_2();
-		}
+	public Integer getId() {
+		return id;
 	}
-
-	private String getDate(DateTime date) {
-		if (date == null){
-			return "";
-		}else{
-			//TODO
-			return date.toString();
-		}
-	}
-
-	private String getNomStatus(NomenclaturalStatusType nomStatus) {
-		if (nomStatus == null){
-			return "";
-		}else{
-			//TODO
-			return nomStatus.getLabel();
-		}
-	}
-
-	private String getNomCode(NomenclaturalCode nomCode) {
-		if (nomCode == null){
-			return "";
-		}else{
-			//TODO
-			return nomCode.getTitleCache();
-		}
-	}
-
-	private String getRank(Rank rank) {
-		if (rank == null){
-			return "";
-		}else{
-			//TODO
-			return rank.getTitleCache();
-		}
-	}
-
-
 
 	public int getScientificNameId() {
 		return scientificNameId;
@@ -469,5 +405,6 @@ public class DwcaTaxRecord {
 	public void setInfraspecificEpithet(String infraspecificEpithet) {
 		this.infraspecificEpithet = infraspecificEpithet;
 	}
+
 	
 }
