@@ -1,12 +1,12 @@
 // $Id$
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.model.description;
 
@@ -40,10 +40,10 @@ import org.hibernate.tool.hbm2x.StringUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 
 /**
  * The class allowing the representation of single-access fixed dichotomous or
@@ -65,22 +65,18 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 2.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PolytomousKey", propOrder = {
-    "coveredTaxa",
-    "taxonomicScope",
-    "geographicalScope",
-    "scopeRestrictions",
-    "root"
-})
+@XmlType(name = "PolytomousKey", propOrder = { "coveredTaxa", "taxonomicScope",
+		"geographicalScope", "scopeRestrictions", "root" })
 @XmlRootElement(name = "PolytomousKey")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.FeatureTree")
 @Audited
-public class PolytomousKey extends IdentifiableEntity implements IIdentificationKey{
+public class PolytomousKey extends IdentifiableEntity implements
+		IIdentificationKey {
 	private static final long serialVersionUID = -3368243754557343942L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PolytomousKey.class);
-	
+
 	@XmlElementWrapper(name = "CoveredTaxa")
 	@XmlElement(name = "CoveredTaxon")
 	@XmlIDREF
@@ -88,65 +84,62 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	@ManyToMany(fetch = FetchType.LAZY)
 	@NotNull
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
-	
+
 	@XmlElementWrapper(name = "TaxonomicScope")
 	@XmlElement(name = "Taxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-	        name="PolytomousKey_Taxon",
-	        joinColumns=@JoinColumn(name="polytomousKey_id"),
-	        inverseJoinColumns=@JoinColumn(name="taxon_id")
-	)
+	@JoinTable(name = "PolytomousKey_Taxon", joinColumns = @JoinColumn(name = "polytomousKey_id"), inverseJoinColumns = @JoinColumn(name = "taxon_id"))
 	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
-	
-	@XmlElementWrapper( name = "GeographicalScope")
-	@XmlElement( name = "Area")
+
+	@XmlElementWrapper(name = "GeographicalScope")
+	@XmlElement(name = "Area")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="PolytomousKey_NamedArea")
+	@JoinTable(name = "PolytomousKey_NamedArea")
 	@NotNull
 	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
-	
-	@XmlElementWrapper( name = "ScopeRestrictions")
-	@XmlElement( name = "Restriction")
+
+	@XmlElementWrapper(name = "ScopeRestrictions")
+	@XmlElement(name = "Restriction")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="PolytomousKey_Scope")
+	@JoinTable(name = "PolytomousKey_Scope")
 	@NotNull
 	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
-	
+
 	@XmlElement(name = "Root")
 	@OneToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKeyNode root;
-	
-//******************************** STATIC METHODS ********************************/	
-	
-	/** 
+
+	// ******************************** STATIC METHODS
+	// ********************************/
+
+	/**
 	 * Creates a new empty identification multi-access key instance.
 	 */
-	public static PolytomousKey NewInstance(){
+	public static PolytomousKey NewInstance() {
 		return new PolytomousKey();
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new empty identification polytomous key instance.
 	 */
-	public static PolytomousKey NewTitledInstance(String title){
+	public static PolytomousKey NewTitledInstance(String title) {
 		PolytomousKey result = new PolytomousKey();
 		result.setTitleCache(title, true);
 		return result;
 	}
-	
-	
-// ************************** CONSTRUCTOR *******************************************/
 
-	/** 
+	// ************************** CONSTRUCTOR
+	// *******************************************/
+
+	/**
 	 * Class constructor: creates a new empty multi-access key instance.
 	 */
 	protected PolytomousKey() {
@@ -154,195 +147,214 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 		root = PolytomousKeyNode.NewRootInstance();
 		root.setKey(this);
 	}
-	
-	
-//************************ GETTER/ SETTER 
-	
-	
-	/** 
-	 * Returns the topmost {@link PolytomousKeyNode polytomous key node} (root node) of <i>this</i>
-	 * polytomous key. The root node does not have any parent. Since polytomous key nodes
-	 * recursively point to their child nodes the complete polytomous key is
-	 * defined by its root node.
+
+	// ************************ GETTER/ SETTER
+
+	/**
+	 * Returns the topmost {@link PolytomousKeyNode polytomous key node} (root
+	 * node) of <i>this</i> polytomous key. The root node does not have any
+	 * parent. Since polytomous key nodes recursively point to their child nodes
+	 * the complete polytomous key is defined by its root node.
 	 */
 	public PolytomousKeyNode getRoot() {
 		return root;
 	}
+
 	/**
-	 * @see	#getRoot() 
+	 * This method should be used by Hibernate only. If we want to make this
+	 * method public we have to think about biderionality and also what should
+	 * happen with the old root node.
+	 * 
+	 * @see #getRoot()
 	 */
 	public void setRoot(PolytomousKeyNode root) {
 		this.root = root;
 	}
-	
-	/** 
+
+	/**
 	 * Returns the set of possible {@link Taxon taxa} corresponding to
 	 * <i>this</i> identification key.
 	 */
 	public Set<Taxon> getCoveredTaxa() {
-		if(coveredTaxa == null) {
+		if (coveredTaxa == null) {
 			this.coveredTaxa = new HashSet<Taxon>();
 		}
 		return coveredTaxa;
 	}
+
 	/**
-	 * @see	#getCoveredTaxa() 
+	 * @see #getCoveredTaxa()
 	 */
 	protected void setCoveredTaxa(Set<Taxon> coveredTaxa) {
 		this.coveredTaxa = coveredTaxa;
 	}
-	
+
 	/**
-	 * Adds a {@link Taxon taxa} to the set of {@link #getCoveredTaxa() covered taxa}
-	 * corresponding to <i>this</i> identification key.
+	 * Adds a {@link Taxon taxa} to the set of {@link #getCoveredTaxa() covered
+	 * taxa} corresponding to <i>this</i> identification key.
 	 * 
-	 * @param	taxon	the taxon to be added to <i>this</i> identification key
-	 * @see    	   		#getCoveredTaxa()
+	 * @param taxon
+	 *            the taxon to be added to <i>this</i> identification key
+	 * @see #getCoveredTaxa()
 	 */
 	public void addCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.add(taxon);
 	}
-	
-	/** 
-	 * Removes one element from the set of {@link #getCoveredTaxa() covered taxa}
-	 * corresponding to <i>this</i> identification key.
-	 *
-	 * @param	taxon	the taxon which should be removed
-	 * @see     		#getCoveredTaxa()
-	 * @see     		#addCoveredTaxon(Taxon)
+
+	/**
+	 * Removes one element from the set of {@link #getCoveredTaxa() covered
+	 * taxa} corresponding to <i>this</i> identification key.
+	 * 
+	 * @param taxon
+	 *            the taxon which should be removed
+	 * @see #getCoveredTaxa()
+	 * @see #addCoveredTaxon(Taxon)
 	 */
 	public void removeCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.remove(taxon);
 	}
 
-	/** 
-	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
-	 * data where <i>this</i> identification key is valid.
+	/**
+	 * Returns the set of {@link NamedArea named areas} indicating the
+	 * geospatial data where <i>this</i> identification key is valid.
 	 */
 	public Set<NamedArea> getGeographicalScope() {
-		if(geographicalScope == null) {
+		if (geographicalScope == null) {
 			this.geographicalScope = new HashSet<NamedArea>();
 		}
 		return geographicalScope;
 	}
-	
+
 	/**
-	 * Adds a {@link NamedArea geoScope} to the set of {@link #getGeoScopes() geogspatial scopes}
-	 * corresponding to <i>this</i> identification key.
+	 * Adds a {@link NamedArea geoScope} to the set of {@link #getGeoScopes()
+	 * geogspatial scopes} corresponding to <i>this</i> identification key.
 	 * 
-	 * @param	geoScope	the named area to be added to <i>this</i> identification key
-	 * @see    	   		 	#getGeoScopes()
+	 * @param geoScope
+	 *            the named area to be added to <i>this</i> identification key
+	 * @see #getGeoScopes()
 	 */
 	public void addGeographicalScope(NamedArea geoScope) {
 		this.geographicalScope.add(geoScope);
 	}
-	/** 
-	 * Removes one element from the set of {@link #getGeoScopes() geogspatial scopes}
-	 * corresponding to <i>this</i> identification key.
-	 *
-	 * @param	geoScope	the named area which should be removed
-	 * @see     			#getGeoScopes()
-	 * @see     			#addGeoScope(NamedArea)
+
+	/**
+	 * Removes one element from the set of {@link #getGeoScopes() geogspatial
+	 * scopes} corresponding to <i>this</i> identification key.
+	 * 
+	 * @param geoScope
+	 *            the named area which should be removed
+	 * @see #getGeoScopes()
+	 * @see #addGeoScope(NamedArea)
 	 */
 	public void removeGeographicalScope(NamedArea geoScope) {
 		this.geographicalScope.remove(geoScope);
 	}
 
-	/** 
-	 * Returns the set of {@link Taxon taxa} that define the taxonomic
-	 * scope of <i>this</i> identification key 
+	/**
+	 * Returns the set of {@link Taxon taxa} that define the taxonomic scope of
+	 * <i>this</i> identification key
 	 */
 	public Set<Taxon> getTaxonomicScope() {
-		if(taxonomicScope == null) {
+		if (taxonomicScope == null) {
 			this.taxonomicScope = new HashSet<Taxon>();
 		}
 		return taxonomicScope;
 	}
-	
+
 	/**
-	 * Adds a {@link Taxon taxa} to the set of {@link #getTaxonomicScope() taxonomic scopes}
-	 * corresponding to <i>this</i> identification key.
+	 * Adds a {@link Taxon taxa} to the set of {@link #getTaxonomicScope()
+	 * taxonomic scopes} corresponding to <i>this</i> identification key.
 	 * 
-	 * @param	taxon	the taxon to be added to <i>this</i> identification key
-	 * @see    	   		#getTaxonomicScope()
+	 * @param taxon
+	 *            the taxon to be added to <i>this</i> identification key
+	 * @see #getTaxonomicScope()
 	 */
 	public void addTaxonomicScope(Taxon taxon) {
 		this.taxonomicScope.add(taxon);
 	}
-	
-	/** 
-	 * Removes one element from the set of {@link #getTaxonomicScope() taxonomic scopes}
-	 * corresponding to <i>this</i> identification key.
-	 *
-	 * @param	taxon	the taxon which should be removed
-	 * @see     		#getTaxonomicScope()
-	 * @see     		#addTaxonomicScope(Taxon)
+
+	/**
+	 * Removes one element from the set of {@link #getTaxonomicScope() taxonomic
+	 * scopes} corresponding to <i>this</i> identification key.
+	 * 
+	 * @param taxon
+	 *            the taxon which should be removed
+	 * @see #getTaxonomicScope()
+	 * @see #addTaxonomicScope(Taxon)
 	 */
 	public void removeTaxonomicScope(Taxon taxon) {
 		this.taxonomicScope.remove(taxon);
 	}
-	
-	/** 
+
+	/**
 	 * Returns the set of {@link Scope scope restrictions} corresponding to
-	 * <i>this</i> identification key 
+	 * <i>this</i> identification key
 	 */
 	public Set<Scope> getScopeRestrictions() {
-		if(scopeRestrictions == null) {
+		if (scopeRestrictions == null) {
 			this.scopeRestrictions = new HashSet<Scope>();
 		}
 		return scopeRestrictions;
 	}
-	
+
 	/**
-	 * Adds a {@link Scope scope restriction} to the set of {@link #getScopeRestrictions() scope restrictions}
-	 * corresponding to <i>this</i> identification key.
+	 * Adds a {@link Scope scope restriction} to the set of
+	 * {@link #getScopeRestrictions() scope restrictions} corresponding to
+	 * <i>this</i> identification key.
 	 * 
-	 * @param	scopeRestriction	the scope restriction to be added to <i>this</i> identification key
-	 * @see    	   		#getScopeRestrictions()
+	 * @param scopeRestriction
+	 *            the scope restriction to be added to <i>this</i>
+	 *            identification key
+	 * @see #getScopeRestrictions()
 	 */
 	public void addScopeRestriction(Scope scopeRestriction) {
 		this.scopeRestrictions.add(scopeRestriction);
 	}
-	
-	/** 
-	 * Removes one element from the set of {@link #getScopeRestrictions() scope restrictions}
-	 * corresponding to <i>this</i> identification key.
-	 *
-	 * @param	scopeRestriction	the scope restriction which should be removed
-	 * @see     		#getScopeRestrictions()
-	 * @see     		#addScopeRestriction(Scope)
+
+	/**
+	 * Removes one element from the set of {@link #getScopeRestrictions() scope
+	 * restrictions} corresponding to <i>this</i> identification key.
+	 * 
+	 * @param scopeRestriction
+	 *            the scope restriction which should be removed
+	 * @see #getScopeRestrictions()
+	 * @see #addScopeRestriction(Scope)
 	 */
 	public void removeScopeRestriction(Scope scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
-	
-//******************** toString *****************************************/
-	
-	private class IntegerObject{
+
+	// ******************** toString *****************************************/
+
+	private class IntegerObject {
 		int number = 0;
-		int inc(){return number++;};
-		@Override 
-		public String toString(){ 
+
+		int inc() {
+			return number++;
+		};
+
+		@Override
+		public String toString() {
 			return String.valueOf(number);
 		}
 	}
-	
-	public String print(PrintStream stream){
+
+	public String print(PrintStream stream) {
 		String title = this.getTitleCache() + "\n";
 		String strPrint = title;
-		
-		if (stream != null){
+
+		if (stream != null) {
 			stream.print(title);
 		}
-		
+
 		PolytomousKeyNode root = this.getRoot();
 		strPrint += printNode(root, null, "  ", stream);
 		return strPrint;
 	}
 
-	
 	/**
 	 * TODO this is a preliminary implementation
+	 * 
 	 * @param node
 	 * @param identation
 	 * @param no
@@ -350,88 +362,97 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	 * @param stream
 	 * @return
 	 */
-	private String printNode(PolytomousKeyNode node, PolytomousKeyNode parent2, String identation, PrintStream stream) {
+	private String printNode(PolytomousKeyNode node, PolytomousKeyNode parent2,
+			String identation, PrintStream stream) {
 		String separator = ", ";
-		
+
 		String result = identation + node.getNodeNumber() + ". ";
-		if (node != null){
-			//key choice
+		if (node != null) {
+			// key choice
 			String question = null;
 			String feature = null;
-			if (node.getQuestion() != null){
+			if (node.getQuestion() != null) {
 				question = node.getQuestion().getLabelText(Language.DEFAULT());
 			}
-			if (node.getFeature() != null){
+			if (node.getFeature() != null) {
 				feature = node.getFeature().getLabel(Language.DEFAULT());
 			}
-			result +=  CdmUtils.concat(" - ", question, feature) + "\n" ; ;
-			
-			//Leads
+			result += CdmUtils.concat(" - ", question, feature) + "\n";
+			;
+
+			// Leads
 			char nextCounter = 'a';
-			for (PolytomousKeyNode child: node.getChildren()){
+			for (PolytomousKeyNode child : node.getChildren()) {
 				String leadNumber = String.valueOf(nextCounter++);
-				if (child.getStatement() != null){
-					String statement = child.getStatement().getLabelText(Language.DEFAULT());
-					result +=  identation + "  " + leadNumber + ") " + ( statement == null ? "" : (statement));
+				if (child.getStatement() != null) {
+					String statement = child.getStatement().getLabelText(
+							Language.DEFAULT());
+					result += identation + "  " + leadNumber + ") "
+							+ (statement == null ? "" : (statement));
 					result += " ... ";
 					// child node
-					if (! child.isLeaf()){
+					if (!child.isLeaf()) {
 						result += child.getNodeNumber() + separator;
 					}
-					//taxon
-					if (child.getTaxon() != null){
+					// taxon
+					if (child.getTaxon() != null) {
 						String strTaxon = "";
-						if (child.getTaxon().getName() != null){
-							strTaxon = child.getTaxon().getName().getTitleCache() ;
-						}else{
-							strTaxon = child.getTaxon().getTitleCache() ;
+						if (child.getTaxon().getName() != null) {
+							strTaxon = child.getTaxon().getName()
+									.getTitleCache();
+						} else {
+							strTaxon = child.getTaxon().getTitleCache();
 						}
-						result +=  strTaxon + separator;
+						result += strTaxon + separator;
 					}
-					//subkey
-					if (child.getSubkey() != null){
+					// subkey
+					if (child.getSubkey() != null) {
 						String subkey = child.getSubkey().getTitleCache();
 						result += subkey + separator;
 					}
-					//other node
-					if (child.getOtherNode() != null){
+					// other node
+					if (child.getOtherNode() != null) {
 						PolytomousKeyNode otherNode = child.getOtherNode();
 						String otherNodeString = null;
-						if (child.getKey().equals(otherNode.getKey())){
-							otherNodeString = String.valueOf(otherNode.getNodeNumber());
-						}else{
-							otherNodeString = otherNode.getKey() + " " + otherNode.getNodeNumber();
+						if (child.getKey().equals(otherNode.getKey())) {
+							otherNodeString = String.valueOf(otherNode
+									.getNodeNumber());
+						} else {
+							otherNodeString = otherNode.getKey() + " "
+									+ otherNode.getNodeNumber();
 						}
 						result += otherNodeString + separator;
 					}
-					
+
 					result = StringUtils.chompLast(result, separator);
-					result += "\n"; 
+					result += "\n";
 				}
 			}
 
-			if (stream != null){
+			if (stream != null) {
 				stream.print(result);
 			}
-			for (PolytomousKeyNode child : node.getChildren()){
-				if (! child.isLeaf()){
+			for (PolytomousKeyNode child : node.getChildren()) {
+				if (!child.isLeaf()) {
 					result += printNode(child, node, identation + "", stream);
 				}
 			}
 		}
 		return result;
 	}
-//
-//	public List<PolytomousKeyNode> getChildren() {
-//		return getRoot().getChildren();
-//	}
-	
-//*********************** CLONE ********************************************************/
-	
-	/** 
-	 * Clones <i>this</i> PolytomousKey. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> PolytomousKey by
-	 * modifying only some of the attributes.
+
+	//
+	// public List<PolytomousKeyNode> getChildren() {
+	// return getRoot().getChildren();
+	// }
+
+	// *********************** CLONE
+	// ********************************************************/
+
+	/**
+	 * Clones <i>this</i> PolytomousKey. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i>
+	 * PolytomousKey by modifying only some of the attributes.
 	 * 
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
@@ -439,41 +460,40 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	@Override
 	public Object clone() {
 		PolytomousKey result;
-		
-		try{
-			result = (PolytomousKey)super.clone();
-			
+
+		try {
+			result = (PolytomousKey) super.clone();
+
 			result.coveredTaxa = new HashSet<Taxon>();
-			for (Taxon taxon: this.coveredTaxa){
+			for (Taxon taxon : this.coveredTaxa) {
 				result.addCoveredTaxon(taxon);
 			}
-			
+
 			result.geographicalScope = new HashSet<NamedArea>();
-			for (NamedArea area: this.geographicalScope){
+			for (NamedArea area : this.geographicalScope) {
 				result.addGeographicalScope(area);
 			}
-			
-			result.root = (PolytomousKeyNode)this.root.clone();
-			
+
+			result.root = (PolytomousKeyNode) this.root.clone();
+
 			result.scopeRestrictions = new HashSet<Scope>();
-			for (Scope scope: this.scopeRestrictions){
+			for (Scope scope : this.scopeRestrictions) {
 				result.addScopeRestriction(scope);
 			}
-			
+
 			result.taxonomicScope = new HashSet<Taxon>();
-			for (Taxon taxon: this.taxonomicScope){
+			for (Taxon taxon : this.taxonomicScope) {
 				result.addTaxonomicScope(taxon);
 			}
-			
+
 			return result;
-			
-		}catch (CloneNotSupportedException e) {
+
+		} catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
 			e.printStackTrace();
 			return null;
 		}
-		
-		
+
 	}
 
 }
