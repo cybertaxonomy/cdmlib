@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -30,10 +32,19 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	private String relatedResourceId;
 	private String relationshipOfResource;
 	private String relationshipAccordingTo;
-	private String relatioshipEstablishedDate;
+	private String relationshipEstablishedDate;
 	private Set<Annotation> relationshipRemarks;
 	private String scientificName;
 	
+	@Override
+	public List<String> getHeaderList() {
+		String[] result = new String[]{"coreid", "resourceRelationshipId",
+				"relatedResourceId","relationshipOfResource", 
+				"relationshipAccordingTo", "relationshipEstablishedDate", 
+				"relationshipRemarks","scientificName"
+		};
+		return Arrays.asList(result);
+	}
 	
 	public void write(PrintWriter writer) {
 		print(coreid, writer, IS_FIRST);
@@ -41,7 +52,7 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 		print(relatedResourceId, writer, IS_NOT_FIRST);
 		print(relationshipOfResource, writer, IS_NOT_FIRST);
 		print(relationshipAccordingTo, writer, IS_NOT_FIRST);
-		print(relatioshipEstablishedDate, writer, IS_NOT_FIRST);
+		print(relationshipEstablishedDate, writer, IS_NOT_FIRST);
 		printNotes(relationshipRemarks, writer, IS_NOT_FIRST);
 		print(scientificName, writer, IS_NOT_FIRST);
 		writer.println();
@@ -96,11 +107,11 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	}
 
 	public String getRelatioshipEstablishedDate() {
-		return relatioshipEstablishedDate;
+		return relationshipEstablishedDate;
 	}
 
 	public void setRelatioshipEstablishedDate(String relatioshipEstablishedDate) {
-		this.relatioshipEstablishedDate = relatioshipEstablishedDate;
+		this.relationshipEstablishedDate = relatioshipEstablishedDate;
 	}
 
 	public Set<Annotation> getRelationshipRemarks() {

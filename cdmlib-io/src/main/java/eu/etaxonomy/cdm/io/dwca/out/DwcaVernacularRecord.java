@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -39,6 +41,21 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	private Boolean isPreferredName;
 	private String organismPart;
 	private String taxonRemarks;
+	
+	@Override
+	public List<String> getHeaderList() {
+		String[] result = new String[]{"coreid", "vernacularName",
+				"source","language", 
+				"temporal", "locationId", 
+				"locality","countryCode",
+				"sex","lifeStage", 
+				"locality", "sex", 
+				"isPlural","isPreferredName",
+				"organismPart","taxonRemarks"
+		};
+		return Arrays.asList(result);
+	}
+	
 	
 	public void write(PrintWriter writer) {
 		print(coreid, writer, IS_FIRST);

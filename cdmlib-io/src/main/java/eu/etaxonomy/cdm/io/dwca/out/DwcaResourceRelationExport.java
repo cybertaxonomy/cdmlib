@@ -118,13 +118,15 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				}
 				
 				//concept relationships
-				//TODO
 				for (TaxonRelationship rel : taxon.getTaxonRelations()){
 					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord();
 					IdentifiableEntity subject = rel.getFromTaxon();
 					IdentifiableEntity object = rel.getToTaxon();
 					
-					//????
+					if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) ){
+						//misapplied names are handled in core (tax)
+						continue;
+					}
 					handleRelationship(record, subject, object, rel);
 					record.write(writer);
 
@@ -140,7 +142,6 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				}
 				Set<NameRelationship> rels = name.getNameRelations();
 				for (NameRelationship rel : rels){
-					NameRelationshipType type = rel.getType();
 					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord();
 					IdentifiableEntity subject = rel.getFromName();
 					IdentifiableEntity object = rel.getToName();

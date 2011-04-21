@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +22,9 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -62,9 +65,16 @@ public class DwcaMetaDataRecord extends DwcaRecordBase {
 	private TimePeriod date;
 	private String taxonomicKeywords;
 	
+	private Point upperLeftCorner;
+	private Point lowerRightCorner;
 	
+	private List<Reference> references;
 	
-	
+	@Override
+	public List<String> getHeaderList() {
+		//TODO not needed here
+		return null;
+	}
 	
 	public void write(PrintWriter writer) {
 //		print(coreid, writer, IS_FIRST);
@@ -214,6 +224,70 @@ public class DwcaMetaDataRecord extends DwcaRecordBase {
 
 	public void setAuthors(List<AgentBase<?>> authors) {
 		this.authors = authors;
+	}
+
+	public String getRegionalScope() {
+		return regionalScope;
+	}
+
+	public void setRegionalScope(String regionalScope) {
+		this.regionalScope = regionalScope;
+	}
+
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+
+	public String getKeywordThesaurus() {
+		return keywordThesaurus;
+	}
+
+	public void setKeywordThesaurus(String keywordThesaurus) {
+		this.keywordThesaurus = keywordThesaurus;
+	}
+
+	public TimePeriod getDate() {
+		return date;
+	}
+
+	public void setDate(TimePeriod date) {
+		this.date = date;
+	}
+
+	public String getTaxonomicKeywords() {
+		return taxonomicKeywords;
+	}
+
+	public void setTaxonomicKeywords(String taxonomicKeywords) {
+		this.taxonomicKeywords = taxonomicKeywords;
+	}
+
+	public Point getUpperLeftCorner() {
+		return upperLeftCorner;
+	}
+
+	public void setUpperLeftCorner(Point upperLeftCorner) {
+		this.upperLeftCorner = upperLeftCorner;
+	}
+
+	public Point getLowerRightCorner() {
+		return lowerRightCorner;
+	}
+
+	public void setLowerRightCorner(Point lowerRightCorner) {
+		this.lowerRightCorner = lowerRightCorner;
+	}
+
+	public List<Reference> getReferences() {
+		return references;
+	}
+
+	public void setReferences(List<Reference> references) {
+		this.references = references;
 	}
 
 

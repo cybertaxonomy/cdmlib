@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -77,6 +79,38 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private Integer datasetId;
 	private String datasetName;
 	private String source;
+
+
+	@Override
+	public List<String> getHeaderList() {
+		String[] result = new String[]{"id", "scientificNameId",
+				"acceptedNameUsageId","parentNameUsageId", 
+				"originalNameUsageId", "nameAccordingToId", 
+				"namePublishedInId","taxonConceptId",
+				"scientificName","acceptedNameUsage", 
+				"parentNameUsage", "originalNameUsage", 
+				"nameAccordingTo","namePublishedIn",
+				"higherClassification",
+				
+				"kingdom","phylum",
+				"clazz","order", 
+				"family", "genus", 
+				"subgenus","specificEpithet",
+				"infraspecificEpithet",
+				
+				"taxonRank", "verbatimTaxonRank",
+				"scientificNameAuthorship","vernacularName", 
+				"nomenclaturalCode", "taxonomicStatus", 
+				"nomenclaturalStatus","taxonRemarks",
+				"modified","language", 
+				"rights", "rightsHolder", 
+				"accessRights","bibliographicCitation",
+				"informationWithheld",
+				"datasetId","datasetName",
+				"source"
+		};
+		return Arrays.asList(result);
+	}
 	
 	
 	public void write(PrintWriter writer) {

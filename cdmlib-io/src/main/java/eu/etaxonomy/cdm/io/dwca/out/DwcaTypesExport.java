@@ -101,8 +101,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 						if (el.isInstanceOf(IndividualsAssociation.class)){
 							DwcaTypesRecord record = new DwcaTypesRecord();
 							IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
-							handleSpecimen(record, individualAssociation, null, taxon);
-							record.write(writer);
+							if (handleSpecimen(record, individualAssociation, null, taxon)){
+								record.write(writer);
+							}
 						}
 					}
 				}
@@ -140,19 +141,19 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 * @param nvn
 	 * @return
 	 */
-	private Set<TypeDesignationBase<?>> handleTypeName(PrintWriter writer,
-			TaxonBase taxonBase, NonViralName<?> nvn) {
+	private Set<TypeDesignationBase<?>> handleTypeName(PrintWriter writer, TaxonBase taxonBase, NonViralName<?> nvn) {
 		Set<TypeDesignationBase<?>> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord();
-			handleSpecimen(record, null, designation, taxonBase);
-			record.write(writer);
+			if (handleSpecimen(record, null, designation, taxonBase)){
+				record.write(writer);
+			}
 		}
 		return designations;
 	}
 	
 
-	private void handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase designation, TaxonBase taxonBase) {
+	private boolean handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase designation, TaxonBase taxonBase) {
 		TypeDesignationStatusBase status = null;
 		DerivedUnitFacade facade = null;
 		if (individualsAssociation != null){
@@ -162,7 +163,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 			status = designation.getTypeStatus();
 		}
 		if (facade == null){
-			return;
+			return false;
 		}
 		
 		record.setCoreid(taxonBase.getId());
@@ -201,6 +202,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 				record.setVerbatimLatitude(facade.getExactLocation().getLatitudeSexagesimal().toString());
 			}
 		}
+		return true;
 	}
 	
 	private TaxonNameBase getScientificName(DerivedUnitFacade facade) {
@@ -217,8 +219,13 @@ public class DwcaTypesExport extends DwcaExportBase {
 		if (designation.isInstanceOf(SpecimenTypeDesignation.class)){
 			SpecimenTypeDesignation specDesig = CdmBase.deproxy(designation, SpecimenTypeDesignation.class);
 			try {
-				DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specDesig.getTypeSpecimen());
-				return facade;
+				DerivedUnitBase derivedUnit = specDesig.getTypeSpecimen();
+				if (derivedUnit == null){
+					return null;
+				}else{
+					DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(derivedUnit);
+					return facade;
+				}
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				String message = "DerivedUnit is too complex to be handled by facade based darwin core archive export";
 				logger.warn(message);

@@ -121,6 +121,10 @@ public class DwcaImageExport extends DwcaExportBase {
 
 	private void handleMedia(DwcaImageRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
 		record.setCoreid(taxon.getId());
+		if (part.getUri() == null){
+			String message = "No uri available for media ("+media.getId()+"). URI is required field. Taxon: " + this.getTaxonLogString(taxon);
+			logger.warn(message);
+		}
 		record.setIdentifier(part.getUri());
 		record.setTitle(media.getTitleCache());
 		//TODO description if default language description is not available

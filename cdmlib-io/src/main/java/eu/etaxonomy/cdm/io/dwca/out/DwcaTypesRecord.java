@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -47,6 +49,20 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	private String verbatimLongitude;
 	private String verbatimLatitude;
 	
+	@Override
+	public List<String> getHeaderList() {
+		String[] result = new String[]{"coreid", "bibliographicCitation",
+				"typeStatus","typeDesignatedBy", 
+				"scientificName", "taxonRank", 
+				"occurrenceId","institutionCode",
+				"collectionCode","catalogNumber", 
+				"locality", "sex", 
+				"recordedBy","source",
+				"eventDate","verbatimLabel", 
+				"verbatimLongitude", "verbatimLatitude"
+		};
+		return Arrays.asList(result);
+	}
 	
 	public void write(PrintWriter writer) {
 		print(coreid, writer, IS_FIRST);

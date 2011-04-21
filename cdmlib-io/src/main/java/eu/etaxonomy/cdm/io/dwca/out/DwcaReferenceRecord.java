@@ -11,10 +11,13 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -38,7 +41,7 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	
 	private String bibliographicCitation;
 	private String title;
-	private String creator;
+	private AgentBase<?> creator;
 	private TimePeriod date;
 	private String source;
 	private String description;
@@ -48,6 +51,13 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	private String taxonRemarks;
 	private String type;
 	
+	@Override
+	public List<String> getHeaderList() {
+		String[] result = new String[]{"coreid", "identifier","identifier","identifier", 
+				"identifier", "bibliographicCitation", "title","creator", "date", 
+				"source", "description", "subject", "language", "rights","taxonRemarks","type"};
+		return Arrays.asList(result);
+	}
 	
 	public void write(PrintWriter writer) {
 		print(coreid, writer, IS_FIRST);
@@ -142,12 +152,12 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	}
 
 
-	public String getCreator() {
+	public AgentBase<?> getCreator() {
 		return creator;
 	}
 
 
-	public void setCreator(String creator) {
+	public void setCreator(AgentBase<?> creator) {
 		this.creator = creator;
 	}
 

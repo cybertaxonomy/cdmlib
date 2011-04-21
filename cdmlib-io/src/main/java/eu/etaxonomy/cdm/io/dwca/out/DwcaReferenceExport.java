@@ -78,14 +78,18 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				DwcaReferenceRecord record = new DwcaReferenceRecord();
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Reference sec = taxon.getSec();
-				handleReference(record, sec, taxon);
-				record.write(writer);
+				if (sec == null){
+					handleReference(record, sec, taxon);
+					record.write(writer);
+				}
 				
 				//nomRef
 				record = new DwcaReferenceRecord();
 				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
-				handleReference(record, (Reference)nomRef, taxon);
-				record.write(writer);
+				if (nomRef != null){
+					handleReference(record, (Reference)nomRef, taxon);
+					record.write(writer);
+				}
 				
 				writer.flush();
 				
@@ -117,9 +121,9 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		//TODO microreference
 		record.setBibliographicCitation(reference.getTitleCache());
 		record.setTitle(reference.getTitle());
-		record.setCreator(reference.getAuthorTeam().getTitleCache());
+		record.setCreator(reference.getAuthorTeam());
 		record.setDate(reference.getDatePublished());
-		record.setSource(reference.getInReference().getTitleCache());
+		record.setSource(reference.getInReference()==null?null:reference.getInReference().getTitleCache());
 		
 		//FIXME abstracts, remarks, notes
 		record.setDescription(reference.getReferenceAbstract());

@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -25,8 +28,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportConfigurator.class);
 
-//	private int maxRows = 0;
-
 	private boolean doTaxa = true;
 	private boolean doResourceRelation = true;
 	private boolean doTypesAndSpecimen = true;
@@ -36,6 +37,15 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean doDistributions = true;
 	private boolean doImages = true;
 
+	private String encoding = "UTF-8";
+	private String linesTerminatedBy = "\r\n";
+	private String fieldsEnclosedBy = "&quot;";
+	private boolean ignoreHeaderLines = true;
+	
+	private boolean includeBasionymsInResourceRelations;
+	private boolean includeMisappliedNamesInResourceRelations;
+	
+	private List<UUID> featureExclusions = new ArrayList<UUID>();
 	
 	
 	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, String destinationFolder) {
@@ -175,6 +185,14 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	public void setDoImages(boolean doImages) {
 		this.doImages = doImages;
+	}
+
+	public void setFeatureExclusions(List<UUID> featureExclusions) {
+		this.featureExclusions = featureExclusions;
+	}
+
+	public List<UUID> getFeatureExclusions() {
+		return featureExclusions;
 	}
 		
 }

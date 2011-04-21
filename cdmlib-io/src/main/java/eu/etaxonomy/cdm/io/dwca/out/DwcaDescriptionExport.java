@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -81,11 +82,15 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
 				for (TaxonDescription description : descriptions){
 					for (DescriptionElementBase el : description.getElements()){
-						if (el.isInstanceOf(TextData.class)){
-							DwcaDescriptionRecord record = new DwcaDescriptionRecord();
-							TextData textData = CdmBase.deproxy(el,TextData.class);
-							handleDescription(record, textData, taxon);
-							record.write(writer);
+						if (el.isInstanceOf(TextData.class) ){
+							Feature feature = el.getFeature();
+							if (feature != null && ! feature.equals(Feature.IMAGE()) && 
+									! config.getFeatureExclusions().contains(feature)){
+								DwcaDescriptionRecord record = new DwcaDescriptionRecord();
+								TextData textData = CdmBase.deproxy(el,TextData.class);
+								handleDescription(record, textData, taxon);
+								record.write(writer);
+							}
 						}
 					}
 				}
@@ -111,20 +116,22 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 
 	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon) {
 		record.setCoreid(taxon.getId());
-		Language.DEFAULT();
+		
 		//TODO make this part of the Configuration
-		
-		
 		//TODO question: multiple entries for each language??
 		List<Language> preferredLanguages = new ArrayList<Language>();
 		preferredLanguages.add(Language.DEFAULT());
 		LanguageString languageText = textData.getPreferredLanguageString(preferredLanguages);
 		
 		
+		if (textData.getFeature() == null){
+			String message = "No feature available for text data ("+textData.getId()+"). Feature is required field. Taxon: " + this.getTaxonLogString(taxon);
+			logger.warn(message);
+		}
 		record.setType(textData.getFeature());
 		
 		if (languageText == null){
-			String message = "No text in default language available for text data ("+textData.getId()+"), Taxon: " + taxon.getTitleCache() + "," + taxon.getId();
+			String message = "No text in default language available for text data ("+textData.getId()+"). Text is required field. Taxon: " + this.getTaxonLogString(taxon);
 			logger.warn(message);
 		}else{
 			record.setDescription(languageText.getText());

@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -40,6 +42,14 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	private TimePeriod seasonalDate; //startDayOfYear and endDayOfYear
 	private String source;
 	private String occurrenceRemarks;
+	
+	@Override
+	public List<String> getHeaderList() {
+		String[] result = new String[]{"coreid", "locationId","locality","countryCode", 
+				"lifeStage", "occurrenceStatus", "threadStatus", "establishmentMeans", 
+				"appendixCITES", "eventDate", "startDayOfYear", "endDayOfYear", "source", "occurrenceRemarks"};
+		return Arrays.asList(result);
+	}
 	
 	public void write(PrintWriter writer) {
 		print(coreid, writer, IS_FIRST);

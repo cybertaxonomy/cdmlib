@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -116,14 +117,19 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 	private void handleCommonTaxonName(DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon) {
 		record.setCoreid(taxon.getId());
-		record.setVernacularName(commonTaxonName.getName());
+		if (StringUtils.isBlank(commonTaxonName.getName())){
+			String message = "'Name' is required field for vernacular name but does not exist for taxon " + getTaxonLogString(taxon);
+			logger.warn(message);
+		}else{
+			record.setVernacularName(commonTaxonName.getName());
+		}
 		//TODO mulitple sources 
 		record.setSource(null);
 		record.setLanguage(commonTaxonName.getLanguage());
 		// does not exist in CDM
 		record.setTemporal(null);
 		
-		handleArea(record, commonTaxonName.getArea());
+		handleArea(record, commonTaxonName.getArea(), taxon, false);
 	}
 
 	@Override

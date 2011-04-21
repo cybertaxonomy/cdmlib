@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -42,11 +44,17 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	private AgentBase<?> creator;
 	private AgentBase<?> contributor;
 	private AgentBase<?> publisher;
-	
-
-
-
 	private String audience;
+
+	@Override
+	public List<String> getHeaderList() {
+		String[] result = new String[]{"coreid", "identifier","title","description", 
+				"spatial", "latitude", "longitude","format", "license", 
+				"created", "creator", "contributor", "publisher", "audience"};
+		return Arrays.asList(result);
+	}
+
+	
 	
 	public void write(PrintWriter writer) {
 		print(coreid, writer, IS_FIRST);

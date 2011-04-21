@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -64,7 +65,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	 * @param record
 	 * @param area
 	 */
-	protected void handleArea(IDwcaAreaRecord record, NamedArea area) {
+	protected void handleArea(IDwcaAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
 		if (area != null){
 			record.setLocationId(area.getId());
 			record.setLocality(area.getLabel());
@@ -72,6 +73,16 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 				WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);
 				record.setCountryCode(country.getIso3166_A2());
 			}
+		}else{
+			if (required){
+				String message = "Description requires area but area does not exist for taxon " + getTaxonLogString(taxon);
+				logger.warn(message);
+			}
 		}
+	}
+
+
+	protected String getTaxonLogString(TaxonBase<?> taxon) {
+		return taxon.getTitleCache() + "(" + taxon.getId() + ")";
 	}
 }
