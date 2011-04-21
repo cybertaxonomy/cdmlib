@@ -27,8 +27,12 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 //	private int maxRows = 0;
 
-	private boolean doReferences = false;
+	private boolean doTaxa = true;
+	private boolean doResourceRelation = true;
+	private boolean doTypesAndSpecimen = true;
 	private boolean doVernacularNames = true;
+	private boolean doReferences = true;
+	private boolean doDescription = true;
 	private boolean doDistributions = true;
 	private boolean doImages = true;
 
@@ -45,12 +49,16 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				DwcaTaxExport.class,
-				DwcaVernacularExport.class,
-				DwcaDistributionExport.class,
-				DwcaImageExport.class
+				DwcaTaxExport.class
+				,DwcaResourceRelationExport.class 
+				,DwcaTypesExport.class
+				,DwcaVernacularExport.class
+				,DwcaReferenceExport.class
+				,DwcaDescriptionExport.class
+				,DwcaDistributionExport.class
+				,DwcaImageExport.class
 		};
-	};
+	}
 
 
 	
@@ -102,23 +110,71 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public DwcaTaxExportState getNewState() {
 		return new DwcaTaxExportState(this);
 	}
+	
+	
 
+	public boolean isDoTaxa() {
+		return doTaxa;
+	}
 
+	public void setDoTaxa(boolean doTaxa) {
+		this.doTaxa = doTaxa;
+	}
 
+	public boolean isDoResourceRelation() {
+		return doResourceRelation;
+	}
 
+	public void setDoResourceRelation(boolean doResourceRelation) {
+		this.doResourceRelation = doResourceRelation;
+	}
+
+	public boolean isDoTypesAndSpecimen() {
+		return doTypesAndSpecimen;
+	}
+
+	public void setDoTypesAndSpecimen(boolean doTypesAndSpecimen) {
+		this.doTypesAndSpecimen = doTypesAndSpecimen;
+	}
+
+	public boolean isDoVernacularNames() {
+		return doVernacularNames;
+	}
+
+	public void setDoVernacularNames(boolean doVernacularNames) {
+		this.doVernacularNames = doVernacularNames;
+	}
 
 	public boolean isDoReferences() {
 		return doReferences;
 	}
 
-
-
-
-
 	public void setDoReferences(boolean doReferences) {
 		this.doReferences = doReferences;
 	}
 
-	
+	public boolean isDoDescription() {
+		return doDescription;
+	}
+
+	public void setDoDescription(boolean doDescription) {
+		this.doDescription = doDescription;
+	}
+
+	public boolean isDoDistributions() {
+		return doDistributions;
+	}
+
+	public void setDoDistributions(boolean doDistributions) {
+		this.doDistributions = doDistributions;
+	}
+
+	public boolean isDoImages() {
+		return doImages;
+	}
+
+	public void setDoImages(boolean doImages) {
+		this.doImages = doImages;
+	}
 		
 }

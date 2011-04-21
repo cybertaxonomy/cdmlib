@@ -20,6 +20,7 @@ import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -54,6 +55,12 @@ public abstract class DwcaRecordBase {
 	public abstract void write(PrintWriter writer);
 	
 	
+	
+	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator) {
+		//FIXME handles annotations correctly
+		String value = null;
+		print(value, writer, addSeparator);
+	}
 	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator) {
 		print(agent == null ? null : getAgent(agent), writer, addSeparator);
 	}

@@ -87,7 +87,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
 
 			
-			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+			List<TaxonNode> allNodes =  getAllNodes(null);
 			
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
@@ -160,6 +160,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 		}else if (designation != null){
 			facade = getFacadeFromDesignation(designation);
 			status = designation.getTypeStatus();
+		}
+		if (facade == null){
+			return;
 		}
 		
 		record.setCoreid(taxonBase.getId());
@@ -253,14 +256,14 @@ public class DwcaTypesExport extends DwcaExportBase {
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
-		logger.warn("No check implemented for Jaxb export");
+		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
 
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return false;
+		return ! state.getConfig().isDoTypesAndSpecimen();
 	}
 	
 }

@@ -25,9 +25,9 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -76,13 +76,12 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 			
 			
-			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
-				for (DescriptionBase description : descriptions){
-					for (Object o : description.getElements()){
-						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
+				Set<TaxonDescription> descriptions = taxon.getDescriptions();
+				for (TaxonDescription description : descriptions){
+					for (DescriptionElementBase el : description.getElements()){
 						if (el.isInstanceOf(CommonTaxonName.class)){
 							DwcaVernacularRecord record = new DwcaVernacularRecord();
 							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
@@ -130,14 +129,14 @@ public class DwcaVernacularExport extends DwcaExportBase {
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
-		logger.warn("No check implemented for Jaxb export");
+		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
 
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return false;
+		return ! state.getConfig().isDoVernacularNames();
 	}
 	
 }

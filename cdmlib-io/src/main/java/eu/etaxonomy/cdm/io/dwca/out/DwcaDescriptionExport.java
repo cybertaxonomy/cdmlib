@@ -60,9 +60,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
-    	String fileName = config.getDestinationNameString();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
+		String fileName = config.getDestinationNameString();
 		TransactionStatus txStatus = startTransaction(true);
 
 		try {
@@ -77,7 +75,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
 
 			
-			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -123,11 +121,18 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 		LanguageString languageText = textData.getPreferredLanguageString(preferredLanguages);
 		
 		
-		record.setDescription(languageText.getText());
 		record.setType(textData.getFeature());
+		
+		if (languageText == null){
+			String message = "No text in default language available for text data ("+textData.getId()+"), Taxon: " + taxon.getTitleCache() + "," + taxon.getId();
+			logger.warn(message);
+		}else{
+			record.setDescription(languageText.getText());
+			record.setLanguage(languageText.getLanguage());
+		}
+		
 		//FIXME multiple sources
 		record.setSource(null);
-		record.setLanguage(languageText.getLanguage());
 		
 		//TODO missing , relationship to credits?
 		record.setCreator(null);
@@ -144,14 +149,14 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
-		logger.warn("No check implemented for Jaxb export");
+		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
 
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return false;
+		return ! state.getConfig().isDoDescription();
 	}
 	
 }

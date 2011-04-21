@@ -72,9 +72,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 			FileOutputStream fos = new FileOutputStream(f);
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
 
-			
-			
-			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				//sec
 				DwcaReferenceRecord record = new DwcaReferenceRecord();
@@ -140,14 +138,14 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
-		logger.warn("No check implemented for Jaxb export");
+		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
 
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return !state.getConfig().isDoReferences();
+		return ! state.getConfig().isDoReferences();
 	}
 	
 }

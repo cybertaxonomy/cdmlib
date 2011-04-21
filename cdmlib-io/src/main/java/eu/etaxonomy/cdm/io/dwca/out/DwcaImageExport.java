@@ -25,6 +25,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -78,7 +79,7 @@ public class DwcaImageExport extends DwcaExportBase {
 
 			
 			
-			List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
@@ -123,7 +124,8 @@ public class DwcaImageExport extends DwcaExportBase {
 		record.setIdentifier(part.getUri());
 		record.setTitle(media.getTitleCache());
 		//TODO description if default language description is not available
-		record.setDescription(media.getDescription(Language.DEFAULT()).getText());
+		LanguageString description = media.getDescription(Language.DEFAULT());
+		record.setDescription(description == null ? null: description.getText());
 		//TODO missing
 		record.setSpatial(null);
 		//TODO missing
@@ -144,14 +146,14 @@ public class DwcaImageExport extends DwcaExportBase {
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
-		logger.warn("No check implemented for Jaxb export");
+		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
 
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return false;
+		return ! state.getConfig().isDoImages();
 	}
 	
 }
