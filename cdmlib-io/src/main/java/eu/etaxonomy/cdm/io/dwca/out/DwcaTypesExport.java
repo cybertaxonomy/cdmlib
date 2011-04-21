@@ -101,8 +101,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 						if (el.isInstanceOf(IndividualsAssociation.class)){
 							DwcaTypesRecord record = new DwcaTypesRecord();
 							IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
-							if (handleSpecimen(record, individualAssociation, null, taxon)){
+							if (! this.recordExistsUuid(individualAssociation) && handleSpecimen(record, individualAssociation, null, taxon)){
 								record.write(writer);
+								this.addExistingRecordUuid(individualAssociation);
 							}
 						}
 					}
@@ -145,8 +146,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 		Set<TypeDesignationBase<?>> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord();
-			if (handleSpecimen(record, null, designation, taxonBase)){
+			if (! this.recordExistsUuid(designation) && handleSpecimen(record, null, designation, taxonBase)){
 				record.write(writer);
+				addExistingRecordUuid(designation);
 			}
 		}
 		return designations;

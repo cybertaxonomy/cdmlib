@@ -90,9 +90,12 @@ public class DwcaImageExport extends DwcaExportBase {
 							for (Media media: el.getMedia()){
 								for (MediaRepresentation repr : media.getRepresentations()){
 									for (MediaRepresentationPart part : repr.getParts()){
-										DwcaImageRecord record = new DwcaImageRecord();
-										handleMedia(record, media, repr, part, taxon);
-										record.write(writer);
+										if (! this.recordExists(part)){
+											DwcaImageRecord record = new DwcaImageRecord();
+											handleMedia(record, media, repr, part, taxon);
+											record.write(writer);
+											this.addExistingRecord(part);
+										}
 									}
 								}
 							}

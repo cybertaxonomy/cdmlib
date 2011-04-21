@@ -83,11 +83,14 @@ public class DwcaDistributionExport extends DwcaExportBase {
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
 				for (TaxonDescription description : descriptions){
 					for (DescriptionElementBase el : description.getElements()){
-						if (el.isInstanceOf(Distribution.class)){
-							DwcaDistributionRecord record = new DwcaDistributionRecord();
-							Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-							handleDistribution(record, distribution, taxon);
-							record.write(writer);
+						if (el.isInstanceOf(Distribution.class) ){
+							if (! recordExists(el)){
+								DwcaDistributionRecord record = new DwcaDistributionRecord();
+								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
+								handleDistribution(record, distribution, taxon);
+								record.write(writer);
+								this.addExistingRecord(distribution);
+							}
 						}else if (el.getFeature().equals(Feature.DISTRIBUTION())){
 							//TODO
 							String message = "Distribution export for TextData not yet implemented";

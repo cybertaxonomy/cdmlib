@@ -111,8 +111,11 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 						if (el.isInstanceOf(TaxonInteraction.class)){
 							DwcaResourceRelationRecord record = new DwcaResourceRelationRecord();
 							TaxonInteraction taxonInteraction = CdmBase.deproxy(el,TaxonInteraction.class);
-							handleInteraction(record, taxon, taxonInteraction);
-							record.write(writer);
+							if (! this.recordExistsUuid(taxonInteraction)){
+								handleInteraction(record, taxon, taxonInteraction);
+								record.write(writer);
+								this.addExistingRecordUuid(taxonInteraction);
+							}
 						}
 					}
 				}
@@ -127,8 +130,11 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 						//misapplied names are handled in core (tax)
 						continue;
 					}
-					handleRelationship(record, subject, object, rel);
-					record.write(writer);
+					if (! this.recordExistsUuid(rel)){
+						handleRelationship(record, subject, object, rel);
+						record.write(writer);
+						this.addExistingRecordUuid(rel);
+					}
 
 				}
 				
@@ -146,9 +152,12 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 					IdentifiableEntity subject = rel.getFromName();
 					IdentifiableEntity object = rel.getToName();
 					
-					//????
-					handleRelationship(record, subject, object, rel);
-					record.write(writer);
+					if (! this.recordExistsUuid(rel)){
+						//????
+						handleRelationship(record, subject, object, rel);
+						record.write(writer);
+						this.addExistingRecordUuid(rel);
+					}
 
 				}
 				

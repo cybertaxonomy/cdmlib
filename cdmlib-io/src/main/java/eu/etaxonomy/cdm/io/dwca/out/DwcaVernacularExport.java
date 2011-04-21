@@ -86,8 +86,11 @@ public class DwcaVernacularExport extends DwcaExportBase {
 						if (el.isInstanceOf(CommonTaxonName.class)){
 							DwcaVernacularRecord record = new DwcaVernacularRecord();
 							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
-							handleCommonTaxonName(record, commonTaxonName, taxon);
-							record.write(writer);
+							if (! this.recordExists(commonTaxonName)){
+								handleCommonTaxonName(record, commonTaxonName, taxon);
+								record.write(writer);
+								this.addExistingRecord(commonTaxonName);
+							}
 						}else if (el.getFeature().equals(Feature.COMMON_NAME())){
 							//TODO
 							String message = "Vernacular name export for TextData not yet implemented";

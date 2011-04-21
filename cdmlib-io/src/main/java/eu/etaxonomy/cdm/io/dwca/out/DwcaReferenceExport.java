@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -78,17 +80,19 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				DwcaReferenceRecord record = new DwcaReferenceRecord();
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Reference sec = taxon.getSec();
-				if (sec == null){
+				if (sec != null && ! recordExists(sec)){
 					handleReference(record, sec, taxon);
 					record.write(writer);
+					addExistingRecord(sec);
 				}
 				
 				//nomRef
 				record = new DwcaReferenceRecord();
 				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
-				if (nomRef != null){
+				if (nomRef != null && ! existingRecordIds.contains(nomRef.getId())){
 					handleReference(record, (Reference)nomRef, taxon);
 					record.write(writer);
+					addExistingRecord((Reference)nomRef);
 				}
 				
 				writer.flush();
@@ -106,9 +110,6 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		commitTransaction(txStatus);
 		return true;
 	}
-	
-
-
 
 	private void handleReference(DwcaReferenceRecord record, Reference reference, Taxon taxon) {
 		record.setCoreid(taxon.getId());

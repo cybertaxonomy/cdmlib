@@ -75,7 +75,6 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 			FileOutputStream fos = new FileOutputStream(f);
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
 
-			
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
@@ -84,12 +83,15 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 					for (DescriptionElementBase el : description.getElements()){
 						if (el.isInstanceOf(TextData.class) ){
 							Feature feature = el.getFeature();
-							if (feature != null && ! feature.equals(Feature.IMAGE()) && 
-									! config.getFeatureExclusions().contains(feature)){
+							if (feature != null && 
+									! feature.equals(Feature.IMAGE()) && 
+									! config.getFeatureExclusions().contains(feature.getUuid()) &&
+									! recordExists(el)){
 								DwcaDescriptionRecord record = new DwcaDescriptionRecord();
 								TextData textData = CdmBase.deproxy(el,TextData.class);
 								handleDescription(record, textData, taxon);
 								record.write(writer);
+								addExistingRecord(textData);
 							}
 						}
 					}
@@ -110,8 +112,6 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 		commitTransaction(txStatus);
 		return true;
 	}
-	
-
 
 
 	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon) {

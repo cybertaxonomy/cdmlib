@@ -9,14 +9,17 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -32,7 +35,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
 	private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
 
-
+	protected Set<Integer> existingRecordIds = new HashSet<Integer>();
+	protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
+	
+	
 	/**
 	 * Returns the list of taxon nodes that are part in one of the given classifications 
 	 * and do have a taxon attached (empty taxon nodes should not but do exist in CDM databases).
@@ -84,5 +90,37 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 
 	protected String getTaxonLogString(TaxonBase<?> taxon) {
 		return taxon.getTitleCache() + "(" + taxon.getId() + ")";
+	}
+	
+
+	/**
+	 * @param el
+	 * @return
+	 */
+	protected boolean recordExists(CdmBase el) {
+		return existingRecordIds.contains(el.getId());
+	}
+	
+
+	/**
+	 * @param sec
+	 */
+	protected void addExistingRecord(CdmBase cdmBase) {
+		existingRecordIds.add(cdmBase.getId());
+	}
+	
+	/**
+	 * @param el
+	 * @return
+	 */
+	protected boolean recordExistsUuid(CdmBase el) {
+		return existingRecordUuids.contains(el.getUuid());
+	}
+	
+	/**
+	 * @param sec
+	 */
+	protected void addExistingRecordUuid(CdmBase cdmBase) {
+		existingRecordUuids.add(cdmBase.getUuid());
 	}
 }

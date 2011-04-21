@@ -96,8 +96,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 				Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
 				TaxonNameBase<?, ?> basionym = name.getBasionym();
 				Classification classification = node.getClassification();
-				handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null);
-				record.write(writer);
+				if (! this.recordExists(taxon)){
+					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null);
+					record.write(writer);
+					this.addExistingRecord(taxon);
+				}
 				
 				node.getClassification().getName();
 				//synonyms
@@ -139,8 +142,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 			Taxon parent = null;
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
-			handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type);
-			record.write(writer);
+			if (! this.recordExists(synonym)){
+				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type);
+				record.write(writer);
+				this.addExistingRecord(synonym);
+			}
 			
 		}
 		
@@ -158,8 +164,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 			Taxon parent = null;
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
-			handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType);
-			record.write(writer);
+			if (! this.recordExists(misappliedName)){
+				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType);
+				record.write(writer);
+				this.addExistingRecord(misappliedName);
+			}
 		}	
 	}
 
