@@ -6,8 +6,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-	
-   <bean id="agentservice"
+
+   <bean id="agentService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/agent.service</value>
@@ -17,7 +17,7 @@
 		</property>
 	</bean>
 
-   <bean id="annotationservice"
+   <bean id="annotationService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/annotation.service</value>
@@ -27,7 +27,7 @@
 		</property>
 	</bean>
 
-   <bean id="auditeventservice"
+   <bean id="auditeventService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/auditevent.service</value>
@@ -37,7 +37,7 @@
 		</property>
 	</bean>
 
-   <bean id="classificationservice"
+   <bean id="classificationService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/classification.service</value>
@@ -46,8 +46,8 @@
 			<value>eu.etaxonomy.cdm.api.service.IClassificationService</value>
 		</property>
 	</bean>
-	
-   <bean id="collectionservice"
+
+   <bean id="collectionService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/collection.service</value>
@@ -57,7 +57,7 @@
 		</property>
 	</bean>
 
-   <bean id="commonservice"
+   <bean id="commonService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/common.service</value>
@@ -67,17 +67,7 @@
 		</property>
 	</bean>
 
-   <bean id="databaseservice"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<property name="serviceUrl">
-			<value>http://${serverName}/${contextPath}/database.service</value>
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.api.service.IDatabaseService</value>
-		</property>
-	</bean>
-
-   <bean id="descriptionservice"
+   <bean id="descriptionService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/description.service</value>
@@ -87,7 +77,7 @@
 		</property>
 	</bean>
 
-   <bean id="featurenodeservice"
+   <bean id="featureNodeService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/featurenode.service</value>
@@ -97,7 +87,7 @@
 		</property>
 	</bean>
 
-   <bean id="featuretreeservice"
+   <bean id="featureTreeService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/featuretree.service</value>
@@ -107,7 +97,7 @@
 		</property>
 	</bean>
 
-   <bean id="groupservice"
+   <bean id="groupService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/group.service</value>
@@ -117,7 +107,7 @@
 		</property>
 	</bean>
 
-   <bean id="identificationkeyservice"
+   <bean id="identificationKeyService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/identificationkey.service</value>
@@ -127,7 +117,7 @@
 		</property>
 	</bean>
 
-   <bean id="locationservice"
+   <bean id="locationService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/location.service</value>
@@ -137,7 +127,7 @@
 		</property>
 	</bean>
 
-   <bean id="markerservice"
+   <bean id="markerService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/marker.service</value>
@@ -147,7 +137,7 @@
 		</property>
 	</bean>
 
-   <bean id="mediaservice"
+   <bean id="mediaService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/media.service</value>
@@ -157,7 +147,7 @@
 		</property>
 	</bean>
 
-   <bean id="nameservice"
+   <bean id="nameService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/name.service</value>
@@ -167,7 +157,7 @@
 		</property>
 	</bean>
 
-   <bean id="occurrenceservice"
+   <bean id="occurrenceService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/occurrence.service</value>
@@ -177,7 +167,7 @@
 		</property>
 	</bean>
 
-   <bean id="polytomouskeynodeservice"
+   <bean id="polytomousKeyNodeService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/polytomouskeynode.service</value>
@@ -187,7 +177,7 @@
 		</property>
 	</bean>
 
-   <bean id="polytomouskeyservice"
+   <bean id="polytomousKeyService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/polytomouskey.service</value>
@@ -197,7 +187,7 @@
 		</property>
 	</bean>
 
-   <bean id="referenceservice"
+   <bean id="referenceService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/reference.service</value>
@@ -206,8 +196,8 @@
 			<value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
 		</property>
 	</bean>
-
-   <bean id="serviceservice"
+<!-- 
+   <bean id="serviceService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/service.service</value>
@@ -216,8 +206,8 @@
 			<value>eu.etaxonomy.cdm.api.service.IService</value>
 		</property>
 	</bean>
-
-   <bean id="taxonnodeservice"
+ -->
+   <bean id="taxonNodeService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/taxonnode.service</value>
@@ -227,7 +217,7 @@
 		</property>
 	</bean>
 
-   <bean id="taxonservice"
+   <bean id="taxonService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/taxon.service</value>
@@ -237,7 +227,7 @@
 		</property>
 	</bean>
 
-   <bean id="termservice"
+   <bean id="termService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/term.service</value>
@@ -247,7 +237,7 @@
 		</property>
 	</bean>
 
-   <bean id="userservice"
+   <bean id="userService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/user.service</value>
@@ -257,7 +247,7 @@
 		</property>
 	</bean>
 
-   <bean id="vocabularyservice"
+   <bean id="vocabularyService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/vocabulary.service</value>
@@ -267,7 +257,7 @@
 		</property>
 	</bean>
 
-   <bean id="workingsetservice"
+   <bean id="workingSetService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/workingset.service</value>
@@ -279,7 +269,7 @@
 
 	<!-- only for simple tests -->
 
-	<bean id="demoservice"
+	<bean id="demoService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/demo.service</value>
@@ -289,7 +279,7 @@
 		</property>
 	</bean>
 
-	<bean id="listservice"
+	<bean id="listService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
 			<value>http://${serverName}/${contextPath}/list.service</value>

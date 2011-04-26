@@ -73,16 +73,6 @@
 		</property>
 	</bean>
 
-	<bean id="httpDatabaseService"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-		<property name="service">
-			<ref bean="databaseServiceHibernateImpl" />
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.api.service.IDatabaseService</value>
-		</property>
-	</bean>
-
 	<bean id="httpDescriptionService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service">

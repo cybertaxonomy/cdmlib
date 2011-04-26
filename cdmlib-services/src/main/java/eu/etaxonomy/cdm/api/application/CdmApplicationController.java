@@ -314,7 +314,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 			}
 		}
 		configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
-		getDatabaseService().setApplicationController(this);
+//		getDatabaseService().setApplicationController(this);
 	}
 	
 

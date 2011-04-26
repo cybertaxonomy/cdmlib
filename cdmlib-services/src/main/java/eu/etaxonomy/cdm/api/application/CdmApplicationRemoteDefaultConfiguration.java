@@ -1,4 +1,4 @@
-// $Id$
+// $Id: CdmApplicationDefaultConfiguration.java 11680 2011-04-04 17:07:39Z a.mueller $
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -10,21 +10,14 @@
 
 package eu.etaxonomy.cdm.api.application;
 
-import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
 
-import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
-import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
@@ -40,7 +33,6 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -54,12 +46,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 /**
  * @author a.mueller
- *
+ * @author j.koch
  */
 @Component
-public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfiguration {
+public class CdmApplicationRemoteDefaultConfiguration implements ICdmApplicationRemoteConfiguration {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmApplicationDefaultConfiguration.class);
+	private static final Logger logger = Logger.getLogger(CdmApplicationRemoteDefaultConfiguration.class);
 
 	@Autowired
 	//@Qualifier("nameService")
@@ -76,14 +68,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	//@Qualifier("agentService")
 	private IAgentService agentService;
-//	@Autowired
-	//@Qualifier("databaseService")
-	private IDatabaseService databaseService;
 	@Autowired
 	//@Qualifier("termService")
 	private ITermService termService;
-	@Autowired
-	private HibernateTransactionManager transactionManager;
 	@Autowired
 	//@Qualifier("descriptionService")
 	private IDescriptionService descriptionService;
@@ -98,12 +85,6 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ICommonService commonService;
 	@Autowired
 	private ILocationService locationService;
-	@Autowired
-	private SessionFactory sessionFactory;
-	@Autowired
-	private DataSource dataSource;
-	@Autowired
-	private ProviderManager authenticationManager;
 	@Autowired
 	private IUserService userService;
 	@Autowired
@@ -136,39 +117,32 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	/**
 	 * 
 	 */
-	public CdmApplicationDefaultConfiguration() {
+	public CdmApplicationRemoteDefaultConfiguration() {
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAgentService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getAgentService()
 	 */
 	public IAgentService getAgentService() {
 		return this.agentService;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDatabaseService()
-	 */
-	public IDatabaseService getDatabaseService() {
-		return this.databaseService;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getNameService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getNameService()
 	 */
 	public INameService getNameService() {
 		return this.nameService;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getReferenceService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getReferenceService()
 	 */
 	public IReferenceService getReferenceService() {
 		return this.referenceService;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTaxonService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getTaxonService()
 	 */
 	public ITaxonService getTaxonService() {
 		return this.taxonService;
@@ -176,7 +150,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getClassificationService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getClassificationService()
 	 */
 	public IClassificationService getClassificationService() {
 		return this.classificationService;
@@ -187,7 +161,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDescriptionService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getDescriptionService()
 	 */
 	public IDescriptionService getDescriptionService(){
 		return this.descriptionService;
@@ -195,7 +169,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getOccurrenceService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getOccurrenceService()
 	 */
 	public IOccurrenceService getOccurrenceService(){
 		return this.occurrenceService;
@@ -203,76 +177,50 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getMediaService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getMediaService()
 	 */
 	public IMediaService getMediaService(){
 		return this.mediaService;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTermService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getTermService()
 	 */
 	public ITermService getTermService() {
 		return this.termService;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getCommonService()
 	 */
 	public ICommonService getCommonService(){
 		return this.commonService;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getLocationService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getLocationService()
 	 */
 	public ILocationService getLocationService() {
 		return this.locationService;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getUserService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getUserService()
 	 */
 	public IUserService getUserService() {
 		return this.userService;
 	}
-	
-	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getCommonService()
 	 */
 	public IService<CdmBase> getMainService(){
 		return this.mainService;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTransactionManager()
-	 */
-	public PlatformTransactionManager getTransactionManager() {
-		return this.transactionManager;
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAuthenticationManager()
-	 */
-	public ProviderManager getAuthenticationManager() {
-		return this.authenticationManager;
-	}
-
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#NewConversation()
-	 */
-	public ConversationHolder NewConversation() {
-		// TODO make this a prototype
-		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCollectionService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getCollectionService()
 	 */
 	public ICollectionService getCollectionService() {
 		return collectionService;
@@ -280,7 +228,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureTreeService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getFeatureTreeService()
 	 */
 	public IFeatureTreeService getFeatureTreeService() {
 		return featureTreeService;
@@ -288,7 +236,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureNodeService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getFeatureNodeService()
 	 */
 	public IFeatureNodeService getFeatureNodeService(){
 		return featureNodeService;
@@ -296,21 +244,21 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	
 	/*
 	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getVocabularyService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getVocabularyService()
 	 */
 	public IVocabularyService getVocabularyService() {
 		return vocabularyService;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getIdentificationKeyService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getIdentificationKeyService()
 	 */
 	public IIdentificationKeyService getIdentificationKeyService(){
 		return identificationKeyService;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPolytomousKeyService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getPolytomousKeyService()
 	 */
 	public IPolytomousKeyService getPolytomousKeyService(){
 		return polytomousKeyService;
@@ -321,7 +269,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getWorkingSetService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getWorkingSetService()
 	 */
 	@Override
 	public IWorkingSetService getWorkingSetService() {
@@ -329,7 +277,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getGroupService()
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationRemoteConfiguration#getGroupService()
 	 */
 	@Override
 	public IGroupService getGroupService() {

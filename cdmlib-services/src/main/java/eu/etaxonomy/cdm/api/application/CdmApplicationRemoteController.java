@@ -19,15 +19,11 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.transaction.PlatformTransactionManager;
 
-import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
-import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
@@ -58,35 +54,35 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * @author j.koch
  *
  */
-public class CdmApplicationRemoteController implements ICdmApplicationConfiguration{
+public class CdmApplicationRemoteController implements ICdmApplicationRemoteConfiguration{
 	private static final Logger logger = Logger.getLogger(CdmApplicationRemoteController.class);
 	
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/remoteApplicationContext.xml";
 	
 	public AbstractApplicationContext applicationContext;
-	private ICdmApplicationConfiguration configuration; 
+	private ICdmApplicationRemoteConfiguration configuration; 
 	private Resource applicationContextResource;
 	private IProgressMonitor progressMonitor;
 	
 	/**
-	 * Constructor, opens a spring ApplicationContext
+	 * Constructor, opens a spring ApplicationContext with defaults
 	 */
 	public static CdmApplicationRemoteController NewInstance() {
-		logger.info("Start CdmApplicationRemoteController with default application context resource");
+		logger.info("Configure CdmApplicationRemoteController with defaults");
 		return new CdmApplicationRemoteController(null, null);
 	}
 	
 	/**
-	 * Constructor, opens a spring ApplicationContext
+	 * Constructor, opens a spring ApplicationContext with given application context
 	 * @param applicationContextResource
 	 */
 	public static CdmApplicationRemoteController NewInstance(Resource applicationContextResource, IProgressMonitor progressMonitor) {
-		logger.info("Start CdmApplicationRemoteController with given application context resource");
+		logger.info("Configure CdmApplicationRemoteController with given application context");
 		return new CdmApplicationRemoteController(applicationContextResource, progressMonitor);
 	}
 
 	/**
-	 * Constructor, opens an spring ApplicationContext
+	 * Constructor, starts the application remote controller
 	 * @param applicationContextResource
 	 */
 	private CdmApplicationRemoteController(Resource applicationContextResource, IProgressMonitor progressMonitor){
@@ -97,12 +93,11 @@ public class CdmApplicationRemoteController implements ICdmApplicationConfigurat
 	}
 		
 	/**
-	 * Sets the application context to a new spring ApplicationContext and initializes the Controller.
-	 * @param dataSource
+	 * Sets the application context to a new spring ApplicationContext and initializes the Controller
 	 */
 	private boolean setNewApplicationContext(){
-		logger.info("set new application context");
-		progressMonitor.beginTask("Connecting to the remote server", 6);
+		logger.info("Set new application context");
+		progressMonitor.beginTask("Start application context.", 6);
 		progressMonitor.worked(1);
 
 		GenericApplicationContext applicationContext =  new GenericApplicationContext();
@@ -173,8 +168,8 @@ public class CdmApplicationRemoteController implements ICdmApplicationConfigurat
 	}
 	
 	private void init(){
-		logger.debug("Init " +  this.getClass().getName() + " ... ");
-		if (logger.isDebugEnabled()){for (String beanName : applicationContext.getBeanDefinitionNames()){ logger.debug(beanName);}}
+		logger.info("Init " +  this.getClass().getName() + " ... ");
+		if (logger.isInfoEnabled()){for (String beanName : applicationContext.getBeanDefinitionNames()){ logger.debug(beanName);}}
 		//TODO delete next row (was just for testing)
 		if (logger.isInfoEnabled()){
 			logger.info("Registered Beans: ");
@@ -183,7 +178,7 @@ public class CdmApplicationRemoteController implements ICdmApplicationConfigurat
 				logger.info(beanName);
 			}
 		}
-		configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
+		configuration = (ICdmApplicationRemoteConfiguration)applicationContext.getBean("cdmApplicationRemoteDefaultConfiguration");
 	}
 	
 
@@ -213,9 +208,9 @@ public class CdmApplicationRemoteController implements ICdmApplicationConfigurat
 		return configuration.getAgentService();
 	}
 	
-	public final IDatabaseService getDatabaseService(){
-		return null;
-	}
+//	public final IDatabaseService getDatabaseService(){
+//		return null;
+//	}
 	
 	public final ITermService getTermService(){
 		return configuration.getTermService();
@@ -285,19 +280,19 @@ public class CdmApplicationRemoteController implements ICdmApplicationConfigurat
 		return configuration.getWorkingSetService();
 	}
 	
-	public final ConversationHolder NewConversation(){
-		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
-		return configuration.NewConversation();
-	}
-	
-	public final ProviderManager getAuthenticationManager(){
-		return configuration.getAuthenticationManager();
-	}
-	
-	@Override
-	public final PlatformTransactionManager getTransactionManager() {
-		return configuration.getTransactionManager();
-	}
+//	public final ConversationHolder NewConversation(){
+//		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
+//		return configuration.NewConversation();
+//	}
+//	
+//	public final ProviderManager getAuthenticationManager(){
+//		return configuration.getAuthenticationManager();
+//	}
+//	
+//	@Override
+//	public final PlatformTransactionManager getTransactionManager() {
+//		return configuration.getTransactionManager();
+//	}
 	
 	public final Object getBean(String name){
 		return this.applicationContext.getBean(name);

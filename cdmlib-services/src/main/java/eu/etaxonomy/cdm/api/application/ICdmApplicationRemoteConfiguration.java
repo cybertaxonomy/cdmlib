@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ICdmApplicationConfiguration.java 11680 2011-04-04 17:07:39Z a.mueller $
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 21.05.2008
  * @version 1.0
  */
-public interface ICdmApplicationConfiguration {
+public interface ICdmApplicationRemoteConfiguration {
 
 	/**
 	 * @return
@@ -93,11 +93,11 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public IMediaService getMediaService();
 	
-	/**
-	 * @return
-	 * @deprecated // databases are not managed thorugh this anymore
-	 */
-	public IDatabaseService getDatabaseService();
+//	/**
+//	 * @return
+//	 * @deprecated // databases are not managed thorugh this anymore
+//	 */
+//	public IDatabaseService getDatabaseService();
 	
 	/**
 	 * @return
@@ -121,7 +121,6 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public IUserService getUserService();
 	
-	
 	/**
 	 * 
 	 * @return
@@ -133,28 +132,26 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public IService<CdmBase> getMainService();
 	
-	
 	/**
 	 * @return
 	 */
 	public IWorkingSetService getWorkingSetService();
 	
-	/**
-	 * @return
-	 */
-	public PlatformTransactionManager getTransactionManager();
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public ProviderManager getAuthenticationManager();
-	
-	/**
-	 * @return
-	 */
-	public ConversationHolder NewConversation();
+//	/**
+//	 * @return
+//	 */
+//	public PlatformTransactionManager getTransactionManager();
+//	
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public ProviderManager getAuthenticationManager();
+//	
+//	/**
+//	 * @return
+//	 */
+//	public ConversationHolder NewConversation();
 
 	/**
 	 * 
