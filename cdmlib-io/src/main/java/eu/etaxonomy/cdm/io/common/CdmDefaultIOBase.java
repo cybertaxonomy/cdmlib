@@ -9,6 +9,7 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -19,9 +20,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @author a.babadshanjan
  * @created 17.11.2008
  */
-public class CdmDefaultIOBase<T extends IIoConfigurator> {
-	private static final Logger logger = Logger
-			.getLogger(CdmDefaultIOBase.class);
+public class CdmDefaultIOBase<T extends IIoConfigurator>  {
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmDefaultIOBase.class);
 
 	protected CdmApplicationController cdmApp = null;
 
@@ -69,7 +70,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	 * 
 	 * @return the cdmApp
 	 */
-	public CdmApplicationController getCdmAppController() {
+	public ICdmApplicationConfiguration getCdmAppController() {
 		return this.cdmApp;
 	}
 

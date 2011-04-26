@@ -38,7 +38,7 @@ public class CdmDefaultExport<T extends IExportConfigurator> extends CdmDefaultI
 			return false;
 		}else{
 			CdmApplicationAwareDefaultExport<?> defaultExport = 
-				(CdmApplicationAwareDefaultExport<?>)getCdmAppController().applicationContext.getBean("defaultExport");
+				(CdmApplicationAwareDefaultExport<?>)getCdmAppController().getBean("defaultExport");
 			return defaultExport.invoke(config);
 		}
 	}

@@ -12,9 +12,11 @@ package eu.etaxonomy.cdm.api.application;
 
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -33,7 +35,6 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -47,6 +48,16 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public interface ICdmApplicationConfiguration {
 
+	public TransactionStatus startTransaction();
+	
+	public TransactionStatus startTransaction(Boolean readOnly);
+	
+	public void commitTransaction(TransactionStatus tx);
+
+	public Object getBean(String string);
+
+	
+	
 	/**
 	 * @return
 	 */
@@ -193,5 +204,7 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public IPolytomousKeyNodeService getPolytomousKeyNodeService();
+
+	
 	
 }
