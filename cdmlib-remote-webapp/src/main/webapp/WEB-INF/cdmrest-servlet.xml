@@ -54,7 +54,6 @@
 				<prop key="/classification.service">httpClassificationService</prop>
 				<prop key="/collection.service">httpCollectionService</prop>
 				<prop key="/common.service">httpCommonService</prop>
-				<prop key="/database.service">httpDatabaseService</prop>
 				<prop key="/description.service">httpDescriptionService</prop>
 				<prop key="/featurenode.service">httpFeatureNodeService</prop>
 				<prop key="/featuretree.service">httpFeatureTreeService</prop>
