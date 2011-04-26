@@ -24,8 +24,8 @@ import org.apache.log4j.Logger;
 
 
 public class UuidAndTitleCache<T extends ICdmBase> {
-	private static final Logger logger = Logger
-			.getLogger(UuidAndTitleCache.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger	.getLogger(UuidAndTitleCache.class);
 	
 	Class<T> type;
 	UUID uuid;

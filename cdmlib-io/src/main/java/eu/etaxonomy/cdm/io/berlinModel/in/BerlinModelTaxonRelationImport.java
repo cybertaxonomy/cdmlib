@@ -447,7 +447,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		Classification tree = classificationMap.get(treeRefFk);
 		if (tree == null){
 			UUID treeUuid = state.getTreeUuidByIntTreeKey(treeRefFk);
-			tree = getClassificationService().getClassificationByUuid(treeUuid);
+			tree = getClassificationService().find(treeUuid);
 			classificationMap.put(treeRefFk, tree);
 		}
 		if (tree == null){

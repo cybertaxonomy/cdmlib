@@ -169,7 +169,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	//TODO @Cascade({CascadeType.DELETE_ORPHAN})
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
-	private Set<TypeDesignationBase> typeDesignations = new HashSet<TypeDesignationBase>();
+	private Set<TypeDesignationBase<?>> typeDesignations = new HashSet<TypeDesignationBase<?>>();
 
     @XmlElement(name = "HomotypicalGroup")
     @XmlIDREF
@@ -922,9 +922,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see     NameTypeDesignation
 	 * @see     SpecimenTypeDesignation
 	 */
-	public Set<TypeDesignationBase> getTypeDesignations() {
+	public Set<TypeDesignationBase<?>> getTypeDesignations() {
 		if(typeDesignations == null) {
-			this.typeDesignations = new HashSet<TypeDesignationBase>();
+			this.typeDesignations = new HashSet<TypeDesignationBase<?>>();
 		}
 		return typeDesignations;
 	}

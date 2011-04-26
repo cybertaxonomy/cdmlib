@@ -10,11 +10,20 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
+import java.net.URI;
+
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -42,7 +51,12 @@ public class GenBankAccession extends VersionableEntity {
 	private String accessionNumber;
 	
 	@XmlElement(name = "URI")
-	private String uri;
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
+	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
+	@Type(type="uriUserType")
+	private URI uri;
 	
 	public String getAccessionNumber(){
 		logger.debug("getAccessionNumber");
@@ -57,7 +71,7 @@ public class GenBankAccession extends VersionableEntity {
 		this.accessionNumber = accessionNumber;
 	}
 
-	public String getUri(){
+	public URI getUri(){
 		return this.uri;
 	}
 
@@ -65,7 +79,7 @@ public class GenBankAccession extends VersionableEntity {
 	 * 
 	 * @param uri    uri
 	 */
-	public void setUri(String uri){
+	public void setUri(URI uri){
 		this.uri = uri;
 	}
 

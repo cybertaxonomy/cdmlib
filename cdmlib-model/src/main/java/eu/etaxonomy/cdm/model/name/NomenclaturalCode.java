@@ -104,11 +104,9 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	}
 
 	public static NomenclaturalCode fromString(String string){
-
 		for(NomenclaturalCode code : NomenclaturalCode.values()){
 			if(code.name().equals(string)) return code;
 		}
-		
 		return null;
 	}
 	
@@ -270,199 +268,38 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 				
 		return taxonNameBase;
 	}
+	
+	/**
+	 * Returns the recommended value for the accepted taxon status according to
+	 * http://code.google.com/p/darwincore/wiki/Taxon#taxonomicStatus
+	 */
+	public String acceptedTaxonStatusLabel(){
+		switch(this){
+		case ICBN:
+			return "accepted";
+		case ICZN:
+			return "valid";
+		default:
+			logger.error("Not implemented yet");
+			return "accepted";
+		}
+	}
+	
+	/**
+	 * Returns the recommended value for the accepted taxon status according to
+	 * http://code.google.com/p/darwincore/wiki/Taxon#taxonomicStatus
+	 */
+	public String synonymStatusLabel(){
+		switch(this){
+		case ICBN:
+			return "synonym";
+		case ICZN:
+			return "invalid";
+		default:
+			logger.error("Not implemented yet");
+			return "synonym";
+		}
+	}
+	
 }
 
-//@XmlAccessorType(XmlAccessType.FIELD)
-//@Entity
-////@Audited
-//public class NomenclaturalCode extends DefinedTermBase<NomenclaturalCode> {
-//	/**
-//	 * SerialVersionUID
-//	 */
-//	private static final long serialVersionUID = -1011240079962589681L;
-//	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
-//
-//	private static final UUID uuidIcnb = UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e");
-//	private static final UUID uuidIcbn = UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482");
-//	private static final UUID uuidIcncp = UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e");
-//	private static final UUID uuidIczn = UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b");
-//	private static final UUID uuidIcvcn = UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a");
-//
-//	private static NomenclaturalCode ICZN;
-//
-//	private static NomenclaturalCode ICVCN;
-//
-//	private static NomenclaturalCode ICNCP;
-//
-//	private static NomenclaturalCode ICBN;
-//
-//	private static NomenclaturalCode ICNB;
-//
-//	
-//	protected static Map<UUID, NomenclaturalCode> termMap = null;		
-//
-//	protected static NomenclaturalCode getTermByUuid(UUID uuid){
-//		if (termMap == null){
-//			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-//			vocabularyStore.initialize();
-//		}
-//		return (NomenclaturalCode)termMap.get(uuid);
-//	}
-//	
-//	
-//	// ************* CONSTRUCTORS *************/	
-//	/** 
-//	 * Class constructor: creates a new empty nomenclature code instance.
-//	 * 
-//	 * @see 	#NomenclaturalCode(String, String, String)
-//	 */
-//	public NomenclaturalCode() {
-//		super();
-//	}
-//	
-//	/** 
-//	 * Class constructor: creates an additional nomenclature code instance with
-//	 * a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label and
-//	 * a label abbreviation.
-//	 * 
-//	 * @param	term  		 the string (in the default language) describing the
-//	 * 						 new nomenclature code to be created 
-//	 * @param	label  		 the string identifying the new nomenclature code
-//	 * 						 to be created
-//	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-//	 * 						 new nomenclature code to be created
-//	 * @see 				 #NomenclaturalCode()
-//	 */
-//	public NomenclaturalCode(String term, String label, String labelAbbrev) {
-//		super(term, label, labelAbbrev);
-//	}
-//
-//
-//	//********* METHODS **************************************/
-//
-//	/**
-//	 * Returns the International Code of Nomenclature of Bacteria
-//	 */
-//	public static final NomenclaturalCode ICNB(){
-//		return getTermByUuid(uuidIcnb);
-////		return ICNB;
-//	}
-//	
-//	/**
-//	 * Returns the International Code of Botanical Nomenclature
-//	 */
-//	public static final NomenclaturalCode ICBN(){
-//		return getTermByUuid(uuidIcbn);
-////		return  ICBN;
-//	}
-//	/**
-//	 * Returns the International Code of Cultivated Plants
-//	 */
-//	public static final NomenclaturalCode ICNCP(){
-//		return getTermByUuid(uuidIcncp);
-////		return ICNCP; 
-//	}
-//
-//	/**
-//	 * Returns the International Code of Zoological Nomenclature
-//	 */
-//	public static final NomenclaturalCode ICZN(){
-//		return getTermByUuid(uuidIczn);
-////		return ICZN; 
-//	}
-//
-//
-//	/**
-//	 * Returns the International Code for Virus Classification and Nomenclature
-//	 */
-//	public static final NomenclaturalCode ICVCN(){
-//		return getTermByUuid(uuidIcvcn);
-////		return ICVCN; // FIXME(uuidIcvcn);
-//	}
-//	
-//	/**
-//	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
-//	 * cultivar plant, bacterial or viral name) instance depending on <i>this</i>
-//	 * nomenclature code only containing the given {@link Rank rank}.
-//	 * 
-//	 * @param	rank	the rank of the new taxon name instance
-//	 * @see 			BotanicalName#NewInstance(Rank)
-//	 * @see 			ZoologicalName#NewInstance(Rank)
-//	 * @see 			CultivarPlantName#NewInstance(Rank)
-//	 * @see 			BacterialName#NewInstance(Rank)
-//	 * @see 			ViralName#NewInstance(Rank)
-//	 */
-//	@Transient
-//	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
-//		TaxonNameBase<?,?> result;
-//		if (this.equals(NomenclaturalCode.ICBN())){
-//			result = BotanicalName.NewInstance(rank);
-//		}else if (this.equals(NomenclaturalCode.ICZN())){
-//			result = ZoologicalName.NewInstance(rank);
-//		}else if (this.equals(NomenclaturalCode.ICNCP())){
-//			result = CultivarPlantName.NewInstance(rank);
-//		}else if (this.equals(NomenclaturalCode.ICNB())){
-//			result = BacterialName.NewInstance(rank);
-//		}else if (this.equals(NomenclaturalCode.ICVCN())){
-//			result = ViralName.NewInstance(rank);
-//		}else {
-//			logger.warn("Unknown nomenclatural code: " + this.getUuid());
-//			result = null;
-//		}
-//		return result;
-//	}
-//	
-//	/**
-//	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
-//	 * cultivar plant, bacterial or viral name) instance depending on <i>this</i>
-//	 * nomenclature code only containing the given {@link Rank rank}.
-//	 * 
-//	 * @param	rank	the rank of the new taxon name instance
-//	 * @see 			BotanicalName#NewInstance(Rank)
-//	 * @see 			ZoologicalName#NewInstance(Rank)
-//	 * @see 			CultivarPlantName#NewInstance(Rank)
-//	 * @see 			BacterialName#NewInstance(Rank)
-//	 * @see 			ViralName#NewInstance(Rank)
-//	 */
-//	@Transient
-//	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){
-//		Class<? extends T> result;
-//		if (this.equals(NomenclaturalCode.ICBN())){
-//			result = (Class<T>)BotanicalName.class;
-//		}else if (this.equals(NomenclaturalCode.ICZN())){
-//			result = (Class<T>)ZoologicalName.class;
-//		}else if (this.equals(NomenclaturalCode.ICNCP())){
-//			result = (Class<T>)CultivarPlantName.class;
-//		}else if (this.equals(NomenclaturalCode.ICNB())){
-//			result = (Class<T>)BacterialName.class;
-//		}else if (this.equals(NomenclaturalCode.ICVCN())){
-//			result = (Class<T>)ViralName.class;
-//		}else {
-//			logger.warn("Unknown nomenclatural code: " + this.getUuid());
-//			result = null;
-//		}
-//		return result;
-//	}
-//
-//	@Override
-//	protected void setDefaultTerms(TermVocabulary<NomenclaturalCode> termVocabulary) {
-//		termMap = new HashMap<UUID, NomenclaturalCode>();
-//		for (NomenclaturalCode term : termVocabulary.getTerms()){
-//			termMap.put(term.getUuid(), term);
-//		}
-//		
-////		termMap.put(uuidIcbn, termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcbn));
-////		termMap.put(uuidIcnb, termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcnb));
-////		termMap.put(uuidIcncp, termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcncp));
-////		termMap.put(uuidIcvcn, termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcvcn));
-////		termMap.put(uuidIczn, termVocabulary.findTermByUuid(NomenclaturalCode.uuidIczn));
-//		
-////		NomenclaturalCode.ICBN = termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcbn);
-////		NomenclaturalCode.ICNB = termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcnb);
-////		NomenclaturalCode.ICNCP = termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcncp);
-////		NomenclaturalCode.ICVCN = termVocabulary.findTermByUuid(NomenclaturalCode.uuidIcvcn);
-////		NomenclaturalCode.ICZN = termVocabulary.findTermByUuid(NomenclaturalCode.uuidIczn);
-//	}
-//	
-//	
-//}

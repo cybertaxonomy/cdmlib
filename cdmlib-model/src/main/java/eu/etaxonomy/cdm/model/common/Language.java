@@ -1213,7 +1213,7 @@ public class Language extends DefinedTermBase<Language> {
 	public void writeCsvLine(CSVWriter writer, Language language) {
 		String [] line = new String[6];
 		line[0] = language.getUuid().toString();
-		line[1] = language.getUri();
+		line[1] = language.getUri().toString();
 		line[2] = language.getLabel(Language.CSV_LANGUAGE());
 		line[3] = language.getDescription(Language.CSV_LANGUAGE());
 		line[4] = language.getIso639_2();

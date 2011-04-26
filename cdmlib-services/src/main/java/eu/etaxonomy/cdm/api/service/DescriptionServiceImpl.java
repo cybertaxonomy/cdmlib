@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -336,12 +335,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return (TermVocabulary)vocabularyDao.findByUuid(uuid);
 	}
 
-	public List<DescriptionElementBase> getDescriptionElementsForTaxon(
+	public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
 			Taxon taxon, Set<Feature> features,
-			Class<? extends DescriptionElementBase> type, Integer pageSize,
+			Class<? extends T> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
 		//FIXME remove cast
-		return (List<DescriptionElementBase>) dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+		return (List<T>) dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
 	}
 	
 	public List<DescriptionElementBase> getDescriptionElementsForTaxon(

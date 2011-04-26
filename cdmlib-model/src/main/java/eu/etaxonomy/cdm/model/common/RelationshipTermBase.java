@@ -227,7 +227,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	public void writeCsvLine(CSVWriter writer,T term) {
 		String [] line = new String[8];
 		line[0] = term.getUuid().toString();
-		line[1] = term.getUri();
+		line[1] = term.getUri().toString();
 		line[2] = term.getLabel();
 		line[3] = term.getDescription();
 		line[4] = term.getDescription();

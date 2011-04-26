@@ -40,7 +40,6 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * The class for tree nodes within a {@link FeatureTree feature tree} structure.
@@ -65,8 +64,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 		"sortIndex",
 		"onlyApplicableIf",
 		"inapplicableIf"
-//		,"questions",
-//		,"taxon"
 })
 @XmlRootElement(name = "FeatureNode")
 @Entity

@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 
 /**
@@ -23,7 +22,7 @@ import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
  * @created 20.03.2008
  * @version 1.0
  */
-public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase implements IExportConfigurator{
+public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TcsXmlExportConfigurator.class);
 

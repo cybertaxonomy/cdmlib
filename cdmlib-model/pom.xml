@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.0</version>
+    <version>3.0.4-SNAPSHOT</version>
 	<relativePath>pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -30,15 +28,14 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/org.springframework.aspects/${spring.version}/org.springframework.aspects-${spring.version}.jar"/>
+                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/org.springframework.aspects/${spring.version}/org.springframework.aspects-${spring.version}.jar" />
                 <path id="aspectPath">
-                  <pathelement location="${spring.aspects.jar}"/>
+                  <pathelement location="${spring.aspects.jar}" />
                 </path>
                 <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
                   <classpath refid="maven.plugin.classpath" />
                 </taskdef>
-                <iajc verbose="false" source="1.5" destDir="target/classes"
-                  aspectPathRef="aspectPath">
+                <iajc verbose="false" source="1.5" destDir="target/classes" aspectPathRef="aspectPath">
                   <classpath refid="maven.plugin.classpath" />
                   <classpath refid="maven.compile.classpath" />
                   <sourceroots>

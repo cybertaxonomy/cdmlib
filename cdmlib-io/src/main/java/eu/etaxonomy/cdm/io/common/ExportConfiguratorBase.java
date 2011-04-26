@@ -8,11 +8,9 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**

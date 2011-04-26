@@ -55,13 +55,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 	 * @return
 	 */
 	public List<Classification> listClassifications(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * 
-	 * @param uuid
-	 * @return
-	 */
-	public Classification getClassificationByUuid(UUID uuid);
 	
 	/**
 	 * 

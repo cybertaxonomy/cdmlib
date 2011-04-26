@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class XmlExportConfiguratorBase extends ExportConfiguratorBase<File> implements IExportConfigurator{
+public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> extends ExportConfiguratorBase<File> implements IExportConfigurator<STATE>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(XmlExportConfiguratorBase.class);
 

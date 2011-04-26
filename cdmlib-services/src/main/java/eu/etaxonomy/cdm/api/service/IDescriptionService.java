@@ -248,7 +248,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
     
-    public List<DescriptionElementBase> getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T>  getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<? extends T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	public DistributionTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels, List<String> propertyPaths);
 
