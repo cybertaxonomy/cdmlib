@@ -225,11 +225,11 @@ public class UriUtils {
 			 result = true;
 			 
 		} catch (UnknownHostException e1) {
-			logger.warn("Unknwon Host: " +e1.getMessage());
+			logger.info("Unknwon Host: " +e1.getMessage());
 		} catch (ClientProtocolException e2) {
-			logger.warn("ClientProtocolException: " + e2.getMessage());
+			logger.info("ClientProtocolException: " + e2.getMessage());
 		} catch (IOException e3) {
-			logger.warn("IOException: " + e3.getMessage());
+			logger.info("IOException: " + e3.getMessage());
 		}
 	     
 	     // When HttpClient instance is no longer needed, 
@@ -253,10 +253,10 @@ public class UriUtils {
 				hostNameToResolve = "cnn.com";
 			}
 		    InetAddress inetHost = InetAddress.getByName(hostNameToResolve);
-		    System.out.println("The hosts IP address is: " + inetHost.getHostAddress());
+		    logger.debug("The hosts IP address is: " + inetHost.getHostAddress());
 			return true;
 		 } catch(UnknownHostException ex) {
-		     System.out.println("Unrecognized host");
+			 logger.info("Unrecognized host");
 		     return false;
 		 }
 	}
