@@ -16,7 +16,7 @@
      <mapping> 
         <class-a>eu.etaxonomy.cdm.model.common.DefinedTermBase</class-a>
         <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm</class-b>
-        <field custom-converter-id="preferLsidToUriConverter">
+        <field>
           <a>uri</a>
           <b>identifier</b>
         </field>
