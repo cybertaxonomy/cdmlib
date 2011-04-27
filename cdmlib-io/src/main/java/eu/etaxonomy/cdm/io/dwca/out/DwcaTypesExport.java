@@ -50,7 +50,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Component
 public class DwcaTypesExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaTypesExport.class);
-
+	private static final String fileName = "typesAndSpecimen.txt";
+	
 	/**
 	 * Constructor
 	 */
@@ -70,23 +71,11 @@ public class DwcaTypesExport extends DwcaExportBase {
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
-    	String fileName = config.getDestinationNameString();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		TransactionStatus txStatus = startTransaction(true);
 
 		try {
 			
-			final String coreTaxFileName = "typesAndSpecimen.txt";
-			fileName = fileName + File.separatorChar + coreTaxFileName;
-			File f = new File(fileName);
-			if (!f.exists()){
-				f.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(f);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-
-			
+			PrintWriter writer = createPrintWriter(fileName, config);
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			
 			for (TaxonNode node : allNodes){

@@ -9,11 +9,8 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -42,6 +39,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaImageExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
 
+	private static final String fileName = "images.txt";
+	
 	/**
 	 * Constructor
 	 */
@@ -61,23 +60,10 @@ public class DwcaImageExport extends DwcaExportBase {
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
-    	String fileName = config.getDestinationNameString();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		TransactionStatus txStatus = startTransaction(true);
 
 		try {
-			
-			final String coreTaxFileName = "images.txt";
-			fileName = fileName + File.separatorChar + coreTaxFileName;
-			File f = new File(fileName);
-			if (!f.exists()){
-				f.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(f);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-
-			
+			PrintWriter writer = createPrintWriter(fileName, config);
 			
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){

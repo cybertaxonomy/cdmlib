@@ -8,6 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +26,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -34,7 +40,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
 	private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
-
+	
+	protected static final boolean IS_CORE = true;
+	
+	
 	protected Set<Integer> existingRecordIds = new HashSet<Integer>();
 	protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
 	
@@ -122,5 +131,39 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	 */
 	protected void addExistingRecordUuid(CdmBase cdmBase) {
 		existingRecordUuids.add(cdmBase.getUuid());
+	}
+	
+
+	/**
+	 * @param config
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	protected FileOutputStream createFileOutputStream(DwcaTaxExportConfigurator config, String thisFileName) throws IOException, FileNotFoundException {
+		String filePath = config.getDestinationNameString();
+		String fileName = filePath + File.separatorChar + thisFileName;
+		File f = new File(fileName);
+		if (!f.exists()){
+			f.createNewFile();
+		}
+		FileOutputStream fos = new FileOutputStream(f);
+		return fos;
+	}
+	
+
+	/**
+	 * @param coreTaxFileName
+	 * @param config
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedEncodingException
+	 */
+	protected PrintWriter createPrintWriter(final String fileName, DwcaTaxExportConfigurator config) 
+					throws IOException, FileNotFoundException, UnsupportedEncodingException {
+		FileOutputStream fos = createFileOutputStream(config, fileName);
+		PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
+		return writer;
 	}
 }

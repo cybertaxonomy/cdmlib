@@ -9,6 +9,9 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
@@ -21,9 +24,20 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportState.class);
 
+	private List<DwcaMetaRecord> metaRecords = new ArrayList<DwcaMetaRecord>();
+	
 	public DwcaTaxExportState(DwcaTaxExportConfigurator config) {
 		super(config);
 	}
+	
+	public void addMetaRecord(DwcaMetaRecord record){
+		metaRecords.add(record);
+	}
+	
+	public List<DwcaMetaRecord> getMetaRecords(){
+		return metaRecords;
+	}
+	
 
 
 }

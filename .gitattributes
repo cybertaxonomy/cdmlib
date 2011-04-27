@@ -259,6 +259,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaImageExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaImageRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaMetaDataExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaMetaDataRecord.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaMetaRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaRecordBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaReferenceExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaReferenceRecord.java -text

@@ -9,11 +9,8 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -41,6 +38,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Component
 public class DwcaDescriptionExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
+	
+	private static final String fileName = "description.txt";
 
 	/**
 	 * Constructor
@@ -61,20 +60,11 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String fileName = config.getDestinationNameString();
 		TransactionStatus txStatus = startTransaction(true);
 
 		try {
+			PrintWriter writer = createPrintWriter(fileName, config);
 			
-			final String coreTaxFileName = "description.txt";
-			fileName = fileName + File.separatorChar + coreTaxFileName;
-			File f = new File(fileName);
-			if (!f.exists()){
-				f.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(f);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);

@@ -40,6 +40,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaVernacularExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
 
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/VernacularName";
+	private static final String fileName = "vernacular.txt";
+	
+	
 	/**
 	 * Constructor
 	 */
@@ -59,22 +63,18 @@ public class DwcaVernacularExport extends DwcaExportBase {
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
-    	String fileName = config.getDestinationNameString();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		TransactionStatus txStatus = startTransaction(true);
 
 		try {
+			PrintWriter writer = createPrintWriter(fileName, config);
 			
-			final String coreTaxFileName = "vernacular.txt";
-			fileName = fileName + File.separatorChar + coreTaxFileName;
-			File f = new File(fileName);
-			if (!f.exists()){
-				f.createNewFile();
+			DwcaMetaRecord metaRecord = new DwcaMetaRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
+			DwcaVernacularRecord r = new DwcaVernacularRecord();
+			List<String> l = r.getHeaderList();
+			for (String header : l){
+				metaRecord.addFieldEntry("http://rs.tdwg.org/dwc/terms/" + header);
 			}
-			FileOutputStream fos = new FileOutputStream(f);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-
 			
 			
 			List<TaxonNode> allNodes =  getAllNodes(null);

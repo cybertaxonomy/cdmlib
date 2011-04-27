@@ -36,12 +36,11 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean doDescription = true;
 	private boolean doDistributions = true;
 	private boolean doImages = true;
-
+	private boolean doMetaData = true;
 	private String encoding = "UTF-8";
-	private String linesTerminatedBy = "\r\n";
-	private String fieldsEnclosedBy = "&quot;";
+	private String linesTerminatedBy = "\\r\\n";
+	private String fieldsEnclosedBy = "\"";
 	private boolean ignoreHeaderLines = true;
-	
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
 	
@@ -67,6 +66,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 				,DwcaDescriptionExport.class
 				,DwcaDistributionExport.class
 				,DwcaImageExport.class
+				,DwcaMetaDataExport.class
 		};
 	}
 
@@ -194,5 +194,60 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public List<UUID> getFeatureExclusions() {
 		return featureExclusions;
 	}
-		
+	
+	public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+
+	public String getLinesTerminatedBy() {
+		return linesTerminatedBy;
+	}
+
+	public void setLinesTerminatedBy(String linesTerminatedBy) {
+		this.linesTerminatedBy = linesTerminatedBy;
+	}
+
+	public String getFieldsEnclosedBy() {
+		return fieldsEnclosedBy;
+	}
+
+	public void setFieldsEnclosedBy(String fieldsEnclosedBy) {
+		this.fieldsEnclosedBy = fieldsEnclosedBy;
+	}
+
+	public boolean isIgnoreHeaderLines() {
+		return ignoreHeaderLines;
+	}
+
+	public void setIgnoreHeaderLines(boolean ignoreHeaderLines) {
+		this.ignoreHeaderLines = ignoreHeaderLines;
+	}
+
+	public boolean isIncludeBasionymsInResourceRelations() {
+		return includeBasionymsInResourceRelations;
+	}
+
+	public void setIncludeBasionymsInResourceRelations(boolean includeBasionymsInResourceRelations) {
+		this.includeBasionymsInResourceRelations = includeBasionymsInResourceRelations;
+	}
+
+	public boolean isIncludeMisappliedNamesInResourceRelations() {
+		return includeMisappliedNamesInResourceRelations;
+	}
+
+	public void setIncludeMisappliedNamesInResourceRelations(boolean includeMisappliedNamesInResourceRelations) {
+		this.includeMisappliedNamesInResourceRelations = includeMisappliedNamesInResourceRelations;
+	}
+
+	public void setDoMetaData(boolean doMetaData) {
+		this.doMetaData = doMetaData;
+	}
+
+	public boolean isDoMetaData() {
+		return doMetaData;
+	}
 }
