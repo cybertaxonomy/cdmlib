@@ -20,11 +20,12 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @author a.babadshanjan
  * @created 17.11.2008
  */
-public class CdmDefaultIOBase<T extends IIoConfigurator>  {
+public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmDefaultIOBase.class);
+	private static final Logger logger = Logger
+			.getLogger(CdmDefaultIOBase.class);
 
-	protected CdmApplicationController cdmApp = null;
+	protected ICdmApplicationConfiguration cdmApp = null;
 
 	/**
 	 * Creates a new {@link CdmApplicationController} if it does not exist yet
@@ -78,7 +79,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator>  {
 	 * @param cdmApp
 	 *            the cdmApp to set
 	 */
-	public void setCdmAppController(CdmApplicationController cdmApp) {
+	public void setCdmAppController(ICdmApplicationConfiguration cdmApp) {
 		this.cdmApp = cdmApp;
 	}
 

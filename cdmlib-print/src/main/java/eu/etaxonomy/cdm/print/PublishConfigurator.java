@@ -1,12 +1,12 @@
 // $Id$
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.print;
 
@@ -22,43 +22,44 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.common.NullProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
- * This class holds the complete configuration for the print publishing process. All aspects of the 
- * process are defined here.
+ * This class holds the complete configuration for the print publishing process.
+ * All aspects of the process are defined here.
  * 
  * @author n.hoffmann
  * @created Aug 3, 2010
  * @version 1.0
  */
-public class PublishConfigurator implements Serializable{
+public class PublishConfigurator implements Serializable {
 
 	private static final Logger logger = Logger
 			.getLogger(PublishConfigurator.class);
 
 	private static final long serialVersionUID = 4896190792717383839L;
-	
-	private CdmApplicationController applicationController;
-	
+
+	private ICdmApplicationConfiguration applicationConfiguration;
+
 	private URL webserviceUrl;
-	
+
 	private List<Element> selectedTaxonNodeElements = new ArrayList<Element>();
-	
+
 	private boolean doSynonymy = true;
-	
+
 	private boolean doDescriptions = true;
-	
+
 	private UUID featureTreeUuid;
-	
+
 	private boolean doImages = true;
-	
+
 	private boolean doPublishEntireBranches = true;
-	
+
 	private File exportFolder;
-	
+
 	private List<IPublishOutputModule> outputModules;
 
 	private boolean remote;
@@ -68,38 +69,43 @@ public class PublishConfigurator implements Serializable{
 	/**
 	 * Hidden default constructor
 	 */
-	private PublishConfigurator(){}
-	
+	private PublishConfigurator() {
+	}
+
 	/**
 	 * Creates a new instance connected to the given application controller.
 	 * 
-	 * @param applicationController
+	 * @param applicationConfiguration
 	 * @return
 	 */
-	public static PublishConfigurator NewLocalInstance(CdmApplicationController applicationController){
+	public static PublishConfigurator NewLocalInstance(
+			ICdmApplicationConfiguration applicationConfiguration) {
 		PublishConfigurator configurator = new PublishConfigurator();
 		configurator.setLocal();
-		configurator.setApplicationController(applicationController);
+		configurator.setApplicationConfiguration(applicationConfiguration);
 		logger.trace("New local publish configurator instantiated.");
 		return configurator;
 	}
-	
+
 	/**
-	 * Creates a new instance, ready to be connected to a CDM Community Stores access point.
+	 * Creates a new instance, ready to be connected to a CDM Community Stores
+	 * access point.
 	 * 
 	 * @return
 	 */
-	public static PublishConfigurator NewRemoteInstance(){
+	public static PublishConfigurator NewRemoteInstance() {
 		PublishConfigurator configurator = new PublishConfigurator();
 		configurator.setRemote();
 		logger.trace("New remote publish configurator instantiated.");
 		return configurator;
 	}
-	
+
 	/**
-	 * Returns the CDM Community Stores access point connected to this configuration.
+	 * Returns the CDM Community Stores access point connected to this
+	 * configuration.
 	 * 
-	 * @return the access points url or null if this configurator is configured to be local.
+	 * @return the access points url or null if this configurator is configured
+	 *         to be local.
 	 */
 	public URL getWebserviceUrl() {
 		return webserviceUrl;
@@ -110,11 +116,12 @@ public class PublishConfigurator implements Serializable{
 	 * @param webserviceUrlString
 	 * @throws MalformedURLException
 	 */
-	public void setWebserviceUrl(String webserviceUrlString) throws MalformedURLException {
+	public void setWebserviceUrl(String webserviceUrlString)
+			throws MalformedURLException {
 		URL url = new URL(webserviceUrlString);
 		setWebserviceUrl(url);
 	}
-	
+
 	/**
 	 * @see {@link #getWebserviceUrl()}
 	 * @param webserviceUrl
@@ -124,7 +131,8 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	/**
-	 * Returns a list of taxon node elements that should be processed by the print publisher.
+	 * Returns a list of taxon node elements that should be processed by the
+	 * print publisher.
 	 * 
 	 * @return a list of elements
 	 */
@@ -133,22 +141,25 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	/**
-	 * Set the list of taxon node elements that should be processed by the print publisher.
+	 * Set the list of taxon node elements that should be processed by the print
+	 * publisher.
 	 * 
 	 * @see {@link #getSelectedTaxonNodeElements()}
 	 * @param selectedTaxonNodeElements
 	 */
-	public void setSelectedTaxonNodeElements(List<Element> selectedTaxonNodeElements) {
+	public void setSelectedTaxonNodeElements(
+			List<Element> selectedTaxonNodeElements) {
 		this.selectedTaxonNodeElements = selectedTaxonNodeElements;
 	}
-	
+
 	/**
-	 * Add a taxon node element to list of taxon nodes that will be processed by the print publisher.
+	 * Add a taxon node element to list of taxon nodes that will be processed by
+	 * the print publisher.
 	 * 
 	 * @see {@link #getSelectedTaxonNodeElements()}
 	 * @param selectedTaxonNodeElement
 	 */
-	public void addSelectedTaxonNodeElements(Element selectedTaxonNodeElement){
+	public void addSelectedTaxonNodeElements(Element selectedTaxonNodeElement) {
 		this.selectedTaxonNodeElements.add(selectedTaxonNodeElement);
 	}
 
@@ -187,37 +198,40 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	/**
-	 * The folder, the produced output will be written to. 
+	 * The folder, the produced output will be written to.
 	 * 
 	 * @return the exportFile
 	 */
 	public File getExportFolder() {
 		return exportFolder;
 	}
-	
+
 	/**
 	 * @see {@link #getExportFolder()}
-	 * @param exportFolder the exportFile to set
+	 * @param exportFolder
+	 *            the exportFile to set
 	 */
 	public void setExportFolder(File exportFolder) {
-		if(!exportFolder.isDirectory()){
-			throw new IllegalArgumentException("Given export folder is not a directory.");
-		}		
-		if(! exportFolder.canWrite()){
-			throw new IllegalArgumentException("Can not write to given export folder");
+		if (!exportFolder.isDirectory()) {
+			throw new IllegalArgumentException(
+					"Given export folder is not a directory.");
+		}
+		if (!exportFolder.canWrite()) {
+			throw new IllegalArgumentException(
+					"Can not write to given export folder");
 		}
 		this.exportFolder = exportFolder;
 	}
 
 	/**
-	 * Returns a list of output modules. The print publisher will export into the formats defined
-	 * by these output modules
+	 * Returns a list of output modules. The print publisher will export into
+	 * the formats defined by these output modules
 	 * 
 	 * @see {@link IPublishOutputModule} and implementations thereof
 	 * @return the outputModules
 	 */
 	public List<IPublishOutputModule> getOutputModules() {
-		if(outputModules == null){
+		if (outputModules == null) {
 			outputModules = new ArrayList<IPublishOutputModule>();
 		}
 		return outputModules;
@@ -225,11 +239,13 @@ public class PublishConfigurator implements Serializable{
 
 	/**
 	 * @see {@link #getOutputModules()}
-	 * @param outputModules the outputModules to set
+	 * @param outputModules
+	 *            the outputModules to set
 	 */
 	public void setOutputModules(List<IPublishOutputModule> outputModules) {
-		if(outputModules == null){
-			throw new IllegalArgumentException("List of output modules may not be null.");
+		if (outputModules == null) {
+			throw new IllegalArgumentException(
+					"List of output modules may not be null.");
 		}
 		this.outputModules = outputModules;
 	}
@@ -240,64 +256,70 @@ public class PublishConfigurator implements Serializable{
 	 * @see {@link IPublishOutputModule} and implementations thereof
 	 * @param module
 	 */
-	public void addOutputModule(IPublishOutputModule module){
+	public void addOutputModule(IPublishOutputModule module) {
 		getOutputModules().add(module);
 	}
 
 	/**
-	 * Whether this configurator is connected to a remote CDM Community Store 
+	 * Whether this configurator is connected to a remote CDM Community Store
+	 * 
 	 * @return
 	 */
-	public boolean isRemote(){
+	public boolean isRemote() {
 		return remote;
 	}
-	
+
 	/**
 	 * @see {@link #isRemote()}
 	 */
 	private void setRemote() {
 		this.remote = true;
 	}
-	
+
 	/**
 	 * Whether this configurator is connected to a local application controller.
+	 * 
 	 * @return
 	 */
-	public boolean isLocal(){
-		return ! remote;
+	public boolean isLocal() {
+		return !remote;
 	}
-	
+
 	/**
 	 * @see {@link #isLocal()}
 	 */
-	private void setLocal(){
+	private void setLocal() {
 		this.remote = false;
 	}
-	
+
 	/**
-	 * Returns a {@link RemoteXMLEntityFactory} if <code>this</code> is a remote instance or a {@link LocalXMLEntityFactory} if
-	 * <code>this</code> is a local instance
+	 * Returns a {@link RemoteXMLEntityFactory} if <code>this</code> is a remote
+	 * instance or a {@link LocalXMLEntityFactory} if <code>this</code> is a
+	 * local instance
 	 * 
 	 * @return an {@link IXMLEntityFactory}
 	 */
-	public IXMLEntityFactory getFactory(){
-		return isRemote() ? new RemoteXMLEntityFactory(getWebserviceUrl(), getProgressMonitor()) : new LocalXMLEntityFactory(getApplicationController(), getProgressMonitor());
+	public IXMLEntityFactory getFactory() {
+		return isRemote() ? new RemoteXMLEntityFactory(getWebserviceUrl(),
+				getProgressMonitor()) : new LocalXMLEntityFactory(
+				getApplicationConfiguration(), getProgressMonitor());
 	}
-	
-	/**
-	 * FIXME this is a dummy implementation
-	 * @return
-	 */
-	public int calculateNumberOfNodes(){
-		int count = 100;
-				
-		return count;
-	}
-	
 
 	/**
-	 * Whether taxonomically included taxa for the {@linkplain #getSelectedTaxonNodeElements() selected taxon nodes}
-	 * should be exported recursively. 
+	 * FIXME this is a dummy implementation
+	 * 
+	 * @return
+	 */
+	public int calculateNumberOfNodes() {
+		int count = 100;
+
+		return count;
+	}
+
+	/**
+	 * Whether taxonomically included taxa for the
+	 * {@linkplain #getSelectedTaxonNodeElements() selected taxon nodes} should
+	 * be exported recursively.
 	 * 
 	 * @return <code>true</code> if this is desired
 	 */
@@ -314,7 +336,7 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	/**
-	 * Whether the synonymy should be exported. 
+	 * Whether the synonymy should be exported.
 	 * 
 	 * @return <code>true</code> if this is desired
 	 */
@@ -331,26 +353,28 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	/**
-	 * The {@linkplain CdmApplicationController application controller} associated with this instance
+	 * The {@linkplain CdmApplicationController application controller}
+	 * associated with this instance
 	 * 
 	 * @return the {@link CdmApplicationController} or null if <code>this</code>
-	 * is a {@linkplain #isRemote() remote} instance
+	 *         is a {@linkplain #isRemote() remote} instance
 	 */
-	public CdmApplicationController getApplicationController() {
-		return applicationController;
-	}
-	
-	/**
-	 * @see {@link #getApplicationController()}
-	 * @param applicationController
-	 */
-	private void setApplicationController(CdmApplicationController applicationController) {
-		this.applicationController = applicationController;
+	public ICdmApplicationConfiguration getApplicationConfiguration() {
+		return applicationConfiguration;
 	}
 
 	/**
-	 * The feature tree configures which features and in which order and nesting will be exported 
-	 * by the application
+	 * @see {@link #getApplicationController()}
+	 * @param applicationConfiguration
+	 */
+	private void setApplicationConfiguration(
+			ICdmApplicationConfiguration applicationConfiguration) {
+		this.applicationConfiguration = applicationConfiguration;
+	}
+
+	/**
+	 * The feature tree configures which features and in which order and nesting
+	 * will be exported by the application
 	 * 
 	 * @return the featureTrees uuid
 	 */
@@ -360,7 +384,8 @@ public class PublishConfigurator implements Serializable{
 
 	/**
 	 * @see {@link #getFeatureTreeUuid()}
-	 * @param featureTreeUuid the featureTree to set
+	 * @param featureTreeUuid
+	 *            the featureTree to set
 	 */
 	public void setFeatureTree(UUID featureTreeUuid) {
 		this.featureTreeUuid = featureTreeUuid;
@@ -371,10 +396,8 @@ public class PublishConfigurator implements Serializable{
 	}
 
 	public IProgressMonitor getProgressMonitor() {
-		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
+		return progressMonitor != null ? progressMonitor
+				: new NullProgressMonitor();
 	}
-
-
-
 
 }
