@@ -68,13 +68,13 @@ import eu.etaxonomy.cdm.model.common.User;
  * @author a.mueller
  *
  */
-public class CdmApplicationController implements ICdmApplicationConfiguration{
+public class CdmApplicationController implements ICdmApplicationLocalConfiguration{
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 	
 	public AbstractApplicationContext applicationContext;
-	private ICdmApplicationConfiguration configuration; 
+	private ICdmApplicationLocalConfiguration configuration; 
 	private Resource applicationContextResource;
 
 	private IProgressMonitor progressMonitor;
@@ -313,7 +313,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 				logger.info(beanName);
 			}
 		}
-		configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
+		configuration = (ICdmApplicationLocalConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
 //		getDatabaseService().setApplicationController(this);
 	}
 	

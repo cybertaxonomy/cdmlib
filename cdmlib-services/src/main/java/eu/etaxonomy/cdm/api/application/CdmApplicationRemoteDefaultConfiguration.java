@@ -12,12 +12,14 @@ package eu.etaxonomy.cdm.api.application;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
+import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
@@ -282,5 +284,17 @@ public class CdmApplicationRemoteDefaultConfiguration implements ICdmApplication
 	@Override
 	public IGroupService getGroupService() {
 		return groupService;
+	}
+
+	@Override
+	public IDatabaseService getDatabaseService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ProviderManager getAuthenticationManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

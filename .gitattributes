@@ -1626,6 +1626,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDef
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationRemoteController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationRemoteDefaultConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationLocalConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationRemoteConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text

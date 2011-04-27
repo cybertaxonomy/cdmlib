@@ -139,22 +139,13 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public IWorkingSetService getWorkingSetService();
 	
-	/**
-	 * @return
-	 */
-	public PlatformTransactionManager getTransactionManager();
-	
 	
 	/**
 	 * 
 	 * @return
 	 */
 	public ProviderManager getAuthenticationManager();
-	
-	/**
-	 * @return
-	 */
-	public ConversationHolder NewConversation();
+
 
 	/**
 	 * 

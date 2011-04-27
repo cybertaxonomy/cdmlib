@@ -76,10 +76,10 @@ public class ConversationHolder{
 	/**
 	 * Simple constructor used by Spring only
 	 */
-	private ConversationHolder(){
+	public ConversationHolder(){
 		closed = false;
 	}
-
+	
 	public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory, 
 			PlatformTransactionManager transactionManager) {
 		this();

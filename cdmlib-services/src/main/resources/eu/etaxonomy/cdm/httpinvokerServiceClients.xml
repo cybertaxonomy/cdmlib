@@ -268,7 +268,7 @@
 	</bean>
 
 	<!-- only for simple tests -->
-
+<!-- 
 	<bean id="demoService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
@@ -288,10 +288,10 @@
 			<value>eu.etaxonomy.cdm.remoting.httpinvoker.ListService</value>
 		</property>
 	</bean>
-
+ -->
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="config.properties" />
+		<property name="location" value="/eu/etaxonomy/cdm/config.properties" />
 	</bean>
 
 </beans>

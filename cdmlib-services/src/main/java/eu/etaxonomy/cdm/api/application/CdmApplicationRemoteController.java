@@ -19,11 +19,13 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.security.authentication.ProviderManager;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
+import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
@@ -296,6 +298,18 @@ public class CdmApplicationRemoteController implements ICdmApplicationRemoteConf
 	
 	public final Object getBean(String name){
 		return this.applicationContext.getBean(name);
+	}
+
+	@Override
+	public IDatabaseService getDatabaseService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ProviderManager getAuthenticationManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

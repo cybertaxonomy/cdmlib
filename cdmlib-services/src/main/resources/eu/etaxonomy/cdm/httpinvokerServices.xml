@@ -274,7 +274,7 @@
 	</bean>
 
 	<!-- only for simple tests -->
-
+<!-- 
 	<bean id="httpDemoService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service">
@@ -300,5 +300,6 @@
 
 	<bean id="listService" class="eu.etaxonomy.cdm.remoting.httpinvoker.ListServiceImpl">
 	</bean>
-
+ -->
+ 
 </beans>
