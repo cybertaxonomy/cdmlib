@@ -127,7 +127,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 			@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException {
-		logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+		logger.info("doListSpecimensOrObersvations() - " + request.getServletPath());
 		
 		ModelAndView mv = new ModelAndView();
 
