@@ -65,6 +65,11 @@ import javax.xml.bind.annotation.XmlType;
 @Configurable
 public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>> implements IRelated<SynonymRelationship>{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -33478852405765267L;
+
 	static Logger logger = Logger.getLogger(Synonym.class);
 
 	// Don't need the synonym relations here since they are stored at taxon side?
