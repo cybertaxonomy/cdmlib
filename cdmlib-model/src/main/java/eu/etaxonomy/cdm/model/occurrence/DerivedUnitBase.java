@@ -156,7 +156,10 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	
 	@Transient
 	public Set<SpecimenOrObservationBase> getOriginals(){
-		return this.getDerivedFrom().getOriginals();
+		if(getDerivedFrom() != null){
+			return getDerivedFrom().getOriginals();			
+		}
+		return null;
 	}
 
 	public Collection getCollection(){

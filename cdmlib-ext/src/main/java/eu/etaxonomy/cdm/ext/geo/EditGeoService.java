@@ -174,18 +174,20 @@ public class EditGeoService implements IEditGeoService{
 			List<Point> derivedUnitPoints) {
 
 		Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
-		for (SpecimenOrObservationBase original : originals) {
-			if (original instanceof FieldObservation) {
-				Point point =  ((FieldObservation) original).getGatheringEvent().getExactLocation();
-				if(point != null){
-					//FIXME: remove next statement after DerivedUnitFacade or ABCD import is fixed
-					if(point.getLatitude() == 0.0 && point.getLongitude() == 0.0){
-						continue;
+		if(originals != null){
+			for (SpecimenOrObservationBase original : originals) {
+				if (original instanceof FieldObservation) {
+					Point point =  ((FieldObservation) original).getGatheringEvent().getExactLocation();
+					if(point != null){
+						//FIXME: remove next statement after DerivedUnitFacade or ABCD import is fixed
+						if(point.getLatitude() == 0.0 && point.getLongitude() == 0.0){
+							continue;
+						}
+						derivedUnitPoints.add(point);
 					}
-					derivedUnitPoints.add(point);
+				} else {
+					registerDerivedUnitLocations((DerivedUnitBase) original, derivedUnitPoints);
 				}
-			} else {
-				registerDerivedUnitLocations((DerivedUnitBase) original, derivedUnitPoints);
 			}
 		}
 
