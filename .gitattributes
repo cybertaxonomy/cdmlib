@@ -1365,13 +1365,14 @@ cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigu
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmlib-remote-servlet.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/configurable.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/datasources-local.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/empty-default-datasource.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsp/index.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text

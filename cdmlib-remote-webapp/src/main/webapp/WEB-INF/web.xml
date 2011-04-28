@@ -39,8 +39,8 @@
      -->
 
     <servlet>
-        <description>CDM Remote REST API</description>
-        <servlet-name>cdmrest</servlet-name> 
+        <description>CDM Remote API</description>
+        <servlet-name>cdmlib-remote</servlet-name> 
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <!-- 
         <init-param>
@@ -51,7 +51,7 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>cdmrest</servlet-name>
+        <servlet-name>cdmlib-remote</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     
@@ -64,9 +64,11 @@
         <url-pattern>*.ico</url-pattern>
     </servlet-mapping>
 
+    <!-- 
+        The welcome-file-list will be ignored since the cdmlib-remote servlet is mapped to the root path 
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+     -->
 
 	<filter>
 		<filter-name>charsetFilter</filter-name>

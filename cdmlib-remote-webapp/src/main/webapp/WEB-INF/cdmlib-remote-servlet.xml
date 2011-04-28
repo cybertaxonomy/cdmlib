@@ -34,18 +34,16 @@
 	</bean>
 
     <!-- 
+	 -->
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="order" value="0" />
 		<property name="mappings">
 			<props>
-				<prop key="/index.do">urlFilenameViewController
-				</prop>
-				<prop key="/">welcomeFileViewController
-				</prop>
+				<prop key="/index.do">urlFilenameViewController</prop>
+				<prop key="/">welcomeFileViewController</prop>
 			</props>
 		</property>
 	</bean>
-	 -->
     
 	<!-- 
 	======= HandlerAdapters =======
@@ -95,29 +93,44 @@
 		cdmserver servlet is mapped to the root path [/] So the welcome file
 		list is being replaced by a SimpleUrlHandlerMapping on the root path
 		[/] which is mapped via this ViewController to the [index] view
+	-->
 	<bean id="welcomeFileViewController"
 		class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
 		<property name="suffix">
 			<value>index</value>
 		</property>
 	</bean>
-	-->
 
 
 	<!-- 
     ======= ViewResolver =======
     -->
+    
+    <bean id="viewResolverJsp"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="0" />
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+        <property name="viewNames">
+            <!--
+                view names (or name patterns) that can be handled
+            -->
+            <list>
+                <value>index</value>
+            </list>
+        </property>
+    </bean>
+
 	<bean id="oaiViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
-        <property name="order" value="0"/>
+        <property name="order" value="1"/>
         <property name="location" value="/WEB-INF/oai-views.xml"/>
         <!-- FOR DEBUGING ONLY !!!!   
         <property name="cache" value="false"/> 
          -->
     </bean>
-	
-    
-	 <bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-	      <property name="order" value="1" />
+
+    <bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+	      <property name="order" value="2" />
 	      <property name="mediaTypes">
 	         <map>
 			    <entry key="xml" value="application/xml" />
@@ -147,24 +160,6 @@
 	      </property>
 	</bean>
 	
-    <!--  
-        === the viewResolverJsp is currently unused ===
-	<bean id="viewResolverJsp"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="order" value="1" />
-		<property name="prefix" value="/WEB-INF/jsp/" />
-		<property name="suffix" value=".jsp" />
-		<property name="viewNames">
-			<!- -
-				view names (or name patterns) that can be handled
-			- ->
-			<list>
-				<value>index</value>
-			</list>
-		</property>
-	</bean>
-    -->
-
 	<!-- 
 	======= Exception Handling =======
 	-->
