@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -71,7 +73,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	private AbstractBeanInitializer beanInitializer;
 	
 	@Autowired
-	private ITaxonService taxonService;
+	private ITaxonDao taxonDao;
 	
 	
 
@@ -230,7 +232,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 			Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
 	{
 		
-		associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
+		associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
 		return dao.listByAnyAssociation(type, associatedTaxon, limit, start, orderHints, propertyPaths);
 		
 	}
