@@ -1,5 +1,9 @@
 package eu.etaxonomy.cdm.model.description;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.PrintStream;
 
 import org.apache.log4j.Logger;
@@ -97,9 +101,20 @@ public class PolytomousKeyTest {
 				strKey);
 	}
 
+
+	@Test
+	public void testClone() {
+		PolytomousKey clone = (PolytomousKey) key1.clone();
+		assertNotNull(clone.getRoot());
+		assertNotSame(clone.getRoot(), key1.getRoot());
+		assertTrue(clone.getRoot().getChildren().size() == 0);
+		assertTrue(key1.getRoot().getChildren().size()> 0);
+			
+	}
 	// @Test
 	// public void testGetChildren() {
 	// fail("Not yet implemented");
 	// }
+
 
 }
