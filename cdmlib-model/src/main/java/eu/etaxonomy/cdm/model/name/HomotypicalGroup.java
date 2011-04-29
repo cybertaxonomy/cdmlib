@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -577,5 +579,56 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		}else{
 			return false;
 		}
+	}
+	
+	//*********************** CLONE ********************************************************/
+	/** 
+	 * Clones <i>this</i> homotypical group. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> homotypical group by
+	 * modifying only some of the attributes.<BR><BR>
+	 * 
+	 *  
+	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone()  {
+		try{
+			HomotypicalGroup result = (HomotypicalGroup) super.clone();
+			result.typifiedNames = new HashSet<TaxonNameBase>();
+			HashMap<UUID,TaxonNameBase> names = new HashMap<UUID,TaxonNameBase>();
+			TaxonNameBase basionym;
+			TaxonNameBase basionymClone;
+			UUID typifiedNameUuid;
+			
+			for (TaxonNameBase typifiedName:this.getTypifiedNames()){
+				if (!names.containsKey(typifiedName.getUuid())){
+					TaxonNameBase typifiedNameClone =(TaxonNameBase) typifiedName.clone();
+					names.put(typifiedName.getUuid(), typifiedNameClone);
+					typifiedNameClone.setHomotypicalGroup(result);
+					basionym = typifiedName.getBasionym();
+					if (basionym != null){
+						if (names.containsKey(basionym.getUuid())){
+							basionymClone = names.get(basionym.getUuid());
+						}else{
+							basionymClone = (TaxonNameBase)basionym.clone();
+							names.put(basionym.getUuid(), basionymClone);
+							result.addTypifiedName(basionymClone);
+						}
+						
+						typifiedNameClone.addBasionym(basionymClone);
+					}
+					
+					result.addTypifiedName(typifiedNameClone);
+					
+				} 
+			}
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

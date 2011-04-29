@@ -248,10 +248,11 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 			result.description = new HashMap<Language, LanguageString>();
 			for (Language language : getDescriptions().keySet()){
 				//TODO clone needed? See also IndividualsAssociation
-				LanguageString newLanguageString = (LanguageString)getModifyingText().get(language).clone();
+				LanguageString newLanguageString = (LanguageString)getDescriptions().get(language).clone();
 				result.description.put(language, newLanguageString);
 			}
 			
+						
 			return result;
 			//no changes to: taxon2
 		} catch (CloneNotSupportedException e) {

@@ -23,8 +23,17 @@ public interface IMultiLanguageText {
 	 * @return String the previous text in the MultilanguageSet that was associated with the language
 	 * defined in languageString, or null if there was no such text before. (A null return can also indicate that the text was previously null.)
 	 */
-	public LanguageString add(LanguageString languageString);
+	public LanguageString put(LanguageString languageString);
 
+	/**
+	 * @param languageString
+	 * @return String the previous text in the MultilanguageSet that was associated with the language
+	 * defined in languageString, or null if there was no such text before. (A null return can also indicate that the text was previously null.)
+	 * @deprecated should follow the put semantic of maps, this method will be removed in v4.0
+	 * 					Use the {@link #put(LanguageString) put} method instead
+	 */
+	@Deprecated
+	public LanguageString add(LanguageString languageString);
 	/**
 	 * Iterates on the languages. As soon as there exists a language string for this language in 
 	 * this multilanguage text

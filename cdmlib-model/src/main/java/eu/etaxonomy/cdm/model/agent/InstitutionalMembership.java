@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "InstitutionalMembership")
 @Entity
 @Audited
-public class InstitutionalMembership extends VersionableEntity {
+public class InstitutionalMembership extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -800814712134999042L;
 	public static final Logger logger = Logger.getLogger(InstitutionalMembership.class);
 	

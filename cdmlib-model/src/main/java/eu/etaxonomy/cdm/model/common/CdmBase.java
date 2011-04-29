@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
     "createdBy"
 })
 @MappedSuperclass
-public abstract class CdmBase implements Serializable, ICdmBase{
+public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	private static final long serialVersionUID = -3053225700018294809L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBase.class);

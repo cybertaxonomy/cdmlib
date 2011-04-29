@@ -74,6 +74,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#add(eu.etaxonomy.cdm.model.common.LanguageString)
 	 */
+	@Deprecated
 	public LanguageString add(LanguageString languageString){
 		if (languageString == null){
 			return null;
@@ -81,7 +82,16 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 			return this.put(languageString.getLanguage(), languageString);
 		}
 	}
-	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#put(eu.etaxonomy.cdm.model.common.LanguageString)
+	 */
+	public LanguageString put(LanguageString languageString){
+		if (languageString == null){
+			return null;
+		}else{
+			return this.put(languageString.getLanguage(), languageString);
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#getPreferredLanguageString(java.util.List)
@@ -110,7 +120,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 			LanguageString newLanguageString;
 			try {
 				newLanguageString = (LanguageString)languageString.clone();
-				result.put(newLanguageString.getLanguage(), newLanguageString);
+				result.put(newLanguageString);
 			} catch (CloneNotSupportedException e) {
 				logger.error(e);
 			}

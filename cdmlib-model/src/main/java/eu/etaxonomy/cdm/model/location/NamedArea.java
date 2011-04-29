@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class NamedArea extends OrderedTermBase<NamedArea> {
+public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	private static final long serialVersionUID = 6248434369557403036L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NamedArea.class);

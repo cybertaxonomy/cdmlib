@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 @XmlRootElement(name = "Contact")
 @Embeddable
 @Audited
-public class Contact implements Serializable {
+public class Contact implements Serializable, Cloneable {
 	private static final long serialVersionUID = -1851305307069277625L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Contact.class);

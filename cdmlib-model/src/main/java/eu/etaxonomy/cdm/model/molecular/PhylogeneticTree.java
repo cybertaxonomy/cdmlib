@@ -67,5 +67,36 @@ public class PhylogeneticTree extends ReferencedMedia {
 	
 	public void removeUsedSequences(Sequence usedSequence) {
 		this.usedSequences.remove(usedSequence);
+		
+	}
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> phylogenetic tree. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> phylogenetic tree
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link Media Media}.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.media.Media#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	
+	public Object clone(){
+		PhylogeneticTree result;
+		try{
+			result= (PhylogeneticTree) super.clone();
+			result.usedSequences = new HashSet<Sequence>();
+			for (Sequence seq: this.usedSequences){
+				result.addUsedSequences((Sequence)seq.clone());
+			}
+			
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
