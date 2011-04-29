@@ -85,6 +85,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public DwcaTaxRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 		scientificNameId = new DwcaId(config);
+		datasetId = new DwcaId(config);
 	}
 
 	/* (non-Javadoc)
@@ -521,8 +522,8 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public String getDatasetId() {
 		return datasetId.getId();
 	}
-	public void setDatasetId(Classification datasetId) {
-		this.datasetId.setId(datasetId);
+	public void setDatasetId(Classification classification) {
+		this.datasetId.setId(classification);
 	}
 	public String getDatasetName() {
 		return datasetName;
