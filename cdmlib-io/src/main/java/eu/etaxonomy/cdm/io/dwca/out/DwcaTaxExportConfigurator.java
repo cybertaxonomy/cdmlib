@@ -37,6 +37,9 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean doDistributions = true;
 	private boolean doImages = true;
 	private boolean doMetaData = true;
+	
+	private boolean isUseIdWherePossible = false;
+	
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\\r\\n";
 	private String fieldsEnclosedBy = "\"";
@@ -249,5 +252,13 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	public boolean isDoMetaData() {
 		return doMetaData;
+	}
+
+	public boolean isUseIdWherePossible() {
+		return this.isUseIdWherePossible;
+	}
+
+	public void setUseIdWherePossible(boolean isUseIdWherePossible) {
+		this.isUseIdWherePossible = isUseIdWherePossible;
 	}
 }

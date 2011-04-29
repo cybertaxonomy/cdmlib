@@ -24,17 +24,17 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportState.class);
 
-	private List<DwcaMetaRecord> metaRecords = new ArrayList<DwcaMetaRecord>();
+	private List<DwcaMetaDataRecord> metaRecords = new ArrayList<DwcaMetaDataRecord>();
 	
 	public DwcaTaxExportState(DwcaTaxExportConfigurator config) {
 		super(config);
 	}
 	
-	public void addMetaRecord(DwcaMetaRecord record){
+	public void addMetaRecord(DwcaMetaDataRecord record){
 		metaRecords.add(record);
 	}
 	
-	public List<DwcaMetaRecord> getMetaRecords(){
+	public List<DwcaMetaDataRecord> getMetaRecords(){
 		return metaRecords;
 	}
 	

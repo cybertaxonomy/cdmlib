@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -31,7 +30,6 @@ import eu.etaxonomy.cdm.model.media.Rights;
 public class DwcaReferenceRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaReferenceRecord.class);
-	private Integer coreid;
 	
 	private String isbnIssn;
 	private URI uri;
@@ -51,32 +49,74 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	private String taxonRemarks;
 	private String type;
 	
-	@Override
-	public List<String> getHeaderList() {
-		String[] result = new String[]{"coreid", "identifier","identifier","identifier", 
-				"identifier", "bibliographicCitation", "title","creator", "date", 
-				"source", "description", "subject", "language", "rights","taxonRemarks","type"};
-		return Arrays.asList(result);
+	
+	public DwcaReferenceRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		super(metaDataRecord, config);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
+	 */
+	protected void registerKnownFields(){
+		try {
+			addKnownField("identifier", "http://purl.org/dc/terms/identifier");
+			addKnownField("bibliographicCitation", "http://purl.org/dc/terms/bibliographicCitation");
+			addKnownField("title", "http://purl.org/dc/terms/title");
+			addKnownField("creator", "http://purl.org/dc/terms/creator");
+			addKnownField("date", "http://purl.org/dc/terms/date");
+			addKnownField("source", "http://purl.org/dc/terms/source");
+			addKnownField("subject", "http://purl.org/dc/terms/subject");
+			addKnownField("description", "http://purl.org/dc/terms/description");
+			addKnownField("language", "http://purl.org/dc/terms/language");
+			addKnownField("rights", "http://purl.org/dc/terms/rights");
+			addKnownField("taxonRemarks", "http://rs.tdwg.org/dwc/terms/taxonRemarks");
+			addKnownField("type", "http://purl.org/dc/terms/type");
+
+
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+//	@Override
+//	public List<String> getHeaderList() {
+//		String[] result = new String[]{"coreid", 
+//				"identifier",
+//				"identifier",
+//				"identifier", 
+//				"identifier", 
+//				"bibliographicCitation", 
+//				"title",
+//				"creator", 
+//				"date", 
+//				"source", 
+//				"description", 
+//				"subject", 
+//				"language", 
+//				"rights",
+//				"taxonRemarks",
+//				"type"};
+//		return Arrays.asList(result);
+//	}
+	
 	public void write(PrintWriter writer) {
-		print(coreid, writer, IS_FIRST);
-		print(isbnIssn, writer, IS_NOT_FIRST);
-		print(uri, writer, IS_NOT_FIRST);
-		print(doi, writer, IS_NOT_FIRST);
-		print(lsid, writer, IS_NOT_FIRST);
-		print(bibliographicCitation, writer, IS_NOT_FIRST);
-		print(title, writer, IS_NOT_FIRST);
-		print(creator, writer, IS_NOT_FIRST);
+		printId(getUuid(), writer, IS_FIRST, "coreid");
+		print(isbnIssn, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
+		print(uri, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
+		print(doi, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
+		print(lsid, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION);
+		print(title, writer, IS_NOT_FIRST, TermUris.DC_TITLE);
+		print(creator, writer, IS_NOT_FIRST, TermUris.DC_CREATOR);
 		//TODO
-		print(getTimePeriod(date), writer, IS_NOT_FIRST);
-		print(source, writer, IS_NOT_FIRST);
-		print(description, writer, IS_NOT_FIRST);
-		print(subject, writer, IS_NOT_FIRST);
-		print(language, writer, IS_NOT_FIRST);
-		print(rights, writer, IS_NOT_FIRST);
-		print(taxonRemarks, writer, IS_NOT_FIRST);
-		print(type, writer, IS_NOT_FIRST);
+		print(getTimePeriod(date), writer, IS_NOT_FIRST, TermUris.DC_DATE);
+		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
+		print(description, writer, IS_NOT_FIRST, TermUris.DC_DESCRIPTION);
+		print(subject, writer, IS_NOT_FIRST, TermUris.DC_SUBJECT);
+		print(language, writer, IS_NOT_FIRST, TermUris.DC_LANGUAGE);
+		print(rights, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS);
+		print(taxonRemarks, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_REMARKS);
+		print(type, writer, IS_NOT_FIRST, TermUris.DC_TYPE);
 		writer.println();
 	}
 
@@ -85,14 +125,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	}
 	public void setSource(String source) {
 		this.source = source;
-	}
-
-	public Integer getCoreid() {
-		return coreid;
-	}
-
-	public void setCoreid(Integer coreid) {
-		this.coreid = coreid;
 	}
 
 	public String getIsbnIssn() {

@@ -9,11 +9,8 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -50,6 +47,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Component
 public class DwcaTypesExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaTypesExport.class);
+	
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/TypesAndSpecimen";
 	private static final String fileName = "typesAndSpecimen.txt";
 	
 	/**
@@ -76,6 +75,10 @@ public class DwcaTypesExport extends DwcaExportBase {
 		try {
 			
 			PrintWriter writer = createPrintWriter(fileName, config);
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
+
+			
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			
 			for (TaxonNode node : allNodes){
@@ -88,7 +91,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 				for (TaxonDescription description : descriptions){
 					for (DescriptionElementBase el : description.getElements()){
 						if (el.isInstanceOf(IndividualsAssociation.class)){
-							DwcaTypesRecord record = new DwcaTypesRecord();
+							DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 							IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
 							if (! this.recordExistsUuid(individualAssociation) && handleSpecimen(record, individualAssociation, null, taxon)){
 								record.write(writer);
@@ -100,9 +103,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 				
 				//type specimen 
 				NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-				handleTypeName(writer, taxon, nvn);
+				handleTypeName(writer, taxon, nvn, metaRecord, config);
 				for (Synonym synonym : taxon.getSynonyms()){
-					handleTypeName(writer, synonym, nvn);
+					handleTypeName(writer, synonym, nvn, metaRecord, config);
 				}
 				
 				//FIXME
@@ -129,12 +132,13 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 * @param writer
 	 * @param taxon
 	 * @param nvn
+	 * @param config 
 	 * @return
 	 */
-	private Set<TypeDesignationBase<?>> handleTypeName(PrintWriter writer, TaxonBase taxonBase, NonViralName<?> nvn) {
+	private Set<TypeDesignationBase<?>> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase, NonViralName<?> nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
 		Set<TypeDesignationBase<?>> designations = nvn.getTypeDesignations();
-		for (TypeDesignationBase designation:designations){
-			DwcaTypesRecord record = new DwcaTypesRecord();
+		for (TypeDesignationBase<?> designation:designations){
+			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 			if (! this.recordExistsUuid(designation) && handleSpecimen(record, null, designation, taxonBase)){
 				record.write(writer);
 				addExistingRecordUuid(designation);
@@ -144,8 +148,8 @@ public class DwcaTypesExport extends DwcaExportBase {
 	}
 	
 
-	private boolean handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase designation, TaxonBase taxonBase) {
-		TypeDesignationStatusBase status = null;
+	private boolean handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase<?> designation, TaxonBase<?> taxonBase) {
+		TypeDesignationStatusBase<?> status = null;
 		DerivedUnitFacade facade = null;
 		if (individualsAssociation != null){
 			facade = getFacadeFromAssociation(individualsAssociation);
@@ -157,18 +161,19 @@ public class DwcaTypesExport extends DwcaExportBase {
 			return false;
 		}
 		
-		record.setCoreid(taxonBase.getId());
+		record.setId(taxonBase.getId());
+		record.setUuid(taxonBase.getUuid());
 		record.setBibliographicCitation(facade.getTitleCache());
 		record.setTypeStatus(status);
 		record.setTypeDesignatedBy( (designation == null || designation.getCitation()==null)? null: designation.getCitation().getTitleCache());
 		
-		TaxonNameBase scientificName = getScientificName(facade);
+		TaxonNameBase<?,?> scientificName = getScientificName(facade);
 		if (scientificName != null){
 			record.setScientificName(scientificName.getTitleCache());
 			record.setTaxonRank(scientificName.getRank());
 		}
 		
-		record.setOccurrenceId(facade.innerDerivedUnit().getUuid().toString());
+		record.setOccurrenceId(facade.innerDerivedUnit());
 		Collection collection = facade.getCollection();
 		if (collection != null){
 			record.setCollectionCode(collection.getCode());
@@ -196,7 +201,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		return true;
 	}
 	
-	private TaxonNameBase getScientificName(DerivedUnitFacade facade) {
+	private TaxonNameBase<?,?> getScientificName(DerivedUnitFacade facade) {
 		Set<DeterminationEvent> detEvents = facade.getDeterminations();
 		for (DeterminationEvent detEvent : detEvents){
 			if (detEvent.getPreferredFlag()== true){
@@ -206,11 +211,11 @@ public class DwcaTypesExport extends DwcaExportBase {
 		return null;
 	}
 
-	private DerivedUnitFacade getFacadeFromDesignation(TypeDesignationBase designation) {
+	private DerivedUnitFacade getFacadeFromDesignation(TypeDesignationBase<?> designation) {
 		if (designation.isInstanceOf(SpecimenTypeDesignation.class)){
 			SpecimenTypeDesignation specDesig = CdmBase.deproxy(designation, SpecimenTypeDesignation.class);
 			try {
-				DerivedUnitBase derivedUnit = specDesig.getTypeSpecimen();
+				DerivedUnitBase<?> derivedUnit = specDesig.getTypeSpecimen();
 				if (derivedUnit == null){
 					return null;
 				}else{
@@ -229,7 +234,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 	}
 
 	private DerivedUnitFacade getFacadeFromAssociation(IndividualsAssociation individualsAssociation) {
-		SpecimenOrObservationBase specimen = individualsAssociation.getAssociatedSpecimenOrObservation();
+		SpecimenOrObservationBase<?> specimen = individualsAssociation.getAssociatedSpecimenOrObservation();
 		DerivedUnitFacade facade;
 		if (! specimen.isInstanceOf(DerivedUnitBase.class)){
 			String message = "Non DerivedUnit specimen can not yet be handled by this export";

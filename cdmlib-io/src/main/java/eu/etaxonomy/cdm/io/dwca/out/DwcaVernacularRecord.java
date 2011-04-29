@@ -10,14 +10,14 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
@@ -27,12 +27,12 @@ import eu.etaxonomy.cdm.model.description.Stage;
 public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRecord{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaVernacularRecord.class);
-	private Integer coreid;
+	
 	private String vernacularName;
 	private String source;
 	private Language language;
 	private String temporal;
-	private Integer locationId;
+	private DwcaId locationId;
 	private String locality;
 	private String countryCode;
 	private Sex sex;
@@ -42,36 +42,78 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	private String organismPart;
 	private String taxonRemarks;
 	
-	@Override
-	public List<String> getHeaderList() {
-		String[] result = new String[]{"coreid", "vernacularName",
-				"source","language", 
-				"temporal", "locationId", 
-				"locality","countryCode",
-				"sex","lifeStage", 
-				"locality", "sex", 
-				"isPlural","isPreferredName",
-				"organismPart","taxonRemarks"
-		};
-		return Arrays.asList(result);
+	public DwcaVernacularRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		super(metaDataRecord, config);
+		locationId = new DwcaId(config);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
+	 */
+	protected void registerKnownFields(){
+		try {
+			addKnownField("vernacularName", "http://rs.tdwg.org/dwc/terms/vernacularName");
+			addKnownField("source", "http://purl.org/dc/terms/source");
+			addKnownField("language", "http://purl.org/dc/terms/language");
+			addKnownField("temporal", "http://purl.org/dc/terms/temporal");
+			addKnownField("locationID", "http://rs.tdwg.org/dwc/terms/locationID");
+			addKnownField("countryCode", "http://rs.tdwg.org/dwc/terms/countryCode");
+			addKnownField("locality", "http://rs.tdwg.org/dwc/terms/locality");
+			addKnownField("sex", "http://rs.tdwg.org/dwc/terms/sex");
+			addKnownField("lifeStage", "http://rs.tdwg.org/dwc/terms/lifeStage");
+			addKnownField("isPlural", "http://rs.gbif.org/terms/1.0/isPlural");
+			addKnownField("organismPart", "http://rs.gbif.org/terms/1.0/organismPart");
+			addKnownField("taxonRemarks", "http://rs.tdwg.org/dwc/terms/taxonRemarks");
+			addKnownField("isPreferredName", "http://rs.gbif.org/terms/1.0/isPreferredName");
+			addKnownField("verbatimEventDate", "http://rs.tdwg.org/dwc/terms/verbatimEventDate");
+			addKnownField("verbatimLabel", "http://rs.gbif.org/terms/1.0/verbatimLabel");
+			addKnownField("verbatimLongitude", "http://rs.tdwg.org/dwc/terms/verbatimLongitude");
+			addKnownField("verbatimLatitude", "http://rs.tdwg.org/dwc/terms/verbatimLatitude");
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	
+//	@Override
+//	public List<String> getHeaderList() {
+//		String[] result = new String[]{"coreid", 
+//				"vernacularName",
+//				"source",
+//				"language", 
+//				"temporal", 
+//				"locationId", 
+//				"locality",
+//				"countryCode",
+//				"sex",
+//				"lifeStage", 
+//				"locality", 
+//				"sex", 
+//				"isPlural",
+//				"isPreferredName",
+//				"organismPart",
+//				"taxonRemarks"
+//		};
+//		return Arrays.asList(result);
+//	}
+	
+	
 	public void write(PrintWriter writer) {
-		print(coreid, writer, IS_FIRST);
-		print(vernacularName, writer, IS_NOT_FIRST);
-		print(source, writer, IS_NOT_FIRST);
-		print(language, writer, IS_NOT_FIRST);
-		print(temporal, writer, IS_NOT_FIRST);
-		print(locationId, writer, IS_NOT_FIRST);
-		print(locality, writer, IS_NOT_FIRST);
-		print(countryCode, writer, IS_NOT_FIRST);
-		print(getSex(sex), writer, IS_NOT_FIRST);
-		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST);
-		print(isPlural, writer, IS_NOT_FIRST);
-		print(isPreferredName, writer, IS_NOT_FIRST);
-		print(organismPart, writer, IS_NOT_FIRST);
-		print(taxonRemarks, writer, IS_NOT_FIRST);
+		printId(getUuid(), writer, IS_FIRST, "coreid");
+		
+		print(vernacularName, writer, IS_NOT_FIRST, TermUris.DWC_VERNACULAR_NAME);
+		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
+		print(language, writer, IS_NOT_FIRST, TermUris.DC_LANGUAGE);
+		print(temporal, writer, IS_NOT_FIRST, TermUris.DC_TEMPORAL);
+		print(locationId, writer, IS_NOT_FIRST, TermUris.DWC_LOCATION_ID);
+		print(locality, writer, IS_NOT_FIRST, TermUris.DWC_LOCALITY);
+		print(countryCode, writer, IS_NOT_FIRST, TermUris.DWC_COUNTRY_CODE);
+		print(getSex(sex), writer, IS_NOT_FIRST, TermUris.DWC_SEX);
+		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST, TermUris.DWC_LIFESTAGE);
+		print(isPlural, writer, IS_NOT_FIRST, TermUris.GBIF_IS_PLURAL);
+		print(isPreferredName, writer, IS_NOT_FIRST, TermUris.GBIF_IS_PREFERRED_NAME);
+		print(organismPart, writer, IS_NOT_FIRST, TermUris.GBIF_ORGANISM_PART);
+		print(taxonRemarks, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_REMARKS);
 		writer.println();
 	}
 
@@ -101,15 +143,6 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	public void setSource(String source) {
 		this.source = source;
 	}
-
-	public Integer getCoreid() {
-		return coreid;
-	}
-
-	public void setCoreid(Integer coreid) {
-		this.coreid = coreid;
-	}
-
 
 	public String getTemporal() {
 		return temporal;
@@ -151,16 +184,15 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	}
 
 
-	public Integer getLocationId() {
-		return locationId;
+	public String getLocationId() {
+		return this.locationId.getId();
 	}
 
 
-	public void setLocationId(Integer locationId) {
-		this.locationId = locationId;
+	public void setLocationId(NamedArea locationId) {
+		this.locationId.setId(locationId);
 	}
-
-
+	
 	public Sex getSex() {
 		return sex;
 	}

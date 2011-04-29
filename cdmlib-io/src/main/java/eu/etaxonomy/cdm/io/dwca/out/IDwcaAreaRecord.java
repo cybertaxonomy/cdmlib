@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import eu.etaxonomy.cdm.model.location.NamedArea;
+
 public interface IDwcaAreaRecord {
 
-	public void setLocationId(Integer id);
-
+	public void setLocationId(NamedArea cdmBase);
+	
 	public void setLocality(String label);
 
 	public void setCountryCode(String iso3166_A2);

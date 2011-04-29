@@ -9,11 +9,8 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -68,14 +65,8 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		try {
 			PrintWriter writer = createPrintWriter(fileName, config);
 			
-			DwcaMetaRecord metaRecord = new DwcaMetaRecord(! IS_CORE, fileName, ROW_TYPE);
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
-			DwcaVernacularRecord r = new DwcaVernacularRecord();
-			List<String> l = r.getHeaderList();
-			for (String header : l){
-				metaRecord.addFieldEntry("http://rs.tdwg.org/dwc/terms/" + header);
-			}
-			
 			
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
@@ -84,7 +75,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 				for (TaxonDescription description : descriptions){
 					for (DescriptionElementBase el : description.getElements()){
 						if (el.isInstanceOf(CommonTaxonName.class)){
-							DwcaVernacularRecord record = new DwcaVernacularRecord();
+							DwcaVernacularRecord record = new DwcaVernacularRecord(metaRecord, config);
 							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
 							if (! this.recordExists(commonTaxonName)){
 								handleCommonTaxonName(record, commonTaxonName, taxon);
@@ -119,7 +110,8 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 
 	private void handleCommonTaxonName(DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		if (StringUtils.isBlank(commonTaxonName.getName())){
 			String message = "'Name' is required field for vernacular name but does not exist for taxon " + getTaxonLogString(taxon);
 			logger.warn(message);

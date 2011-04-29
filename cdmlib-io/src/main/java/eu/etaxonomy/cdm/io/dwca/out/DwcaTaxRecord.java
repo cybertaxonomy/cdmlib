@@ -10,9 +10,9 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URISyntaxException;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -22,6 +22,8 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
@@ -32,14 +34,13 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxRecord.class);
 
-	private Integer id;
-	private Integer scientificNameId;
-	private Integer acceptedNameUsageId;
-	private Integer parentNameUsageId;
-	private Integer originalNameUsageId;
-	private Integer nameAccordingToId;
-	private Integer namePublishedInId;
-	private Integer taxonConceptId;
+	private DwcaId scientificNameId;
+	private UUID acceptedNameUsageId;
+	private UUID parentNameUsageId;
+	private UUID originalNameUsageId;
+	private UUID nameAccordingToId;
+	private UUID namePublishedInId;
+	private UUID taxonConceptId;
 	private String scientificName;
 	private String acceptedNameUsage;
 	private String parentNameUsage;
@@ -76,145 +77,313 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private String accessRights;
 	private String bibliographicCitation;
 	private String informationWithheld;
-	private Integer datasetId;
+	private DwcaId datasetId;
 	private String datasetName;
 	private String source;
 
+	
+	public DwcaTaxRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		super(metaDataRecord, config);
+		scientificNameId = new DwcaId(config);
+	}
 
-	@Override
-	public List<String> getHeaderList() {
-		String[] result = new String[]{"id", "scientificNameId",
-				"acceptedNameUsageId","parentNameUsageId", 
-				"originalNameUsageId", "nameAccordingToId", 
-				"namePublishedInId","taxonConceptId",
-				"scientificName","acceptedNameUsage", 
-				"parentNameUsage", "originalNameUsage", 
-				"nameAccordingTo","namePublishedIn",
-				"higherClassification",
-				
-				"kingdom","phylum",
-				"clazz","order", 
-				"family", "genus", 
-				"subgenus","specificEpithet",
-				"infraspecificEpithet",
-				
-				"taxonRank", "verbatimTaxonRank",
-				"scientificNameAuthorship","vernacularName", 
-				"nomenclaturalCode", "taxonomicStatus", 
-				"nomenclaturalStatus","taxonRemarks",
-				"modified","language", 
-				"rights", "rightsHolder", 
-				"accessRights","bibliographicCitation",
-				"informationWithheld",
-				"datasetId","datasetName",
-				"source"
-		};
-		return Arrays.asList(result);
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
+	 */
+	protected void registerKnownFields(){
+		try {
+			addKnownField(TermUris.DWC_SCIENTIFIC_NAME_ID);
+			addKnownField(TermUris.DWC_ACCEPTED_NAME_USAGE_ID);
+			addKnownField(TermUris.DWC_PARENT_NAME_USAGE_ID);
+			addKnownField(TermUris.DWC_ORIGINAL_NAME_USAGE_ID);
+			addKnownField(TermUris.DWC_NAME_ACCORDING_TO_ID);
+			addKnownField(TermUris.DWC_NAME_PUBLISHED_IN_ID);
+			addKnownField(TermUris.DWC_TAXON_CONCEPT_ID);
+			addKnownField(TermUris.DWC_SCIENTIFIC_NAME);
+			addKnownField(TermUris.DWC_ACCEPTED_NAME_USAGE);
+			addKnownField(TermUris.DWC_PARENT_NAME_USAGE);
+			addKnownField(TermUris.DWC_NAME_ACCORDING_TO);
+			addKnownField(TermUris.DWC_ORIGINAL_NAME_USAGE);
+			addKnownField(TermUris.DWC_NAME_PUBLISHED_IN);
+			addKnownField(TermUris.DWC_HIGHER_CLASSIFICATION);
+			addKnownField(TermUris.DWC_KINGDOM);
+			addKnownField(TermUris.DWC_PHYLUM);
+			addKnownField(TermUris.DWC_CLASS);
+			addKnownField(TermUris.DWC_ORDER);
+			addKnownField(TermUris.DWC_FAMILY);
+			addKnownField(TermUris.DWC_GENUS);
+			addKnownField(TermUris.DWC_SUBGENUS);
+			addKnownField(TermUris.DWC_SPECIFIC_EPI);
+			addKnownField(TermUris.DWC_INFRA_SPECIFIC_EPI);
+			addKnownField(TermUris.DWC_TAXON_RANK);
+			addKnownField(TermUris.DWC_VERBATIM_TAXON_RANK);
+			addKnownField(TermUris.DWC_SCIENTIFIC_NAME_AUTHORS);
+			addKnownField(TermUris.DWC_VERNACULAR_NAME);
+			addKnownField(TermUris.DWC_NOMENCLATURAL_CODE);
+			addKnownField(TermUris.DWC_TAXONOMIC_STATUS);
+			addKnownField(TermUris.DWC_NOMENCLATURAL_STATUS);
+			addKnownField(TermUris.DWC_TAXON_REMARKS);
+			addKnownField(TermUris.DC_MODIFIED);
+			addKnownField(TermUris.DC_LANGUAGE);
+			addKnownField(TermUris.DC_RIGHTS);
+			addKnownField(TermUris.DC_RIGHTS_HOLDER);
+			addKnownField(TermUris.DC_ACCESS_RIGHTS);
+			addKnownField(TermUris.DC_BIBLIOGRAPHIC_CITATION);
+			addKnownField(TermUris.DWC_INFORMATION_WITHHELD);
+			addKnownField(TermUris.DWC_DATASET_NAME);
+			addKnownField(TermUris.DC_SOURCE);
+
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	
-	public void write(PrintWriter writer) {
-		print(id, writer, IS_FIRST);
-		print(scientificNameId, writer, IS_NOT_FIRST);
-		print(acceptedNameUsageId, writer, IS_NOT_FIRST);
-		print(parentNameUsageId, writer, IS_NOT_FIRST);
-		print(originalNameUsageId, writer, IS_NOT_FIRST);
-		print(nameAccordingToId, writer, IS_NOT_FIRST);
-		print(namePublishedInId, writer, IS_NOT_FIRST);
-		print(taxonConceptId, writer, IS_NOT_FIRST);
-		print(scientificName, writer, IS_NOT_FIRST);
-		print(acceptedNameUsage, writer, IS_NOT_FIRST);
-		print(parentNameUsage, writer, IS_NOT_FIRST);
-		print(originalNameUsage, writer, IS_NOT_FIRST);
-		print(nameAccordingTo, writer, IS_NOT_FIRST);
-		print(namePublishedIn, writer, IS_NOT_FIRST);
-		print(higherClassification, writer, IS_NOT_FIRST);
-		
-		
-		print(kingdom, writer, IS_NOT_FIRST);
-		print(phylum, writer, IS_NOT_FIRST);
-		print(clazz, writer, IS_NOT_FIRST);
-		print(order, writer, IS_NOT_FIRST);
-		print(family, writer, IS_NOT_FIRST);
-		print(genus, writer, IS_NOT_FIRST);
-		print(subgenus, writer, IS_NOT_FIRST);
-		print(specificEpithet, writer, IS_NOT_FIRST);
-		print(infraspecificEpithet, writer, IS_NOT_FIRST);
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
+//	 */
+//	protected void registerKnownFields(){
+//		try {
+//			addKnownField("scientificNameID", "http://rs.tdwg.org/dwc/terms/scientificNameID");
+//			addKnownField("acceptedNameUsageID", "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID");
+//			addKnownField("parentNameUsageID", "http://rs.tdwg.org/dwc/terms/parentNameUsageID");
+//			addKnownField("originalNameUsageID", "http://rs.tdwg.org/dwc/terms/originalNameUsageID");
+//			addKnownField("nameAccordingToID", "http://rs.tdwg.org/dwc/terms/nameAccordingToID");
+//			addKnownField("namePublishedInID", "http://rs.tdwg.org/dwc/terms/namePublishedInID");
+//			addKnownField("taxonConceptID", "http://rs.tdwg.org/dwc/terms/taxonConceptID");
+//			addKnownField("scientificName", "http://rs.tdwg.org/dwc/terms/scientificName");
+//			addKnownField("acceptedNameUsage", "http://rs.tdwg.org/dwc/terms/acceptedNameUsage");
+//			addKnownField("parentNameUsage", "http://rs.tdwg.org/dwc/terms/parentNameUsage");
+//			addKnownField("nameAccordingTo", "http://rs.tdwg.org/dwc/terms/nameAccordingTo");
+//			addKnownField("originalNameUsage", "http://rs.tdwg.org/dwc/terms/originalNameUsage");
+//			addKnownField("namePublishedIn", "http://rs.tdwg.org/dwc/terms/namePublishedIn");
+//			addKnownField("higherClassification", "http://rs.tdwg.org/dwc/terms/higherClassification");
+//			addKnownField("kingdom", "http://rs.tdwg.org/dwc/terms/kingdom");
+//			addKnownField("phylum", "http://rs.tdwg.org/dwc/terms/phylum");
+//			addKnownField("class", "http://rs.tdwg.org/dwc/terms/class");
+//			addKnownField("order", "http://rs.tdwg.org/dwc/terms/order");
+//			addKnownField("family", "http://rs.tdwg.org/dwc/terms/family");
+//			addKnownField("genus", "http://rs.tdwg.org/dwc/terms/genus");
+//			addKnownField("subgenus", "http://rs.tdwg.org/dwc/terms/subgenus");
+//			addKnownField("specificEpithet", "http://rs.tdwg.org/dwc/terms/specificEpithet");
+//			addKnownField("infraspecificEpithet", "http://rs.tdwg.org/dwc/terms/infraspecificEpithet");
+//			addKnownField("taxonRank", "http://rs.tdwg.org/dwc/terms/taxonRank");
+//			addKnownField("verbatimTaxonRank", "http://rs.tdwg.org/dwc/terms/verbatimTaxonRank");
+//			addKnownField("scientificNameAuthorship", "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship");
+//			addKnownField("vernacularName", "http://rs.tdwg.org/dwc/terms/vernacularName");
+//			addKnownField("nomenclaturalCode", "http://rs.tdwg.org/dwc/terms/nomenclaturalCode");
+//			addKnownField("taxonomicStatus", "http://rs.tdwg.org/dwc/terms/taxonomicStatus");
+//			addKnownField("nomenclaturalStatus", "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus");
+//			addKnownField("taxonRemarks", "http://rs.tdwg.org/dwc/terms/taxonRemarks");
+//			addKnownField("modified", "http://purl.org/dc/terms/modified");
+//			addKnownField("language", "http://purl.org/dc/terms/language");
+//			addKnownField("rights", "http://purl.org/dc/terms/rights");
+//			addKnownField("rightsHolder", "http://purl.org/dc/terms/rightsHolder");
+//			addKnownField("accessRights", "http://purl.org/dc/terms/accessRights");
+//			addKnownField("bibliographicCitation", "http://purl.org/dc/terms/bibliographicCitation");
+//			addKnownField("informationWithheld", "http://rs.tdwg.org/dwc/terms/informationWithheld");
+//			addKnownField("datasetName", "http://rs.tdwg.org/dwc/terms/datasetName");
+//			addKnownField("datasetID", "http://rs.tdwg.org/dwc/terms/datasetID");
+//			addKnownField("source", "http://purl.org/dc/terms/source");
+//
+//		} catch (URISyntaxException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
+
+//	@Override
+//	public List<String> getHeaderList() {
+//		String[] result = new String[]{
+//				"id", 
+//				"scientificNameId",
+//				"acceptedNameUsageId",
+//				"parentNameUsageId", 
+//				"originalNameUsageId", 
+//				"nameAccordingToId", 
+//				"namePublishedInId",
+//				"taxonConceptId",
+//				"scientificName",
+//				"acceptedNameUsage", 
+//				"parentNameUsage", 
+//				"originalNameUsage", 
+//				"nameAccordingTo",
+//				"namePublishedIn",
+//				"higherClassification",
+//				
+//				"kingdom",
+//				"phylum",
+//				"clazz",
+//				"order", 
+//				"family", 
+//				"genus", 
+//				"subgenus",
+//				"specificEpithet",
+//				"infraspecificEpithet",
+//				
+//				"taxonRank", 
+//				"verbatimTaxonRank",
+//				"scientificNameAuthorship",
+//				"vernacularName", 
+//				"nomenclaturalCode", 
+//				"taxonomicStatus", 
+//				"nomenclaturalStatus",
+//				"taxonRemarks",
+//				"modified",
+//				"language", 
+//				"rights", 
+//				"rightsHolder", 
+//				"accessRights",
+//				"bibliographicCitation",
+//				"informationWithheld",
+//				"datasetId",
+//				"datasetName",
+//				"source"
+//		};
+//		return Arrays.asList(result);
+//	}
+	
+	
+//	public void write(PrintWriter writer) {
+//		print(id, writer, IS_FIRST, null);
+//		print(scientificNameId, writer, IS_NOT_FIRST, "scientificNameID");
+//		print(acceptedNameUsageId, writer, IS_NOT_FIRST, "acceptedNameUsageId");
+//		print(parentNameUsageId, writer, IS_NOT_FIRST, "parentNameUsageId");
+//		print(originalNameUsageId, writer, IS_NOT_FIRST, "originalNameUsageId");
+//		print(nameAccordingToId, writer, IS_NOT_FIRST, "nameAccordingToId");
+//		print(namePublishedInId, writer, IS_NOT_FIRST, "namePublishedInId");
+//		print(taxonConceptId, writer, IS_NOT_FIRST, "taxonConceptId");
+//		print(scientificName, writer, IS_NOT_FIRST, "scientificName");
+//		print(acceptedNameUsage, writer, IS_NOT_FIRST, "acceptedNameUsage");
+//		print(parentNameUsage, writer, IS_NOT_FIRST, "parentNameUsage");
+//		print(originalNameUsage, writer, IS_NOT_FIRST, "originalNameUsage");
+//		print(nameAccordingTo, writer, IS_NOT_FIRST, "nameAccordingTo");
+//		print(namePublishedIn, writer, IS_NOT_FIRST, "namePublishedIn");
+//		print(higherClassification, writer, IS_NOT_FIRST, "higherClassification");
+//		
+//		print(kingdom, writer, IS_NOT_FIRST, "kingdom");
+//		print(phylum, writer, IS_NOT_FIRST, "phylum");
+//		print(clazz, writer, IS_NOT_FIRST, "clazz");
+//		print(order, writer, IS_NOT_FIRST, "order");
+//		print(family, writer, IS_NOT_FIRST, "family");
+//		print(genus, writer, IS_NOT_FIRST, "genus");
+//		print(subgenus, writer, IS_NOT_FIRST, "subgenus");
+//		print(specificEpithet, writer, IS_NOT_FIRST, "specificEpithet");
+//		print(infraspecificEpithet, writer, IS_NOT_FIRST, "infraspecificEpithet");
+//		
+//		print(getRank(taxonRank), writer, IS_NOT_FIRST, "taxonRank");
+//		print(verbatimTaxonRank, writer, IS_NOT_FIRST, "verbatimTaxonRank");
+//		print(scientificNameAuthorship, writer, IS_NOT_FIRST, "scientificNameAuthorship");
+//		print(vernacularName, writer, IS_NOT_FIRST, "vernacularName");
+//		print(getNomCode(nomenclaturalCode), writer, IS_NOT_FIRST, "nomenclaturalCode");
+//		print(taxonomicStatus, writer, IS_NOT_FIRST, "taxonomicStatus");
+//		print(getNomStatus(nomenclaturalStatus), writer, IS_NOT_FIRST, "nomenclaturalStatus");
+//		print(taxonRemarks, writer, IS_NOT_FIRST, "taxonRemarks");
+//		print(getDate(modified), writer, IS_NOT_FIRST, "modified");
+//		print(language, writer, IS_NOT_FIRST, "language");
+//		print(rights, writer, IS_NOT_FIRST, "rights");
+//		print(rightsHolder, writer, IS_NOT_FIRST, "rightsHolder");
+//		print(accessRights, writer, IS_NOT_FIRST, "accessRights");
+//		print(bibliographicCitation, writer, IS_NOT_FIRST, "bibliographicCitation");
+//		print(informationWithheld, writer, IS_NOT_FIRST, "informationWithheld");
+//		print(datasetId, writer, IS_NOT_FIRST, "datasetId");
+//		print(datasetName, writer, IS_NOT_FIRST, "datasetName");
+//		print(source, writer, IS_NOT_FIRST, "source");
+//		writer.println();
+//	}
+
+	public void write(PrintWriter writer) {
+		printId(getUuid(), writer, IS_FIRST, "id");
+		print(scientificNameId, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME_ID);
+		print(acceptedNameUsageId, writer, IS_NOT_FIRST, TermUris.DWC_ACCEPTED_NAME_USAGE_ID);
+		print(parentNameUsageId, writer, IS_NOT_FIRST, TermUris.DWC_PARENT_NAME_USAGE_ID);
+		print(originalNameUsageId, writer, IS_NOT_FIRST, TermUris.DWC_ORIGINAL_NAME_USAGE_ID);
+		print(nameAccordingToId, writer, IS_NOT_FIRST, TermUris.DWC_NAME_ACCORDING_TO_ID);
+		print(namePublishedInId, writer, IS_NOT_FIRST, TermUris.DWC_NAME_PUBLISHED_IN_ID);
+		print(taxonConceptId, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_CONCEPT_ID);
+		print(scientificName, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME);
+		print(acceptedNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ACCEPTED_NAME_USAGE_ID);
+		print(parentNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_PARENT_NAME_USAGE);
+		print(originalNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ORIGINAL_NAME_USAGE);
+		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUris.DWC_NAME_ACCORDING_TO);
+		print(namePublishedIn, writer, IS_NOT_FIRST, TermUris.DWC_NAME_PUBLISHED_IN);
+		print(higherClassification, writer, IS_NOT_FIRST, TermUris.DWC_HIGHER_CLASSIFICATION);
 		
+		print(kingdom, writer, IS_NOT_FIRST, TermUris.DWC_KINGDOM);
+		print(phylum, writer, IS_NOT_FIRST, TermUris.DWC_PHYLUM);
+		print(clazz, writer, IS_NOT_FIRST, TermUris.DWC_CLASS);
+		print(order, writer, IS_NOT_FIRST, TermUris.DWC_ORDER);
+		print(family, writer, IS_NOT_FIRST, TermUris.DWC_FAMILY);
+		print(genus, writer, IS_NOT_FIRST, TermUris.DWC_GENUS);
+		print(subgenus, writer, IS_NOT_FIRST, TermUris.DWC_SUBGENUS);
+		print(specificEpithet, writer, IS_NOT_FIRST, TermUris.DWC_SPECIFIC_EPI);
+		print(infraspecificEpithet, writer, IS_NOT_FIRST, TermUris.DWC_INFRA_SPECIFIC_EPI);
 		
-		
-		print(getRank(taxonRank), writer, IS_NOT_FIRST);
-		print(verbatimTaxonRank, writer, IS_NOT_FIRST);
-		print(scientificNameAuthorship, writer, IS_NOT_FIRST);
-		print(vernacularName, writer, IS_NOT_FIRST);
-		print(getNomCode(nomenclaturalCode), writer, IS_NOT_FIRST);
-		print(taxonomicStatus, writer, IS_NOT_FIRST);
-		print(getNomStatus(nomenclaturalStatus), writer, IS_NOT_FIRST);
-		print(taxonRemarks, writer, IS_NOT_FIRST);
-		print(getDate(modified), writer, IS_NOT_FIRST);
-		print(language, writer, IS_NOT_FIRST);
-		print(rights, writer, IS_NOT_FIRST);
-		print(rightsHolder, writer, IS_NOT_FIRST);
-		print(accessRights, writer, IS_NOT_FIRST);
-		print(bibliographicCitation, writer, IS_NOT_FIRST);
-		print(informationWithheld, writer, IS_NOT_FIRST);
-		print(datasetId, writer, IS_NOT_FIRST);
-		print(datasetName, writer, IS_NOT_FIRST);
-		print(source, writer, IS_NOT_FIRST);
+		print(getRank(taxonRank), writer, IS_NOT_FIRST, TermUris.DWC_TAXON_RANK);
+		print(verbatimTaxonRank, writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_TAXON_RANK);
+		print(scientificNameAuthorship, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME_AUTHORS);
+		print(vernacularName, writer, IS_NOT_FIRST, TermUris.DWC_VERNACULAR_NAME);
+		print(getNomCode(nomenclaturalCode), writer, IS_NOT_FIRST, TermUris.DWC_NOMENCLATURAL_CODE);
+		print(taxonomicStatus, writer, IS_NOT_FIRST, TermUris.DWC_TAXONOMIC_STATUS);
+		print(getNomStatus(nomenclaturalStatus), writer, IS_NOT_FIRST, TermUris.DWC_NOMENCLATURAL_STATUS);
+		print(taxonRemarks, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_REMARKS);
+		print(getDate(modified), writer, IS_NOT_FIRST, TermUris.DC_MODIFIED);
+		print(language, writer, IS_NOT_FIRST, TermUris.DC_LANGUAGE);
+		print(rights, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS);
+		print(rightsHolder, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS_HOLDER);
+		print(accessRights, writer, IS_NOT_FIRST, TermUris.DC_ACCESS_RIGHTS);
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION);
+		print(informationWithheld, writer, IS_NOT_FIRST, TermUris.DWC_INFORMATION_WITHHELD);
+		print(datasetId, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_ID);
+		print(datasetName, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_NAME);
+		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
 		writer.println();
 	}
 
-
-
-	public void setId(Integer id) {
-		this.id = id;
+	public String getScientificNameId() {
+		return scientificNameId.getId();
 	}
-
-	public Integer getId() {
-		return id;
+	public void setScientificNameId(TaxonNameBase<?, ?> scientificNameId) {
+		this.scientificNameId.setId(scientificNameId);
 	}
-
-	public int getScientificNameId() {
-		return scientificNameId;
-	}
-	public void setScientificNameId(Integer scientificNameId) {
-		this.scientificNameId = scientificNameId;
-	}
-	public int getAcceptedNameUsageId() {
+	
+	public UUID getAcceptedNameUsageId() {
 		return acceptedNameUsageId;
 	}
-	public void setAcceptedNameUsageId(Integer acceptedNameUsageId) {
+	public void setAcceptedNameUsageId(UUID acceptedNameUsageId) {
 		this.acceptedNameUsageId = acceptedNameUsageId;
 	}
-	public int getParentNameUsageId() {
+	public UUID getParentNameUsageId() {
 		return parentNameUsageId;
 	}
-	public void setParentNameUsageId(Integer parentNameUsageId) {
+	public void setParentNameUsageId(UUID parentNameUsageId) {
 		this.parentNameUsageId = parentNameUsageId;
 	}
-	public int getOriginalNameUsageId() {
+	public UUID getOriginalNameUsageId() {
 		return originalNameUsageId;
 	}
-	public void setOriginalNameUsageId(Integer originalNameUsageId) {
+	public void setOriginalNameUsageId(UUID originalNameUsageId) {
 		this.originalNameUsageId = originalNameUsageId;
 	}
-	public int getNameAccordingToId() {
+	
+	public Object getNameAccordingToId() {
 		return nameAccordingToId;
 	}
-	public void setNameAccordingToId(Integer nameAccordingToId) {
+	
+	public void setNameAccordingToId(UUID nameAccordingToId) {
 		this.nameAccordingToId = nameAccordingToId;
 	}
-	public int getNamePublishedInId() {
+	
+	public Object getNamePublishedInId() {
 		return namePublishedInId;
 	}
-	public void setNamePublishedInId(Integer namePublishedInId) {
+	public void setNamePublishedInId(UUID namePublishedInId) {
 		this.namePublishedInId = namePublishedInId;
 	}
-	public int getTaxonConceptId() {
+	public UUID getTaxonConceptId() {
 		return taxonConceptId;
 	}
-	public void setTaxonConceptId(Integer taxonConceptId) {
+	public void setTaxonConceptId(UUID taxonConceptId) {
 		this.taxonConceptId = taxonConceptId;
 	}
 	public String getScientificName() {
@@ -349,11 +518,11 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public void setInformationWithheld(String informationWithheld) {
 		this.informationWithheld = informationWithheld;
 	}
-	public int getDatasetId() {
-		return datasetId;
+	public String getDatasetId() {
+		return datasetId.getId();
 	}
-	public void setDatasetId(Integer datasetId) {
-		this.datasetId = datasetId;
+	public void setDatasetId(Classification datasetId) {
+		this.datasetId.setId(datasetId);
 	}
 	public String getDatasetName() {
 		return datasetName;

@@ -11,8 +11,12 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.List;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -44,63 +48,148 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 public abstract class DwcaRecordBase {
 	private static final Logger logger = Logger.getLogger(DwcaRecordBase.class);
 
-	protected static final CharSequence COLLECTION_SEPARATOR = null;
-
-	protected static String FIELD_ENCLOSER = "\"";
-
-	final protected boolean IS_FIRST = false;
-	final protected boolean IS_NOT_FIRST = true;
+	//TODO Collection_SEPARATOR
+	protected static final CharSequence COLLECTION_SEPARATOR = "@";
+	protected static final String FIELD_ENCLOSER = "\"";
+	protected static final boolean IS_FIRST = false;
+	protected static final boolean IS_NOT_FIRST = true;
+	protected static final String SEP = ",";
 	
-	protected String SEP = ",";
+	protected Map<String, URI> knownFields = new HashMap<String, URI>();
+	protected Set<TermUris> knownTermFields = new HashSet<TermUris>();
 	
 	public abstract void write(PrintWriter writer);
+	protected abstract void registerKnownFields();
 	
-	public abstract List<String> getHeaderList();
+	protected int count;
+	private DwcaMetaDataRecord metaDataRecord;
+	protected DwcaTaxExportConfigurator config;
+
+	private Integer id;
+	private UUID uuid;
+
 	
-	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator) {
+	protected DwcaRecordBase(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		this.metaDataRecord = metaDataRecord;
+		this.count = metaDataRecord.inc();
+		this.config = config;
+	}
+	
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		printNotes(notes, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		//FIXME handles annotations correctly
 		String value = null;
-		print(value, writer, addSeparator);
+		print(value, writer, addSeparator, fieldKey);
 	}
-	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator) {
-		print(agent == null ? null : getAgent(agent), writer, addSeparator);
+	
+//	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+//		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
+//	}
+	protected void print(DwcaId dwcaId, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(dwcaId == null ? null : dwcaId.getId(), writer, addSeparator, fieldKey);
+	}
+	protected void print(UUID uuid, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(uuid == null ? null : uuid.toString(), writer, addSeparator, fieldKey);
+	}
+	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(agent, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(agent == null ? null : getAgent(agent), writer, addSeparator, fieldKey);
 	}
 
 	
-	protected void print(Language language, PrintWriter writer, boolean addSeparator) {
-		print(language == null ? null : getLanguage(language), writer, addSeparator);
+	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(language, writer, addSeparator, fieldKey.getUriString());
 	}
-
-	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator) {
-		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator);
+	protected void print(Language language, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(language == null ? null : getLanguage(language), writer, addSeparator, fieldKey);
 	}
-	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator) {
+	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(lsid, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator, fieldKey);
+	}
+	
+	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(rights, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		String rightsString = getRights(rights);
-		print(rightsString, writer, addSeparator);
+		print(rightsString, writer, addSeparator, fieldKey);
 	}
-	protected void print(URI uri, PrintWriter writer, boolean addSeparator) {
-		print(uri == null ? null : String.valueOf(uri), writer, addSeparator);
+	protected void print(URI uri, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(uri, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(URI uri, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(uri == null ? null : String.valueOf(uri), writer, addSeparator, fieldKey);
 	}
 	
-	protected void print(Point point, PrintWriter writer, boolean addSeparator) {
+	protected void print(Point point, PrintWriter writer, boolean addSeparator, TermUris latitudeKey, TermUris longitudeKey) {
+		print(point, writer, addSeparator, latitudeKey.getUriString(), longitudeKey.getUriString());
+	}
+	
+	protected void print(Point point, PrintWriter writer, boolean addSeparator, String latitudeKey, String longitudeKey) {
 		if (point == null){
 			String toPrint = null;
-			print(toPrint, writer, addSeparator);
-			print(toPrint, writer, addSeparator);
+			print(toPrint, writer, addSeparator, latitudeKey);
+			print(toPrint, writer, addSeparator, longitudeKey);
 		}else{
 			String latitude = point.getLatitude().toString();
 			String longitude = point.getLongitude().toString();
-			print(latitude, writer, addSeparator);
-			print(longitude, writer, addSeparator);
+			print(latitude, writer, addSeparator, latitudeKey);
+			print(longitude, writer, addSeparator, longitudeKey);
 		}
 	}
-	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator) {
-		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator);
+	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(boolValue, writer, addSeparator, fieldKey.getUriString());
+	}	
+	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator, fieldKey);
 	}
-	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator) {
-		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator);
+
+	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(intValue, writer, addSeparator, fieldKey.getUriString());
 	}
-	protected void print(String value, PrintWriter writer, boolean addSeparator) {
+	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
+	}
+	
+	protected void printId(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
+	}
+	protected void printId(UUID uuid, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(uuid == null ? null : String.valueOf(uuid), writer, addSeparator, fieldKey);
+	}
+
+	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(value, writer, addSeparator, fieldKey.getUriString());
+	}
+	
+	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		if (count == 1 && addSeparator == IS_NOT_FIRST){
+			registerFieldKey(URI.create(fieldKey));
+		}
 		String strToPrint = addSeparator ? SEP : "";
 		if (StringUtils.isNotBlank(value)){
 			strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
@@ -108,7 +197,9 @@ public abstract class DwcaRecordBase {
 		writer.print(strToPrint);
 	}
 	
-
+	private void registerFieldKey(URI key) {
+		this.metaDataRecord.addFieldEntry(key);
+	}
 
 	
 	protected String getRights(Rights rights) {
@@ -183,7 +274,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	protected String getOccurrenceStatus(PresenceAbsenceTermBase status) {
+	protected String getOccurrenceStatus(PresenceAbsenceTermBase<?> status) {
 		if (status == null){
 			return "";
 		}else{
@@ -192,7 +283,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 	
-	protected String getAgent(AgentBase agent) {
+	protected String getAgent(AgentBase<?> agent) {
 		if (agent == null){
 			return "";
 		}else{
@@ -251,12 +342,21 @@ public abstract class DwcaRecordBase {
 	}
 	
 
-	protected String getDesignationType(TypeDesignationStatusBase status) {
+	protected String getDesignationType(TypeDesignationStatusBase<?> status) {
 		if (status == null){
 			return "";
 		}else{
 			//TODO
 			return status.getLabel();
 		}
+	}
+	
+	
+	protected void addKnownField(String string, String uri) throws URISyntaxException {
+		this.knownFields.put(string, new URI(uri));
+	}
+	
+	protected void addKnownField(TermUris term) throws URISyntaxException {
+		this.knownTermFields.add(term);
 	}
 }

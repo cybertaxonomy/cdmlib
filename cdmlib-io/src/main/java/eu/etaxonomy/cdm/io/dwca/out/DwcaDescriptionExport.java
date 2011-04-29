@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaDescriptionExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
 	
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Description";
 	private static final String fileName = "description.txt";
 
 	/**
@@ -64,7 +65,9 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 
 		try {
 			PrintWriter writer = createPrintWriter(fileName, config);
-			
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
+
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
@@ -77,7 +80,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 									! feature.equals(Feature.IMAGE()) && 
 									! config.getFeatureExclusions().contains(feature.getUuid()) &&
 									! recordExists(el)){
-								DwcaDescriptionRecord record = new DwcaDescriptionRecord();
+								DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
 								TextData textData = CdmBase.deproxy(el,TextData.class);
 								handleDescription(record, textData, taxon);
 								record.write(writer);
@@ -105,7 +108,8 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 
 
 	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		
 		//TODO make this part of the Configuration
 		//TODO question: multiple entries for each language??

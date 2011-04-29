@@ -82,7 +82,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	 */
 	protected void handleArea(IDwcaAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
 		if (area != null){
-			record.setLocationId(area.getId());
+			record.setLocationId(area);
 			record.setLocality(area.getLabel());
 			if (area.isInstanceOf(WaterbodyOrCountry.class)){
 				WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);

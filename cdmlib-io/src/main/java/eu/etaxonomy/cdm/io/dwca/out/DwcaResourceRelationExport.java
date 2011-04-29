@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class DwcaResourceRelationExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaResourceRelationExport.class);
 
+	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/ResourceRelationship";
 	private static final String fileName = "resourceRelationship.txt";
 
 	/**
@@ -74,7 +75,9 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		try {
 			
 			PrintWriter writer = createPrintWriter(fileName, config);
-			
+
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
 			
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			
@@ -86,7 +89,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				for (TaxonDescription description : descriptions){
 					for (DescriptionElementBase el : description.getElements()){
 						if (el.isInstanceOf(TaxonInteraction.class)){
-							DwcaResourceRelationRecord record = new DwcaResourceRelationRecord();
+							DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
 							TaxonInteraction taxonInteraction = CdmBase.deproxy(el,TaxonInteraction.class);
 							if (! this.recordExistsUuid(taxonInteraction)){
 								handleInteraction(record, taxon, taxonInteraction);
@@ -99,9 +102,9 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				
 				//concept relationships
 				for (TaxonRelationship rel : taxon.getTaxonRelations()){
-					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord();
-					IdentifiableEntity subject = rel.getFromTaxon();
-					IdentifiableEntity object = rel.getToTaxon();
+					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
+					IdentifiableEntity<?> subject = rel.getFromTaxon();
+					IdentifiableEntity<?> object = rel.getToTaxon();
 					
 					if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) ){
 						//misapplied names are handled in core (tax)
@@ -125,9 +128,9 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				}
 				Set<NameRelationship> rels = name.getNameRelations();
 				for (NameRelationship rel : rels){
-					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord();
-					IdentifiableEntity subject = rel.getFromName();
-					IdentifiableEntity object = rel.getToName();
+					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
+					IdentifiableEntity<?> subject = rel.getFromName();
+					IdentifiableEntity<?> object = rel.getToName();
 					
 					if (! this.recordExistsUuid(rel)){
 						//????
@@ -155,14 +158,18 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		return true;
 	}
 
-	private void handleRelationship(DwcaResourceRelationRecord record, IdentifiableEntity subject, IdentifiableEntity object,
-			RelationshipBase rel) {
-		RelationshipTermBase type = rel.getType();
-		record.setCoreid(subject.getId());
-		record.setResourceRelationshipId(String.valueOf(rel.getId()));
+	private void handleRelationship(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, IdentifiableEntity<?> object,
+			RelationshipBase<?,?,?> rel) {
+		RelationshipTermBase<?> type = rel.getType();
+		record.setId(subject.getId());
+		record.setUuid(subject.getUuid());
+		
+		
+		record.setResourceRelationshipId(rel.getId());
+		record.setResourceRelationshipId(rel.getUuid());
 		//TODO id / uuid / names ??
 		if (subject.isInstanceOf(TaxonBase.class)){
-			record.setRelatedResourceId(object.getUuid().toString());
+			record.setRelatedResourceId(object.getUuid());
 		}
 		//TODO transform to controlled voc
 		record.setRelationshipOfResource(type.getLabel());
@@ -177,13 +184,14 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		
 	}
 
-	private void handleInteraction(DwcaResourceRelationRecord record, IdentifiableEntity subject, TaxonInteraction interaction) {
+	private void handleInteraction(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, TaxonInteraction interaction) {
 		Taxon object = interaction.getTaxon2();
 		Map<Language, LanguageString> description = interaction.getDescriptions();
 		
-		record.setCoreid(subject.getId());
-		//TODO id / uuid
-		record.setRelatedResourceId(object.getUuid().toString());
+		record.setId(subject.getId());
+		record.setUuid(subject.getUuid());
+		
+		record.setRelatedResourceId(object.getUuid());
 		//TODO transform to controlled voc
 		if (description != null && description.get(Language.DEFAULT()) != null){
 			record.setRelationshipOfResource(description.get(Language.DEFAULT()).getText());
@@ -191,7 +199,8 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 			record.setRelationshipOfResource(interaction.getFeature().getLabel());
 		}
 		//TODO uuid
-		record.setResourceRelationshipId(String.valueOf(interaction.getId()));
+		record.setResourceRelationshipId(interaction.getId());
+		record.setResourceRelationshipId(interaction.getUuid());
 		
 		//FIXME multiple sources
 		record.setRelationshipAccordingTo(null);

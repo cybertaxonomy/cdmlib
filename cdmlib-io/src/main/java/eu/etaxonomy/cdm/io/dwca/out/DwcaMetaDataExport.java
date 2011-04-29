@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -21,7 +22,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaRecord.FieldEntry;
+import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
 
 /**
  * @author a.mueller
@@ -59,7 +60,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 			String rootNamespace = "http://rs.tdwg.org/dwc/text/";
 			String rootName = "archive";
 			
-			List<DwcaMetaRecord> metaRecords = state.getMetaRecords();
+			List<DwcaMetaDataRecord> metaRecords = state.getMetaRecords();
 			
 			// create header 
 			writer.writeStartDocument(); 
@@ -72,8 +73,8 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 				writer.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 				writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", "http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd");
 				
-				for (DwcaMetaRecord metaRecord : metaRecords){
-					writeMetaRecord(writer, config, metaRecord);
+				for (DwcaMetaDataRecord metaRecord : metaRecords){
+					writeMetaDataRecord(writer, config, metaRecord);
 				}
 				writer.writeEndElement(); 
 			writer.writeEndDocument(); 
@@ -95,8 +96,11 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	}
 
 
-	private void writeMetaRecord(XMLStreamWriter writer,
-			DwcaTaxExportConfigurator config, DwcaMetaRecord metaRecord) throws XMLStreamException {
+	private void writeMetaDataRecord(XMLStreamWriter writer,
+			DwcaTaxExportConfigurator config, DwcaMetaDataRecord metaRecord) throws XMLStreamException {
+		if (! metaRecord.hasEntries()){
+			return; 
+		}
 		String encoding = config.getEncoding();
 		String linesTerminatedBy = config.getLinesTerminatedBy();
 		String fieldsEnclosedBy = config.getFieldsEnclosedBy();
@@ -120,10 +124,10 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		writer.writeEndElement();
 	}
 
-	private void writeFieldLine(XMLStreamWriter writer, int index, String term) throws XMLStreamException {
+	private void writeFieldLine(XMLStreamWriter writer, int index, URI term) throws XMLStreamException {
 		writer.writeStartElement("field");
 		writer.writeAttribute("index", String.valueOf(index));
-		writer.writeAttribute("term", term);
+		writer.writeAttribute("term", term.toString());
 		writer.writeEndElement();
 		
 	}

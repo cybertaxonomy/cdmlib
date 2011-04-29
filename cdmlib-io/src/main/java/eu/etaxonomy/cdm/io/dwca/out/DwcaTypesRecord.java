@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URISyntaxException;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author a.mueller
@@ -30,13 +31,12 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTypesRecord.class);
 	
-	private Integer coreid;
 	private String bibliographicCitation;
-	private TypeDesignationStatusBase typeStatus;
+	private TypeDesignationStatusBase<?> typeStatus;
 	private String typeDesignatedBy;
 	private String scientificName;
 	private Rank taxonRank;
-	private String occurrenceId;
+	private DwcaId occurrenceId;
 	private String institutionCode;
 	private String collectionCode;
 	private String catalogNumber;
@@ -49,40 +49,84 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	private String verbatimLongitude;
 	private String verbatimLatitude;
 	
-	@Override
-	public List<String> getHeaderList() {
-		String[] result = new String[]{"coreid", "bibliographicCitation",
-				"typeStatus","typeDesignatedBy", 
-				"scientificName", "taxonRank", 
-				"occurrenceId","institutionCode",
-				"collectionCode","catalogNumber", 
-				"locality", "sex", 
-				"recordedBy","source",
-				"eventDate","verbatimLabel", 
-				"verbatimLongitude", "verbatimLatitude"
-		};
-		return Arrays.asList(result);
+	public DwcaTypesRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		super(metaDataRecord, config);
+		occurrenceId = new DwcaId(config);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
+	 */
+	protected void registerKnownFields(){
+		try {
+			addKnownField("bibliographicCitation", "http://purl.org/dc/terms/bibliographicCitation");
+			addKnownField("typeStatus", "http://rs.tdwg.org/dwc/terms/typeStatus");
+			addKnownField("typeDesignatedBy", "http://rs.gbif.org/terms/1.0/typeDesignatedBy");
+			addKnownField("scientificName", "http://rs.tdwg.org/dwc/terms/scientificName");
+			addKnownField("taxonRank", "http://rs.tdwg.org/dwc/terms/taxonRank");
+			addKnownField("occurrenceID", "http://rs.tdwg.org/dwc/terms/occurrenceID");
+			addKnownField("institutionCode", "http://rs.tdwg.org/dwc/terms/institutionCode");
+			addKnownField("collectionCode", "http://rs.tdwg.org/dwc/terms/collectionCode");
+			addKnownField("catalogNumber", "http://rs.tdwg.org/dwc/terms/catalogNumber");
+			addKnownField("locality", "http://rs.tdwg.org/dwc/terms/locality");
+			addKnownField("sex", "http://rs.tdwg.org/dwc/terms/sex");
+			addKnownField("recordedBy", "http://rs.tdwg.org/dwc/terms/recordedBy");
+			addKnownField("source", "http://purl.org/dc/terms/source");
+			addKnownField("verbatimEventDate", "http://rs.tdwg.org/dwc/terms/verbatimEventDate");
+			addKnownField("verbatimLabel", "http://rs.gbif.org/terms/1.0/verbatimLabel");
+			addKnownField("verbatimLongitude", "http://rs.tdwg.org/dwc/terms/verbatimLongitude");
+			addKnownField("verbatimLatitude", "http://rs.tdwg.org/dwc/terms/verbatimLatitude");
+
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
+	
+//	@Override
+//	public List<String> getHeaderList() {
+//		String[] result = new String[]{
+//				"coreid", 
+//				"bibliographicCitation",
+//				"typeStatus",
+//				"typeDesignatedBy", 
+//				"scientificName", 
+//				"taxonRank", 
+//				"occurrenceId",
+//				"institutionCode",
+//				"collectionCode",
+//				"catalogNumber", 
+//				"locality", 
+//				"sex", 
+//				"recordedBy",
+//				"source",
+//				"eventDate",
+//				"verbatimLabel", 
+//				"verbatimLongitude", 
+//				"verbatimLatitude"
+//		};
+//		return Arrays.asList(result);
+//	}
+	
 	public void write(PrintWriter writer) {
-		print(coreid, writer, IS_FIRST);
-		print(bibliographicCitation, writer, IS_NOT_FIRST);
-		print(getDesignationType(typeStatus), writer, IS_NOT_FIRST);
-		print(typeDesignatedBy, writer, IS_NOT_FIRST);
-		print(scientificName, writer, IS_NOT_FIRST);
-		print(getRank(taxonRank), writer, IS_NOT_FIRST);
-		print(occurrenceId, writer, IS_NOT_FIRST);
-		print(institutionCode, writer, IS_NOT_FIRST);
-		print(collectionCode, writer, IS_NOT_FIRST);
-		print(catalogNumber, writer, IS_NOT_FIRST);
-		print(locality, writer, IS_NOT_FIRST);
-		print(getSex(sex), writer, IS_NOT_FIRST);
-		print(recordedBy, writer, IS_NOT_FIRST);
-		print(source, writer, IS_NOT_FIRST);
-		print(getTimePeriod(eventDate), writer, IS_NOT_FIRST);
-		print(verbatimLabel, writer, IS_NOT_FIRST);
-		print(verbatimLongitude, writer, IS_NOT_FIRST);
-		print(verbatimLatitude, writer, IS_NOT_FIRST);
+		printId(getUuid(), writer, IS_FIRST, "coreid");
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION);
+		print(getDesignationType(typeStatus), writer, IS_NOT_FIRST, TermUris.DWC_TYPE_STATUS);
+		print(typeDesignatedBy, writer, IS_NOT_FIRST, TermUris.DWC_TYPE_DESIGNATED_BY);
+		print(scientificName, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME);
+		print(getRank(taxonRank), writer, IS_NOT_FIRST, TermUris.DWC_TAXON_RANK);
+		print(occurrenceId, writer, IS_NOT_FIRST, TermUris.DWC_OCCURRENCE_ID);
+		print(institutionCode, writer, IS_NOT_FIRST, TermUris.DWC_INSTITUTION_CODE);
+		print(collectionCode, writer, IS_NOT_FIRST, TermUris.DWC_COLLECTION_CODE);
+		print(catalogNumber, writer, IS_NOT_FIRST, TermUris.DWC_CATALOG_NUMBER);
+		print(locality, writer, IS_NOT_FIRST, TermUris.DWC_LOCALITY);
+		print(getSex(sex), writer, IS_NOT_FIRST, TermUris.DWC_SEX);
+		print(recordedBy, writer, IS_NOT_FIRST, TermUris.DWC_RECORDED_BY);
+		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
+		print(getTimePeriod(eventDate), writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_EVENT_DATE);
+		print(verbatimLabel, writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_LABEL);
+		print(verbatimLongitude, writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_LONGITUDE);
+		print(verbatimLatitude, writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_LATITUDE);
 		writer.println();
 	}
 
@@ -93,14 +137,6 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 		this.source = source;
 	}
 
-	public Integer getCoreid() {
-		return coreid;
-	}
-
-	public void setCoreid(Integer coreid) {
-		this.coreid = coreid;
-	}
-
 	public String getBibliographicCitation() {
 		return bibliographicCitation;
 	}
@@ -109,11 +145,11 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 		this.bibliographicCitation = bibliographicCitation;
 	}
 
-	public TypeDesignationStatusBase getTypeStatus() {
+	public TypeDesignationStatusBase<?> getTypeStatus() {
 		return typeStatus;
 	}
 
-	public void setTypeStatus(TypeDesignationStatusBase typeStatus) {
+	public void setTypeStatus(TypeDesignationStatusBase<?> typeStatus) {
 		this.typeStatus = typeStatus;
 	}
 
@@ -142,11 +178,11 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	}
 
 	public String getOccurrenceId() {
-		return occurrenceId;
+		return occurrenceId.getId();
 	}
 
-	public void setOccurrenceId(String occurrenceId) {
-		this.occurrenceId = occurrenceId;
+	public void setOccurrenceId(SpecimenOrObservationBase<?> occurrenceId) {
+		this.occurrenceId.setId(occurrenceId);
 	}
 
 	public String getInstitutionCode() {

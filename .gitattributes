@@ -254,12 +254,13 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaDescriptionExport.java 
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaDescriptionRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaDistributionExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaDistributionRecord.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaEmlRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaExportBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaId.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaImageExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaImageRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaMetaDataExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaMetaDataRecord.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaMetaRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaRecordBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaReferenceExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaReferenceRecord.java -text
@@ -274,6 +275,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTypesRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/IDwcaAreaRecord.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermUris.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text

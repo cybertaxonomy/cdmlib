@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaImageExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
 
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Image";
 	private static final String fileName = "images.txt";
 	
 	/**
@@ -64,12 +65,14 @@ public class DwcaImageExport extends DwcaExportBase {
 
 		try {
 			PrintWriter writer = createPrintWriter(fileName, config);
-			
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
+
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
-				for (DescriptionBase description : descriptions){
+				Set<? extends DescriptionBase<?>> descriptions = taxon.getDescriptions();
+				for (DescriptionBase<?> description : descriptions){
 					for (Object o : description.getElements()){
 						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
 						if (el.getMedia().size() > 0){
@@ -77,7 +80,7 @@ public class DwcaImageExport extends DwcaExportBase {
 								for (MediaRepresentation repr : media.getRepresentations()){
 									for (MediaRepresentationPart part : repr.getParts()){
 										if (! this.recordExists(part)){
-											DwcaImageRecord record = new DwcaImageRecord();
+											DwcaImageRecord record = new DwcaImageRecord(metaRecord, config);
 											handleMedia(record, media, repr, part, taxon);
 											record.write(writer);
 											this.addExistingRecord(part);
@@ -109,7 +112,8 @@ public class DwcaImageExport extends DwcaExportBase {
 
 
 	private void handleMedia(DwcaImageRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		if (part.getUri() == null){
 			String message = "No uri available for media ("+media.getId()+"). URI is required field. Taxon: " + this.getTaxonLogString(taxon);
 			logger.warn(message);

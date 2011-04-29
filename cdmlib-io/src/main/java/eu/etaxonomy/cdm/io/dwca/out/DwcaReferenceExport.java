@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2007 EDIT
+d* Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
 * http://www.e-taxonomy.eu
 * 
@@ -35,7 +35,8 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaReferenceExport.class);
 
 	private static final String fileName = "reference.txt";
-	
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Reference";
+
 	/**
 	 * Constructor
 	 */
@@ -59,13 +60,15 @@ public class DwcaReferenceExport extends DwcaExportBase {
 
 		try {
 			PrintWriter writer = createPrintWriter(fileName, config);
-			
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
+
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				//sec
-				DwcaReferenceRecord record = new DwcaReferenceRecord();
+				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Reference sec = taxon.getSec();
+				Reference<?> sec = taxon.getSec();
 				if (sec != null && ! recordExists(sec)){
 					handleReference(record, sec, taxon);
 					record.write(writer);
@@ -73,12 +76,12 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				}
 				
 				//nomRef
-				record = new DwcaReferenceRecord();
+				record = new DwcaReferenceRecord(metaRecord, config);
 				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
 				if (nomRef != null && ! existingRecordIds.contains(nomRef.getId())){
-					handleReference(record, (Reference)nomRef, taxon);
+					handleReference(record, (Reference<?>)nomRef, taxon);
 					record.write(writer);
-					addExistingRecord((Reference)nomRef);
+					addExistingRecord((Reference<?>)nomRef);
 				}
 				
 				writer.flush();
@@ -97,8 +100,9 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		return true;
 	}
 
-	private void handleReference(DwcaReferenceRecord record, Reference reference, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+	private void handleReference(DwcaReferenceRecord record, Reference<?> reference, Taxon taxon) {
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		
 		record.setISBN_ISSN(StringUtils.isNotBlank(reference.getIsbn())? reference.getIsbn(): reference.getIssn());
 		record.setUri(reference.getUri());

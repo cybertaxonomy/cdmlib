@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaDistributionExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaDistributionExport.class);
 
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Distribution";
 	private static final String fileName = "distribution.txt";
 
 	/**
@@ -61,7 +62,9 @@ public class DwcaDistributionExport extends DwcaExportBase {
 
 		try {
 			PrintWriter writer = createPrintWriter(fileName, config);
-			
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
+
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
@@ -71,7 +74,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
 					for (DescriptionElementBase el : description.getElements()){
 						if (el.isInstanceOf(Distribution.class) ){
 							if (! recordExists(el)){
-								DwcaDistributionRecord record = new DwcaDistributionRecord();
+								DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
 								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
 								handleDistribution(record, distribution, taxon);
 								record.write(writer);
@@ -104,7 +107,8 @@ public class DwcaDistributionExport extends DwcaExportBase {
 
 
 	private void handleDistribution(DwcaDistributionRecord record, Distribution distribution, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		handleArea(record, distribution.getArea(), taxon, true);
 		//TODO missing
 		record.setLifeStage(null);

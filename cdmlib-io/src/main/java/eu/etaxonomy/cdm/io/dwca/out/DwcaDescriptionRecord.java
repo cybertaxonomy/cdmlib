@@ -10,9 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -28,10 +26,9 @@ import eu.etaxonomy.cdm.model.media.Rights;
  *
  */
 public class DwcaDescriptionRecord extends DwcaRecordBase {
-
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaDescriptionRecord.class);
-	private Integer coreid;
+
 	private String description;
 	private Feature type;
 	private String source;
@@ -42,26 +39,58 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	private Set<Rights> license;
 	private AgentBase<?> rightsHolder;
 	
-
-	@Override
-	public List<String> getHeaderList() {
-		String[] result = new String[]{"coreid", "description","type","source", 
-				"language", "creator", "contributor", "audience", 
-				"license", "rightsHolder"};
-		return Arrays.asList(result);
+	
+	public DwcaDescriptionRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		super(metaDataRecord, config);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
+	 */
+	protected void registerKnownFields(){
+		try {
+			addKnownField("description", "http://purl.org/dc/terms/description");
+			addKnownField("type", "http://purl.org/dc/terms/type");
+			addKnownField("source", "http://purl.org/dc/terms/source");
+			addKnownField("language", "http://purl.org/dc/terms/language");
+			addKnownField("creator", "http://purl.org/dc/terms/creator");
+			addKnownField("contributor", "http://purl.org/dc/terms/contributor");
+			addKnownField("audience", "http://purl.org/dc/terms/audience");
+			addKnownField("license", "http://purl.org/dc/terms/license");
+			addKnownField("rightsHolder", "http://purl.org/dc/terms/rightsHolder");
+
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+//	@Override
+//	public List<String> getHeaderList() {
+//		String[] result = new String[]{
+//				"coreid", 
+//				"description",
+//				"type",
+//				"source", 
+//				"language", 
+//				"creator", 
+//				"contributor", 
+//				"audience", 
+//				"license", 
+//				"rightsHolder"};
+//		return Arrays.asList(result);
+//	}
+	
 	public void write(PrintWriter writer) {
-		print(coreid, writer, IS_FIRST);
-		print(description, writer, IS_NOT_FIRST);
-		print(getFeature(type), writer, IS_NOT_FIRST);
-		print(source, writer, IS_NOT_FIRST);
-		print(language, writer, IS_NOT_FIRST);
-		print(creator, writer, IS_NOT_FIRST);
-		print(contributor, writer, IS_NOT_FIRST);
-		print(audience, writer, IS_NOT_FIRST);
-		print(license, writer, IS_NOT_FIRST);
-		print(rightsHolder, writer, IS_NOT_FIRST);
+		printId(getUuid(), writer, IS_FIRST, "coreid");
+		print(description, writer, IS_NOT_FIRST, TermUris.DC_DESCRIPTION);
+		print(getFeature(type), writer, IS_NOT_FIRST, TermUris.DC_TYPE);
+		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
+		print(language, writer, IS_NOT_FIRST, TermUris.DC_LANGUAGE);
+		print(creator, writer, IS_NOT_FIRST, TermUris.DC_CREATOR);
+		print(contributor, writer, IS_NOT_FIRST, TermUris.DC_CONTRIBUTOR);
+		print(audience, writer, IS_NOT_FIRST, TermUris.DC_AUDIENCE);
+		print(license, writer, IS_NOT_FIRST, TermUris.DC_LICENSE);
+		print(rightsHolder, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS_HOLDER);
 		writer.println();
 	}
 
@@ -70,14 +99,6 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	}
 	public void setSource(String source) {
 		this.source = source;
-	}
-
-	public Integer getCoreid() {
-		return coreid;
-	}
-
-	public void setCoreid(Integer coreid) {
-		this.coreid = coreid;
 	}
 	
 	public String getDescription() {
