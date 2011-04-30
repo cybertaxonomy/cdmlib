@@ -29,7 +29,7 @@ public class DwcaMetaDataRecord  {
 	
 	private boolean isCore;
 	private int currentIndex = 0;
-	boolean isId;
+	private boolean isMetaData = false;  //is this record about meta data (should be true for MetaData and EML)
 	
 	private int count = 0;
 	
@@ -114,6 +114,15 @@ public class DwcaMetaDataRecord  {
 	public int inc(){
 		return ++count;
 	}
+
+	public void setMetaData(boolean isMetaData) {
+		this.isMetaData = isMetaData;
+	}
+
+	public boolean isMetaData() {
+		return isMetaData;
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -122,7 +131,7 @@ public class DwcaMetaDataRecord  {
 	public String toString() {
 		return this.fileLocation;
 	}
-	
+
 	
 
 }

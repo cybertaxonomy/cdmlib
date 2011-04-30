@@ -37,6 +37,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean doDistributions = true;
 	private boolean doImages = true;
 	private boolean doMetaData = true;
+	private boolean doEml = true;
+	private boolean doZip = true;
 	
 	private boolean isUseIdWherePossible = false;
 	
@@ -47,18 +49,18 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
 	
+	private DwcaEmlRecord emlRecord;
+
+	
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 	
 	
-	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, String destinationFolder) {
-		return new DwcaTaxExportConfigurator(source, destinationFolder);
+	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, String destinationFolder, DwcaEmlRecord emlRecord) {
+		return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
 	}
 
 
-	
-
-	
-	@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				DwcaTaxExport.class
@@ -70,6 +72,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 				,DwcaDistributionExport.class
 				,DwcaImageExport.class
 				,DwcaMetaDataExport.class
+				,DwcaEmlExport.class
+				,DwcaZipExport.class
 		};
 	}
 
@@ -80,10 +84,9 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	 * @param url
 	 * @param destination
 	 */
-	private DwcaTaxExportConfigurator(ICdmDataSource source, String url) {
+	private DwcaTaxExportConfigurator(ICdmDataSource source, String url, DwcaEmlRecord emlRecord) {
 		super(new File(url), source);
-//		setDestination(url);
-//		setSource(source);
+		this.emlRecord = emlRecord;
 	}
 	
 
@@ -261,4 +264,31 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setUseIdWherePossible(boolean isUseIdWherePossible) {
 		this.isUseIdWherePossible = isUseIdWherePossible;
 	}
+
+	public void setEmlRecord(DwcaEmlRecord emlRecord) {
+		this.emlRecord = emlRecord;
+	}
+
+	public DwcaEmlRecord getEmlRecord() {
+		return emlRecord;
+	}
+
+	public void setDoEml(boolean doEml) {
+		this.doEml = doEml;
+	}
+
+	public boolean isDoEml() {
+		return doEml;
+	}
+
+
+	public void setDoZip(boolean doZip) {
+		this.doZip = doZip;
+	}
+
+
+	public boolean isDoZip() {
+		return doZip;
+	}
+
 }

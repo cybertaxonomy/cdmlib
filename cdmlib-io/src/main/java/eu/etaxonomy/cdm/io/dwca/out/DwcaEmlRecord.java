@@ -11,14 +11,14 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -35,7 +35,7 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	private static final Logger logger = Logger.getLogger(DwcaEmlRecord.class);
 	
 //	BASIC
-	private UUID uuid;
+	private String identifier;
 	private String title;
 	private DateTime publicationDate;
 	private String expectedCitation;
@@ -53,21 +53,22 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	private String projectDescription;
 	
 //	People
-	private AgentBase<?> resourceCreator;
-	private Person metaDataAuthor;
-	private List<AgentBase<?>> authors;
+	private InstitutionalMembership resourceCreator;
+	private InstitutionalMembership metaDataAuthor;
+	private InstitutionalMembership contact;
+	private List<InstitutionalMembership> authors = new ArrayList<InstitutionalMembership>();
 	
 //	Keywords / Coverage
 	private String regionalScope;
-	private String keywords;
+	private List<String> keywords = new ArrayList<String>();
 	private String keywordThesaurus; //maybe a URI
 	private TimePeriod date;
-	private String taxonomicKeywords;
+	private List<String> taxonomicKeywords = new ArrayList<String>();
 	
 	private Point upperLeftCorner;
 	private Point lowerRightCorner;
 	
-	private List<Reference<?>> references;
+	private List<Reference<?>> references = new ArrayList<Reference<?>>();
 
 
 	@Override
@@ -75,30 +76,23 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 		//not needed
 	}
 	
-	protected DwcaEmlRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config) {
-		super(metaDataRecord, config);
+	public DwcaEmlRecord() {
+		super(new DwcaMetaDataRecord(false, null, null), null);
 	}
 
 	public void write(PrintWriter writer) {
-//		print(coreid, writer, IS_FIRST);
-//		print(description, writer, IS_NOT_FIRST);
-//		print(getFeature(type), writer, IS_NOT_FIRST);
-//		print(source, writer, IS_NOT_FIRST);
-//		print(language, writer, IS_NOT_FIRST);
-//		print(creator, writer, IS_NOT_FIRST);
-//		print(contributor, writer, IS_NOT_FIRST);
-//		print(audience, writer, IS_NOT_FIRST);
-//		print(license, writer, IS_NOT_FIRST);
-//		print(rightsHolder, writer, IS_NOT_FIRST);
-//		writer.println();
+
 	}
 
-	public UUID getUuid() {
-		return uuid;
+	public String getIdentifier() {
+		if (identifier == null){
+			identifier = UUID.randomUUID().toString();
+		}
+		return identifier;
 	}
 
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	public String getTitle() {
@@ -205,27 +199,38 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 		this.projectDescription = projectDescription;
 	}
 
-	public AgentBase<?> getResourceCreator() {
+	public InstitutionalMembership getResourceCreator() {
 		return resourceCreator;
 	}
 
-	public void setResourceCreator(AgentBase<?> resourceCreator) {
+	public void setResourceCreator(InstitutionalMembership resourceCreator) {
 		this.resourceCreator = resourceCreator;
 	}
 
-	public Person getMetaDataAuthor() {
+	public InstitutionalMembership getMetaDataAuthor() {
 		return metaDataAuthor;
 	}
 
-	public void setMetaDataAuthor(Person metaDataAuthor) {
+	public void setMetaDataAuthor(InstitutionalMembership metaDataAuthor) {
 		this.metaDataAuthor = metaDataAuthor;
 	}
+	
 
-	public List<AgentBase<?>> getAuthors() {
-		return authors;
+
+	public InstitutionalMembership getContact() {
+		return contact;
+	}
+	
+	public void setContact(InstitutionalMembership contact) {
+		this.contact = contact;
 	}
 
-	public void setAuthors(List<AgentBase<?>> authors) {
+
+	public List<InstitutionalMembership> getAuthors() {
+		return authors != null ? authors : new ArrayList<InstitutionalMembership>();
+	}
+
+	public void setAuthors(List<InstitutionalMembership> authors) {
 		this.authors = authors;
 	}
 
@@ -237,11 +242,11 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 		this.regionalScope = regionalScope;
 	}
 
-	public String getKeywords() {
-		return keywords;
+	public List<String> getKeywords() {
+		return keywords != null ? keywords : new ArrayList<String>();
 	}
 
-	public void setKeywords(String keywords) {
+	public void setKeywords(List<String> keywords) {
 		this.keywords = keywords;
 	}
 
@@ -261,11 +266,11 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 		this.date = date;
 	}
 
-	public String getTaxonomicKeywords() {
-		return taxonomicKeywords;
+	public List<String> getTaxonomicKeywords() {
+		return taxonomicKeywords != null ? taxonomicKeywords : new ArrayList<String>();
 	}
 
-	public void setTaxonomicKeywords(String taxonomicKeywords) {
+	public void setTaxonomicKeywords(List<String> taxonomicKeywords) {
 		this.taxonomicKeywords = taxonomicKeywords;
 	}
 
@@ -286,19 +291,12 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	}
 
 	public List<Reference<?>> getReferences() {
-		return references;
+		return references != null ? references : new ArrayList<Reference<?>>();
 	}
 
 	public void setReferences(List<Reference<?>> references) {
 		this.references = references;
 	}
-
-
-
-
-
-
-
 
 
 }

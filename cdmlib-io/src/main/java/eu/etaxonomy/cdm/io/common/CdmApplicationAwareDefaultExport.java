@@ -52,11 +52,11 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 
 	
 	//Constants
-	final boolean OBLIGATORY = true; 
-	final boolean FACULTATIVE = false; 
+	final static boolean OBLIGATORY = true; 
+	final static boolean FACULTATIVE = false; 
 	final int modCount = 1000;
 
-	IService service = null;
+	private IService service = null;
 	
 	//different type of stores that are used by the known imports
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
@@ -91,7 +91,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 	@SuppressWarnings("unchecked")
 	protected <S extends IExportConfigurator> boolean doCheck(S  config){
 		boolean result = true;
-		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
 		
 		//check
 		if (config == null){
@@ -101,6 +100,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 			logger.warn("CdmExportConfiguration is not valid");
 			return false;
 		}
+		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
 		
 		ExportStateBase state = config.getNewState();
 		state.initialize(config);
@@ -171,25 +171,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 					result = false;
 			}
 		}
-		
-		//do invoke for each class
-//		for (String ioBean: config.getIoBeans()){
-//			try {
-//				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBean, ICdmIO.class);
-//				if (cdmIo != null){
-//					result &= cdmIo.invoke(config, stores);
-//				}else{
-//					logger.error("cdmIO was null");
-//					result = false;
-//				}
-//			} catch (Exception e) {
-//					logger.error(e);
-//					e.printStackTrace();
-//					result = false;
-//			}
-//			
-//		}
-		
 		
 		System.out.println("End export from source '" + config.getSourceNameString() 
 				+ "' to destination '" + config.getDestinationNameString() + "' " +

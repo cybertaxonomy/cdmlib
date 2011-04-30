@@ -72,12 +72,6 @@ public class DwcaTaxExport extends DwcaExportBase {
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 		
-//		DwcaTaxRecord r = new DwcaTaxRecord(metaRecord);
-//		List<URI> list = r.getTermList();
-//		for (URI term : list){
-//			metaRecord.addFieldEntry(term);
-//		}
-		
 		try {
 			
 			PrintWriter writer = createPrintWriter(fileName, config);

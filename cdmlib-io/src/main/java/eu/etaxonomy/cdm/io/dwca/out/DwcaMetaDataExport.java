@@ -50,7 +50,10 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-//		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
+
+		DwcaMetaDataRecord metaDataRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, null);
+		metaDataRecord.setMetaData(true);
+		state.addMetaRecord(metaDataRecord);
     	
 		XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
 		try {
@@ -74,7 +77,9 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 				writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", "http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd");
 				
 				for (DwcaMetaDataRecord metaRecord : metaRecords){
-					writeMetaDataRecord(writer, config, metaRecord);
+					if (! metaDataRecord.isMetaData()){
+						writeMetaDataRecord(writer, config, metaRecord);
+					}
 				}
 				writer.writeEndElement(); 
 			writer.writeEndDocument(); 
@@ -186,7 +191,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	 */
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return false;
+		return ! state.getConfig().isDoMetaData();
 	}
 	
 }
