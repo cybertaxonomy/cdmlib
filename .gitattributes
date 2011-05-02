@@ -384,6 +384,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/out/TcsXmlExportState.java -t
 cdmlib-io/src/main/resources/CatalogManager.properties -text
 cdmlib-io/src/main/resources/catalog.xml -text
 cdmlib-io/src/main/resources/defaultIoApplicationContext.xml -text
+cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportConfigurator.properties -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/main/resources/schema/cdm/agent.xsd -text
 cdmlib-io/src/main/resources/schema/cdm/cdm.xsd -text
