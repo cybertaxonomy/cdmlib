@@ -10,13 +10,9 @@
 
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
-import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 
 /**
  * @author a.mueller
