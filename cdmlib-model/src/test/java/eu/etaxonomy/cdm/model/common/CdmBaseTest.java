@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -530,6 +531,27 @@ public class CdmBaseTest extends EntityTestBase{
 	public void testToString() {
 		String expected = cdmBase.getClass().getSimpleName()+"#"+cdmBase.getId()+"<"+cdmBase.getUuid()+">";
 		assertEquals(expected, cdmBase.toString());
+	}
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#clone()}.
+	 */
+	@Test
+	public void testClone(){
+		try {
+			CdmBase clone = (CdmBase) cdmBase.clone();
+			assertNotSame(clone, cdmBase);
+			assertEquals(clone.getId(), cdmBase.getId());
+			assertFalse(clone.getUuid().equals(cdmBase.getUuid()));
+			assertNotNull(clone.getCreated());
+			assertNull(clone.getCreatedBy());
+			
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
 	}
 
 

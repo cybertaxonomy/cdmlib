@@ -179,4 +179,13 @@ public class IdentifiableEntityTest {
 		assertNotNull("A list should always be returned",abies.getCredits());
 		assertTrue("No credits should exist",abies.getCredits().isEmpty());
 	}
+	
+	@Test
+	public void testClone(){
+		IdentifiableEntity clone = (IdentifiableEntity)abies.clone();
+		assertNotNull(clone);
+		assertEquals(clone.annotations, abies.annotations);
+		assertEquals(clone.markers, abies.markers);
+		assertFalse(clone.uuid.equals(abies.uuid));
+	}
 }
