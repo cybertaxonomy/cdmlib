@@ -208,8 +208,8 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see 			    #getInstitutionalMemberships()
 	 * @see 			    InstitutionalMembership#InstitutionalMembership(Institution, Person, TimePeriod, String, String)
 	 */
-	public void addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
-		new InstitutionalMembership(institution, this, period, department, role);
+	public InstitutionalMembership addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
+		return new InstitutionalMembership(institution, this, period, department, role);
 	}
 	
 	/** 
