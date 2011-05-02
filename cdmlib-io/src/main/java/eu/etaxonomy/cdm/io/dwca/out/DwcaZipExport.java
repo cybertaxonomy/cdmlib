@@ -114,7 +114,7 @@ public class DwcaZipExport extends DwcaExportBase {
 	 */
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
-		return ! state.getConfig().isDoZip();
+		return ! state.isZip();
 	}
 	
 }

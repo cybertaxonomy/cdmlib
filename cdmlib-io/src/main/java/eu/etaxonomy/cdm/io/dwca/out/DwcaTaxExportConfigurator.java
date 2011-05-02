@@ -38,8 +38,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean doImages = true;
 	private boolean doMetaData = true;
 	private boolean doEml = true;
-	private boolean doZip = true;
-	
+//	private boolean doZip = true;
+//	
 	private boolean isUseIdWherePossible = false;
 	
 	private String encoding = "UTF-8";
@@ -282,13 +282,13 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	}
 
 
-	public void setDoZip(boolean doZip) {
-		this.doZip = doZip;
-	}
-
-
-	public boolean isDoZip() {
-		return doZip;
-	}
+//	public void setDoZip(boolean doZip) {
+//		this.doZip = doZip;
+//	}
+//
+//
+//	public boolean isDoZip() {
+//		return doZip;
+//	}
 
 }
