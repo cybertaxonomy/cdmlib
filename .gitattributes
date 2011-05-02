@@ -902,6 +902,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java 
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/TdwgAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/media/MediaTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/molecular/MolecularTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BacterialNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/CultivarPlantNameTest.java -text
