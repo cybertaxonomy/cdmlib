@@ -54,11 +54,12 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 	
 	
-	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, String destinationFolder, DwcaEmlRecord emlRecord) {
+	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
 		return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
 	}
 
 
+		@Override
 		@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
@@ -83,8 +84,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	 * @param url
 	 * @param destination
 	 */
-	private DwcaTaxExportConfigurator(ICdmDataSource source, String url, DwcaEmlRecord emlRecord) {
-		super(new File(url), source);
+	private DwcaTaxExportConfigurator(ICdmDataSource source, File destination, DwcaEmlRecord emlRecord) {
+		super(destination, source);
 		this.emlRecord = emlRecord;
 	}
 	
@@ -92,6 +93,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
+	@Override
 	public File getDestination() {
 		File file = super.getDestination();
 		return file;
@@ -102,6 +104,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	/**
 	 * @param file
 	 */
+	@Override
 	public void setDestination(File fileName) {
 		super.setDestination(fileName);
 	}
@@ -110,6 +113,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
 	 */
+	@Override
 	public String getDestinationNameString() {
 		if (this.getDestination() == null) {
 			return null;
