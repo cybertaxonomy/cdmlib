@@ -72,9 +72,10 @@ public class DwcaTaxExport extends DwcaExportBase {
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 		
+		PrintWriter writer = null;
 		try {
 			
-			PrintWriter writer = createPrintWriter(fileName, config);
+			writer = createPrintWriter(fileName, state);
 
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
@@ -109,6 +110,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		finally{
+			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
 		return true;

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -20,6 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.log4j.Logger;
 
@@ -153,6 +158,29 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	
 
 	/**
+	 * @param config
+	 * @param factory
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws XMLStreamException
+	 */
+	protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, String fileName)
+			throws IOException, FileNotFoundException, XMLStreamException {
+		XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
+		OutputStream os;
+		boolean useZip = state.isZip();
+		if (useZip){
+			os = state.getZipStream(fileName);
+		}else{
+			os = createFileOutputStream(state.getConfig(), fileName);
+		}
+		XMLStreamWriter  writer = factory.createXMLStreamWriter(os);
+		return writer;
+	}
+	
+
+	/**
 	 * @param coreTaxFileName
 	 * @param config
 	 * @return
@@ -160,10 +188,48 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	 * @throws FileNotFoundException
 	 * @throws UnsupportedEncodingException
 	 */
-	protected PrintWriter createPrintWriter(final String fileName, DwcaTaxExportConfigurator config) 
+	protected PrintWriter createPrintWriter(final String fileName, DwcaTaxExportState state) 
 					throws IOException, FileNotFoundException, UnsupportedEncodingException {
-		FileOutputStream fos = createFileOutputStream(config, fileName);
-		PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
+		
+		OutputStream os;
+		boolean useZip = state.isZip();
+		if (useZip){
+			os = state.getZipStream(fileName);
+		}else{
+			os = createFileOutputStream(state.getConfig(), fileName);
+		}
+		PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF8"), true);
+		
 		return writer;
+	}
+	
+
+	/**
+	 * Closes the writer
+	 * @param writer
+	 * @param state
+	 */
+	protected void closeWriter(PrintWriter writer, DwcaTaxExportState state) {
+		if (writer != null && state.isZip() == false){
+			writer.close();
+		}
+	}
+	
+
+	
+	/**
+	 * Closes the writer.
+	 * Note: XMLStreamWriter does not close the underlying stream.
+	 * @param writer
+	 * @param state
+	 */
+	protected void closeWriter(XMLStreamWriter writer, DwcaTaxExportState state) {
+		if (writer != null && state.isZip() == false){
+			try {
+				writer.close();
+			} catch (XMLStreamException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

@@ -9,13 +9,7 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -43,53 +37,63 @@ public class DwcaZipExport extends DwcaExportBase {
 	 */
 	@Override
 	protected boolean doInvoke(DwcaTaxExportState state){
-		DwcaTaxExportConfigurator config = state.getConfig();
-	    
-		String zipFileName = "dwca.zip";
-	    String filePath = config.getDestinationNameString();
-		String zipFullFileName = filePath + File.separatorChar + zipFileName;
-		
-		ZipOutputStream zos  = null;
-		try {
-		  	zos  = new ZipOutputStream( new FileOutputStream(zipFullFileName) ) ;
-			 
-		    for (DwcaMetaDataRecord record : state.getMetaRecords()){
-		    	try {
-					String fileLocation = record.getFileLocation();
-					File file = new File(filePath + File.separatorChar + fileLocation);
-					ZipEntry newEntry = new ZipEntry(file.getName());
-					zos.putNextEntry(newEntry);
- 
-					BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-					while (bis.available() > 0) {
-					    zos.write(bis.read());
-					}
-					zos.closeEntry();
-				} catch (Exception e) {
-					//TODO finally is not called anymore
-					throw new IOException(e);
-				}
-		   	 }
-		  	
-	        zos.finish();
-	        zos.close();
-		 
-		} catch (IOException e) {
+		if (state.isZip()){
 			try {
-		       if(zos!=null) zos.close();
-		    } catch(Exception ex){
-		    	
-		    }
-			e.printStackTrace();
-		    //TODO finally is not called anymore
-			throw new RuntimeException(e);
-		} finally {
-		    try {
-		       if(zos!=null) zos.close();
-		    } catch(Exception ex){
-		    	
-		    }
-		 }
+				state.closeZip();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+//		DwcaTaxExportConfigurator config = state.getConfig();
+//	    
+//		String zipFileName = "dwca.zip";
+//	    String filePath = config.getDestinationNameString();
+//		String zipFullFileName = filePath + File.separatorChar + zipFileName;
+//		
+//		ZipOutputStream zos  = null;
+//		try {
+//		  	zos  = new ZipOutputStream( new FileOutputStream(zipFullFileName) ) ;
+//			 
+//		    for (DwcaMetaDataRecord record : state.getMetaRecords()){
+//		    	try {
+//					String fileLocation = record.getFileLocation();
+//					File file = new File(filePath + File.separatorChar + fileLocation);
+//					ZipEntry newEntry = new ZipEntry(fileLocation);
+//					zos.putNextEntry(newEntry);
+// 
+//					BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+//					while (bis.available() > 0) {
+//					    zos.write(bis.read());
+//					}
+//					zos.closeEntry();
+//					bis.close();
+//					boolean wasDeleted = file.delete();
+//					logger.debug(wasDeleted); //doesn't work on my machine
+//				} catch (Exception e) {
+//					//TODO finally is not called anymore
+//					throw new IOException(e);
+//				}
+//		   	 }
+//		  	
+//	        zos.finish();
+//	        zos.close();
+//		 
+//		} catch (IOException e) {
+//			try {
+//		       if(zos!=null) zos.close();
+//		    } catch(Exception ex){
+//		    	
+//		    }
+//			e.printStackTrace();
+//		    //TODO finally is not called anymore
+//			throw new RuntimeException(e);
+//		} finally {
+//		    try {
+//		       if(zos!=null) zos.close();
+//		    } catch(Exception ex){
+//		    	
+//		    }
+//		 }
 	 
 		
 		return true;

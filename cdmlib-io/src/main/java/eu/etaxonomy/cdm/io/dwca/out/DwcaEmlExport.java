@@ -10,11 +10,9 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -78,14 +76,11 @@ public class DwcaEmlExport extends DwcaExportBase {
 			return true;
 		}
 		
-		XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
+		XMLStreamWriter writer = null;
 		try {
-			FileOutputStream fos = createFileOutputStream(config, fileName);
-			XMLStreamWriter writer = factory.createXMLStreamWriter(fos);
+			writer = createXmlStreamWriter(state, fileName);
 			
-
 			String rootName = "eml";
-			
 			
 			// create header 
 			//TODO encoding
@@ -129,7 +124,9 @@ public class DwcaEmlExport extends DwcaExportBase {
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		} 
+		}  finally{
+			closeWriter(writer, state);
+		}
 		
 		return true;
 	}

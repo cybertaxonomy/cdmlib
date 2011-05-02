@@ -63,8 +63,9 @@ public class DwcaImageExport extends DwcaExportBase {
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
+		PrintWriter writer = null;
 		try {
-			PrintWriter writer = createPrintWriter(fileName, config);
+			writer = createPrintWriter(fileName, state);
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
@@ -103,7 +104,10 @@ public class DwcaImageExport extends DwcaExportBase {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			closeWriter(writer, state);
 		}
+		
 		commitTransaction(txStatus);
 		return true;
 	}
