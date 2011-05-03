@@ -64,7 +64,7 @@ public class TermMapping {
 	}
 
 	private void readMappingLine(String[] mappingLine) {
-		if (! mappingLine[0].equals(COMMENT)){
+		if (! mappingLine[0].startsWith(COMMENT)){
 			UUID uuidCdm = UUID.fromString(mappingLine[0]);
 			String externalTerm = mappingLine[1].trim();
 			mappingMap.put(uuidCdm, externalTerm);

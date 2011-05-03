@@ -58,39 +58,39 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 		}
 	}
 
-	private static void initNomStatusMap() {
-		nomStatusMap.put(NomenclaturalStatusType.uuidAlternative, "alternativum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidAmbiguous, "ambigua");
-//		nomStatusMap.put(NomenclaturalStatusType.uuidCombinationIllegitimate, "");
-//		nomStatusMap.put(NomenclaturalStatusType.uuidCombinationInvalid, "");
-		nomStatusMap.put(NomenclaturalStatusType.uuidConfusum, "confusum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidConserved, "conservandum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidConservedProp, "conservandumProp");
-		//TODO Wrong at GBIF !!!: dubimum
-		nomStatusMap.put(NomenclaturalStatusType.uuidDoubtful, "dubium");
-		nomStatusMap.put(NomenclaturalStatusType.uuidIllegitimate, "illegitimum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidInvalid, "invalidum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidLegitimate, "legitimate");  //why english not latin ??
-		nomStatusMap.put(NomenclaturalStatusType.uuidNovum, "novum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidNudum, "nudum");
-		//TODO 
-		nomStatusMap.put(NomenclaturalStatusType.uuidOpusUtiqueOppr, "opressa");
-		//TODO
-		nomStatusMap.put(NomenclaturalStatusType.uuidOrthographyConserved, "orthographia");
-		//TODO
-		nomStatusMap.put(NomenclaturalStatusType.uuidOrthographyConservedProp, "orthographia");
-		nomStatusMap.put(NomenclaturalStatusType.uuidProvisional, "provisorium");
-		nomStatusMap.put(NomenclaturalStatusType.uuidRejected, "rejiciendum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidRejectedProp, "rejiciendumProp");
-//		nomStatusMap.put(NomenclaturalStatusType.uuidSanctioned, "");
-		
-		nomStatusMap.put(NomenclaturalStatusType.uuidSubnudum, "rejiciendum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidSuperfluous, "superfluum");
-		nomStatusMap.put(NomenclaturalStatusType.uuidValid, "valid");
-		
-		//CDM is missing abortivum, available, combinatio, negatum, oblitum,
-		//               protectum, rejiciendumUtique, rejiciendumUtiqueProp
-	}
+//	private static void initNomStatusMap() {
+//		nomStatusMap.put(NomenclaturalStatusType.uuidAlternative, "alternativum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidAmbiguous, "ambigua");
+////		nomStatusMap.put(NomenclaturalStatusType.uuidCombinationIllegitimate, "");
+////		nomStatusMap.put(NomenclaturalStatusType.uuidCombinationInvalid, "");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidConfusum, "confusum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidConserved, "conservandum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidConservedProp, "conservandumProp");
+//		//TODO Wrong at GBIF !!!: dubimum
+//		nomStatusMap.put(NomenclaturalStatusType.uuidDoubtful, "dubium");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidIllegitimate, "illegitimum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidInvalid, "invalidum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidLegitimate, "legitimate");  //why english not latin ??
+//		nomStatusMap.put(NomenclaturalStatusType.uuidNovum, "novum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidNudum, "nudum");
+//		//TODO 
+//		nomStatusMap.put(NomenclaturalStatusType.uuidOpusUtiqueOppr, "opressa");
+//		//TODO
+//		nomStatusMap.put(NomenclaturalStatusType.uuidOrthographyConserved, "orthographia");
+//		//TODO
+//		nomStatusMap.put(NomenclaturalStatusType.uuidOrthographyConservedProp, "orthographia");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidProvisional, "provisorium");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidRejected, "rejiciendum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidRejectedProp, "rejiciendumProp");
+////		nomStatusMap.put(NomenclaturalStatusType.uuidSanctioned, "");
+//		
+//		nomStatusMap.put(NomenclaturalStatusType.uuidSubnudum, "rejiciendum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidSuperfluous, "superfluum");
+//		nomStatusMap.put(NomenclaturalStatusType.uuidValid, "valid");
+//		
+//		//CDM is missing abortivum, available, combinatio, negatum, oblitum,
+//		//               protectum, rejiciendumUtique, rejiciendumUtiqueProp
+//	}
 	
 	public static String transformToTdwgRank(Rank term){
 		if ( term == null){
