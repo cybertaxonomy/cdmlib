@@ -9,10 +9,14 @@
  
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
 import java.util.Iterator;
-import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,7 +24,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -94,7 +97,7 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testTermVocabularyStringStringString() {
-		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, "termSourceUri");
+		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("label", voc2.getLabel());	
 	}
 
@@ -157,14 +160,14 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testGetTermSourceUri() {
 		assertEquals(null, voc1.getTermSourceUri());
-		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, "uri");
-		assertEquals("uri", voc2.getTermSourceUri());
+		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, URI.create("http://term.Source.Uri"));
+		assertEquals("http://term.Source.Uri", voc2.getTermSourceUri().toString());
 	}
 
 	@Test
 	public final void testSetTermSourceUri() {
-		voc1.setTermSourceUri("uri");
-		assertEquals("uri", voc1.getTermSourceUri());
+		voc1.setTermSourceUri(URI.create("http://term.Source.Uri"));
+		assertEquals("http://term.Source.Uri", voc1.getTermSourceUri().toString());
 	}
 
 	@Test

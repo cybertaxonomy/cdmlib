@@ -334,7 +334,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 * 
 	 */
-	protected TermVocabulary getVocabulary(UUID uuid, String text, String label, String abbrev, String termSourceUri, boolean isOrdered) {
+	protected TermVocabulary getVocabulary(UUID uuid, String text, String label, String abbrev, URI termSourceUri, boolean isOrdered) {
 		TermVocabulary voc = getVocabularyService().find(uuid);
 		if (voc == null){
 			if (isOrdered){

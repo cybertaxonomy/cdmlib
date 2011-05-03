@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.URI;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -122,7 +123,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testOrderedTermVocabularyStringStringString() {
-		oVoc2 = new OrderedTermVocabulary<OrderedTermBase>("term", "label", null, "termSourceUri");
+		oVoc2 = new OrderedTermVocabulary<OrderedTermBase>("term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("label", oVoc2.getLabel());	
 	}
 

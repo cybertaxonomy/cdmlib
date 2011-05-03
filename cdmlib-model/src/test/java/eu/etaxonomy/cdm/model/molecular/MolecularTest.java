@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,11 +16,11 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 public class MolecularTest {
-private static Logger logger = Logger.getLogger(MolecularTest.class);
+	@SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(MolecularTest.class);
 
 	private DnaSample dnaSample;
 	private Locus locus;

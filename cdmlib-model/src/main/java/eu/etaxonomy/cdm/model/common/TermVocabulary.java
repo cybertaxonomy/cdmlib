@@ -42,6 +42,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.Length;
 
 
 /**
@@ -71,7 +72,9 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
 	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	private String termSourceUri;
+	@Length(max = 255)
+	@Type(type="uriUserType")
+	private URI termSourceUri;
 	
 
 	//TODO Changed
@@ -87,7 +90,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	
 // ********************************* FACTORY METHODS *****************************************/
 
-	public static TermVocabulary NewInstance(String description, String label, String abbrev, String termSourceUri){
+	public static TermVocabulary NewInstance(String description, String label, String abbrev, URI termSourceUri){
 		return new TermVocabulary(description, label, abbrev, termSourceUri);
 	}
 	
@@ -96,7 +99,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	protected TermVocabulary() {
 	}
 	
-	protected TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
+	protected TermVocabulary(String term, String label, String labelAbbrev, URI termSourceUri) {
 		super(term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
 	}
@@ -131,10 +134,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		term.setVocabulary(null);
 	}
 
-	public String getTermSourceUri() {
+	public URI getTermSourceUri() {
 		return termSourceUri;
 	}
-	public void setTermSourceUri(String vocabularyUri) {
+	public void setTermSourceUri(URI vocabularyUri) {
 		this.termSourceUri = vocabularyUri;
 	}
 	
