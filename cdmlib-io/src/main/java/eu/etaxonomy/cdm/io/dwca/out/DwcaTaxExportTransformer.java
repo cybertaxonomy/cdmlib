@@ -10,16 +10,18 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
@@ -29,9 +31,15 @@ import eu.etaxonomy.cdm.model.name.Rank;
 public class DwcaTaxExportTransformer extends InputTransformerBase {
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportTransformer.class);
 	
-	private static Map<UUID, String> nomStatusMap = new HashMap<UUID, String>();
+//	private static Map<UUID, String> nomStatusMap = new HashMap<UUID, String>();
 	private static TermMapping nomStatusMapping;
 	private static TermMapping rankMapping;
+	private static TermMapping specimenTypeMapping;
+	private static TermMapping nameTypeMapping;
+	private static TermMapping sexMapping;
+	private static TermMapping lifeStageMapping;
+	private static TermMapping occStatusMapping;
+	private static TermMapping establishmentMeansMapping;
 	
 
 //	public static String transformToGbifTaxonomicStatus(){
@@ -45,7 +53,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 		}else{
 			if (nomStatusMapping == null){
 				try {
-					nomStatusMapping = new TermMapping("nomStatusToGbif.csv");
+					nomStatusMapping = new TermMapping("nomStatusToGbif.tsv");
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
@@ -92,13 +100,13 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 //		//               protectum, rejiciendumUtique, rejiciendumUtiqueProp
 //	}
 	
-	public static String transformToTdwgRank(Rank term){
+	public static String transformToGbifRank(Rank term){
 		if ( term == null){
 			return null;
 		}else{
 			if (rankMapping == null){
 				try {
-					rankMapping = new TermMapping("rankToTdwg.tsv");
+					rankMapping = new TermMapping("rankToGbif.tsv");
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
@@ -106,6 +114,121 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			String result = rankMapping.getTerm(term.getUuid());
 			if (StringUtils.isBlank(result)){
 				logger.warn("Rank (" + term.getLabel() + ") could not be mapped. Use CDM abbreviated label instead.");
+			}
+			return result;
+		}
+	}
+	
+	public static String transformSpecimenTypeStatusToGbif(SpecimenTypeDesignationStatus status){
+		if ( status == null){
+			return null;
+		}else{
+			if (specimenTypeMapping == null){
+				try {
+					specimenTypeMapping = new TermMapping("specimenTypeStatusToGbif.tsv");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			String result = specimenTypeMapping.getTerm(status.getUuid());
+			if (StringUtils.isBlank(result)){
+				logger.warn("Specimen type status (" + status.getLabel() + ") could not be mapped. Use CDM status label.");
+			}
+			return result;
+		}
+	}
+	
+	
+	public static String transformNameTypeStatusToGbif(NameTypeDesignationStatus status){
+		if ( status == null){
+			return null;
+		}else{
+			if (nameTypeMapping == null){
+				try {
+					nameTypeMapping = new TermMapping("nameTypeStatusToGbif.tsv");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			String result = nameTypeMapping.getTerm(status.getUuid());
+			if (StringUtils.isBlank(result)){
+				logger.warn("Name type status (" + status.getLabel() + ") could not be mapped. Use CDM status label.");
+			}
+			return result;
+		}
+	}
+
+	public static String transformToGbifSex(Sex sex) {
+		if ( sex == null){
+			return null;
+		}else{
+			if (sexMapping == null){
+				try {
+					sexMapping = new TermMapping("sexToGbif.tsv");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			String result = sexMapping.getTerm(sex.getUuid());
+			if (StringUtils.isBlank(result)){
+				logger.warn("Sex (" + sex.getLabel() + ") could not be mapped. Use CDM status label.");
+			}
+			return result;
+		}
+	}
+
+	public static String transformToGbifLifeStage(Stage stage) {
+		if ( stage == null){
+			return null;
+		}else{
+			if (lifeStageMapping == null){
+				try {
+					lifeStageMapping = new TermMapping("lifeStageToGbif.tsv");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			String result = lifeStageMapping.getTerm(stage.getUuid());
+			if (StringUtils.isBlank(result)){
+				logger.warn("Life stage (" + stage.getLabel() + ") could not be mapped. Use CDM status label.");
+			}
+			return result;
+		}
+	}
+
+	public static String transformToGbifOccStatus(PresenceAbsenceTermBase<?> status) {
+		if ( status == null){
+			return null;
+		}else{
+			if (occStatusMapping == null){
+				try {
+					occStatusMapping = new TermMapping("presenceTermToGbifOccurrenceStatus.tsv");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			String result = occStatusMapping.getTerm(status.getUuid());
+			if (StringUtils.isBlank(result)){
+				logger.warn("PresenceAbsence term (" + status.getLabel() + ") could not be mapped to GBIF occurrence status. Use CDM status label.");
+			}
+			return result;
+		}
+	}
+
+	public static String transformToGbifEstablishmentMeans(PresenceAbsenceTermBase<?> status) {
+		if ( status == null){
+			return null;
+		}else{
+			if (establishmentMeansMapping == null){
+				try {
+					establishmentMeansMapping = new TermMapping("presenceTermToGbifEstablishmentMeans.tsv");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			String result = establishmentMeansMapping.getTerm(status.getUuid());
+			if (StringUtils.isBlank(result)){
+				logger.warn("PresenceAbsence term (" + status.getLabel() + ") could not be mapped to GBIF establishment means. Use CDM status label.");
 			}
 			return result;
 		}

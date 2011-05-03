@@ -118,8 +118,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
 		record.setOccurrenceStatus(distribution.getStatus());
 		//TODO missing
 		record.setThreadStatus(null);
-		//TODO missing
-		record.setEstablishmentMeans(null);
+		record.setEstablishmentMeans(distribution.getStatus());
 		//TODO missing
 		record.setAppendixCITES(null);
 		//TODO missing

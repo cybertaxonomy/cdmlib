@@ -35,7 +35,7 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	private PresenceAbsenceTermBase<?> occurrenceStatus;
 	private String threadStatus;
 	
-	private String establishmentMeans;
+	private PresenceAbsenceTermBase establishmentMeans;
 	private String appendixCITES;
 	private TimePeriod eventDate;
 	
@@ -100,7 +100,7 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST, TermUris.DWC_LIFESTAGE);
 		print(getOccurrenceStatus(occurrenceStatus), writer, IS_NOT_FIRST, TermUris.DWC_OCCURRENCE_STATUS);
 		print(threadStatus, writer, IS_NOT_FIRST, TermUris.IUCN_THREAD_STATUS);
-		print(establishmentMeans, writer, IS_NOT_FIRST, TermUris.DWC_ESTABLISHMENT_MEANS);
+		print(getEstablishmentMeans(establishmentMeans), writer, IS_NOT_FIRST, TermUris.DWC_ESTABLISHMENT_MEANS);
 		print(appendixCITES, writer, IS_NOT_FIRST, TermUris.GBIF_APPENDIX_CITES);
 		print(getTimePeriod(eventDate),writer, IS_NOT_FIRST, TermUris.DWC_EVENT_DATE);
 		print(getTimePeriodPart(seasonalDate, false),writer, IS_NOT_FIRST, TermUris.DWC_START_DAY_OF_YEAR);
@@ -177,12 +177,12 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	}
 
 
-	public String getEstablishmentMeans() {
+	public PresenceAbsenceTermBase getEstablishmentMeans() {
 		return establishmentMeans;
 	}
 
 
-	public void setEstablishmentMeans(String establishmentMeans) {
+	public void setEstablishmentMeans(PresenceAbsenceTermBase establishmentMeans) {
 		this.establishmentMeans = establishmentMeans;
 	}
 

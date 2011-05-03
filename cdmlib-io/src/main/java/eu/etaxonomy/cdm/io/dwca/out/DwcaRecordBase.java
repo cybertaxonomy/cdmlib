@@ -26,6 +26,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -35,9 +36,11 @@ import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
@@ -252,7 +255,7 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected String getRank(Rank rank) {
-		String result = DwcaTaxExportTransformer.transformToTdwgRank(rank);
+		String result = DwcaTaxExportTransformer.transformToGbifRank(rank);
 		if (result == null){
 			if (rank == null){
 				return "";
@@ -265,31 +268,58 @@ public abstract class DwcaRecordBase {
 	}
 	
 	protected String getSex(Sex sex) {
-		if (sex == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifSex(sex);
+		if (result == null){
+			if (sex == null){
+				return "";
+			}else{
+				return sex.getLabel();
+			}
 		}else{
-			//TODO
-			return sex.getTitleCache();
+			return result;
 		}
 	}
 	
 	protected String getLifeStage(Stage stage) {
-		if (stage == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifLifeStage(stage);
+		if (result == null){
+			if (stage == null){
+				return "";
+			}else{
+				return stage.getLabel();
+			}
 		}else{
-			//TODO
-			return stage.getTitleCache();
+			return result;
 		}
 	}
 
 	protected String getOccurrenceStatus(PresenceAbsenceTermBase<?> status) {
-		if (status == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifOccStatus(status);
+		if (result == null){
+			if (status == null){
+				return "";
+			}else{
+				return status.getLabel();
+			}
 		}else{
-			//TODO
-			return status.getTitleCache();
+			return result;
 		}
 	}
+	
+	protected String getEstablishmentMeans(PresenceAbsenceTermBase<?> status) {
+		String result = DwcaTaxExportTransformer.transformToGbifEstablishmentMeans(status);
+		if (result == null){
+			if (status == null){
+				return "";
+			}else{
+				return status.getLabel();
+			}
+		}else{
+			return result;
+		}
+	}
+
+	
 	
 	protected String getAgent(AgentBase<?> agent) {
 		if (agent == null){
@@ -353,9 +383,19 @@ public abstract class DwcaRecordBase {
 	protected String getDesignationType(TypeDesignationStatusBase<?> status) {
 		if (status == null){
 			return "";
+		}
+		String result;
+		if (status.isInstanceOf(SpecimenTypeDesignationStatus.class)){
+			SpecimenTypeDesignationStatus specStatus = CdmBase.deproxy(status, SpecimenTypeDesignationStatus.class);
+			result = DwcaTaxExportTransformer.transformSpecimenTypeStatusToGbif(specStatus);
 		}else{
-			//TODO
+			NameTypeDesignationStatus nameStatus = CdmBase.deproxy(status, NameTypeDesignationStatus.class);
+			result = DwcaTaxExportTransformer.transformNameTypeStatusToGbif(nameStatus);
+		}
+		if (result == null){
 			return status.getLabel();
+		}else{
+			return result;
 		}
 	}
 	

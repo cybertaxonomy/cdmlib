@@ -87,7 +87,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 				TaxonNameBase<?, ?> basionym = name.getBasionym();
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
-					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null);
+					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null, false, false);
 					record.write(writer);
 					this.addExistingRecord(taxon);
 				}
@@ -125,6 +125,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
 			Synonym synonym = synRel.getSynonym();
 			SynonymRelationshipType type = synRel.getType();
+			boolean isProParte = synRel.isProParte();
+			boolean isPartial = synRel.isPartial();
 			if (type == null){ // should not happen
 				type = SynonymRelationshipType.SYNONYM_OF();
 			}
@@ -134,7 +136,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
 			if (! this.recordExists(synonym)){
-				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type);
+				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial);
 				record.write(writer);
 				this.addExistingRecord(synonym);
 			}
@@ -155,7 +157,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
 			if (! this.recordExists(misappliedName)){
-				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType);
+				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false);
 				record.write(writer);
 				this.addExistingRecord(misappliedName);
 			}
@@ -178,12 +180,14 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param acceptedTaxon
 	 * @param parent
 	 * @param basionym
+	 * @param isPartial 
+	 * @param isProParte 
 	 * @param config 
 	 * @param type
 	 */
 	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, NonViralName<?> name, 
 			Taxon acceptedTaxon, Taxon parent, TaxonNameBase<?, ?> basionym, Classification classification, 
-			RelationshipTermBase<?> relType) {
+			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 		
@@ -238,7 +242,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		
 		record.setNomenclaturalCode(name.getNomenclaturalCode());
 		// ??? TODO Misapplied Names, inferred synonyms
-		handleTaxonomicStatus(record, name, relType);
+		handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
 		handleNomStatus(record, taxonBase, name);
 		// ???
 		record.setTaxonRemarks(null);
@@ -267,20 +271,30 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param record
 	 * @param name
 	 * @param type
+	 * @param isPartial 
+	 * @param isProParte 
 	 */
 	private void handleTaxonomicStatus(DwcaTaxRecord record,
-			NonViralName<?> name, RelationshipTermBase<?> type) {
+			NonViralName<?> name, RelationshipTermBase<?> type, boolean isProParte, boolean isPartial) {
 		if (type == null){
 			record.setTaxonomicStatus(name.getNomenclaturalCode().acceptedTaxonStatusLabel());
 		}else{
 			String status = name.getNomenclaturalCode().synonymStatusLabel();
 			if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
-				status = "heterotypic synonym";
+				status = "heterotypicSynonym";
 			}else if(type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
-				status = "homotypic synonym";
+				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
 			}
+			if (isProParte){
+				status = "proParteSynonym";
+			}else if (isPartial){
+				String message = "Partial synonym is not part of the gbif toxonomic status vocabulary";
+				logger.warn(message);
+				status = "partialSynonym";
+			}
+			
 			record.setTaxonomicStatus(status);
 		}
 	}
