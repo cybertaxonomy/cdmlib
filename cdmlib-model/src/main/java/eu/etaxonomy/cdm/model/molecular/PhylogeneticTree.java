@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
-public class PhylogeneticTree extends ReferencedMedia {
+public class PhylogeneticTree extends ReferencedMedia implements Cloneable{
 	private static final long serialVersionUID = -7020182117362324067L;
 	private static final  Logger logger = Logger.getLogger(PhylogeneticTree.class);
 	
