@@ -120,7 +120,6 @@ public class DwcaTaxExport extends DwcaExportBase {
 	}
 
 	private void handleSynonyms(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
-		//TODO avoid duplicates
 		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
 		for (SynonymRelationship synRel :synRels ){
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
@@ -146,7 +145,6 @@ public class DwcaTaxExport extends DwcaExportBase {
 	
 
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
-		//TODO avoid duplicates
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
 		for (Taxon misappliedName : misappliedNames ){
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);

@@ -270,6 +270,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaResourceRelationRecord.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTypesExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaTypesRecord.java -text
@@ -277,6 +278,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularExport.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaZipExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/IDwcaAreaRecord.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermUris.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text

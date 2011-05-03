@@ -230,11 +230,15 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected String getNomStatus(NomenclaturalStatusType nomStatus) {
-		if (nomStatus == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifNomStatus(nomStatus);
+		if (result == null){
+			if (nomStatus == null){
+				return "";
+			}else{
+				return nomStatus.getLabel();
+			}
 		}else{
-			//TODO
-			return nomStatus.getLabel();
+			return result;
 		}
 	}
 
@@ -248,11 +252,15 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected String getRank(Rank rank) {
-		if (rank == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToTdwgRank(rank);
+		if (result == null){
+			if (rank == null){
+				return "";
+			}else{
+				return rank.getLabel();
+			}
 		}else{
-			//TODO
-			return rank.getTitleCache();
+			return result;
 		}
 	}
 	

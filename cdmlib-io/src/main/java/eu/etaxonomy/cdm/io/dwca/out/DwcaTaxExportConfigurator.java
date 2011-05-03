@@ -95,9 +95,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	 */
 	@Override
 	public File getDestination() {
-		File file = super.getDestination();
-		return file;
-//		return super.getDestination();
+		return super.getDestination();
 	}
 
 	
