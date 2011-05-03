@@ -63,8 +63,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
+	private static final long serialVersionUID = 1337101678484153972L;
 
-	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
+	private static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 
 	private static final UUID uuidAmbiguous = UUID.fromString("90f5012b-705b-4488-b4c6-002d2bc5198e");
 	private static final UUID uuidDoubtful = UUID.fromString("0ffeb39e-872e-4c0f-85ba-a4150d9f9e7d");
