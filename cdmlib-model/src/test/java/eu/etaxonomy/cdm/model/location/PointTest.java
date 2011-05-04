@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -200,6 +201,24 @@ public class PointTest {
 //		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
 //		Assert.assertNull("isLongitude must be undefined. S stands for second.", conversionResults.isLongitude);
 
+	}
+	
+	/**
+	 * I don't exactly know what should happen here.
+	 * Please see http://dev.e-taxonomy.eu/trac/ticket/2267#comment:3 on why this test was created 
+	 * 
+	 * @throws ParseException
+	 */
+	@Ignore 
+	@Test
+	public void testParsingHexagesimalAndDecimalMixed() throws ParseException{
+		String example = "-35\u00B034'55.67S";
+		point1.setLatitudeByParsing(example);
+		
+		// should this work?
+		Assert.assertEquals(example, point1.getLatitude());
+		// should this work?
+		Assert.assertEquals(example, point1.getLatitudeSexagesimal());
 	}
 	
 	@Test
