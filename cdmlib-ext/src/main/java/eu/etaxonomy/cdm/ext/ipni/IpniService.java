@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +33,7 @@ import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -53,6 +57,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 * @author a.mueller
 * @created Aug 16, 2010
 * @version 1.0
+ *
+ * TODO the whole ipni service should be refactored to use UriUtils. I did this for the queryService method only because we ran into timeout
+ * problems in tests. UriUtils handles these problems already.
  *
  */
 @Component
@@ -232,6 +239,8 @@ public class IpniService  implements IIpniService{
 	       
 
 	/**
+	 *	FIXME rewrote this method to rely on {@link UriUtils}. The whole class should be adjusted to reflect this change.
+	 *	Also see comments in the class' documentation block.
 	 *
 	 * @param restRequest
 	 * @return
@@ -241,25 +250,25 @@ public class IpniService  implements IIpniService{
 			throw new NullPointerException("Ipni service configurator should not be null");
 		}
 		try {
+			
             // create the request url
             URL newUrl = new URL(serviceUrl.getProtocol(),
                                                      serviceUrl.getHost(),
                                                      serviceUrl.getPort(),
                                                      serviceUrl.getPath() 
                                                      + "?" + request);
-            // open a connection
-            HttpURLConnection connection = (HttpURLConnection) newUrl.openConnection();
-            // set the accept property to XML so we can use jdom to handle the content
-            //connection.setRequestProperty("Accept", "text/xml");
-   
-           
-            logger.info("Firing request for URL: " + newUrl);
-                   
-            int responseCode = connection.getResponseCode();
-           
+            
+            
+            URI newUri = newUrl.toURI();
+                       
+            logger.info("Firing request for URI: " + newUri);
+                
+            HttpResponse response = UriUtils.getResponse(newUri, null);
+            
+            int responseCode = response.getStatusLine().getStatusCode();
+            
             // get the content at the resource
-            InputStream content = (InputStream) connection.getContent();
-           
+            InputStream content = response.getEntity().getContent();
             // build the result
             List<? extends IdentifiableEntity> result;
             if (serviceType.equals(ServiceType.AUTHOR)){
@@ -277,8 +286,10 @@ public class IpniService  implements IIpniService{
             }
                
         } catch (IOException e) {
-                logger.error("No content for request: " + request);
-        }
+            logger.error("No content for request: " + request);
+        } catch (URISyntaxException e) {
+			logger.error("Given URL could not be transformed into URI", e);
+		}
        
         // error
         return null;
