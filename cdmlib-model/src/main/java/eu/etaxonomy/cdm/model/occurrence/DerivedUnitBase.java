@@ -199,10 +199,24 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		this.accessionNumber = accessionNumber;
 	}
 	
+	/**
+	 * Will be removed in future versions as semantics is not clear.
+	 * For accessing the collecting number use 
+	 * {@link FieldObservation#getFieldNumber()} instead.
+	 * @return
+	 */
+	@Deprecated
 	public String getCollectorsNumber() {
 		return collectorsNumber;
 	}
 	
+	/**
+	 * Will be removed in future versions as semantics is not clear.
+	 * For editing the collecting number use 
+	 * {@link FieldObservation#getFieldNumber()} instead.
+	 * @return
+	 */
+	@Deprecated
 	public void setCollectorsNumber(String collectorsNumber) {
 		this.collectorsNumber = collectorsNumber;
 	}

@@ -1906,15 +1906,16 @@ public class DerivedUnitFacade {
 		derivedUnit.setStoredUnder(storedUnder);
 	}
 
-	// colletors number
-	@Transient
-	public String getCollectorsNumber() {
-		return derivedUnit.getCollectorsNumber();
-	}
-
-	public void setCollectorsNumber(String collectorsNumber) {
-		this.derivedUnit.setCollectorsNumber(collectorsNumber);
-	}
+	
+//	// colletors number
+//	@Transient
+//	public String getCollectorsNumber() {
+//		return derivedUnit.getCollectorsNumber();
+//	}
+//
+//	public void setCollectorsNumber(String collectorsNumber) {
+//		this.derivedUnit.setCollectorsNumber(collectorsNumber);
+//	}
 
 	// title cache
 	public String getTitleCache() {

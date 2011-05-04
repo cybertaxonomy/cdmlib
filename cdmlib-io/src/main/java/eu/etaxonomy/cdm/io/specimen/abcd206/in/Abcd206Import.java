@@ -216,7 +216,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		//set catalogue number (unitID)
 		derivedUnitFacade.setCatalogNumber(dataHolder.unitID);
 		derivedUnitFacade.setAccessionNumber(dataHolder.accessionNumber);
-		derivedUnitFacade.setCollectorsNumber(dataHolder.collectorsNumber);
+//		derivedUnitFacade.setCollectorsNumber(dataHolder.collectorsNumber);
 
 
 		/**
@@ -799,16 +799,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			dataHolder.fieldNumber = "";
 		}
 
-		try {
-			group = root.getElementsByTagName("CollectorsNumber");
-			path=group.item(0).getNodeName();
-			getHierarchie(group.item(0));
-			dataHolder.knownABCDelements.add(path);
-			path="";
-			dataHolder.collectorsNumber = group.item(0).getTextContent();
-		} catch (NullPointerException e) {
-			dataHolder.collectorsNumber = "";
-		}
+//		try {
+//			group = root.getElementsByTagName("CollectorsNumber");
+//			path=group.item(0).getNodeName();
+//			getHierarchie(group.item(0));
+//			dataHolder.knownABCDelements.add(path);
+//			path="";
+//			dataHolder.collectorsNumber = group.item(0).getTextContent();
+//		} catch (NullPointerException e) {
+//			dataHolder.collectorsNumber = "";
+//		}
 
 		try {
 			group = root.getElementsByTagName("AccessionNumber");

@@ -31,7 +31,7 @@ public class Abcd206DataHolder {
 	protected String unitID;
 	protected String recordBasis;
 	protected String accessionNumber;
-	protected String collectorsNumber;
+//	protected String collectorsNumber;
 	
 	protected String fieldNumber;
 	protected Double longitude;

@@ -1317,19 +1317,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 				specimenFacade.getStoredUnder());
 	}
 
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectorsNumber()}
-	 * .
-	 */
-	@Test
-	public void testGetSetCollectorsNumber() {
-		Assert.assertEquals("Collectors number must be same", collectorsNumber,
-				specimenFacade.getCollectorsNumber());
-		specimenFacade.setCollectorsNumber("C12345693");
-		Assert.assertEquals("New collectors number must be 'C12345693'",
-				"C12345693", specimenFacade.getCollectorsNumber());
-	}
+//	/**
+//	 * Test method for
+//	 * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectorsNumber()}
+//	 * .
+//	 */
+//	@Test
+//	public void testGetSetCollectorsNumber() {
+//		Assert.assertEquals("Collectors number must be same", collectorsNumber,
+//				specimenFacade.getCollectorsNumber());
+//		specimenFacade.setCollectorsNumber("C12345693");
+//		Assert.assertEquals("New collectors number must be 'C12345693'",
+//				"C12345693", specimenFacade.getCollectorsNumber());
+//	}
 
 	/**
 	 * Test method for
