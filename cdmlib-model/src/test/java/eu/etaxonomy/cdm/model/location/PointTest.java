@@ -127,11 +127,11 @@ public class PointTest {
 	
 	@Test
 	public void testGetLongitudeSexagesimal(){
-		Assert.assertEquals("23\u00B07'25\"E", point1.getLongitudeSexagesimal().toString(true));
+		Assert.assertEquals("23\u00B07'24.801\"E", point1.getLongitudeSexagesimal().toString(true, false));
 		
 		point2.setLongitudeSexagesimal(Sexagesimal.NewInstance(5, 22, null, Direction.WEST));
-		Assert.assertTrue(point2.getLongitudeSexagesimal().minutes == 22);
-		Assert.assertTrue(point2.getLongitudeSexagesimal().seconds == 0);
+		Assert.assertEquals((Integer)22, (Integer)point2.getLongitudeSexagesimal().minutes);
+		Assert.assertEquals((Integer)0, (Integer)point2.getLongitudeSexagesimal().seconds);
 		
 		Double latitudeDouble = -45.57389326; 
 		point1.setLatitudeSexagesimal(Sexagesimal.valueOf(latitudeDouble, true));
@@ -209,16 +209,11 @@ public class PointTest {
 	 * 
 	 * @throws ParseException
 	 */
-	@Ignore 
 	@Test
 	public void testParsingHexagesimalAndDecimalMixed() throws ParseException{
-		String example = "-35\u00B034'55.67S";
+		String example = "35\u00B034'55.67\"S";
 		point1.setLatitudeByParsing(example);
-		
-		// should this work?
-		Assert.assertEquals(example, point1.getLatitude());
-		// should this work?
-		Assert.assertEquals(example, point1.getLatitudeSexagesimal());
+		Assert.assertEquals(example, point1.getLatitudeSexagesimal().toString());
 	}
 	
 	@Test

@@ -31,6 +31,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
@@ -297,7 +299,7 @@ public class Point implements Cloneable, Serializable {
 		public Integer degree;
 		public Integer minutes;
 		public Integer seconds;
-//		public Double tertiers;
+		public Double tertiers;
 		
 		public Direction direction;
 
@@ -311,10 +313,10 @@ public class Point implements Cloneable, Serializable {
 		
 		
 		public static Sexagesimal valueOf(Double decimal, boolean isLatitude){
-			return valueOf(decimal, isLatitude, false, false);
+			return valueOf(decimal, isLatitude, false, false, true);
 		}
 		
-		public static Sexagesimal valueOf(Double decimal, boolean isLatitude, boolean nullSecondsToNull, boolean nullMinutesToNull){
+		public static Sexagesimal valueOf(Double decimal, boolean isLatitude, boolean nullSecondsToNull, boolean nullMinutesToNull, boolean allowTertiers){
 			if(decimal == null){
 				return null;
 			}
@@ -339,15 +341,20 @@ public class Point implements Cloneable, Serializable {
 		 
 		        // Decimal in \u00B0'" umrechnen
 		        double d = Math.abs(decimalDegree);
-		        d += HALF_SECOND; // add a second for rounding
+		        if (! allowTertiers){
+		        	d += HALF_SECOND; // add half a second for rounding
+		        }else{
+		        	d += HALF_SECOND / 10000;  //to avoid rounding errors
+		        }
 		        sexagesimal.degree = (int) Math.floor(d);
 		        sexagesimal.minutes = (int) Math.floor((d - sexagesimal.degree) * 60.0);
 		        sexagesimal.seconds = (int) Math.floor((d - sexagesimal.degree - sexagesimal.minutes / 60.0) * 3600.0);
-		 
+		        sexagesimal.tertiers = (d - sexagesimal.degree - sexagesimal.minutes / 60.0 - sexagesimal.seconds / 3600.0) * 3600.0;
+		        
 		        if (sexagesimal.seconds == 0 && nullSecondsToNull){
 		        	sexagesimal.seconds = null;
 		        }
-		        if (sexagesimal.seconds == null && nullMinutesToNull){
+		        if (sexagesimal.seconds == null && sexagesimal.minutes == 0 && nullMinutesToNull){
 		        	sexagesimal.minutes = null;
 		        }
 		        
@@ -370,9 +377,13 @@ public class Point implements Cloneable, Serializable {
 
 		@Override
 		public String toString(){
-			return toString(false);
+			return toString(false, false);
 		}
 		public String toString(boolean includeEmptySeconds){
+			return toString(includeEmptySeconds, false);
+		}
+		
+		public String toString(boolean includeEmptySeconds, boolean removeTertiers){
 			String result;
 			result = String.valueOf(CdmUtils.Nz(degree)) + "\u00B0";
 			if (seconds != null || minutes != null){
@@ -380,11 +391,26 @@ public class Point implements Cloneable, Serializable {
 			}
 			if (seconds != null ){
 				if (seconds != 0 || includeEmptySeconds){
-					result += String.valueOf(CdmUtils.Nz(seconds)) + "\"";
+					result += String.valueOf(CdmUtils.Nz(seconds)) + getTertiersString(tertiers, removeTertiers) + "\"";
 				}
 			}
 			result += direction; 
 			return result;
+		}
+		private String getTertiersString(Double tertiers, boolean removeTertiers) {
+			if (tertiers == null || removeTertiers){
+				return "";
+			}else{
+				String result = String.valueOf(tertiers);
+				if (result.length() > 5){
+					result = result.substring(0, 5);
+				}
+				while (result.endsWith("0")){
+					result = result.substring(0, result.length() -1);
+				}
+				return result.substring(1);
+			}
+			
 		}
 		
 	}
