@@ -1087,6 +1087,7 @@
 				<artifactId>org.springframework.context.support</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			<!-- ******* SPRING SECURITY ******* -->
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
@@ -1114,6 +1115,16 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>3.0.0.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>3.0.0.RELEASE</version>
+			</dependency>			
 			<!-- ******* SERVLET/JSP/JSF ******* -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
