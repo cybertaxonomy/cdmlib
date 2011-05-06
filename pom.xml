@@ -430,7 +430,7 @@
           <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <preparationGoals>clean install</preparationGoals> 
-          <tag>cdmlib/${project.version}</tag>
+          <tagBase>http://dev.e-taxonomy.eu/svn/tags/cdmlib</tagBase>
         </configuration>
       </plugin>
 		</plugins>
