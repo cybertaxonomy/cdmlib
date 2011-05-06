@@ -15,6 +15,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IAgentService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="annotationService"
@@ -24,6 +27,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IAnnotationService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -35,6 +41,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IAuditEventService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="classificationService"
@@ -44,6 +53,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IClassificationService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -55,6 +67,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.ICollectionService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="commonService"
@@ -64,6 +79,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.ICommonService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -75,6 +93,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IDescriptionService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="featureNodeService"
@@ -84,6 +105,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IFeatureNodeService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -95,6 +119,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IFeatureTreeService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="groupService"
@@ -104,6 +131,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IGroupService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -115,6 +145,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IIdentificationKeyService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="locationService"
@@ -124,6 +157,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.ILocationService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -135,6 +171,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IMarkerService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="mediaService"
@@ -144,6 +183,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IMediaService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -155,6 +197,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.INameService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="occurrenceService"
@@ -164,6 +209,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IOccurrenceService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -175,6 +223,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="polytomousKeyService"
@@ -184,6 +235,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IPolytomousKeyService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -195,7 +249,11 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
+	
 <!-- 
    <bean id="serviceService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
@@ -207,6 +265,7 @@
 		</property>
 	</bean>
  -->
+ 
    <bean id="taxonNodeService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
 		<property name="serviceUrl">
@@ -214,6 +273,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.ITaxonNodeService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -225,6 +287,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.ITaxonService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="termService"
@@ -234,6 +299,9 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.ITermService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 
@@ -245,6 +313,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IUserService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="vocabularyService"
@@ -255,6 +326,9 @@
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IVocabularyService</value>
 		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
 	</bean>
 
    <bean id="workingSetService"
@@ -264,6 +338,22 @@
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IWorkingSetService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
+	</bean>
+
+	<bean id="securityService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/security.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ISecurityService</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
 		</property>
 	</bean>
 

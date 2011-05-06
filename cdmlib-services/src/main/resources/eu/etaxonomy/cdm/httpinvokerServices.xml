@@ -273,6 +273,19 @@
 		</property>
 	</bean>
 
+	<!-- spring security -->
+	
+	<bean id="httpSecurityService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="securityServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.ISecurityService</value>
+		</property>
+	</bean>
+	
+
 	<!-- only for simple tests -->
 <!-- 
 	<bean id="httpDemoService"

@@ -75,6 +75,9 @@
 				<prop key="/vocabulary.service">httpVocabularyService</prop>
 				<prop key="/workingset.service">httpWorkingService</prop>
 				
+				<!-- spring security -->
+				<prop key="/security.service">httpSecurityService</prop>
+				
 				<!-- only for simple tests -->
 <!-- 
 				<prop key="/demo.service">httpDemoService</prop>
@@ -226,5 +229,5 @@
 <!--	<bean id="authenticationEntryPoint" class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">-->
 <!--		<property name="realmName"><value>Name Of Your Realm</value></property>-->
 <!--	</bean>-->
-    
+
 </beans>

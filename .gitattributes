@@ -1682,6 +1682,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ISecurityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeService.java -text
@@ -1706,6 +1707,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/SecurityServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeByNameComparator.java -text

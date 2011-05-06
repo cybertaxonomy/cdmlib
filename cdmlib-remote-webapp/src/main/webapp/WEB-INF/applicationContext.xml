@@ -3,9 +3,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:security="http://www.springframework.org/schema/security"
     xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/security   http://www.springframework.org/schema/security/spring-security-3.0.xsd
     ">
        
    <!-- include default application context and customization -->
@@ -67,5 +69,68 @@
 	    <property name="cacheManager" ref="cacheManager" />
 	    <property name="serializableFactory" ref="serializableFactory"/>
 	</bean>
+
+	<!--  
+    ======= Security ======= 
+    -->
+    <security:http realm="SecRemoting">
+        <security:http-basic/>
+        <security:intercept-url pattern="/**" access="ROLE_ADMIN" requires-channel="any"/>
+        <security:port-mappings>
+			<security:port-mapping http="8080" https="8443"/>
+		</security:port-mappings>
+    </security:http>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider>
+            <security:user-service id="uds">
+                <security:user name="jimi" password="jimi"
+                               authorities="ROLE_USER, ROLE_MANAGER" />
+                <security:user name="bob" password="bob"
+                               authorities="ROLE_USER,ROLE_ADMIN" />
+                <security:user name="developer" password="developer"
+                               authorities="ROLE_USER, ROLE_ADMIN, ROLE_MANAGER" />
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id="digestProcessingFilter"
+          class="org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
+        <property name="userDetailsService" ref="uds" />
+        <property name="authenticationEntryPoint" ref="digestProcessingFilterEntryPoint" />
+    </bean>
+
+    <bean id="digestProcessingFilterEntryPoint"
+          class="org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
+        <property name="realmName" value="ThisIsTheDigestRealm" />
+        <property name="key" value="acegi" />
+        <property name="nonceValiditySeconds" value="10" />
+    </bean>
+
+    <bean id="springSecurityFilterChain"
+          class="org.springframework.security.web.FilterChainProxy">
+        <security:filter-chain-map path-type="ant">
+            <security:filter-chain pattern="/**"
+                                   filters="httpSessionContextIntegrationFilter,digestProcessingFilter,exceptionTranslationFilter,filterSecurityInterceptor" />
+        </security:filter-chain-map>
+    </bean>
+
+    <bean id="httpSessionContextIntegrationFilter"
+          class="org.springframework.security.web.context.HttpSessionContextIntegrationFilter" />
+          
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased">
+        <property name="decisionVoters">
+            <list>
+                <bean class="org.springframework.security.access.vote.RoleVoter" />
+                <bean class="org.springframework.security.access.vote.AuthenticatedVoter" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="exceptionTranslationFilter"  class="org.springframework.security.web.access.ExceptionTranslationFilter">
+        <property name="authenticationEntryPoint"
+                  ref="digestProcessingFilterEntryPoint" />
+    </bean>
+
 
 </beans>
