@@ -64,7 +64,6 @@ import org.hibernate.validator.constraints.Length;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	private static final long serialVersionUID = 1925052321596648672L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
 
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
