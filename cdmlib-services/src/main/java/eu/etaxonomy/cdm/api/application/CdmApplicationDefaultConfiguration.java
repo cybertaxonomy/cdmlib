@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ISecurityService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -124,6 +125,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IPolytomousKeyService polytomousKeyService;
 	@Autowired
 	private IPolytomousKeyNodeService polytomousKeyNodeService;
+	@Autowired
+	private ISecurityService securityService;
 
 	
 //	@Autowired
@@ -335,4 +338,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	public IGroupService getGroupService() {
 		return groupService;
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getGroupService()
+	 */
+	public ISecurityService getSecurityService() {
+		return securityService;
+	}
+
 }
