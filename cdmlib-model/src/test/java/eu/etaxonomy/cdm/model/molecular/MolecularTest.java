@@ -105,12 +105,23 @@ public class MolecularTest {
 		assertNotSame(genBankAccession, genBankAccessionClone);
 		
 		DnaSample dnaSampleClone = (DnaSample)dnaSample.clone();
-		Iterator<Sequence> seqIterator = dnaSample.getSequences().iterator();
-		Iterator<Sequence> seqIteratorClone = dnaSampleClone.getSequences().iterator();
+		Sequence[] seqArray = new Sequence[dnaSample.getSequences().size()];
+		seqArray = dnaSample.getSequences().toArray(seqArray);
+		Sequence[] seqArrayClone = dnaSampleClone.getSequences().toArray(seqArray);
+		boolean testBool = true;
+		for (Sequence seqTest: seqArray){
+			if (testBool == false) break;
+			testBool = false;
+			for (Sequence seq: seqArrayClone){
+				if (seq.equals(seqTest)) {
+					testBool = true;
+					break;
+				} else testBool = false;
+				
+			}
+		}
+		assertTrue(testBool);
 		
-		Sequence seqTest = seqIterator.next();
-		Sequence seqTestClone = seqIteratorClone.next();
-		assertSame(seqTest, seqTestClone);
 		
 		
 		
