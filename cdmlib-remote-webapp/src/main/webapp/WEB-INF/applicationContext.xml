@@ -73,30 +73,31 @@
 	<!--  
     ======= Security ======= 
     -->
-    <security:http realm="SecRemoting">
+    <security:http realm="SecRemoting" use-expressions="true">
         <security:http-basic/>
-        <security:intercept-url pattern="/**" access="ROLE_ADMIN" requires-channel="any"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="any"/>
         <security:port-mappings>
 			<security:port-mapping http="8080" https="8443"/>
 		</security:port-mappings>
     </security:http>
 
     <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider>
-            <security:user-service id="uds">
-                <security:user name="jimi" password="jimi"
-                               authorities="ROLE_USER, ROLE_MANAGER" />
-                <security:user name="bob" password="bob"
-                               authorities="ROLE_USER,ROLE_ADMIN" />
-                <security:user name="developer" password="developer"
-                               authorities="ROLE_USER, ROLE_ADMIN, ROLE_MANAGER" />
-            </security:user-service>
+        <security:authentication-provider user-service-ref="userService">
+        	<security:password-encoder ref="passwordEncoder">
+        		<security:salt-source ref="saltSource" />
+        	</security:password-encoder>
         </security:authentication-provider>
     </security:authentication-manager>
 
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+    
+    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="getUsername"/>
+    </bean>
+
     <bean id="digestProcessingFilter"
           class="org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
-        <property name="userDetailsService" ref="uds" />
+        <property name="userDetailsService" ref="userService" />
         <property name="authenticationEntryPoint" ref="digestProcessingFilterEntryPoint" />
     </bean>
 
@@ -111,7 +112,8 @@
           class="org.springframework.security.web.FilterChainProxy">
         <security:filter-chain-map path-type="ant">
             <security:filter-chain pattern="/**"
-                                   filters="httpSessionContextIntegrationFilter,digestProcessingFilter,exceptionTranslationFilter,filterSecurityInterceptor" />
+                                   filters="securityContextPersistenceFilter,httpSessionContextIntegrationFilter,
+                                   digestProcessingFilter,exceptionTranslationFilter,filterSecurityInterceptor" />
         </security:filter-chain-map>
     </bean>
 
@@ -132,5 +134,6 @@
                   ref="digestProcessingFilterEntryPoint" />
     </bean>
 
-
+	<bean id="securityContextPersistenceFilter" class="org.springframework.security.web.context.SecurityContextPersistenceFilter"/>
+	
 </beans>
