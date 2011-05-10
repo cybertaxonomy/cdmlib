@@ -9,15 +9,18 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -32,6 +35,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
@@ -108,6 +112,12 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivedFrom;
+	
+	@XmlElementWrapper(name = "SpecimenTypeDesignations")
+	@XmlElement(name = "SpecimenTypeDesignation")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "typeSpecimen")
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
 	/**
 	 * Constructor
@@ -223,6 +233,14 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	
 	public TaxonNameBase getStoredUnder() {
 		return storedUnder;
+	}
+	
+	public void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
+		specimenTypeDesignations.add(specimenTypeDesignation);
+	}
+	
+	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
+		return specimenTypeDesignations;
 	}
 	
 //*********** CLONE **********************************/	

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -65,6 +66,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="typeSpecimen_id")
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private DerivedUnitBase typeSpecimen;
 	
@@ -131,6 +133,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 			String originalNameString, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeSpecimen(specimen);
+		
 		this.setTypeStatus(status);
 	}
 	
@@ -150,6 +153,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	 */
 	public void setTypeSpecimen(DerivedUnitBase typeSpecimen){
 		this.typeSpecimen = typeSpecimen;
+		typeSpecimen.addSpecimenTypeDesignation(this);
 	}
 
 	/* (non-Javadoc)
