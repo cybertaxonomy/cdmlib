@@ -175,7 +175,7 @@ public class PointTest {
 			Assert.assertTrue("Longitude can not be S", true);
 		}
 
-
+		
 		
 		
 //		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
@@ -202,6 +202,45 @@ public class PointTest {
 //		Assert.assertNull("isLongitude must be undefined. S stands for second.", conversionResults.isLongitude);
 
 	}
+	
+
+	@Test
+	public void testDoubleParsing(){
+		try {
+			Assert.assertEquals("", longitude1, point1.getLongitude());
+			Assert.assertTrue("", latitude1.equals(point1.getLatitude()));
+			point1.setLatitudeByParsing("33.474");
+			Assert.assertEquals("", longitude1, point1.getLongitude());
+			Assert.assertFalse("", latitude1.equals(point1.getLatitude()));
+			Assert.assertEquals("", Double.valueOf("33.474"), point1.getLatitude());
+			point1.setLatitudeByParsing("-39,474");
+			Assert.assertEquals("", Double.valueOf("-39.474"), point1.getLatitude());
+		} catch (ParseException e) {
+			Assert.fail("No parsing error should occur");
+		}
+		
+		try {
+			point1.setLongitudeByParsing("-120.4");
+			Assert.assertEquals("", "-120.4", point1.getLongitude().toString());
+			point1.setLongitudeByParsing("53,4");
+			Assert.assertEquals("", "53.4", point1.getLongitude().toString());
+		} catch (ParseException e) {
+			Assert.fail("No parsing error should occur");
+		}
+		try {
+			point1.setLatitudeByParsing("112.456");
+			Assert.fail("Latitude can not be > 90");
+		} catch (ParseException e) {
+			Assert.assertTrue("Latitude can not be > 90", true);
+		}
+		
+		try {
+			point1.setLongitudeByParsing("191");
+			Assert.fail("Longitude can be > 180°");
+		} catch (ParseException e) {
+			Assert.assertTrue("Longitude can not > 180°", true);
+		}
+}
 	
 	/**
 	 * I don't exactly know what should happen here.

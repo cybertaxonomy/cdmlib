@@ -449,23 +449,61 @@ public class Point implements Cloneable, Serializable {
 	
 	
 	public static Double parseLatitude(String string) throws ParseException{
-		CoordinateConverter converter = new CoordinateConverter();
-		ConversionResults result = converter.tryConvert(string);
-		if (! result.conversionSuccessful || (result.isLongitude != null  && result.isLongitude)  ){
-			throw new ParseException("Latitude could not be parsed", 0);
+		string = setCurrentDoubleSeparator(string);
+		if (isDouble(string)){
+			Double result = Double.valueOf(string);
+			if (Math.abs(result) > 90.0){
+				throw new ParseException("Latitude could not be parsed", 0);
+			}
+			return result;
 		}else{
-			return result.convertedCoord;
+			CoordinateConverter converter = new CoordinateConverter();
+			ConversionResults result = converter.tryConvert(string);
+			if (! result.conversionSuccessful || (result.isLongitude != null  && result.isLongitude)  ){
+				throw new ParseException("Latitude could not be parsed", 0);
+			}else{
+				return result.convertedCoord;
+			}
 		}
 	}
 	
 	public static Double parseLongitude(String string) throws ParseException{
-		CoordinateConverter converter = new CoordinateConverter();
-		ConversionResults result = converter.tryConvert(string);
-		if (! result.conversionSuccessful || (result.isLongitude != null  && ! result.isLongitude)){
-			throw new ParseException("Longitude could not be parsed", 0);
+		string = setCurrentDoubleSeparator(string);
+		if (isDouble(string)){
+			Double result = Double.valueOf(string);
+			if (Math.abs(result) > 180.0){
+				throw new ParseException("Longitude could not be parsed", 0);
+			}
+			return result;
 		}else{
-			return result.convertedCoord;
+			CoordinateConverter converter = new CoordinateConverter();
+			ConversionResults result = converter.tryConvert(string);
+			if (! result.conversionSuccessful || (result.isLongitude != null  && ! result.isLongitude)){
+				throw new ParseException("Longitude could not be parsed", 0);
+			}else{
+				return result.convertedCoord;
+			}
 		}
+	}
+
+	private static String setCurrentDoubleSeparator(String string) {
+        String regExReplaceComma = "(\\,|\\.)";
+        string = string.replaceAll(regExReplaceComma,".");
+        return string;
+ 
+	}
+
+	private static boolean isDouble(String string) {
+		try {
+			Double.valueOf(string);
+			return true;
+
+		} catch (NumberFormatException e) {
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+
 	}
 
 // ******************** GETTER / SETTER ********************************	
