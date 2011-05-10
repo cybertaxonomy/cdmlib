@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
+import javax.persistence.EnumType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.PartialUserType;
+import eu.etaxonomy.cdm.hibernate.URIUserType;
 import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -351,7 +353,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				LongType.class,
 				FloatType.class,
 				SerializableType.class,
-				DoubleType.class
+				DoubleType.class,
+				URIUserType.class,
+				EnumType.class
 				};
 		Set<String> classNames = new HashSet<String>();
 		for (Class clazz: classes){
