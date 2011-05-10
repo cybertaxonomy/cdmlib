@@ -2089,14 +2089,13 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public Specimen addDuplicate(Collection collection, String catalogNumber,
-			String accessionNumber, String collectorsNumber,
+			String accessionNumber,
 			TaxonNameBase storedUnder, PreservationMethod preservation) {
 		Specimen duplicate = Specimen.NewInstance();
 		duplicate.setDerivedFrom(getDerivationEvent(true));
 		duplicate.setCollection(collection);
 		duplicate.setCatalogNumber(catalogNumber);
 		duplicate.setAccessionNumber(accessionNumber);
-		duplicate.setCollectorsNumber(collectorsNumber);
 		duplicate.setStoredUnder(storedUnder);
 		duplicate.setPreservation(preservation);
 		return duplicate;

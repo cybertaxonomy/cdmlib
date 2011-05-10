@@ -1459,7 +1459,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		TaxonNameBase storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
 		PreservationMethod method = PreservationMethod.NewInstance();
 		Specimen duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
-				catalogNumber, accessionNumber, collectorsNumber, storedUnder,
+				catalogNumber, accessionNumber, storedUnder,
 				method);
 		Assert.assertEquals("There should be 2 duplicates now", 2,
 				specimenFacade.getDuplicates().size());
