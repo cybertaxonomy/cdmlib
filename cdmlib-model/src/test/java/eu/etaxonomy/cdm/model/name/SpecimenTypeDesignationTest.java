@@ -66,6 +66,7 @@ public class SpecimenTypeDesignationTest {
 		assertEquals(term1.getTypeStatus(), SpecimenTypeDesignationStatus.EPITYPE());
 		assertTrue(term1.getTypeStatus().isInstanceOf(SpecimenTypeDesignationStatus.class));
 	}
+	/*
 	@Test
 	public void testBidirectionalRelationship(){
 		term2 = new SpecimenTypeDesignation(Specimen.NewInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
@@ -81,5 +82,5 @@ public class SpecimenTypeDesignationTest {
 		}
 		assertTrue(contains);
 	}
-
+*/
 }
