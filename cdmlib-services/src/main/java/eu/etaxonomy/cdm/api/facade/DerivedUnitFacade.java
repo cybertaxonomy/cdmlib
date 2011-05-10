@@ -1716,6 +1716,58 @@ public class DerivedUnitFacade {
 	}
 
 	@Transient
+	public DeterminationEvent getPreferredDetermination() {
+		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		for (DeterminationEvent event : events){
+			if (event.getPreferredFlag() == true){
+				return event;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * This method returns the preferred determination.
+	 * @see #getOtherDeterminations()
+	 * @see #getDeterminations()
+	 * @return
+	 */
+	@Transient
+	public void setPreferredDetermination(DeterminationEvent newEvent) {
+		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		for (DeterminationEvent event : events){
+			if (event.getPreferredFlag() == true){
+				event.setPreferredFlag(false);
+			}
+		}
+		newEvent.setPreferredFlag(true);
+		events.add(newEvent);
+	}
+	
+	/**
+	 * This method returns all determinations except for the preferred one.
+	 * @see #getPreferredDetermination()
+	 * @see #getDeterminations()
+	 * @return
+	 */
+	@Transient
+	public Set<DeterminationEvent> getOtherDeterminations() {
+		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		Set<DeterminationEvent> result = new HashSet<DeterminationEvent>();
+		for (DeterminationEvent event : events){
+			if (event.getPreferredFlag() != true){
+				result.add(event);
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * This method returns all determination events. The preferred one {@link #getPreferredDetermination()} 
+	 * and all others {@link #getOtherDeterminations()}.
+	 * @return
+	 */
+	@Transient
 	public Set<DeterminationEvent> getDeterminations() {
 		return derivedUnit.getDeterminations();
 	}

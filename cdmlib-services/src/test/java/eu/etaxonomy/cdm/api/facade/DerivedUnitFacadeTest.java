@@ -166,7 +166,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
 		specimen.setStoredUnder(taxonName);
-		specimen.setCollectorsNumber(collectorsNumber);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 
@@ -1181,6 +1180,58 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		specimenFacade.removeDetermination(determinationEvent2);
 		Assert.assertEquals("There should remain no definition", 0,
 				specimenFacade.getDerivedUnitDefinitions().size());
+
+	}
+	
+
+	/**
+	 * Test method for
+	 * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}
+	 * .
+	 */
+	@Test
+	public void testPreferredOtherDeterminations() {
+		Assert.assertEquals("There should be no determination yet", 0,
+				specimenFacade.getDeterminations().size());
+		DeterminationEvent determinationEvent1 = DeterminationEvent.NewInstance();
+		specimenFacade.setPreferredDetermination(determinationEvent1);
+		
+		Assert.assertEquals("There should be exactly one determination", 1,
+				specimenFacade.getDeterminations().size());
+		Assert.assertEquals("The only determination should be determination 1",
+				determinationEvent1, specimenFacade.getDeterminations()
+						.iterator().next());
+		Assert.assertEquals("determination 1 should be the preferred determination",
+				determinationEvent1, specimenFacade.getPreferredDetermination());
+		Assert.assertEquals("There should be no 'non preferred' determination", 0,
+				specimenFacade.getOtherDeterminations().size());
+
+		
+
+		DeterminationEvent determinationEvent2 = DeterminationEvent.NewInstance();
+		specimenFacade.addDetermination(determinationEvent2);
+		Assert.assertEquals("There should be exactly 2 determinations", 2,
+				specimenFacade.getDeterminations().size());
+		Assert.assertEquals("determination 1 should be the preferred determination",
+				determinationEvent1, specimenFacade.getPreferredDetermination());
+		Assert.assertEquals("There should be one 'non preferred' determination", 1,
+				specimenFacade.getOtherDeterminations().size());
+		Assert.assertEquals("The only 'non preferred' determination should be determination 2",
+				determinationEvent2, specimenFacade.getOtherDeterminations().iterator().next());
+		
+	
+		DeterminationEvent determinationEvent3 = DeterminationEvent.NewInstance();
+		specimenFacade.setPreferredDetermination(determinationEvent3);
+		Assert.assertEquals("There should be exactly 3 determinations", 3,
+				specimenFacade.getDeterminations().size());
+		Assert.assertEquals("determination 3 should be the preferred determination",
+				determinationEvent3, specimenFacade.getPreferredDetermination());
+		Assert.assertEquals("There should be 2 'non preferred' determination", 2,
+				specimenFacade.getOtherDeterminations().size());
+		Assert.assertTrue("determination 1 should be contained in the set of 'non preferred' determinations",
+				specimenFacade.getOtherDeterminations().contains(determinationEvent1));
+		Assert.assertTrue("determination 2 should be contained in the set of 'non preferred' determinations",
+				specimenFacade.getOtherDeterminations().contains(determinationEvent2));
 
 	}
 
