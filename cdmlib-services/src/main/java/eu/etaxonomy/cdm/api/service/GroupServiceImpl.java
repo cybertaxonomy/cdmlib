@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroupService {
+public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IGroupService {
 
 	protected IUserDao userDao;
 	
@@ -87,7 +87,9 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 		Assert.hasText(groupName);
 		
 		Group group = dao.findGroupByName(groupName);
-		dao.delete(group);
+		if(group != null){
+			dao.delete(group);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -117,9 +119,11 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 		Group group = dao.findGroupByName(groupName);
 		User user = userDao.findUserByUsername(username);
 		
-		if(group.addMember(user)) {
-			dao.update(group);
-		}		
+		if(group != null || user != null){
+			if(group.addMember(user)) {
+				dao.update(group);
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -134,8 +138,10 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 		Group group = dao.findGroupByName(groupName);
 		User user = userDao.findUserByUsername(username);
 		
-		if(group.removeMember(user)) {
-			dao.update(group);
+		if(group != null || user != null){
+			if(group.removeMember(user)){
+				dao.update(group);
+			}
 		}
 	}
 
@@ -147,7 +153,11 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 		Assert.hasText(groupName);
 		Group group = dao.findGroupByName(groupName);
 		
-		return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
+		if (group != null){
+			return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
+		}
+		
+		return new ArrayList<GrantedAuthority>();
 	}
 
 	/* (non-Javadoc)
@@ -160,8 +170,11 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 		Assert.notNull(authority);
 		
 		Group group = dao.findGroupByName(groupName);
-		if(group.getGrantedAuthorities().add(authority)) {
-			dao.update(group);
+		
+		if (group != null){
+			if(group.getGrantedAuthorities().add(authority)){
+				dao.update(group);
+			}
 		}
 	}
 
@@ -177,8 +190,10 @@ public class GroupService extends ServiceBase<Group,IGroupDao> implements IGroup
 		
 		Group group = dao.findGroupByName(groupName);
 		
-		if(group.getGrantedAuthorities().remove(authority)) {
-			dao.update(group);
+		if(group != null){
+			if(group.getGrantedAuthorities().remove(authority)) {
+				dao.update(group);
+			}
 		}
 	}
 
