@@ -469,7 +469,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportTemplate.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExample.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
